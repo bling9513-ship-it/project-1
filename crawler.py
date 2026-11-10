@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-정보보안 채용공고 자동 수집 & 중복 제거 크롤러
+정보보안 채용공고 자동 수집 & 엄격한 직무 검증/태깅 크롤러
 대상 플랫폼: 원티드 (Wanted), 점핏 (Jumpit), 사람인 (Saramin)
-대상 키워드: 정보보안, 정보보호, 취약점 진단, 모의해킹
+대상 핵심 분야: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
 
 import urllib.request
@@ -15,10 +15,28 @@ from datetime import datetime, timezone, timedelta, date
 
 KEYWORDS = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Referer": "https://www.google.com/"
+HEADERS_BASE = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
+WANTED_HEADERS = {**HEADERS_BASE, "Referer": "https://www.wanted.co.kr/"}
+JUMPIT_HEADERS = {**HEADERS_BASE, "Referer": "https://www.jumpit.co.kr/"}
+SARAMIN_HEADERS = {**HEADERS_BASE, "Referer": "https://www.saramin.co.kr/"}
+
+# 실제 정보보안 직무 식별을 위한 필수 키워드 패턴 (대소문자 무관)
+SECURITY_PATTERNS = [
+    r"보안", r"정보보호", r"개인정보", r"취약점", r"모의해킹", r"침해대응",
+    r"\bcert\b", r"보안관제", r"악성코드", r"리버싱", r"\bciso\b", r"\bcpo\b",
+    r"\bisms\b", r"security", r"infosec", r"secops", r"devsecops",
+    r"pentest", r"penetration", r"cyber", r"vulnerab", r"red\s*team", r"blue\s*team",
+    r"오펜시브"
+]
+
+# 비보안 직무 및 단순 물리/경비 직무 제외 패턴
+EXCLUDE_PATTERNS = [
+    r"경비", r"보안요원", r"물류센터\s*보안", r"시설\s*보안", r"주차\s*보안",
+    r"출입\s*보안", r"보안\s*안내", r"특수경비", r"청원경찰",
+    r"마케팅", r"디자이너", r"영업", r"\bmd\b", r"hvac", r"캐스팅"
+]
 
 def get_today_kst():
     kst = timezone(timedelta(hours=9))
@@ -30,6 +48,43 @@ def clean_text(text):
     text = html.unescape(text)
     text = re.sub(r"<[^>]+>", "", text)
     return re.sub(r"\s+", " ", text).strip()
+
+def is_security(title):
+    """공고 제목(Title)을 기반으로 실제 정보보안 직무인지 엄격 검증"""
+    t = clean_text(title).lower()
+    if not any(re.search(p, t) for p in SECURITY_PATTERNS):
+        return False
+    if any(re.search(p, t) for p in EXCLUDE_PATTERNS):
+        return False
+    return True
+
+def assign_keywords(title):
+    """
+    공고 제목 및 직무명을 분석하여 실제 수행 업무에 부합하는 카테고리만 정확히 태깅
+    (검색 쿼리 기반 맹목적 태깅 배제)
+    """
+    t = clean_text(title).lower()
+    tags = []
+    
+    # 1. 모의해킹 (Penetration Testing / Offensive)
+    if any(k in t for k in ["모의해킹", "pentest", "penetration", "레드팀", "red team", "오펜시브", "offensive", "해킹"]):
+        tags.append("모의해킹")
+        
+    # 2. 취약점 진단 (Vulnerability Assessment / Code Audit)
+    if any(k in t for k in ["취약점", "진단", "보안성 검토", "보안성검토", "소스코드", "sast", "dast", "vulnerab"]):
+        tags.append("취약점 진단")
+        
+    # 3. 정보보호 (Governance, Risk & Compliance, Privacy, ISMS)
+    if any(k in t for k in ["정보보호", "개인정보", "isms", "cpo", "privacy", "관리체계", "grc", "컴플라이언스"]):
+        tags.append("정보보호")
+        
+    # 4. 정보보안 (Infosec, Engineering, Operations, CERT, Cloud/Network Security)
+    if any(k in t for k in ["정보보안", "보안", "security", "secops", "devsecops", "infosec", "침해대응", "cert", "관제", "악성코드", "리버싱", "cyber"]):
+        tags.append("정보보안")
+        
+    if not tags:
+        tags.append("정보보안")
+    return tags
 
 def normalize_key(company, title):
     """중복 제거를 위한 정규화 키 생성"""
@@ -89,115 +144,134 @@ def format_jumpit_deadline(p, today_date):
     except Exception:
         return "상시채용"
 
-def fetch_jumpit(keyword, today_date):
-    """점핏 (Jumpit) API 수집"""
+def fetch_jumpit(today_date):
+    """점핏 (Jumpit) API 수집 + 직무 검증"""
     results = []
-    encoded = urllib.parse.quote(keyword)
-    url = f"https://api.jumpit.co.kr/api/positions?keyword={encoded}&page=1"
+    seen_ids = set()
+    queries = ["정보보안", "보안", "정보보호", "취약점", "모의해킹"]
     
-    try:
-        req = urllib.request.Request(url, headers=HEADERS)
-        with urllib.request.urlopen(req, timeout=15) as res:
-            data = json.loads(res.read().decode("utf-8"))
-            positions = data.get("result", {}).get("positions", [])
-            for p in positions:
-                deadline = format_jumpit_deadline(p, today_date)
-                results.append({
-                    "platform": "점핏",
-                    "company": clean_text(p.get("companyName")),
-                    "title": clean_text(p.get("title")),
-                    "url": f"https://www.jumpit.co.kr/position/{p.get('id')}",
-                    "location": clean_text(p.get("location", "")),
-                    "deadline": deadline,
-                    "keyword": keyword
-                })
-    except Exception as e:
-        print(f"[Jumpit] Error for '{keyword}': {e}")
+    for q in queries:
+        for page in [1, 2]:
+            encoded = urllib.parse.quote(q)
+            url = f"https://api.jumpit.co.kr/api/positions?keyword={encoded}&page={page}"
+            try:
+                req = urllib.request.Request(url, headers=JUMPIT_HEADERS)
+                with urllib.request.urlopen(req, timeout=10) as res:
+                    data = json.loads(res.read().decode("utf-8"))
+                    positions = data.get("result", {}).get("positions", [])
+                    for p in positions:
+                        jid = str(p.get("id"))
+                        if jid in seen_ids:
+                            continue
+                        seen_ids.add(jid)
+                        
+                        title = clean_text(p.get("title", ""))
+                        if not is_security(title):
+                            continue
+                            
+                        comp = clean_text(p.get("companyName", ""))
+                        deadline = format_jumpit_deadline(p, today_date)
+                        results.append({
+                            "platform": "점핏",
+                            "company": comp,
+                            "title": title,
+                            "url": f"https://www.jumpit.co.kr/position/{jid}",
+                            "location": clean_text(p.get("location", "")),
+                            "deadline": deadline
+                        })
+            except Exception as e:
+                pass
     return results
 
-def fetch_wanted(keyword):
-    """원티드 (Wanted) API 수집"""
+def fetch_wanted():
+    """원티드 (Wanted) 공식 채용 API 수집 + 직무 검증"""
     results = []
-    encoded = urllib.parse.quote(keyword)
-    url = f"https://www.wanted.co.kr/api/chaos/navigation/v1/results?query={encoded}&years=-1&country=kr"
+    seen_ids = set()
+    queries = ["정보보안", "보안", "정보보호", "취약점", "모의해킹"]
     
-    try:
-        req = urllib.request.Request(url, headers=HEADERS)
-        with urllib.request.urlopen(req, timeout=15) as res:
-            data = json.loads(res.read().decode("utf-8"))
-            items = data.get("data", [])
-            for item in items:
-                results.append({
-                    "platform": "원티드",
-                    "company": clean_text(item.get("company", {}).get("name")),
-                    "title": clean_text(item.get("position")),
-                    "url": f"https://www.wanted.co.kr/wd/{item.get('id')}",
-                    "location": clean_text(item.get("address", {}).get("location", "")),
-                    "deadline": "상시채용",
-                    "keyword": keyword
-                })
-    except Exception as e:
-        print(f"[Wanted] Error for '{keyword}': {e}")
+    for q in queries:
+        encoded = urllib.parse.quote(q)
+        url = f"https://www.wanted.co.kr/api/v4/jobs?query={encoded}&country=kr&years=-1&limit=50"
+        try:
+            req = urllib.request.Request(url, headers=WANTED_HEADERS)
+            with urllib.request.urlopen(req, timeout=10) as res:
+                data = json.loads(res.read().decode("utf-8"))
+                for item in data.get("data", []):
+                    jid = str(item.get("id"))
+                    if jid in seen_ids:
+                        continue
+                    seen_ids.add(jid)
+                    
+                    pos = clean_text(item.get("position", ""))
+                    if not is_security(pos):
+                        continue
+                        
+                    comp = clean_text(item.get("company", {}).get("name", "") if isinstance(item.get("company"), dict) else item.get("company", ""))
+                    results.append({
+                        "platform": "원티드",
+                        "company": comp,
+                        "title": pos,
+                        "url": f"https://www.wanted.co.kr/wd/{jid}",
+                        "location": clean_text(item.get("address", {}).get("location", "")),
+                        "deadline": "상시채용"
+                    })
+        except Exception as e:
+            pass
     return results
 
-def fetch_saramin(keyword, today_date):
-    """사람인 (Saramin) 웹 스크래핑"""
+def fetch_saramin(today_date):
+    """사람인 (Saramin) 수집 + 직무 검증"""
     results = []
-    encoded = urllib.parse.quote(keyword)
-    url = f"https://www.saramin.co.kr/zf_user/search/recruit?searchword={encoded}&recruitPage=1"
+    seen_links = set()
+    queries = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
     
-    try:
-        saramin_headers = dict(HEADERS)
-        saramin_headers["Referer"] = "https://www.saramin.co.kr/"
-        req = urllib.request.Request(url, headers=saramin_headers)
-        with urllib.request.urlopen(req, timeout=15) as res:
-            page = res.read().decode("utf-8", errors="ignore")
-            
-            pattern = r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>.*?<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>.*?<div class="job_date">\s*<span class="date">(.*?)</span>'
-            matches = re.findall(pattern, page, re.DOTALL)
-            
-            for m in matches:
-                corp = clean_text(m[0])
-                link_part = html.unescape(m[1]).split("&searchType")[0]
-                if not link_part.startswith("http"):
-                    link = "https://www.saramin.co.kr" + link_part
-                else:
-                    link = link_part
-                title = clean_text(m[2])
-                raw_deadline = clean_text(m[3])
-                deadline = parse_saramin_deadline(raw_deadline, today_date)
-                
-                results.append({
-                    "platform": "사람인",
-                    "company": corp,
-                    "title": title,
-                    "url": link,
-                    "location": "",
-                    "deadline": deadline,
-                    "keyword": keyword
-                })
-    except Exception as e:
-        print(f"[Saramin] Error for '{keyword}': {e}")
+    for q in queries:
+        encoded = urllib.parse.quote(q)
+        url = f"https://www.saramin.co.kr/zf_user/search/recruit?searchword={encoded}&recruitPage=1"
+        try:
+            req = urllib.request.Request(url, headers=SARAMIN_HEADERS)
+            with urllib.request.urlopen(req, timeout=15) as res:
+                page = res.read().decode("utf-8", errors="ignore")
+                pattern = r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>.*?<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>.*?<div class="job_date">\s*<span class="date">(.*?)</span>'
+                for m in re.findall(pattern, page, re.DOTALL):
+                    corp = clean_text(m[0])
+                    link_part = html.unescape(m[1]).split("&searchType")[0]
+                    link = ("https://www.saramin.co.kr" + link_part) if not link_part.startswith("http") else link_part
+                    if link in seen_links:
+                        continue
+                    seen_links.add(link)
+                    
+                    title = clean_text(m[2])
+                    if not is_security(title):
+                        continue
+                        
+                    raw_deadline = clean_text(m[3])
+                    deadline = parse_saramin_deadline(raw_deadline, today_date)
+                    results.append({
+                        "platform": "사람인",
+                        "company": corp,
+                        "title": title,
+                        "url": link,
+                        "location": "",
+                        "deadline": deadline
+                    })
+        except Exception as e:
+            pass
     return results
 
 def collect_all_jobs():
     today_date = get_today_kst()
-    raw_jobs = []
-    print("=== 채용 정보 수집 시작 ===")
-    for kw in KEYWORDS:
-        print(f"-> 키워드 탐색 중: '{kw}'")
-        jumpit_jobs = fetch_jumpit(kw, today_date)
-        wanted_jobs = fetch_wanted(kw)
-        saramin_jobs = fetch_saramin(kw, today_date)
-        
-        print(f"   [점핏: {len(jumpit_jobs)}건, 원티드: {len(wanted_jobs)}건, 사람인: {len(saramin_jobs)}건]")
-        raw_jobs.extend(jumpit_jobs)
-        raw_jobs.extend(wanted_jobs)
-        raw_jobs.extend(saramin_jobs)
-        
-    print(f"\n총 원시 수집 건수: {len(raw_jobs)}건")
+    print("=== 정보보안 채용 정보 정밀 수집 시작 ===")
     
-    # 중복 제거 및 마감일 우선순위 병합 로직
+    wanted_jobs = fetch_wanted()
+    jumpit_jobs = fetch_jumpit(today_date)
+    saramin_jobs = fetch_saramin(today_date)
+    
+    print(f"-> 플랫폼별 검증 수집 결과: 원티드 {len(wanted_jobs)}건, 점핏 {len(jumpit_jobs)}건, 사람인 {len(saramin_jobs)}건")
+    raw_jobs = wanted_jobs + jumpit_jobs + saramin_jobs
+    print(f"-> 유효 보안 공고 총합: {len(raw_jobs)}건")
+    
+    # 중복 제거 및 직무 기반 정확한 카테고리 태깅
     deduped = {}
     for job in raw_jobs:
         if not job["company"] or not job["title"]:
@@ -210,15 +284,13 @@ def collect_all_jobs():
                 "title": job["title"],
                 "url": job["url"],
                 "platforms": [job["platform"]],
-                "keywords": [job["keyword"]],
+                "keywords": assign_keywords(job["title"]),
                 "location": job["location"],
                 "deadline": job.get("deadline", "상시채용")
             }
         else:
             if job["platform"] not in deduped[key]["platforms"]:
                 deduped[key]["platforms"].append(job["platform"])
-            if job["keyword"] not in deduped[key]["keywords"]:
-                deduped[key]["keywords"].append(job["keyword"])
             if not deduped[key]["location"] and job["location"]:
                 deduped[key]["location"] = job["location"]
             # 구체적인 D-day 일정이 있는 마감일을 '상시채용'보다 우선 반영
@@ -228,7 +300,7 @@ def collect_all_jobs():
                 deduped[key]["deadline"] = new_dl
                 
     job_list = list(deduped.values())
-    print(f"중복 제거 후 최종 고유 공고: {len(job_list)}건")
+    print(f"-> 중복 제거 후 최종 고유 공고: {len(job_list)}건")
     return job_list
 
 def generate_html(jobs, update_time_str):
@@ -1110,11 +1182,11 @@ def generate_html(jobs, update_time_str):
     <!-- Hero Header -->
     <section class="hero">
       <h1 class="hero-title">정보보안 직무 채용 큐레이션</h1>
-      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 매일 아침 선별해 중복 없이 정리합니다.</p>
+      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 정리합니다.</p>
       <div class="hero-stats">
-        <span class="stat-chip">등록 공고 <strong>{len(jobs)}건</strong></span>
+        <span class="stat-chip">엄선된 보안 공고 <strong>{len(jobs)}건</strong></span>
         <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
-        <span class="stat-chip">중복 제거 및 마감일 추적</span>
+        <span class="stat-chip">공고명 기반 정밀 직무 분류</span>
       </div>
     </section>
 
@@ -1507,17 +1579,17 @@ def generate_readme(jobs, update_time_str):
         "",
         f"> **🌐 웹사이트 바로가기**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
         f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
-        f"> **전체 등록 공고**: 총 **{len(jobs)}**개 (중복 제거 완료)",
+        f"> **엄선된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         "",
-        "### 목차 바로가기",
-        "| 키워드 | 등록 공고 | 링크 |",
+        "### 분야별 바로가기",
+        "| 분야 | 등록 공고 | 바로가기 |",
         "| :--- | :---: | :--- |"
     ]
 
     for kw in KEYWORDS:
         count = len(keyword_jobs[kw])
         anchor = kw.replace(" ", "-")
-        lines.append(f"| **{kw}** | **{count}개** | [목록 바로가기](#-{anchor}-{count}건) |")
+        lines.append(f"| **{kw}** | **{count}개** | [목록 바로가기](#{anchor}-{count}건) |")
 
     lines.append("")
     lines.append("---")
@@ -1532,7 +1604,7 @@ def generate_readme(jobs, update_time_str):
             lines.append("")
             continue
 
-        lines.append("| 회사명 | 공고명 | 플랫폼 | 마감 일정 | 태그 |")
+        lines.append("| 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |")
         lines.append("| :--- | :--- | :--- | :--- | :--- |")
         for job in kw_list:
             platforms_str = ", ".join(job["platforms"])
