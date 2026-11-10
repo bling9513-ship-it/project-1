@@ -49,6 +49,17 @@ def clean_text(text):
     text = re.sub(r"<[^>]+>", "", text)
     return re.sub(r"\s+", " ", text).strip()
 
+def is_urgent_deadline(dl):
+    """마감 임박 여부 판별 (D-Day, 오늘, 내일, D-1 ~ D-7)"""
+    if not dl:
+        return False
+    if "D-Day" in dl or "오늘" in dl or "내일" in dl:
+        return True
+    m = re.search(r"D-(\d+)", dl)
+    if m:
+        return int(m.group(1)) <= 7
+    return False
+
 def is_security(title):
     """공고 제목(Title)을 기반으로 실제 정보보안 직무인지 엄격 검증"""
     t = clean_text(title).lower()
@@ -337,7 +348,7 @@ def generate_html(jobs, update_time_str):
     for kw in KEYWORDS:
         kw_counts[kw] = sum(1 for j in jobs if kw in j.get("keywords", []))
         
-    urgent_count = sum(1 for j in jobs if any(k in j.get("deadline", "") for k in ["D-Day", "D-1", "D-2", "D-3", "D-4", "D-5", "D-6", "D-7", "오늘", "내일"]))
+    urgent_count = sum(1 for j in jobs if is_urgent_deadline(j.get("deadline", "")))
         
     html_content = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -1620,7 +1631,7 @@ def generate_readme(jobs, update_time_str):
             if kw in keyword_jobs:
                 keyword_jobs[kw].append(job)
 
-    urgent_count = sum(1 for j in jobs if any(k in j.get("deadline", "") for k in ["D-Day", "D-1", "D-2", "D-3", "D-4", "D-5", "D-6", "D-7", "오늘", "내일"]))
+    urgent_count = sum(1 for j in jobs if is_urgent_deadline(j.get("deadline", "")))
 
     lines = [
         "# 🛡️ Infosec Archive · 정보보안 포지션 아카이브",
