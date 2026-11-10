@@ -299,8 +299,26 @@ def collect_all_jobs():
             if "상시채용" in curr_dl and "상시채용" not in new_dl:
                 deduped[key]["deadline"] = new_dl
                 
+    def get_deadline_sort_key(item):
+        dl = item.get("deadline", "상시채용")
+        if not dl:
+            return (3, 999)
+        if "D-Day" in dl or "오늘" in dl:
+            return (0, 0)
+        if "내일" in dl:
+            return (0, 1)
+        m = re.search(r"D-(\d+)", dl)
+        if m:
+            return (0, int(m.group(1)))
+        if "채용시" in dl:
+            return (1, 500)
+        if "상시" in dl:
+            return (2, 800)
+        return (3, 999)
+
     job_list = list(deduped.values())
-    print(f"-> 중복 제거 후 최종 고유 공고: {len(job_list)}건")
+    job_list.sort(key=get_deadline_sort_key)
+    print(f"-> 중복 제거 및 마감 임박 순 정렬 후 최종 공고: {len(job_list)}건")
     return job_list
 
 def generate_html(jobs, update_time_str):
@@ -310,6 +328,8 @@ def generate_html(jobs, update_time_str):
     kw_counts = {}
     for kw in KEYWORDS:
         kw_counts[kw] = sum(1 for j in jobs if kw in j.get("keywords", []))
+        
+    urgent_count = sum(1 for j in jobs if any(k in j.get("deadline", "") for k in ["D-Day", "D-1", "D-2", "D-3", "D-4", "D-5", "D-6", "D-7", "오늘", "내일"]))
         
     html_content = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -360,6 +380,10 @@ def generate_html(jobs, update_time_str):
       --urgent-text: #dc2626;
       --urgent-border: #fecaca;
       
+      --warning-bg: #fff7ed;
+      --warning-text: #ea580c;
+      --warning-border: #fed7aa;
+      
       --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
       --card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
     }}
@@ -397,6 +421,10 @@ def generate_html(jobs, update_time_str):
       --saramin-bg: rgba(245, 158, 11, 0.15);
       --saramin-text: #fbbf24;
       --saramin-border: rgba(245, 158, 11, 0.3);
+      
+      --warning-bg: rgba(234, 88, 12, 0.15);
+      --warning-text: #fb923c;
+      --warning-border: rgba(234, 88, 12, 0.3);
       
       --urgent-bg: rgba(239, 68, 68, 0.15);
       --urgent-text: #f87171;
@@ -899,6 +927,12 @@ def generate_html(jobs, update_time_str):
       border: 1px solid var(--urgent-border);
     }}
 
+    .badge-dl-warning {{
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }}
+
     .badge-dl-normal {{
       background: var(--bg-subtle);
       color: var(--text-secondary);
@@ -1185,6 +1219,7 @@ def generate_html(jobs, update_time_str):
       <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 정리합니다.</p>
       <div class="hero-stats">
         <span class="stat-chip">엄선된 보안 공고 <strong>{len(jobs)}건</strong></span>
+        <span class="stat-chip">D-Day 마감 임박 <strong>{urgent_count}건</strong></span>
         <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
         <span class="stat-chip">공고명 기반 정밀 직무 분류</span>
       </div>
@@ -1230,8 +1265,8 @@ def generate_html(jobs, update_time_str):
 
         <div class="view-actions">
           <select id="sortSelect" class="sort-select" aria-label="정렬">
+            <option value="deadline" selected>마감 임박 순</option>
             <option value="default">등록 순</option>
-            <option value="deadline">마감 임박 순</option>
             <option value="company">회사명 순</option>
           </select>
 
@@ -1281,7 +1316,7 @@ def generate_html(jobs, update_time_str):
     let selectedKeyword = 'all';
     let selectedPlatform = 'all';
     let selectedDeadline = 'all';
-    let sortBy = 'default';
+    let sortBy = 'deadline';
     let searchTerm = '';
     let currentView = 'grid';
 
@@ -1347,7 +1382,13 @@ def generate_html(jobs, update_time_str):
         daysLeft = 500;
       }} else {{
         const m = dl.match(/D-(\\d+)/);
-        if (m) daysLeft = parseInt(m[1]);
+        if (m) {{
+          daysLeft = parseInt(m[1]);
+          if (daysLeft <= 7) {{
+            badgeClass = 'badge-dl-warning';
+            isUrgent = true;
+          }}
+        }}
       }}
 
       return {{ label: dl, badgeClass, isUrgent, isAlways, daysLeft }};
@@ -1574,12 +1615,15 @@ def generate_readme(jobs, update_time_str):
             if kw in keyword_jobs:
                 keyword_jobs[kw].append(job)
 
+    urgent_count = sum(1 for j in jobs if any(k in j.get("deadline", "") for k in ["D-Day", "D-1", "D-2", "D-3", "D-4", "D-5", "D-6", "D-7", "오늘", "내일"]))
+
     lines = [
         "# SecJobs · 정보보안 직무 채용 피드",
         "",
         f"> **🌐 웹사이트 바로가기**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
         f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
         f"> **엄선된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
+        f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
         "",
         "### 분야별 바로가기",
         "| 분야 | 등록 공고 | 바로가기 |",
