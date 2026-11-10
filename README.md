@@ -1,9 +1,21 @@
-# 🛡️ 정보보안 채용공고 리스트 (자동 업데이트)
+# 🛡️ 정보보안 직무 채용공고 피드 (키워드별 분류)
 
-> **마지막 업데이트**: `2026-11-10 08:58:08 KST` (매일 자동 수집)
-> **현재 등록된 공고**: 총 **186**개 (중복 제거 완료)
+> **마지막 업데이트**: `2026-11-10 09:39:35 KST` (매일 06:30 KST 자동 수집)
+> **전체 고유 공고**: 총 **186**개 (중복 제거 완료)
 
-| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 매칭 키워드 |
+### 📌 키워드별 바로가기 목차
+| 키워드 | 등록 공고 수 | 목차 링크 |
+| :--- | :---: | :--- |
+| 🛡️ **정보보안** | **67개** | [공고 목록 바로가기](#-정보보안-67건) |
+| 🔒 **정보보호** | **67개** | [공고 목록 바로가기](#-정보보호-67건) |
+| 🔍 **취약점 진단** | **67개** | [공고 목록 바로가기](#-취약점-진단-67건) |
+| 💻 **모의해킹** | **54개** | [공고 목록 바로가기](#-모의해킹-54건) |
+
+---
+
+## 🛡️ 정보보안 (67건)
+
+| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 상세 태그 |
 | :--- | :--- | :--- | :--- |
 | **브레인즈컴퍼니** | [Application성능관리솔루션개발자(신입)](https://www.jumpit.co.kr/position/55330482) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
 | **와이톤** | [백엔드 개발자 채용](https://www.jumpit.co.kr/position/55396303) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
@@ -20,19 +32,19 @@
 | **드림어스컴퍼니** | [음악 서비스 백엔드 서버 개발자 채용](https://www.jumpit.co.kr/position/55354281) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
 | **대성엔지니어링** | [헬프데스크 및 IT 인프라 운영 담당자 경력 모집](https://www.jumpit.co.kr/position/55273822) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
 | **러닝포인트** | [풀스텍 개발자-신입](https://www.jumpit.co.kr/position/55424525) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
-| **인젠트** | [정보지원팀 iBiz Java 개발자 채용](https://www.jumpit.co.kr/position/55415545) | 점핏 | `정보보안`, `정보보호` |
-| **디에스글로벌** | [커머스 백엔드 개발 (Backend Engineer, 5~9년)](https://www.wanted.co.kr/wd/395510) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 HTS 채널 개발](https://www.wanted.co.kr/wd/397404) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 MTS 채널 개발](https://www.wanted.co.kr/wd/397403) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 원장 계정계 개발](https://www.wanted.co.kr/wd/397402) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 Web/WTS 채널 개발](https://www.wanted.co.kr/wd/397401) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 채널 서버 개발](https://www.wanted.co.kr/wd/397400) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 디지털자산 지갑·키관리 개발](https://www.wanted.co.kr/wd/397399) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [토큰증권 스마트 컨트랙트 엔지니어](https://www.wanted.co.kr/wd/397398) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 소프트웨어 아키텍트](https://www.wanted.co.kr/wd/397397) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [증권 데이터베이스 엔지니어](https://www.wanted.co.kr/wd/397396) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [금융 데이터 아키텍트](https://www.wanted.co.kr/wd/397395) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
-| **다우기술** | [금융 네트워크 엔지니어](https://www.wanted.co.kr/wd/397394) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **코어시큐리티** | [금융범죄 AI 풀스택 개발자](https://www.jumpit.co.kr/position/55357203) | 점핏 | `정보보안`, `정보보호` |
+| **쉐어잇** | [Backend 개발자](https://www.wanted.co.kr/wd/397413) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **파마리서치** | [코스메틱 S&OP 및 수요관리 담당](https://www.wanted.co.kr/wd/380619) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **비나우** | [Knock, 글로벌 퍼포먼스 마케터](https://www.wanted.co.kr/wd/394036) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [사업개발 매니저(Business Development Manager)](https://www.wanted.co.kr/wd/395023) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [시니어 프로덕트 엔지니어 (Senior Product Engineer)](https://www.wanted.co.kr/wd/386123) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케이더블유이코리아** | [WMS 웹 개발 (5~9년)](https://www.wanted.co.kr/wd/397412) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **유모스원** | [CS정책 및 운영 관리 담당자](https://www.wanted.co.kr/wd/372687) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [콘텐츠 마케터 (1년 계약직)](https://www.wanted.co.kr/wd/397410) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **서울쿠키컴퍼니** | [인사팀장](https://www.wanted.co.kr/wd/391773) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케어랩스** | [[DM사업부] 광고영업 담당자](https://www.wanted.co.kr/wd/390672) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [캐치테이블페이_정산 운영](https://www.wanted.co.kr/wd/393489) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **펜타시큐리티** | [웹보안 소프트웨어 개발자](https://www.wanted.co.kr/wd/397408) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
 | **지에스건설(주)** | [[평일근무/판교] 카카오뱅크 정보보안 기술지원 MDB1](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55483142&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **(주)트랜스코스모스코리아** | [서비스탑 AI Tech팀 IT 인프라 및 정보보안 전문가 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55489854&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **서비스탑(주)** | [경력직 채용공고(정보보안시스템 운영)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55500394&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
@@ -61,7 +73,8 @@
 | **(주)웨일시큐리티** | [정보보안 컨설팅(모의해킹) 정규직 채용 - 신입/경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491375&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **(주)베이스라인시큐어** | [[삼성물산 건설부문] 플랫폼 정보보안 채용 공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502827&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **삼성물산 (주)** | [[정보보안기술] 2026년 보안솔루션 엔지니어 채용(신입,경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55148925&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
-| **(주)에이바이트** | [[코스닥상장] 정보보안분야 마케팅 담당자를 모십니다.](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55521908&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
+| **(주)에이바이트** | [[정보보안] 보안관제 담당 정규직 채용(교대근무)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55434834&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
+| **(주)유호스트** | [[코스닥상장] 정보보안분야 마케팅 담당자를 모십니다.](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55521908&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **㈜모니터랩** | [2026년 제35회 정규직 정보처리사(정보보안전담) 직원 모집 공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55456887&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **서울특별시서울의료원** | [정보보안 기술 담당자 (경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55517902&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **에어프레미아(주)** | [총무(총무,산업안전,정보보안) 경력직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55388492&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
@@ -71,7 +84,43 @@
 | **에이스아메리칸화재해상보험(주)** | [[강남구청/외국계 자동차 기업] IT 정보보안 Specialist 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361461&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **퍼솔코리아(유)** | [[알바천국본사] 정보보안 기술 엔지니어 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55405421&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
 | **(주)미디어윌네트웍스** | [메타엠 정보보안팀 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55374803&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
-| **(주)메타엠** | [[코스닥상장] 정보보안 솔루션 영업 신입 사원을 모십니다.](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55284136&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | `정보보안` |
+
+[⬆️ 맨 위로 이동](#-정보보안-직무-채용공고-피드-키워드별-분류)
+
+---
+
+## 🔒 정보보호 (67건)
+
+| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 상세 태그 |
+| :--- | :--- | :--- | :--- |
+| **브레인즈컴퍼니** | [Application성능관리솔루션개발자(신입)](https://www.jumpit.co.kr/position/55330482) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **와이톤** | [백엔드 개발자 채용](https://www.jumpit.co.kr/position/55396303) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **오디케이미디어** | [Backend Developer (Data Platform)](https://www.jumpit.co.kr/position/55277466) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **아티언스** | [[AX팀] AI 서비스 개발자](https://www.jumpit.co.kr/position/55284832) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **드림어스컴퍼니** | [콘텐츠 플랫폼 백엔드 개발(신입)](https://www.jumpit.co.kr/position/55354317) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **펫박스** | [프론트엔드 개발자_1~4년](https://www.jumpit.co.kr/position/55427793) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **핀다** | [백엔드 개발자](https://www.jumpit.co.kr/position/55262223) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **인젠트** | [JAVA개발자(연계개발)](https://www.jumpit.co.kr/position/55352065) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **토스씨엑스** | [IT Manager(IT인프라 운영 및 기획)](https://www.jumpit.co.kr/position/55393067) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **건강누리** | [웹 개발자 채용[신입]](https://www.jumpit.co.kr/position/55425606) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **프로토타이** | [웹/서버 개발자](https://www.jumpit.co.kr/position/55379247) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **티엔에이치** | [백엔드 개발자 (신입)](https://www.jumpit.co.kr/position/55299151) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **드림어스컴퍼니** | [음악 서비스 백엔드 서버 개발자 채용](https://www.jumpit.co.kr/position/55354281) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **대성엔지니어링** | [헬프데스크 및 IT 인프라 운영 담당자 경력 모집](https://www.jumpit.co.kr/position/55273822) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **러닝포인트** | [풀스텍 개발자-신입](https://www.jumpit.co.kr/position/55424525) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **코어시큐리티** | [금융범죄 AI 풀스택 개발자](https://www.jumpit.co.kr/position/55357203) | 점핏 | `정보보안`, `정보보호` |
+| **쉐어잇** | [Backend 개발자](https://www.wanted.co.kr/wd/397413) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **파마리서치** | [코스메틱 S&OP 및 수요관리 담당](https://www.wanted.co.kr/wd/380619) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **비나우** | [Knock, 글로벌 퍼포먼스 마케터](https://www.wanted.co.kr/wd/394036) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [사업개발 매니저(Business Development Manager)](https://www.wanted.co.kr/wd/395023) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [시니어 프로덕트 엔지니어 (Senior Product Engineer)](https://www.wanted.co.kr/wd/386123) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케이더블유이코리아** | [WMS 웹 개발 (5~9년)](https://www.wanted.co.kr/wd/397412) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **유모스원** | [CS정책 및 운영 관리 담당자](https://www.wanted.co.kr/wd/372687) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [콘텐츠 마케터 (1년 계약직)](https://www.wanted.co.kr/wd/397410) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **서울쿠키컴퍼니** | [인사팀장](https://www.wanted.co.kr/wd/391773) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케어랩스** | [[DM사업부] 광고영업 담당자](https://www.wanted.co.kr/wd/390672) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [캐치테이블페이_정산 운영](https://www.wanted.co.kr/wd/393489) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **펜타시큐리티** | [웹보안 소프트웨어 개발자](https://www.wanted.co.kr/wd/397408) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
 | **(주)진영정기** | [[수산그룹] 수산INT 정보보호 컨설팅 채용(관리체계/취약점진단/영업 등)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55478913&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | `정보보호` |
 | **(주)수산아이앤티** | [KB라이프파트너스 본사 : 정보보호/IT운영 신입/경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55419546&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | `정보보호` |
 | **KB라이프파트너스** | [한국정보보호산업협회 일반직 직원 채용(재공고)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55469616&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | `정보보호` |
@@ -111,6 +160,42 @@
 | **한화시스템(주)** | [[삼정KPMG] 정보보안팀 개인정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55466514&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | `정보보호` |
 | **삼정KPMG** | [정보보호 및 네트워크 엔지니어[신입/경력] 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55297992&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | `정보보호` |
 | **링크정보통신(주)** | [정보보호(보안) 담당자 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403110&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | `정보보호` |
+
+[⬆️ 맨 위로 이동](#-정보보안-직무-채용공고-피드-키워드별-분류)
+
+---
+
+## 🔍 취약점 진단 (67건)
+
+| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 상세 태그 |
+| :--- | :--- | :--- | :--- |
+| **브레인즈컴퍼니** | [Application성능관리솔루션개발자(신입)](https://www.jumpit.co.kr/position/55330482) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **와이톤** | [백엔드 개발자 채용](https://www.jumpit.co.kr/position/55396303) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **오디케이미디어** | [Backend Developer (Data Platform)](https://www.jumpit.co.kr/position/55277466) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **아티언스** | [[AX팀] AI 서비스 개발자](https://www.jumpit.co.kr/position/55284832) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **드림어스컴퍼니** | [콘텐츠 플랫폼 백엔드 개발(신입)](https://www.jumpit.co.kr/position/55354317) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **펫박스** | [프론트엔드 개발자_1~4년](https://www.jumpit.co.kr/position/55427793) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **핀다** | [백엔드 개발자](https://www.jumpit.co.kr/position/55262223) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **인젠트** | [JAVA개발자(연계개발)](https://www.jumpit.co.kr/position/55352065) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **토스씨엑스** | [IT Manager(IT인프라 운영 및 기획)](https://www.jumpit.co.kr/position/55393067) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **건강누리** | [웹 개발자 채용[신입]](https://www.jumpit.co.kr/position/55425606) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **프로토타이** | [웹/서버 개발자](https://www.jumpit.co.kr/position/55379247) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **티엔에이치** | [백엔드 개발자 (신입)](https://www.jumpit.co.kr/position/55299151) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **드림어스컴퍼니** | [음악 서비스 백엔드 서버 개발자 채용](https://www.jumpit.co.kr/position/55354281) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **대성엔지니어링** | [헬프데스크 및 IT 인프라 운영 담당자 경력 모집](https://www.jumpit.co.kr/position/55273822) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **러닝포인트** | [풀스텍 개발자-신입](https://www.jumpit.co.kr/position/55424525) | 점핏 | `정보보안`, `정보보호`, `취약점 진단` |
+| **쉐어잇** | [Backend 개발자](https://www.wanted.co.kr/wd/397413) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **파마리서치** | [코스메틱 S&OP 및 수요관리 담당](https://www.wanted.co.kr/wd/380619) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **비나우** | [Knock, 글로벌 퍼포먼스 마케터](https://www.wanted.co.kr/wd/394036) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [사업개발 매니저(Business Development Manager)](https://www.wanted.co.kr/wd/395023) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [시니어 프로덕트 엔지니어 (Senior Product Engineer)](https://www.wanted.co.kr/wd/386123) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케이더블유이코리아** | [WMS 웹 개발 (5~9년)](https://www.wanted.co.kr/wd/397412) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **유모스원** | [CS정책 및 운영 관리 담당자](https://www.wanted.co.kr/wd/372687) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [콘텐츠 마케터 (1년 계약직)](https://www.wanted.co.kr/wd/397410) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **서울쿠키컴퍼니** | [인사팀장](https://www.wanted.co.kr/wd/391773) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케어랩스** | [[DM사업부] 광고영업 담당자](https://www.wanted.co.kr/wd/390672) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [캐치테이블페이_정산 운영](https://www.wanted.co.kr/wd/393489) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **펜타시큐리티** | [웹보안 소프트웨어 개발자](https://www.wanted.co.kr/wd/397408) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
 | **위볼린** | [개발자 채용[신입]](https://www.jumpit.co.kr/position/55469987) | 점핏 | `취약점 진단` |
 | **(주)수산아이앤티** | [취약점 진단 및 모의해킹 담당자](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403612&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단` |
 | **넷마블(주)** | [[인프라사업본부] 취약점 진단 경력직 인재 채용(진주)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55391939&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단` |
@@ -151,6 +236,29 @@
 | **(주)인스케이프** | [기획/영업/개발(SW/HW)/기술(PM)/고객지원(CS) 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55363937&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단` |
 | **(주)세미티에스** | [KB라이프파트너스 본사 : 정보보호/IT운영 신입/경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55419546&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단` |
 | **KB라이프파트너스** | [(주)앰진 개발자 신입·경력 채용공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55516193&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단` |
+
+[⬆️ 맨 위로 이동](#-정보보안-직무-채용공고-피드-키워드별-분류)
+
+---
+
+## 💻 모의해킹 (54건)
+
+| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 상세 태그 |
+| :--- | :--- | :--- | :--- |
+| **쉐어잇** | [Backend 개발자](https://www.wanted.co.kr/wd/397413) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **파마리서치** | [코스메틱 S&OP 및 수요관리 담당](https://www.wanted.co.kr/wd/380619) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **비나우** | [Knock, 글로벌 퍼포먼스 마케터](https://www.wanted.co.kr/wd/394036) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [사업개발 매니저(Business Development Manager)](https://www.wanted.co.kr/wd/395023) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **보살핌** | [시니어 프로덕트 엔지니어 (Senior Product Engineer)](https://www.wanted.co.kr/wd/386123) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케이더블유이코리아** | [WMS 웹 개발 (5~9년)](https://www.wanted.co.kr/wd/397412) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **유모스원** | [CS정책 및 운영 관리 담당자](https://www.wanted.co.kr/wd/372687) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [콘텐츠 마케터 (1년 계약직)](https://www.wanted.co.kr/wd/397410) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **서울쿠키컴퍼니** | [인사팀장](https://www.wanted.co.kr/wd/391773) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **케어랩스** | [[DM사업부] 광고영업 담당자](https://www.wanted.co.kr/wd/390672) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **와드(캐치테이블)** | [캐치테이블페이_정산 운영](https://www.wanted.co.kr/wd/393489) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **펜타시큐리티** | [웹보안 소프트웨어 개발자](https://www.wanted.co.kr/wd/397408) | 원티드 | `정보보안`, `정보보호`, `취약점 진단`, `모의해킹` |
+| **쿠도커뮤니케이션(주)** | [2026년 정보보안 / 신재생사업(재무·금융) / 시운전(Commissioning) 전문인력 정규직 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55518674&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단`, `모의해킹` |
+| **지에스건설(주)** | [다우기술 금융/증권 IT 경력사원 대규모 인재영입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55494421&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | `취약점 진단`, `모의해킹` |
 | **디어유** | [정보보호/개인정보보호 분야 경력직 채용](https://www.jumpit.co.kr/position/55299862) | 점핏 | `모의해킹` |
 | **에스투더블유** | [AI Pentester](https://www.jumpit.co.kr/position/55507615) | 점핏 | `모의해킹` |
 | **대진정보통신** | [PIA자격/개인정보보호컨설팅(1~3년)](https://www.jumpit.co.kr/position/55402895) | 점핏 | `모의해킹` |
@@ -192,5 +300,6 @@
 | **(주)수산아이앤티** | [[코스닥상장사 수산INT] 플랫폼SW개발자 (대전근무)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55441165&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | `모의해킹` |
 | **(주)수산아이앤티** | [(신입/경력) IT 정보보안 기술지원 엔지니어 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55272204&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | `모의해킹` |
 
+[⬆️ 맨 위로 이동](#-정보보안-직무-채용공고-피드-키워드별-분류)
+
 ---
-💡 **GitHub Pages 웹 대시보드**: 저장소의 `Settings > Pages`에서 활성화하면 검색/필터 기능이 있는 웹사이트로 이용할 수 있습니다.

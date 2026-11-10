@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-정보보안 채용공고 자동 수집 & 중복 제거 크롤러
+정보보안 채용공고 자동 수집 & 중복 제거 크롤러 (키워드별 분리 뷰 지원)
 대상 플랫폼: 원티드 (Wanted), 점핏 (Jumpit), 사람인 (Saramin)
 대상 키워드: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
@@ -168,15 +168,18 @@ def collect_all_jobs():
     return job_list
 
 def generate_html(jobs, update_time_str):
-    """GitHub Pages 배포용 정적 웹페이지 생성 (검색, 필터, 리다이렉트 지원)"""
+    """GitHub Pages 배포용 정적 웹페이지 생성 (키워드별 분리 모아보기 + 필터 검색)"""
     jobs_json_str = json.dumps(jobs, ensure_ascii=False)
+    
+    # 키워드별 건수 계산
+    kw_counts = {kw: sum(1 for j in jobs if kw in j.get("keywords", [])) for kw in KEYWORDS}
     
     html_content = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>정보보안 채용공고 피드 | 자동 수집 대시보드</title>
+  <title>정보보안 채용공고 피드 | 키워드별 분리 대시보드</title>
   <style>
     :root {{
       --bg: #0f172a;
@@ -188,7 +191,6 @@ def generate_html(jobs, update_time_str):
       --wanted: #3b82f6;
       --jumpit: #10b981;
       --saramin: #f97316;
-      --tag-bg: #0284c7;
       --border: #334155;
     }}
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -205,7 +207,7 @@ def generate_html(jobs, update_time_str):
     }}
     header {{
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }}
     header h1 {{
       font-size: 28px;
@@ -228,6 +230,29 @@ def generate_html(jobs, update_time_str):
       border-radius: 9999px;
       font-size: 12px;
       font-weight: 600;
+    }}
+    .view-mode-tabs {{
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }}
+    .tab-btn {{
+      padding: 8px 18px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }}
+    .tab-btn.active {{
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+      font-weight: 800;
     }}
     .controls {{
       background: var(--card-bg);
@@ -293,10 +318,29 @@ def generate_html(jobs, update_time_str):
       color: var(--accent);
       font-weight: 700;
     }}
+    .section-title {{
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin: 28px 0 12px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }}
+    .section-title span.badge-cnt {{
+      font-size: 13px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+    }}
     .job-list {{
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
+      margin-bottom: 20px;
     }}
     @media (min-width: 768px) {{
       .job-list {{
@@ -307,7 +351,7 @@ def generate_html(jobs, update_time_str):
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 18px;
+      padding: 16px;
       cursor: pointer;
       transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
       display: flex;
@@ -349,7 +393,7 @@ def generate_html(jobs, update_time_str):
     .badge-점핏 {{ background-color: var(--jumpit); }}
     .badge-사람인 {{ background-color: var(--saramin); }}
     .job-title {{
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: #fff;
       line-height: 1.4;
@@ -394,21 +438,26 @@ def generate_html(jobs, update_time_str):
 <body>
   <div class="container">
     <header>
-      <h1>🛡️ 정보보안 채용공고 모음</h1>
+      <h1>🛡️ 정보보안 직무 채용공고 모음</h1>
       <p>원티드 · 점핏 · 사람인 실시간 자동 수집 및 중복 제거 피드</p>
       <div class="time-badge">마지막 갱신: {update_time_str}</div>
     </header>
 
-    <div class="controls">
+    <div class="view-mode-tabs">
+      <button class="tab-btn active" id="tabSections">📑 키워드별 분리 모아보기</button>
+      <button class="tab-btn" id="tabFilter">🔍 통합 검색 & 필터</button>
+    </div>
+
+    <div class="controls" id="filterControls" style="display: none;">
       <input type="text" id="searchInput" class="search-bar" placeholder="🔍 회사명 또는 공고명으로 실시간 검색...">
       
       <div class="filter-group">
         <span class="filter-label">키워드:</span>
-        <div class="chip active" data-filter="keyword" data-val="all">전체</div>
-        <div class="chip" data-filter="keyword" data-val="정보보안">정보보안</div>
-        <div class="chip" data-filter="keyword" data-val="정보보호">정보보호</div>
-        <div class="chip" data-filter="keyword" data-val="취약점 진단">취약점 진단</div>
-        <div class="chip" data-filter="keyword" data-val="모의해킹">모의해킹</div>
+        <div class="chip active" data-filter="keyword" data-val="all">전체 ({len(jobs)})</div>
+        <div class="chip" data-filter="keyword" data-val="정보보안">정보보안 ({kw_counts.get("정보보안", 0)})</div>
+        <div class="chip" data-filter="keyword" data-val="정보보호">정보보호 ({kw_counts.get("정보보호", 0)})</div>
+        <div class="chip" data-filter="keyword" data-val="취약점 진단">취약점 진단 ({kw_counts.get("취약점 진단", 0)})</div>
+        <div class="chip" data-filter="keyword" data-val="모의해킹">모의해킹 ({kw_counts.get("모의해킹", 0)})</div>
       </div>
 
       <div class="filter-group">
@@ -420,77 +469,118 @@ def generate_html(jobs, update_time_str):
       </div>
     </div>
 
-    <div class="count-stat">검색된 공고: <span id="countNum">0</span>개 (공고 클릭 시 원문 사이트로 바로 이동)</div>
+    <div class="count-stat" id="countStat">공고 카드 클릭 시 원문 사이트로 바로 이동합니다.</div>
 
-    <div class="job-list" id="jobList"></div>
+    <div id="contentArea"></div>
   </div>
 
   <script>
     const JOBS = {jobs_json_str};
+    const KEYWORDS = ["정보보안", "정보보호", "취약점 진단", "모의해킹"];
+    const ICONS = {{
+      "정보보안": "🛡️",
+      "정보보호": "🔒",
+      "취약점 진단": "🔍",
+      "모의해킹": "💻"
+    }};
+
+    let viewMode = 'sections'; // 'sections' or 'filter'
     let activeKeyword = 'all';
     let activePlatform = 'all';
     let searchTerm = '';
 
-    const jobListEl = document.getElementById('jobList');
-    const countNumEl = document.getElementById('countNum');
+    const contentArea = document.getElementById('contentArea');
+    const filterControls = document.getElementById('filterControls');
+    const countStat = document.getElementById('countStat');
     const searchInput = document.getElementById('searchInput');
 
-    function renderJobs() {{
-      const filtered = JOBS.filter(job => {{
-        // 키워드 필터
-        if (activeKeyword !== 'all' && !job.keywords.includes(activeKeyword)) {{
-          return false;
-        }}
-        // 플랫폼 필터
-        if (activePlatform !== 'all' && !job.platforms.includes(activePlatform)) {{
-          return false;
-        }}
-        // 검색어 필터
-        if (searchTerm) {{
-          const term = searchTerm.toLowerCase();
-          const matchCompany = job.company.toLowerCase().includes(term);
-          const matchTitle = job.title.toLowerCase().includes(term);
-          if (!matchCompany && !matchTitle) return false;
-        }}
-        return true;
-      }});
+    function createJobCard(job) {{
+      const badges = job.platforms.map(p => `<span class="badge badge-${{p}}">${{p}}</span>`).join('');
+      const tags = job.keywords.map(k => `<span class="tag">#${{k}}</span>`).join('');
+      
+      return `
+        <a class="job-card" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="job-header">
+              <span class="company-name">${{escapeHtml(job.company)}}</span>
+              <div class="platform-badges">${{badges}}</div>
+            </div>
+            <div class="job-title">${{escapeHtml(job.title)}}</div>
+          </div>
+          <div class="job-footer">
+            <div class="keyword-tags">${{tags}}</div>
+            <div class="click-hint">원문 보기 ↗</div>
+          </div>
+        </a>
+      `;
+    }}
 
-      countNumEl.textContent = filtered.length;
-
-      if (filtered.length === 0) {{
-        jobListEl.innerHTML = '<div class="no-results">조건에 일치하는 채용공고가 없습니다.</div>';
-        return;
-      }}
-
-      jobListEl.innerHTML = filtered.map(job => {{
-        const badges = job.platforms.map(p => `<span class="badge badge-${{p}}">${{p}}</span>`).join('');
-        const tags = job.keywords.map(k => `<span class="tag">#${{k}}</span>`).join('');
+    function renderView() {{
+      if (viewMode === 'sections') {{
+        filterControls.style.display = 'none';
+        countStat.textContent = `4개 키워드별로 분류된 총 ${{JOBS.length}}건의 공고입니다. (카드 클릭 시 원문 이동)`;
         
-        return `
-          <a class="job-card" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
-            <div>
-              <div class="job-header">
-                <span class="company-name">${{escapeHtml(job.company)}}</span>
-                <div class="platform-badges">${{badges}}</div>
-              </div>
-              <div class="job-title">${{escapeHtml(job.title)}}</div>
+        let html = '';
+        KEYWORDS.forEach(kw => {{
+          const icon = ICONS[kw] || '🏷️';
+          const list = JOBS.filter(j => j.keywords && j.keywords.includes(kw));
+          
+          html += `
+            <div class="section-title">
+              <span>${{icon}} ${{kw}}</span>
+              <span class="badge-cnt">${{list.length}}건</span>
             </div>
-            <div class="job-footer">
-              <div class="keyword-tags">${{tags}}</div>
-              <div class="click-hint">공고 보기 ↗</div>
+            <div class="job-list">
+              ${{list.map(createJobCard).join('')}}
             </div>
-          </a>
-        `;
-      }}).join('');
+          `;
+        }});
+        contentArea.innerHTML = html;
+      }} else {{
+        filterControls.style.display = 'flex';
+        const filtered = JOBS.filter(job => {{
+          if (activeKeyword !== 'all' && !job.keywords.includes(activeKeyword)) return false;
+          if (activePlatform !== 'all' && !job.platforms.includes(activePlatform)) return false;
+          if (searchTerm) {{
+            const term = searchTerm.toLowerCase();
+            const matchCompany = job.company.toLowerCase().includes(term);
+            const matchTitle = job.title.toLowerCase().includes(term);
+            if (!matchCompany && !matchTitle) return false;
+          }}
+          return true;
+        }});
+
+        countStat.innerHTML = `검색 및 필터된 공고: <span>${{filtered.length}}</span>개 (공고 클릭 시 원문 사이트로 바로 이동)`;
+
+        if (filtered.length === 0) {{
+          contentArea.innerHTML = '<div class="no-results">조건에 일치하는 채용공고가 없습니다.</div>';
+          return;
+        }}
+
+        contentArea.innerHTML = `<div class="job-list">${{filtered.map(createJobCard).join('')}}</div>`;
+      }}
     }}
 
     function escapeHtml(str) {{
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }}
 
-    // 필터 이벤트 바인딩
+    document.getElementById('tabSections').addEventListener('click', () => {{
+      viewMode = 'sections';
+      document.getElementById('tabSections').classList.add('active');
+      document.getElementById('tabFilter').classList.remove('active');
+      renderView();
+    }});
+
+    document.getElementById('tabFilter').addEventListener('click', () => {{
+      viewMode = 'filter';
+      document.getElementById('tabFilter').classList.add('active');
+      document.getElementById('tabSections').classList.remove('active');
+      renderView();
+    }});
+
     document.querySelectorAll('.chip').forEach(chip => {{
-      chip.addEventListener('click', e => {{
+      chip.addEventListener('click', () => {{
         const type = chip.getAttribute('data-filter');
         const val = chip.getAttribute('data-val');
 
@@ -499,17 +589,17 @@ def generate_html(jobs, update_time_str):
 
         if (type === 'keyword') activeKeyword = val;
         if (type === 'platform') activePlatform = val;
-        renderJobs();
+        renderView();
       }});
     }});
 
     searchInput.addEventListener('input', e => {{
       searchTerm = e.target.value.trim();
-      renderJobs();
+      renderView();
     }});
 
-    // 최초 렌더링
-    renderJobs();
+    // 초기 렌더링: 키워드별 분리 모아보기 기본
+    renderView();
   </script>
 </body>
 </html>
@@ -517,28 +607,66 @@ def generate_html(jobs, update_time_str):
     return html_content
 
 def generate_readme(jobs, update_time_str):
-    """GitHub 저장소 메인에 노출될 마크다운 테이블 리스트 생성"""
-    lines = [
-        "# 🛡️ 정보보안 채용공고 리스트 (자동 업데이트)",
-        "",
-        f"> **마지막 업데이트**: `{update_time_str}` (매일 자동 수집)",
-        f"> **현재 등록된 공고**: 총 **{len(jobs)}**개 (중복 제거 완료)",
-        "",
-        "| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 매칭 키워드 |",
-        "| :--- | :--- | :--- | :--- |"
-    ]
-    
+    """GitHub 저장소 메인에 노출될 마크다운: 4대 키워드별 명확한 분리 테이블"""
+    keyword_jobs = {kw: [] for kw in KEYWORDS}
     for job in jobs:
-        platforms_str = ", ".join(job["platforms"])
-        keywords_str = ", ".join([f"`{k}`" for k in job["keywords"]])
-        # 마크다운 링크 파이프 문자 이스케이프
-        title_escaped = job["title"].replace("|", "\\|")
-        company_escaped = job["company"].replace("|", "\\|")
-        lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | {keywords_str} |")
-        
+        for kw in job.get("keywords", []):
+            if kw in keyword_jobs:
+                keyword_jobs[kw].append(job)
+
+    icons = {
+        "정보보안": "🛡️",
+        "정보보호": "🔒",
+        "취약점 진단": "🔍",
+        "모의해킹": "💻"
+    }
+
+    lines = [
+        "# 🛡️ 정보보안 직무 채용공고 피드 (키워드별 분류)",
+        "",
+        f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
+        f"> **전체 고유 공고**: 총 **{len(jobs)}**개 (중복 제거 완료)",
+        "",
+        "### 📌 키워드별 바로가기 목차",
+        "| 키워드 | 등록 공고 수 | 목차 링크 |",
+        "| :--- | :---: | :--- |"
+    ]
+
+    for kw in KEYWORDS:
+        count = len(keyword_jobs[kw])
+        anchor = kw.replace(" ", "-")
+        icon = icons.get(kw, "🏷️")
+        lines.append(f"| {icon} **{kw}** | **{count}개** | [공고 목록 바로가기](#-{anchor}-{count}건) |")
+
     lines.append("")
     lines.append("---")
-    lines.append("💡 **GitHub Pages 웹 대시보드**: 저장소의 `Settings > Pages`에서 활성화하면 검색/필터 기능이 있는 웹사이트로 이용할 수 있습니다.")
+    lines.append("")
+
+    for kw in KEYWORDS:
+        kw_list = keyword_jobs[kw]
+        icon = icons.get(kw, "🏷️")
+        lines.append(f"## {icon} {kw} ({len(kw_list)}건)")
+        lines.append("")
+        if not kw_list:
+            lines.append("_현재 등록된 공고가 없습니다._")
+            lines.append("")
+            continue
+
+        lines.append("| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 상세 태그 |")
+        lines.append("| :--- | :--- | :--- | :--- |")
+        for job in kw_list:
+            platforms_str = ", ".join(job["platforms"])
+            keywords_str = ", ".join([f"`{k}`" for k in job["keywords"]])
+            title_escaped = job["title"].replace("|", "\\|")
+            company_escaped = job["company"].replace("|", "\\|")
+            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | {keywords_str} |")
+        
+        lines.append("")
+        lines.append("[⬆️ 맨 위로 이동](#-정보보안-직무-채용공고-피드-키워드별-분류)")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
     return "\n".join(lines)
 
 def main():
@@ -556,13 +684,13 @@ def main():
     html_data = generate_html(jobs, now_kst)
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_data)
-    print("-> 'index.html' 웹 대시보드 생성 완료")
+    print("-> 'index.html' 키워드 분리 대시보드 생성 완료")
     
     # 3. README.md 생성
     readme_data = generate_readme(jobs, now_kst)
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_data)
-    print("-> 'README.md' 저장 완료")
+    print("-> 'README.md' 키워드 분리 테이블 저장 완료")
     
     print("\n모든 산출물이 성공적으로 생성되었습니다!")
 
