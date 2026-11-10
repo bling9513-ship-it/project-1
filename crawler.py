@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-정보보안 채용공고 자동 수집 & 중복 제거 크롤러 (키워드별 분리 뷰 지원)
+정보보안 채용공고 자동 수집 & 중복 제거 크롤러 (키워드별 선택/필터 뷰 지원)
 대상 플랫폼: 원티드 (Wanted), 점핏 (Jumpit), 사람인 (Saramin)
 대상 키워드: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
@@ -168,7 +168,7 @@ def collect_all_jobs():
     return job_list
 
 def generate_html(jobs, update_time_str):
-    """GitHub Pages 배포용 정적 웹페이지 생성 (키워드별 분리 모아보기 + 필터 검색)"""
+    """GitHub Pages 배포용 정적 웹페이지 생성 (키워드별 탭 선택 기능 탑재)"""
     jobs_json_str = json.dumps(jobs, ensure_ascii=False)
     
     # 키워드별 건수 계산
@@ -179,7 +179,7 @@ def generate_html(jobs, update_time_str):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>정보보안 채용공고 피드 | 키워드별 분리 대시보드</title>
+  <title>정보보안 채용공고 피드 | 키워드별 선택 대시보드</title>
   <style>
     :root {{
       --bg: #0f172a;
@@ -235,7 +235,7 @@ def generate_html(jobs, update_time_str):
       display: flex;
       justify-content: center;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }}
     .tab-btn {{
       padding: 8px 18px;
@@ -249,6 +249,45 @@ def generate_html(jobs, update_time_str):
       transition: all 0.15s ease;
     }}
     .tab-btn.active {{
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+      font-weight: 800;
+    }}
+    /* 키워드별 선택 바 (Sticky) */
+    .section-nav {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(10px);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }}
+    .section-nav-chip {{
+      padding: 8px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }}
+    .section-nav-chip:hover {{
+      border-color: var(--accent);
+      color: #fff;
+    }}
+    .section-nav-chip.active {{
       background: var(--accent);
       color: #0f172a;
       border-color: var(--accent);
@@ -329,6 +368,9 @@ def generate_html(jobs, update_time_str):
       align-items: center;
       justify-content: space-between;
     }}
+    .section-title:first-child {{
+      margin-top: 10px;
+    }}
     .section-title span.badge-cnt {{
       font-size: 13px;
       padding: 3px 10px;
@@ -340,7 +382,7 @@ def generate_html(jobs, update_time_str):
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }}
     @media (min-width: 768px) {{
       .job-list {{
@@ -444,10 +486,20 @@ def generate_html(jobs, update_time_str):
     </header>
 
     <div class="view-mode-tabs">
-      <button class="tab-btn active" id="tabSections">📑 키워드별 분리 모아보기</button>
+      <button class="tab-btn active" id="tabSections">📑 키워드별 분리 뷰</button>
       <button class="tab-btn" id="tabFilter">🔍 통합 검색 & 필터</button>
     </div>
 
+    <!-- 키워드별 선택 바 -->
+    <div class="section-nav" id="sectionNav">
+      <button class="section-nav-chip active" data-target="all">전체 키워드 ({len(jobs)})</button>
+      <button class="section-nav-chip" data-target="정보보안">🛡️ 정보보안 ({kw_counts.get("정보보안", 0)})</button>
+      <button class="section-nav-chip" data-target="정보보호">🔒 정보보호 ({kw_counts.get("정보보호", 0)})</button>
+      <button class="section-nav-chip" data-target="취약점 진단">🔍 취약점 진단 ({kw_counts.get("취약점 진단", 0)})</button>
+      <button class="section-nav-chip" data-target="모의해킹">💻 모의해킹 ({kw_counts.get("모의해킹", 0)})</button>
+    </div>
+
+    <!-- 검색 및 필터 컨트롤 -->
     <div class="controls" id="filterControls" style="display: none;">
       <input type="text" id="searchInput" class="search-bar" placeholder="🔍 회사명 또는 공고명으로 실시간 검색...">
       
@@ -469,7 +521,7 @@ def generate_html(jobs, update_time_str):
       </div>
     </div>
 
-    <div class="count-stat" id="countStat">공고 카드 클릭 시 원문 사이트로 바로 이동합니다.</div>
+    <div class="count-stat" id="countStat">상단 키워드 버튼을 누르면 해당 키워드 공고만 모아서 보실 수 있습니다.</div>
 
     <div id="contentArea"></div>
   </div>
@@ -485,12 +537,14 @@ def generate_html(jobs, update_time_str):
     }};
 
     let viewMode = 'sections'; // 'sections' or 'filter'
+    let selectedSectionKeyword = 'all'; // 'all' or specific keyword
     let activeKeyword = 'all';
     let activePlatform = 'all';
     let searchTerm = '';
 
     const contentArea = document.getElementById('contentArea');
     const filterControls = document.getElementById('filterControls');
+    const sectionNav = document.getElementById('sectionNav');
     const countStat = document.getElementById('countStat');
     const searchInput = document.getElementById('searchInput');
 
@@ -518,15 +572,25 @@ def generate_html(jobs, update_time_str):
     function renderView() {{
       if (viewMode === 'sections') {{
         filterControls.style.display = 'none';
-        countStat.textContent = `4개 키워드별로 분류된 총 ${{JOBS.length}}건의 공고입니다. (카드 클릭 시 원문 이동)`;
+        sectionNav.style.display = 'flex';
+        
+        let targetKeywords = selectedSectionKeyword === 'all' ? KEYWORDS : [selectedSectionKeyword];
+        
+        if (selectedSectionKeyword === 'all') {{
+          countStat.innerHTML = `전체 4대 키워드별 공고 목록입니다. (상단 버튼을 눌러 특정 키워드만 선택 가능)`;
+        }} else {{
+          const icon = ICONS[selectedSectionKeyword] || '🏷️';
+          const cnt = JOBS.filter(j => j.keywords && j.keywords.includes(selectedSectionKeyword)).length;
+          countStat.innerHTML = `${{icon}} <span>${{selectedSectionKeyword}}</span> 키워드 공고만 모아보는 중입니다. (총 <span>${{cnt}}</span>건)`;
+        }}
         
         let html = '';
-        KEYWORDS.forEach(kw => {{
+        targetKeywords.forEach(kw => {{
           const icon = ICONS[kw] || '🏷️';
           const list = JOBS.filter(j => j.keywords && j.keywords.includes(kw));
           
           html += `
-            <div class="section-title">
+            <div class="section-title" id="sec-${{kw.replace(' ', '-')}}">
               <span>${{icon}} ${{kw}}</span>
               <span class="badge-cnt">${{list.length}}건</span>
             </div>
@@ -538,6 +602,8 @@ def generate_html(jobs, update_time_str):
         contentArea.innerHTML = html;
       }} else {{
         filterControls.style.display = 'flex';
+        sectionNav.style.display = 'none';
+        
         const filtered = JOBS.filter(job => {{
           if (activeKeyword !== 'all' && !job.keywords.includes(activeKeyword)) return false;
           if (activePlatform !== 'all' && !job.platforms.includes(activePlatform)) return false;
@@ -579,6 +645,17 @@ def generate_html(jobs, update_time_str):
       renderView();
     }});
 
+    // 키워드별 선택 바 클릭 이벤트
+    document.querySelectorAll('.section-nav-chip').forEach(chip => {{
+      chip.addEventListener('click', () => {{
+        document.querySelectorAll('.section-nav-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedSectionKeyword = chip.getAttribute('data-target');
+        renderView();
+        window.scrollTo({{ top: 0, behavior: 'smooth' }});
+      }});
+    }});
+
     document.querySelectorAll('.chip').forEach(chip => {{
       chip.addEventListener('click', () => {{
         const type = chip.getAttribute('data-filter');
@@ -598,7 +675,7 @@ def generate_html(jobs, update_time_str):
       renderView();
     }});
 
-    // 초기 렌더링: 키워드별 분리 모아보기 기본
+    // 초기 렌더링
     renderView();
   </script>
 </body>
@@ -624,6 +701,7 @@ def generate_readme(jobs, update_time_str):
     lines = [
         "# 🛡️ 정보보안 직무 채용공고 피드 (키워드별 분류)",
         "",
+        f"> **🌐 웹사이트 바로가기**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
         f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
         f"> **전체 고유 공고**: 총 **{len(jobs)}**개 (중복 제거 완료)",
         "",
@@ -684,7 +762,7 @@ def main():
     html_data = generate_html(jobs, now_kst)
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_data)
-    print("-> 'index.html' 키워드 분리 대시보드 생성 완료")
+    print("-> 'index.html' 키워드 선택 대시보드 생성 완료")
     
     # 3. README.md 생성
     readme_data = generate_readme(jobs, now_kst)
