@@ -232,20 +232,28 @@ def fetch_saramin(today_date):
             req = urllib.request.Request(url, headers=SARAMIN_HEADERS)
             with urllib.request.urlopen(req, timeout=15) as res:
                 page = res.read().decode("utf-8", errors="ignore")
-                pattern = r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>.*?<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>.*?<div class="job_date">\s*<span class="date">(.*?)</span>'
-                for m in re.findall(pattern, page, re.DOTALL):
-                    corp = clean_text(m[0])
-                    link_part = html.unescape(m[1]).split("&searchType")[0]
+                # 각 공고 단위(item_recruit)로 분할하여 회사명-공고명-마감일의 1:1 매칭 보장
+                items = page.split('class="item_recruit"')[1:]
+                for it in items:
+                    tit_m = re.search(r'<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>', it, re.DOTALL)
+                    corp_m = re.search(r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>', it, re.DOTALL)
+                    date_m = re.search(r'<div class="job_date">\s*<span class="date">(.*?)</span>', it, re.DOTALL)
+                    
+                    if not tit_m or not corp_m:
+                        continue
+                        
+                    corp = clean_text(corp_m.group(1))
+                    title = clean_text(tit_m.group(2))
+                    if not is_security(title):
+                        continue
+                        
+                    link_part = html.unescape(tit_m.group(1)).split("&searchType")[0]
                     link = ("https://www.saramin.co.kr" + link_part) if not link_part.startswith("http") else link_part
                     if link in seen_links:
                         continue
                     seen_links.add(link)
                     
-                    title = clean_text(m[2])
-                    if not is_security(title):
-                        continue
-                        
-                    raw_deadline = clean_text(m[3])
+                    raw_deadline = clean_text(date_m.group(1)) if date_m else "상시채용"
                     deadline = parse_saramin_deadline(raw_deadline, today_date)
                     results.append({
                         "platform": "사람인",
