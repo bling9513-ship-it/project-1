@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-정보보안 채용공고 자동 수집 & 중복 제거 크롤러 (키워드별 선택/필터 뷰 지원)
+정보보안 채용공고 자동 수집 & 중복 제거 크롤러 (마감일/D-Day 및 키워드별 선택 뷰 지원)
 대상 플랫폼: 원티드 (Wanted), 점핏 (Jumpit), 사람인 (Saramin)
 대상 키워드: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
@@ -11,7 +11,7 @@ import urllib.parse
 import json
 import re
 import html
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, date
 
 KEYWORDS = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
 
@@ -19,6 +19,10 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Referer": "https://www.google.com/"
 }
+
+def get_today_kst():
+    kst = timezone(timedelta(hours=9))
+    return datetime.now(kst).date()
 
 def clean_text(text):
     if not text:
@@ -33,12 +37,63 @@ def normalize_key(company, title):
     c = re.sub(r"[\(주\)|㈜|주식회사|\s]", "", c).lower()
     
     t = clean_text(title)
-    # 신입, 경력, 대괄호 태그 제거하여 제목 유사도 매칭
     t = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", t)
     t = re.sub(r"[\s\-_/|·]", "", t).lower()
     return f"{c}_{t[:12]}"
 
-def fetch_jumpit(keyword):
+def parse_saramin_deadline(text, today_date):
+    t = text.strip()
+    if not t or "상시" in t:
+        return "상시채용"
+    if "채용시" in t:
+        return "채용시 마감"
+    if "오늘" in t:
+        return "🚨 D-Day (오늘마감)"
+    if "내일" in t:
+        return "⚡ D-1 (내일마감)"
+    
+    m = re.search(r"(\d{1,2})/(\d{1,2})", t)
+    if m:
+        month, day = int(m.group(1)), int(m.group(2))
+        year = today_date.year
+        if month < today_date.month:
+            year += 1
+        target = date(year, month, day)
+        diff = (target - today_date).days
+        if diff < 0:
+            return f"마감됨 ({t})"
+        elif diff == 0:
+            return f"🚨 D-Day ({t})"
+        elif diff <= 3:
+            return f"⚡ D-{diff} ({t})"
+        else:
+            return f"⏳ D-{diff} ({t})"
+    return t
+
+def format_jumpit_deadline(p, today_date):
+    if p.get("alwaysOpen"):
+        return "상시채용"
+    closed_at = p.get("closedAt")
+    if not closed_at:
+        return "상시채용"
+    try:
+        dt = datetime.fromisoformat(closed_at.replace("Z", "+00:00"))
+        d_day = (dt.date() - today_date).days
+        day_str = dt.strftime("%m/%d")
+        weekdays = ["월", "화", "수", "목", "금", "토", "일"]
+        w = weekdays[dt.weekday()]
+        if d_day < 0:
+            return f"마감됨 (~{day_str})"
+        elif d_day == 0:
+            return f"🚨 D-Day (~{day_str} {w})"
+        elif d_day <= 3:
+            return f"⚡ D-{d_day} (~{day_str} {w})"
+        else:
+            return f"⏳ D-{d_day} (~{day_str} {w})"
+    except Exception:
+        return "상시채용"
+
+def fetch_jumpit(keyword, today_date):
     """점핏 (Jumpit) API 수집"""
     results = []
     encoded = urllib.parse.quote(keyword)
@@ -50,12 +105,14 @@ def fetch_jumpit(keyword):
             data = json.loads(res.read().decode("utf-8"))
             positions = data.get("result", {}).get("positions", [])
             for p in positions:
+                deadline = format_jumpit_deadline(p, today_date)
                 results.append({
                     "platform": "점핏",
                     "company": clean_text(p.get("companyName")),
                     "title": clean_text(p.get("title")),
                     "url": f"https://www.jumpit.co.kr/position/{p.get('id')}",
                     "location": clean_text(p.get("location", "")),
+                    "deadline": deadline,
                     "keyword": keyword
                 })
     except Exception as e:
@@ -80,13 +137,14 @@ def fetch_wanted(keyword):
                     "title": clean_text(item.get("position")),
                     "url": f"https://www.wanted.co.kr/wd/{item.get('id')}",
                     "location": clean_text(item.get("address", {}).get("location", "")),
+                    "deadline": "상시채용",
                     "keyword": keyword
                 })
     except Exception as e:
         print(f"[Wanted] Error for '{keyword}': {e}")
     return results
 
-def fetch_saramin(keyword):
+def fetch_saramin(keyword, today_date):
     """사람인 (Saramin) 검색 결과 수집"""
     results = []
     encoded = urllib.parse.quote(keyword)
@@ -99,7 +157,7 @@ def fetch_saramin(keyword):
         with urllib.request.urlopen(req, timeout=15) as res:
             page = res.read().decode("utf-8", errors="ignore")
             
-            pattern = r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>.*?<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>'
+            pattern = r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>.*?<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>.*?<div class="job_date">\s*<span class="date">(.*?)</span>'
             matches = re.findall(pattern, page, re.DOTALL)
             
             for m in matches:
@@ -110,6 +168,8 @@ def fetch_saramin(keyword):
                 else:
                     link = link_part
                 title = clean_text(m[2])
+                raw_deadline = clean_text(m[3])
+                deadline = parse_saramin_deadline(raw_deadline, today_date)
                 
                 results.append({
                     "platform": "사람인",
@@ -117,6 +177,7 @@ def fetch_saramin(keyword):
                     "title": title,
                     "url": link,
                     "location": "",
+                    "deadline": deadline,
                     "keyword": keyword
                 })
     except Exception as e:
@@ -124,13 +185,14 @@ def fetch_saramin(keyword):
     return results
 
 def collect_all_jobs():
+    today_date = get_today_kst()
     raw_jobs = []
     print("=== 채용 정보 수집 시작 ===")
     for kw in KEYWORDS:
         print(f"-> 키워드 탐색 중: '{kw}'")
-        jumpit_jobs = fetch_jumpit(kw)
+        jumpit_jobs = fetch_jumpit(kw, today_date)
         wanted_jobs = fetch_wanted(kw)
-        saramin_jobs = fetch_saramin(kw)
+        saramin_jobs = fetch_saramin(kw, today_date)
         
         print(f"   [점핏: {len(jumpit_jobs)}건, 원티드: {len(wanted_jobs)}건, 사람인: {len(saramin_jobs)}건]")
         raw_jobs.extend(jumpit_jobs)
@@ -139,7 +201,7 @@ def collect_all_jobs():
         
     print(f"\n총 원시 수집 건수: {len(raw_jobs)}건")
     
-    # 중복 제거 로직
+    # 중복 제거 및 마감일 우선순위 병합 로직
     deduped = {}
     for job in raw_jobs:
         if not job["company"] or not job["title"]:
@@ -153,7 +215,8 @@ def collect_all_jobs():
                 "url": job["url"],
                 "platforms": [job["platform"]],
                 "keywords": [job["keyword"]],
-                "location": job["location"]
+                "location": job["location"],
+                "deadline": job.get("deadline", "상시채용")
             }
         else:
             if job["platform"] not in deduped[key]["platforms"]:
@@ -162,16 +225,20 @@ def collect_all_jobs():
                 deduped[key]["keywords"].append(job["keyword"])
             if not deduped[key]["location"] and job["location"]:
                 deduped[key]["location"] = job["location"]
+            # 구체적인 D-day 일정이 있는 마감일을 '상시채용'보다 우선 반영
+            curr_dl = deduped[key].get("deadline", "상시채용")
+            new_dl = job.get("deadline", "상시채용")
+            if "상시채용" in curr_dl and "상시채용" not in new_dl:
+                deduped[key]["deadline"] = new_dl
                 
     job_list = list(deduped.values())
     print(f"중복 제거 후 최종 고유 공고: {len(job_list)}건")
     return job_list
 
 def generate_html(jobs, update_time_str):
-    """GitHub Pages 배포용 정적 웹페이지 생성 (키워드별 탭 선택 기능 탑재)"""
+    """GitHub Pages 배포용 정적 웹페이지 생성 (마감 일정 뱃지 탑재)"""
     jobs_json_str = json.dumps(jobs, ensure_ascii=False)
     
-    # 키워드별 건수 계산
     kw_counts = {kw: sum(1 for j in jobs if kw in j.get("keywords", [])) for kw in KEYWORDS}
     
     html_content = f"""<!DOCTYPE html>
@@ -179,7 +246,7 @@ def generate_html(jobs, update_time_str):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>정보보안 채용공고 피드 | 키워드별 선택 대시보드</title>
+  <title>정보보안 채용공고 피드 | 키워드별 선택 & 마감일자 대시보드</title>
   <style>
     :root {{
       --bg: #0f172a;
@@ -410,18 +477,19 @@ def generate_html(jobs, update_time_str):
     .job-header {{
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }}
     .company-name {{
       font-size: 14px;
       font-weight: 700;
       color: var(--text-muted);
     }}
-    .platform-badges {{
+    .header-badges {{
       display: flex;
-      gap: 4px;
+      align-items: center;
+      gap: 5px;
       flex-shrink: 0;
     }}
     .badge {{
@@ -434,6 +502,31 @@ def generate_html(jobs, update_time_str):
     .badge-원티드 {{ background-color: var(--wanted); }}
     .badge-점핏 {{ background-color: var(--jumpit); }}
     .badge-사람인 {{ background-color: var(--saramin); }}
+    /* 마감일 뱃지 스타일 */
+    .badge-dl {{
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }}
+    .badge-dl-urgent {{
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+    }}
+    .badge-dl-normal {{
+      background: rgba(168, 85, 247, 0.18);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }}
+    .badge-dl-always {{
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }}
     .job-title {{
       font-size: 15px;
       font-weight: 700;
@@ -536,8 +629,8 @@ def generate_html(jobs, update_time_str):
       "모의해킹": "💻"
     }};
 
-    let viewMode = 'sections'; // 'sections' or 'filter'
-    let selectedSectionKeyword = 'all'; // 'all' or specific keyword
+    let viewMode = 'sections';
+    let selectedSectionKeyword = 'all';
     let activeKeyword = 'all';
     let activePlatform = 'all';
     let searchTerm = '';
@@ -552,12 +645,24 @@ def generate_html(jobs, update_time_str):
       const badges = job.platforms.map(p => `<span class="badge badge-${{p}}">${{p}}</span>`).join('');
       const tags = job.keywords.map(k => `<span class="tag">#${{k}}</span>`).join('');
       
+      const dl = job.deadline || '상시채용';
+      let dlClass = 'badge-dl-normal';
+      if (dl.includes('D-Day') || dl.includes('D-1') || dl.includes('D-2') || dl.includes('D-3') || dl.includes('오늘마감') || dl.includes('내일마감')) {{
+        dlClass = 'badge-dl-urgent';
+      }} else if (dl.includes('상시') || dl.includes('채용시')) {{
+        dlClass = 'badge-dl-always';
+      }}
+      const deadlineBadge = `<span class="badge-dl ${{dlClass}}">${{escapeHtml(dl)}}</span>`;
+      
       return `
         <a class="job-card" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
           <div>
             <div class="job-header">
               <span class="company-name">${{escapeHtml(job.company)}}</span>
-              <div class="platform-badges">${{badges}}</div>
+              <div class="header-badges">
+                ${{deadlineBadge}}
+                ${{badges}}
+              </div>
             </div>
             <div class="job-title">${{escapeHtml(job.title)}}</div>
           </div>
@@ -645,7 +750,6 @@ def generate_html(jobs, update_time_str):
       renderView();
     }});
 
-    // 키워드별 선택 바 클릭 이벤트
     document.querySelectorAll('.section-nav-chip').forEach(chip => {{
       chip.addEventListener('click', () => {{
         document.querySelectorAll('.section-nav-chip').forEach(c => c.classList.remove('active'));
@@ -684,7 +788,7 @@ def generate_html(jobs, update_time_str):
     return html_content
 
 def generate_readme(jobs, update_time_str):
-    """GitHub 저장소 메인에 노출될 마크다운: 4대 키워드별 명확한 분리 테이블"""
+    """GitHub 저장소 메인에 노출될 마크다운: 4대 키워드별 테이블 및 마감 일정 컬럼"""
     keyword_jobs = {kw: [] for kw in KEYWORDS}
     for job in jobs:
         for kw in job.get("keywords", []):
@@ -730,14 +834,15 @@ def generate_readme(jobs, update_time_str):
             lines.append("")
             continue
 
-        lines.append("| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 상세 태그 |")
-        lines.append("| :--- | :--- | :--- | :--- |")
+        lines.append("| 회사명 | 공고명 (클릭 시 이동) | 플랫폼 | 마감 일정 | 상세 태그 |")
+        lines.append("| :--- | :--- | :--- | :--- | :--- |")
         for job in kw_list:
             platforms_str = ", ".join(job["platforms"])
             keywords_str = ", ".join([f"`{k}`" for k in job["keywords"]])
+            dl = job.get("deadline", "상시채용")
             title_escaped = job["title"].replace("|", "\\|")
             company_escaped = job["company"].replace("|", "\\|")
-            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | {keywords_str} |")
+            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | **{dl}** | {keywords_str} |")
         
         lines.append("")
         lines.append("[⬆️ 맨 위로 이동](#-정보보안-직무-채용공고-피드-키워드별-분류)")
@@ -762,13 +867,13 @@ def main():
     html_data = generate_html(jobs, now_kst)
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_data)
-    print("-> 'index.html' 키워드 선택 대시보드 생성 완료")
+    print("-> 'index.html' 마감 일정 대시보드 생성 완료")
     
     # 3. README.md 생성
     readme_data = generate_readme(jobs, now_kst)
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_data)
-    print("-> 'README.md' 키워드 분리 테이블 저장 완료")
+    print("-> 'README.md' 마감 일정 테이블 저장 완료")
     
     print("\n모든 산출물이 성공적으로 생성되었습니다!")
 

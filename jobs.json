@@ -11,7 +11,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-7 (~11/17 화)"
   },
   {
     "company": "와이톤",
@@ -25,7 +26,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~11/25 수)"
   },
   {
     "company": "오디케이미디어",
@@ -39,7 +41,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (~11/11 수)"
   },
   {
     "company": "아티언스",
@@ -53,7 +56,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-3 (~11/13 금)"
   },
   {
     "company": "드림어스컴퍼니",
@@ -67,7 +71,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-11 (~11/21 토)"
   },
   {
     "company": "펫박스",
@@ -81,7 +86,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-17 (~11/27 금)"
   },
   {
     "company": "핀다",
@@ -95,7 +101,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "🚨 D-Day (~11/10 화)"
   },
   {
     "company": "인젠트",
@@ -109,7 +116,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~11/19 목)"
   },
   {
     "company": "토스씨엑스",
@@ -123,21 +131,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
-  },
-  {
-    "company": "건강누리",
-    "title": "웹 개발자 채용[신입]",
-    "url": "https://www.jumpit.co.kr/position/55425606",
-    "platforms": [
-      "점핏"
-    ],
-    "keywords": [
-      "정보보안",
-      "정보보호",
-      "취약점 진단"
-    ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-14 (~11/24 화)"
   },
   {
     "company": "프로토타이",
@@ -151,7 +146,23 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-14 (~11/24 화)"
+  },
+  {
+    "company": "건강누리",
+    "title": "웹 개발자 채용[신입]",
+    "url": "https://www.jumpit.co.kr/position/55425606",
+    "platforms": [
+      "점핏"
+    ],
+    "keywords": [
+      "정보보안",
+      "정보보호",
+      "취약점 진단"
+    ],
+    "location": "",
+    "deadline": "⏳ D-17 (~11/27 금)"
   },
   {
     "company": "티엔에이치",
@@ -165,7 +176,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-8 (~11/18 수)"
   },
   {
     "company": "드림어스컴퍼니",
@@ -179,7 +191,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-11 (~11/21 토)"
   },
   {
     "company": "러닝포인트",
@@ -193,7 +206,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-17 (~11/27 금)"
   },
   {
     "company": "대성엔지니어링",
@@ -207,7 +221,8 @@
       "정보보호",
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (~11/11 수)"
   },
   {
     "company": "코어시큐리티",
@@ -220,7 +235,72 @@
       "정보보안",
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~11/20 금)"
+  },
+  {
+    "company": "크래프톤(Krafton)",
+    "title": "[Strategy Div] Partnerships Manager (7년 이상)",
+    "url": "https://www.wanted.co.kr/wd/397457",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안",
+      "정보보호",
+      "취약점 진단",
+      "모의해킹"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "올릿",
+    "title": "영업 지원 매니저 (B2B/MD)",
+    "url": "https://www.wanted.co.kr/wd/397456",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안",
+      "정보보호",
+      "취약점 진단",
+      "모의해킹"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "아임웹",
+    "title": "Marketing Designer",
+    "url": "https://www.wanted.co.kr/wd/397455",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안",
+      "정보보호",
+      "취약점 진단",
+      "모의해킹"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "패브릭덕트",
+    "title": "HVAC 기술영업·프로젝트 매니저 | B2G·설계·설치 관리",
+    "url": "https://www.wanted.co.kr/wd/394503",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안",
+      "정보보호",
+      "취약점 진단",
+      "모의해킹"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "에이베러",
@@ -235,7 +315,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "올리브인터내셔널",
@@ -250,7 +331,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "스페이스플래닝",
@@ -265,7 +347,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "에임인텔리전스",
@@ -280,7 +363,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "에임인텔리전스",
@@ -295,7 +379,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "에임인텔리전스",
@@ -310,7 +395,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "에임인텔리전스",
@@ -325,7 +411,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "에임인텔리전스",
@@ -340,67 +427,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": "서울"
-  },
-  {
-    "company": "빅턴",
-    "title": "금융, 대출 퍼포먼스 마케터",
-    "url": "https://www.wanted.co.kr/wd/396858",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안",
-      "정보보호",
-      "취약점 진단",
-      "모의해킹"
-    ],
-    "location": "서울"
-  },
-  {
-    "company": "렛유인에듀",
-    "title": "온라인 교육상품 기획·판매 담당자",
-    "url": "https://www.wanted.co.kr/wd/397448",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안",
-      "정보보호",
-      "취약점 진단",
-      "모의해킹"
-    ],
-    "location": "서울"
-  },
-  {
-    "company": "잉글리시에그",
-    "title": "전략기획 실무자",
-    "url": "https://www.wanted.co.kr/wd/373614",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안",
-      "정보보호",
-      "취약점 진단",
-      "모의해킹"
-    ],
-    "location": "서울"
-  },
-  {
-    "company": "미립",
-    "title": "[일소] 글로벌 세일즈 매니저 (해외영업 7년 이상)",
-    "url": "https://www.wanted.co.kr/wd/397447",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안",
-      "정보보호",
-      "취약점 진단",
-      "모의해킹"
-    ],
-    "location": "서울"
+    "location": "서울",
+    "deadline": "상시채용"
   },
   {
     "company": "지에스건설(주)",
@@ -412,7 +440,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "(주)트랜스코스모스코리아",
@@ -424,7 +453,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~ 11/20(금))"
   },
   {
     "company": "서비스탑(주)",
@@ -436,7 +466,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (내일마감)"
   },
   {
     "company": "메리츠화재해상보험(주)",
@@ -448,7 +479,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "(주)연합인포맥스",
@@ -460,7 +492,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-26 (~ 12/06(일))"
   },
   {
     "company": "(주)에스에프에이",
@@ -472,7 +505,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "에이티아이(주)",
@@ -484,7 +518,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "국민연금공단",
@@ -496,7 +531,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "씨제이대한통운(주)",
@@ -508,7 +544,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-23 (~ 12/03(목))"
   },
   {
     "company": "휴젤(주)",
@@ -520,7 +557,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)대신저축은행",
@@ -532,7 +570,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "(주)윈스테크넷",
@@ -544,7 +583,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-14 (~ 11/24(화))"
   },
   {
     "company": "(주)유호스트",
@@ -556,7 +596,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "태광후지킨(주)",
@@ -568,7 +609,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)한국비엔씨",
@@ -580,7 +622,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-2 (~ 11/12(목))"
   },
   {
     "company": "(주)시큐어월",
@@ -592,7 +635,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-26 (~ 12/06(일))"
   },
   {
     "company": "(주)제테마",
@@ -604,7 +648,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-24 (~ 12/04(금))"
   },
   {
     "company": "팀스파르타(주)",
@@ -616,7 +661,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (내일마감)"
   },
   {
     "company": "NICE인프라(주)",
@@ -628,7 +674,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-17 (~ 11/27(금))"
   },
   {
     "company": "SK(주)",
@@ -640,7 +687,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-25 (~ 12/05(토))"
   },
   {
     "company": "(주)비즈테크온",
@@ -652,7 +700,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "알디에스(주)",
@@ -664,7 +713,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "(주)한진",
@@ -676,7 +726,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-7 (~ 11/17(화))"
   },
   {
     "company": "(주)카카오브이엑스",
@@ -688,7 +739,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-29 (~ 12/09(수))"
   },
   {
     "company": "(주)코윈디에스티",
@@ -700,7 +752,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-24 (~ 12/04(금))"
   },
   {
     "company": "(주)웨일시큐리티",
@@ -712,7 +765,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~ 11/20(금))"
   },
   {
     "company": "(주)베이스라인시큐어",
@@ -724,7 +778,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-26 (~ 12/06(일))"
   },
   {
     "company": "삼성물산 (주)",
@@ -736,7 +791,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)에이바이트",
@@ -748,7 +804,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~ 11/20(금))"
   },
   {
     "company": "(주)유호스트",
@@ -760,7 +817,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-29 (~ 12/09(수))"
   },
   {
     "company": "㈜모니터랩",
@@ -772,7 +830,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-2 (~ 11/12(목))"
   },
   {
     "company": "서울특별시서울의료원",
@@ -784,7 +843,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "에어프레미아(주)",
@@ -796,7 +856,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "(주)리드엔지니어링",
@@ -808,7 +869,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)세스코",
@@ -820,7 +882,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)시선인터내셔널",
@@ -832,7 +895,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "에이스아메리칸화재해상보험(주)",
@@ -844,7 +908,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "퍼솔코리아(유)",
@@ -856,7 +921,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "(주)미디어윌네트웍스",
@@ -868,7 +934,8 @@
     "keywords": [
       "정보보안"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "(주)진영정기",
@@ -880,7 +947,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-55 (~ 01/04(월))"
   },
   {
     "company": "(주)수산아이앤티",
@@ -892,7 +960,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "KB라이프파트너스",
@@ -904,7 +973,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "한국정보보호산업협회",
@@ -916,10 +986,24 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)알라딘커뮤니케이션",
+    "title": "개인정보보호 Principal, Risk (Global)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55521285&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "⏳ D-59 (~ 01/08(금))"
+  },
+  {
+    "company": "쿠팡(주)",
     "title": "한국건강관리협회 정보화혁신본부 전산직(정보보호) 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55395433&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
@@ -928,7 +1012,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(사)한국건강관리협회",
@@ -940,7 +1025,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-28 (~ 12/08(화))"
   },
   {
     "company": "(주)에이피알",
@@ -952,7 +1038,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)카카오",
@@ -964,7 +1051,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "(주)하나투어",
@@ -976,7 +1064,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-23 (~ 12/03(목))"
   },
   {
     "company": "휴젤(주)",
@@ -988,7 +1077,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)한국갤럽조사연구소",
@@ -1000,7 +1090,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-49 (~ 12/29(화))"
   },
   {
     "company": "코오롱글로벌(주)",
@@ -1012,7 +1103,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "하나증권(주)",
@@ -1024,7 +1116,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-25 (~ 12/05(토))"
   },
   {
     "company": "(주)비즈테크온",
@@ -1036,7 +1129,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)싸이버원",
@@ -1048,7 +1142,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-22 (~ 12/02(수))"
   },
   {
     "company": "(주)에스지시큐리티컨설팅",
@@ -1060,7 +1155,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-4 (~ 11/14(토))"
   },
   {
     "company": "(주)테라정보보호",
@@ -1072,7 +1168,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-4 (~ 11/14(토))"
   },
   {
     "company": "(주)테라정보보호",
@@ -1084,7 +1181,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-3 (~ 11/13(금))"
   },
   {
     "company": "(주)알라딘커뮤니케이션",
@@ -1096,7 +1194,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "(주)현대그린푸드",
@@ -1108,7 +1207,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "한화오션(주)",
@@ -1120,7 +1220,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)일신비츠온",
@@ -1132,7 +1233,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (내일마감)"
   },
   {
     "company": "메리츠화재해상보험(주)",
@@ -1144,7 +1246,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-22 (~ 12/02(수))"
   },
   {
     "company": "송암시스콤(주)",
@@ -1156,7 +1259,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "넷마블(주)",
@@ -1168,7 +1272,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "(주)에이피알",
@@ -1180,7 +1285,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "(주)미디어윌네트웍스",
@@ -1192,7 +1298,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "🚨 D-Day (오늘마감)"
   },
   {
     "company": "SK텔레콤(주)",
@@ -1204,7 +1311,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)한섬",
@@ -1216,7 +1324,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "(주)대웅제약",
@@ -1228,7 +1337,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)숲",
@@ -1240,7 +1350,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-19 (~ 11/29(일))"
   },
   {
     "company": "라온시큐어(주)",
@@ -1252,7 +1363,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "(주)윈스테크넷",
@@ -1264,7 +1376,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "(주)윈스테크넷",
@@ -1276,7 +1389,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)케이지파이낸셜",
@@ -1288,7 +1402,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "한화시스템(주)",
@@ -1300,7 +1415,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "한화시스템(주)",
@@ -1312,7 +1428,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "삼정KPMG",
@@ -1324,19 +1441,8 @@
     "keywords": [
       "정보보호"
     ],
-    "location": ""
-  },
-  {
-    "company": "링크정보통신(주)",
-    "title": "정보보호(보안) 담당자 경력 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403110&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-31 (~ 12/11(금))"
   },
   {
     "company": "위볼린",
@@ -1348,7 +1454,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-22 (~12/02 수)"
   },
   {
     "company": "(주)수산아이앤티",
@@ -1360,7 +1467,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "넷마블(주)",
@@ -1372,7 +1480,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-3 (~ 11/13(금))"
   },
   {
     "company": "㈜이글루코퍼레이션",
@@ -1384,7 +1493,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-34 (~ 12/14(월))"
   },
   {
     "company": "한국정보보안원",
@@ -1396,7 +1506,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(주)에스피씨지",
@@ -1408,7 +1519,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-33 (~ 12/13(일))"
   },
   {
     "company": "주식회사제로시큐어(ZEROSECUREInc.)",
@@ -1420,7 +1532,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-54 (~ 01/03(일))"
   },
   {
     "company": "(주)인더포레스트",
@@ -1432,7 +1545,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-40 (~ 12/20(일))"
   },
   {
     "company": "(주)코드벡터",
@@ -1444,7 +1558,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)골프존",
@@ -1456,7 +1571,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "(주)이글루코퍼레이션",
@@ -1468,7 +1584,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "㈜이글루코퍼레이션",
@@ -1480,7 +1597,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(주)스패로우",
@@ -1492,7 +1610,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-8 (~ 11/18(수))"
   },
   {
     "company": "주식회사 티시스 아이티",
@@ -1504,7 +1623,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)아도스",
@@ -1516,7 +1636,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(주)이지스아이티",
@@ -1528,7 +1649,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-38 (~ 12/18(금))"
   },
   {
     "company": "(주)포유씨큐리티",
@@ -1540,7 +1662,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "(주)고른",
@@ -1552,7 +1675,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "🚨 D-Day (오늘마감)"
   },
   {
     "company": "(주)에이치알비즈코리아",
@@ -1564,7 +1688,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-3 (~ 11/13(금))"
   },
   {
     "company": "(주)써니즈",
@@ -1576,7 +1701,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (내일마감)"
   },
   {
     "company": "에이치케이시큐리티",
@@ -1588,7 +1714,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "커리어서포트",
@@ -1600,7 +1727,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "코리아써치",
@@ -1612,7 +1740,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-29 (~ 12/09(수))"
   },
   {
     "company": "토니서치",
@@ -1624,7 +1753,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "쿠도커뮤니케이션(주)",
@@ -1637,7 +1767,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "지에스건설(주)",
@@ -1650,7 +1781,8 @@
       "취약점 진단",
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-8 (~ 11/18(수))"
   },
   {
     "company": "(주)다우기술",
@@ -1662,7 +1794,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "사회복지법인사회복지공동모금회",
@@ -1674,7 +1807,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "프라임에셋(주)",
@@ -1686,7 +1820,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-19 (~ 11/29(일))"
   },
   {
     "company": "(주)안랩",
@@ -1698,7 +1833,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~ 11/20(금))"
   },
   {
     "company": "(주)프로에스콤",
@@ -1710,7 +1846,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~ 11/20(금))"
   },
   {
     "company": "서비스탑(주)",
@@ -1722,7 +1859,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-14 (~ 11/24(화))"
   },
   {
     "company": "(주)로봇앤드디자인",
@@ -1734,7 +1872,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "(주)연합인포맥스",
@@ -1746,7 +1885,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)태경식품",
@@ -1758,7 +1898,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)인텍에프에이",
@@ -1770,7 +1911,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "크리니티(주)",
@@ -1782,7 +1924,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-55 (~ 01/04(월))"
   },
   {
     "company": "(주)인스케이프",
@@ -1794,7 +1937,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "(주)세미티에스",
@@ -1806,7 +1950,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "KB라이프파트너스",
@@ -1818,7 +1963,8 @@
     "keywords": [
       "취약점 진단"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~ 11/16(월))"
   },
   {
     "company": "디어유",
@@ -1830,7 +1976,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-6 (~11/16 월)"
   },
   {
     "company": "에스투더블유",
@@ -1842,7 +1989,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-25 (~12/05 토)"
   },
   {
     "company": "대진정보통신",
@@ -1854,7 +2002,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-16 (~11/26 목)"
   },
   {
     "company": "(주)코드벡터",
@@ -1866,7 +2015,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-10 (~ 11/20(금))"
   },
   {
     "company": "(주)베이스라인시큐어",
@@ -1878,7 +2028,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-8 (~ 11/18(수))"
   },
   {
     "company": "교보디티에스(주)",
@@ -1890,7 +2041,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-59 (~ 01/08(금))"
   },
   {
     "company": "에쓰오씨소프트(주)",
@@ -1902,7 +2054,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "넷마블(주)",
@@ -1914,7 +2067,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(주)싸이버원",
@@ -1926,7 +2080,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "(주)웨일시큐리티",
@@ -1938,7 +2093,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-38 (~ 12/18(금))"
   },
   {
     "company": "(주)타이거씨엔에스",
@@ -1950,7 +2106,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-33 (~ 12/13(일))"
   },
   {
     "company": "주식회사제로시큐어(ZEROSECUREInc.)",
@@ -1962,7 +2119,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-41 (~ 12/21(월))"
   },
   {
     "company": "(주)케이알시큐리티",
@@ -1974,7 +2132,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "크론",
@@ -1986,7 +2145,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-54 (~ 01/03(일))"
   },
   {
     "company": "(주)인더포레스트",
@@ -1998,7 +2158,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-25 (~ 12/05(토))"
   },
   {
     "company": "(주)지엔",
@@ -2010,7 +2171,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-20 (~ 11/30(월))"
   },
   {
     "company": "(주)에버스핀",
@@ -2022,7 +2184,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)에프원시큐리티",
@@ -2034,7 +2197,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (내일마감)"
   },
   {
     "company": "(주)에이쓰리시큐리티",
@@ -2046,7 +2210,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "(주)아도스",
@@ -2058,7 +2223,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-38 (~ 12/18(금))"
   },
   {
     "company": "(주)포유씨큐리티",
@@ -2070,7 +2236,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-9 (~ 11/19(목))"
   },
   {
     "company": "(주)웨일시큐리티",
@@ -2082,7 +2249,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-4 (~ 11/14(토))"
   },
   {
     "company": "(주)에이치알비즈코리아",
@@ -2094,7 +2262,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(주)에스피씨지",
@@ -2106,7 +2275,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "엔에이치엔클라우드(주)",
@@ -2118,7 +2288,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "(주)스패로우",
@@ -2130,7 +2301,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-15 (~ 11/25(수))"
   },
   {
     "company": "(주)고른",
@@ -2142,7 +2314,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-25 (~ 12/05(토))"
   },
   {
     "company": "(주)제이투이",
@@ -2154,7 +2327,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⚡ D-1 (내일마감)"
   },
   {
     "company": "에이치케이시큐리티",
@@ -2166,7 +2340,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)다우기술",
@@ -2178,7 +2353,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-12 (~ 11/22(일))"
   },
   {
     "company": "(주)연합인포맥스",
@@ -2190,7 +2366,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)인텍에프에이",
@@ -2202,7 +2379,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-55 (~ 01/04(월))"
   },
   {
     "company": "(주)수산아이앤티",
@@ -2214,7 +2392,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-29 (~ 12/09(수))"
   },
   {
     "company": "(주)윈스테크넷",
@@ -2226,7 +2405,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-7 (~ 11/17(화))"
   },
   {
     "company": "(주)카카오브이엑스",
@@ -2238,7 +2418,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "(주)구디",
@@ -2250,7 +2431,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   },
   {
     "company": "에이티아이(주)",
@@ -2262,7 +2444,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "상시채용"
   },
   {
     "company": "한국아이티진흥(주)",
@@ -2274,7 +2457,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-40 (~ 12/20(일))"
   },
   {
     "company": "(주)수산아이앤티",
@@ -2286,7 +2470,8 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-49 (~ 12/29(화))"
   },
   {
     "company": "(주)수산아이앤티",
@@ -2298,6 +2483,7 @@
     "keywords": [
       "모의해킹"
     ],
-    "location": ""
+    "location": "",
+    "deadline": "⏳ D-5 (~ 11/15(일))"
   }
 ]
