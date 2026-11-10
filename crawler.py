@@ -344,8 +344,10 @@ def generate_html(jobs, update_time_str):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecJobs · 정보보안 포지션 큐레이션</title>
-  <meta name="description" content="원티드, 점핏, 사람인의 보안 엔지니어 및 분석가 채용공고를 매일 아침 선별해 중복 없이 제공합니다.">
+  <title>Infosec Archive · 정보보안 포지션 아카이브</title>
+  <meta name="description" content="원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
     :root {{
@@ -487,15 +489,14 @@ def generate_html(jobs, update_time_str):
       color: inherit;
     }}
 
-    .logo-mark {{
+    .brand-logo-img {{
       width: 28px;
       height: 28px;
-      border-radius: 8px;
-      background: var(--accent-primary);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
     }}
 
     .brand-name {{
@@ -1179,13 +1180,9 @@ def generate_html(jobs, update_time_str):
   <header class="navbar">
     <div class="nav-container">
       <div class="nav-brand">
-        <div class="logo-mark">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <span class="brand-name">SecJobs</span>
-        <span class="curation-pill">큐레이션</span>
+        <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+        <span class="brand-name">Infosec Archive</span>
+        <span class="curation-pill">정보 아카이브</span>
       </div>
 
       <div class="nav-actions">
@@ -1223,10 +1220,10 @@ def generate_html(jobs, update_time_str):
     
     <!-- Hero Header -->
     <section class="hero">
-      <h1 class="hero-title">정보보안 직무 채용 큐레이션</h1>
-      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 정리합니다.</p>
+      <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
+      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
       <div class="hero-stats">
-        <span class="stat-chip">엄선된 보안 공고 <strong>{len(jobs)}건</strong></span>
+        <span class="stat-chip">아카이빙된 보안 공고 <strong>{len(jobs)}건</strong></span>
         <span class="stat-chip">D-Day 마감 임박 <strong>{urgent_count}건</strong></span>
         <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
         <span class="stat-chip">공고명 기반 정밀 직무 분류</span>
@@ -1313,7 +1310,7 @@ def generate_html(jobs, update_time_str):
 
     <!-- Footer -->
     <footer>
-      <p>SecJobs · 비상업적 정보 큐레이션 서비스</p>
+      <p>Infosec Archive · 정보보안 포지션 & 커리어 정보공유 아카이브</p>
       <p>데이터는 매일 아침 06:30 KST 기준 자동 갱신됩니다.</p>
     </footer>
   </main>
@@ -1626,12 +1623,14 @@ def generate_readme(jobs, update_time_str):
     urgent_count = sum(1 for j in jobs if any(k in j.get("deadline", "") for k in ["D-Day", "D-1", "D-2", "D-3", "D-4", "D-5", "D-6", "D-7", "오늘", "내일"]))
 
     lines = [
-        "# SecJobs · 정보보안 직무 채용 피드",
+        "# 🛡️ Infosec Archive · 정보보안 포지션 아카이브",
         "",
-        f"> **🌐 웹사이트 바로가기**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
+        f"> **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
         f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
-        f"> **엄선된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
+        f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
+        "",
+        "원티드, 점핏, 사람인의 정보보안 포지션을 정밀 직무 필터링을 거쳐 선별하고 공유하는 정보 아카이브 레포지토리입니다.",
         "",
         "### 분야별 바로가기",
         "| 분야 | 등록 공고 | 바로가기 |",

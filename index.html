@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecJobs · 정보보안 포지션 큐레이션</title>
-  <meta name="description" content="원티드, 점핏, 사람인의 보안 엔지니어 및 분석가 채용공고를 매일 아침 선별해 중복 없이 제공합니다.">
+  <title>Infosec Archive · 정보보안 포지션 아카이브</title>
+  <meta name="description" content="원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
     :root {
@@ -146,15 +148,14 @@
       color: inherit;
     }
 
-    .logo-mark {
+    .brand-logo-img {
       width: 28px;
       height: 28px;
-      border-radius: 8px;
-      background: var(--accent-primary);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
     }
 
     .brand-name {
@@ -838,19 +839,15 @@
   <header class="navbar">
     <div class="nav-container">
       <div class="nav-brand">
-        <div class="logo-mark">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <span class="brand-name">SecJobs</span>
-        <span class="curation-pill">큐레이션</span>
+        <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+        <span class="brand-name">Infosec Archive</span>
+        <span class="curation-pill">정보 아카이브</span>
       </div>
 
       <div class="nav-actions">
         <div class="update-meta">
           <span class="live-dot"></span>
-          <span>2026-11-10 19:19:03 KST 기준</span>
+          <span>2026-11-10 19:30:30 KST 기준</span>
         </div>
         <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
           <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -882,10 +879,10 @@
     
     <!-- Hero Header -->
     <section class="hero">
-      <h1 class="hero-title">정보보안 직무 채용 큐레이션</h1>
-      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 정리합니다.</p>
+      <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
+      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
       <div class="hero-stats">
-        <span class="stat-chip">엄선된 보안 공고 <strong>253건</strong></span>
+        <span class="stat-chip">아카이빙된 보안 공고 <strong>253건</strong></span>
         <span class="stat-chip">D-Day 마감 임박 <strong>103건</strong></span>
         <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
         <span class="stat-chip">공고명 기반 정밀 직무 분류</span>
@@ -972,7 +969,7 @@
 
     <!-- Footer -->
     <footer>
-      <p>SecJobs · 비상업적 정보 큐레이션 서비스</p>
+      <p>Infosec Archive · 정보보안 포지션 & 커리어 정보공유 아카이브</p>
       <p>데이터는 매일 아침 06:30 KST 기준 자동 갱신됩니다.</p>
     </footer>
   </main>
