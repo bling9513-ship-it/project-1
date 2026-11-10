@@ -46,7 +46,7 @@ def fetch_jumpit(keyword):
     
     try:
         req = urllib.request.Request(url, headers=HEADERS)
-        with urllib.request.urlopen(req, timeout=8) as res:
+        with urllib.request.urlopen(req, timeout=15) as res:
             data = json.loads(res.read().decode("utf-8"))
             positions = data.get("result", {}).get("positions", [])
             for p in positions:
@@ -70,7 +70,7 @@ def fetch_wanted(keyword):
     
     try:
         req = urllib.request.Request(url, headers=HEADERS)
-        with urllib.request.urlopen(req, timeout=8) as res:
+        with urllib.request.urlopen(req, timeout=15) as res:
             data = json.loads(res.read().decode("utf-8"))
             items = data.get("data", [])
             for item in items:
@@ -96,7 +96,7 @@ def fetch_saramin(keyword):
         saramin_headers = dict(HEADERS)
         saramin_headers["Referer"] = "https://www.saramin.co.kr/"
         req = urllib.request.Request(url, headers=saramin_headers)
-        with urllib.request.urlopen(req, timeout=8) as res:
+        with urllib.request.urlopen(req, timeout=15) as res:
             page = res.read().decode("utf-8", errors="ignore")
             
             pattern = r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>.*?<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>'
