@@ -13,21 +13,6 @@
     "deadline": "D-Day (오늘 마감)"
   },
   {
-    "company": "에이치케이시큐리티",
-    "title": "보안컨설팅 관리/취약점진단/모의해킹 경력 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55018717&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-Day (오늘 마감)"
-  },
-  {
     "company": "(주)에이쓰리시큐리티",
     "title": "A3SECURITY 컨설턴트 모집(모의해킹) 경력 5년 이상",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55253999&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
@@ -40,6 +25,20 @@
     ],
     "location": "",
     "deadline": "D-Day (오늘 마감)"
+  },
+  {
+    "company": "신한라이프생명보험(주)",
+    "title": "디지털보안 담당자(경력)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352344",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-Day (~11/11 수)"
   },
   {
     "company": "(주)시큐어월",
@@ -68,13 +67,54 @@
     "deadline": "D-1 (내일 마감)"
   },
   {
+    "company": "탑커리어인사이트",
+    "title": "정보보호 취약점분석, 대응 / MAX1억",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050002115",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-1 (내일 마감)"
+  },
+  {
+    "company": "탑커리어인사이트",
+    "title": "기술적, 관리적, 물리적 보안 / MAX1억",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050002123",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-1 (내일 마감)"
+  },
+  {
+    "company": "탑커리어인사이트",
+    "title": "보안엔지니어 / MAX1억",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050002125",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-1 (내일 마감)"
+  },
+  {
     "company": "알라딘커뮤니케이션",
     "title": "정보보호팀 정보보호담당자 (기술보안)",
     "url": "https://www.wanted.co.kr/wd/392825",
     "platforms": [
       "원티드",
       "점핏",
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보호",
@@ -101,12 +141,13 @@
     "title": "[인프라사업본부] 취약점 진단 경력직 인재 채용(진주)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55391939&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "취약점 진단"
     ],
-    "location": "",
+    "location": "경남 진주시",
     "deadline": "D-2 (~ 11/13(금))"
   },
   {
@@ -114,14 +155,42 @@
     "title": "[써니즈][IT정보보안] 소스코드 취약점 진단(SAST) 경력 2년",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55455578&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "취약점 진단",
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 영등포구",
     "deadline": "D-2 (~ 11/13(금))"
+  },
+  {
+    "company": "웍스피어(유)",
+    "title": "[웍스피어] 보안 엔지니어 (3년이상)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50176196",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 서초구",
+    "deadline": "D-2"
+  },
+  {
+    "company": "㈜소만사",
+    "title": "정보보호 및 개인정보보호 컨설턴트",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50246483",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "경기 성남시 수정구",
+    "deadline": "D-2"
   },
   {
     "company": "스콥정보통신",
@@ -221,12 +290,13 @@
     "title": "(주)세스코 정보보안기획 담당자 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55453211&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 강동구",
     "deadline": "D-4 (~ 11/15(일))"
   },
   {
@@ -260,12 +330,13 @@
     "title": "개인정보보호 담당자 (경력)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55482452&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보호"
     ],
-    "location": "",
+    "location": "경기 성남시 분당구",
     "deadline": "D-4 (~ 11/15(일))"
   },
   {
@@ -286,7 +357,8 @@
     "title": "[경영지원] 정보보호 경력사원 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "인크루트"
     ],
     "keywords": [
       "정보보호"
@@ -325,12 +397,13 @@
     "title": "[KG파이낸셜] 정보보호 및 개인정보보호 담당 경력직 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55417581&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보호"
     ],
-    "location": "",
+    "location": "서울 중구",
     "deadline": "D-4 (~ 11/15(일))"
   },
   {
@@ -348,17 +421,195 @@
     "deadline": "D-4 (~ 11/15(일))"
   },
   {
-    "company": "(주)구디",
-    "title": "[AI캠퍼스] AI Cloud · AI 보안 · AI SW 강사 채용 공고",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55312651&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "company": "세방그룹",
+    "title": "[이앤에스글로벌] 보안전문가",
+    "url": "https://career.rememberapp.co.kr/job/posting/352962",
     "platforms": [
-      "사람인"
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-4 (~ 11/15(일))"
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "KB라이프파트너스(주)",
+    "title": "[KB라이프파트너스] 정보보호(정보보안) 담당",
+    "url": "https://career.rememberapp.co.kr/job/posting/352185",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "(주)비바리퍼블리카",
+    "title": "Security Researcher (모의해킹/취약점)",
+    "url": "https://career.rememberapp.co.kr/job/posting/351260",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "(주)비바리퍼블리카",
+    "title": "Security Engineer (이벤트 분석/사고대응)",
+    "url": "https://career.rememberapp.co.kr/job/posting/351259",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "(주)비바리퍼블리카",
+    "title": "Information Security Manager(보안정책)",
+    "url": "https://career.rememberapp.co.kr/job/posting/351257",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "엔카닷컴(주)",
+    "title": "정보보호(기술보안) 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/343585",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "한섬",
+    "title": "현대백화점그룹 (주)한섬 정보보호담당 경력채용 (5-8년)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50293282",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-4"
+  },
+  {
+    "company": "하나증권㈜",
+    "title": "내부통제 경력직 특별채용 - 정보보호실",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50249771",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 영등포구",
+    "deadline": "D-4"
+  },
+  {
+    "company": "신한DS",
+    "title": "정보보호 서비스 경력직 수시채용(정보보호 취약점 진단)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50294196",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호"
+    ],
+    "location": "서울 중구",
+    "deadline": "D-4"
+  },
+  {
+    "company": "주식회사 위메이드",
+    "title": "정보보안 담당자(취약점 진단·보안 관제)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50018619",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-4"
+  },
+  {
+    "company": "에스케이쉴더스㈜",
+    "title": "웹/애플리케이션 보안 경력직 채용(본사 정보보호그룹 근무)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50308131",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-4"
+  },
+  {
+    "company": "㈜티빙",
+    "title": "[티빙] Information Security 팀 경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50161534",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-4"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "[사이버보안AI랩스그룹] PEN-AI 서비스 개발/진단 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610220003553",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
+  },
+  {
+    "company": "한국지엠",
+    "title": "[2027 GMTCK 동계인턴십] Software and Electronics_CyberSecurity Engineer",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040000030",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-4 (~11/15 일)"
   },
   {
     "company": "디어유",
@@ -454,11 +705,208 @@
     "deadline": "D-5 (~ 11/16(월))"
   },
   {
-    "company": "티시스아이티",
-    "title": "보안진단(4~8년)",
-    "url": "https://www.wanted.co.kr/wd/393831",
+    "company": "(주)녹십자홀딩스",
+    "title": "[GC] 인프라보안 운영",
+    "url": "https://career.rememberapp.co.kr/job/posting/351653",
     "platforms": [
-      "원티드",
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "SK쉴더스(주)",
+    "title": "[SK쉴더스] 보안관제 PM",
+    "url": "https://career.rememberapp.co.kr/job/posting/351054",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "㈜바텍이우홀딩스",
+    "title": "[바텍이우홀딩스] 정보보안 담당",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50008163",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 화성시 동탄구",
+    "deadline": "D-5"
+  },
+  {
+    "company": "GS건설㈜",
+    "title": "2026년 정보보안 / 신재생사업(재무·금융) / 시운전(Commissioning) 전문인력 정규직 경력사원 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50328925",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 종로구",
+    "deadline": "D-5"
+  },
+  {
+    "company": "주식회사 윈스테크넷",
+    "title": "[중견기업 윈스테크넷]11월 월간채용(신입/경력) - 정보보안 및 클라우드",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001277",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "한국관광공사",
+    "title": "2026년 한국관광공사 개방형직위(정보보안파트장) 공개 모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000328",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "국민연금공단",
+    "title": "공인노무사 및 정보보안전문가(전문계약직) 공개채용 공고",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000007",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "주식회사 윈스테크넷",
+    "title": "[중견기업 윈스테크넷] 부울경 정보보호서비스 경력 채용(관제, 진단, 개인정보)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001280",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "국가정보원",
+    "title": "[AI 경력직] AI 보안정책(특정6급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001096",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "국가정보원",
+    "title": "[AI 경력직] AI 보안 소프트웨어 개발(특정7급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001071",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "국가정보원",
+    "title": "[AI 경력직] AI 기반 취약점 점검(특정7급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001069",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "주식회사 윈스테크넷",
+    "title": "[중견기업 윈스테크넷]정보보호서비스 분야 경력 집중 채용(클라우드 관제, 분석)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001284",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "국민연금공단",
+    "title": "국민연금공단 공인노무사 및 정보보안전문가(전문계약직) 공개채용 공고",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000101",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-5 (~11/16 월)"
+  },
+  {
+    "company": "(주)카카오브이엑스",
+    "title": "카카오VX 정보보안팀 서비스 보안 담당자 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55484488&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-6 (~ 11/17(화))"
+  },
+  {
+    "company": "카카오브이엑스",
+    "title": "정보보안팀 서비스 보안 담당자 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050002130",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-6 (~11/17 화)"
+  },
+  {
+    "company": "티시스아이티",
+    "title": "보안진단(취약점진단/보안성검토)",
+    "url": "https://www.jumpit.co.kr/position/55342793",
+    "platforms": [
       "점핏",
       "사람인"
     ],
@@ -466,7 +914,7 @@
       "취약점 진단",
       "정보보안"
     ],
-    "location": "서울",
+    "location": "",
     "deadline": "D-7 (~11/18 수)"
   },
   {
@@ -482,6 +930,111 @@
     ],
     "location": "",
     "deadline": "D-7 (~ 11/18(수))"
+  },
+  {
+    "company": "대진정보통신㈜",
+    "title": "개인정보보호 컨설팅",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50200667",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 관악구",
+    "deadline": "D-7"
+  },
+  {
+    "company": "대진정보통신㈜",
+    "title": "PIA 자격증 필수/개인정보보호 컨설팅(경력)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50200675",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 관악구",
+    "deadline": "D-7"
+  },
+  {
+    "company": "교보DTS",
+    "title": "교보DTS 경력 채용공고 (모의해킹)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50319019",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "서울 종로구 외",
+    "deadline": "D-7"
+  },
+  {
+    "company": "(주)위드브레인",
+    "title": "정보보호 . 정보보안",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611070000147",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/18 수)"
+  },
+  {
+    "company": "(주)위드브레인",
+    "title": "보안 업무(기술적 / 관리적 / 물리적)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611080000074",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/18 수)"
+  },
+  {
+    "company": "시큐코리아 주식회사",
+    "title": "공공기관 상주 보안장비 등 인프라운영 인력 모집(경력, 서울 종로구)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610190000507",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/18 수)"
+  },
+  {
+    "company": "(주)위드브레인",
+    "title": "보안 엔지니어",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060003987",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/18 수)"
+  },
+  {
+    "company": "(주)이테크시스템",
+    "title": "[이테크시스템] 엔드포인트 보안 분석가 (EDR) (경력)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609230003495",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/18 수)"
   },
   {
     "company": "이스트시큐리티",
@@ -549,32 +1102,6 @@
     "deadline": "D-8 (~ 11/19(목))"
   },
   {
-    "company": "에이스아메리칸화재해상보험(주)",
-    "title": "IT Security Specialist / 정보보안 담당자",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55356882&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/19(목))"
-  },
-  {
-    "company": "(주)미디어윌네트웍스",
-    "title": "[알바천국본사] 정보보안 기술 엔지니어 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55405421&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/19(목))"
-  },
-  {
     "company": "(주)미디어윌네트웍스",
     "title": "[알바천국본사] 정보보호 담당자 정규직 모집",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55423760&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
@@ -628,6 +1155,58 @@
     ],
     "location": "",
     "deadline": "D-8 (~ 11/19(목))"
+  },
+  {
+    "company": "(주)고른",
+    "title": "삼성전자 DS부문 보안 1차 대응 담당자 채용(기흥캠퍼스 근무)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55338407&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-8 (~ 11/19(목))"
+  },
+  {
+    "company": "(주)안랩",
+    "title": "보안 컨설팅",
+    "url": "https://career.rememberapp.co.kr/job/posting/352497",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-8 (~11/19 목)"
+  },
+  {
+    "company": "(주)씨젠",
+    "title": "[씨젠] 개인정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/351081",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-8 (~11/19 목)"
+  },
+  {
+    "company": "(주)차바이오텍",
+    "title": "[차바이오텍] IT사업본부 정보보안 시스템엔지니어 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001118",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-8 (~11/19 목)"
   },
   {
     "company": "코어시큐리티",
@@ -684,7 +1263,7 @@
   {
     "company": "(주)베이스라인시큐어",
     "title": "정보보안 컨설팅(모의해킹) 정규직 채용 - 신입/경력",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491375&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491375&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
       "사람인"
     ],
@@ -694,6 +1273,45 @@
     ],
     "location": "",
     "deadline": "D-9 (~ 11/20(금))"
+  },
+  {
+    "company": "(주)채널코퍼레이션",
+    "title": "[채널톡] Chief Information Security Officer",
+    "url": "https://career.rememberapp.co.kr/job/posting/335934",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-9 (~11/20 금)"
+  },
+  {
+    "company": "(주) 유호스트",
+    "title": "정보보안 보안관제 담당 채용(교대근무/정규직)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000196",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-9 (~11/20 금)"
+  },
+  {
+    "company": "HR컨설팅(주)",
+    "title": "인프라 보안 (그룹사)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610220002280",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-10 (~11/21 토)"
   },
   {
     "company": "(주)연합인포맥스",
@@ -727,13 +1345,160 @@
     "title": "하나투어 정보보호팀 경력직 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55519340&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 종로구",
+    "deadline": "D-11 (~ 11/22(일))"
+  },
+  {
+    "company": "(주)LG유플러스",
+    "title": "[정보보안센터] 클라우드 보안 구축 및 운영",
+    "url": "https://career.rememberapp.co.kr/job/posting/332202",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "[외국계/사이버보안 플랫폼] IT Global Sales Manager",
+    "url": "https://career.rememberapp.co.kr/job/posting/353407",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "(주)LG유플러스",
+    "title": "[정보보안센터] 보안사업지원TF 리더",
+    "url": "https://career.rememberapp.co.kr/job/posting/353317",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "(주)크몽",
+    "title": "개인정보 보호 담당자 (8년 이상)",
+    "url": "https://career.rememberapp.co.kr/job/posting/353199",
+    "platforms": [
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-11 (~ 11/22(일))"
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "(주)케이뱅크",
+    "title": "엔드포인트 보안 운영 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/353019",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "DB손해보험(주)",
+    "title": "[DB손해보험] (정보보호파트) AI 보안 전문가",
+    "url": "https://career.rememberapp.co.kr/job/posting/352232",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "모트렉스(주)",
+    "title": "[MOTREX] 정보보안/IT운영",
+    "url": "https://career.rememberapp.co.kr/job/posting/349478",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "㈜다날",
+    "title": "정보보호 담당자(보안 정책)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50290595",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-11"
+  },
+  {
+    "company": "써치스퀘어",
+    "title": "정보보안 컨설팅-초일류 대기업",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030004959",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "(주)연합인포맥스",
+    "title": "(주)연합인포맥스 정보보안 담당 경력사원 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611090000339",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
+  },
+  {
+    "company": "(주)씨아이솔루션",
+    "title": "IT 보안관제 보안팀장 및 CERT 운영 경력직 모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610230003218",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-11 (~11/22 일)"
   },
   {
     "company": "바로팜",
@@ -741,13 +1506,96 @@
     "url": "https://www.wanted.co.kr/wd/385054",
     "platforms": [
       "원티드",
-      "점핏"
+      "점핏",
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "서울",
     "deadline": "D-12 (~11/23 월)"
+  },
+  {
+    "company": "롯데이노베이트(주)",
+    "title": "[백화점IS팀] 보안 운영 경력",
+    "url": "https://career.rememberapp.co.kr/job/posting/353768",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-12 (~11/23 월)"
+  },
+  {
+    "company": "(주)핀다",
+    "title": "[핀다뱅크(현 대원저축은행)] 주니어 보안 엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/353267",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-12 (~11/23 월)"
+  },
+  {
+    "company": "(주)핀다",
+    "title": "[핀다뱅크(현 대원저축은행)] 시니어 보안 엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/353263",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-12 (~11/23 월)"
+  },
+  {
+    "company": "(주)핀다",
+    "title": "[핀다뱅크(현 대원저축은행)] 개인정보보호 매니저",
+    "url": "https://career.rememberapp.co.kr/job/posting/353262",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-12 (~11/23 월)"
+  },
+  {
+    "company": "한화시스템",
+    "title": "[한화시스템/방산부문] 정보보호",
+    "url": "https://career.rememberapp.co.kr/job/posting/350647",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-12 (~11/23 월)"
+  },
+  {
+    "company": "CJ올리브네트웍스(주)",
+    "title": "개인정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/341892",
+    "platforms": [
+      "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 용산구",
+    "deadline": "D-12"
   },
   {
     "company": "이스트시큐리티",
@@ -767,7 +1615,8 @@
     "title": "보안관제(정보보안) 정규직 채용(월16일 근무/교대근무)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55469578&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
-      "사람인"
+      "사람인",
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
@@ -776,12 +1625,26 @@
     "deadline": "D-13 (~ 11/24(화))"
   },
   {
+    "company": "넷마블(주)",
+    "title": "보안 정책 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/353648",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-13 (~11/24 화)"
+  },
+  {
     "company": "넷마블",
     "title": "취약점 진단 및 모의해킹 담당자",
     "url": "https://www.wanted.co.kr/wd/361467",
     "platforms": [
       "원티드",
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "모의해킹",
@@ -847,27 +1710,54 @@
     "title": "[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "모의해킹",
       "취약점 진단"
     ],
-    "location": "",
+    "location": "경기 화성시 동탄구 외",
     "deadline": "D-14 (~ 11/25(수))"
   },
   {
-    "company": "(주)인코스파트너스",
-    "title": "[구로디지털단지/유명기업] 넷마블 보안모니터링 직원 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55529293&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
+    "company": "(주)알스퀘어",
+    "title": "[라이프매니지먼트] 개인정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/342101",
     "platforms": [
-      "사람인"
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-14 (~11/25 수)"
+  },
+  {
+    "company": "HR컨설팅(주)",
+    "title": "국내 최대 대기업 AI서비스 확산/ERP개발운영/정보보안 각 담당자 1명씩 3명 신규충원",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000535",
+    "platforms": [
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-14 (~ 11/25(수))"
+    "deadline": "D-14 (~11/25 수)"
+  },
+  {
+    "company": "(주)인싸이트에이치알지",
+    "title": "우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-14 (~11/25 수)"
   },
   {
     "company": "위드네트웍스",
@@ -909,17 +1799,224 @@
     "deadline": "D-15 (~11/26 목)"
   },
   {
-    "company": "SK(주)",
-    "title": "정보보안 운영 전문가 영입",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55338862&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "company": "한화에어로스페이스(주)",
+    "title": "[한화에어로스페이스] 해외사업 정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/353918",
     "platforms": [
-      "사람인"
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-15 (~11/26 목)"
+  },
+  {
+    "company": "현대오토에버(주)",
+    "title": "클라우드 보안성 검토 및 관리",
+    "url": "https://career.rememberapp.co.kr/job/posting/347418",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-15 (~11/26 목)"
+  },
+  {
+    "company": "현대오토에버(주)",
+    "title": "북미 기술 보안 주재원 (Endpoint)",
+    "url": "https://career.rememberapp.co.kr/job/posting/333894",
+    "platforms": [
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "",
+    "deadline": "D-15 (~11/26 목)"
+  },
+  {
+    "company": "현대오토에버(주)",
+    "title": "[보안]모의 해킹 및 취약점 진단",
+    "url": "https://career.rememberapp.co.kr/job/posting/236690",
+    "platforms": [
+      "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-15 (~11/26 목)"
+  },
+  {
+    "company": "현대오토에버(주)",
+    "title": "정보보안 솔루션 구축/운영 (금융)",
+    "url": "https://career.rememberapp.co.kr/job/posting/342314",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-15 (~11/26 목)"
+  },
+  {
+    "company": "㈜선익시스템",
+    "title": "[선익시스템] IT팀 정보보안 경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50248199",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 수원시 권선구",
+    "deadline": "D-15"
+  },
+  {
+    "company": "현대오토에버㈜",
+    "title": "DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301974",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-15"
+  },
+  {
+    "company": "중고나라",
+    "title": "정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)",
+    "url": "https://www.wanted.co.kr/wd/389366",
+    "platforms": [
+      "원티드",
+      "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "D-16"
+  },
+  {
+    "company": "SK(주)",
+    "title": "정보보안 운영 전문가 영입",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55338862&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
     "deadline": "D-16 (~ 11/27(금))"
+  },
+  {
+    "company": "갓루트(GOTROOT)",
+    "title": "[경력 무관] Offensive Security 컨설턴트 모집",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50253569",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "서울 금천구",
+    "deadline": "D-16"
+  },
+  {
+    "company": "에스케이",
+    "title": "정보보안 운영 전문가 영입",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610030000081",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-16 (~11/27 금)"
+  },
+  {
+    "company": "그레이스앤파트너스",
+    "title": "정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-16 (~11/27 금)"
+  },
+  {
+    "company": "㈜위대한상상",
+    "title": "[Security] Web & Application Security (5년 이상)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50068192",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-17"
+  },
+  {
+    "company": "㈜웹젠",
+    "title": "[웹젠] 인프라보안(경력)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50072508",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-17"
+  },
+  {
+    "company": "(주)코인원",
+    "title": "Service Security Engineer(팀장)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50072314",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 영등포구",
+    "deadline": "D-17"
+  },
+  {
+    "company": "(주)씨아이솔루션",
+    "title": "보안관제 채용 모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290000183",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-17 (~11/28 토)"
   },
   {
     "company": "라온시큐어(주)",
@@ -933,6 +2030,103 @@
     ],
     "location": "",
     "deadline": "D-18 (~ 11/29(일))"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "[외국계/블루팀] Cyber Security Lead",
+    "url": "https://career.rememberapp.co.kr/job/posting/353425",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-18 (~11/29 일)"
+  },
+  {
+    "company": "(주)위대한상상",
+    "title": "[Security] Privacy Manager (개인정보보호 담당자/3년 이상)",
+    "url": "https://career.rememberapp.co.kr/job/posting/340187",
+    "platforms": [
+      "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-18"
+  },
+  {
+    "company": "㈜티빙",
+    "title": "[티빙] Privacy(개인정보보호) Lead 경력채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50260163",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-18"
+  },
+  {
+    "company": "㈜시큐러스",
+    "title": "[경력] 정보보안 컨설팅 컨설턴트 프리랜서 모집",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50274614",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-18"
+  },
+  {
+    "company": "그레이스앤파트너스",
+    "title": "EDR 보안관제 경력/(5~ 12년) - 금융그룹 ICT",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000899",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-18 (~11/29 일)"
+  },
+  {
+    "company": "부드러운돌멩이",
+    "title": "전자금융 정보보안전문가 (3년~10년)",
+    "url": "https://www.wanted.co.kr/wd/371674",
+    "platforms": [
+      "원티드",
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)비트러스트",
+    "title": "정보보안솔루션(FW,WAF, IPS, DBSafer, NAC, DLP) 운영 엔지니어",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55535134&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인",
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~ 11/30(월))"
   },
   {
     "company": "(주)에이피알",
@@ -965,13 +2159,14 @@
     "title": "[AI통합보안센터] 취약점 진단 경력 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55287721&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "취약점 진단",
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 송파구",
     "deadline": "D-19 (~ 11/30(월))"
   },
   {
@@ -979,7 +2174,8 @@
     "title": "[정보보안 코스닥] 취약점 진단 PL-경력직",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "인크루트"
     ],
     "keywords": [
       "취약점 진단",
@@ -993,15 +2189,270 @@
     "title": "취약점 분석 및 정보보안 모의해킹 컨설턴트 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "모의해킹",
       "취약점 진단",
       "정보보안"
     ],
+    "location": "서울 동작구 외",
+    "deadline": "D-19 (~ 11/30(월))"
+  },
+  {
+    "company": "(주)엘지씨엔에스",
+    "title": "[LG CNS] 보안 분야 전 영역 전문가 모집(경력)(화이트해커)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55532818&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
     "location": "",
     "deadline": "D-19 (~ 11/30(월))"
+  },
+  {
+    "company": "(주)가비아",
+    "title": "정보보호 및 개인정보보호",
+    "url": "https://career.rememberapp.co.kr/job/posting/348990",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)가비아",
+    "title": "Security Engineer",
+    "url": "https://career.rememberapp.co.kr/job/posting/339606",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)네비웍스",
+    "title": "[네비웍스] 품질팀 리더 (SW품질경영 & 전사 정보보안 총괄)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352753",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "브리스캔영어쏘시에이츠(주)",
+    "title": "정보보안 관리체계(정책) 담당자(시니어)",
+    "url": "https://career.rememberapp.co.kr/job/posting/351600",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)씨앤씨인터내셔널",
+    "title": "[화장품ODM상장사]IT/정보보안 담당",
+    "url": "https://career.rememberapp.co.kr/job/posting/341715",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)프로써치코리아",
+    "title": "정보보안 채용",
+    "url": "https://career.rememberapp.co.kr/job/posting/290289",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "삼양데이타시스템(주)",
+    "title": "[삼양데이타시스템] 삼양그룹 보안 시스템 운영(계약직)",
+    "url": "https://career.rememberapp.co.kr/job/posting/351075",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)힐링페이퍼",
+    "title": "개인정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/342705",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "한국조선해양(주)",
+    "title": "[HD한국조선해양] 선박보안 테스트 및 모의해킹",
+    "url": "https://career.rememberapp.co.kr/job/posting/343623",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "주식회사스마일게이트",
+    "title": "[스마일게이트] [정보보안] 정보보안 분석 담당 (팀장급)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50244585",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-19"
+  },
+  {
+    "company": "주식회사스마일게이트",
+    "title": "[스마일게이트] [정보보안] 게임 보안 SDK 개발 담당",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50274592",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-19"
+  },
+  {
+    "company": "㈜넥솔위즈빌",
+    "title": "정보보안 관리업무",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50116778",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강서구",
+    "deadline": "D-19"
+  },
+  {
+    "company": "신한DS",
+    "title": "정보보안LAB(레드팀) 경력직 수시채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50258924",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "서울 중구",
+    "deadline": "D-19"
+  },
+  {
+    "company": "㈜가비아",
+    "title": "2026년 가비아 정보보호 및 개인정보보호 경력직 수시채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50329018",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "경기 과천시",
+    "deadline": "D-19"
+  },
+  {
+    "company": "㈜지엘엔인터내셔널",
+    "title": "[IT본부] 개인정보 보호(경력직)(정보보호부)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50161376",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-19"
+  },
+  {
+    "company": "웍스피어(유)",
+    "title": "[웍스피어] App Security 엔지니어 (4년이상)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50309164",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 서초구",
+    "deadline": "D-19"
+  },
+  {
+    "company": "(주)신한디에스",
+    "title": "정보보안LAB(레드팀) 경력직 수시채용 (~채용 시 마감)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280002113",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
+  },
+  {
+    "company": "(주)에이치알맨파워그룹",
+    "title": "[대기업-지주] AI 보안 담당 (서울)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610310000238",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-19 (~11/30 월)"
   },
   {
     "company": "리브스메드",
@@ -1034,12 +2485,13 @@
     "title": "문화체육관광부 정보보호 및 개인정보보호 담당자 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55458701&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보호"
     ],
-    "location": "",
+    "location": "서울 강남구",
     "deadline": "D-21 (~ 12/02(수))"
   },
   {
@@ -1060,21 +2512,65 @@
     "title": "[보안1팀] 정보보안 운영/개인정보보호 경력",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아",
+      "인크루트"
     ],
     "keywords": [
       "정보보호",
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 강남구",
     "deadline": "D-22 (~ 12/03(목))"
+  },
+  {
+    "company": "㈜에스앤케이인스티튜트",
+    "title": "정보보안솔루션 경력개발자",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50297500",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 서초구",
+    "deadline": "D-22"
+  },
+  {
+    "company": "그레이스앤파트너스",
+    "title": "보안관제/(3~ 12년) - 금융그룹 ICT",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002809",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-22 (~12/03 목)"
+  },
+  {
+    "company": "그레이스앤파트너스",
+    "title": "보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-22 (~12/03 목)"
   },
   {
     "company": "핀다",
     "title": "[핀다] Application Security Engineer",
     "url": "https://www.jumpit.co.kr/position/55494452",
     "platforms": [
-      "점핏"
+      "점핏",
+      "리멤버",
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
@@ -1108,6 +2604,32 @@
     ],
     "location": "",
     "deadline": "D-23 (~ 12/04(금))"
+  },
+  {
+    "company": "한패스(주)",
+    "title": "[ 한패스 ] 한패스 및 관계사 정보보호 시스템/관리 경력 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55483392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-23 (~ 12/04(금))"
+  },
+  {
+    "company": "㈜메타넷엑스",
+    "title": "[MetanetX] 정보보안 컨설턴트 (경력)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50304298",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 종로구",
+    "deadline": "D-23"
   },
   {
     "company": "에스투더블유",
@@ -1192,6 +2714,62 @@
     "deadline": "D-24 (~ 12/05(토))"
   },
   {
+    "company": "고려아연(주)",
+    "title": "보안기획 [개인정보]",
+    "url": "https://career.rememberapp.co.kr/job/posting/353868",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-24 (~12/05 토)"
+  },
+  {
+    "company": "고려아연(주)",
+    "title": "보안기획팀 [보안진단]",
+    "url": "https://career.rememberapp.co.kr/job/posting/353857",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-24 (~12/05 토)"
+  },
+  {
+    "company": "㈜아도스",
+    "title": "모의해킹/취약점 진단/AI Agent for Security (경력직 채용)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50118492",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "경기 용인시 기흥구",
+    "deadline": "D-24"
+  },
+  {
+    "company": "그레이스앤파트너스",
+    "title": "Cyber Security(Junior)/( ~7년 이하) - 반도체 (코스닥)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050001979",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-24 (~12/05 토)"
+  },
+  {
     "company": "(주)에스에프에이",
     "title": "SFA 2026년 수시채용 정보보안 (11월29일 마감)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55504431&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
@@ -1231,6 +2809,19 @@
     "deadline": "D-25 (~ 12/06(일))"
   },
   {
+    "company": "파워에이치알",
+    "title": "[주요SI업체] 정보보안 컨설팅 담당(경력 3년 - 16년)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611070000271",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-26 (~12/07 월)"
+  },
+  {
     "company": "(주)에이피알",
     "title": "개인정보보호 담당 경력사원 모집",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55518236&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
@@ -1247,6 +2838,19 @@
     "company": "(주)코윈디에스티",
     "title": "기술보안 및 정보보안 운영 담당자 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55517406&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-28 (~ 12/09(수))"
+  },
+  {
+    "company": "한국결제네트웍스(유)",
+    "title": "[Fintech기업 - KPN] 정보보안 담당자(Jr.)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55524626&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
       "사람인"
     ],
@@ -1288,13 +2892,56 @@
     "title": "사이버보안 컨설턴트 경력직 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55529935&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-28 (~ 12/09(수))"
+  },
+  {
+    "company": "피플워크(주)",
+    "title": "Cyber Security Assistant Manager - 외국계럭셔리기업",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611090001114",
+    "platforms": [
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-28 (~ 12/09(수))"
+    "deadline": "D-28 (~12/09 수)"
+  },
+  {
+    "company": "아주큐엠에스",
+    "title": "정보보안담당(선임급)",
+    "url": "https://www.wanted.co.kr/wd/397426",
+    "platforms": [
+      "원티드",
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "D-29 (~ 12/10(목))"
+  },
+  {
+    "company": "미리디",
+    "title": "보안 엔지니어(AI-Driven Security Automation Engineer)",
+    "url": "https://www.wanted.co.kr/wd/397265",
+    "platforms": [
+      "원티드",
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "D-29 (~12/10 목)"
   },
   {
     "company": "SK시그넷",
@@ -1324,43 +2971,44 @@
     "deadline": "D-29 (~ 12/10(목))"
   },
   {
-    "company": "(주)메타엠",
-    "title": "메타엠 정보보안 엔지니어 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55535686&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-29 (~ 12/10(목))"
-  },
-  {
     "company": "(주)시큐아이",
     "title": "[삼성SDS자회사] (주)시큐아이 경력사원 채용(보안운영)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55533683&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 종로구 외",
     "deadline": "D-29 (~ 12/10(목))"
   },
   {
-    "company": "링크정보통신(주)",
-    "title": "정보보호 및 네트워크 엔지니어[신입/경력] 모집",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55297992&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "company": "(주)시큐리티인사이드",
+    "title": "정보보호 컨설턴트 채용(국내/해외 PM/PA)",
+    "url": "https://career.rememberapp.co.kr/job/posting/340369",
     "platforms": [
-      "사람인"
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-30 (~ 12/11(금))"
+    "deadline": "D-29 (~12/10 목)"
+  },
+  {
+    "company": "베스트네트워크(주)",
+    "title": "48. 정보보호 및 개인정보보호 담당자 [국내 금융사]",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611110000359",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-30 (~12/11 금)"
   },
   {
     "company": "주식회사제로시큐어(ZEROSECUREInc.)",
@@ -1378,6 +3026,21 @@
     "deadline": "D-32 (~ 12/13(일))"
   },
   {
+    "company": "(주)하이브",
+    "title": "[HYBE] 정보보호 (클라우드 보안운영)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352104",
+    "platforms": [
+      "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "서울 용산구",
+    "deadline": "D-32"
+  },
+  {
     "company": "한국정보보안원",
     "title": "[정규직] 개인정보 및 정보보호, 취약점 진단",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55296054&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
@@ -1390,6 +3053,86 @@
     ],
     "location": "",
     "deadline": "D-33 (~ 12/14(월))"
+  },
+  {
+    "company": "(재) 한국의학연구소",
+    "title": "[KMI] 한국의학연구소 재단본부 정보보호 담당자 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50180182",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 중구",
+    "deadline": "D-34"
+  },
+  {
+    "company": "㈜아큐닉스",
+    "title": "정보보안취약점 진단 및 컨설턴트 모집",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50181103",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-34"
+  },
+  {
+    "company": "안진회계법인",
+    "title": "T&T부문 정보보안 및 개인정보보호 컨설팅 경력직",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610010000033",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-36 (~12/17 목)"
+  },
+  {
+    "company": "안진회계법인",
+    "title": "T&T부문 정보보안 컨설팅 인턴",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610010000030",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-36 (~12/17 목)"
+  },
+  {
+    "company": "안진회계법인",
+    "title": "T&T부문 정보보안 관련 인증 서비스 부문 컨설턴트 경력직",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610010000037",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-36 (~12/17 목)"
+  },
+  {
+    "company": "안진회계법인",
+    "title": "T&T부문 인증보안 컨설팅 경력직",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610010000035",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-36 (~12/17 목)"
   },
   {
     "company": "(주)포유씨큐리티",
@@ -1446,6 +3189,32 @@
     "deadline": "D-39 (~ 12/20(일))"
   },
   {
+    "company": "(주)맨파워써치",
+    "title": "AI 보안 전문가",
+    "url": "https://career.rememberapp.co.kr/job/posting/312425",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-39 (~12/20 일)"
+  },
+  {
+    "company": "㈜천재교과서",
+    "title": "[천재교과서] 정보보안 팀장 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50211658",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 금천구",
+    "deadline": "D-39"
+  },
+  {
     "company": "(주)케이알시큐리티",
     "title": "(신입/경력) 오펜시브 모의해킹",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55368948&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
@@ -1459,17 +3228,17 @@
     "deadline": "D-40 (~ 12/21(월))"
   },
   {
-    "company": "(주)디오",
-    "title": "(주)디오 글로벌 정보보안 담당",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55414604&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "company": "㈜한빛소프트",
+    "title": "[정보자산팀] 정보보호 관리 담당자 모집",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50260320",
     "platforms": [
-      "사람인"
+      "잡코리아"
     ],
     "keywords": [
-      "정보보안"
+      "정보보호"
     ],
-    "location": "",
-    "deadline": "D-44 (~ 12/25(금))"
+    "location": "서울 금천구",
+    "deadline": "D-46"
   },
   {
     "company": "코오롱글로벌(주)",
@@ -1485,19 +3254,154 @@
     "deadline": "D-48 (~ 12/29(화))"
   },
   {
+    "company": "알엑스",
+    "title": "정보보안 담당자",
+    "url": "https://www.wanted.co.kr/wd/394716",
+    "platforms": [
+      "원티드",
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "대전",
+    "deadline": "D-50 (~12/31 목)"
+  },
+  {
+    "company": "파인더갭(주)",
+    "title": "[경력] 보안 엔지니어(취약점 분석/평가)",
+    "url": "https://career.rememberapp.co.kr/job/posting/335897",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-50 (~12/31 목)"
+  },
+  {
+    "company": "신세계I&C",
+    "title": "정보보안 분야 인재모집(보안기획)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50087376",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강남구 외",
+    "deadline": "D-50"
+  },
+  {
+    "company": "두산에너빌리티㈜",
+    "title": "정보보안 경력직 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50292591",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-50"
+  },
+  {
+    "company": "㈜이글루코퍼레이션",
+    "title": "[컨설팅사업부] 정보보호컨설팅 (관리체계/인프라점검/모의해킹)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50282373",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보호"
+    ],
+    "location": "서울 송파구",
+    "deadline": "D-50"
+  },
+  {
+    "company": "Kim & Chang (김앤장 법률사무소)",
+    "title": "[채용공고] IT 부문 (개발, IT 운영, IT 지원, 정보보안) 상시 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610230004089",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-50 (~12/31 목)"
+  },
+  {
+    "company": "NHN",
+    "title": "[NHN Japan] 보안 엔지니어",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260004862",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-50 (~12/31 화)"
+  },
+  {
     "company": "(주)인더포레스트",
     "title": "[보안 컨설팅] 수준높은 취약점 진단, 모의해킹 컨설팅",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55489626&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "모의해킹",
       "취약점 진단",
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 서초구",
     "deadline": "D-53 (~ 01/03(일))"
+  },
+  {
+    "company": "동원그룹",
+    "title": "[동원홈푸드] 정보보호실 정보보호 담당 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50300313",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 서초구",
+    "deadline": "D-53"
+  },
+  {
+    "company": "㈜케이엠파크",
+    "title": "정보보안팀 담당자 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50324507",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-57"
+  },
+  {
+    "company": "컬리",
+    "title": "정보보호 정책 담당자",
+    "url": "https://www.wanted.co.kr/wd/377077",
+    "platforms": [
+      "원티드",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울",
+    "deadline": "D-58"
   },
   {
     "company": "쿠팡(주)",
@@ -1517,13 +3421,29 @@
     "title": "웹 어플리케이션 모의해킹 인력 수급 공고",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55516745&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "모의해킹"
     ],
-    "location": "",
+    "location": "서울 구로구",
     "deadline": "D-58 (~ 01/08(금))"
+  },
+  {
+    "company": "(주)핀시큐리티",
+    "title": "정보보안 컨설팅 모의해킹 채용 - 신입/경력",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55536813&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "서울 구로구",
+    "deadline": "D-59 (~ 01/09(토))"
   },
   {
     "company": "(주)비이아이",
@@ -1539,18 +3459,19 @@
     "deadline": "D-59 (~ 01/09(토))"
   },
   {
-    "company": "(주)핀시큐리티",
-    "title": "정보보안 컨설팅 모의해킹 채용 - 신입/경력",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55536813&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "company": "에이치케이시큐리티",
+    "title": "보안컨설팅 관리/취약점진단/모의해킹 경력 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55542050&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
       "사람인"
     ],
     "keywords": [
       "모의해킹",
+      "취약점 진단",
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-59 (~ 01/09(토))"
+    "deadline": "D-60 (~ 01/10(일))"
   },
   {
     "company": "씨제이대한통운(주)",
@@ -1579,6 +3500,19 @@
     "deadline": "채용시 마감"
   },
   {
+    "company": "주식회사 엔투원시스템",
+    "title": "네트워크 및 정보보안 시스템 엔지니어 모집(서울, 본사)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55298801&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
     "company": "(주)에이바이트",
     "title": "[정보보안기술] 2026년 보안솔루션 엔지니어 채용(신입,경력)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55148925&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
@@ -1596,7 +3530,8 @@
     "title": "정보보안 기술 담당자 (경력)",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55517902&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
-      "사람인"
+      "사람인",
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
@@ -1613,32 +3548,6 @@
     ],
     "keywords": [
       "정보보호",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "채용시 마감"
-  },
-  {
-    "company": "퍼솔코리아(유)",
-    "title": "[강남구청/외국계 자동차 기업] IT 정보보안 Specialist 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361461&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "채용시 마감"
-  },
-  {
-    "company": "(주)바텍",
-    "title": "정보보안 담당자",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55061273&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
       "정보보안"
     ],
     "location": "",
@@ -1712,43 +3621,575 @@
     "deadline": "채용시 마감"
   },
   {
-    "company": "(주)에프원시큐리티",
-    "title": "모의해킹 신입 및 경력직 채용 공고",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55481184&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "모의해킹"
-    ],
-    "location": "",
-    "deadline": "채용시 마감"
-  },
-  {
     "company": "엔에이치엔클라우드(주)",
     "title": "[NHN Cloud] 모의해킹 및 Red Team 운영",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55524647&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아",
+      "인크루트"
     ],
     "keywords": [
       "모의해킹"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)에프원시큐리티",
+    "title": "모의해킹 신입 및 경력직 채용 공고",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55481184&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "서울 금천구",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)피플렙",
+    "title": "개인정보 보호, 보안진단 [국내 대기업]",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610130002286",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호",
+      "정보보안"
     ],
     "location": "",
     "deadline": "채용시 마감"
   },
   {
-    "company": "아주큐엠에스",
-    "title": "정보보안담당(선임급)",
-    "url": "https://www.wanted.co.kr/wd/397426",
+    "company": "(주)잡뉴스솔로몬서치",
+    "title": "보안관제 (정보보안 사고 예방 대응,경력 7년-12년) - 대기업, 그룹계열사",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060000988",
     "platforms": [
-      "원티드"
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "서울",
-    "deadline": "상시채용"
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)잡뉴스솔로몬서치",
+    "title": "보안 진단 (취약점 진단/ 보안성 검토,경력 3년-4년) - 대기업, 그룹계열사",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060000932",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)스마일게이트홀딩스",
+    "title": "[정보보안] 정보보안 분석 담당 (팀장급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610270000002",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "주식회사 히든스카우트",
+    "title": "[BIG 4 컨설팅펌] 사이버보안(Cyber Security) 컨설턴트",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290003344",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "오씨아이홀딩스",
+    "title": "[OCI정보통신] 보안담당 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050000023",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)잡뉴스솔로몬서치",
+    "title": "보안 위협 분석 및 침해사고 대응 (경력 8년이상) - 대기업, 그룹계열사",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060000973",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "한화시스템",
+    "title": "한화시스템 정보보호/해외수출보안 경력사원 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290004055",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "파워에이치알",
+    "title": "[코스닥-보안업체] 정보보호 컨설팅 PM 또는 PL",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001221",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)신세계아이앤씨",
+    "title": "[신세계아이앤씨] 정보보안 분야 인재모집(채용 시 마감)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2608240001109",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "엘림써치",
+    "title": "(국내 에너지 대기업 계열사) 정보·물리보안/총무 (사원-대리급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611110000942",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)잡뉴스솔로몬서치",
+    "title": "IT 담당 (클라우드/네트워크/정보보호, 대리-과장급) - 패션 전문기업",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060000995",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "삼일회계법인",
+    "title": "[삼일회계법인] AI IT 보안 및 거버넌스 컨설턴트 모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040000853",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "미래에셋증권 (주)",
+    "title": "미래에셋증권 정보보호 경력 Specialist 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2608200002448",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "주식회사 라피플코리아리미티드",
+    "title": "국내 대기업 계열사 - 개인정보보호 업무 경력자 포지션",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290003353",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)JYP엔터테인먼트",
+    "title": "[JYP ENTERTAINMENT] IT 보안 (경력)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610270001083",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "한화시스템",
+    "title": "보안진단 담당자 경력사원 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030004839",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)보령",
+    "title": "[보령] 정보보호팀 팀장 (경력)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100002034",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "스노우(주)",
+    "title": "[SNOW] 클라우드 보안 담당",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040001802",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "Cloud 보안 컨설팅 PM 경력직 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610150004218",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)신한디에스",
+    "title": "보안운영 경력직 수시채용 (~채용 시 마감)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040002165",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)JYP엔터테인먼트",
+    "title": "[Blue Garage] 개인정보보호",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610020003994",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "LS전선(주)",
+    "title": "[LS전선] IT보안/인프라운영(본사) 경력 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610140004478",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "주식회사 무신사",
+    "title": "Security Engineer (무신사페이먼츠)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609170000001",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "OT 보안 운영 경력직 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609290005237",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "스노우(주)",
+    "title": "[SNOW] IT 보안 기술 담당",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280001826",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "카카오페이증권(주)",
+    "title": "클라우드 보안 담당자(시니어)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100003381",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "주식회사 빗썸코리아",
+    "title": "[경력] 애플리케이션 보안 엔지니어링 (SAST/DAST)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609170001103",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)신세계아이앤씨",
+    "title": "[신세계아이앤씨] 보안관제 직무 인재모집(계약직, 장애/보훈 전형, 채용 시 마감)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2608240001125",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)잡뉴스솔로몬서치",
+    "title": "AI 보안 전문가 (과장-부장급) - 대기업. 그룹지주회사",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611020000050",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)CJ ENM",
+    "title": "[CJ ENM] 개인정보보호담당자",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050003300",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "아마존 코리아",
+    "title": "Data Center Security Manager, Data Center Security",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610020000242",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "컴투스",
+    "title": "(플랫폼) 기술보안(CERT) 담당자 (2~5년)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609220000031",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "보안운영 경력직 채용(당산)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060003906",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "한국로슈진단",
+    "title": "Senior Cybersecurity Analyst - Policy Based Access",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610250000116",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "NHN",
+    "title": "개인정보보호 담당자",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100004148",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "(주)동원홈푸드",
+    "title": "[동원홈푸드] 정보보호실 정보보호 담당 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040000914",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "미래에셋증권 (주)",
+    "title": "미래에셋증권 AI/Tech (Security) Specialist 모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2608200002446",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "[관제사업팀] 취약점 진단 및 모의해킹 경력직 채용(인천)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290004120",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "엘아이지넥스원(주)",
+    "title": "LIG D&A SW(AI/사이버보안) 상시채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611080000077",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
+  },
+  {
+    "company": "엘아이지넥스원(주)",
+    "title": "LIG D&A SW(AI/사이버보안) 경력사원 상시채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2606010005752",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감"
   },
   {
     "company": "에스더블유엠",
@@ -1787,19 +4228,6 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "상시채용"
-  },
-  {
-    "company": "알엑스",
-    "title": "정보보안 담당자",
-    "url": "https://www.wanted.co.kr/wd/394716",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "대전",
     "deadline": "상시채용"
   },
   {
@@ -1883,20 +4311,6 @@
     "deadline": "상시채용"
   },
   {
-    "company": "중고나라",
-    "title": "정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)",
-    "url": "https://www.wanted.co.kr/wd/389366",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용"
-  },
-  {
     "company": "한국신용데이터(KCD)",
     "title": "[정보보안팀] Cloud Security Engineer",
     "url": "https://www.wanted.co.kr/wd/388358",
@@ -1927,7 +4341,8 @@
     "title": "정보보안",
     "url": "https://www.wanted.co.kr/wd/386925",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
@@ -2034,7 +4449,8 @@
     "title": "정보보안 담당자",
     "url": "https://www.wanted.co.kr/wd/377258",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
@@ -2059,19 +4475,6 @@
     "company": "패스트레인(여신티켓)",
     "title": "정보보안 담당자(팀장, 팀원)",
     "url": "https://www.wanted.co.kr/wd/373016",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용"
-  },
-  {
-    "company": "부드러운돌멩이",
-    "title": "전자금융 정보보안전문가 (3년~10년)",
-    "url": "https://www.wanted.co.kr/wd/371674",
     "platforms": [
       "원티드"
     ],
@@ -2139,7 +4542,8 @@
     "title": "정보보안 담당자",
     "url": "https://www.wanted.co.kr/wd/321892",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
@@ -2166,6 +4570,20 @@
     "url": "https://www.wanted.co.kr/wd/294992",
     "platforms": [
       "원티드"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "빗썸",
+    "title": "보안 정책",
+    "url": "https://www.wanted.co.kr/wd/397743",
+    "platforms": [
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
@@ -2217,19 +4635,6 @@
     "company": "크래프톤(Krafton)",
     "title": "[Infra Div.] 클라우드·네트워크 보안 대응 엔지니어 (5~8년)",
     "url": "https://www.wanted.co.kr/wd/397292",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용"
-  },
-  {
-    "company": "미리디",
-    "title": "보안 엔지니어(AI-Driven Security Automation Engineer)",
-    "url": "https://www.wanted.co.kr/wd/397265",
     "platforms": [
       "원티드"
     ],
@@ -2430,7 +4835,8 @@
     "title": "보안 엔지니어",
     "url": "https://www.wanted.co.kr/wd/395880",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
@@ -2468,6 +4874,19 @@
     "company": "소프트웨어원코리아",
     "title": "Microsoft 보안 프리세일즈",
     "url": "https://www.wanted.co.kr/wd/395331",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "크립토랩",
+    "title": "인증 담당자(제품, 보안인증)",
+    "url": "https://www.wanted.co.kr/wd/395151",
     "platforms": [
       "원티드"
     ],
@@ -2649,21 +5068,6 @@
     "deadline": "상시채용"
   },
   {
-    "company": "티시스아이티",
-    "title": "정보보호(보안기획/진단)",
-    "url": "https://www.wanted.co.kr/wd/393832",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용"
-  },
-  {
     "company": "핀다(FINDA)",
     "title": "[핀다뱅크(현 대원저축은행)] 개인정보보호 매니저",
     "url": "https://www.wanted.co.kr/wd/397194",
@@ -2694,7 +5098,8 @@
     "title": "정보보호 담당자",
     "url": "https://www.wanted.co.kr/wd/396718",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
@@ -2720,10 +5125,26 @@
     "title": "정보보호 최고책임자(CISO)",
     "url": "https://www.wanted.co.kr/wd/394325",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
+    ],
+    "location": "서울",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "티시스아이티",
+    "title": "정보보호(보안기획/진단)",
+    "url": "https://www.wanted.co.kr/wd/393832",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호",
+      "정보보안"
     ],
     "location": "서울",
     "deadline": "상시채용"
@@ -2748,7 +5169,8 @@
     "title": "[쏘카일레클] 정보보호 담당자",
     "url": "https://www.wanted.co.kr/wd/392588",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
@@ -2789,7 +5211,8 @@
     "title": "정보보호팀장 [정보보호팀]",
     "url": "https://www.wanted.co.kr/wd/391913",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
@@ -2802,7 +5225,8 @@
     "title": "정보보호 및 보안 담당자",
     "url": "https://www.wanted.co.kr/wd/390803",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호",
@@ -2816,7 +5240,8 @@
     "title": "정보보호 및 보안 엔지니어",
     "url": "https://www.wanted.co.kr/wd/390548",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호",
@@ -2856,7 +5281,8 @@
     "title": "개인정보보호 엔지니어",
     "url": "https://www.wanted.co.kr/wd/390044",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
@@ -3023,19 +5449,6 @@
     "deadline": "상시채용"
   },
   {
-    "company": "페이타랩(패스오더)",
-    "title": "컴플라이언스 담당자(전자금융업, 정보보호)",
-    "url": "https://www.wanted.co.kr/wd/377888",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울",
-    "deadline": "상시채용"
-  },
-  {
     "company": "다음",
     "title": "개인정보보호 담당자",
     "url": "https://www.wanted.co.kr/wd/377792",
@@ -3046,19 +5459,6 @@
       "정보보호"
     ],
     "location": "경기",
-    "deadline": "상시채용"
-  },
-  {
-    "company": "컬리",
-    "title": "정보보호 정책 담당자",
-    "url": "https://www.wanted.co.kr/wd/377077",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울",
     "deadline": "상시채용"
   },
   {
@@ -3132,7 +5532,8 @@
     "title": "정보보호 담당자",
     "url": "https://www.wanted.co.kr/wd/344783",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "정보보호"
@@ -3172,7 +5573,8 @@
     "title": "취약점관리 & 침해대응 엔지니어 (Vulnerability Management & Incident Response)",
     "url": "https://www.wanted.co.kr/wd/395040",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "취약점 진단",
@@ -3269,7 +5671,8 @@
     "title": "Security Engineer - 모의해킹",
     "url": "https://www.wanted.co.kr/wd/395937",
     "platforms": [
-      "원티드"
+      "원티드",
+      "리멤버"
     ],
     "keywords": [
       "모의해킹",
@@ -3325,12 +5728,13 @@
     "title": "(주)에스피씨지 인프라 취약점 진단 신입 및 경력 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55483491&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "취약점 진단"
     ],
-    "location": "",
+    "location": "서울 금천구",
     "deadline": "상시채용"
   },
   {
@@ -3365,13 +5769,14 @@
     "title": "[크론시큐리티] 모의해킹·보안컨설팅 프리랜서 인력풀 모집",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55329823&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "모의해킹",
       "정보보안"
     ],
-    "location": "",
+    "location": "서울 구로구 외",
     "deadline": "상시채용"
   },
   {
@@ -3388,16 +5793,944 @@
     "deadline": "상시채용"
   },
   {
-    "company": "한국아이티진흥(주)",
-    "title": "IT 인프라 및 보안 운영 신입/경력 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55041933&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "company": "(주)여기어때컴퍼니",
+    "title": "Cloud Security & Tech Leader",
+    "url": "https://career.rememberapp.co.kr/job/posting/336920",
     "platforms": [
-      "사람인"
+      "리멤버",
+      "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "",
     "deadline": "상시채용"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "물리보안 담당",
+    "url": "https://career.rememberapp.co.kr/job/posting/353721",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "[유명 대기업] 정보보호 (보안기획) (과,차장급)",
+    "url": "https://career.rememberapp.co.kr/job/posting/353710",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "[쿠팡풀필먼트서비스] 물류센터 물리보안 담당자 (이천 1센터)",
+    "url": "https://career.rememberapp.co.kr/job/posting/353544",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "Security Engineer (Attack Surface Identification)",
+    "url": "https://career.rememberapp.co.kr/job/posting/353488",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "[쿠팡페이] Senior Security Engineer (Fintech Identity & Access Management)",
+    "url": "https://career.rememberapp.co.kr/job/posting/353359",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)보령",
+    "title": "[보령] 정보보호 거버넌스 및 컴플라이언스(ISMS/개인정보보호) 팀장",
+    "url": "https://career.rememberapp.co.kr/job/posting/340012",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)코인원",
+    "title": "[코인원] 서비스 보안 팀장",
+    "url": "https://career.rememberapp.co.kr/job/posting/353165",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)레몬베이스",
+    "title": "Security Manager (정보 보안)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352466",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)제노코",
+    "title": "전산보안 팀장 (코스닥 상장사-KAI자회사)",
+    "url": "https://career.rememberapp.co.kr/job/posting/353071",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "한화시스템(주)_ICT",
+    "title": "보안진단 담당자 경력사원",
+    "url": "https://career.rememberapp.co.kr/job/posting/352863",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)프로써치코리아",
+    "title": "정보보호 담당",
+    "url": "https://career.rememberapp.co.kr/job/posting/352814",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)에코마케팅",
+    "title": "클라우드 보안 엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/329044",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)시큐아이",
+    "title": "[삼성SDS자회사] 시큐아이 보안컨설팅 (계약직)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352408",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)에스아이에이",
+    "title": "보안담당자 (Security Engineer)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352711",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "[쿠팡풀필먼트서비스] 개인정보보호 담당자 (7년이상)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352702",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "[쿠팡] Staff Security Engineer (Information Security)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352697",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)텔레칩스",
+    "title": "Senior Cyber Security Manager",
+    "url": "https://career.rememberapp.co.kr/job/posting/337921",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)지란지교에스앤씨",
+    "title": "네트워크 및 네트워크 보안솔루션 엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/352425",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)포티투닷",
+    "title": "Security Engineer (차량 보안)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352420",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "엔에이치엔(주)",
+    "title": "[NHN Cloud] 보안 AI엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/352304",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "[쿠팡] Senior Manager, Logistics Security & Loss Prevention (서부권역)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352277",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)여기어때컴퍼니",
+    "title": "EndPoint Security & Data Loss Prevention Manager",
+    "url": "https://career.rememberapp.co.kr/job/posting/348635",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)에임인텔리전스",
+    "title": "Senior GTM Manager, AI Security",
+    "url": "https://career.rememberapp.co.kr/job/posting/351951",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)하이브",
+    "title": "[HYBE] 보안 서비스기획(PM)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352100",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)하이브",
+    "title": "[HYBE] 보안정책(물리보안)",
+    "url": "https://career.rememberapp.co.kr/job/posting/352092",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)맨파워써치",
+    "title": "정보보호 센터장 임원급",
+    "url": "https://career.rememberapp.co.kr/job/posting/351828",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)버킷플레이스",
+    "title": "정보보안·컴플라이언스 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/351633",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "현대오토에버(주)",
+    "title": "인도 법인 보안&인프라 주재원",
+    "url": "https://career.rememberapp.co.kr/job/posting/349973",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "쿠팡(주)",
+    "title": "[쿠팡페이] 개인(신용)정보 보호 최고책임자 (CPO)",
+    "url": "https://career.rememberapp.co.kr/job/posting/351532",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)구다이글로벌",
+    "title": "[구다이글로벌] 정보 보안 엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/351071",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "국내 OTT 기업 :정보보안 엔지니어(취약점 및 모의해킹)",
+    "url": "https://career.rememberapp.co.kr/job/posting/349497",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)비바리퍼블리카",
+    "title": "[토스] Internal Auditor (개인정보)",
+    "url": "https://career.rememberapp.co.kr/job/posting/349653",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "대형증권사 정보보호",
+    "url": "https://career.rememberapp.co.kr/job/posting/348680",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)모니터랩",
+    "title": "정보(네트워크) 보안 기술지원 엔지니어 채용",
+    "url": "https://career.rememberapp.co.kr/job/posting/336417",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "콘텐츠웨이브(주)",
+    "title": "정보보호 담당(ISMS인증, 클라우드 보안)",
+    "url": "https://career.rememberapp.co.kr/job/posting/345080",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "한화오션(주)",
+    "title": "[경영지원] 정보보호 경력사원",
+    "url": "https://career.rememberapp.co.kr/job/posting/344846",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)에이피알",
+    "title": "정보보호 리더",
+    "url": "https://career.rememberapp.co.kr/job/posting/344769",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "[대기업 계열사] 정보보안 컨설팅",
+    "url": "https://career.rememberapp.co.kr/job/posting/327248",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)한국신용데이터",
+    "title": "[정보보안팀] Cloud Security Engineer",
+    "url": "https://career.rememberapp.co.kr/job/posting/342452",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "우리에프아이에스(주)",
+    "title": "[우리FIS] 정보보안 관리자 (팀장~부장) (계약직)",
+    "url": "https://career.rememberapp.co.kr/job/posting/341631",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)바텍이우홀딩스",
+    "title": "[바텍이우홀딩스] 정보보안",
+    "url": "https://career.rememberapp.co.kr/job/posting/298358",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)왓섭",
+    "title": "정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/232999",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)왓섭",
+    "title": "개인(신용)정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/232997",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)위대한상상",
+    "title": "[Security] Information Security Manager (관리보안 담당자/3년 이상)",
+    "url": "https://career.rememberapp.co.kr/job/posting/340191",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)프로써치코리아",
+    "title": "정보보안/개인정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/339063",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)무신사",
+    "title": "CERT/취약점진단 (무신사페이먼츠)",
+    "url": "https://career.rememberapp.co.kr/job/posting/350364",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)써니즈",
+    "title": "[써니즈][IT정보보안] 소스코드 취약점 진단(SAST)(경력)",
+    "url": "https://career.rememberapp.co.kr/job/posting/332131",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)유니코써치",
+    "title": "취약점진단",
+    "url": "https://career.rememberapp.co.kr/job/posting/329890",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)써니즈",
+    "title": "[써니즈][IT정보보안]기술적(웹/앱/인프라) 취약점진단 선임 컨설턴트",
+    "url": "https://career.rememberapp.co.kr/job/posting/308145",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "클럼엘",
+    "title": "정보보안 취약점 분석 및 CERT",
+    "url": "https://career.rememberapp.co.kr/job/posting/214001",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "엔에이치엔(주)",
+    "title": "[NHN Cloud] 모의해킹 및 Red Team 운영",
+    "url": "https://career.rememberapp.co.kr/job/posting/353439",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)지란지교에스앤씨",
+    "title": "모의해킹/프리세일즈 엔지니어",
+    "url": "https://career.rememberapp.co.kr/job/posting/336405",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜소만사",
+    "title": "엔드포인트 보안 C++개발자 신입/경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50344020",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜파라타항공",
+    "title": "IT(정보보안) 경력직 상시채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50264960",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "강원 양양군",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜에이플러스에셋어드바이저",
+    "title": "(코스피상장 대기업) 정보보안(ISS) 담당자 경력 모집",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50230075",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "예스이십사(주)",
+    "title": "[예스24] 개인정보보호담당 경력직 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50041926",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 영등포구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "엔에이치엔커머스㈜",
+    "title": "개인정보보호 담당자",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50046471",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 구로구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "크림(주)",
+    "title": "개인정보보호 담당자 모집",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50039252",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜에프원시큐리티",
+    "title": "정보보호컨설턴트 인재채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50177762",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 금천구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "메가존클라우드㈜",
+    "title": "정보보호 담당자",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50214416",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "경기 과천시",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜싸이버원",
+    "title": "[싸이버원] 정보보호 및 개인정보보호 관리체계 컨설턴트(경력/PM) 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50005500",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 서초구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜이글루코퍼레이션",
+    "title": "[인프라사업본부] 취약점진단 분야 경력직 채용(대전/세종/광주/진주)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50187053",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "취약점 진단"
+    ],
+    "location": "전국",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜에스피씨지",
+    "title": "(주)에스피씨지 모의해킹 신입 및 경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50304660",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "서울 금천구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "우리에프아이에스㈜",
+    "title": "[우리FIS] 26년 11월 보안 부문 경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50085310",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 마포구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "㈜에스피씨지",
+    "title": "(주)에스피씨지 Offensive Security 신입 및 경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50304697",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "서울 금천구",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)대한항공",
+    "title": "정보보안 전문인력 상시모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2606190000062",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "[MSS사업] Hybrid 보안관제 경력직 상시 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2608240004623",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "(주)크래프톤",
+    "title": "[Publishing Platform Div.] Game Security S/W Engineer (5년 이상)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610010000071",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용"
+  },
+  {
+    "company": "소만사",
+    "title": "정보보안 엔드포인트 SW 기술지원 엔지니어 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610120004870",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감"
+  },
+  {
+    "company": "시니어앤파트너즈",
+    "title": "[화성.정남] 네트워크/보안 엔지니어(사원-대리급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280000233",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감"
   }
 ]

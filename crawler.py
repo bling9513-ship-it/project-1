@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 정보보안 채용공고 자동 수집 & 엄격한 직무 검증/태깅 크롤러
-대상 플랫폼: 원티드 (Wanted), 점핏 (Jumpit), 사람인 (Saramin)
+대상 플랫폼: 원티드 (Wanted), 점핏 (Jumpit), 사람인 (Saramin), 리멤버 (Remember), 잡코리아 (JobKorea), 인크루트 (Incruit)
 대상 핵심 분야: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
 
@@ -21,6 +21,20 @@ HEADERS_BASE = {
 WANTED_HEADERS = {**HEADERS_BASE, "Referer": "https://www.wanted.co.kr/"}
 JUMPIT_HEADERS = {**HEADERS_BASE, "Referer": "https://www.jumpit.co.kr/"}
 SARAMIN_HEADERS = {**HEADERS_BASE, "Referer": "https://www.saramin.co.kr/"}
+REMEMBER_HEADERS = {
+    **HEADERS_BASE,
+    "Referer": "https://career.rememberapp.co.kr/",
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+}
+JOBKOREA_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+    "Referer": "https://m.jobkorea.co.kr/"
+}
+INCRUIT_HEADERS = {
+    **HEADERS_BASE,
+    "Referer": "https://job.incruit.com/"
+}
 
 # 실제 정보보안 직무 식별을 위한 필수 키워드 패턴 (대소문자 무관)
 SECURITY_PATTERNS = [
@@ -278,6 +292,182 @@ def fetch_saramin(today_date):
             pass
     return results
 
+def fetch_remember(today_date):
+    """리멤버 (Remember) REST API 수집 + 직무 검증"""
+    results = []
+    seen_ids = set()
+    queries = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
+    url = "https://career-api.rememberapp.co.kr/job_postings/search"
+    for q in queries:
+        for page in [1, 2]:
+            payload = json.dumps({"search": {"keywords": [q]}, "page": page, "per": 50}).encode("utf-8")
+            try:
+                req = urllib.request.Request(url, data=payload, headers=REMEMBER_HEADERS, method="POST")
+                with urllib.request.urlopen(req, timeout=10) as res:
+                    data = json.loads(res.read().decode("utf-8"))
+                    for it in data.get("data", []):
+                        jid = str(it.get("id"))
+                        if jid in seen_ids:
+                            continue
+                        seen_ids.add(jid)
+                        title = clean_text(it.get("title", ""))
+                        if not is_security(title):
+                            continue
+                        comp = clean_text((it.get("company") or {}).get("name") or (it.get("organization") or {}).get("name") or "")
+                        deadline = "상시채용"
+                        if it.get("explicit_due") and it.get("ends_at"):
+                            try:
+                                dt = datetime.fromisoformat(it.get("ends_at"))
+                                diff = (dt.date() - today_date).days
+                                day_str = dt.strftime("%m/%d")
+                                w = ["월", "화", "수", "목", "금", "토", "일"][dt.weekday()]
+                                if diff < 0:
+                                    deadline = f"마감 (~{day_str})"
+                                elif diff == 0:
+                                    deadline = f"D-Day (~{day_str} {w})"
+                                elif diff == 1:
+                                    deadline = "D-1 (내일 마감)"
+                                else:
+                                    deadline = f"D-{diff} (~{day_str} {w})"
+                            except Exception:
+                                deadline = "상시채용"
+                        results.append({
+                            "platform": "리멤버",
+                            "company": comp,
+                            "title": title,
+                            "url": f"https://career.rememberapp.co.kr/job/posting/{jid}",
+                            "location": "",
+                            "deadline": deadline
+                        })
+            except Exception:
+                pass
+    return results
+
+def fetch_jobkorea(today_date):
+    """잡코리아 (JobKorea) 모바일 수집 + 직무 검증"""
+    results = []
+    seen_links = set()
+    queries = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
+    for q in queries:
+        for page in [1, 2]:
+            url = f"https://m.jobkorea.co.kr/Search/Adv?Keyword={urllib.parse.quote(q)}&Page_No={page}"
+            try:
+                req = urllib.request.Request(url, headers=JOBKOREA_HEADERS)
+                with urllib.request.urlopen(req, timeout=10) as res:
+                    html_text = res.read().decode("utf-8", errors="ignore")
+                    items = html_text.split('class="section-item bg-white')[1:]
+                    for it in items:
+                        link_m = re.search(r'href="(/Recruit/GI_Read/\d+)[^"]*"', it)
+                        comp_m = re.search(r'class="item-corp_name"[^>]*>(.*?)</(?:span|div)>', it, re.DOTALL)
+                        tit_m = re.search(r'class="item-title"[^>]*>(.*?)</(?:span|div)>', it, re.DOTALL)
+                        dday_m = re.search(r'class="item-condition_dday"[^>]*>(.*?)</span>', it, re.DOTALL)
+                        loc_m = re.search(r'class="item-condition_location"[^>]*>(.*?)</span>', it, re.DOTALL)
+                        
+                        if comp_m and tit_m and link_m:
+                            title = clean_text(tit_m.group(1))
+                            if not is_security(title):
+                                continue
+                            link = "https://www.jobkorea.co.kr" + link_m.group(1).split("?")[0]
+                            if link in seen_links:
+                                continue
+                            seen_links.add(link)
+                            comp = clean_text(comp_m.group(1))
+                            raw_dday = clean_text(dday_m.group(1)) if dday_m else "상시채용"
+                            if "오늘" in raw_dday or raw_dday == "D-Day":
+                                deadline = "D-Day (오늘 마감)"
+                            elif "내일" in raw_dday or raw_dday == "D-1":
+                                deadline = "D-1 (내일 마감)"
+                            elif "채용시" in raw_dday:
+                                deadline = "채용시 마감"
+                            elif "상시" in raw_dday:
+                                deadline = "상시채용"
+                            else:
+                                deadline = raw_dday
+                                
+                            results.append({
+                                "platform": "잡코리아",
+                                "company": comp,
+                                "title": title,
+                                "url": link,
+                                "location": clean_text(loc_m.group(1)) if loc_m else "",
+                                "deadline": deadline
+                            })
+            except Exception:
+                pass
+    return results
+
+def fetch_incruit(today_date):
+    """인크루트 (Incruit) 수집 + 직무 검증"""
+    results = []
+    seen_links = set()
+    queries = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
+    for q in queries:
+        for page in [1, 2]:
+            url = f"https://job.incruit.com/jobdb_list/searchjob.asp?kw={urllib.parse.quote(q)}&page={page}"
+            try:
+                req = urllib.request.Request(url, headers=INCRUIT_HEADERS)
+                with urllib.request.urlopen(req, timeout=10) as res:
+                    html_text = res.read().decode("euc-kr", errors="ignore")
+                    items = html_text.split('class="cell_first"')[1:]
+                    for it in items:
+                        cp_m = re.search(r'class="cpname"[^>]*>(.*?)</a>', it)
+                        tit_m = re.search(r'<div class="cell_mid">.*?<div class="cl_top">.*?<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', it, re.DOTALL)
+                        date_m = re.search(r'<div class="cell_last">.*?<div class="cl_btm"><span>(.*?)</span>', it, re.DOTALL)
+                        loc_m = re.search(r'<div class="cl_md"><span>(.*?)</span>', it, re.DOTALL)
+                        
+                        if cp_m and tit_m:
+                            title = clean_text(tit_m.group(2))
+                            if not is_security(title):
+                                continue
+                            link = tit_m.group(1).split("&src=")[0].strip()
+                            if link in seen_links:
+                                continue
+                            seen_links.add(link)
+                            comp = clean_text(cp_m.group(1))
+                            raw_dl = clean_text(date_m.group(1)) if date_m else ""
+                            deadline = "상시채용"
+                            if "상시" in raw_dl:
+                                deadline = "상시채용"
+                            elif "채용시" in raw_dl:
+                                deadline = "채용시 마감"
+                            elif "오늘" in raw_dl:
+                                deadline = "D-Day (오늘 마감)"
+                            elif "내일" in raw_dl:
+                                deadline = "D-1 (내일 마감)"
+                            else:
+                                m = re.search(r'(\d{1,2})\.(\d{1,2})', raw_dl)
+                                if m:
+                                    month, day = int(m.group(1)), int(m.group(2))
+                                    year = today_date.year
+                                    if month < today_date.month:
+                                        year += 1
+                                    target = date(year, month, day)
+                                    diff = (target - today_date).days
+                                    w_match = re.search(r'\(([월화수목금토일])\)', raw_dl)
+                                    w_str = f" {w_match.group(1)}" if w_match else ""
+                                    if diff < 0:
+                                        deadline = f"마감 (~{month:02d}/{day:02d}{w_str})"
+                                    elif diff == 0:
+                                        deadline = f"D-Day (~{month:02d}/{day:02d}{w_str})"
+                                    elif diff == 1:
+                                        deadline = "D-1 (내일 마감)"
+                                    else:
+                                        deadline = f"D-{diff} (~{month:02d}/{day:02d}{w_str})"
+                                else:
+                                    deadline = raw_dl if raw_dl else "상시채용"
+                            
+                            results.append({
+                                "platform": "인크루트",
+                                "company": comp,
+                                "title": title,
+                                "url": link,
+                                "location": clean_text(loc_m.group(1)) if loc_m else "",
+                                "deadline": deadline
+                            })
+            except Exception:
+                pass
+    return results
+
 def collect_all_jobs():
     today_date = get_today_kst()
     print("=== 정보보안 채용 정보 정밀 수집 시작 ===")
@@ -285,9 +475,12 @@ def collect_all_jobs():
     wanted_jobs = fetch_wanted()
     jumpit_jobs = fetch_jumpit(today_date)
     saramin_jobs = fetch_saramin(today_date)
+    remember_jobs = fetch_remember(today_date)
+    jobkorea_jobs = fetch_jobkorea(today_date)
+    incruit_jobs = fetch_incruit(today_date)
     
-    print(f"-> 플랫폼별 검증 수집 결과: 원티드 {len(wanted_jobs)}건, 점핏 {len(jumpit_jobs)}건, 사람인 {len(saramin_jobs)}건")
-    raw_jobs = wanted_jobs + jumpit_jobs + saramin_jobs
+    print(f"-> 플랫폼별 검증 수집 결과: 원티드 {len(wanted_jobs)}건, 점핏 {len(jumpit_jobs)}건, 사람인 {len(saramin_jobs)}건, 리멤버 {len(remember_jobs)}건, 잡코리아 {len(jobkorea_jobs)}건, 인크루트 {len(incruit_jobs)}건")
+    raw_jobs = wanted_jobs + jumpit_jobs + saramin_jobs + remember_jobs + jobkorea_jobs + incruit_jobs
     print(f"-> 유효 보안 공고 총합: {len(raw_jobs)}건")
     
     # 중복 제거 및 직무 기반 정확한 카테고리 태깅
@@ -312,10 +505,10 @@ def collect_all_jobs():
                 deduped[key]["platforms"].append(job["platform"])
             if not deduped[key]["location"] and job["location"]:
                 deduped[key]["location"] = job["location"]
-            # 구체적인 D-day 일정이 있는 마감일을 '상시채용'보다 우선 반영
+            # 구체적인 D-day 일정이 있는 마감일을 '상시채용'이나 '채용시 마감'보다 우선 반영
             curr_dl = deduped[key].get("deadline", "상시채용")
             new_dl = job.get("deadline", "상시채용")
-            if "상시채용" in curr_dl and "상시채용" not in new_dl:
+            if ("상시" in curr_dl or "채용시" in curr_dl) and ("D-" in new_dl or "D-Day" in new_dl):
                 deduped[key]["deadline"] = new_dl
                 
     def get_deadline_sort_key(item):
@@ -356,7 +549,7 @@ def generate_html(jobs, update_time_str):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 정보보안 포지션 아카이브</title>
-  <meta name="description" content="원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.">
+  <meta name="description" content="원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
@@ -396,6 +589,18 @@ def generate_html(jobs, update_time_str):
       --saramin-bg: #fff7ed;
       --saramin-text: #d97706;
       --saramin-border: #fed7aa;
+
+      --remember-bg: #f8fafc;
+      --remember-text: #0f172a;
+      --remember-border: #cbd5e1;
+
+      --jobkorea-bg: #f0f9ff;
+      --jobkorea-text: #0284c7;
+      --jobkorea-border: #bae6fd;
+
+      --incruit-bg: #fff1f2;
+      --incruit-text: #e11d48;
+      --incruit-border: #fecdd3;
       
       --urgent-bg: #fef2f2;
       --urgent-text: #dc2626;
@@ -442,6 +647,18 @@ def generate_html(jobs, update_time_str):
       --saramin-bg: rgba(245, 158, 11, 0.15);
       --saramin-text: #fbbf24;
       --saramin-border: rgba(245, 158, 11, 0.3);
+
+      --remember-bg: rgba(148, 163, 184, 0.15);
+      --remember-text: #e2e8f0;
+      --remember-border: rgba(148, 163, 184, 0.3);
+
+      --jobkorea-bg: rgba(2, 132, 199, 0.15);
+      --jobkorea-text: #38bdf8;
+      --jobkorea-border: rgba(2, 132, 199, 0.3);
+
+      --incruit-bg: rgba(225, 29, 72, 0.15);
+      --incruit-text: #fb7185;
+      --incruit-border: rgba(225, 29, 72, 0.3);
       
       --warning-bg: rgba(234, 88, 12, 0.15);
       --warning-text: #fb923c;
@@ -991,6 +1208,24 @@ def generate_html(jobs, update_time_str):
       border: 1px solid var(--saramin-border);
     }}
 
+    .badge-platform-리멤버 {{
+      background: var(--remember-bg);
+      color: var(--remember-text);
+      border: 1px solid var(--remember-border);
+    }}
+
+    .badge-platform-잡코리아 {{
+      background: var(--jobkorea-bg);
+      color: var(--jobkorea-text);
+      border: 1px solid var(--jobkorea-border);
+    }}
+
+    .badge-platform-인크루트 {{
+      background: var(--incruit-bg);
+      color: var(--incruit-text);
+      border: 1px solid var(--incruit-border);
+    }}
+
     .job-title {{
       font-size: 15.5px;
       font-weight: 600;
@@ -1232,7 +1467,7 @@ def generate_html(jobs, update_time_str):
     <!-- Hero Header -->
     <section class="hero">
       <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
-      <p class="hero-desc">원티드 · 점핏 · 사람인의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
+      <p class="hero-desc">원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
       <div class="hero-stats">
         <span class="stat-chip">아카이빙된 보안 공고 <strong>{len(jobs)}건</strong></span>
         <span class="stat-chip">D-Day 마감 임박 <strong>{urgent_count}건</strong></span>
@@ -1270,6 +1505,9 @@ def generate_html(jobs, update_time_str):
           <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
           <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
           <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
+          <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
+          <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
+          <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
           
           <span class="filter-divider"></span>
           
@@ -1641,7 +1879,7 @@ def generate_readme(jobs, update_time_str):
         f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
         "",
-        "원티드, 점핏, 사람인의 정보보안 포지션을 정밀 직무 필터링을 거쳐 선별하고 공유하는 정보 아카이브 레포지토리입니다.",
+        "원티드, 점핏, 사람인, 리멤버, 잡코리아, 인크루트의 정보보안 포지션을 정밀 직무 필터링을 거쳐 선별하고 공유하는 정보 아카이브 레포지토리입니다.",
         "",
         "### 분야별 바로가기",
         "| 분야 | 등록 공고 | 바로가기 |",
@@ -1677,7 +1915,7 @@ def generate_readme(jobs, update_time_str):
             lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | **{dl}** | {keywords_str} |")
         
         lines.append("")
-        lines.append("[맨 위로 이동](#secjobs--정보보안-직무-채용-피드)")
+        lines.append("[맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)")
         lines.append("")
         lines.append("---")
         lines.append("")
