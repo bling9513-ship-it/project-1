@@ -291,38 +291,44 @@
     .custom-traps li { font-size: 12.5px; color: var(--text-secondary); list-style: none; margin-bottom: 3px; }
 
     @media (max-width: 640px) {
-      .nav-container { padding: 10px 14px; }
-      .nav-left { gap: 10px; }
-      .brand-name { font-size: 15px; }
-      .brand-logo-img { width: 26px; height: 26px; }
+      .nav-container { padding: 8px 12px; }
+      .nav-left { gap: 8px; }
+      .brand-name { font-size: 14px; }
+      .brand-logo-img { width: 24px; height: 24px; }
       .nav-tabs { gap: 4px; }
-      .nav-tab-item { padding: 5px 10px; font-size: 12px; }
-      .theme-btn { width: 32px; height: 32px; font-size: 12px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; }
+      .theme-btn { width: 30px; height: 30px; font-size: 11px; }
 
-      .main-wrap { padding: 20px 14px 60px; }
-      .hero-title { font-size: 20px; }
-      .hero-desc { font-size: 13px; }
+      .main-wrap { padding: 16px 12px 60px; }
+      .hero { margin-bottom: 16px; }
+      .hero-pill { font-size: 11px; padding: 3px 10px; margin-bottom: 8px; }
+      .hero-title { font-size: 19px; }
+      .hero-desc { font-size: 12.5px; }
 
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .stat-card { padding: 12px 8px; }
-      .stat-val { font-size: 19px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 16px; }
+      .stat-card { padding: 10px 6px; }
+      .stat-val { font-size: 18px; }
 
-      .mode-tabs { gap: 4px; padding: 3px; }
-      .mode-btn { padding: 9px 4px; font-size: 12.5px; gap: 4px; }
+      .mode-tabs { gap: 3px; padding: 3px; margin-bottom: 16px; }
+      .mode-btn { padding: 8px 4px; font-size: 12px; gap: 4px; }
       .mode-label-full { display: none; }
       .mode-label-short { display: inline; }
 
-      .exam-tabs { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-      .exam-tab { padding: 9px 6px; font-size: 12px; }
+      .exam-tabs { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 12px; }
+      .exam-tab { padding: 8px 6px; font-size: 12px; }
       .exam-label-full { display: none; }
       .exam-label-short { display: inline; }
 
-      .controls-bar { flex-direction: column; align-items: stretch; gap: 8px; }
-      .tools-wrap { justify-content: flex-end; }
+      .controls-bar { flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 14px; }
+      .subj-filters { padding-bottom: 2px; }
+      .subj-chip { padding: 5px 10px; font-size: 11.5px; }
+      .tools-wrap { justify-content: flex-end; gap: 6px; }
+      .tool-btn { padding: 5px 10px; font-size: 11px; }
 
-      .q-card { padding: 16px 14px; }
-      .q-prompt { font-size: 14.5px; }
-      .choice-row { padding: 10px 12px; font-size: 13px; }
+      .q-card { padding: 16px 12px; }
+      .q-prompt { font-size: 14px; margin-bottom: 12px; }
+      .choice-row { padding: 9px 10px; font-size: 12.5px; gap: 8px; }
+      .choice-circle { width: 20px; height: 20px; font-size: 11px; }
     }
   </style>
 </head>
@@ -382,12 +388,12 @@
       <button class="mode-btn" id="btnModeSummary" onclick="switchMode('summary')">
         <span class="mode-icon">📖</span>
         <span class="mode-label-full">전 과목 핵심 요약노트</span>
-        <span class="mode-label-short">핵심 요약노트</span>
+        <span class="mode-label-short">핵심노트</span>
       </button>
       <button class="mode-btn" id="btnModeCustom" onclick="switchMode('custom')">
         <span class="mode-icon">🔬</span>
-        <span class="mode-label-full">맞춤 AI 분석 & 퀴즈</span>
-        <span class="mode-label-short">맞춤 AI 퀴즈</span>
+        <span class="mode-label-full">맞춤 AI 분석 &amp; 퀴즈</span>
+        <span class="mode-label-short">맞춤 AI</span>
       </button>
     </div>
 
@@ -397,15 +403,15 @@
       <div class="exam-tabs">
         <button class="exam-tab active" data-exam="1">
           <span class="exam-label-full">1회 실전 모의고사 (100문항)</span>
-          <span class="exam-label-short">1회 모의고사</span>
+          <span class="exam-label-short">1회 (100제)</span>
         </button>
         <button class="exam-tab" data-exam="2">
           <span class="exam-label-full">2회 실전 모의고사 (100문항)</span>
-          <span class="exam-label-short">2회 모의고사</span>
+          <span class="exam-label-short">2회 (100제)</span>
         </button>
         <button class="exam-tab" data-exam="3">
           <span class="exam-label-full">3회 실전 모의고사 (100문항)</span>
-          <span class="exam-label-short">3회 모의고사</span>
+          <span class="exam-label-short">3회 (100제)</span>
         </button>
         <button class="exam-tab" data-exam="0">
           <span class="exam-label-full">전체 300제 집중 풀이</span>
