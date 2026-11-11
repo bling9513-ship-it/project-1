@@ -1236,6 +1236,26 @@ def generate_html(jobs, update_time_str):
       transition: color 0.15s ease;
     }}
 
+    .job-summary {{
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-top: -6px;
+      margin-bottom: 12px;
+      word-break: keep-all;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }}
+
+    .ai-tag {{
+      background: var(--bg-subtle);
+      border-color: var(--border-default);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }}
+
     .card-footer {{
       display: flex;
       align-items: center;
@@ -1324,6 +1344,16 @@ def generate_html(jobs, update_time_str):
       overflow: hidden;
       text-overflow: ellipsis;
       transition: color 0.12s ease;
+    }}
+
+    .list-summary {{
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }}
 
     .list-deadline {{
@@ -1711,6 +1741,10 @@ def generate_html(jobs, update_time_str):
           const tags = (job.keywords || []).map(k => 
             `<span class="keyword-tag">#${{k}}</span>`
           ).join('');
+          const aiTags = (job.tags || []).filter(t => !(job.keywords || []).includes(t.replace('#', ''))).map(t =>
+            `<span class="keyword-tag ai-tag">${{escapeHtml(t)}}</span>`
+          ).join('');
+          const summaryHtml = job.summary ? `<div class="job-summary">${{escapeHtml(job.summary)}}</div>` : '';
 
           html += `
             <a class="job-card" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
@@ -1723,9 +1757,10 @@ def generate_html(jobs, update_time_str):
                   </div>
                 </div>
                 <div class="job-title">${{escapeHtml(job.title)}}</div>
+                ${{summaryHtml}}
               </div>
               <div class="card-footer">
-                <div class="tags-list">${{tags}}</div>
+                <div class="tags-list">${{tags}}${{aiTags}}</div>
                 <div class="outlink-indicator">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="7" y1="17" x2="17" y2="7"></line>
@@ -1747,10 +1782,15 @@ def generate_html(jobs, update_time_str):
             `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
           ).join('');
 
+          const listSummaryHtml = job.summary ? `<div class="list-summary" title="${{escapeHtml(job.summary)}}">${{escapeHtml(job.summary)}}</div>` : '';
+
           html += `
             <a class="list-row" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
               <div class="list-company" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</div>
-              <div class="list-title">${{escapeHtml(job.title)}}</div>
+              <div class="list-title">
+                <div>${{escapeHtml(job.title)}}</div>
+                ${{listSummaryHtml}}
+              </div>
               <div class="list-deadline">${{dlBadge}}</div>
               <div class="list-platforms">${{platformBadges}}</div>
               <div class="list-outlink">
@@ -1924,6 +1964,14 @@ def generate_readme(jobs, update_time_str):
 
 def main():
     jobs = collect_all_jobs()
+    
+    # EXAONE AI 기반 직무 요약 및 정밀 태깅 배치 연동
+    try:
+        from ai_enricher import enrich_jobs_batch
+        print("\n[AI 배치] 엑사원(EXAONE) API 연동 직무 요약 및 정밀 태깅 진행 중...")
+        jobs = enrich_jobs_batch(jobs, max_calls=2, batch_size=4)
+    except Exception as e:
+        print(f"[AI 배치 경고] 엑사원 연동 중 오류 발생 (기본 크롤링 데이터로 계속 진행): {e}")
     
     kst = timezone(timedelta(hours=9))
     now_kst = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
