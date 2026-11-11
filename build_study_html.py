@@ -1107,6 +1107,22 @@ html_content = """<!DOCTYPE html>
     }
     initTheme();
 
+    // Data Normalization Helper
+    function normalizeQuestion(q) {
+      if (!q) return null;
+      return {
+        id: q.id,
+        exam: typeof q.exam === 'number' ? q.exam : 1,
+        exam_name: q.exam_name || (q.exam ? `${q.exam}회 모의고사` : '모의고사'),
+        subject_id: typeof q.subject_id === 'number' ? q.subject_id : 1,
+        subject_name: q.subject || q.subject_name || '',
+        question: q.prompt || q.question || '',
+        options: q.choices || q.options || [],
+        answer: typeof q.answer === 'number' ? q.answer : 1,
+        explanation: q.explanation || ''
+      };
+    }
+
     // Global State
     let currentCategory = 'cppg'; // cppg | infosec_written | infosec_practical | ismsp_auditor | custom
     let currentMode = 'quiz'; // quiz | summary | custom
@@ -1282,16 +1298,15 @@ html_content = """<!DOCTYPE html>
       // Update Mode Labels
       modeQuizLabel.textContent = window.innerWidth <= 640 ? conf.quizLabelShort : conf.quizLabel;
 
+      renderControls();
+      updateStats();
+
       if (cat === 'custom') {
         switchMode('custom');
       } else {
         if (currentMode === 'custom') currentMode = 'quiz';
         switchMode(currentMode);
       }
-
-      renderControls();
-      updateStats();
-      renderQuestions();
     }
 
     function renderControls() {
@@ -1363,14 +1378,15 @@ html_content = """<!DOCTYPE html>
     }
 
     function getQuestionsForCurrentCategory() {
+      let raw = [];
       if (currentCategory === 'cppg') {
-        return window.ALL_QUESTIONS || [];
+        raw = window.ALL_QUESTIONS || [];
       } else if (currentCategory === 'infosec_written') {
-        return (window.INFOSEC_WRITTEN_DATA && window.INFOSEC_WRITTEN_DATA.questions) || [];
+        raw = (window.INFOSEC_WRITTEN_DATA && window.INFOSEC_WRITTEN_DATA.questions) || [];
       } else if (currentCategory === 'infosec_practical') {
-        return (window.INFOSEC_PRACTICAL_DATA && window.INFOSEC_PRACTICAL_DATA.questions) || [];
+        raw = (window.INFOSEC_PRACTICAL_DATA && window.INFOSEC_PRACTICAL_DATA.questions) || [];
       } else if (currentCategory === 'ismsp_auditor') {
-        return (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.questions) || [];
+        raw = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.questions) || [];
       } else if (currentCategory === 'custom') {
         const customUnits = (window.CUSTOM_STUDY_DATA && window.CUSTOM_STUDY_DATA.units) || [];
         const flat = [];
@@ -1382,16 +1398,16 @@ html_content = """<!DOCTYPE html>
               exam_name: u.unit_title,
               subject_id: uIdx + 1,
               subject_name: u.unit_title,
-              question: q.question,
-              options: q.options,
+              prompt: q.question,
+              choices: q.options,
               answer: q.answer,
               explanation: q.explanation
             });
           });
         });
-        return flat;
+        raw = flat;
       }
-      return [];
+      return raw.map(normalizeQuestion).filter(Boolean);
     }
 
     function getFilteredQuestions() {
@@ -1455,7 +1471,7 @@ html_content = """<!DOCTYPE html>
         card.className = 'q-card';
 
         let choicesHtml = '';
-        q.options.forEach((optText, cIdx) => {
+        (q.options || []).forEach((optText, cIdx) => {
           const choiceNum = cIdx + 1;
           let extraClass = '';
           if (uAns) {
@@ -1468,7 +1484,7 @@ html_content = """<!DOCTYPE html>
 
           choicesHtml += `
             <div class="choice-row ${extraClass}" onclick="handleSelectChoice('${q.id}', ${choiceNum})">
-              <div class="choice-circle">${circles[cIdx]}</div>
+              <div class="choice-circle">${circles[cIdx] || (cIdx+1)}</div>
               <div class="choice-text">${escapeHtml(optText)}</div>
             </div>
           `;
@@ -1489,7 +1505,7 @@ html_content = """<!DOCTYPE html>
           <div class="choices-list">${choicesHtml}</div>
           <div class="exp-box ${expShowClass}" id="exp_${q.id}">
             <div class="exp-header ${expHeaderClass}">
-              <span>정답: ${circles[q.answer - 1]}</span>
+              <span>정답: ${circles[q.answer - 1] || q.answer}</span>
               <span>${expHeaderText}</span>
             </div>
             <div>${escapeHtml(q.explanation)}</div>
@@ -1580,7 +1596,7 @@ html_content = """<!DOCTYPE html>
 
           <div class="summary-card">
             <div class="summary-header">
-              <div class="summary-title">4과목 & 5과목. 보호조치 및 관리체계 (배점: 45점)</div>
+              <div class="summary-title">4과목 &amp; 5과목. 보호조치 및 관리체계 (배점: 45점)</div>
               <div class="summary-badge">핵심 요약</div>
             </div>
             <div class="summary-topic">
@@ -1809,4 +1825,4 @@ html_content = """<!DOCTYPE html>
 with open(out_path, 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("Successfully generated study.html with 100% unified design system matching index.html!")
+print("Successfully regenerated study.html with normalized questions and robust rendering!")
