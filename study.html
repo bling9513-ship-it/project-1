@@ -413,7 +413,8 @@
       </div>
       <div class="category-bar" id="categoryBar">
         <button class="cat-chip active" data-cat="cppg">📜 개인정보관리사 (CPPG)</button>
-        <button class="cat-chip" data-cat="infosec_engineer">🛡️ 정보보안기사</button>
+        <button class="cat-chip" data-cat="infosec_written">🛡️ 정보보안기사 (필기)</button>
+        <button class="cat-chip" data-cat="infosec_practical">⚔️ 정보보안기사 (실기)</button>
         <button class="cat-chip" data-cat="ismsp_auditor">🔒 ISMS-P 인증심사원</button>
         <button class="cat-chip" data-cat="custom">🔬 파일·URL 맞춤 분석</button>
         <button class="cat-chip add-chip" id="btnAddResource" data-cat="add_new">➕ 새 학습자료 등록</button>
@@ -652,22 +653,42 @@
           { id: 5, name: "5과목: 관리체계" }
         ]
       },
-      infosec_engineer: {
-        title: "🛡️ 정보보안기사",
-        mainTitle: "정보보안기사 기출 핵심 퀴즈 & 요약노트",
-        mainDesc: "시스템·네트워크·애플리케이션 보안 및 법규 4대 과목 실전 퀴즈와 핵심 정리",
-        quizLabel: "실전 기출 퀴즈",
-        quizLabelShort: "실전 퀴즈",
+      infosec_written: {
+        title: "🛡️ 정보보안기사(필기)",
+        mainTitle: "정보보안기사 필기 기출 모의고사 & 5대 과목 핵심요약",
+        mainDesc: "시스템·네트워크·애플리케이션·정보보안일반·법규 5대 전 과목 핵심 기출 모의고사 및 상세 해설",
+        quizLabel: "필기 모의고사",
+        quizLabelShort: "필기 퀴즈",
         exams: [
-          { id: 1, full: "기출 핵심 모의고사 (1회)", short: "기출 1회" },
-          { id: 0, full: "전체 기출 퀴즈 풀이", short: "전체 풀이" }
+          { id: 1, full: "1회 필기 실전 모의고사", short: "필기 1회" },
+          { id: 0, full: "전체 필기 기출 집중 풀이", short: "전체 풀이" }
         ],
         subjects: [
           { id: 0, name: "전체" },
           { id: 1, name: "1과목: 시스템" },
           { id: 2, name: "2과목: 네트워크" },
           { id: 3, name: "3과목: 애플리케이션" },
-          { id: 4, name: "4과목: 법규/관리" }
+          { id: 4, name: "4과목: 정보보안 일반" },
+          { id: 5, name: "5과목: 보안관리/법규" }
+        ]
+      },
+      infosec_practical: {
+        title: "⚔️ 정보보안기사(실기)",
+        mainTitle: "정보보안기사 실기 단답형·서술형 족보 & 실무 가이드",
+        mainDesc: "단답형 핵심 명령어 · 시스템/네트워크 실무 설정 · 시큐어코딩 진단 · 법규 서술형 모범 답안",
+        quizLabel: "실기 실전 문제",
+        quizLabelShort: "실기 문제",
+        exams: [
+          { id: 1, full: "단답형 핵심 족보 모의고사", short: "단답형" },
+          { id: 2, full: "서술형·실무형 실전 분석", short: "서술·실무" },
+          { id: 0, full: "전체 실기 기출 집중 풀이", short: "전체 풀이" }
+        ],
+        subjects: [
+          { id: 0, name: "전체" },
+          { id: 1, name: "1영역: 단답형" },
+          { id: 2, name: "2영역: 시스템/네트워크" },
+          { id: 3, name: "3영역: 시큐어코딩" },
+          { id: 4, name: "4영역: 서술형/관리" }
         ]
       },
       ismsp_auditor: {
@@ -817,8 +838,10 @@
     function getQuestionsForCurrentCategory() {
       if (currentCategory === 'cppg') {
         return window.ALL_QUESTIONS || [];
-      } else if (currentCategory === 'infosec_engineer') {
-        return (window.INFOSEC_ENGINEER_DATA && window.INFOSEC_ENGINEER_DATA.questions) || [];
+      } else if (currentCategory === 'infosec_written') {
+        return (window.INFOSEC_WRITTEN_DATA && window.INFOSEC_WRITTEN_DATA.questions) || [];
+      } else if (currentCategory === 'infosec_practical') {
+        return (window.INFOSEC_PRACTICAL_DATA && window.INFOSEC_PRACTICAL_DATA.questions) || [];
       } else if (currentCategory === 'ismsp_auditor') {
         return (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.questions) || [];
       } else if (currentCategory === 'custom') {
@@ -1046,8 +1069,8 @@
             </div>
           </div>
         `;
-      } else if (currentCategory === 'infosec_engineer') {
-        const summaries = (window.INFOSEC_ENGINEER_DATA && window.INFOSEC_ENGINEER_DATA.summaries) || [];
+      } else if (currentCategory === 'infosec_written') {
+        const summaries = (window.INFOSEC_WRITTEN_DATA && window.INFOSEC_WRITTEN_DATA.summaries) || [];
         summaries.forEach(s => {
           let topicsHtml = '';
           s.topics.forEach(t => {
@@ -1064,7 +1087,31 @@
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">핵심 요약</div>
+                <div class="summary-badge">필기 핵심요약</div>
+              </div>
+              ${topicsHtml}
+            </div>
+          `;
+        });
+      } else if (currentCategory === 'infosec_practical') {
+        const summaries = (window.INFOSEC_PRACTICAL_DATA && window.INFOSEC_PRACTICAL_DATA.summaries) || [];
+        summaries.forEach(s => {
+          let topicsHtml = '';
+          s.topics.forEach(t => {
+            let pts = '';
+            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
+            topicsHtml += `
+              <div class="summary-topic">
+                <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
+                <ul>${pts}</ul>
+              </div>
+            `;
+          });
+          summaryContainer.innerHTML += `
+            <div class="summary-card">
+              <div class="summary-header">
+                <div class="summary-title">${escapeHtml(s.title)}</div>
+                <div class="summary-badge">실기 실무족보</div>
               </div>
               ${topicsHtml}
             </div>
