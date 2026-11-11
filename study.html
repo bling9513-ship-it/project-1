@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CPPG 실전 300제 & AI 맞춤 스터디 허브 | Infosec Archive</title>
+  <title>시험 공부 & 맞춤 AI 스터디 허브 | Infosec Archive</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="icon" type="image/png" href="logo.png">
   <style>
@@ -57,48 +57,88 @@
     .nav-tabs { display: flex; gap: 6px; }
     .nav-tab-item { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--text-secondary); transition: all 0.2s; }
     .nav-tab-item:hover { background: var(--chip-bg); color: var(--text-primary); }
-    .nav-tab-item.active { background: var(--accent); color: #ffffff; }
+    .nav-tab-item.active { background: var(--accent); color: #ffffff !important; }
     .nav-right { display: flex; align-items: center; gap: 10px; }
     .theme-btn { background: none; border: 1px solid var(--border-color); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; }
     
-    .main-wrap { max-width: 1000px; margin: 0 auto; padding: 32px 20px 80px; }
-    .hero { margin-bottom: 24px; text-align: center; }
-    .hero-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; border-radius: 20px; margin-bottom: 12px; }
-    .hero-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .main-wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px 80px; }
+    .hero { margin-bottom: 20px; text-align: center; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; border-radius: 20px; margin-bottom: 10px; }
+    .hero-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
     .hero-desc { font-size: 14px; color: var(--text-secondary); }
 
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+    /* Category Bar */
+    .category-section { margin-bottom: 20px; }
+    .category-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .category-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .category-bar::-webkit-scrollbar { display: none; }
+    .cat-chip { flex-shrink: 0; padding: 8px 16px; border-radius: 22px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; user-select: none; }
+    .cat-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-chip.active { background: var(--accent); color: #ffffff; border-color: var(--accent); box-shadow: 0 2px 6px rgba(37,99,235,0.25); }
+    .cat-chip.add-chip { border-style: dashed; background: var(--chip-bg); }
+    .cat-chip.add-chip:hover { border-color: var(--accent); }
+
+    /* Add Resource Panel */
+    .add-resource-panel { display: none; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 22px; margin-bottom: 24px; box-shadow: var(--shadow-sm); animation: fadeIn 0.2s ease; }
+    .add-resource-panel.open { display: block; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+    .panel-title { font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+    .panel-close { background: none; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer; padding: 4px; }
+    .panel-form { display: flex; flex-direction: column; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .form-input { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-size: 13px; outline: none; }
+    .form-input:focus { border-color: var(--accent); }
+    
+    .source-type-selector { display: flex; gap: 8px; }
+    .source-type-btn { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--chip-bg); color: var(--text-secondary); font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center; }
+    .source-type-btn.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+    
+    .drop-zone { border: 2px dashed var(--border-color); border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg-secondary); }
+    .drop-zone:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .drop-icon { font-size: 28px; margin-bottom: 6px; }
+    .drop-text { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .drop-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+    
+    .panel-options { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+    .option-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); cursor: pointer; }
+    .submit-btn { padding: 11px 16px; border-radius: 8px; border: none; background: var(--accent); color: #ffffff; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; }
+    .submit-btn:hover { background: var(--accent-hover); }
+    .panel-quick-guide { margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: var(--accent-soft); border-left: 3px solid var(--accent); font-size: 12.5px; color: var(--accent); line-height: 1.5; }
+
+    /* Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
     .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; }
     .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
     .stat-val { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .stat-val.accent { color: var(--accent); }
 
-    /* Mode Tabs - Segmented Control */
+    /* Mode Tabs */
     .mode-tabs {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
       max-width: 680px;
-      margin: 0 auto 24px;
+      margin: 0 auto 20px;
       background: var(--chip-bg);
       padding: 4px;
       border-radius: 12px;
       border: 1px solid var(--border-color);
     }
     .mode-btn {
-      padding: 10px 12px;
+      padding: 9px 8px;
       border-radius: 8px;
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
       user-select: none;
     }
@@ -120,12 +160,12 @@
       margin-bottom: 16px;
     }
     .exam-tab {
-      padding: 10px 12px;
-      border-radius: 10px;
+      padding: 9px 8px;
+      border-radius: 8px;
       border: 1px solid var(--border-color);
       background: var(--bg-card);
       color: var(--text-secondary);
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -146,6 +186,7 @@
     .exam-label-short { display: none; }
     .exam-label-full { display: inline; }
 
+    /* Controls Bar */
     .controls-bar {
       display: flex;
       align-items: center;
@@ -199,6 +240,7 @@
     .tool-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
     .tool-btn.active { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
 
+    /* Questions List */
     .questions-list { display: flex; flex-direction: column; gap: 16px; }
     .q-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-sm); }
     .q-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -206,16 +248,16 @@
     .q-exam-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--chip-bg); color: var(--text-secondary); font-weight: 600; }
     .q-subj-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
     .q-index { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-    .q-prompt { font-size: 15px; font-weight: 600; line-height: 1.5; margin-bottom: 16px; color: var(--text-primary); white-space: pre-wrap; word-break: keep-all; }
-    
-    .choices-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+    .q-prompt { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; line-height: 1.6; }
+    .q-choices { display: flex; flex-direction: column; gap: 8px; }
     .choice-row {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 11px 14px;
-      border-radius: 10px;
+      padding: 12px 14px;
       border: 1px solid var(--border-color);
+      border-radius: 8px;
       background: var(--bg-secondary);
       cursor: pointer;
       transition: all 0.15s;
@@ -290,6 +332,8 @@
     .custom-traps-title { font-size: 12px; font-weight: 700; color: var(--danger); margin-bottom: 4px; }
     .custom-traps li { font-size: 12.5px; color: var(--text-secondary); list-style: none; margin-bottom: 3px; }
 
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
     @media (max-width: 640px) {
       .nav-container { padding: 8px 12px; }
       .nav-left { gap: 8px; }
@@ -300,10 +344,13 @@
       .theme-btn { width: 30px; height: 30px; font-size: 11px; }
 
       .main-wrap { padding: 16px 12px 60px; }
-      .hero { margin-bottom: 16px; }
-      .hero-pill { font-size: 11px; padding: 3px 10px; margin-bottom: 8px; }
+      .hero { margin-bottom: 14px; }
+      .hero-pill { font-size: 11px; padding: 3px 10px; margin-bottom: 6px; }
       .hero-title { font-size: 19px; }
       .hero-desc { font-size: 12.5px; }
+
+      .category-section { margin-bottom: 16px; }
+      .cat-chip { padding: 7px 13px; font-size: 12px; }
 
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 16px; }
       .stat-card { padding: 10px 6px; }
@@ -342,7 +389,7 @@
         </a>
         <div class="nav-tabs">
           <a href="index.html" class="nav-tab-item">보안 채용공고</a>
-          <a href="study.html" class="nav-tab-item active">CPPG 스터디</a>
+          <a href="study.html" class="nav-tab-item active">시험 공부</a>
         </div>
       </div>
       <div class="nav-right">
@@ -353,9 +400,83 @@
 
   <div class="main-wrap">
     <div class="hero">
-      <div class="hero-pill">📚 개인정보관리사(CPPG) & AI 스터디 허브</div>
-      <h1 class="hero-title">CPPG 실전 300제 & 전 과목 핵심 노트</h1>
-      <p class="hero-desc">실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL AI 맞춤 분석</p>
+      <div class="hero-pill">📚 IT·보안 자격증 & 시험 공부 허브</div>
+      <h1 class="hero-title" id="pageMainTitle">시험 공부 & 맞춤 AI 스터디 허브</h1>
+      <p class="hero-desc" id="pageMainDesc">자격증별 실전 기출·모의고사 즉시 채점, 핵심 요약노트 및 파일/URL 맞춤 분석</p>
+    </div>
+
+    <!-- Exam Category Selector -->
+    <div class="category-section">
+      <div class="category-label">
+        <span>시험 종목 / 학습 카테고리</span>
+        <span id="activeExamBadge" style="color:var(--accent);">📜 개인정보관리사(CPPG)</span>
+      </div>
+      <div class="category-bar" id="categoryBar">
+        <button class="cat-chip active" data-cat="cppg">📜 개인정보관리사 (CPPG)</button>
+        <button class="cat-chip" data-cat="infosec_engineer">🛡️ 정보보안기사</button>
+        <button class="cat-chip" data-cat="ismsp_auditor">🔒 ISMS-P 인증심사원</button>
+        <button class="cat-chip" data-cat="custom">🔬 파일·URL 맞춤 분석</button>
+        <button class="cat-chip add-chip" id="btnAddResource" data-cat="add_new">➕ 새 학습자료 등록</button>
+      </div>
+    </div>
+
+    <!-- Add Resource Panel (파일 및 URL 첨부하여 카테고리 생성) -->
+    <div class="add-resource-panel" id="addResourcePanel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>📥</span>
+          <span>새 학습자료(파일/URL) 분석 &amp; 새 카테고리 등록</span>
+        </div>
+        <button class="panel-close" id="btnCloseAddPanel" title="닫기">&times;</button>
+      </div>
+      <div class="panel-form">
+        <div class="form-group">
+          <label class="form-label">시험명 또는 카테고리 제목</label>
+          <input type="text" class="form-input" id="newCategoryTitle" placeholder="예: 개인정보보호법 2026 개정특강, AWS SAA, 네트워크관리사">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">학습 자료 유형</label>
+          <div class="source-type-selector">
+            <button type="button" class="source-type-btn active" id="btnSourceFile" onclick="setSourceType('file')">📄 문서 파일 (PDF / TXT / MD)</button>
+            <button type="button" class="source-type-btn" id="btnSourceUrl" onclick="setSourceType('url')">🔗 웹 링크 (URL)</button>
+          </div>
+        </div>
+
+        <div class="form-group" id="fileInputGroup">
+          <label class="form-label">문서 파일 첨부</label>
+          <input type="file" id="studyFileInput" accept=".pdf,.txt,.md,.json" style="display:none;" onchange="handleFileSelect(event)">
+          <div class="drop-zone" id="dropZone" onclick="document.getElementById('studyFileInput').click()">
+            <div class="drop-icon">📁</div>
+            <div class="drop-text" id="dropFileName">클릭하여 PDF, TXT, MD 파일 선택 또는 드래그 앤 드롭</div>
+            <div class="drop-hint">CPPG 요약본, 기출 해설서, 기술 표준 문서를 지원합니다</div>
+          </div>
+        </div>
+
+        <div class="form-group" id="urlInputGroup" style="display:none;">
+          <label class="form-label">웹 페이지 URL 링크</label>
+          <input type="url" class="form-input" id="studyUrlInput" placeholder="https://law.go.kr/... 또는 기술 공식 문서 링크">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">엑사원 AI 분석 옵션</label>
+          <div class="panel-options">
+            <label class="option-check"><input type="checkbox" id="chkSummary" checked> 핵심 3줄 서머리 &amp; 중요 개념 추출</label>
+            <label class="option-check"><input type="checkbox" id="chkQuiz" checked> 실전 5지선다 문제 세트 자동 출제</label>
+            <label class="option-check"><input type="checkbox" id="chkTraps" checked> 시험 빈출 함정 포인트 정리</label>
+          </div>
+        </div>
+
+        <button type="button" class="submit-btn" id="btnRequestAnalysis" onclick="requestAnalysis()">
+          <span>🚀</span>
+          <span>엑사원 AI 분석 &amp; 카테고리 퀴즈 생성</span>
+        </button>
+
+        <div class="panel-quick-guide">
+          <strong>💡 피클 비서 연동 안내:</strong><br>
+          피클 채팅창에 직접 PDF 수험서나 공부할 웹 URL 링크를 첨부해 주시면, 엑사원 AI가 전체 텍스트를 정밀 파싱하여 이 화면 상단 카테고리에 새 시험 탭으로 자동 생성하고 배포해 드립니다!
+        </div>
+      </div>
     </div>
 
     <!-- Stats -->
@@ -374,16 +495,16 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">정답률 / 합격진단</div>
-        <div class="stat-val" id="topAccuracy">0%</div>
+        <div class="stat-val accent" id="topRate">0%</div>
       </div>
     </div>
 
-    <!-- Mode Selector -->
+    <!-- Mode Tabs: 실전 퀴즈 / 요약노트 / 맞춤 AI -->
     <div class="mode-tabs">
       <button class="mode-btn active" id="btnModeQuiz" onclick="switchMode('quiz')">
         <span class="mode-icon">📝</span>
-        <span class="mode-label-full">실전 모의고사 (300제)</span>
-        <span class="mode-label-short">실전 300제</span>
+        <span class="mode-label-full" id="lblModeQuiz">실전 모의고사 (300제)</span>
+        <span class="mode-label-short" id="lblModeQuizShort">실전 300제</span>
       </button>
       <button class="mode-btn" id="btnModeSummary" onclick="switchMode('summary')">
         <span class="mode-icon">📖</span>
@@ -400,7 +521,7 @@
     <!-- QUIZ VIEW -->
     <div id="quizSection">
       <!-- Exam Selector -->
-      <div class="exam-tabs">
+      <div class="exam-tabs" id="examTabsContainer">
         <button class="exam-tab active" data-exam="1">
           <span class="exam-label-full">1회 실전 모의고사 (100문항)</span>
           <span class="exam-label-short">1회 (100제)</span>
@@ -421,7 +542,7 @@
 
       <!-- Controls & Filter -->
       <div class="controls-bar">
-        <div class="subj-filters">
+        <div class="subj-filters" id="subjFiltersContainer">
           <div class="subj-chip active" data-subj="0">전체</div>
           <div class="subj-chip" data-subj="1">1과목: 이해</div>
           <div class="subj-chip" data-subj="2">2과목: 제도</div>
@@ -441,324 +562,290 @@
 
     <!-- SUMMARY VIEW -->
     <div class="summary-section" id="summarySection">
-      <!-- 1과목 -->
-      <div class="summary-card">
-        <div class="summary-header">
-          <div class="summary-title">1과목. 개인정보보호의 이해</div>
-          <div class="summary-badge">출제 10문항 (배점 10점)</div>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 개인정보의 법적 정의 및 식별가능성 판단 기준</div>
-          <ul>
-            <li><strong>정의 3요소:</strong> ① 살아있는 개인에 관한 정보, ② 성명·주민번호·영상 등을 통해 특정 개인을 알아볼 수 있는 정보, ③ 해당 정보만으로는 알 수 없더라도 다른 정보와 쉽게 결합하여 알아볼 수 있는 정보.</li>
-            <li><strong>정보주체 범위:</strong> 원칙적으로 생존하는 자연인에 한정. 법인·단체·사망자·사물 정보는 개인정보가 아님 (단, 사망자 정보가 유족과의 관계를 증명하여 유족의 사생활을 침해하는 경우 유족의 개인정보로 인정).</li>
-            <li><strong>쉽게 결합(식별가능성):</strong> 결합 대상 정보의 입수 가능성, 결합에 소요되는 시간·비용·기술적 노력을 합리적으로 고려하여 판단.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 가명정보 vs 익명정보의 법적 지위</div>
-          <ul>
-            <li><strong>가명정보:</strong> 추가 정보의 사용·결합 없이는 특정 개인을 식별할 수 없도록 처리한 정보. 개인정보 보호법의 적용을 받으나 통계작성, 과학적 연구, 공익적 기록보존 목적으로 정보주체 동의 없이 처리 가능. 특정 개인을 식별하기 위한 재식별 행위는 절대 금지(위반 시 5년 이하 징역 또는 5천만원 이하 벌금, 전체 매출액 3% 이하 과징금).</li>
-            <li><strong>익명정보:</strong> 시간·비용·기술 등을 합리적으로 고려할 때 다른 정보를 사용하여도 더 이상 개인을 식별할 수 없는 정보. 개인정보 보호법의 적용을 전면 배제.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 프라이버시 권리와 개인정보 유형</div>
-          <ul>
-            <li><strong>프라이버시 권리:</strong> '홀로 있을 권리'에서 출발하여 현대 사회에서는 '자신에 관한 정보를 언제, 누구에게, 어느 범위까지 공개하고 이용되도록 할 것인지 스스로 결정할 수 있는 권리(개인정보 자기결정권)'로 발전.</li>
-            <li><strong>유형 분류:</strong> 인적 정보(성명, 주민번호, 주소), 신체적 정보(얼굴, 지문, 홍채, DNA), 정신적 정보(사상, 신념, 종교), 사회적 정보(학력, 직업, 경력, 상벌), 재산적 정보(금융계좌, 소득, 부동산, 신용등급), 통신·위치 정보(통화내역, 로그기록, GPS 위치 등).</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• OECD 8대 원칙 & EU GDPR 핵심 비교</div>
-          <ul>
-            <li><strong>OECD 8원칙:</strong> 수집제한의 원칙, 정보정확성의 원칙, 목적명확화의 원칙, 이용제한의 원칙, 안전보호의 원칙, 공개의 원칙, 개인참가의 원칙, 책임의 원칙.</li>
-            <li><strong>EU GDPR 주요 특징:</strong>
-              <table>
-                <tr><th>구분</th><th>주요 내용</th></tr>
-                <tr><td>역외 적용</td><td>EU 역내 사업장이 없더라도 EU 거주자에게 재화·서비스를 제공하거나 행동을 모니터링하는 경우 적용</td></tr>
-                <tr><td>DPO 지정 의무</td><td>공공기관, 핵심 활동이 대규모 정기적 모니터링이거나 대규모 민감정보를 처리하는 기업에 DPO 지정 의무화</td></tr>
-                <tr><td>유출 통지</td><td>개인정보 유출 인지 후 지체 없이 72시간 이내에 감독기구(DPA)에 통지</td></tr>
-                <tr><td>과징금</td><td>심각한 위반 시 전 세계 연간 매출액의 4% 또는 2,000만 유로 중 높은 금액 부과</td></tr>
-              </table>
-            </li>
-            <li><strong>미국 법제:</strong> 일반법 중심이 아닌 산업 분야별 개별법 체계(HIPAA, GLBA, COPPA 등) 및 주 단위 법률(캘리포니아 CCPA/CPRA) 중심 규율.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- 2과목 -->
-      <div class="summary-card">
-        <div class="summary-header">
-          <div class="summary-title">2과목. 개인정보보호 제도</div>
-          <div class="summary-badge">출제 20문항 (배점 20점)</div>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 법령 체계와 규제 일원화</div>
-          <ul>
-            <li><strong>일반법-특별법 체계:</strong> 개인정보 보호법은 공공과 민간을 포괄하는 일반법. 신용정보법(금융분야 개인신용정보), 위치정보법(개인위치정보), 의료법 등 특별법이 우선 적용되고 미규정 사항은 개인정보 보호법 적용.</li>
-            <li><strong>규제 일원화:</strong> 정보통신망법의 개인정보 보호 관련 조항이 개인정보 보호법으로 전면 통합 이관되어 온·오프라인 사업자 규제가 완전히 일원화됨.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 개인정보 수집·이용 요건 및 최소수집 원칙</div>
-          <ul>
-            <li><strong>적법 수집 근거(제15조):</strong> ① 정보주체의 동의, ② 법률에 특별한 규정 또는 법령상 의무 준수, ③ 공공기관의 소관 업무 수행, ④ 계약의 체결 및 이행, ⑤ 정보주체 또는 제3자의 급박한 생명·신체·재산의 이익, ⑥ 개인정보처리자의 정당한 이익 달성(명백히 정보주체의 권리보다 우선하는 경우).</li>
-            <li><strong>필수 동의 vs 선택 동의 분리:</strong> 필수 항목과 선택 항목을 명확히 구분하여 각각 동의를 받아야 하며, 선택 항목 동의를 거부한다는 이유로 서비스 제공을 거부할 수 없음(위반 시 3천만원 이하 과태료).</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 개인정보 처리 위탁 vs 제3자 제공 핵심 비교</div>
-          <table>
-            <tr><th>구분</th><th>제3자 제공 (제17조)</th><th>개인정보 처리 위탁 (제26조)</th></tr>
-            <tr><td>처리 목적</td><td>제공받는 제3자의 고유 업무 목적</td><td>위탁자의 업무 처리 목적 (위탁자 이익)</td></tr>
-            <tr><td>동의 요건</td><td>원칙적으로 정보주체의 개별 동의 필수</td><td>정보주체 동의 불요 (처리방침 공개 또는 통지)</td></tr>
-            <tr><td>법적 책임</td><td>제공받은 자가 독립된 처리자로서 법적 책임</td><td>위탁자가 수탁자에 대한 관리·감독 및 손해배상 책임</td></tr>
-            <tr><td>문서 계약</td><td>제공 계약서 체결 권장</td><td>필수 사항(위탁업무 목적, 기술적 조치, 재위탁 제한 등) 서면 계약 의무</td></tr>
-          </table>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 민감정보 및 고유식별정보의 처리 제한</div>
-          <ul>
-            <li><strong>민감정보:</strong> 사상·신념, 노동조합·정당의 가입·탈퇴, 정치적 견해, 건강, 성생활, 유전정보, 범죄경력자료, 생체인식정보(개인식별 목적), 인종·민족 정보. 일반 개인정보와 별도로 분리하여 동의를 받아야 함.</li>
-            <li><strong>고유식별정보:</strong> 주민등록번호, 여권번호, 운전면허번호, 외국인등록번호. 일반 개인정보와 별도 분리 동의 필수.</li>
-            <li><strong>주민등록번호 원칙적 처리 금지:</strong> 동의가 있더라도 처리 불가! 법률·대통령령·국회규칙·대법원규칙 등 명시적 법령 근거가 있거나 급박한 생명·신체·재산의 이익을 위한 경우에만 예외적 허용. 대체수단(아이핀, 휴대폰인증 등) 의무 제공.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 영상정보처리기기 설치·운영 규제</div>
-          <ul>
-            <li><strong>고정형 영상처리기기(CCTV):</strong> 공개된 장소 설치 원칙적 금지. 범죄 예방, 시설 안전, 화재 예방, 교통 단속 등 법정 목적에 한해 설치 가능. 안내판 5대 필수 항목: 설치 목적 및 장소, 촬영 범위 및 시간, 관리책임자 성명 및 연락처. 녹음 기능 사용 및 임의 조작은 절대 금지(3년 이하 징역 또는 3천만원 이하 벌금).</li>
-            <li><strong>이동형 영상처리기기(드론, 자율주행차, 바디캠):</strong> 업무 목적으로 공개된 장소에서 이동형 기기로 촬영 시 불빛, 소리, 안내판 등으로 촬영 사실을 정보주체가 쉽게 알 수 있도록 표시해야 함.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 개인정보 보호책임자(CPO) & 국외 이전</div>
-          <ul>
-            <li><strong>CPO 지정 요건:</strong> 공공기관(중앙부처 고위공무원, 시·도 3급, 시·군·구 4급), 민간기업(사업주, 대표자, 임원 또는 개인정보 처리 부서의 장). CPO의 독립적 업무 수행 보장 및 불이익 처우 금지.</li>
-            <li><strong>국외 이전 요건:</strong> ① 정보주체 별도 동의, ② 계약 체결·이행을 위한 처리위탁·보관, ③ 개인정보보호 인증(ISMS-P 등), ④ 보호위원회가 동등 수준으로 인정한 국가/국제기구. 위반 시 보호위원회가 국외이전 중지명령 부과 가능.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- 3과목 -->
-      <div class="summary-card">
-        <div class="summary-header">
-          <div class="summary-title">3과목. 개인정보 라이프사이클 관리</div>
-          <div class="summary-badge">출제 25문항 (배점 25점)</div>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 수집·이용·파기 라이프사이클 관리</div>
-          <ul>
-            <li><strong>간접수집 출처 통지:</strong> 정보주체 이외로부터 수집한 경우 정보주체의 요구가 있거나, 5만명 이상 민감/고유식별정보 처리자 또는 100만명 이상 정보 처리자는 3개월 이내에 출처, 처리 목적, 처리정지 요구권을 서면 등으로 통지해야 함.</li>
-            <li><strong>이용·제공 내역 정기 통지:</strong> 100만명 이상 정보주체 또는 5만명 이상 민감/고유식별정보 처리자는 연 1회 이상 개인정보 이용·제공 내역을 정보주체에게 통지해야 함.</li>
-            <li><strong>파기 기한 및 방법:</strong> 보유기간 경과 또는 처리 목적 달성 시 지체 없이 5일 이내 파기. 전자적 파일은 영구삭제(복구 불가능 기술), 인쇄물은 분쇄 또는 소각. 다른 법령에 따라 보존해야 하는 경우 다른 개인정보와 별도 분리 저장·관리.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 개인정보 유출 사고 대응 체계</div>
-          <ul>
-            <li><strong>정보주체 통지:</strong> 유출 사실을 알게 된 때부터 지체 없이 72시간 이내에 유출 항목, 시점 및 경위, 피해 최소화 조치, 처리자 대응 및 구제절차, 담당부서 연락처를 서면·이메일·문자 등으로 개별 통지. (연락처를 모르는 경우 홈페이지 30일 이상 게시 갈음 가능).</li>
-            <li><strong>감독기구 신고:</strong> 1,000명 이상의 정보주체에 관한 개인정보가 유출된 경우 지체 없이 72시간 이내에 개인정보 보호위원회 또는 한국인터넷진흥원(KISA)에 신고 의무.</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 정보주체의 권리 및 권리구제 제도</div>
-          <ul>
-            <li><strong>정보주체의 6대 권리:</strong> 열람 요구권, 정정·삭제 요구권(열람 거친 후 행사), 처리정지 요구권, 동의철회권, 개인정보 전송요구권(마이데이터), 자동화된 결정에 대한 거부·설명요구권.</li>
-            <li><strong>손해배상 제도:</strong> 입증책임 전환(처리자가 고의·과실 없음을 입증해야 함), 법정손해배상(300만원 이하 범위에서 배상 청구), 징벌적 손해배상(고의 또는 중대한 과실로 유출된 경우 실제 손해액의 최대 5배까지 배상책임). 손해배상책임 보장을 위한 보험·공제 가입 의무.</li>
-            <li><strong>과징금 부과 체계:</strong> 위반행위 시 전체 매출액의 3% 이하 과징금 부과 (단, 처리자가 위반행위와 관련 없는 매출액임을 입증한 경우 해당 금액 제외 후 산정).</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- 4과목 -->
-      <div class="summary-card">
-        <div class="summary-header">
-          <div class="summary-title">4과목. 개인정보의 보호조치</div>
-          <div class="summary-badge">출제 30문항 (배점 30점)</div>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 안전성 확보조치 기준 (보호위원회 고시) 핵심</div>
-          <ul>
-            <li><strong>내부관리계획 수립:</strong> CPO 지정, 취급자 역할 및 교육, 접근 권한 관리, 암호화, 접속기록 보관, 모의훈련 등 필수 사항을 반영하여 매년 수립·시행.</li>
-            <li><strong>접근 권한 관리:</strong> 업무 수행에 필요한 최소한의 범위로 업무 담당자별 차등 부여. 인사이동 발생 시 지체 없이(5일 이내) 변경 또는 말소. 권한 부여·변경·말소 내역은 최소 3년 이상 보관.</li>
-            <li><strong>접근 통제 & 망분리:</strong> 침입차단시스템(방화벽) 및 침입탐지시스템 운영. 외부 접속 시 안전한 가상사설망(VPN) 및 2차 인증(OTP) 적용. 10만명 이상 정보주체 또는 100만명 이상 정보 처리자는 인터넷망 차단조치(망분리) 의무.</li>
-            <li><strong>암호화 의무 대상:</strong>
-              <table>
-                <tr><th>구분</th><th>암호화 대상 항목</th><th>암호화 방식</th></tr>
-                <tr><td>전송 구간</td><td>모든 개인정보 및 인증정보</td><td>SSL/TLS, HTTPS, IPSec 등 보안 프로토콜</td></tr>
-                <tr><td>저장 구간</td><td>고유식별정보, 바이오정보</td><td>안전한 암호 알고리즘(AES, ARIA, SEED 등)</td></tr>
-                <tr><td>비밀번호</td><td>로그인 비밀번호</td><td>일방향(단방향) 암호화 (SHA-256 등 솔트 적용, 복호화 불가)</td></tr>
-              </table>
-            </li>
-            <li><strong>접속기록 보관 및 점검:</strong> 접속기록(계정, 접속일시, 접속지IP, 수행업무, 정보주체 식별정보)을 기본 1년 이상 보관. 단, 5만명 이상 정보주체 또는 민감정보/고유식별정보 처리시스템은 2년 이상 보관! 월 1회 이상 정기적으로 점검(다운로드, 대량조회, 비정상 접속 분석).</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 정보통신망법 광고성 정보 전송 제한 규제</div>
-          <ul>
-            <li><strong>사전 동의 원칙(Opt-in):</strong> 영리 목적 광고성 정보 전송 시 정보주체의 명시적인 사전 수신 동의 필수.</li>
-            <li><strong>야간 전송 제한:</strong> 오후 9시부터 다음 날 오전 8시까지 광고성 정보를 전송하려는 경우 별도의 사전 동의를 받아야 함.</li>
-            <li><strong>필수 표기 사항:</strong> 제목 첫머리에 (광고) 표시, 전송자 명칭 및 연락처, 무료 수신거부 방법(080 무료전화 등). 수신거부 비용을 수신자에게 전가하는 것은 불법.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- 5과목 -->
-      <div class="summary-card">
-        <div class="summary-header">
-          <div class="summary-title">5과목. 개인정보 관리체계</div>
-          <div class="summary-badge">출제 15문항 (배점 15점)</div>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• ISMS-P 인증 제도 체계</div>
-          <ul>
-            <li><strong>공동 운영 부처:</strong> 과학기술정보통신부 + 개인정보보호위원회 공동 운영, 한국인터넷진흥원(KISA) 총괄 관리.</li>
-            <li><strong>인증기준 구성 (총 102개 항목):</strong>
-              <table>
-                <tr><th>영역</th><th>기준 수</th><th>주요 내용</th></tr>
-                <tr><td>1. 관리체계 수립 및 운영</td><td>16개</td><td>경영진 참여, 위험 관리, 정책 수립, 범위 설정, 사후 관리</td></tr>
-                <tr><td>2. 보호대책 요구사항</td><td>64개</td><td>정책·조직·자산, 인적보안, 외부자보안, 접근통제, 암호화, 운영보안 등</td></tr>
-                <tr><td>3. 개인정보 처리단계별 요구사항</td><td>22개</td><td>수집 시 보호, 보유 및 이용 시 보호, 제공 시 보호, 파기, 권리보호</td></tr>
-              </table>
-            </li>
-            <li><strong>인증 유효기간:</strong> 최초 인증 3년. 매년 1회 이상 사후심사를 받아야 하며, 유효기간 만료 전 갱신심사 신청.</li>
-            <li><strong>인증심사원 등급:</strong> 심사원보 → 심사원(자격 취득 후 심사 4회 20일 이상 참가) → 선임심사원 → 특급심사원. 자격 유효기간 3년(보수교육 필수 이수).</li>
-          </ul>
-        </div>
-        <div class="summary-topic">
-          <div class="summary-topic-title">• 개인정보 영향평가 (PIA: Privacy Impact Assessment)</div>
-          <ul>
-            <li><strong>제도 목적:</strong> 공공기관이 대규모 개인정보파일을 구축·운용·변경할 때 사전에 프라이버시 침해 위험성을 분석하고 개선책을 도출하는 제도.</li>
-            <li><strong>공공기관 의무 평가 대상 기준:</strong>
-              <table>
-                <tr><th>구분</th><th>의무 평가 기준</th></tr>
-                <tr><td>민감정보 / 고유식별정보</td><td>5만명 이상의 정보주체에 관한 정보를 처리하는 파일 구축·운용·변경 시</td></tr>
-                <tr><td>연계·결합 파일</td><td>50만명 이상의 정보주체에 관한 정보를 다른 파일과 연계·결합하는 경우</td></tr>
-                <tr><td>일반 대규모 개인정보파일</td><td>100만명 이상의 정보주체에 관한 개인정보파일을 구축·운용·변경하는 경우</td></tr>
-              </table>
-            </li>
-            <li><strong>PIA 수행 3단계 절차:</strong> 사전준비 단계(사업계획 분석, 평가팀 구성) → 영향평가 수행 단계(위험도 분석, 보호조치 점검) → 결과보고 및 이행관리 단계(영향평가서 작성, 보호위원회 제출 및 개선사항 이행).</li>
-          </ul>
-        </div>
-      </div>
+      <!-- Dynamic summary cards loaded here -->
     </div>
 
     <!-- CUSTOM AI ANALYSIS VIEW -->
     <div class="custom-section" id="customSection">
       <div class="custom-hero-banner">
-        <div class="custom-hero-title">🔬 엑사원(EXAONE) AI 기반 파일 & URL 맞춤 분석실</div>
+        <div class="custom-hero-title">
+          <span>🔬</span>
+          <span>LG 엑사원(EXAONE) AI 심층 분석 &amp; 맞춤 출제</span>
+        </div>
         <div class="custom-hero-desc">
-          보안 규정, 수험서, 기술 블로그 URL 등 분석하고 싶은 자료를 피클 대화창에 공유해 주시면,
-          엑사원 AI가 핵심 3줄 요약, 핵심 개념, 빈출 함정 및 실전 5지선다 모의고사를 자동으로 생성하여 이 곳에 누적 배포합니다.
+          수험서 핵심 단원과 법령·기술 문서를 엑사원 모델(k-exaone_v2.5)이 분석하여 핵심 요약, 시험 빈출 함정 포인트, 그리고 법적 근거가 완비된 실전 5지선다 문제를 맞춤 생성했습니다.
         </div>
       </div>
 
       <div class="custom-guide-card">
         <div class="custom-guide-icon">💡</div>
         <div>
-          <div class="custom-guide-title">새로운 자료를 분석하고 퀴즈를 생성하고 싶으신가요?</div>
+          <div class="custom-guide-title">새로운 시험 파일이나 웹 URL을 분석하고 싶으신가요?</div>
           <div class="custom-guide-text">
-            피클 채팅창에 분석하고 싶은 PDF 문서, HWP 파일, 또는 웹 URL(예: KISA 가이드라인, 보안 기술 블로그)을 첨부하고 
-            "이 자료 분석해서 요약이랑 퀴즈 만들어줘"라고 말씀해 주세요. 엑사원 AI가 즉시 분석을 수행하여 이 탭에 실시간 추가 배포해 드립니다.
+            상단 <strong>[➕ 새 학습자료 등록]</strong>을 누르시거나 피클 채팅창에 PDF 수험서, 웹 링크를 전달해 주시면 즉시 엑사원 AI가 이 화면에 새로운 시험 카테고리로 퀴즈를 탑재해 드립니다.
           </div>
         </div>
       </div>
 
-      <!-- Analyzed units list -->
-      <div id="customUnitsContainer"></div>
+      <div id="customUnitsList"></div>
     </div>
+
   </div>
 
   <script src="cppg_questions.js"></script>
+  <script src="infosec_exam_data.js"></script>
   <script src="custom_study.js"></script>
   <script>
     // Theme
     const btnTheme = document.getElementById('btnTheme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    let currentTheme = localStorage.getItem('infosec_theme') || (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', currentTheme);
-
+    const root = document.documentElement;
+    let isDark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() {
+      root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    applyTheme();
     btnTheme.addEventListener('click', () => {
-      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', currentTheme);
-      localStorage.setItem('infosec_theme', currentTheme);
+      isDark = !isDark;
+      applyTheme();
     });
 
-    // Modes: 'quiz', 'summary', 'custom'
-    window.switchMode = function(mode) {
-      document.getElementById('btnModeQuiz').classList.toggle('active', mode === 'quiz');
-      document.getElementById('btnModeSummary').classList.toggle('active', mode === 'summary');
-      document.getElementById('btnModeCustom').classList.toggle('active', mode === 'custom');
-
-      document.getElementById('quizSection').style.display = (mode === 'quiz') ? 'block' : 'none';
-      document.getElementById('summarySection').style.display = (mode === 'summary') ? 'flex' : 'none';
-      document.getElementById('customSection').style.display = (mode === 'custom') ? 'flex' : 'none';
-
-      if (mode === 'custom') {
-        renderCustomUnits();
-      }
-    };
-
-    // State
+    // Global State
+    let currentCategory = 'cppg'; // cppg | infosec_engineer | ismsp_auditor | custom
+    let currentMode = 'quiz'; // quiz | summary | custom
     let currentExam = 1;
     let currentSubj = 0;
     let wrongOnly = false;
     let userAnswers = {};
-    let customUserAnswers = {};
 
     try {
-      const saved = localStorage.getItem('cppg_user_answers_v2');
+      const saved = localStorage.getItem('study_user_answers_v3');
       if (saved) userAnswers = JSON.parse(saved);
-      const savedCustom = localStorage.getItem('cppg_custom_user_answers');
-      if (savedCustom) customUserAnswers = JSON.parse(savedCustom);
     } catch(e) {}
 
-    // Exam tabs
-    const examTabs = document.querySelectorAll('.exam-tab');
-    examTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        examTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        currentExam = parseInt(tab.getAttribute('data-exam'), 10);
-        updateStats();
-        renderQuestions();
-      });
-    });
+    function saveUserAnswers() {
+      try {
+        localStorage.setItem('study_user_answers_v3', JSON.stringify(userAnswers));
+      } catch(e) {}
+    }
 
-    // Subject chips
-    const subjChips = document.querySelectorAll('.subj-chip');
-    subjChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        subjChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        currentSubj = parseInt(chip.getAttribute('data-subj'), 10);
-        renderQuestions();
-      });
-    });
-
-    // Tools
-    const btnWrongOnly = document.getElementById('btnWrongOnly');
-    btnWrongOnly.addEventListener('click', () => {
-      wrongOnly = !wrongOnly;
-      btnWrongOnly.classList.toggle('active', wrongOnly);
-      btnWrongOnly.textContent = wrongOnly ? '전체 보기' : '오답만 보기';
-      renderQuestions();
-    });
-
-    const btnReset = document.getElementById('btnReset');
-    btnReset.addEventListener('click', () => {
-      if (confirm('현재 풀이 기록을 모두 초기화하시겠습니까?')) {
-        userAnswers = {};
-        try { localStorage.removeItem('cppg_user_answers_v2'); } catch(e) {}
-        updateStats();
-        renderQuestions();
+    // Category Definitions
+    const CATEGORIES = {
+      cppg: {
+        title: "📜 개인정보관리사(CPPG)",
+        mainTitle: "CPPG 실전 300제 & 전 과목 핵심 노트",
+        mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL AI 맞춤 분석",
+        quizLabel: "실전 모의고사 (300제)",
+        quizLabelShort: "실전 300제",
+        exams: [
+          { id: 1, full: "1회 실전 모의고사 (100문항)", short: "1회 (100제)" },
+          { id: 2, full: "2회 실전 모의고사 (100문항)", short: "2회 (100제)" },
+          { id: 3, full: "3회 실전 모의고사 (100문항)", short: "3회 (100제)" },
+          { id: 0, full: "전체 300제 집중 풀이", short: "전체 300제" }
+        ],
+        subjects: [
+          { id: 0, name: "전체" },
+          { id: 1, name: "1과목: 이해" },
+          { id: 2, name: "2과목: 제도" },
+          { id: 3, name: "3과목: 라이프사이클" },
+          { id: 4, name: "4과목: 보호조치" },
+          { id: 5, name: "5과목: 관리체계" }
+        ]
+      },
+      infosec_engineer: {
+        title: "🛡️ 정보보안기사",
+        mainTitle: "정보보안기사 기출 핵심 퀴즈 & 요약노트",
+        mainDesc: "시스템·네트워크·애플리케이션 보안 및 법규 4대 과목 실전 퀴즈와 핵심 정리",
+        quizLabel: "실전 기출 퀴즈",
+        quizLabelShort: "실전 퀴즈",
+        exams: [
+          { id: 1, full: "기출 핵심 모의고사 (1회)", short: "기출 1회" },
+          { id: 0, full: "전체 기출 퀴즈 풀이", short: "전체 풀이" }
+        ],
+        subjects: [
+          { id: 0, name: "전체" },
+          { id: 1, name: "1과목: 시스템" },
+          { id: 2, name: "2과목: 네트워크" },
+          { id: 3, name: "3과목: 애플리케이션" },
+          { id: 4, name: "4과목: 법규/관리" }
+        ]
+      },
+      ismsp_auditor: {
+        title: "🔒 ISMS-P 인증심사원",
+        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈",
+        mainDesc: "관리체계 수립·보호대책 요구사항·개인정보 처리단계 3개 영역 실전 결함 분석",
+        quizLabel: "인증기준 실전 퀴즈",
+        quizLabelShort: "인증 퀴즈",
+        exams: [
+          { id: 1, full: "인증기준 실전 평가 (1회)", short: "인증 1회" },
+          { id: 0, full: "전체 인증 문제 풀이", short: "전체 풀이" }
+        ],
+        subjects: [
+          { id: 0, name: "전체" },
+          { id: 1, name: "1영역: 관리체계" },
+          { id: 2, name: "2영역: 보호대책" },
+          { id: 3, name: "3영역: 개인정보" }
+        ]
+      },
+      custom: {
+        title: "🔬 맞춤 분석 (파일·URL)",
+        mainTitle: "파일·웹 URL AI 맞춤 분석 & 출제 세트",
+        mainDesc: "첨부 문서와 웹 문서를 엑사원 AI로 분석한 핵심 서머리와 실전 모의고사",
+        quizLabel: "맞춤 퀴즈 풀이",
+        quizLabelShort: "맞춤 퀴즈",
+        exams: [
+          { id: 1, full: "맞춤 분석 1차 세트", short: "1차 세트" },
+          { id: 0, full: "전체 맞춤 퀴즈 풀이", short: "전체 풀이" }
+        ],
+        subjects: [
+          { id: 0, name: "전체" },
+          { id: 1, name: "PIA 영향평가" },
+          { id: 2, name: "72h 유출통지" },
+          { id: 3, name: "안전성확보조치" }
+        ]
       }
+    };
+
+    // Category Tabs Click
+    const categoryBar = document.getElementById('categoryBar');
+    const catChips = categoryBar.querySelectorAll('.cat-chip');
+    const activeExamBadge = document.getElementById('activeExamBadge');
+    const addResourcePanel = document.getElementById('addResourcePanel');
+
+    catChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const catKey = chip.getAttribute('data-cat');
+        if (catKey === 'add_new') {
+          addResourcePanel.classList.toggle('open');
+          if (addResourcePanel.classList.contains('open')) {
+            addResourcePanel.scrollIntoView({ behavior: 'smooth' });
+          }
+          return;
+        }
+
+        catChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentCategory = catKey;
+        activeExamBadge.textContent = CATEGORIES[catKey].title;
+        currentExam = 1;
+        currentSubj = 0;
+        wrongOnly = false;
+        
+        // Hide panel if open
+        addResourcePanel.classList.remove('open');
+
+        updateCategoryUI();
+      });
     });
+
+    document.getElementById('btnCloseAddPanel').addEventListener('click', () => {
+      addResourcePanel.classList.remove('open');
+    });
+
+    function setSourceType(type) {
+      document.getElementById('btnSourceFile').classList.toggle('active', type === 'file');
+      document.getElementById('btnSourceUrl').classList.toggle('active', type === 'url');
+      document.getElementById('fileInputGroup').style.display = type === 'file' ? 'flex' : 'none';
+      document.getElementById('urlInputGroup').style.display = type === 'url' ? 'flex' : 'none';
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('dropFileName').textContent = `선택된 파일: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        if (!document.getElementById('newCategoryTitle').value) {
+          document.getElementById('newCategoryTitle').value = file.name.replace(/\.[^/.]+$/, "");
+        }
+      }
+    }
+
+    function requestAnalysis() {
+      const title = document.getElementById('newCategoryTitle').value.trim() || '새 맞춤 학습자료';
+      alert(`[분석 요청 접수]\n\n'${title}' 자료의 AI 분석 요청이 접수되었습니다!\n피클 채팅창에 해당 파일이나 웹 URL을 공유해 주시면 엑사원 AI가 실전 문제와 요약노트로 추출하여 이 화면 상단에 새 카테고리로 정식 배포해 드립니다.`);
+      addResourcePanel.classList.remove('open');
+    }
+
+    function updateCategoryUI() {
+      const catConfig = CATEGORIES[currentCategory];
+      document.getElementById('pageMainTitle').textContent = catConfig.mainTitle;
+      document.getElementById('pageMainDesc').textContent = catConfig.mainDesc;
+      document.getElementById('lblModeQuiz').textContent = catConfig.quizLabel;
+      document.getElementById('lblModeQuizShort').textContent = catConfig.quizLabelShort;
+
+      // Render Exam Tabs
+      const examContainer = document.getElementById('examTabsContainer');
+      examContainer.innerHTML = '';
+      catConfig.exams.forEach((ex, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'exam-tab' + (ex.id === currentExam ? ' active' : '');
+        btn.setAttribute('data-exam', ex.id);
+        btn.innerHTML = `<span class="exam-label-full">${ex.full}</span><span class="exam-label-short">${ex.short}</span>`;
+        btn.addEventListener('click', () => {
+          examContainer.querySelectorAll('.exam-tab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentExam = ex.id;
+          updateStats();
+          renderQuestions();
+        });
+        examContainer.appendChild(btn);
+      });
+
+      // Render Subj Chips
+      const subjContainer = document.getElementById('subjFiltersContainer');
+      subjContainer.innerHTML = '';
+      catConfig.subjects.forEach(sub => {
+        const chip = document.createElement('div');
+        chip.className = 'subj-chip' + (sub.id === currentSubj ? ' active' : '');
+        chip.setAttribute('data-subj', sub.id);
+        chip.textContent = sub.name;
+        chip.addEventListener('click', () => {
+          subjContainer.querySelectorAll('.subj-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentSubj = sub.id;
+          renderQuestions();
+        });
+        subjContainer.appendChild(chip);
+      });
+
+      // Render Summary View
+      renderCategorySummary();
+
+      updateStats();
+      renderQuestions();
+    }
+
+    function getQuestionsForCurrentCategory() {
+      if (currentCategory === 'cppg') {
+        return window.ALL_QUESTIONS || [];
+      } else if (currentCategory === 'infosec_engineer') {
+        return (window.INFOSEC_ENGINEER_DATA && window.INFOSEC_ENGINEER_DATA.questions) || [];
+      } else if (currentCategory === 'ismsp_auditor') {
+        return (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.questions) || [];
+      } else if (currentCategory === 'custom') {
+        const customUnits = (window.CUSTOM_STUDY_DATA && window.CUSTOM_STUDY_DATA.units) || [];
+        const flat = [];
+        customUnits.forEach((u, uIdx) => {
+          (u.practice_questions || []).forEach(q => {
+            flat.push({
+              id: q.id || `custom_${uIdx}_${q.q_index}`,
+              exam: 1,
+              exam_name: u.unit_title,
+              subject_id: uIdx + 1,
+              subject_name: u.unit_title,
+              question: q.question,
+              options: q.options,
+              answer: q.answer,
+              explanation: q.explanation
+            });
+          });
+        });
+        return flat;
+      }
+      return [];
+    }
 
     function getFilteredQuestions() {
-      const all = window.ALL_QUESTIONS || [];
+      const all = getQuestionsForCurrentCategory();
       return all.filter(q => {
         const matchExam = currentExam === 0 || q.exam === currentExam;
         const matchSubj = currentSubj === 0 || q.subject_id === currentSubj;
@@ -767,7 +854,7 @@
     }
 
     function updateStats() {
-      const all = window.ALL_QUESTIONS || [];
+      const all = getQuestionsForCurrentCategory();
       const examQuestions = all.filter(q => currentExam === 0 || q.exam === currentExam);
       const totalCount = examQuestions.length;
       
@@ -781,253 +868,342 @@
       });
 
       const acc = solved > 0 ? Math.round((correct / solved) * 100) : 0;
-
       document.getElementById('topTotal').textContent = totalCount;
       document.getElementById('topSolved').textContent = solved;
       document.getElementById('topCorrect').textContent = correct;
-
-      let passText = acc + '%';
-      if (solved >= 40) {
-        if (acc >= 60) {
-          passText += ' (합격권 👍)';
-        } else {
-          passText += ' (보완필요 ⚠️)';
-        }
+      
+      let rateText = acc + '%';
+      if (totalCount >= 20 && solved >= 15) {
+        rateText += acc >= 60 ? ' (합격권)' : ' (보강필요)';
       }
-      document.getElementById('topAccuracy').textContent = passText;
+      document.getElementById('topRate').textContent = rateText;
     }
+
+    const circles = ['①', '②', '③', '④', '⑤'];
 
     function renderQuestions() {
       const container = document.getElementById('questionsContainer');
       container.innerHTML = '';
+      const list = getFilteredQuestions();
 
-      const filtered = getFilteredQuestions();
-      const circles = ['①', '②', '③', '④', '⑤'];
-
-      filtered.forEach(q => {
+      let displayedCount = 0;
+      list.forEach((q, idx) => {
         const ans = userAnswers[q.id];
-        if (wrongOnly) {
-          if (!ans || ans.isCorrect) return;
-        }
+        if (wrongOnly && (!ans || ans.isCorrect)) return;
 
+        displayedCount++;
         const card = document.createElement('div');
         card.className = 'q-card';
+        card.id = 'q_' + q.id;
+
+        const isAnswered = !!ans;
+        const userChoice = ans ? ans.choice : null;
+        const isCorrect = ans ? ans.isCorrect : false;
 
         let choicesHtml = '';
-        q.choices.forEach((choiceText, idx) => {
-          const choiceNum = idx + 1;
+        (q.options || []).forEach((opt, oIdx) => {
+          const choiceNum = oIdx + 1;
           let rowClass = 'choice-row';
-          if (ans) {
+          if (isAnswered) {
             rowClass += ' disabled';
             if (choiceNum === q.answer) {
               rowClass += ' correct';
-            } else if (choiceNum === ans.selected) {
+            } else if (choiceNum === userChoice && !isCorrect) {
               rowClass += ' wrong';
             }
           }
-
           choicesHtml += `
-            <div class="${rowClass}" onclick="handleAnswer('${q.id}', ${choiceNum})">
-              <div class="choice-circle">${circles[idx]}</div>
-              <div>${escapeHtml(choiceText)}</div>
+            <div class="${rowClass}" data-qid="${q.id}" data-choice="${choiceNum}">
+              <div class="choice-circle">${circles[oIdx] || choiceNum}</div>
+              <div class="choice-text">${escapeHtml(opt)}</div>
             </div>
           `;
         });
 
-        const expDisplay = ans ? 'block' : 'none';
+        let expHtml = '';
+        if (isAnswered) {
+          expHtml = `
+            <div class="exp-panel">
+              <div class="exp-title">정답: ${circles[q.answer - 1] || q.answer} ${isCorrect ? '✅ 정답입니다!' : '❌ 오답입니다'}</div>
+              <div class="exp-body">${escapeHtml(q.explanation || '해설이 준비되어 있습니다.')}</div>
+            </div>
+          `;
+        }
 
         card.innerHTML = `
           <div class="q-meta">
             <div class="q-badge-wrap">
-              <span class="q-exam-badge">${q.exam}회 모의고사</span>
-              <span class="q-subj-badge">${q.subject}</span>
+              <span class="q-exam-badge">${escapeHtml(q.exam_name || (q.exam + '회 모의고사'))}</span>
+              <span class="q-subj-badge">${escapeHtml(q.subject_name || (q.subject_id + '과목'))}</span>
             </div>
-            <span class="q-index">Q${q.number}</span>
+            <div class="q-index">Q${idx + 1}</div>
           </div>
-          <div class="q-prompt">${escapeHtml(q.prompt)}</div>
-          <div class="choices-list">${choicesHtml}</div>
-          <div class="exp-panel" id="exp_${q.id}" style="display: ${expDisplay}">
-            <div class="exp-title">정답: ${circles[q.answer - 1]}</div>
-            <div class="exp-body">${escapeHtml(q.explanation || '해설 준비 중')}</div>
-          </div>
+          <div class="q-prompt">${escapeHtml(q.question)}</div>
+          <div class="q-choices">${choicesHtml}</div>
+          ${expHtml}
         `;
+
+        card.querySelectorAll('.choice-row').forEach(row => {
+          row.addEventListener('click', () => {
+            if (userAnswers[q.id]) return;
+            const chosen = parseInt(row.getAttribute('data-choice'), 10);
+            const correct = chosen === q.answer;
+            userAnswers[q.id] = { choice: chosen, isCorrect: correct };
+            saveUserAnswers();
+            updateStats();
+            renderQuestions();
+          });
+        });
 
         container.appendChild(card);
       });
 
-      if (container.children.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted);">조건에 일치하는 문제가 없습니다.</div>';
+      if (displayedCount === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding: 40px 20px; color: var(--text-muted); font-size: 14px;">
+            ${wrongOnly ? '오답으로 체크된 문항이 없습니다. 🎉' : '선택한 조건에 해당하는 문항이 없습니다.'}
+          </div>
+        `;
       }
     }
 
-    window.handleAnswer = function(qId, choiceNum) {
-      if (userAnswers[qId]) return;
-      const all = window.ALL_QUESTIONS || [];
-      const q = all.find(item => item.id === qId);
-      if (!q) return;
+    function renderCategorySummary() {
+      const summaryContainer = document.getElementById('summarySection');
+      summaryContainer.innerHTML = '';
 
-      const isCorrect = (choiceNum === q.answer);
-      userAnswers[qId] = {
-        selected: choiceNum,
-        isCorrect: isCorrect
-      };
-
-      try {
-        localStorage.setItem('cppg_user_answers_v2', JSON.stringify(userAnswers));
-      } catch(e) {}
-
-      updateStats();
-      renderQuestions();
-    };
-
-    // Render Custom AI Units
-    function renderCustomUnits() {
-      const container = document.getElementById('customUnitsContainer');
-      const units = window.CUSTOM_STUDIES || [];
-      container.innerHTML = '';
-
-      if (units.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted);">아직 등록된 맞춤 분석 자료가 없습니다. 채팅창에 파일이나 URL을 공유해 보세요!</div>';
-        return;
-      }
-
-      const circles = ['①', '②', '③', '④', '⑤'];
-
-      units.forEach(unit => {
-        const card = document.createElement('div');
-        card.className = 'custom-unit-card';
-
-        let takeawaysHtml = '';
-        if (unit.summary && unit.summary.core_takeaways) {
-          takeawaysHtml = `
-            <div class="custom-takeaways">
-              <div class="custom-takeaways-title">📌 엑사원 AI 핵심 요약</div>
+      if (currentCategory === 'cppg') {
+        summaryContainer.innerHTML = `
+          <!-- 1과목 -->
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">1과목. 개인정보보호의 이해</div>
+              <div class="summary-badge">출제 10문항 (배점 10점)</div>
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• 개인정보의 법적 정의 및 식별가능성 판단 기준</div>
               <ul>
-                ${unit.summary.core_takeaways.map(t => `<li>${escapeHtml(t)}</li>`).join('')}
+                <li><strong>정의 3요소:</strong> ① 살아있는 개인에 관한 정보, ② 성명·주민번호·영상 등을 통해 특정 개인을 알아볼 수 있는 정보, ③ 해당 정보만으로는 알 수 없더라도 다른 정보와 쉽게 결합하여 알아볼 수 있는 정보.</li>
+                <li><strong>정보주체 범위:</strong> 원칙적으로 생존하는 자연인에 한정. 법인·단체·사망자·사물 정보는 개인정보가 아님.</li>
+                <li><strong>가명정보 vs 익명정보:</strong> 가명정보는 통계작성, 과학적 연구 등 목적으로 동의 없이 처리 가능하나 재식별 행위는 절대 금지. 익명정보는 개인정보 보호법 적용 전면 배제.</li>
               </ul>
             </div>
-          `;
-        }
-
-        let termsHtml = '';
-        if (unit.summary && unit.summary.key_concepts && unit.summary.key_concepts.length > 0) {
-          termsHtml = `
-            <div class="custom-terms-grid">
-              ${unit.summary.key_concepts.map(k => `
-                <div class="custom-term-card">
-                  <div class="custom-term-name">🔹 ${escapeHtml(k.term)}</div>
-                  <div class="custom-term-desc">${escapeHtml(k.desc)}</div>
-                </div>
-              `).join('')}
+          </div>
+          <!-- 2과목 -->
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">2과목. 개인정보보호 제도</div>
+              <div class="summary-badge">출제 20문항 (배점 20점)</div>
             </div>
-          `;
-        }
-
-        let trapsHtml = '';
-        if (unit.summary && unit.summary.exam_points && unit.summary.exam_points.length > 0) {
-          trapsHtml = `
-            <div class="custom-traps">
-              <div class="custom-traps-title">⚠️ 시험 빈출 함정 & 주의점</div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• CPO(개인정보 보호책임자) 의무 및 자격요건</div>
               <ul>
-                ${unit.summary.exam_points.map(p => `<li>• ${escapeHtml(p)}</li>`).join('')}
+                <li><strong>역할:</strong> 개인정보 보호 계획 수립·시행, 처리실태 조사 및 개선 권고, 불만처리 및 피해구제, 파일 등록·관리 등 총괄.</li>
+                <li><strong>배상책임:</strong> 손해액의 최대 5배까지 징벌적 손해배상 청구 가능. 보험/공제 가입 의무(매출 10억 이상 or 이용자 1만명 이상).</li>
               </ul>
             </div>
-          `;
-        }
-
-        // Quiz questions for this unit
-        let questionsHtml = '';
-        if (unit.questions && unit.questions.length > 0) {
-          questionsHtml = `<div style="font-weight: 700; font-size: 14.5px; margin: 16px 0 10px; color: var(--text-primary);">📝 실전 출제 문제 (${unit.questions.length}문항)</div>`;
-          unit.questions.forEach((q, qIdx) => {
-            const ansKey = `${unit.id}_${q.id}`;
-            const userAns = customUserAnswers[ansKey];
-
-            let choicesRows = '';
-            q.choices.forEach((choiceText, cIdx) => {
-              const choiceNum = cIdx + 1;
-              let rowClass = 'choice-row';
-              if (userAns) {
-                rowClass += ' disabled';
-                if (choiceNum === q.answer) {
-                  rowClass += ' correct';
-                } else if (choiceNum === userAns.selected) {
-                  rowClass += ' wrong';
-                }
-              }
-
-              choicesRows += `
-                <div class="${rowClass}" onclick="handleCustomAnswer('${unit.id}', '${q.id}', ${choiceNum})">
-                  <div class="choice-circle">${circles[cIdx]}</div>
-                  <div>${escapeHtml(choiceText)}</div>
-                </div>
-              `;
-            });
-
-            const expDisplay = userAns ? 'block' : 'none';
-
-            questionsHtml += `
-              <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 12px;">
-                <div style="font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 4px;">문항 ${qIdx + 1}</div>
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">${escapeHtml(q.prompt)}</div>
-                <div class="choices-list">${choicesRows}</div>
-                <div class="exp-panel" style="display: ${expDisplay}">
-                  <div class="exp-title">정답: ${circles[q.answer - 1]}</div>
-                  <div class="exp-body">${escapeHtml(q.explanation || '')}</div>
-                </div>
+          </div>
+          <!-- 3과목 -->
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">3과목. 개인정보 라이프사이클 관리</div>
+              <div class="summary-badge">출제 25문항 (배점 25점)</div>
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• 수집·이용·제공·위탁·파기 전 과정</div>
+              <ul>
+                <li><strong>필수 동의 4대 고지사항:</strong> ① 수집·이용 목적, ② 수집 항목, ③ 보유 및 이용 기간, ④ 동의 거부권 및 거부 시 불이익.</li>
+                <li><strong>제3자 제공 vs 위탁:</strong> 제3자 제공은 제공받는 자의 이익을 위한 것이며 별도 동의 필수. 위탁은 위탁자의 업무 목적 달성을 위한 것이며 동의 대신 처리방침 공개 가능.</li>
+                <li><strong>파기 원칙:</strong> 목적 달성 시 지체 없이 5일 이내 파기. 영구 삭제(소각, 디가우징, 덮어쓰기).</li>
+              </ul>
+            </div>
+          </div>
+          <!-- 4과목 -->
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">4과목. 개인정보의 보호조치</div>
+              <div class="summary-badge">출제 30문항 (배점 30점 - 최다)</div>
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• 기술적·관리적·물리적 안전성 확보조치 기준</div>
+              <ul>
+                <li><strong>접속기록 관리:</strong> 최소 1년 보관 (5만명 이상 민감/고유식별정보 처리 시스템은 2년 보관), 월 1회 이상 점검.</li>
+                <li><strong>암호화 의무:</strong> 비밀번호는 일방향 암호화(SHA-256 이상 + Salt), 고유식별정보 및 바이오정보는 양방향 암호화(AES-256 등).</li>
+              </ul>
+            </div>
+          </div>
+          <!-- 5과목 -->
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">5과목. 개인정보 관리체계</div>
+              <div class="summary-badge">출제 15문항 (배점 15점)</div>
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• ISMS-P 및 PIA(영향평가) 관리체계</div>
+              <ul>
+                <li><strong>ISMS-P 인증기준:</strong> 관리체계 수립 및 운영(16개), 보호대책 요구사항(64개), 개인정보 처리단계별 요구사항(22개) 총 102개 기준.</li>
+                <li><strong>PIA 의무기관:</strong> 5만명 이상 민감정보/고유식별정보 구축, 50만명 이상 연계·연동 공공시스템 운용 시 사전 영향평가 의무.</li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } else if (currentCategory === 'infosec_engineer') {
+        const summaries = (window.INFOSEC_ENGINEER_DATA && window.INFOSEC_ENGINEER_DATA.summaries) || [];
+        summaries.forEach(s => {
+          let topicsHtml = '';
+          s.topics.forEach(t => {
+            let pts = '';
+            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
+            topicsHtml += `
+              <div class="summary-topic">
+                <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
+                <ul>${pts}</ul>
               </div>
             `;
           });
-        }
+          summaryContainer.innerHTML += `
+            <div class="summary-card">
+              <div class="summary-header">
+                <div class="summary-title">${escapeHtml(s.title)}</div>
+                <div class="summary-badge">핵심 요약</div>
+              </div>
+              ${topicsHtml}
+            </div>
+          `;
+        });
+      } else if (currentCategory === 'ismsp_auditor') {
+        const summaries = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
+        summaries.forEach(s => {
+          let topicsHtml = '';
+          s.topics.forEach(t => {
+            let pts = '';
+            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
+            topicsHtml += `
+              <div class="summary-topic">
+                <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
+                <ul>${pts}</ul>
+              </div>
+            `;
+          });
+          summaryContainer.innerHTML += `
+            <div class="summary-card">
+              <div class="summary-header">
+                <div class="summary-title">${escapeHtml(s.title)}</div>
+                <div class="summary-badge">인증기준 요약</div>
+              </div>
+              ${topicsHtml}
+            </div>
+          `;
+        });
+      }
+    }
+
+    // Tools
+    const btnWrongOnly = document.getElementById('btnWrongOnly');
+    btnWrongOnly.addEventListener('click', () => {
+      wrongOnly = !wrongOnly;
+      btnWrongOnly.classList.toggle('active', wrongOnly);
+      btnWrongOnly.textContent = wrongOnly ? '전체 보기' : '오답만 보기';
+      renderQuestions();
+    });
+
+    const btnReset = document.getElementById('btnReset');
+    btnReset.addEventListener('click', () => {
+      if (confirm('현재 시험의 풀이 기록을 모두 초기화하시겠습니까?')) {
+        const qList = getQuestionsForCurrentCategory();
+        qList.forEach(q => { delete userAnswers[q.id]; });
+        saveUserAnswers();
+        updateStats();
+        renderQuestions();
+      }
+    });
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('btnModeQuiz').classList.toggle('active', mode === 'quiz');
+      document.getElementById('btnModeSummary').classList.toggle('active', mode === 'summary');
+      document.getElementById('btnModeCustom').classList.toggle('active', mode === 'custom');
+
+      document.getElementById('quizSection').style.display = mode === 'quiz' ? 'block' : 'none';
+      document.getElementById('summarySection').style.display = mode === 'summary' ? 'flex' : 'none';
+      document.getElementById('customSection').style.display = mode === 'custom' ? 'flex' : 'none';
+
+      if (mode === 'custom') {
+        renderCustomUnits();
+      }
+    }
+
+    function renderCustomUnits() {
+      const container = document.getElementById('customUnitsList');
+      container.innerHTML = '';
+      const customData = window.CUSTOM_STUDY_DATA;
+      if (!customData || !customData.units) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:30px;">맞춤 분석 데이터가 아직 없습니다.</div>';
+        return;
+      }
+
+      customData.units.forEach((u, uIdx) => {
+        const card = document.createElement('div');
+        card.className = 'custom-unit-card';
+        card.style.marginBottom = '20px';
+
+        let takeawaysHtml = '';
+        (u.key_takeaways || []).forEach(pt => {
+          takeawaysHtml += `<li>${escapeHtml(pt)}</li>`;
+        });
+
+        let termsHtml = '';
+        (u.core_concepts || []).forEach(tc => {
+          termsHtml += `
+            <div class="custom-term-card">
+              <div class="custom-term-name">${escapeHtml(tc.term)}</div>
+              <div class="custom-term-desc">${escapeHtml(tc.definition)}</div>
+            </div>
+          `;
+        });
+
+        let trapsHtml = '';
+        (u.exam_traps || []).forEach(tr => {
+          trapsHtml += `<li>⚠️ ${escapeHtml(tr)}</li>`;
+        });
 
         card.innerHTML = `
           <div class="custom-unit-header">
             <div>
-              <div class="custom-unit-title">${escapeHtml(unit.title)}</div>
-              <div class="custom-unit-meta">${escapeHtml(unit.category || '보안 일반')} · ${escapeHtml(unit.source_type || '문서')} · ${unit.created_at || ''}</div>
+              <div class="custom-unit-title">${escapeHtml(u.unit_title)}</div>
+              <div class="custom-unit-meta">문서 출처: ${escapeHtml(u.source_material)}</div>
             </div>
-            <span class="summary-badge">AI 분석</span>
+            <div class="summary-badge">${escapeHtml(u.ai_model || 'k-exaone_v2.5')}</div>
           </div>
-          ${takeawaysHtml}
-          ${termsHtml}
-          ${trapsHtml}
-          ${questionsHtml}
+
+          <div class="custom-takeaways">
+            <div class="custom-takeaways-title">📌 핵심 요약 &amp; 결론</div>
+            <ul>${takeawaysHtml}</ul>
+          </div>
+
+          <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:var(--text-primary);">💡 필수 개념 정리</div>
+          <div class="custom-terms-grid">${termsHtml}</div>
+
+          <div class="custom-traps">
+            <div class="custom-traps-title">🚨 시험 빈출 함정 포인트</div>
+            <ul>${trapsHtml}</ul>
+          </div>
         `;
 
         container.appendChild(card);
       });
     }
 
-    window.handleCustomAnswer = function(unitId, qId, choiceNum) {
-      const ansKey = `${unitId}_${qId}`;
-      if (customUserAnswers[ansKey]) return;
-
-      const units = window.CUSTOM_STUDIES || [];
-      const unit = units.find(u => u.id === unitId);
-      if (!unit || !unit.questions) return;
-      const q = unit.questions.find(item => item.id === qId);
-      if (!q) return;
-
-      customUserAnswers[ansKey] = {
-        selected: choiceNum,
-        isCorrect: (choiceNum === q.answer)
-      };
-
-      try {
-        localStorage.setItem('cppg_custom_user_answers', JSON.stringify(customUserAnswers));
-      } catch(e) {}
-
-      renderCustomUnits();
-    };
-
     function escapeHtml(str) {
       if (!str) return '';
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
-    // Init
-    updateStats();
-    renderQuestions();
+    // Initialize
+    updateCategoryUI();
   </script>
 </body>
 </html>
