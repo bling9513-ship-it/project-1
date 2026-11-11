@@ -2,19 +2,17 @@
 # -*- coding: utf-8 -*-
 """
 build_study_html.py:
-CPPG 300제, 정보보안기사, ISMS-P 및 파일·URL 맞춤 분석을 아우르는
+보안 채용공고 메인 웹사이트(index.html)와 100% 동일한 디자인 시스템,
+컬러 팔레트, 폰트 자간, 헤더/내비게이션, 카드 섀도우를 공유하는
 '시험 공부' 통합 허브 HTML 생성 스크립트
 """
 
 import json
-import re
 import os
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 json_path = os.path.join(base_dir, 'cppg_questions.json')
 js_path = os.path.join(base_dir, 'cppg_questions.js')
-custom_js_path = os.path.join(base_dir, 'custom_study.js')
-infosec_js_path = os.path.join(base_dir, 'infosec_exam_data.js')
 out_path = os.path.join(base_dir, 'study.html')
 
 with open(json_path, 'r', encoding='utf-8') as f:
@@ -30,388 +28,854 @@ html_content = """<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>시험 공부 & 맞춤 AI 스터디 허브 | Infosec Archive</title>
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <title>시험 공부 &amp; 맞춤 AI 스터디 허브 | Infosec Archive</title>
+  <meta name="description" content="CPPG 실전 300제, 정보보안기사(필기·실기), ISMS-P 인증심사원 기출 퀴즈와 전 과목 핵심 요약노트 및 파일/URL 맞춤 분석 학습 허브입니다.">
   <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
     :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8fafc;
-      --bg-card: #ffffff;
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+      
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
       --text-primary: #0f172a;
       --text-secondary: #475569;
       --text-muted: #94a3b8;
-      --border-color: #e2e8f0;
-      --accent: #2563eb;
-      --accent-soft: #eff6ff;
+      
+      --accent-primary: #2563eb;
       --accent-hover: #1d4ed8;
-      --success: #16a34a;
-      --success-soft: #f0fdf4;
-      --danger: #dc2626;
-      --danger-soft: #fef2f2;
-      --chip-bg: #f1f5f9;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+      --accent-subtle: #eff6ff;
+      
+      --success-bg: #ecfdf5;
+      --success-text: #059669;
+      --success-border: #a7f3d0;
+      
+      --urgent-bg: #fef2f2;
+      --urgent-text: #dc2626;
+      --urgent-border: #fecaca;
+      
+      --warning-bg: #fff7ed;
+      --warning-text: #ea580c;
+      --warning-border: #fed7aa;
+      
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+      --card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
     }
+
     [data-theme="dark"] {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-card: #161f30;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-muted: #64748b;
-      --border-color: #1e293b;
-      --accent: #3b82f6;
-      --accent-soft: rgba(59, 130, 246, 0.12);
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+      
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+      
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      
+      --accent-primary: #3b82f6;
       --accent-hover: #60a5fa;
-      --success: #22c55e;
-      --success-soft: rgba(34, 197, 94, 0.12);
-      --danger: #ef4444;
-      --danger-soft: rgba(239, 68, 68, 0.12);
-      --chip-bg: #1e293b;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+      
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --success-text: #34d399;
+      --success-border: rgba(16, 185, 129, 0.3);
+      
+      --urgent-bg: rgba(239, 68, 68, 0.15);
+      --urgent-text: #f87171;
+      --urgent-border: rgba(239, 68, 68, 0.3);
+      
+      --warning-bg: rgba(234, 88, 12, 0.15);
+      --warning-text: #fb923c;
+      --warning-border: rgba(234, 88, 12, 0.3);
+      
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+      --card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, sans-serif; }
-    body { background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-    
-    .navbar { position: sticky; top: 0; z-index: 50; background: var(--bg-primary); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(8px); }
-    .nav-container { max-width: 1100px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
-    .nav-left { display: flex; align-items: center; gap: 16px; }
-    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
-    .brand-logo-img { width: 32px; height: 32px; border-radius: 8px; }
-    .brand-name { font-weight: 700; font-size: 17px; }
-    .nav-tabs { display: flex; gap: 6px; }
-    .nav-tab-item { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--text-secondary); transition: all 0.2s; }
-    .nav-tab-item:hover { background: var(--chip-bg); color: var(--text-primary); }
-    .nav-tab-item.active { background: var(--accent); color: #ffffff !important; }
-    .nav-right { display: flex; align-items: center; gap: 10px; }
-    .theme-btn { background: none; border: 1px solid var(--border-color); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; }
-    
-    .main-wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px 80px; }
-    .hero { margin-bottom: 20px; text-align: center; }
-    .hero-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; border-radius: 20px; margin-bottom: 10px; }
-    .hero-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
-    .hero-desc { font-size: 14px; color: var(--text-secondary); }
 
-    /* Category Bar */
-    .category-section { margin-bottom: 20px; }
-    .category-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .category-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-    .category-bar::-webkit-scrollbar { display: none; }
-    .cat-chip { flex-shrink: 0; padding: 8px 16px; border-radius: 22px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; user-select: none; }
-    .cat-chip:hover { border-color: var(--accent); color: var(--accent); }
-    .cat-chip.active { background: var(--accent); color: #ffffff; border-color: var(--accent); box-shadow: 0 2px 6px rgba(37,99,235,0.25); }
-    .cat-chip.add-chip { border-style: dashed; background: var(--chip-bg); }
-    .cat-chip.add-chip:hover { border-color: var(--accent); }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    /* Add Resource Panel */
-    .add-resource-panel { display: none; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 22px; margin-bottom: 24px; box-shadow: var(--shadow-sm); animation: fadeIn 0.2s ease; }
-    .add-resource-panel.open { display: block; }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-    .panel-title { font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-    .panel-close { background: none; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer; padding: 4px; }
-    .panel-form { display: flex; flex-direction: column; gap: 14px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-    .form-input { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-size: 13px; outline: none; }
-    .form-input:focus { border-color: var(--accent); }
-    
-    .source-type-selector { display: flex; gap: 8px; }
-    .source-type-btn { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--chip-bg); color: var(--text-secondary); font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center; }
-    .source-type-btn.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
-    
-    .drop-zone { border: 2px dashed var(--border-color); border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg-secondary); }
-    .drop-zone:hover { border-color: var(--accent); background: var(--accent-soft); }
-    .drop-icon { font-size: 28px; margin-bottom: 6px; }
-    .drop-text { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-    .drop-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
-    
-    .panel-options { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
-    .option-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); cursor: pointer; }
-    .submit-btn { padding: 11px 16px; border-radius: 8px; border: none; background: var(--accent); color: #ffffff; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; }
-    .submit-btn:hover { background: var(--accent-hover); }
-    .panel-quick-guide { margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: var(--accent-soft); border-left: 3px solid var(--accent); font-size: 12.5px; color: var(--accent); line-height: 1.5; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
 
-    /* Stats Grid */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; }
-    .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
-    .stat-val { font-size: 22px; font-weight: 800; color: var(--text-primary); }
-    .stat-val.accent { color: var(--accent); }
+    /* Global Header (index.html과 100% 동일) */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
 
-    /* Mode Tabs */
-    .mode-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+    .nav-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+
+    .nav-tabs {
+      display: flex;
       gap: 6px;
-      max-width: 680px;
-      margin: 0 auto 20px;
-      background: var(--chip-bg);
-      padding: 4px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
+      margin-left: 10px;
     }
-    .mode-btn {
-      padding: 9px 8px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 13px;
+
+    .nav-tab-item {
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 12.5px;
       font-weight: 600;
-      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-secondary);
       transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab-item:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .nav-tab-item.active {
+      background: var(--accent-primary);
+      color: #ffffff !important;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .update-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      white-space: nowrap;
-      user-select: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .mode-btn:hover { color: var(--text-primary); }
-    .mode-btn.active {
-      background: var(--bg-card);
-      color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-      font-weight: 700;
-    }
-    .mode-label-short { display: none; }
-    .mode-label-full { display: inline; }
 
-    /* Exam Tabs */
-    .exam-tabs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
+    .icon-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
     }
-    .exam-tab {
-      padding: 9px 8px;
+
+    /* Main Container */
+    .main-wrap {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 28px 20px 80px;
+    }
+
+    /* Hero Section */
+    .hero {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Category Bar Section */
+    .category-section {
+      margin-bottom: 20px;
+    }
+
+    .category-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-bar::-webkit-scrollbar { display: none; }
+
+    .cat-chip {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      box-shadow: var(--card-shadow);
+    }
+
+    .cat-chip:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    .cat-chip.active {
+      background: var(--text-primary);
+      color: var(--bg-surface) !important;
+      border-color: var(--text-primary);
+    }
+
+    .cat-chip.add-chip {
+      background: var(--bg-subtle);
+      border-style: dashed;
+      color: var(--accent-primary);
+    }
+    .cat-chip.add-chip:hover {
+      border-color: var(--accent-primary);
+      background: var(--accent-subtle);
+    }
+
+    /* Add Resource Panel */
+    .add-resource-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      display: none;
+    }
+    .add-resource-panel.show { display: block; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .panel-close:hover { color: var(--text-primary); }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
       border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
+      border: 1px solid var(--border-default);
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .form-input:focus { border-color: var(--accent-primary); }
+
+    .source-type-selector { display: flex; gap: 8px; margin-bottom: 12px; }
+    .source-type-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
       color: var(--text-secondary);
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.15s;
+    }
+    .source-type-btn.active {
+      border-color: var(--accent-primary);
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border-strong);
+      border-radius: 10px;
+      padding: 24px;
       text-align: center;
-      white-space: nowrap;
-      user-select: none;
+      cursor: pointer;
+      background: var(--bg-page);
+      transition: all 0.15s;
     }
-    .exam-tab:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .exam-tab.active {
-      background: var(--accent);
+    .drop-zone:hover { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .drop-icon { font-size: 28px; margin-bottom: 8px; color: var(--text-muted); }
+    .drop-text { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .drop-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+    .panel-options { display: flex; flex-direction: column; gap: 8px; }
+    .option-check { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-secondary); cursor: pointer; }
+    .option-check input { accent-color: var(--accent-primary); }
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--accent-primary);
       color: #ffffff;
-      border-color: var(--accent);
-      box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+      border: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
     }
-    .exam-label-short { display: none; }
-    .exam-label-full { display: inline; }
+    .submit-btn:hover { background: var(--accent-hover); }
+
+    /* Top Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.15s ease;
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-val {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .stat-val.accent { color: var(--accent-primary); }
+
+    /* Mode Segmented Control Bar */
+    .mode-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-default);
+    }
+
+    .mode-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .mode-btn:hover { color: var(--text-primary); }
+
+    .mode-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: var(--card-shadow);
+    }
 
     /* Controls Bar */
     .controls-bar {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 12px;
       margin-bottom: 20px;
     }
-    .subj-filters {
+
+    .exam-btn-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .exam-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      box-shadow: var(--card-shadow);
+    }
+
+    .exam-btn:hover { border-color: var(--border-strong); color: var(--text-primary); }
+
+    .exam-btn.active {
+      border-color: var(--accent-primary);
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+    }
+
+    .filter-and-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .subj-chips-scroll {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 4px;
-      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      flex: 1;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
     }
-    .subj-filters::-webkit-scrollbar { display: none; }
-    .subj-chip {
-      flex-shrink: 0;
-      padding: 6px 12px;
+    .subj-chips-scroll::-webkit-scrollbar { display: none; }
+
+    .filter-pill {
+      padding: 5px 12px;
       border-radius: 16px;
-      border: 1px solid var(--border-color);
-      background: var(--chip-bg);
-      color: var(--text-secondary);
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.15s;
       white-space: nowrap;
-    }
-    .subj-chip.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: var(--accent);
-      font-weight: 700;
+      transition: all 0.15s ease;
     }
 
-    .tools-wrap { display: flex; gap: 6px; flex-shrink: 0; }
+    .filter-pill:hover { border-color: var(--border-strong); color: var(--text-primary); }
+
+    .filter-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-surface);
+      border-color: var(--text-primary);
+    }
+
+    .tools-wrap {
+      display: flex;
+      gap: 6px;
+    }
+
     .tool-btn {
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
       color: var(--text-secondary);
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 11.5px;
+      font-weight: 600;
       cursor: pointer;
-      white-space: nowrap;
       transition: all 0.15s;
     }
-    .tool-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
-    .tool-btn.active { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
 
-    /* Questions List */
-    .questions-list { display: flex; flex-direction: column; gap: 16px; }
-    .q-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-sm); }
-    .q-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .q-badge-wrap { display: flex; gap: 6px; }
-    .q-exam-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--chip-bg); color: var(--text-secondary); font-weight: 600; }
-    .q-subj-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-    .q-index { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+    .tool-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+    .tool-btn.active { background: var(--urgent-bg); color: var(--urgent-text); border-color: var(--urgent-border); }
 
-    .q-prompt { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; line-height: 1.6; }
-    .q-choices { display: flex; flex-direction: column; gap: 8px; }
+    /* Question Cards */
+    .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .q-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      transition: border-color 0.15s ease;
+    }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .q-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+    }
+
+    .q-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-left: auto;
+    }
+
+    .q-prompt {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+    }
+
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .choice-row {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 12px 14px;
-      border: 1px solid var(--border-color);
+      padding: 10px 14px;
       border-radius: 8px;
-      background: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      background: var(--bg-page);
+      color: var(--text-primary);
       cursor: pointer;
-      transition: all 0.15s;
       font-size: 13.5px;
       line-height: 1.5;
-      word-break: keep-all;
-      overflow-wrap: break-word;
+      transition: all 0.15s ease;
     }
-    .choice-row:hover:not(.disabled) { border-color: var(--accent); background: var(--accent-soft); }
+
+    .choice-row:hover {
+      border-color: var(--accent-primary);
+      background: var(--accent-subtle);
+    }
+
     .choice-circle {
-      flex-shrink: 0;
       width: 22px;
       height: 22px;
-      margin-top: 1px;
       border-radius: 50%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
-      background: var(--chip-bg);
       color: var(--text-secondary);
+      flex-shrink: 0;
+      margin-top: 1px;
     }
-    
-    .choice-row.correct { border-color: var(--success); background: var(--success-soft); color: var(--success); font-weight: 600; }
-    .choice-row.correct .choice-circle { background: var(--success); color: #fff; }
-    .choice-row.wrong { border-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
-    .choice-row.wrong .choice-circle { background: var(--danger); color: #fff; }
-    .choice-row.disabled { cursor: default; }
 
-    .exp-panel { margin-top: 12px; padding: 14px; border-radius: 8px; background: var(--chip-bg); font-size: 13px; line-height: 1.5; }
-    .exp-title { font-weight: 700; color: var(--accent); margin-bottom: 4px; }
-    .exp-body { color: var(--text-secondary); white-space: pre-wrap; }
+    .choice-text { flex: 1; }
 
-    /* Summary section */
-    .summary-section { display: none; flex-direction: column; gap: 20px; }
-    .summary-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; box-shadow: var(--shadow-sm); }
-    .summary-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; }
-    .summary-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
-    .summary-badge { font-size: 12px; padding: 3px 10px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-    .summary-topic { margin-bottom: 16px; }
-    .summary-topic-title { font-size: 14.5px; font-weight: 700; color: var(--accent); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-    .summary-topic ul { list-style: none; padding-left: 0; }
-    .summary-topic li { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.5; padding-left: 14px; position: relative; }
-    .summary-topic li::before { content: "•"; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
-    .summary-topic table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12.5px; }
-    .summary-topic th, .summary-topic td { border: 1px solid var(--border-color); padding: 8px 10px; text-align: left; }
-    .summary-topic th { background: var(--chip-bg); font-weight: 600; color: var(--text-primary); }
+    /* Answer States */
+    .choice-row.correct {
+      border-color: #10b981 !important;
+      background: var(--success-bg) !important;
+      color: var(--success-text) !important;
+      font-weight: 600;
+    }
+    .choice-row.correct .choice-circle {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
 
-    /* Custom AI Analysis Tab */
-    .custom-section { display: none; flex-direction: column; gap: 20px; }
-    .custom-hero-banner { background: linear-gradient(135deg, rgba(37,99,235,0.08) 0%, rgba(99,102,241,0.08) 100%); border: 1px solid rgba(37,99,235,0.2); border-radius: 12px; padding: 20px; margin-bottom: 8px; }
-    .custom-hero-title { font-size: 17px; font-weight: 800; color: var(--accent); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-    .custom-hero-desc { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
-    .custom-guide-card { background: var(--bg-card); border: 1px dashed var(--accent); border-radius: 12px; padding: 18px 20px; display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
-    .custom-guide-icon { font-size: 24px; flex-shrink: 0; }
-    .custom-guide-title { font-size: 14.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-    .custom-guide-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
-    .custom-unit-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 22px; box-shadow: var(--shadow-sm); }
-    .custom-unit-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-    .custom-unit-title { font-size: 17px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
-    .custom-unit-meta { font-size: 12px; color: var(--text-muted); }
-    .custom-takeaways { background: var(--bg-secondary); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 14px; }
-    .custom-takeaways-title { font-size: 12.5px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
-    .custom-takeaways li { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; list-style: none; position: relative; padding-left: 12px; }
-    .custom-takeaways li::before { content: "-"; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
-    .custom-terms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 16px; }
-    .custom-term-card { background: var(--chip-bg); border-radius: 8px; padding: 10px 12px; font-size: 12.5px; }
-    .custom-term-name { font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
-    .custom-term-desc { color: var(--text-secondary); line-height: 1.45; }
-    .custom-traps { background: var(--danger-soft); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; }
-    .custom-traps-title { font-size: 12px; font-weight: 700; color: var(--danger); margin-bottom: 4px; }
-    .custom-traps li { font-size: 12.5px; color: var(--text-secondary); list-style: none; margin-bottom: 3px; }
+    .choice-row.wrong {
+      border-color: #ef4444 !important;
+      background: var(--urgent-bg) !important;
+      color: var(--urgent-text) !important;
+    }
+    .choice-row.wrong .choice-circle {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #ffffff;
+    }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    /* Explanation Box */
+    .exp-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      font-size: 12.5px;
+      line-height: 1.6;
+      display: none;
+    }
+    .exp-box.show { display: block; }
+    .exp-header { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .exp-header.correct { color: #10b981; }
+    .exp-header.wrong { color: #ef4444; }
 
+    /* Summary Note Cards */
+    .summary-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .summary-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .summary-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .summary-topic {
+      margin-bottom: 14px;
+    }
+    .summary-topic:last-child { margin-bottom: 0; }
+
+    .summary-topic-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .summary-topic ul {
+      list-style: none;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .summary-topic li {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding-left: 12px;
+      position: relative;
+    }
+    .summary-topic li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-primary);
+    }
+
+    /* Custom AI Banner */
+    .custom-section { display: none; }
+    .custom-hero-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
+    }
+    .custom-hero-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .custom-hero-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    .custom-guide-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .custom-guide-icon { font-size: 20px; line-height: 1; }
+    .custom-guide-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .custom-guide-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Footer */
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* Responsive */
     @media (max-width: 640px) {
-      .nav-container { padding: 8px 12px; }
-      .nav-left { gap: 8px; }
-      .brand-name { font-size: 14px; }
-      .brand-logo-img { width: 24px; height: 24px; }
-      .nav-tabs { gap: 4px; }
-      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; }
-      .theme-btn { width: 30px; height: 30px; font-size: 11px; }
-
       .main-wrap { padding: 16px 12px 60px; }
-      .hero { margin-bottom: 14px; }
-      .hero-pill { font-size: 11px; padding: 3px 10px; margin-bottom: 6px; }
-      .hero-title { font-size: 19px; }
-      .hero-desc { font-size: 12.5px; }
-
-      .category-section { margin-bottom: 16px; }
-      .cat-chip { padding: 7px 13px; font-size: 12px; }
-
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 16px; }
-      .stat-card { padding: 10px 6px; }
-      .stat-val { font-size: 18px; }
-
-      .mode-tabs { gap: 3px; padding: 3px; margin-bottom: 16px; }
-      .mode-btn { padding: 8px 4px; font-size: 12px; gap: 4px; }
-      .mode-label-full { display: none; }
-      .mode-label-short { display: inline; }
-
-      .exam-tabs { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 12px; }
-      .exam-tab { padding: 8px 6px; font-size: 12px; }
-      .exam-label-full { display: none; }
-      .exam-label-short { display: inline; }
-
-      .controls-bar { flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 14px; }
-      .subj-filters { padding-bottom: 2px; }
-      .subj-chip { padding: 5px 10px; font-size: 11.5px; }
-      .tools-wrap { justify-content: flex-end; gap: 6px; }
-      .tool-btn { padding: 5px 10px; font-size: 11px; }
-
-      .q-card { padding: 16px 12px; }
-      .q-prompt { font-size: 14px; margin-bottom: 12px; }
-      .choice-row { padding: 9px 10px; font-size: 12.5px; gap: 8px; }
-      .choice-circle { width: 20px; height: 20px; font-size: 11px; }
+      .hero-title { font-size: 22px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-card { padding: 10px 12px; }
+      .stat-val { font-size: 17px; }
+      .exam-btn-group { grid-template-columns: repeat(2, 1fr); }
+      .q-card { padding: 16px 14px; }
+      .q-prompt { font-size: 14px; }
+      .choice-row { padding: 8px 10px; font-size: 12.5px; }
     }
   </style>
 </head>
 <body>
-  <nav class="navbar">
+
+  <!-- Global Nav (index.html과 100% 동일 구조) -->
+  <header class="navbar">
     <div class="nav-container">
-      <div class="nav-left">
-        <a href="index.html" class="nav-brand">
-          <img src="logo.png" alt="Infosec Archive" class="brand-logo-img">
+      <div class="nav-brand">
+        <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;">
+          <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
           <span class="brand-name">Infosec Archive</span>
         </a>
         <div class="nav-tabs">
@@ -419,24 +883,33 @@ html_content = """<!DOCTYPE html>
           <a href="study.html" class="nav-tab-item active">시험 공부</a>
         </div>
       </div>
-      <div class="nav-right">
-        <button class="theme-btn" id="btnTheme" title="테마 전환">🌓</button>
+
+      <div class="nav-actions">
+        <div class="update-meta">
+          <span class="live-dot"></span>
+          <span>스터디 허브</span>
+        </div>
+        <button class="icon-btn" id="themeToggle" title="화면 테마 전환" aria-label="화면 테마 전환">
+          <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <svg id="sunIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
       </div>
     </div>
-  </nav>
+  </header>
 
   <div class="main-wrap">
+    <!-- Hero -->
     <div class="hero">
-      <div class="hero-pill">📚 IT·보안 자격증 & 시험 공부 허브</div>
-      <h1 class="hero-title" id="pageMainTitle">시험 공부 & 맞춤 AI 스터디 허브</h1>
-      <p class="hero-desc" id="pageMainDesc">자격증별 실전 기출·모의고사 즉시 채점, 핵심 요약노트 및 파일/URL 맞춤 분석</p>
+      <div class="hero-pill">📚 IT·보안 자격증 &amp; 시험 공부 허브</div>
+      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 노트</h1>
+      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL AI 맞춤 분석</p>
     </div>
 
     <!-- Exam Category Selector -->
     <div class="category-section">
       <div class="category-label">
         <span>시험 종목 / 학습 카테고리</span>
-        <span id="activeExamBadge" style="color:var(--accent);">📜 개인정보관리사(CPPG)</span>
+        <span id="activeExamBadge" style="color:var(--accent-primary);">📜 개인정보관리사(CPPG)</span>
       </div>
       <div class="category-bar" id="categoryBar">
         <button class="cat-chip active" data-cat="cppg">📜 개인정보관리사 (CPPG)</button>
@@ -448,7 +921,7 @@ html_content = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- Add Resource Panel (파일 및 URL 첨부하여 카테고리 생성) -->
+    <!-- Add Resource Panel -->
     <div class="add-resource-panel" id="addResourcePanel">
       <div class="panel-header">
         <div class="panel-title">
@@ -499,15 +972,10 @@ html_content = """<!DOCTYPE html>
           <span>🚀</span>
           <span>엑사원 AI 분석 &amp; 카테고리 퀴즈 생성</span>
         </button>
-
-        <div class="panel-quick-guide">
-          <strong>💡 피클 비서 연동 안내:</strong><br>
-          피클 채팅창에 직접 PDF 수험서나 공부할 웹 URL 링크를 첨부해 주시면, 엑사원 AI가 전체 텍스트를 정밀 파싱하여 이 화면 상단 카테고리에 새 시험 탭으로 자동 생성하고 배포해 드립니다!
-        </div>
       </div>
     </div>
 
-    <!-- Stats -->
+    <!-- Top Stats -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-label">현재 회차 문항</div>
@@ -523,69 +991,42 @@ html_content = """<!DOCTYPE html>
       </div>
       <div class="stat-card">
         <div class="stat-label">정답률 / 합격진단</div>
-        <div class="stat-val accent" id="topRate">0%</div>
+        <div class="stat-val" id="topRate">0%</div>
       </div>
     </div>
 
-    <!-- Mode Tabs: 실전 퀴즈 / 요약노트 / 맞춤 AI -->
-    <div class="mode-tabs">
-      <button class="mode-btn active" id="btnModeQuiz" onclick="switchMode('quiz')">
-        <span class="mode-icon">📝</span>
-        <span class="mode-label-full" id="lblModeQuiz">실전 모의고사 (300제)</span>
-        <span class="mode-label-short" id="lblModeQuizShort">실전 300제</span>
+    <!-- Mode Selector -->
+    <div class="mode-nav-grid" id="modeNavGrid">
+      <button class="mode-btn active" data-mode="quiz" id="modeQuizBtn">
+        <span>📝</span><span id="modeQuizLabel">실전 모의고사 (300제)</span>
       </button>
-      <button class="mode-btn" id="btnModeSummary" onclick="switchMode('summary')">
-        <span class="mode-icon">📖</span>
-        <span class="mode-label-full">전 과목 핵심 요약노트</span>
-        <span class="mode-label-short">핵심노트</span>
+      <button class="mode-btn" data-mode="summary" id="modeSummaryBtn">
+        <span>📖</span><span id="modeSummaryLabel">전 과목 핵심 요약노트</span>
       </button>
-      <button class="mode-btn" id="btnModeCustom" onclick="switchMode('custom')">
-        <span class="mode-icon">🔬</span>
-        <span class="mode-label-full">맞춤 AI 분석 &amp; 퀴즈</span>
-        <span class="mode-label-short">맞춤 AI</span>
+      <button class="mode-btn" data-mode="custom" id="modeCustomBtn">
+        <span>🔬</span><span id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
       </button>
     </div>
 
-    <!-- QUIZ VIEW -->
-    <div id="quizSection">
-      <!-- Exam Selector -->
-      <div class="exam-tabs" id="examTabsContainer">
-        <button class="exam-tab active" data-exam="1">
-          <span class="exam-label-full">1회 실전 모의고사 (100문항)</span>
-          <span class="exam-label-short">1회 (100제)</span>
-        </button>
-        <button class="exam-tab" data-exam="2">
-          <span class="exam-label-full">2회 실전 모의고사 (100문항)</span>
-          <span class="exam-label-short">2회 (100제)</span>
-        </button>
-        <button class="exam-tab" data-exam="3">
-          <span class="exam-label-full">3회 실전 모의고사 (100문항)</span>
-          <span class="exam-label-short">3회 (100제)</span>
-        </button>
-        <button class="exam-tab" data-exam="0">
-          <span class="exam-label-full">전체 300제 집중 풀이</span>
-          <span class="exam-label-short">전체 300제</span>
-        </button>
+    <!-- Controls Bar -->
+    <div class="controls-bar" id="controlsBar">
+      <div class="exam-btn-group" id="examBtnGroup">
+        <!-- Rendered dynamically -->
       </div>
-
-      <!-- Controls & Filter -->
-      <div class="controls-bar">
-        <div class="subj-filters" id="subjFiltersContainer">
-          <div class="subj-chip active" data-subj="0">전체</div>
-          <div class="subj-chip" data-subj="1">1과목: 이해</div>
-          <div class="subj-chip" data-subj="2">2과목: 제도</div>
-          <div class="subj-chip" data-subj="3">3과목: 라이프사이클</div>
-          <div class="subj-chip" data-subj="4">4과목: 보호조치</div>
-          <div class="subj-chip" data-subj="5">5과목: 관리체계</div>
+      <div class="filter-and-tools">
+        <div class="subj-chips-scroll" id="subjPills">
+          <!-- Rendered dynamically -->
         </div>
         <div class="tools-wrap">
           <button class="tool-btn" id="btnWrongOnly">오답만 보기</button>
           <button class="tool-btn" id="btnReset">풀이 초기화</button>
         </div>
       </div>
+    </div>
 
-      <!-- Questions Container -->
-      <div class="questions-list" id="questionsContainer"></div>
+    <!-- QUIZ VIEW -->
+    <div class="questions-list" id="questionsList">
+      <!-- Questions rendered dynamically -->
     </div>
 
     <!-- SUMMARY VIEW -->
@@ -618,28 +1059,56 @@ html_content = """<!DOCTYPE html>
       <div id="customUnitsList"></div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+      <p>Infosec Archive · 자격증 &amp; 시험 공부 허브</p>
+      <p>개인정보관리사(CPPG) · 정보보안기사(필기/실기) · ISMS-P 인증심사원 · 엑사원 AI 맞춤 분석</p>
+    </footer>
+
   </div>
 
   <script src="cppg_questions.js"></script>
   <script src="infosec_exam_data.js"></script>
   <script src="custom_study.js"></script>
   <script>
-    // Theme
-    const btnTheme = document.getElementById('btnTheme');
-    const root = document.documentElement;
-    let isDark = localStorage.getItem('theme') === 'dark';
-    function applyTheme() {
-      root.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    // Theme Engine (index.html과 100% 동일한 secjobs-theme 동기화)
+    const themeToggle = document.getElementById('themeToggle');
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+
+    function initTheme() {
+      const saved = localStorage.getItem('secjobs-theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
     }
-    applyTheme();
-    btnTheme.addEventListener('click', () => {
-      isDark = !isDark;
-      applyTheme();
-    });
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (moonIcon) moonIcon.style.display = 'none';
+        if (sunIcon) sunIcon.style.display = 'block';
+        localStorage.setItem('secjobs-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (moonIcon) moonIcon.style.display = 'block';
+        if (sunIcon) sunIcon.style.display = 'none';
+        localStorage.setItem('secjobs-theme', 'light');
+      }
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setTheme(isDark ? 'light' : 'dark');
+      });
+    }
+    initTheme();
 
     // Global State
-    let currentCategory = 'cppg'; // cppg | infosec_engineer | ismsp_auditor | custom
+    let currentCategory = 'cppg'; // cppg | infosec_written | infosec_practical | ismsp_auditor | custom
     let currentMode = 'quiz'; // quiz | summary | custom
     let currentExam = 1;
     let currentSubj = 0;
@@ -647,13 +1116,13 @@ html_content = """<!DOCTYPE html>
     let userAnswers = {};
 
     try {
-      const saved = localStorage.getItem('study_user_answers_v3');
+      const saved = localStorage.getItem('study_user_answers_v4');
       if (saved) userAnswers = JSON.parse(saved);
     } catch(e) {}
 
     function saveUserAnswers() {
       try {
-        localStorage.setItem('study_user_answers_v3', JSON.stringify(userAnswers));
+        localStorage.setItem('study_user_answers_v4', JSON.stringify(userAnswers));
       } catch(e) {}
     }
 
@@ -681,7 +1150,7 @@ html_content = """<!DOCTYPE html>
         ]
       },
       infosec_written: {
-        title: "🛡️ 정보보안기사(필기)",
+        title: "🛡️ 정보보안기사 (필기)",
         mainTitle: "정보보안기사 필기 기출 모의고사 & 5대 과목 핵심요약",
         mainDesc: "시스템·네트워크·애플리케이션·정보보안일반·법규 5대 전 과목 핵심 기출 모의고사(총 50문항) 및 상세 해설",
         quizLabel: "필기 모의고사",
@@ -701,7 +1170,7 @@ html_content = """<!DOCTYPE html>
         ]
       },
       infosec_practical: {
-        title: "⚔️ 정보보안기사(실기)",
+        title: "⚔️ 정보보안기사 (실기)",
         mainTitle: "정보보안기사 실기 단답형·서술형 족보 & 실무 가이드",
         mainDesc: "단답형 핵심 명령어 · 시스템/네트워크 실무 설정 · 시큐어코딩 진단 · 법규 서술형 모범 답안 (총 30문항)",
         quizLabel: "실기 실전 문제",
@@ -739,128 +1208,158 @@ html_content = """<!DOCTYPE html>
       custom: {
         title: "🔬 맞춤 분석 (파일·URL)",
         mainTitle: "파일·웹 URL AI 맞춤 분석 & 출제 세트",
-        mainDesc: "첨부 문서와 웹 문서를 엑사원 AI로 분석한 핵심 서머리와 실전 모의고사",
-        quizLabel: "맞춤 퀴즈 풀이",
+        mainDesc: "LG 엑사원(EXAONE) AI로 분석한 핵심 요약 및 맞춤형 5지선다 실전 퀴즈",
+        quizLabel: "맞춤 퀴즈 풀기",
         quizLabelShort: "맞춤 퀴즈",
         exams: [
-          { id: 1, full: "맞춤 분석 1차 세트", short: "1차 세트" },
-          { id: 0, full: "전체 맞춤 퀴즈 풀이", short: "전체 풀이" }
+          { id: 1, full: "엑사원 맞춤 분석 퀴즈", short: "맞춤 퀴즈" },
+          { id: 0, full: "전체 맞춤 문제 풀이", short: "전체 풀이" }
         ],
         subjects: [
-          { id: 0, name: "전체" },
-          { id: 1, name: "PIA 영향평가" },
-          { id: 2, name: "72h 유출통지" },
-          { id: 3, name: "안전성확보조치" }
+          { id: 0, name: "전체" }
         ]
       }
     };
 
-    // Category Tabs Click
-    const categoryBar = document.getElementById('categoryBar');
-    const catChips = categoryBar.querySelectorAll('.cat-chip');
+    // DOM Elements
+    const pageMainTitle = document.getElementById('pageMainTitle');
+    const pageMainDesc = document.getElementById('pageMainDesc');
     const activeExamBadge = document.getElementById('activeExamBadge');
+    const categoryBar = document.getElementById('categoryBar');
     const addResourcePanel = document.getElementById('addResourcePanel');
+    const btnAddResource = document.getElementById('btnAddResource');
+    const btnCloseAddPanel = document.getElementById('btnCloseAddPanel');
 
-    catChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        const catKey = chip.getAttribute('data-cat');
-        if (catKey === 'add_new') {
-          addResourcePanel.classList.toggle('open');
-          if (addResourcePanel.classList.contains('open')) {
-            addResourcePanel.scrollIntoView({ behavior: 'smooth' });
-          }
-          return;
-        }
+    const modeNavGrid = document.getElementById('modeNavGrid');
+    const modeQuizBtn = document.getElementById('modeQuizBtn');
+    const modeSummaryBtn = document.getElementById('modeSummaryBtn');
+    const modeCustomBtn = document.getElementById('modeCustomBtn');
+    const modeQuizLabel = document.getElementById('modeQuizLabel');
 
-        catChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        currentCategory = catKey;
-        activeExamBadge.textContent = CATEGORIES[catKey].title;
-        currentExam = 1;
-        currentSubj = 0;
-        wrongOnly = false;
-        
-        // Hide panel if open
-        addResourcePanel.classList.remove('open');
+    const controlsBar = document.getElementById('controlsBar');
+    const examBtnGroup = document.getElementById('examBtnGroup');
+    const subjPills = document.getElementById('subjPills');
+    const questionsList = document.getElementById('questionsList');
+    const summarySection = document.getElementById('summarySection');
+    const customSection = document.getElementById('customSection');
 
-        updateCategoryUI();
+    // Add Resource Panel Toggle
+    btnAddResource.addEventListener('click', (e) => {
+      e.stopPropagation();
+      addResourcePanel.classList.toggle('show');
+      if (addResourcePanel.classList.contains('show')) {
+        addResourcePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+    btnCloseAddPanel.addEventListener('click', () => {
+      addResourcePanel.classList.remove('show');
+    });
+
+    // Category Switching
+    categoryBar.querySelectorAll('.cat-chip:not(.add-chip)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-cat');
+        switchCategory(cat);
       });
     });
 
-    document.getElementById('btnCloseAddPanel').addEventListener('click', () => {
-      addResourcePanel.classList.remove('open');
-    });
+    function switchCategory(cat) {
+      if (!CATEGORIES[cat]) return;
+      currentCategory = cat;
+      currentExam = 1;
+      currentSubj = 0;
 
-    function setSourceType(type) {
-      document.getElementById('btnSourceFile').classList.toggle('active', type === 'file');
-      document.getElementById('btnSourceUrl').classList.toggle('active', type === 'url');
-      document.getElementById('fileInputGroup').style.display = type === 'file' ? 'flex' : 'none';
-      document.getElementById('urlInputGroup').style.display = type === 'url' ? 'flex' : 'none';
-    }
+      // Update Active Category Chip
+      categoryBar.querySelectorAll('.cat-chip:not(.add-chip)').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-cat') === cat);
+      });
 
-    function handleFileSelect(e) {
-      const file = e.target.files[0];
-      if (file) {
-        document.getElementById('dropFileName').textContent = `선택된 파일: ${file.name} (${Math.round(file.size / 1024)} KB)`;
-        if (!document.getElementById('newCategoryTitle').value) {
-          document.getElementById('newCategoryTitle').value = file.name.replace(/\\.[^/.]+$/, "");
-        }
+      const conf = CATEGORIES[cat];
+      pageMainTitle.textContent = conf.mainTitle;
+      pageMainDesc.textContent = conf.mainDesc;
+      activeExamBadge.textContent = conf.title;
+
+      // Update Mode Labels
+      modeQuizLabel.textContent = window.innerWidth <= 640 ? conf.quizLabelShort : conf.quizLabel;
+
+      if (cat === 'custom') {
+        switchMode('custom');
+      } else {
+        if (currentMode === 'custom') currentMode = 'quiz';
+        switchMode(currentMode);
       }
+
+      renderControls();
+      updateStats();
+      renderQuestions();
     }
 
-    function requestAnalysis() {
-      const title = document.getElementById('newCategoryTitle').value.trim() || '새 맞춤 학습자료';
-      alert(`[분석 요청 접수]\\n\\n'${title}' 자료의 AI 분석 요청이 접수되었습니다!\\n피클 채팅창에 해당 파일이나 웹 URL을 공유해 주시면 엑사원 AI가 실전 문제와 요약노트로 추출하여 이 화면 상단에 새 카테고리로 정식 배포해 드립니다.`);
-      addResourcePanel.classList.remove('open');
-    }
-
-    function updateCategoryUI() {
-      const catConfig = CATEGORIES[currentCategory];
-      document.getElementById('pageMainTitle').textContent = catConfig.mainTitle;
-      document.getElementById('pageMainDesc').textContent = catConfig.mainDesc;
-      document.getElementById('lblModeQuiz').textContent = catConfig.quizLabel;
-      document.getElementById('lblModeQuizShort').textContent = catConfig.quizLabelShort;
-
-      // Render Exam Tabs
-      const examContainer = document.getElementById('examTabsContainer');
-      examContainer.innerHTML = '';
-      catConfig.exams.forEach((ex, idx) => {
+    function renderControls() {
+      const conf = CATEGORIES[currentCategory];
+      
+      // 1. Exam buttons
+      examBtnGroup.innerHTML = '';
+      conf.exams.forEach(ex => {
         const btn = document.createElement('button');
-        btn.className = 'exam-tab' + (ex.id === currentExam ? ' active' : '');
-        btn.setAttribute('data-exam', ex.id);
-        btn.innerHTML = `<span class="exam-label-full">${ex.full}</span><span class="exam-label-short">${ex.short}</span>`;
+        btn.className = `exam-btn ${currentExam === ex.id ? 'active' : ''}`;
+        btn.textContent = window.innerWidth <= 640 ? ex.short : ex.full;
         btn.addEventListener('click', () => {
-          examContainer.querySelectorAll('.exam-tab').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
           currentExam = ex.id;
+          renderControls();
           updateStats();
           renderQuestions();
         });
-        examContainer.appendChild(btn);
+        examBtnGroup.appendChild(btn);
       });
 
-      // Render Subj Chips
-      const subjContainer = document.getElementById('subjFiltersContainer');
-      subjContainer.innerHTML = '';
-      catConfig.subjects.forEach(sub => {
-        const chip = document.createElement('div');
-        chip.className = 'subj-chip' + (sub.id === currentSubj ? ' active' : '');
-        chip.setAttribute('data-subj', sub.id);
-        chip.textContent = sub.name;
-        chip.addEventListener('click', () => {
-          subjContainer.querySelectorAll('.subj-chip').forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
+      // 2. Subject Pills
+      subjPills.innerHTML = '';
+      conf.subjects.forEach(sub => {
+        const pill = document.createElement('button');
+        pill.className = `filter-pill ${currentSubj === sub.id ? 'active' : ''}`;
+        pill.textContent = sub.name;
+        pill.addEventListener('click', () => {
           currentSubj = sub.id;
+          renderControls();
           renderQuestions();
         });
-        subjContainer.appendChild(chip);
+        subjPills.appendChild(pill);
+      });
+    }
+
+    // Mode Switching
+    modeNavGrid.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        switchMode(mode);
+      });
+    });
+
+    function switchMode(mode) {
+      currentMode = mode;
+      modeNavGrid.querySelectorAll('.mode-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-mode') === mode);
       });
 
-      // Render Summary View
-      renderCategorySummary();
-
-      updateStats();
-      renderQuestions();
+      if (mode === 'quiz') {
+        controlsBar.style.display = 'flex';
+        questionsList.style.display = 'flex';
+        summarySection.style.display = 'none';
+        customSection.style.display = 'none';
+        renderQuestions();
+      } else if (mode === 'summary') {
+        controlsBar.style.display = 'none';
+        questionsList.style.display = 'none';
+        summarySection.style.display = 'flex';
+        customSection.style.display = 'none';
+        renderSummaries();
+      } else if (mode === 'custom') {
+        controlsBar.style.display = 'none';
+        questionsList.style.display = 'none';
+        summarySection.style.display = 'none';
+        customSection.style.display = 'block';
+        renderCustomUnits();
+      }
     }
 
     function getQuestionsForCurrentCategory() {
@@ -933,166 +1432,164 @@ html_content = """<!DOCTYPE html>
     const circles = ['①', '②', '③', '④', '⑤'];
 
     function renderQuestions() {
-      const container = document.getElementById('questionsContainer');
-      container.innerHTML = '';
-      const list = getFilteredQuestions();
+      let list = getFilteredQuestions();
+      if (wrongOnly) {
+        list = list.filter(q => userAnswers[q.id] && !userAnswers[q.id].isCorrect);
+      }
 
-      let displayedCount = 0;
+      questionsList.innerHTML = '';
+      if (list.length === 0) {
+        questionsList.innerHTML = `
+          <div style="text-align:center; padding: 48px 16px; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 12px;">
+            <div style="font-size:24px; margin-bottom:8px;">🔍</div>
+            <div style="font-size:14px; font-weight:600;">조건에 해당하는 문제가 없습니다.</div>
+            <div style="font-size:12px; margin-top:4px;">오답만 보기 필터나 과목 선택을 변경해 보세요.</div>
+          </div>
+        `;
+        return;
+      }
+
       list.forEach((q, idx) => {
-        const ans = userAnswers[q.id];
-        if (wrongOnly && (!ans || ans.isCorrect)) return;
-
-        displayedCount++;
+        const uAns = userAnswers[q.id];
         const card = document.createElement('div');
         card.className = 'q-card';
-        card.id = 'q_' + q.id;
-
-        const isAnswered = !!ans;
-        const userChoice = ans ? ans.choice : null;
-        const isCorrect = ans ? ans.isCorrect : false;
 
         let choicesHtml = '';
-        (q.options || []).forEach((opt, oIdx) => {
-          const choiceNum = oIdx + 1;
-          let rowClass = 'choice-row';
-          if (isAnswered) {
-            rowClass += ' disabled';
+        q.options.forEach((optText, cIdx) => {
+          const choiceNum = cIdx + 1;
+          let extraClass = '';
+          if (uAns) {
             if (choiceNum === q.answer) {
-              rowClass += ' correct';
-            } else if (choiceNum === userChoice && !isCorrect) {
-              rowClass += ' wrong';
+              extraClass = 'correct';
+            } else if (uAns.selected === choiceNum && !uAns.isCorrect) {
+              extraClass = 'wrong';
             }
           }
+
           choicesHtml += `
-            <div class="${rowClass}" data-qid="${q.id}" data-choice="${choiceNum}">
-              <div class="choice-circle">${circles[oIdx] || choiceNum}</div>
-              <div class="choice-text">${escapeHtml(opt)}</div>
+            <div class="choice-row ${extraClass}" onclick="handleSelectChoice('${q.id}', ${choiceNum})">
+              <div class="choice-circle">${circles[cIdx]}</div>
+              <div class="choice-text">${escapeHtml(optText)}</div>
             </div>
           `;
         });
 
-        let expHtml = '';
-        if (isAnswered) {
-          expHtml = `
-            <div class="exp-panel">
-              <div class="exp-title">정답: ${circles[q.answer - 1] || q.answer} ${isCorrect ? '✅ 정답입니다!' : '❌ 오답입니다'}</div>
-              <div class="exp-body">${escapeHtml(q.explanation || '해설이 준비되어 있습니다.')}</div>
-            </div>
-          `;
-        }
+        let expShowClass = uAns ? 'show' : '';
+        let isCorrect = uAns && uAns.isCorrect;
+        let expHeaderClass = isCorrect ? 'correct' : 'wrong';
+        let expHeaderText = isCorrect ? '✅ 정답입니다!' : '❌ 오답입니다';
 
         card.innerHTML = `
           <div class="q-meta">
-            <div class="q-badge-wrap">
-              <span class="q-exam-badge">${escapeHtml(q.exam_name || (q.exam + '회 모의고사'))}</span>
-              <span class="q-subj-badge">${escapeHtml(q.subject_name || (q.subject_id + '과목'))}</span>
-            </div>
-            <div class="q-index">Q${idx + 1}</div>
+            <span class="q-badge">${escapeHtml(q.exam_name || '')}</span>
+            <span class="q-badge">${escapeHtml(q.subject_name || '')}</span>
+            <span class="q-num">Q${idx + 1}</span>
           </div>
           <div class="q-prompt">${escapeHtml(q.question)}</div>
-          <div class="q-choices">${choicesHtml}</div>
-          ${expHtml}
-        `;
-
-        card.querySelectorAll('.choice-row').forEach(row => {
-          row.addEventListener('click', () => {
-            if (userAnswers[q.id]) return;
-            const chosen = parseInt(row.getAttribute('data-choice'), 10);
-            const correct = chosen === q.answer;
-            userAnswers[q.id] = { choice: chosen, isCorrect: correct };
-            saveUserAnswers();
-            updateStats();
-            renderQuestions();
-          });
-        });
-
-        container.appendChild(card);
-      });
-
-      if (displayedCount === 0) {
-        container.innerHTML = `
-          <div style="text-align:center; padding: 40px 20px; color: var(--text-muted); font-size: 14px;">
-            ${wrongOnly ? '오답으로 체크된 문항이 없습니다. 🎉' : '선택한 조건에 해당하는 문항이 없습니다.'}
+          <div class="choices-list">${choicesHtml}</div>
+          <div class="exp-box ${expShowClass}" id="exp_${q.id}">
+            <div class="exp-header ${expHeaderClass}">
+              <span>정답: ${circles[q.answer - 1]}</span>
+              <span>${expHeaderText}</span>
+            </div>
+            <div>${escapeHtml(q.explanation)}</div>
           </div>
         `;
-      }
+
+        questionsList.appendChild(card);
+      });
     }
 
-    function renderCategorySummary() {
-      const summaryContainer = document.getElementById('summarySection');
-      summaryContainer.innerHTML = '';
+    window.handleSelectChoice = function(qid, choiceNum) {
+      if (userAnswers[qid]) return; // 풀이 고정
 
+      const all = getQuestionsForCurrentCategory();
+      const q = all.find(item => item.id === qid);
+      if (!q) return;
+
+      const isCorrect = (choiceNum === q.answer);
+      userAnswers[qid] = {
+        selected: choiceNum,
+        isCorrect: isCorrect,
+        timestamp: Date.now()
+      };
+      saveUserAnswers();
+      updateStats();
+      renderQuestions();
+    };
+
+    function renderSummaries() {
+      summarySection.innerHTML = '';
+      
       if (currentCategory === 'cppg') {
-        summaryContainer.innerHTML = `
-          <!-- 1과목 -->
+        summarySection.innerHTML = `
           <div class="summary-card">
             <div class="summary-header">
-              <div class="summary-title">1과목. 개인정보보호의 이해</div>
-              <div class="summary-badge">출제 10문항 (배점 10점)</div>
+              <div class="summary-title">1과목. 개인정보보호의 이해 (배점: 10점)</div>
+              <div class="summary-badge">핵심 요약</div>
             </div>
             <div class="summary-topic">
-              <div class="summary-topic-title">• 개인정보의 법적 정의 및 식별가능성 판단 기준</div>
+              <div class="summary-topic-title">• 개인정보의 정의 및 판단 기준</div>
               <ul>
-                <li><strong>정의 3요소:</strong> ① 살아있는 개인에 관한 정보, ② 성명·주민번호·영상 등을 통해 특정 개인을 알아볼 수 있는 정보, ③ 해당 정보만으로는 알 수 없더라도 다른 정보와 쉽게 결합하여 알아볼 수 있는 정보.</li>
-                <li><strong>정보주체 범위:</strong> 원칙적으로 생존하는 자연인에 한정. 법인·단체·사망자·사물 정보는 개인정보가 아님.</li>
-                <li><strong>가명정보 vs 익명정보:</strong> 가명정보는 통계작성, 과학적 연구 등 목적으로 동의 없이 처리 가능하나 재식별 행위는 절대 금지. 익명정보는 개인정보 보호법 적용 전면 배제.</li>
+                <li><strong>개인정보:</strong> 살아있는 개인에 관한 정보로서 성명, 주민번호, 영상 등을 통해 특정 개인을 알아볼 수 있는 정보.</li>
+                <li><strong>결합 식별 가능 정보:</strong> 해당 정보만으로는 알 수 없으나 다른 정보와 쉽게 결합하여 알아볼 수 있는 정보. 결합 시 '시간·비용·노력' 등 합리적 가능성을 종합 판단.</li>
+                <li><strong>가명정보:</strong> 추가 정보 없이는 특정 개인을 알아볼 수 없도록 처리(가명처리)한 정보 (통계작성, 과학적 연구, 공익적 기록보존 목적 활용 가능).</li>
+                <li><strong>익명정보:</strong> 다른 정보를 사용하여도 더 이상 개인을 알아볼 수 없는 정보로, 법 적용 대상에서 제외.</li>
+              </ul>
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• 개인정보 보호 원칙 및 헌법상 권리</div>
+              <ul>
+                <li><strong>자기결정권:</strong> 헌법상 기본권으로서 자신에 관한 정보를 통제하고 결정할 권리.</li>
+                <li><strong>최소 처리의 원칙:</strong> 처리 목적에 필요한 최소한의 범위에서 적법하고 정당하게 처리.</li>
+                <li><strong>목적 외 이용 금지:</strong> 수집 목적의 범위를 초과하여 처리하거나 제3자에게 제공 금지.</li>
               </ul>
             </div>
           </div>
-          <!-- 2과목 -->
+
           <div class="summary-card">
             <div class="summary-header">
-              <div class="summary-title">2과목. 개인정보보호 제도</div>
-              <div class="summary-badge">출제 20문항 (배점 20점)</div>
+              <div class="summary-title">2과목. 개인정보보호 제도 (배점: 20점)</div>
+              <div class="summary-badge">핵심 요약</div>
             </div>
             <div class="summary-topic">
-              <div class="summary-topic-title">• CPO(개인정보 보호책임자) 의무 및 자격요건</div>
+              <div class="summary-topic-title">• 법체계 및 거버넌스</div>
               <ul>
-                <li><strong>역할:</strong> 개인정보 보호 계획 수립·시행, 처리실태 조사 및 개선 권고, 불만처리 및 피해구제, 파일 등록·관리 등 총괄.</li>
-                <li><strong>배상책임:</strong> 손해액의 최대 5배까지 징벌적 손해배상 청구 가능. 보험/공제 가입 의무(매출 10억 이상 or 이용자 1만명 이상).</li>
+                <li><strong>개인정보 보호위원회:</strong> 국무총리 소속 중앙행정기관으로 독립성 보장, 위원장 1인, 부위원장 1인 포함 총 9인으로 구성.</li>
+                <li><strong>CPO(개인정보보호책임자) 지정:</strong> 개인정보 처리를 총괄하는 책임자 지정 의무. 정당한 이유 없이 불이익 처우 금지.</li>
+                <li><strong>유출 통지 및 신고:</strong> 유출 인지 시 지체 없이 72시간 이내 정보주체에게 통지. 1천명 이상 유출 시 보호위/KISA에 즉시 신고.</li>
               </ul>
             </div>
           </div>
-          <!-- 3과목 -->
+
           <div class="summary-card">
             <div class="summary-header">
-              <div class="summary-title">3과목. 개인정보 라이프사이클 관리</div>
-              <div class="summary-badge">출제 25문항 (배점 25점)</div>
+              <div class="summary-title">3과목. 개인정보 라이프사이클 (배점: 25점)</div>
+              <div class="summary-badge">핵심 요약</div>
             </div>
             <div class="summary-topic">
-              <div class="summary-topic-title">• 수집·이용·제공·위탁·파기 전 과정</div>
+              <div class="summary-topic-title">• 수집·이용·제공·파기 단계별 의무</div>
               <ul>
-                <li><strong>필수 동의 4대 고지사항:</strong> ① 수집·이용 목적, ② 수집 항목, ③ 보유 및 이용 기간, ④ 동의 거부권 및 거부 시 불이익.</li>
-                <li><strong>제3자 제공 vs 위탁:</strong> 제3자 제공은 제공받는 자의 이익을 위한 것이며 별도 동의 필수. 위탁은 위탁자의 업무 목적 달성을 위한 것이며 동의 대신 처리방침 공개 가능.</li>
-                <li><strong>파기 원칙:</strong> 목적 달성 시 지체 없이 5일 이내 파기. 영구 삭제(소각, 디가우징, 덮어쓰기).</li>
+                <li><strong>동의 시 고지 필수 4대 사항:</strong> ① 수집·이용 목적, ② 수집 항목, ③ 보유 및 이용 기간, ④ 동의 거부권 및 불이익 내용.</li>
+                <li><strong>민감정보 및 고유식별정보:</strong> 사상, 신념, 건강, 유전정보, 성생활 / 주민번호, 여권번호, 운전면허번호, 외국인등록번호는 원칙적 처리 금지(별도 동의 또는 법령 구체적 근거 시만 허용).</li>
+                <li><strong>제3자 제공 vs 업무 위탁:</strong> 제3자 제공은 받는 자의 이익(별도 동의 필수), 위탁은 위탁자의 이익(계약서 문서화, 관리·감독, 수탁사 교육).</li>
+                <li><strong>파기 기준:</strong> 목적 달성 시 복구 불가능한 영구 삭제(5일 이내). 법령상 보존 시 다른 개인정보와 분리 보관.</li>
               </ul>
             </div>
           </div>
-          <!-- 4과목 -->
+
           <div class="summary-card">
             <div class="summary-header">
-              <div class="summary-title">4과목. 개인정보의 보호조치</div>
-              <div class="summary-badge">출제 30문항 (배점 30점 - 최다)</div>
+              <div class="summary-title">4과목 & 5과목. 보호조치 및 관리체계 (배점: 45점)</div>
+              <div class="summary-badge">핵심 요약</div>
             </div>
             <div class="summary-topic">
-              <div class="summary-topic-title">• 기술적·관리적·물리적 안전성 확보조치 기준</div>
+              <div class="summary-topic-title">• 안전성 확보조치 기준 (고시)</div>
               <ul>
-                <li><strong>접속기록 관리:</strong> 최소 1년 보관 (5만명 이상 민감/고유식별정보 처리 시스템은 2년 보관), 월 1회 이상 점검.</li>
-                <li><strong>암호화 의무:</strong> 비밀번호는 일방향 암호화(SHA-256 이상 + Salt), 고유식별정보 및 바이오정보는 양방향 암호화(AES-256 등).</li>
-              </ul>
-            </div>
-          </div>
-          <!-- 5과목 -->
-          <div class="summary-card">
-            <div class="summary-header">
-              <div class="summary-title">5과목. 개인정보 관리체계</div>
-              <div class="summary-badge">출제 15문항 (배점 15점)</div>
-            </div>
-            <div class="summary-topic">
-              <div class="summary-topic-title">• ISMS-P 및 PIA(영향평가) 관리체계</div>
-              <ul>
-                <li><strong>ISMS-P 인증기준:</strong> 관리체계 수립 및 운영(16개), 보호대책 요구사항(64개), 개인정보 처리단계별 요구사항(22개) 총 102개 기준.</li>
-                <li><strong>PIA 의무기관:</strong> 5만명 이상 민감정보/고유식별정보 구축, 50만명 이상 연계·연동 공공시스템 운용 시 사전 영향평가 의무.</li>
+                <li><strong>접속기록 보관 및 점검:</strong> 최소 1년 이상 보관(5만명 이상 민감/고유식별정보 처리 시 2년). 월 1회 이상 점검.</li>
+                <li><strong>암호화 의무:</strong> 고유식별정보, 비밀번호(일방향), 바이오정보. 저장 시 및 네트워크 전송 시 필수 암호화.</li>
+                <li><strong>접근통제 및 비밀번호:</strong> 3종 8자리 또는 2종 10자리, 초기 비밀번호 변경 강제.</li>
+                <li><strong>ISMS-P 인증기준:</strong> 관리체계 수립(16개), 보호대책 요구사항(64개), 개인정보 처리단계(22개) 총 102개 기준.</li>
               </ul>
             </div>
           </div>
@@ -1111,7 +1608,7 @@ html_content = """<!DOCTYPE html>
               </div>
             `;
           });
-          summaryContainer.innerHTML += `
+          summarySection.innerHTML += `
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
@@ -1135,7 +1632,7 @@ html_content = """<!DOCTYPE html>
               </div>
             `;
           });
-          summaryContainer.innerHTML += `
+          summarySection.innerHTML += `
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
@@ -1159,17 +1656,68 @@ html_content = """<!DOCTYPE html>
               </div>
             `;
           });
-          summaryContainer.innerHTML += `
+          summarySection.innerHTML += `
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">인증기준 요약</div>
+                <div class="summary-badge">102개 기준 요약</div>
               </div>
               ${topicsHtml}
             </div>
           `;
         });
       }
+    }
+
+    function renderCustomUnits() {
+      const container = document.getElementById('customUnitsList');
+      container.innerHTML = '';
+      const data = window.CUSTOM_STUDY_DATA;
+      if (!data || !data.units || data.units.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding: 40px; color:var(--text-muted); background:var(--bg-surface); border:1px solid var(--border-default); border-radius:12px;">
+            등록된 맞춤 분석 단원이 없습니다. 상단 [➕ 새 학습자료 등록]을 이용해 보세요.
+          </div>
+        `;
+        return;
+      }
+
+      data.units.forEach(u => {
+        let keyConceptsHtml = '';
+        (u.key_concepts || []).forEach(c => {
+          keyConceptsHtml += `
+            <div style="margin-bottom:8px;">
+              <strong style="color:var(--text-primary); font-size:13px;">${escapeHtml(c.term)}:</strong>
+              <span style="color:var(--text-secondary); font-size:12.5px;">${escapeHtml(c.desc)}</span>
+            </div>
+          `;
+        });
+
+        let trapsHtml = '';
+        (u.exam_traps || []).forEach(tr => {
+          trapsHtml += `<li style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">⚠️ ${escapeHtml(tr)}</li>`;
+        });
+
+        container.innerHTML += `
+          <div class="summary-card" style="margin-bottom:16px;">
+            <div class="summary-header">
+              <div class="summary-title">${escapeHtml(u.unit_title)}</div>
+              <div class="summary-badge">엑사원 AI 분석</div>
+            </div>
+            <div style="background:var(--accent-subtle); border-left:3px solid var(--accent-primary); padding:10px 12px; border-radius:4px; font-size:12.5px; line-height:1.6; margin-bottom:14px; color:var(--text-primary);">
+              <strong>핵심 요약:</strong> ${escapeHtml(u.ai_summary)}
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• 중요 개념 정리</div>
+              <div style="padding-left:4px;">${keyConceptsHtml}</div>
+            </div>
+            <div class="summary-topic">
+              <div class="summary-topic-title">• 시험 빈출 함정 포인트</div>
+              <ul style="list-style:none; padding-left:0;">${trapsHtml}</ul>
+            </div>
+          </div>
+        `;
+      });
     }
 
     // Tools
@@ -1192,93 +1740,67 @@ html_content = """<!DOCTYPE html>
       }
     });
 
-    function switchMode(mode) {
-      currentMode = mode;
-      document.getElementById('btnModeQuiz').classList.toggle('active', mode === 'quiz');
-      document.getElementById('btnModeSummary').classList.toggle('active', mode === 'summary');
-      document.getElementById('btnModeCustom').classList.toggle('active', mode === 'custom');
-
-      document.getElementById('quizSection').style.display = mode === 'quiz' ? 'block' : 'none';
-      document.getElementById('summarySection').style.display = mode === 'summary' ? 'flex' : 'none';
-      document.getElementById('customSection').style.display = mode === 'custom' ? 'flex' : 'none';
-
-      if (mode === 'custom') {
-        renderCustomUnits();
-      }
-    }
-
-    function renderCustomUnits() {
-      const container = document.getElementById('customUnitsList');
-      container.innerHTML = '';
-      const customData = window.CUSTOM_STUDY_DATA;
-      if (!customData || !customData.units) {
-        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:30px;">맞춤 분석 데이터가 아직 없습니다.</div>';
-        return;
-      }
-
-      customData.units.forEach((u, uIdx) => {
-        const card = document.createElement('div');
-        card.className = 'custom-unit-card';
-        card.style.marginBottom = '20px';
-
-        let takeawaysHtml = '';
-        (u.key_takeaways || []).forEach(pt => {
-          takeawaysHtml += `<li>${escapeHtml(pt)}</li>`;
-        });
-
-        let termsHtml = '';
-        (u.core_concepts || []).forEach(tc => {
-          termsHtml += `
-            <div class="custom-term-card">
-              <div class="custom-term-name">${escapeHtml(tc.term)}</div>
-              <div class="custom-term-desc">${escapeHtml(tc.definition)}</div>
-            </div>
-          `;
-        });
-
-        let trapsHtml = '';
-        (u.exam_traps || []).forEach(tr => {
-          trapsHtml += `<li>⚠️ ${escapeHtml(tr)}</li>`;
-        });
-
-        card.innerHTML = `
-          <div class="custom-unit-header">
-            <div>
-              <div class="custom-unit-title">${escapeHtml(u.unit_title)}</div>
-              <div class="custom-unit-meta">문서 출처: ${escapeHtml(u.source_material)}</div>
-            </div>
-            <div class="summary-badge">${escapeHtml(u.ai_model || 'k-exaone_v2.5')}</div>
-          </div>
-
-          <div class="custom-takeaways">
-            <div class="custom-takeaways-title">📌 핵심 요약 &amp; 결론</div>
-            <ul>${takeawaysHtml}</ul>
-          </div>
-
-          <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:var(--text-primary);">💡 필수 개념 정리</div>
-          <div class="custom-terms-grid">${termsHtml}</div>
-
-          <div class="custom-traps">
-            <div class="custom-traps-title">🚨 시험 빈출 함정 포인트</div>
-            <ul>${trapsHtml}</ul>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
+    // Helper functions
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
-    // Initialize
-    updateCategoryUI();
+    // Panel File/URL Helper
+    window.setSourceType = function(type) {
+      const btnFile = document.getElementById('btnSourceFile');
+      const btnUrl = document.getElementById('btnSourceUrl');
+      const grpFile = document.getElementById('fileInputGroup');
+      const grpUrl = document.getElementById('urlInputGroup');
+      if (type === 'file') {
+        btnFile.classList.add('active');
+        btnUrl.classList.remove('active');
+        grpFile.style.display = 'block';
+        grpUrl.style.display = 'none';
+      } else {
+        btnFile.classList.remove('active');
+        btnUrl.classList.add('active');
+        grpFile.style.display = 'none';
+        grpUrl.style.display = 'block';
+      }
+    };
+
+    window.handleFileSelect = function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('dropFileName').textContent = `선택된 파일: ${file.name} (${Math.round(file.size/1024)} KB)`;
+        if (!document.getElementById('newCategoryTitle').value) {
+          document.getElementById('newCategoryTitle').value = file.name.replace(/\\.[^/.]+$/, "");
+        }
+      }
+    };
+
+    window.requestAnalysis = function() {
+      const title = document.getElementById('newCategoryTitle').value.trim();
+      const url = document.getElementById('studyUrlInput').value.trim();
+      const fileInput = document.getElementById('studyFileInput');
+      const hasFile = fileInput.files && fileInput.files.length > 0;
+      
+      if (!title) {
+        alert('시험명 또는 카테고리 제목을 입력해 주세요.');
+        return;
+      }
+      if (!hasFile && !url) {
+        alert('분석할 문서 파일(PDF/TXT/MD)을 첨부하거나 웹 URL 링크를 입력해 주세요.');
+        return;
+      }
+
+      alert(`[분석 요청 접수]\\n카테고리: ${title}\\n\\n피클 비서가 엑사원 AI를 가동하여 핵심 요약과 실전 퀴즈를 생성합니다.\\n채팅창에서도 즉시 확인하실 수 있습니다!`);
+      addResourcePanel.classList.remove('show');
+    };
+
+    // Initial Load
+    switchCategory('cppg');
   </script>
 </body>
 </html>
@@ -1287,4 +1809,4 @@ html_content = """<!DOCTYPE html>
 with open(out_path, 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print(f"Successfully generated study.html with Multi-Exam Category Support & Resource Upload Panel!")
+print("Successfully generated study.html with 100% unified design system matching index.html!")
