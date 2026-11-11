@@ -56,13 +56,14 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=10, batch_size=5):
             
     print(f"Total jobs: {len(jobs)}, Cached: {len(cache)}, Needing enrichment: {len(unprocessed_jobs)}")
     
+    # Pre-apply existing cache to all jobs
+    for job in jobs:
+        key = get_cache_key(job)
+        if key in cache:
+            job['summary'] = cache[key].get('summary', '')
+            job['tags'] = cache[key].get('tags', [])
+
     if not unprocessed_jobs or not api_key:
-        # Merge existing cache into jobs
-        for job in jobs:
-            key = get_cache_key(job)
-            if key in cache:
-                job['summary'] = cache[key].get('summary', '')
-                job['tags'] = cache[key].get('tags', [])
         return jobs
         
     calls_made = 0
@@ -100,14 +101,14 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=10, batch_size=5):
         }
         
         success = False
-        for retry in range(2):
+        for retry in range(1):
             try:
                 req = urllib.request.Request(
                     'https://api.exaone.ai/v1/chat/completions',
                     data=json.dumps(payload).encode('utf-8'),
                     headers=headers
                 )
-                with urllib.request.urlopen(req, timeout=120) as resp:
+                with urllib.request.urlopen(req, timeout=25) as resp:
                     data = json.loads(resp.read().decode('utf-8'))
                     content = data['choices'][0]['message']['content'].strip()
                     

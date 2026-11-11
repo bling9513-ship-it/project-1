@@ -2681,5 +2681,45 @@
       "#보안검증"
     ],
     "updated_at": "2026-11-11 23:00:34"
+  },
+  "https://www.jobkorea.co.kr/Recruit/GI_Read/50158630": {
+    "summary": "삼성SDS 자회사 시큐아이에서 경력 보안컨설턴트를 채용해 보안 컨설팅 업무를 수행합니다.",
+    "tags": [
+      "#보안컨설팅",
+      "#정보보안",
+      "#경력채용",
+      "#삼성SDS"
+    ],
+    "updated_at": "2026-11-12 06:48:42"
+  },
+  "https://www.jobkorea.co.kr/Recruit/GI_Read/50176732": {
+    "summary": "쓰리브이아이에서 정보보안 컨설턴트 통합형 인재를 모집해 보안 전반 컨설팅을 담당합니다.",
+    "tags": [
+      "#정보보안",
+      "#보안컨설팅",
+      "#통합형인재",
+      "#정보보호"
+    ],
+    "updated_at": "2026-11-12 06:48:42"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55312651&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9": {
+    "summary": "구디가 AI 클라우드·AI 보안·AI SW 분야 강사를 채용해 관련 교육을 진행합니다.",
+    "tags": [
+      "#AI보안",
+      "#AI클라우드",
+      "#AI강사",
+      "#AI교육"
+    ],
+    "updated_at": "2026-11-12 06:48:42"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55546737&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8": {
+    "summary": "신한은행이 2026년 정보보호 수시채용으로 보안 운영·점검 인력을 모집합니다.",
+    "tags": [
+      "#정보보호",
+      "#금융보안",
+      "#보안운영",
+      "#수시채용"
+    ],
+    "updated_at": "2026-11-12 06:48:42"
   }
 }

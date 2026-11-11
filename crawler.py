@@ -12,6 +12,7 @@ import json
 import re
 import html
 from datetime import datetime, timezone, timedelta, date
+from concurrent.futures import ThreadPoolExecutor
 
 KEYWORDS = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
 
@@ -470,14 +471,34 @@ def fetch_incruit(today_date):
 
 def collect_all_jobs():
     today_date = get_today_kst()
-    print("=== 정보보안 채용 정보 정밀 수집 시작 ===")
+    print("=== 정보보안 채용 정보 정밀 수집 시작 (6대 플랫폼 병렬) ===")
     
-    wanted_jobs = fetch_wanted()
-    jumpit_jobs = fetch_jumpit(today_date)
-    saramin_jobs = fetch_saramin(today_date)
-    remember_jobs = fetch_remember(today_date)
-    jobkorea_jobs = fetch_jobkorea(today_date)
-    incruit_jobs = fetch_incruit(today_date)
+    tasks = {
+        "원티드": lambda: fetch_wanted(),
+        "점핏": lambda: fetch_jumpit(today_date),
+        "사람인": lambda: fetch_saramin(today_date),
+        "리멤버": lambda: fetch_remember(today_date),
+        "잡코리아": lambda: fetch_jobkorea(today_date),
+        "인크루트": lambda: fetch_incruit(today_date),
+    }
+    
+    platform_results = {}
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        futures = {executor.submit(fn): name for name, fn in tasks.items()}
+        for future in futures:
+            name = futures[future]
+            try:
+                platform_results[name] = future.result(timeout=40)
+            except Exception as e:
+                print(f"[수집 경고] {name} 수집 실패 또는 타임아웃: {e}")
+                platform_results[name] = []
+                
+    wanted_jobs = platform_results.get("원티드", [])
+    jumpit_jobs = platform_results.get("점핏", [])
+    saramin_jobs = platform_results.get("사람인", [])
+    remember_jobs = platform_results.get("리멤버", [])
+    jobkorea_jobs = platform_results.get("잡코리아", [])
+    incruit_jobs = platform_results.get("인크루트", [])
     
     print(f"-> 플랫폼별 검증 수집 결과: 원티드 {len(wanted_jobs)}건, 점핏 {len(jumpit_jobs)}건, 사람인 {len(saramin_jobs)}건, 리멤버 {len(remember_jobs)}건, 잡코리아 {len(jobkorea_jobs)}건, 인크루트 {len(incruit_jobs)}건")
     raw_jobs = wanted_jobs + jumpit_jobs + saramin_jobs + remember_jobs + jobkorea_jobs + incruit_jobs
@@ -734,6 +755,33 @@ def generate_html(jobs, update_time_str):
       color: var(--text-primary);
     }}
 
+    .nav-tabs {{
+      display: flex;
+      gap: 6px;
+      margin-left: 10px;
+    }}
+
+    .nav-tab-item {{
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }}
+
+    .nav-tab-item:hover {{
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }}
+
+    .nav-tab-item.active {{
+      background: var(--accent-primary);
+      color: #ffffff !important;
+    }}
+
     .curation-pill {{
       font-size: 11px;
       font-weight: 600;
@@ -960,17 +1008,29 @@ def generate_html(jobs, update_time_str):
     /* Sub Filters & View Switcher */
     .sub-toolbar {{
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 12px;
-      padding-top: 10px;
+      padding-top: 12px;
       border-top: 1px solid var(--border-subtle);
     }}
 
-    .filter-group {{
+    @media (min-width: 860px) {{
+      .sub-toolbar {{
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }}
+    }}
+
+    .filter-controls-wrap {{
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 18px;
+    }}
+
+    .filter-row {{
+      display: flex;
       align-items: center;
       gap: 6px;
     }}
@@ -980,10 +1040,24 @@ def generate_html(jobs, update_time_str):
       font-weight: 600;
       color: var(--text-muted);
       margin-right: 2px;
+      white-space: nowrap;
     }}
 
+    .filter-pills-scroll {{
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }}
+    .filter-pills-scroll::-webkit-scrollbar {{ display: none; }}
+
     .filter-pill {{
-      padding: 4px 10px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 5px 10px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 500;
@@ -1455,10 +1529,15 @@ def generate_html(jobs, update_time_str):
   <!-- Global Nav -->
   <header class="navbar">
     <div class="nav-container">
-      <div class="nav-brand">
-        <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
-        <span class="brand-name">Infosec Archive</span>
-        <span class="curation-pill">정보 아카이브</span>
+      <div class="nav-brand" style="display:flex;align-items:center;gap:12px;">
+        <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;">
+          <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+          <span class="brand-name">Infosec Archive</span>
+        </a>
+        <div class="nav-tabs">
+          <a href="index.html" class="nav-tab-item active">보안 채용공고</a>
+          <a href="study.html" class="nav-tab-item">시험 공부</a>
+        </div>
       </div>
 
       <div class="nav-actions">
@@ -1529,22 +1608,28 @@ def generate_html(jobs, update_time_str):
 
       <!-- Sub Filters & View Options -->
       <div class="sub-toolbar">
-        <div class="filter-group">
-          <span class="filter-label">플랫폼</span>
-          <button class="filter-pill active" data-filter="platform" data-val="all">전체</button>
-          <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
-          <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
-          <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
-          <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
-          <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
-          <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
+        <div class="filter-controls-wrap">
+          <div class="filter-row">
+            <span class="filter-label">플랫폼</span>
+            <div class="filter-pills-scroll">
+              <button class="filter-pill active" data-filter="platform" data-val="all">전체</button>
+              <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
+              <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
+              <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
+              <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
+              <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
+              <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
+            </div>
+          </div>
           
-          <span class="filter-divider"></span>
-          
-          <span class="filter-label">마감</span>
-          <button class="filter-pill active" data-filter="deadline" data-val="all">전체</button>
-          <button class="filter-pill" data-filter="deadline" data-val="urgent">마감 임박</button>
-          <button class="filter-pill" data-filter="deadline" data-val="always">상시</button>
+          <div class="filter-row">
+            <span class="filter-label">마감</span>
+            <div class="filter-pills-scroll">
+              <button class="filter-pill active" data-filter="deadline" data-val="all">전체</button>
+              <button class="filter-pill" data-filter="deadline" data-val="urgent">마감 임박</button>
+              <button class="filter-pill" data-filter="deadline" data-val="always">상시</button>
+            </div>
+          </div>
         </div>
 
         <div class="view-actions">
