@@ -683,12 +683,13 @@ html_content = """<!DOCTYPE html>
       infosec_written: {
         title: "🛡️ 정보보안기사(필기)",
         mainTitle: "정보보안기사 필기 기출 모의고사 & 5대 과목 핵심요약",
-        mainDesc: "시스템·네트워크·애플리케이션·정보보안일반·법규 5대 전 과목 핵심 기출 모의고사 및 상세 해설",
+        mainDesc: "시스템·네트워크·애플리케이션·정보보안일반·법규 5대 전 과목 핵심 기출 모의고사(총 50문항) 및 상세 해설",
         quizLabel: "필기 모의고사",
         quizLabelShort: "필기 퀴즈",
         exams: [
-          { id: 1, full: "1회 필기 실전 모의고사", short: "필기 1회" },
-          { id: 0, full: "전체 필기 기출 집중 풀이", short: "전체 풀이" }
+          { id: 1, full: "1회 필기 실전 모의고사 (25문항)", short: "1회 (25제)" },
+          { id: 2, full: "2회 필기 고난도 모의고사 (25문항)", short: "2회 (25제)" },
+          { id: 0, full: "전체 50제 필기 집중 풀이", short: "전체 50제" }
         ],
         subjects: [
           { id: 0, name: "전체" },
@@ -702,13 +703,13 @@ html_content = """<!DOCTYPE html>
       infosec_practical: {
         title: "⚔️ 정보보안기사(실기)",
         mainTitle: "정보보안기사 실기 단답형·서술형 족보 & 실무 가이드",
-        mainDesc: "단답형 핵심 명령어 · 시스템/네트워크 실무 설정 · 시큐어코딩 진단 · 법규 서술형 모범 답안",
+        mainDesc: "단답형 핵심 명령어 · 시스템/네트워크 실무 설정 · 시큐어코딩 진단 · 법규 서술형 모범 답안 (총 30문항)",
         quizLabel: "실기 실전 문제",
         quizLabelShort: "실기 문제",
         exams: [
-          { id: 1, full: "단답형 핵심 족보 모의고사", short: "단답형" },
-          { id: 2, full: "서술형·실무형 실전 분석", short: "서술·실무" },
-          { id: 0, full: "전체 실기 기출 집중 풀이", short: "전체 풀이" }
+          { id: 1, full: "1회 단답형 핵심 족보 (15문항)", short: "1회 단답형" },
+          { id: 2, full: "2회 서술·실무형 분석 (15문항)", short: "2회 서술실무" },
+          { id: 0, full: "전체 30제 실기 집중 풀이", short: "전체 30제" }
         ],
         subjects: [
           { id: 0, name: "전체" },
@@ -720,13 +721,13 @@ html_content = """<!DOCTYPE html>
       },
       ismsp_auditor: {
         title: "🔒 ISMS-P 인증심사원",
-        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈",
-        mainDesc: "관리체계 수립·보호대책 요구사항·개인정보 처리단계 3개 영역 실전 결함 분석",
+        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈 & 102개 기준 결함사례",
+        mainDesc: "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈(총 15문항) 및 기준별 결함 체크리스트",
         quizLabel: "인증기준 실전 퀴즈",
         quizLabelShort: "인증 퀴즈",
         exams: [
-          { id: 1, full: "인증기준 실전 평가 (1회)", short: "인증 1회" },
-          { id: 0, full: "전체 인증 문제 풀이", short: "전체 풀이" }
+          { id: 1, full: "1회 실전 결함판정 모의고사 (15문항)", short: "1회 (15제)" },
+          { id: 0, full: "전체 102개 기준 결함 풀이", short: "전체 풀이" }
         ],
         subjects: [
           { id: 0, name: "전체" },
