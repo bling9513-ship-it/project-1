@@ -829,17 +829,102 @@
       line-height: 1.8;
     }
 
-    /* Responsive */
+    /* Responsive & Mobile Polish */
+    .btn-text-mobile { display: none; }
+    .btn-text-full { display: inline; }
+
     @media (max-width: 640px) {
-      .main-wrap { padding: 16px 12px 60px; }
-      .hero-title { font-size: 22px; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .stat-card { padding: 10px 12px; }
-      .stat-val { font-size: 17px; }
-      .exam-btn-group { grid-template-columns: repeat(2, 1fr); }
-      .q-card { padding: 16px 14px; }
-      .q-prompt { font-size: 14px; }
-      .choice-row { padding: 8px 10px; font-size: 12.5px; }
+      .nav-container {
+        padding: 0 12px;
+        height: 54px;
+      }
+      .brand-name {
+        font-size: 15px;
+      }
+      .brand-logo-img {
+        width: 24px;
+        height: 24px;
+      }
+      .nav-tabs {
+        margin-left: 6px;
+        gap: 4px;
+      }
+      .nav-tab-item {
+        padding: 4px 9px;
+        font-size: 11.5px;
+        border-radius: 14px;
+      }
+      .update-meta {
+        display: none !important;
+      }
+      .main-wrap {
+        padding: 16px 12px 60px;
+      }
+      .hero {
+        margin-bottom: 16px;
+      }
+      .hero-title {
+        font-size: 20px;
+        letter-spacing: -0.03em;
+      }
+      .hero-desc {
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .stat-card {
+        padding: 10px 12px;
+      }
+      .stat-label {
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      .stat-val {
+        font-size: 18px;
+      }
+      .mode-nav-grid {
+        gap: 4px;
+        padding: 3px;
+      }
+      .mode-btn {
+        padding: 7px 4px;
+        font-size: 11.5px;
+        gap: 4px;
+      }
+      .btn-text-full {
+        display: none !important;
+      }
+      .btn-text-mobile {
+        display: inline !important;
+      }
+      .exam-btn-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+      .exam-btn {
+        padding: 7px 6px;
+        font-size: 12px;
+      }
+      .q-card {
+        padding: 16px 14px;
+      }
+      .q-prompt {
+        font-size: 14px;
+        line-height: 1.55;
+      }
+      .choice-row {
+        padding: 9px 10px;
+        font-size: 13px;
+      }
+      .choice-circle {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+        margin-top: 1px;
+      }
     }
   </style>
 </head>
@@ -973,13 +1058,19 @@
     <!-- Mode Selector -->
     <div class="mode-nav-grid" id="modeNavGrid">
       <button class="mode-btn active" data-mode="quiz" id="modeQuizBtn">
-        <span>📝</span><span id="modeQuizLabel">실전 모의고사 (300제)</span>
+        <span>📝</span>
+        <span class="btn-text-full" id="modeQuizLabel">실전 모의고사 (300제)</span>
+        <span class="btn-text-mobile" id="modeQuizLabelMobile">실전 300제</span>
       </button>
       <button class="mode-btn" data-mode="summary" id="modeSummaryBtn">
-        <span>📖</span><span id="modeSummaryLabel">전 과목 핵심 요약노트</span>
+        <span>📖</span>
+        <span class="btn-text-full" id="modeSummaryLabel">전 과목 핵심 요약노트</span>
+        <span class="btn-text-mobile" id="modeSummaryLabelMobile">핵심 요약집</span>
       </button>
       <button class="mode-btn" data-mode="custom" id="modeCustomBtn">
-        <span>🔬</span><span id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
+        <span>🔬</span>
+        <span class="btn-text-full" id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
+        <span class="btn-text-mobile" id="modeCustomLabelMobile">맞춤 AI</span>
       </button>
     </div>
 
@@ -1226,6 +1317,7 @@
     const modeSummaryBtn = document.getElementById('modeSummaryBtn');
     const modeCustomBtn = document.getElementById('modeCustomBtn');
     const modeQuizLabel = document.getElementById('modeQuizLabel');
+    const modeQuizLabelMobile = document.getElementById('modeQuizLabelMobile');
 
     const controlsBar = document.getElementById('controlsBar');
     const examBtnGroup = document.getElementById('examBtnGroup');
@@ -1271,7 +1363,8 @@
       activeExamBadge.textContent = conf.title;
 
       // Update Mode Labels
-      modeQuizLabel.textContent = window.innerWidth <= 640 ? conf.quizLabelShort : conf.quizLabel;
+      if (modeQuizLabel) modeQuizLabel.textContent = conf.quizLabel;
+      if (modeQuizLabelMobile) modeQuizLabelMobile.textContent = conf.quizLabelShort;
 
       renderControls();
       updateStats();
@@ -1292,7 +1385,7 @@
       conf.exams.forEach(ex => {
         const btn = document.createElement('button');
         btn.className = `exam-btn ${currentExam === ex.id ? 'active' : ''}`;
-        btn.textContent = window.innerWidth <= 640 ? ex.short : ex.full;
+        btn.innerHTML = `<span class="btn-text-full">${ex.full}</span><span class="btn-text-mobile">${ex.short}</span>`;
         btn.addEventListener('click', () => {
           currentExam = ex.id;
           renderControls();

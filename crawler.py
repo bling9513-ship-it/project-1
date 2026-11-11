@@ -1522,6 +1522,97 @@ def generate_html(jobs, update_time_str):
       color: var(--text-muted);
       line-height: 1.8;
     }}
+
+    /* Mobile Responsive Polish */
+    @media (max-width: 640px) {{
+      .nav-container {{
+        padding: 0 12px;
+        height: 54px;
+      }}
+      .brand-name {{
+        font-size: 15px;
+      }}
+      .brand-logo-img {{
+        width: 24px;
+        height: 24px;
+      }}
+      .nav-tabs {{
+        margin-left: 6px;
+        gap: 4px;
+      }}
+      .nav-tab-item {{
+        padding: 4px 9px;
+        font-size: 11.5px;
+        border-radius: 14px;
+      }}
+      .update-meta {{
+        display: none !important;
+      }}
+      .container {{
+        padding: 16px 12px 60px;
+      }}
+      .hero {{
+        margin-bottom: 18px;
+      }}
+      .hero-title {{
+        font-size: 21px;
+      }}
+      .hero-desc {{
+        font-size: 13px;
+        line-height: 1.5;
+      }}
+      .hero-stats {{
+        gap: 6px;
+      }}
+      .stat-chip {{
+        font-size: 11px;
+        padding: 3px 8px;
+      }}
+      .toolbar {{
+        padding: 12px;
+        border-radius: 12px;
+        gap: 10px;
+      }}
+      .search-input {{
+        padding: 9px 34px 9px 36px;
+        font-size: 13px;
+      }}
+      .segment-btn {{
+        padding: 6px 10px;
+        font-size: 12px;
+      }}
+      .sub-toolbar {{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }}
+      .filter-controls-wrap {{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }}
+      .filter-row {{
+        width: 100%;
+      }}
+      .view-actions {{
+        width: 100%;
+        justify-content: space-between;
+      }}
+      .sort-select {{
+        flex: 1;
+      }}
+      .jobs-grid {{
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+      }}
+      .job-card {{
+        padding: 14px 16px;
+      }}
+      .job-title {{
+        font-size: 14.5px;
+        line-height: 1.45;
+      }}
+    }}
   </style>
 </head>
 <body>
