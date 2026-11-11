@@ -415,17 +415,29 @@
     /* Sub Filters & View Switcher */
     .sub-toolbar {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 12px;
-      padding-top: 10px;
+      padding-top: 12px;
       border-top: 1px solid var(--border-subtle);
     }
 
-    .filter-group {
+    @media (min-width: 860px) {
+      .sub-toolbar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .filter-controls-wrap {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 18px;
+    }
+
+    .filter-row {
+      display: flex;
       align-items: center;
       gap: 6px;
     }
@@ -435,10 +447,24 @@
       font-weight: 600;
       color: var(--text-muted);
       margin-right: 2px;
+      white-space: nowrap;
     }
 
+    .filter-pills-scroll {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .filter-pills-scroll::-webkit-scrollbar { display: none; }
+
     .filter-pill {
-      padding: 4px 10px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 5px 10px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 500;
@@ -447,6 +473,7 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.15s ease;
+      user-select: none;
     }
 
     .filter-pill:hover {
@@ -829,6 +856,28 @@
     }
 
     @media (max-width: 768px) {
+      .header-container { padding: 10px 14px; }
+      .brand-title { font-size: 15px; }
+      .badge { display: none; }
+      .status-pill { font-size: 11px; padding: 3px 8px; }
+
+      .main-container { padding: 20px 14px 60px; }
+      .hero-title { font-size: 22px; }
+      .hero-desc { font-size: 13.5px; }
+      .hero-metrics { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+      .segmented-control { gap: 4px; }
+      .segment-btn { padding: 7px 10px; font-size: 12.5px; gap: 4px; }
+      .segment-btn .count { font-size: 10.5px; padding: 1px 4px; }
+
+      .view-actions {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border-subtle);
+      }
+      .sort-select { flex: 1; }
+
       .list-row {
         grid-template-columns: 1fr auto;
         gap: 6px;
@@ -984,22 +1033,28 @@
 
       <!-- Sub Filters & View Options -->
       <div class="sub-toolbar">
-        <div class="filter-group">
-          <span class="filter-label">플랫폼</span>
-          <button class="filter-pill active" data-filter="platform" data-val="all">전체</button>
-          <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
-          <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
-          <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
-          <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
-          <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
-          <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
+        <div class="filter-controls-wrap">
+          <div class="filter-row">
+            <span class="filter-label">플랫폼</span>
+            <div class="filter-pills-scroll">
+              <button class="filter-pill active" data-filter="platform" data-val="all">전체</button>
+              <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
+              <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
+              <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
+              <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
+              <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
+              <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
+            </div>
+          </div>
           
-          <span class="filter-divider"></span>
-          
-          <span class="filter-label">마감</span>
-          <button class="filter-pill active" data-filter="deadline" data-val="all">전체</button>
-          <button class="filter-pill" data-filter="deadline" data-val="urgent">마감 임박</button>
-          <button class="filter-pill" data-filter="deadline" data-val="always">상시</button>
+          <div class="filter-row">
+            <span class="filter-label">마감</span>
+            <div class="filter-pills-scroll">
+              <button class="filter-pill active" data-filter="deadline" data-val="all">전체</button>
+              <button class="filter-pill" data-filter="deadline" data-val="urgent">마감 임박</button>
+              <button class="filter-pill" data-filter="deadline" data-val="always">상시</button>
+            </div>
+          </div>
         </div>
 
         <div class="view-actions">

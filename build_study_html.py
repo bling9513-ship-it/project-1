@@ -89,21 +89,130 @@ html_content = """<!DOCTYPE html>
     .stat-val { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .stat-val.accent { color: var(--accent); }
 
-    .mode-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
-    .mode-btn { padding: 10px 20px; border-radius: 24px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .mode-btn.active { background: var(--text-primary); color: var(--bg-primary); border-color: var(--text-primary); }
+    /* Mode Tabs - Segmented Control */
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      max-width: 680px;
+      margin: 0 auto 24px;
+      background: var(--chip-bg);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+    .mode-btn {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .mode-btn:hover { color: var(--text-primary); }
+    .mode-btn.active {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+    }
+    .mode-label-short { display: none; }
+    .mode-label-full { display: inline; }
 
-    .exam-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .exam-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .exam-tab.active { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+    /* Exam Tabs */
+    .exam-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .exam-tab {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .exam-tab:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .exam-tab.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+    }
+    .exam-label-short { display: none; }
+    .exam-label-full { display: inline; }
 
-    .controls-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .subj-filters { display: flex; gap: 6px; flex-wrap: wrap; }
-    .subj-chip { padding: 6px 12px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--chip-bg); color: var(--text-secondary); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-    .subj-chip.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 700; }
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .subj-filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex: 1;
+    }
+    .subj-filters::-webkit-scrollbar { display: none; }
+    .subj-chip {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      background: var(--chip-bg);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .subj-chip.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
 
-    .tools-wrap { display: flex; gap: 8px; }
-    .tool-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); font-size: 12px; font-weight: 500; cursor: pointer; }
+    .tools-wrap { display: flex; gap: 6px; flex-shrink: 0; }
+    .tool-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .tool-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
     .tool-btn.active { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
 
     .questions-list { display: flex; flex-direction: column; gap: 16px; }
@@ -113,12 +222,39 @@ html_content = """<!DOCTYPE html>
     .q-exam-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--chip-bg); color: var(--text-secondary); font-weight: 600; }
     .q-subj-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
     .q-index { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-    .q-prompt { font-size: 15px; font-weight: 600; line-height: 1.5; margin-bottom: 16px; color: var(--text-primary); white-space: pre-wrap; }
+    .q-prompt { font-size: 15px; font-weight: 600; line-height: 1.5; margin-bottom: 16px; color: var(--text-primary); white-space: pre-wrap; word-break: keep-all; }
     
     .choices-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    .choice-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); cursor: pointer; transition: all 0.15s; font-size: 13.5px; line-height: 1.45; }
+    .choice-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 13.5px;
+      line-height: 1.5;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
     .choice-row:hover:not(.disabled) { border-color: var(--accent); background: var(--accent-soft); }
-    .choice-circle { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--chip-bg); color: var(--text-secondary); }
+    .choice-circle {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      margin-top: 1px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: var(--chip-bg);
+      color: var(--text-secondary);
+    }
     
     .choice-row.correct { border-color: var(--success); background: var(--success-soft); color: var(--success); font-weight: 600; }
     .choice-row.correct .choice-circle { background: var(--success); color: #fff; }
@@ -171,9 +307,38 @@ html_content = """<!DOCTYPE html>
     .custom-traps li { font-size: 12.5px; color: var(--text-secondary); list-style: none; margin-bottom: 3px; }
 
     @media (max-width: 640px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .hero-title { font-size: 22px; }
-      .mode-tabs { flex-direction: column; }
+      .nav-container { padding: 10px 14px; }
+      .nav-left { gap: 10px; }
+      .brand-name { font-size: 15px; }
+      .brand-logo-img { width: 26px; height: 26px; }
+      .nav-tabs { gap: 4px; }
+      .nav-tab-item { padding: 5px 10px; font-size: 12px; }
+      .theme-btn { width: 32px; height: 32px; font-size: 12px; }
+
+      .main-wrap { padding: 20px 14px 60px; }
+      .hero-title { font-size: 20px; }
+      .hero-desc { font-size: 13px; }
+
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-card { padding: 12px 8px; }
+      .stat-val { font-size: 19px; }
+
+      .mode-tabs { gap: 4px; padding: 3px; }
+      .mode-btn { padding: 9px 4px; font-size: 12.5px; gap: 4px; }
+      .mode-label-full { display: none; }
+      .mode-label-short { display: inline; }
+
+      .exam-tabs { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .exam-tab { padding: 9px 6px; font-size: 12px; }
+      .exam-label-full { display: none; }
+      .exam-label-short { display: inline; }
+
+      .controls-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .tools-wrap { justify-content: flex-end; }
+
+      .q-card { padding: 16px 14px; }
+      .q-prompt { font-size: 14.5px; }
+      .choice-row { padding: 10px 12px; font-size: 13px; }
     }
   </style>
 </head>
@@ -225,19 +390,43 @@ html_content = """<!DOCTYPE html>
 
     <!-- Mode Selector -->
     <div class="mode-tabs">
-      <button class="mode-btn active" id="btnModeQuiz" onclick="switchMode('quiz')">📝 실전 모의고사 (300제)</button>
-      <button class="mode-btn" id="btnModeSummary" onclick="switchMode('summary')">📖 전 과목 핵심 개념 요약노트</button>
-      <button class="mode-btn" id="btnModeCustom" onclick="switchMode('custom')">🔬 맞춤 AI 분석 & 퀴즈</button>
+      <button class="mode-btn active" id="btnModeQuiz" onclick="switchMode('quiz')">
+        <span class="mode-icon">📝</span>
+        <span class="mode-label-full">실전 모의고사 (300제)</span>
+        <span class="mode-label-short">실전 300제</span>
+      </button>
+      <button class="mode-btn" id="btnModeSummary" onclick="switchMode('summary')">
+        <span class="mode-icon">📖</span>
+        <span class="mode-label-full">전 과목 핵심 요약노트</span>
+        <span class="mode-label-short">핵심 요약노트</span>
+      </button>
+      <button class="mode-btn" id="btnModeCustom" onclick="switchMode('custom')">
+        <span class="mode-icon">🔬</span>
+        <span class="mode-label-full">맞춤 AI 분석 & 퀴즈</span>
+        <span class="mode-label-short">맞춤 AI 퀴즈</span>
+      </button>
     </div>
 
     <!-- QUIZ VIEW -->
     <div id="quizSection">
       <!-- Exam Selector -->
       <div class="exam-tabs">
-        <button class="exam-tab active" data-exam="1">1회 실전 모의고사 (100문항)</button>
-        <button class="exam-tab" data-exam="2">2회 실전 모의고사 (100문항)</button>
-        <button class="exam-tab" data-exam="3">3회 실전 모의고사 (100문항)</button>
-        <button class="exam-tab" data-exam="0">전체 300제 집중 풀이</button>
+        <button class="exam-tab active" data-exam="1">
+          <span class="exam-label-full">1회 실전 모의고사 (100문항)</span>
+          <span class="exam-label-short">1회 모의고사</span>
+        </button>
+        <button class="exam-tab" data-exam="2">
+          <span class="exam-label-full">2회 실전 모의고사 (100문항)</span>
+          <span class="exam-label-short">2회 모의고사</span>
+        </button>
+        <button class="exam-tab" data-exam="3">
+          <span class="exam-label-full">3회 실전 모의고사 (100문항)</span>
+          <span class="exam-label-short">3회 모의고사</span>
+        </button>
+        <button class="exam-tab" data-exam="0">
+          <span class="exam-label-full">전체 300제 집중 풀이</span>
+          <span class="exam-label-short">전체 300제</span>
+        </button>
       </div>
 
       <!-- Controls & Filter -->
