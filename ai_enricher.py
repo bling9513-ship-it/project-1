@@ -41,7 +41,7 @@ def get_cache_key(job):
         return url
     return f"{job.get('company', '').strip()}:{job.get('title', '').strip()}"
 
-def enrich_jobs_batch(jobs, api_key=None, max_calls=6, batch_size=3):
+def enrich_jobs_batch(jobs, api_key=None, max_calls=10, batch_size=5):
     if not api_key:
         api_key = get_api_key()
         
@@ -78,7 +78,7 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=6, batch_size=3):
             items_desc.append(f"공고 {idx + 1}:\n- ID: {idx + 1}\n- 회사: {j.get('company', '')}\n- 공고명: {j.get('title', '')}")
             
         prompt = (
-            "다음 정보보안 채용공고들의 회사명과 공고명을 분석하여, 각 공고의 핵심 직무 요약(1문장, 35~50자 내외)과 "
+            f"다음 정보보안 채용공고 {len(chunk)}건의 회사명과 공고명을 분석하여, 각 공고의 핵심 직무 요약(1문장, 35~50자 내외)과 "
             "정밀 기술/직무 해시태그(3~4개, 예: #모의해킹, #ISMS-P, #클라우드보안, #보안관제, #취약점분석, #개인정보보호 등)를 "
             "JSON 배열로 추출해줘. 반드시 오직 순수 JSON 배열 포맷만 출력해줘.\n\n"
             + "\n\n".join(items_desc)
@@ -94,7 +94,7 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=6, batch_size=3):
                 {'role': 'system', 'content': '당신은 정보보안 전문 채용 분석 AI입니다. 지정된 JSON 배열 포맷으로만 답변합니다.'},
                 {'role': 'user', 'content': prompt}
             ],
-            'max_tokens': 1024,
+            'max_tokens': 2500,
             'temperature': 0.2,
             'reasoning_effort': 'low'
         }
@@ -107,7 +107,7 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=6, batch_size=3):
                     data=json.dumps(payload).encode('utf-8'),
                     headers=headers
                 )
-                with urllib.request.urlopen(req, timeout=60) as resp:
+                with urllib.request.urlopen(req, timeout=120) as resp:
                     data = json.loads(resp.read().decode('utf-8'))
                     content = data['choices'][0]['message']['content'].strip()
                     
@@ -147,15 +147,15 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=6, batch_size=3):
                 save_cache(cache)
                 calls_made += 1
                 success = True
-                print(f"Successfully enriched batch {calls_made}: {len(chunk)} jobs")
-                time.sleep(1.2)
+                print(f"Successfully enriched batch {calls_made}: {len(chunk)} jobs (Total cached: {len(cache)})")
+                time.sleep(1.5)
                 break
                 
             except urllib.error.HTTPError as e:
                 print(f"EXAONE API HTTP error: {e.code} - {e.read().decode('utf-8', errors='ignore')}")
                 if e.code == 429:
                     print("Rate limit reached. Stopping enrichment.")
-                    break
+                    return jobs
             except Exception as e:
                 print(f"Error enriching batch (attempt {retry + 1}): {e}")
                 time.sleep(2)
@@ -170,7 +170,7 @@ def enrich_jobs_batch(jobs, api_key=None, max_calls=6, batch_size=3):
             job['summary'] = cache[key].get('summary', '')
             job['tags'] = cache[key].get('tags', [])
             
-    print(f"Enrichment done. Total calls made: {calls_made}, Total cached: {len(cache)}")
+    print(f"Enrichment cycle done. Total calls made: {calls_made}, Total cached: {len(cache)}")
     return jobs
 
 if __name__ == '__main__':
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     with open(jobs_path, 'r', encoding='utf-8') as f:
         jobs = json.load(f)
         
-    enriched = enrich_jobs_batch(jobs, max_calls=6, batch_size=3)
+    enriched = enrich_jobs_batch(jobs, max_calls=10, batch_size=5)
     with open(jobs_path, 'w', encoding='utf-8') as f:
         json.dump(enriched, f, ensure_ascii=False, indent=2)
     print("Done enrichment run.")
