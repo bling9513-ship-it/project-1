@@ -985,24 +985,24 @@ html_content = """<!DOCTYPE html>
   <div class="main-wrap">
     <!-- Hero -->
     <div class="hero">
-      <div class="hero-pill">📚 IT·보안 자격증 &amp; 시험 공부 허브</div>
+      <div class="hero-pill">자격증 시험 대비 · 핵심 문제 풀이</div>
       <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 노트</h1>
-      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL AI 맞춤 분석</p>
+      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL 맞춤 분석</p>
     </div>
 
     <!-- Exam Category Selector -->
     <div class="category-section">
       <div class="category-label">
         <span>시험 종목 / 학습 카테고리</span>
-        <span id="activeExamBadge" style="color:var(--accent-primary);">📜 개인정보관리사(CPPG)</span>
+        <span id="activeExamBadge" style="color:var(--accent-primary);font-weight:600;">개인정보관리사 (CPPG)</span>
       </div>
       <div class="category-bar" id="categoryBar">
-        <button class="cat-chip active" data-cat="cppg">📜 개인정보관리사 (CPPG)</button>
-        <button class="cat-chip" data-cat="infosec_written">🛡️ 정보보안기사 (필기)</button>
-        <button class="cat-chip" data-cat="infosec_practical">⚔️ 정보보안기사 (실기)</button>
-        <button class="cat-chip" data-cat="ismsp_auditor">🔒 ISMS-P 인증심사원</button>
-        <button class="cat-chip" data-cat="custom">🔬 파일·URL 맞춤 분석</button>
-        <button class="cat-chip add-chip" id="btnAddResource" data-cat="add_new">➕ 새 학습자료 등록</button>
+        <button class="cat-chip active" data-cat="cppg">개인정보관리사 (CPPG)</button>
+        <button class="cat-chip" data-cat="infosec_written">정보보안기사 (필기)</button>
+        <button class="cat-chip" data-cat="infosec_practical">정보보안기사 (실기)</button>
+        <button class="cat-chip" data-cat="ismsp_auditor">ISMS-P 인증심사원</button>
+        <button class="cat-chip" data-cat="custom">맞춤 분석 (파일·URL)</button>
+        <button class="cat-chip add-chip" id="btnAddResource" data-cat="add_new">+ 새 자료 등록</button>
       </div>
     </div>
 
@@ -1010,8 +1010,7 @@ html_content = """<!DOCTYPE html>
     <div class="add-resource-panel" id="addResourcePanel">
       <div class="panel-header">
         <div class="panel-title">
-          <span>📥</span>
-          <span>새 학습자료(파일/URL) 분석 &amp; 새 카테고리 등록</span>
+          <span>새 학습자료 분석 &amp; 카테고리 등록</span>
         </div>
         <button class="panel-close" id="btnCloseAddPanel" title="닫기">&times;</button>
       </div>
@@ -1024,8 +1023,8 @@ html_content = """<!DOCTYPE html>
         <div class="form-group">
           <label class="form-label">학습 자료 유형</label>
           <div class="source-type-selector">
-            <button type="button" class="source-type-btn active" id="btnSourceFile" onclick="setSourceType('file')">📄 문서 파일 (PDF / TXT / MD)</button>
-            <button type="button" class="source-type-btn" id="btnSourceUrl" onclick="setSourceType('url')">🔗 웹 링크 (URL)</button>
+            <button type="button" class="source-type-btn active" id="btnSourceFile" onclick="setSourceType('file')">문서 파일 (PDF / TXT / MD)</button>
+            <button type="button" class="source-type-btn" id="btnSourceUrl" onclick="setSourceType('url')">웹 링크 (URL)</button>
           </div>
         </div>
 
@@ -1033,7 +1032,7 @@ html_content = """<!DOCTYPE html>
           <label class="form-label">문서 파일 첨부</label>
           <input type="file" id="studyFileInput" accept=".pdf,.txt,.md,.json" style="display:none;" onchange="handleFileSelect(event)">
           <div class="drop-zone" id="dropZone" onclick="document.getElementById('studyFileInput').click()">
-            <div class="drop-icon">📁</div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;color:var(--text-muted);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             <div class="drop-text" id="dropFileName">클릭하여 PDF, TXT, MD 파일 선택 또는 드래그 앤 드롭</div>
             <div class="drop-hint">CPPG 요약본, 기출 해설서, 기술 표준 문서를 지원합니다</div>
           </div>
@@ -1054,8 +1053,7 @@ html_content = """<!DOCTYPE html>
         </div>
 
         <button type="button" class="submit-btn" id="btnRequestAnalysis" onclick="requestAnalysis()">
-          <span>🚀</span>
-          <span>엑사원 AI 분석 &amp; 카테고리 퀴즈 생성</span>
+          <span>AI 분석 &amp; 카테고리 퀴즈 생성</span>
         </button>
       </div>
     </div>
@@ -1083,17 +1081,14 @@ html_content = """<!DOCTYPE html>
     <!-- Mode Selector -->
     <div class="mode-nav-grid" id="modeNavGrid">
       <button class="mode-btn active" data-mode="quiz" id="modeQuizBtn">
-        <span>📝</span>
         <span class="btn-text-full" id="modeQuizLabel">실전 모의고사 (300제)</span>
         <span class="btn-text-mobile" id="modeQuizLabelMobile">실전 300제</span>
       </button>
       <button class="mode-btn" data-mode="summary" id="modeSummaryBtn">
-        <span>📖</span>
         <span class="btn-text-full" id="modeSummaryLabel">전 과목 핵심 요약노트</span>
         <span class="btn-text-mobile" id="modeSummaryLabelMobile">핵심 요약집</span>
       </button>
       <button class="mode-btn" data-mode="custom" id="modeCustomBtn">
-        <span>🔬</span>
         <span class="btn-text-full" id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
         <span class="btn-text-mobile" id="modeCustomLabelMobile">맞춤 AI</span>
       </button>
@@ -1129,8 +1124,7 @@ html_content = """<!DOCTYPE html>
     <div class="custom-section" id="customSection">
       <div class="custom-hero-banner">
         <div class="custom-hero-title">
-          <span>🔬</span>
-          <span>LG 엑사원(EXAONE) AI 심층 분석 &amp; 맞춤 출제</span>
+          <span>LG 엑사원(EXAONE) 심층 분석 &amp; 맞춤 출제</span>
         </div>
         <div class="custom-hero-desc">
           수험서 핵심 단원과 법령·기술 문서를 엑사원 모델(k-exaone_v2.5)이 분석하여 핵심 요약, 시험 빈출 함정 포인트, 그리고 법적 근거가 완비된 실전 5지선다 문제를 맞춤 생성했습니다.
@@ -1236,7 +1230,7 @@ html_content = """<!DOCTYPE html>
     // Category Definitions
     const CATEGORIES = {
       cppg: {
-        title: "📜 개인정보관리사(CPPG)",
+        title: "개인정보관리사 (CPPG)",
         mainTitle: "CPPG 실전 300제 & 전 과목 핵심 노트",
         mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL AI 맞춤 분석",
         quizLabel: "실전 모의고사 (300제)",
@@ -1257,7 +1251,7 @@ html_content = """<!DOCTYPE html>
         ]
       },
       infosec_written: {
-        title: "🛡️ 정보보안기사 (필기)",
+        title: "정보보안기사 (필기)",
         mainTitle: "정보보안기사 필기 기출 모의고사 & 5대 과목 핵심요약",
         mainDesc: "시스템·네트워크·애플리케이션·정보보안일반·법규 5대 전 과목 핵심 기출 모의고사(총 50문항) 및 상세 해설",
         quizLabel: "필기 모의고사",
@@ -1277,7 +1271,7 @@ html_content = """<!DOCTYPE html>
         ]
       },
       infosec_practical: {
-        title: "⚔️ 정보보안기사 (실기)",
+        title: "정보보안기사 (실기)",
         mainTitle: "정보보안기사 실기 단답형·서술형 족보 & 실무 가이드",
         mainDesc: "단답형 핵심 명령어 · 시스템/네트워크 실무 설정 · 시큐어코딩 진단 · 법규 서술형 모범 답안 (총 30문항)",
         quizLabel: "실기 실전 문제",
@@ -1296,7 +1290,7 @@ html_content = """<!DOCTYPE html>
         ]
       },
       ismsp_auditor: {
-        title: "🔒 ISMS-P 인증심사원",
+        title: "ISMS-P 인증심사원",
         mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈 & 102개 기준 결함사례",
         mainDesc: "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈(총 15문항) 및 기준별 결함 체크리스트",
         quizLabel: "인증기준 실전 퀴즈",
@@ -1313,7 +1307,7 @@ html_content = """<!DOCTYPE html>
         ]
       },
       custom: {
-        title: "🔬 맞춤 분석 (파일·URL)",
+        title: "맞춤 분석 (파일·URL)",
         mainTitle: "파일·웹 URL AI 맞춤 분석 & 출제 세트",
         mainDesc: "LG 엑사원(EXAONE) AI로 분석한 핵심 요약 및 맞춤형 5지선다 실전 퀴즈",
         quizLabel: "맞춤 퀴즈 풀기",
@@ -1804,7 +1798,7 @@ html_content = """<!DOCTYPE html>
 
         let trapsHtml = '';
         (u.exam_traps || []).forEach(tr => {
-          trapsHtml += `<li style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">⚠️ ${escapeHtml(tr)}</li>`;
+          trapsHtml += `<li style="font-size:12.5px; color:var(--text-secondary); line-height:1.6; margin-bottom:4px;">• ${escapeHtml(tr)}</li>`;
         });
 
         container.innerHTML += `
