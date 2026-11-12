@@ -90,24 +90,21 @@ written_data = {
     "title": "2026 이기적 정보보안기사 (필기) 100제 & 5대 과목 심층 요약집",
     "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1회 실전 모의고사(50제), 2회 고난도 기출 모의고사(50제) 총 100문항 및 1권 이론서 전 과목 핵심 요약노트",
     "questions": written_qs,
-    "summary": written_summary
+    "summaries": written_summary["sections"]
 }
 
 practical_data = {
     "title": "2026 이기적 정보보안기사 (실기) 50제 & 실무 가이드",
     "description": "2026 이기적 정보보안기사 필기+실기 올인원 실기 편제 기준 1회 단답형 핵심 족보(25제), 2회 서술·실무형 침해사고 분석(25제) 총 50문항 및 실무 요약",
     "questions": practical_qs,
-    "summary": practical_summary_data
+    "summaries": practical_summary_data["sections"]
 }
 
 ismsp_data = {
     "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 & 102개 기준 결함사례",
     "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈(총 15문항) 및 102개 전 기준 결함사례 총람",
     "questions": ismsp_qs,
-    "summary": {
-        "title": "ISMS-P 102개 인증기준별 핵심 점검 포인트 및 결함도출 총람",
-        "sections": ismsp_summary_data
-    }
+    "summaries": ismsp_summary_data
 }
 
 js_content = f"""// infosec_exam_data.js
@@ -121,7 +118,8 @@ window.INFOSEC_PRACTICAL_DATA = {json.dumps(practical_data, ensure_ascii=False, 
 window.ISMSP_AUDITOR_DATA = {json.dumps(ismsp_data, ensure_ascii=False, indent=2)};
 """
 
-with open("downloads/infosec-job-crawler/infosec_exam_data.js", "w", encoding="utf-8") as f:
+out_path = os.path.join(os.path.dirname(__file__), "infosec_exam_data.js")
+with open(out_path, "w", encoding="utf-8") as f:
     f.write(js_content)
 
 print(f"Successfully generated infosec_exam_data.js!")

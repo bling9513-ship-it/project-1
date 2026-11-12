@@ -1698,12 +1698,13 @@ html_content = """<!DOCTYPE html>
           </div>
         `;
       } else if (currentCategory === 'infosec_written') {
-        const summaries = (window.INFOSEC_WRITTEN_DATA && window.INFOSEC_WRITTEN_DATA.summaries) || [];
+        const d = window.INFOSEC_WRITTEN_DATA || {};
+        const summaries = d.summaries || (d.summary && d.summary.sections) || [];
         summaries.forEach(s => {
           let topicsHtml = '';
-          s.topics.forEach(t => {
+          (s.topics || []).forEach(t => {
             let pts = '';
-            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
+            (t.points || []).forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
             topicsHtml += `
               <div class="summary-topic">
                 <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
@@ -1715,19 +1716,20 @@ html_content = """<!DOCTYPE html>
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">필기 핵심요약</div>
+                <div class="summary-badge">필기 이론 요약</div>
               </div>
               ${topicsHtml}
             </div>
           `;
         });
       } else if (currentCategory === 'infosec_practical') {
-        const summaries = (window.INFOSEC_PRACTICAL_DATA && window.INFOSEC_PRACTICAL_DATA.summaries) || [];
+        const d = window.INFOSEC_PRACTICAL_DATA || {};
+        const summaries = d.summaries || (d.summary && d.summary.sections) || [];
         summaries.forEach(s => {
           let topicsHtml = '';
-          s.topics.forEach(t => {
+          (s.topics || []).forEach(t => {
             let pts = '';
-            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
+            (t.points || []).forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
             topicsHtml += `
               <div class="summary-topic">
                 <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
@@ -1739,7 +1741,7 @@ html_content = """<!DOCTYPE html>
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">실기 실무족보</div>
+                <div class="summary-badge">실기 실무 가이드</div>
               </div>
               ${topicsHtml}
             </div>
