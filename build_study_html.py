@@ -1923,32 +1923,6 @@ html_content = """<!DOCTYPE html>
         });
       }
     }
-      } else if (currentCategory === 'ismsp_auditor') {
-        const summaries = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
-        summaries.forEach(s => {
-          let topicsHtml = '';
-          s.topics.forEach(t => {
-            let pts = '';
-            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
-            topicsHtml += `
-              <div class="summary-topic">
-                <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
-                <ul>${pts}</ul>
-              </div>
-            `;
-          });
-          summarySection.innerHTML += `
-            <div class="summary-card">
-              <div class="summary-header">
-                <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">102개 기준 요약</div>
-              </div>
-              ${topicsHtml}
-            </div>
-          `;
-        });
-      }
-    }
 
     function renderCustomUnits() {
       const container = document.getElementById('customUnitsList');
