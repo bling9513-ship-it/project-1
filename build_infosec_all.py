@@ -87,17 +87,17 @@ ismsp_summary_data = [
 ]
 
 written_data = {
-    "title": "2026 이기적 정보보안기사 (필기) 100제 & 5대 과목 심층 요약집",
-    "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1회 실전 모의고사(50제), 2회 고난도 기출 모의고사(50제) 총 100문항 및 1권 이론서 전 과목 핵심 요약노트",
+    "title": "2026 이기적 정보보안기사 (필기) 100제 & 내용별 심층요약·용어사전 80선",
+    "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1회 실전(50제)·2회 고난도 기출(50제) 총 100문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
     "questions": written_qs,
-    "summaries": written_summary["sections"]
+    "summaries": written_summary.get("items", written_summary.get("sections", []))
 }
 
 practical_data = {
-    "title": "2026 이기적 정보보안기사 (실기) 50제 & 실무 가이드",
-    "description": "2026 이기적 정보보안기사 필기+실기 올인원 실기 편제 기준 1회 단답형 핵심 족보(25제), 2회 서술·실무형 침해사고 분석(25제) 총 50문항 및 실무 요약",
+    "title": "2026 이기적 정보보안기사 (실기) 50제 & 단답형 족보·실무 가이드",
+    "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1회 단답형 족보(25제)·2회 서술·실무형 침해사고 분석(25제) 총 50문항 및 실무·시큐어코딩 가이드",
     "questions": practical_qs,
-    "summaries": practical_summary_data["sections"]
+    "summaries": practical_summary_data.get("items", practical_summary_data.get("sections", []))
 }
 
 ismsp_data = {

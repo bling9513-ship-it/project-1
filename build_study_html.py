@@ -783,6 +783,79 @@ html_content = """<!DOCTYPE html>
       color: var(--accent-primary);
       border: 1px solid rgba(37, 99, 235, 0.2);
     }
+    .summary-badge.badge-term {
+      background: rgba(147, 51, 234, 0.1);
+      color: #a855f7;
+      border: 1px solid rgba(147, 51, 234, 0.25);
+    }
+    .summary-badge.badge-content {
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+    .summary-subtag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--border-default);
+      color: var(--text-muted);
+      margin-left: 8px;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+
+    .summary-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .summary-search-box {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.15s ease;
+      box-sizing: border-box;
+    }
+    .summary-search-box:focus {
+      border-color: var(--accent-primary);
+    }
+    .summary-chips-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .summary-chips-scroll::-webkit-scrollbar { display: none; }
+    .summary-chip-btn {
+      padding: 6px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .summary-chip-btn:hover {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+    .summary-chip-btn.active {
+      background: var(--text-primary);
+      color: var(--bg-page);
+      border-color: var(--text-primary);
+      font-weight: 600;
+    }
 
     .summary-topic {
       margin-bottom: 14px;
@@ -1621,9 +1694,100 @@ html_content = """<!DOCTYPE html>
       renderQuestions();
     };
 
+    let summaryActiveFilter = 'all';
+    let summarySearchQuery = '';
+
+    window.setSummaryFilter = function(filterKey) {
+      summaryActiveFilter = filterKey;
+      const chips = document.querySelectorAll('.summary-chip-btn');
+      chips.forEach(c => {
+        if (c.getAttribute('data-filter') === filterKey) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+      renderSummaryCardsOnly();
+    };
+
+    window.handleSummarySearch = function(val) {
+      summarySearchQuery = (val || '').trim().toLowerCase();
+      renderSummaryCardsOnly();
+    };
+
+    function renderSummaryCardsOnly() {
+      const container = document.getElementById('summaryCardsContainer');
+      if (!container) return;
+
+      let rawItems = [];
+      if (currentCategory === 'infosec_written') {
+        const d = window.INFOSEC_WRITTEN_DATA || {};
+        rawItems = d.summaries || [];
+      } else if (currentCategory === 'infosec_practical') {
+        const d = window.INFOSEC_PRACTICAL_DATA || {};
+        rawItems = d.summaries || [];
+      } else if (currentCategory === 'ismsp_auditor') {
+        rawItems = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
+      }
+
+      // 모듈형 아이템 필터링
+      const filtered = rawItems.filter(item => {
+        // 필터 탭
+        if (summaryActiveFilter !== 'all') {
+          if (summaryActiveFilter === 'content' && item.type !== 'content') return false;
+          if (summaryActiveFilter === 'term' && item.type !== 'term') return false;
+          if (['system', 'network', 'app', 'crypto', 'law'].includes(summaryActiveFilter)) {
+            if (item.category !== summaryActiveFilter) return false;
+          }
+        }
+        // 검색어 필터
+        if (summarySearchQuery) {
+          const title = (item.title || '').toLowerCase();
+          const cat = (item.category_name || '').toLowerCase();
+          const pts = (item.points || []).join(' ').toLowerCase();
+          if (!title.includes(summarySearchQuery) && !cat.includes(summarySearchQuery) && !pts.includes(summarySearchQuery)) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:48px 16px; color:var(--text-muted); font-size:13px;">
+            일치하는 용어나 요약 내용이 없습니다. 검색어를 변경해 보세요.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(s => {
+        let ptsHtml = '';
+        (s.points || []).forEach(p => {
+          ptsHtml += `<li>${p}</li>`;
+        });
+
+        const badgeClass = (s.type === 'term') ? 'badge-term' : 'badge-content';
+        const badgeLabel = s.badge || (s.type === 'term' ? '필수 용어사전' : '핵심 요약');
+        const subtagHtml = s.category_name ? `<span class="summary-subtag">${escapeHtml(s.category_name)}</span>` : '';
+
+        container.innerHTML += `
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">${escapeHtml(s.title)}${subtagHtml}</div>
+              <div class="summary-badge ${badgeClass}">${escapeHtml(badgeLabel)}</div>
+            </div>
+            <div class="summary-topic">
+              <ul>${ptsHtml}</ul>
+            </div>
+          </div>
+        `;
+      });
+    }
+
     function renderSummaries() {
       summarySection.innerHTML = '';
-      
+      summaryActiveFilter = 'all';
+      summarySearchQuery = '';
+
       if (currentCategory === 'cppg') {
         summarySection.innerHTML = `
           <div class="summary-card">
@@ -1698,38 +1862,48 @@ html_content = """<!DOCTYPE html>
           </div>
         `;
       } else if (currentCategory === 'infosec_written') {
-        const d = window.INFOSEC_WRITTEN_DATA || {};
-        const summaries = d.summaries || (d.summary && d.summary.sections) || [];
-        summaries.forEach(s => {
-          let topicsHtml = '';
-          (s.topics || []).forEach(t => {
-            let pts = '';
-            (t.points || []).forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
-            topicsHtml += `
-              <div class="summary-topic">
-                <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
-                <ul>${pts}</ul>
-              </div>
-            `;
-          });
-          summarySection.innerHTML += `
-            <div class="summary-card">
-              <div class="summary-header">
-                <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">필기 이론 요약</div>
-              </div>
-              ${topicsHtml}
+        summarySection.innerHTML = `
+          <div class="summary-toolbar">
+            <input type="text" id="summarySearchBox" class="summary-search-box"
+                   placeholder="궁금한 용어나 개념 검색 (예: ASLR, PAM, IPSec, 유출통지)..."
+                   oninput="handleSummarySearch(this.value)">
+            <div class="summary-chips-scroll" id="summaryChipsBar">
+              <button class="summary-chip-btn active" data-filter="all" onclick="setSummaryFilter('all')">전체 (80)</button>
+              <button class="summary-chip-btn" data-filter="content" onclick="setSummaryFilter('content')">내용별 핵심정리 (35)</button>
+              <button class="summary-chip-btn" data-filter="term" onclick="setSummaryFilter('term')">필수 용어사전 (45)</button>
+              <button class="summary-chip-btn" data-filter="system" onclick="setSummaryFilter('system')">시스템 보안</button>
+              <button class="summary-chip-btn" data-filter="network" onclick="setSummaryFilter('network')">네트워크 보안</button>
+              <button class="summary-chip-btn" data-filter="app" onclick="setSummaryFilter('app')">애플리케이션 보안</button>
+              <button class="summary-chip-btn" data-filter="crypto" onclick="setSummaryFilter('crypto')">암호학·일반</button>
+              <button class="summary-chip-btn" data-filter="law" onclick="setSummaryFilter('law')">관리 및 법률</button>
             </div>
-          `;
-        });
+          </div>
+          <div id="summaryCardsContainer" class="summary-section"></div>
+        `;
+        renderSummaryCardsOnly();
       } else if (currentCategory === 'infosec_practical') {
-        const d = window.INFOSEC_PRACTICAL_DATA || {};
-        const summaries = d.summaries || (d.summary && d.summary.sections) || [];
+        summarySection.innerHTML = `
+          <div class="summary-toolbar">
+            <input type="text" id="summarySearchBox" class="summary-search-box"
+                   placeholder="실기 명령어 또는 실무 가이드 검색 (예: find, umask, SQLi, Snort)..."
+                   oninput="handleSummarySearch(this.value)">
+            <div class="summary-chips-scroll" id="summaryChipsBar">
+              <button class="summary-chip-btn active" data-filter="all" onclick="setSummaryFilter('all')">전체 가이드</button>
+              <button class="summary-chip-btn" data-filter="system" onclick="setSummaryFilter('system')">단답형 점검·명령어</button>
+              <button class="summary-chip-btn" data-filter="app" onclick="setSummaryFilter('app')">침해사고 로그분석</button>
+              <button class="summary-chip-btn" data-filter="law" onclick="setSummaryFilter('law')">디지털 포렌식</button>
+            </div>
+          </div>
+          <div id="summaryCardsContainer" class="summary-section"></div>
+        `;
+        renderSummaryCardsOnly();
+      } else if (currentCategory === 'ismsp_auditor') {
+        const summaries = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
         summaries.forEach(s => {
           let topicsHtml = '';
-          (s.topics || []).forEach(t => {
+          s.topics.forEach(t => {
             let pts = '';
-            (t.points || []).forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
+            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
             topicsHtml += `
               <div class="summary-topic">
                 <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
@@ -1741,12 +1915,14 @@ html_content = """<!DOCTYPE html>
             <div class="summary-card">
               <div class="summary-header">
                 <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">실기 실무 가이드</div>
+                <div class="summary-badge">102개 기준 요약</div>
               </div>
               ${topicsHtml}
             </div>
           `;
         });
+      }
+    }
       } else if (currentCategory === 'ismsp_auditor') {
         const summaries = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
         summaries.forEach(s => {
