@@ -846,4 +846,11 @@ def get_written_questions():
         "answer": 1, "explanation": "개정 개인정보보호법 제35조의2에 신설된 '개인정보 전송요구권'은 정보주체가 자신에 관한 정보를 본인 또는 제3자에게 전송하도록 요구할 수 있는 권리입니다."
     })
 
+    try:
+        from . import written_questions_extra
+        q.extend(written_questions_extra.get_extra_written_questions())
+    except ImportError:
+        import written_questions_extra
+        q.extend(written_questions_extra.get_extra_written_questions())
+
     return q

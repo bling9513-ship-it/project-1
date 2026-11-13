@@ -501,4 +501,11 @@ def get_practical_questions():
         "answer": 1, "explanation": "개인정보처리자는 개인정보처리시스템의 접속기록에 대해 월 1회 이상 정기적으로 불법 접근, 다운로드, 열람 등 이상 징후를 점검·확인하여야 합니다."
     })
 
+    try:
+        from . import practical_questions_extra
+        q.extend(practical_questions_extra.get_extra_practical_questions())
+    except ImportError:
+        import practical_questions_extra
+        q.extend(practical_questions_extra.get_extra_practical_questions())
+
     return q

@@ -750,6 +750,14 @@ def get_ismsp_questions():
             "answer": 1, "explanation": "3.2.1(개인정보 현황 관리) 기준에 따라 개인정보 처리방침 및 내부 관리대장과 실제 시스템에서 수집·이용되는 개인정보 항목은 100% 일치해야 합니다."
         }
     ])
+
+    try:
+        from exam_builder import ismsp_questions_extra
+        q.extend(ismsp_questions_extra.get_extra_ismsp_questions())
+    except ImportError:
+        import ismsp_questions_extra
+        q.extend(ismsp_questions_extra.get_extra_ismsp_questions())
+
     return q
 
 def main():

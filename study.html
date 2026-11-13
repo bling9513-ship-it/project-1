@@ -1300,14 +1300,16 @@
       },
       infosec_written: {
         title: "정보보안기사 (필기)",
-        mainTitle: "2026 이기적 정보보안기사 필기 100제 & 이론서 심층 요약",
-        mainDesc: "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1회 실전(50제) · 2회 고난도 기출(50제) 총 100문항 및 1권 이론서 전 과목 요약집",
-        quizLabel: "필기 모의고사 (100제)",
-        quizLabelShort: "필기 100제",
+        mainTitle: "2026 이기적 정보보안기사 필기 200제 & 내용별 심층요약·용어사전 80선",
+        mainDesc: "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
+        quizLabel: "필기 모의고사 (200제)",
+        quizLabelShort: "필기 200제",
         exams: [
           { id: 1, full: "1회 필기 실전 모의고사 (50문항)", short: "1회 (50제)" },
           { id: 2, full: "2회 필기 고난도 기출 (50문항)", short: "2회 (50제)" },
-          { id: 0, full: "전체 100제 필기 집중 풀이", short: "전체 100제" }
+          { id: 3, full: "3회 필기 최신 기출 (50문항)", short: "3회 (50제)" },
+          { id: 4, full: "4회 필기 심화 모의고사 (50문항)", short: "4회 (50제)" },
+          { id: 0, full: "전체 200제 필기 집중 풀이", short: "전체 200제" }
         ],
         subjects: [
           { id: 0, name: "전체" },
@@ -1320,14 +1322,16 @@
       },
       infosec_practical: {
         title: "정보보안기사 (실기)",
-        mainTitle: "2026 이기적 정보보안기사 실기 50제 & 실무 가이드",
-        mainDesc: "2026 이기적 올인원 실기 편제 기준 1회 단답형 족보(25제) · 2회 서술·실무형 침해사고 분석(25제) 총 50문항 및 실무 요약",
-        quizLabel: "실기 실전 문제 (50제)",
-        quizLabelShort: "실기 50제",
+        mainTitle: "2026 이기적 정보보안기사 실기 100제 & 단답형 족보·실무 가이드 50선",
+        mainDesc: "2026 이기적 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 20선 + 단답형 족보 30선",
+        quizLabel: "실기 실전 문제 (100제)",
+        quizLabelShort: "실기 100제",
         exams: [
-          { id: 1, full: "1회 단답형 핵심 족보 (25문항)", short: "1회 단답형 (25제)" },
-          { id: 2, full: "2회 서술·실무형 분석 (25문항)", short: "2회 서술실무 (25제)" },
-          { id: 0, full: "전체 50제 실기 집중 풀이", short: "전체 50제" }
+          { id: 1, full: "1회 단답형 핵심 족보 (25문항)", short: "1회 단답 (25제)" },
+          { id: 2, full: "2회 서술·실무형 분석 (25문항)", short: "2회 서술 (25제)" },
+          { id: 3, full: "3회 최신 단답형 족보 (25문항)", short: "3회 단답 (25제)" },
+          { id: 4, full: "4회 침해사고 분석·서술 (25문항)", short: "4회 서술 (25제)" },
+          { id: 0, full: "전체 100제 실기 집중 풀이", short: "전체 100제" }
         ],
         subjects: [
           { id: 0, name: "전체" },
@@ -1339,13 +1343,14 @@
       },
       ismsp_auditor: {
         title: "ISMS-P 인증심사원",
-        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈 & 102개 기준 결함사례",
-        mainDesc: "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈(총 15문항) 및 기준별 결함 체크리스트",
-        quizLabel: "인증기준 실전 퀴즈",
-        quizLabelShort: "인증 퀴즈",
+        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 102개 기준 결함사례",
+        mainDesc: "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 기준별 결함사례 총람",
+        quizLabel: "실전 결함 퀴즈 (30제)",
+        quizLabelShort: "결함 30제",
         exams: [
           { id: 1, full: "1회 실전 결함판정 모의고사 (15문항)", short: "1회 (15제)" },
-          { id: 0, full: "전체 102개 기준 결함 풀이", short: "전체 풀이" }
+          { id: 2, full: "2회 고난도 결함판정 모의고사 (15문항)", short: "2회 (15제)" },
+          { id: 0, full: "전체 30제 결함판정 집중 풀이", short: "전체 30제" }
         ],
         subjects: [
           { id: 0, name: "전체" },
@@ -1863,10 +1868,13 @@
                    placeholder="실기 명령어 또는 실무 가이드 검색 (예: find, umask, SQLi, Snort)..."
                    oninput="handleSummarySearch(this.value)">
             <div class="summary-chips-scroll" id="summaryChipsBar">
-              <button class="summary-chip-btn active" data-filter="all" onclick="setSummaryFilter('all')">전체 가이드</button>
-              <button class="summary-chip-btn" data-filter="system" onclick="setSummaryFilter('system')">단답형 점검·명령어</button>
-              <button class="summary-chip-btn" data-filter="app" onclick="setSummaryFilter('app')">침해사고 로그분석</button>
-              <button class="summary-chip-btn" data-filter="law" onclick="setSummaryFilter('law')">디지털 포렌식</button>
+              <button class="summary-chip-btn active" data-filter="all" onclick="setSummaryFilter('all')">전체 (50)</button>
+              <button class="summary-chip-btn" data-filter="term" onclick="setSummaryFilter('term')">단답형 족보 (30)</button>
+              <button class="summary-chip-btn" data-filter="content" onclick="setSummaryFilter('content')">내용별 핵심 (20)</button>
+              <button class="summary-chip-btn" data-filter="system" onclick="setSummaryFilter('system')">시스템 보안</button>
+              <button class="summary-chip-btn" data-filter="network" onclick="setSummaryFilter('network')">네트워크 보안</button>
+              <button class="summary-chip-btn" data-filter="app" onclick="setSummaryFilter('app')">애플리케이션 보안</button>
+              <button class="summary-chip-btn" data-filter="law" onclick="setSummaryFilter('law')">포렌식·법률</button>
             </div>
           </div>
           <div id="summaryCardsContainer" class="summary-section"></div>

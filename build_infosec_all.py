@@ -87,29 +87,29 @@ ismsp_summary_data = [
 ]
 
 written_data = {
-    "title": "2026 이기적 정보보안기사 (필기) 100제 & 내용별 심층요약·용어사전 80선",
-    "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1회 실전(50제)·2회 고난도 기출(50제) 총 100문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
+    "title": "2026 이기적 정보보안기사 (필기) 200제 & 내용별 심층요약·용어사전 80선",
+    "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
     "questions": written_qs,
     "summaries": written_summary.get("items", written_summary.get("sections", []))
 }
 
 practical_data = {
-    "title": "2026 이기적 정보보안기사 (실기) 50제 & 단답형 족보·실무 가이드",
-    "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1회 단답형 족보(25제)·2회 서술·실무형 침해사고 분석(25제) 총 50문항 및 실무·시큐어코딩 가이드",
+    "title": "2026 이기적 정보보안기사 (실기) 100제 & 단답형 족보·실무 가이드 50선",
+    "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 20선 + 단답형 족보 30선",
     "questions": practical_qs,
     "summaries": practical_summary_data.get("items", practical_summary_data.get("sections", []))
 }
 
 ismsp_data = {
-    "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 & 102개 기준 결함사례",
-    "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈(총 15문항) 및 102개 전 기준 결함사례 총람",
+    "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 102개 기준 결함사례",
+    "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 102개 전 기준 결함사례 총람",
     "questions": ismsp_qs,
     "summaries": ismsp_summary_data
 }
 
 js_content = f"""// infosec_exam_data.js
 // 2026 이기적 정보보안기사 필기+실기 올인원(영진닷컴) 및 ISMS-P 인증심사원 완전판 데이터셋
-// 필기 100문항 (1회 50제 + 2회 50제) | 실기 50문항 (단답 25제 + 서술실무 25제) | ISMS-P 15문항
+// 필기 200문항 (1~4회 각 50제) | 실기 100문항 (단답 50제 + 서술실무 50제) | ISMS-P 30문항 (1·2회 각 15제)
 
 window.INFOSEC_WRITTEN_DATA = {json.dumps(written_data, ensure_ascii=False, indent=2)};
 
