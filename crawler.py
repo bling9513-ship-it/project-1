@@ -1669,10 +1669,10 @@ def generate_html(jobs, update_time_str):
       <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
       <p class="hero-desc">원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
       <div class="hero-stats">
-        <span class="stat-chip">아카이빙된 보안 공고 <strong>{len(jobs)}건</strong></span>
+        <span class="stat-chip">활성 보안 공고 <strong>{len(jobs)}건</strong></span>
         <span class="stat-chip">D-Day 마감 임박 <strong>{urgent_count}건</strong></span>
+        <span class="stat-chip">SQLite DB 기반 마감 자동 정리</span>
         <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
-        <span class="stat-chip">공고명 기반 정밀 직무 분류</span>
       </div>
     </section>
 
@@ -2151,20 +2151,80 @@ def main():
     
     kst = timezone(timedelta(hours=9))
     now_kst = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
+    today_date = datetime.now(kst).date()
     
-    # 1. JSON 파일 저장
+    # SQLite DB (archive.db) 저장 및 마감 정리 연동
+    from db_manager import get_connection, init_db, parse_deadline_status, normalize_key, mark_expired_jobs, get_active_jobs, get_db_stats
+    init_db()
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    # 1. 수집된 공고 DB UPSERT
+    seen_keys = set()
+    for job in jobs:
+        key = normalize_key(job["company"], job["title"])
+        seen_keys.add(key)
+        raw_deadline = job.get("deadline", "상시채용")
+        dl_status, status = parse_deadline_status(raw_deadline, today_date)
+        
+        cur.execute("""
+        INSERT INTO jobs (
+            job_key, company, title, url, platforms, keywords,
+            location, deadline, deadline_status, status,
+            summary, tags, first_seen_at, last_seen_at,
+            created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(job_key) DO UPDATE SET
+            platforms = excluded.platforms,
+            keywords = excluded.keywords,
+            location = CASE WHEN excluded.location != '' THEN excluded.location ELSE jobs.location END,
+            deadline = excluded.deadline,
+            deadline_status = excluded.deadline_status,
+            status = excluded.status,
+            summary = CASE WHEN excluded.summary != '' THEN excluded.summary ELSE jobs.summary END,
+            tags = CASE WHEN excluded.tags != '[]' THEN excluded.tags ELSE jobs.tags END,
+            last_seen_at = excluded.last_seen_at,
+            updated_at = excluded.updated_at;
+        """, (
+            key, job["company"], job["title"], job["url"],
+            json.dumps(job.get("platforms", []), ensure_ascii=False),
+            json.dumps(job.get("keywords", []), ensure_ascii=False),
+            job.get("location", ""), raw_deadline, dl_status, status,
+            job.get("summary", ""), json.dumps(job.get("tags", []), ensure_ascii=False),
+            now_kst, now_kst, now_kst, now_kst
+        ))
+        
+    # 2. 마감일 지난 공고 및 플랫폼에서 삭제된 공고 EXPIRED 처리
+    mark_expired_jobs(today_date)
+    cur.execute("SELECT id, job_key, deadline FROM jobs WHERE status = 'ACTIVE';")
+    active_rows = cur.fetchall()
+    for r in active_rows:
+        if r["job_key"] not in seen_keys:
+            dl_st, st = parse_deadline_status(r["deadline"], today_date)
+            if st == "EXPIRED" or "D-" not in r["deadline"]:
+                cur.execute("UPDATE jobs SET status = 'EXPIRED', deadline_status = 'EXPIRED', updated_at = ? WHERE id = ?;", (now_kst, r["id"]))
+                
+    conn.commit()
+    conn.close()
+    
+    # 3. DB에서 활성 공고 조회 (Single Source of Truth)
+    active_jobs = get_active_jobs()
+    stats = get_db_stats()
+    print(f"\n[SQLite DB] 활성 공고: {stats['active_jobs']}건 | 마감 정리된 공고: {stats['expired_jobs']}건")
+    
+    # 4. JSON 파일 저장 (활성 공고 기준)
     with open("jobs.json", "w", encoding="utf-8") as f:
-        json.dump(jobs, f, ensure_ascii=False, indent=2)
-    print("-> 'jobs.json' 저장 완료")
+        json.dump(active_jobs, f, ensure_ascii=False, indent=2)
+    print(f"-> 'jobs.json' 저장 완료 ({len(active_jobs)}건)")
     
-    # 2. index.html 생성
-    html_data = generate_html(jobs, now_kst)
+    # 5. index.html 생성
+    html_data = generate_html(active_jobs, now_kst)
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_data)
     print("-> 'index.html' 생성 완료")
     
-    # 3. README.md 생성
-    readme_data = generate_readme(jobs, now_kst)
+    # 6. README.md 생성
+    readme_data = generate_readme(active_jobs, now_kst)
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_data)
     print("-> 'README.md' 생성 완료")
