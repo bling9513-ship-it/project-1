@@ -93,6 +93,38 @@ def init_db(db_path=DB_PATH):
     conn.commit()
     conn.close()
 
+def parse_explicit_deadline_date(deadline_str, today_date=None):
+    """마감일 문자열에 함께 적힌 날짜(예: ~11/14, ~ 01/03(일))를 date로 해석.
+
+    연 단위 표기가 없으므로 오늘 기준 같은 해로 먼저 해석하고, 그 차이가 6개월을 넘으면
+    연말/연초 경계로 보고 연도를 보정한다 (12월의 ~01/05 → 다음 해, 1월의 ~12/31 → 지난 해).
+    날짜 표기가 없거나 달력에 없는 값이면 None.
+    """
+    if not deadline_str:
+        return None
+    if not today_date:
+        kst = timezone(timedelta(hours=9))
+        today_date = datetime.now(kst).date()
+
+    m = re.search(r"(\d{1,2})\s*/\s*(\d{1,2})", deadline_str)
+    if not m:
+        return None
+
+    month, day = int(m.group(1)), int(m.group(2))
+    try:
+        target_date = datetime(today_date.year, month, day).date()
+    except ValueError:
+        return None  # 13/45 같은 잘못된 값
+
+    diff = (target_date - today_date).days
+    if diff > 180 or diff < -180:
+        shifted_year = today_date.year - 1 if diff > 180 else today_date.year + 1
+        try:
+            target_date = datetime(shifted_year, month, day).date()
+        except ValueError:
+            return None
+    return target_date
+
 def parse_deadline_status(deadline_str, today_date=None):
     """마감일 문자열을 분석하여 상태값과 마감 여부(ACTIVE/EXPIRED) 판별"""
     if not today_date:
@@ -104,16 +136,31 @@ def parse_deadline_status(deadline_str, today_date=None):
     # 1. 이미 마감 표시가 명시된 경우 (예: "마감 (~11/12)")
     if "마감 (" in dl or "마감(" in dl or dl.startswith("마감"):
         return "EXPIRED", "EXPIRED"
+
+    # 2. 문자열에 실제 마감 날짜(MM/DD)가 적혀 있으면 라벨(D-Day/오늘/D-N)보다 날짜를 우선한다.
+    #    재수집되지 않은 라벨은 하루만 지나도 어긋나므로(예: 11/15에 남은 "D-Day (~11/14 토)"),
+    #    적힌 날짜가 지났으면 라벨과 무관하게 마감 처리한다.
+    explicit_date = parse_explicit_deadline_date(dl, today_date)
+    if explicit_date is not None:
+        diff = (explicit_date - today_date).days
+        if diff < 0:
+            return "EXPIRED", "EXPIRED"
+        elif diff == 0:
+            return "D_DAY", "ACTIVE"
+        elif 1 <= diff <= 7:
+            return "URGENT", "ACTIVE"
+        else:
+            return "UPCOMING", "ACTIVE"
         
-    # 2. D-Day / 오늘 마감
+    # 3. D-Day / 오늘 마감 (날짜 표기 없음)
     if "D-Day" in dl or "오늘" in dl:
         return "D_DAY", "ACTIVE"
         
-    # 3. 내일 마감 ("D-1" 부분 문자열 매칭은 D-10~D-19까지 잡히므로 사용하지 않음)
+    # 4. 내일 마감 ("D-1" 부분 문자열 매칭은 D-10~D-19까지 잡히므로 사용하지 않음)
     if "내일" in dl:
         return "URGENT", "ACTIVE"
         
-    # 4. D-N 계산
+    # 5. D-N 계산 (날짜 표기 없음)
     m = re.search(r"D-(\d+)", dl)
     if m:
         days = int(m.group(1))
@@ -123,26 +170,6 @@ def parse_deadline_status(deadline_str, today_date=None):
             return "URGENT", "ACTIVE"
         else:
             return "UPCOMING", "ACTIVE"
-            
-    # 5. 날짜 형식 (~MM/DD 또는 YYYY-MM-DD 등)
-    m_date = re.search(r"(\d{1,2})/(\d{1,2})", dl)
-    if m_date:
-        month = int(m_date.group(1))
-        day = int(m_date.group(2))
-        year = today_date.year
-        try:
-            target_date = datetime(year, month, day).date()
-            diff = (target_date - today_date).days
-            if diff < 0:
-                return "EXPIRED", "EXPIRED"
-            elif diff == 0:
-                return "D_DAY", "ACTIVE"
-            elif 1 <= diff <= 7:
-                return "URGENT", "ACTIVE"
-            else:
-                return "UPCOMING", "ACTIVE"
-        except Exception:
-            pass
             
     # 6. 상시 채용 / 채용시 마감
     if "채용시" in dl:
