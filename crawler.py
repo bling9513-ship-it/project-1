@@ -1831,24 +1831,31 @@ def generate_html(jobs, update_time_str):
       let isAlways = false;
       let daysLeft = 999;
 
-      if (dl.includes('D-Day') || dl.includes('D-1') || dl.includes('D-2') || dl.includes('D-3') || dl.includes('오늘') || dl.includes('내일')) {{
-        badgeClass = 'badge-dl-urgent';
-        isUrgent = true;
-        const m = dl.match(/D-(\\d+)/);
-        daysLeft = m ? parseInt(m[1]) : 0;
+      // 부분 문자열 매칭('D-1' in 'D-16')으로 두 자리 D-Day까지 마감 임박으로 잡히던 문제를 막기 위해
+      // 먼저 D-(숫자)를 정규식으로 파싱해 남은 일수를 확정하고, D-Day/오늘/내일만 보조로 처리한다.
+      const dm = dl.match(/D-(\\d+)/);
+      let parsedDays = null;
+      if (dm) {{
+        parsedDays = parseInt(dm[1], 10);
+      }} else if (dl.includes('D-Day') || dl.includes('오늘')) {{
+        parsedDays = 0;
+      }} else if (dl.includes('내일')) {{
+        parsedDays = 1;
+      }}
+
+      if (parsedDays !== null) {{
+        daysLeft = parsedDays;
+        if (daysLeft <= 3) {{
+          badgeClass = 'badge-dl-urgent';
+          isUrgent = true;
+        }} else if (daysLeft <= 7) {{
+          badgeClass = 'badge-dl-warning';
+          isUrgent = true;
+        }}
       }} else if (dl.includes('상시') || dl.includes('채용시')) {{
         badgeClass = 'badge-dl-always';
         isAlways = true;
         daysLeft = 500;
-      }} else {{
-        const m = dl.match(/D-(\\d+)/);
-        if (m) {{
-          daysLeft = parseInt(m[1]);
-          if (daysLeft <= 7) {{
-            badgeClass = 'badge-dl-warning';
-            isUrgent = true;
-          }}
-        }}
       }}
 
       return {{ label: dl, badgeClass, isUrgent, isAlways, daysLeft }};

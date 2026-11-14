@@ -109,8 +109,8 @@ def parse_deadline_status(deadline_str, today_date=None):
     if "D-Day" in dl or "오늘" in dl:
         return "D_DAY", "ACTIVE"
         
-    # 3. 내일 마감
-    if "내일" in dl or "D-1" in dl:
+    # 3. 내일 마감 ("D-1" 부분 문자열 매칭은 D-10~D-19까지 잡히므로 사용하지 않음)
+    if "내일" in dl:
         return "URGENT", "ACTIVE"
         
     # 4. D-N 계산
@@ -181,6 +181,38 @@ def mark_expired_jobs(today_date=None, db_path=DB_PATH):
         conn.commit()
     conn.close()
     return len(expired_ids)
+
+def refresh_deadline_statuses(today_date=None, db_path=DB_PATH):
+    """ACTIVE 공고의 deadline_status를 현재 기준으로 재계산 (마감 판정 로직 변경 시 DB 재정규화)"""
+    if not today_date:
+        kst = timezone(timedelta(hours=9))
+        today_date = datetime.now(kst).date()
+
+    kst = timezone(timedelta(hours=9))
+    now_str = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
+
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("SELECT id, deadline, deadline_status FROM jobs WHERE status = 'ACTIVE';")
+    rows = cur.fetchall()
+
+    updates = []
+    unchanged = 0
+    for row in rows:
+        dl_status, status = parse_deadline_status(row["deadline"], today_date)
+        if status != "ACTIVE":
+            # 마감 전환은 mark_expired_jobs 담당
+            continue
+        if dl_status != row["deadline_status"]:
+            updates.append((dl_status, now_str, row["id"]))
+        else:
+            unchanged += 1
+
+    if updates:
+        cur.executemany("UPDATE jobs SET deadline_status = ?, updated_at = ? WHERE id = ?;", updates)
+        conn.commit()
+    conn.close()
+    return len(updates), unchanged
 
 def get_active_jobs(db_path=DB_PATH):
     """활성 공고(ACTIVE)를 마감 임박 순 및 최신 순으로 정렬하여 딕셔너리 리스트로 반환"""

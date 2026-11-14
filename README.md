@@ -1,7 +1,7 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-14 06:30:52 KST` (매일 06:30 KST 자동 수집)
+> **마지막 업데이트**: `2026-11-14 09:02:40 KST` (매일 06:30 KST 자동 수집)
 > **아카이빙된 보안 공고**: 총 **522**개 (직무 검증 및 중복 제거 완료)
 > **마감 임박 공고**: 총 **95**개 (D-Day 및 마감 기한 순 정렬)
 
@@ -86,72 +86,10 @@
 | **(주)채널코퍼레이션** | [[채널톡] Chief Information Security Officer](https://career.rememberapp.co.kr/job/posting/335934) | 리멤버 | **D-6 (~11/20 금)** | `정보보안` |
 | **(주) 유호스트** | [정보보안 보안관제 담당 채용(교대근무/정규직)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000196) | 인크루트 | **D-6 (~11/20 금)** | `정보보안` |
 | **HR컨설팅(주)** | [인프라 보안 (그룹사)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610220002280) | 인크루트 | **D-7 (~11/21 토)** | `정보보안` |
-| **이스트시큐리티** | [악성코드 탐지 엔진 개발 (경력)](https://www.jumpit.co.kr/position/55394459) | 점핏 | **D-10 (~11/24 화)** | `정보보안` |
-| **(주)유호스트** | [보안관제(정보보안) 정규직 채용(월16일 근무/교대근무)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55469578&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 인크루트 | **D-10 (~ 11/24(화))** | `정보보안` |
-| **넷마블(주)** | [보안 정책 담당자](https://career.rememberapp.co.kr/job/posting/353648) | 리멤버 | **D-10 (~11/24 화)** | `정보보안` |
-| **(주)한진** | [(주)한진 정보보안팀 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393373&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-11 (~ 11/25(수))** | `정보보안` |
-| **(주)리드엔지니어링** | [총무(총무,산업안전,정보보안) 경력직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55388492&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-11 (~ 11/25(수))** | `정보보안` |
-| **HR컨설팅(주)** | [국내 최대 대기업 AI서비스 확산/ERP개발운영/정보보안 각 담당자 1명씩 3명 신규충원](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000535) | 인크루트 | **D-11 (~11/25 수)** | `정보보안` |
-| **(주)인싸이트에이치알지** | [우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897) | 인크루트 | **D-11 (~11/25 수)** | `정보보안` |
-| **위드네트웍스** | [보안 연구소 솔루션 개발자(신입)](https://www.jumpit.co.kr/position/55417954) | 점핏 | **D-12 (~11/26 목)** | `정보보안` |
-| **이너버스** | [통합보안관리 엔지니어(신입)](https://www.jumpit.co.kr/position/55404385) | 점핏 | **D-12 (~11/26 목)** | `정보보안` |
-| **(주)에이치알비즈코리아** | [게임 및 웹 모의해킹/게임보안 분석 및 대응 담당/세계적 게임사](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55548080&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-12 (~ 11/26(목))** | `모의해킹`, `정보보안` |
-| **현대오토에버(주)** | [클라우드 보안성 검토 및 관리](https://career.rememberapp.co.kr/job/posting/347418) | 리멤버 | **D-12 (~11/26 목)** | `취약점 진단`, `정보보안` |
-| **현대오토에버(주)** | [북미 기술 보안 주재원 (Endpoint)](https://career.rememberapp.co.kr/job/posting/333894) | 리멤버 | **D-12 (~11/26 목)** | `정보보안` |
-| **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 리멤버, 잡코리아 | **D-12 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
-| **현대오토에버(주)** | [정보보안 솔루션 구축/운영 (금융)](https://career.rememberapp.co.kr/job/posting/342314) | 리멤버 | **D-12 (~11/26 목)** | `정보보안` |
-| **㈜선익시스템** | [[선익시스템] IT팀 정보보안 경력 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50248199) | 잡코리아 | **D-12** | `정보보안` |
-| **시니어앤파트너즈** | [[화성.정남] 네트워크/보안 엔지니어(사원-대리급)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120000241) | 인크루트 | **D-12 (~11/26 목)** | `정보보안` |
-| **중고나라** | [정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/389366) | 원티드, 리멤버, 잡코리아 | **D-13** | `정보보호`, `정보보안` |
-| **SK(주)** | [정보보안 운영 전문가 영입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55338862&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 잡코리아 | **D-13 (~ 11/27(금))** | `정보보안` |
-| **(주) 케인앤클루컨설팅** | [보안진단(취약점진단/보안성검토) 대리급 경력사원 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554726&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-13 (~ 11/27(금))** | `취약점 진단`, `정보보안` |
-| **갓루트(GOTROOT)** | [[경력 무관] Offensive Security 컨설턴트 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50253569) | 잡코리아 | **D-13** | `모의해킹`, `정보보안` |
-| **에스케이** | [정보보안 운영 전문가 영입](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610030000081) | 인크루트 | **D-13 (~11/27 금)** | `정보보안` |
-| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 인크루트 | **D-13 (~11/27 금)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **㈜위대한상상** | [[Security] Web & Application Security (5년 이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50068192) | 잡코리아 | **D-14** | `정보보안` |
-| **㈜웹젠** | [[웹젠] 인프라보안(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50072508) | 잡코리아 | **D-14** | `정보보안` |
-| **(주)코인원** | [Service Security Engineer(팀장)](https://www.jobkorea.co.kr/Recruit/GI_Read/50072314) | 잡코리아 | **D-14** | `정보보안` |
-| **(주)씨아이솔루션** | [보안관제 채용 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290000183) | 인크루트 | **D-14 (~11/28 토)** | `정보보안` |
-| **(주)유니코써치** | [[외국계/블루팀] Cyber Security Lead](https://career.rememberapp.co.kr/job/posting/353425) | 리멤버 | **D-15 (~11/29 일)** | `정보보안` |
-| **㈜위대한상상** | [[Security] Privacy Manager (개인정보보호 담당자/3년 이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50082650) | 잡코리아 | **D-15** | `정보보호`, `정보보안` |
-| **㈜숲(SOOP CO., LTD.)** | [[SOOP] 보안솔루션 운영 및 취약점 진단](https://www.jobkorea.co.kr/Recruit/GI_Read/50356584) | 잡코리아 | **D-15** | `취약점 진단`, `정보보안` |
-| **㈜시큐러스** | [[경력] 정보보안 컨설팅 컨설턴트 프리랜서 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50274614) | 잡코리아 | **D-15** | `정보보안` |
-| **그레이스앤파트너스** | [EDR 보안관제 경력/(5~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000899) | 인크루트 | **D-15 (~11/29 일)** | `정보보안` |
-| **부드러운돌멩이** | [전자금융 정보보안전문가 (3년~10년)](https://www.wanted.co.kr/wd/371674) | 원티드, 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
-| **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
-| **(주)에버스핀** | [취약점 분석 및 정보보안 모의해킹 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `모의해킹`, `취약점 진단`, `정보보안` |
-| **(주)가비아** | [Security Engineer](https://career.rememberapp.co.kr/job/posting/339606) | 리멤버, 인크루트 | **D-16 (~11/30 월)** | `정보보안` |
-| **(주)네비웍스** | [[네비웍스] 품질팀 리더 (SW품질경영 & 전사 정보보안 총괄)](https://career.rememberapp.co.kr/job/posting/352753) | 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
-| **브리스캔영어쏘시에이츠(주)** | [정보보안 관리체계(정책) 담당자(시니어)](https://career.rememberapp.co.kr/job/posting/351600) | 리멤버 | **D-16 (~11/30 월)** | `정보보호`, `정보보안` |
-| **(주)씨앤씨인터내셔널** | [[화장품ODM상장사]IT/정보보안 담당](https://career.rememberapp.co.kr/job/posting/341715) | 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
-| **(주)프로써치코리아** | [정보보안 채용](https://career.rememberapp.co.kr/job/posting/290289) | 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
-| **한국조선해양(주)** | [[HD한국조선해양] 선박보안 테스트 및 모의해킹](https://career.rememberapp.co.kr/job/posting/343623) | 리멤버 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
-| **주식회사스마일게이트** | [[스마일게이트] [정보보안] 정보보안 분석 담당 (팀장급)](https://www.jobkorea.co.kr/Recruit/GI_Read/50244585) | 잡코리아 | **D-16** | `정보보안` |
-| **에프알엘코리아㈜** | [[유니클로] 정보보안 담당자 Senior](https://www.jobkorea.co.kr/Recruit/GI_Read/50358217) | 잡코리아 | **D-16** | `정보보안` |
-| **에프알엘코리아㈜** | [[유니클로] 정보보안 담당자 Junior](https://www.jobkorea.co.kr/Recruit/GI_Read/50358204) | 잡코리아 | **D-16** | `정보보안` |
-| **주식회사스마일게이트** | [[스마일게이트] [정보보안] 게임 보안 SDK 개발 담당](https://www.jobkorea.co.kr/Recruit/GI_Read/50274592) | 잡코리아 | **D-16** | `정보보안` |
-| **㈜넥솔위즈빌** | [정보보안 관리업무](https://www.jobkorea.co.kr/Recruit/GI_Read/50116778) | 잡코리아 | **D-16** | `정보보안` |
-| **신한DS** | [정보보안LAB(레드팀) 경력직 수시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50258924) | 잡코리아 | **D-16** | `모의해킹`, `정보보안` |
-| **웍스피어(유)** | [[웍스피어] App Security 엔지니어 (4년이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50309164) | 잡코리아 | **D-16** | `정보보안` |
-| **(주)신한디에스** | [정보보안LAB(레드팀) 경력직 수시채용 (~채용 시 마감)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280002113) | 인크루트 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
-| **시큐어트리(주)** | [IT인프라 네트워크 보안 엔지니어](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611110000268) | 인크루트 | **D-16 (~11/30 월)** | `정보보안` |
-| **(주)에이치알맨파워그룹** | [[대기업-지주] AI 보안 담당 (서울)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610310000238) | 인크루트 | **D-16 (~11/30 월)** | `정보보안` |
-| **(주)비트러스트** | [정보보안솔루션(FW/WAF/IPS/DBSafer/NAC/DLP) 운영 엔지니어 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100002040) | 인크루트 | **D-17 (~11/30 월)** | `정보보안` |
-| **리브스메드** | [기업보안 담당자 (과장~차장)](https://www.jumpit.co.kr/position/55453157) | 점핏 | **D-17 (~12/01 화)** | `정보보안` |
-| **리브스메드** | [제품보안 담당자 (과장~차장)](https://www.jumpit.co.kr/position/55453172) | 점핏 | **D-17 (~12/01 화)** | `정보보안` |
-| **휴젤(주)** | [[보안1팀] 정보보안 운영/개인정보보호 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 잡코리아, 인크루트 | **D-19 (~ 12/03(목))** | `정보보호`, `정보보안` |
-| **㈜에스앤케이인스티튜트** | [정보보안솔루션 경력개발자](https://www.jobkorea.co.kr/Recruit/GI_Read/50297500) | 잡코리아 | **D-19** | `정보보안` |
-| **그레이스앤파트너스** | [보안관제/(3~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002809) | 인크루트 | **D-19 (~12/03 목)** | `정보보안` |
-| **그레이스앤파트너스** | [보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810) | 인크루트 | **D-19 (~12/03 목)** | `취약점 진단`, `정보보안` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 원티드, 점핏 | **D-5 (~11/19 목)** | `취약점 진단`, `정보보호`, `정보보안` |
 | **탑커리어인사이트** | [기술적, 관리적, 물리적 보안 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000190) | 인크루트 | **D-5 (~11/19 목)** | `정보보안` |
 | **탑커리어인사이트** | [보안엔지니어 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000188) | 인크루트 | **D-5 (~11/19 목)** | `정보보안` |
 | **(주)맨파워써치** | [SK계열 에너지 기업_ 정보·물리보안/총무(사원~대리급)](https://career.rememberapp.co.kr/job/posting/354474) | 리멤버 | **D-7 (~11/21 토)** | `정보보안` |
-| **(주)시큐아이** | [[삼성SDS자회사] (주)시큐아이 경력사원 채용(보안컨설팅)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55567156&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-11 (~ 11/25(수))** | `정보보안` |
-| **(주)우리카드** | [[우리카드] 정보보안 경력직 채용](https://career.rememberapp.co.kr/job/posting/354554) | 리멤버, 인크루트 | **D-11 (~11/25 수)** | `정보보안` |
-| **(주)코리아인** | [[금융사/여의도] IT정보보안 솔루션 기술지원 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55564120&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-13 (~ 11/27(금))** | `정보보안` |
-| **(주)이글루코퍼레이션** | [[AI통합보안센터] 취약점 진단 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55287721&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
-| **㈜비트러스트** | [정보보안솔루션(FW/WAF/IPS/DBSafer/NAC/DLP) 운영 엔지니어 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50340997) | 잡코리아, 인크루트 | **D-16** | `정보보안` |
 | **(주)대신저축은행** | [IT 정보보안 부문 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393054&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **채용시 마감** | `정보보안` |
 | **(주)에이바이트** | [[정보보안기술] 2026년 보안솔루션 엔지니어 채용(신입,경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55148925&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **채용시 마감** | `정보보안` |
 | **(주)시선인터내셔널** | [[(주)시선인터내셔널] 정보보안 경력직 모집 (ISMS 담당)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491789&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **채용시 마감** | `정보보호`, `정보보안` |
@@ -352,6 +290,63 @@
 | **바로팜** | [정보보안 담당자](https://www.wanted.co.kr/wd/385054) | 원티드, 점핏 | **D-9 (~11/23 월)** | `정보보안` |
 | **라이나생명보험(주)** | [IT Security Engineer](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55540695&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-9 (~ 11/23(월))** | `정보보안` |
 | **롯데이노베이트(주)** | [[백화점IS팀] 보안 운영 경력](https://career.rememberapp.co.kr/job/posting/353768) | 리멤버 | **D-9 (~11/23 월)** | `정보보안` |
+| **이스트시큐리티** | [악성코드 탐지 엔진 개발 (경력)](https://www.jumpit.co.kr/position/55394459) | 점핏 | **D-10 (~11/24 화)** | `정보보안` |
+| **(주)유호스트** | [보안관제(정보보안) 정규직 채용(월16일 근무/교대근무)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55469578&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 인크루트 | **D-10 (~ 11/24(화))** | `정보보안` |
+| **넷마블(주)** | [보안 정책 담당자](https://career.rememberapp.co.kr/job/posting/353648) | 리멤버 | **D-10 (~11/24 화)** | `정보보안` |
+| **(주)한진** | [(주)한진 정보보안팀 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393373&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-11 (~ 11/25(수))** | `정보보안` |
+| **(주)리드엔지니어링** | [총무(총무,산업안전,정보보안) 경력직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55388492&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-11 (~ 11/25(수))** | `정보보안` |
+| **HR컨설팅(주)** | [국내 최대 대기업 AI서비스 확산/ERP개발운영/정보보안 각 담당자 1명씩 3명 신규충원](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000535) | 인크루트 | **D-11 (~11/25 수)** | `정보보안` |
+| **(주)인싸이트에이치알지** | [우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897) | 인크루트 | **D-11 (~11/25 수)** | `정보보안` |
+| **위드네트웍스** | [보안 연구소 솔루션 개발자(신입)](https://www.jumpit.co.kr/position/55417954) | 점핏 | **D-12 (~11/26 목)** | `정보보안` |
+| **이너버스** | [통합보안관리 엔지니어(신입)](https://www.jumpit.co.kr/position/55404385) | 점핏 | **D-12 (~11/26 목)** | `정보보안` |
+| **(주)에이치알비즈코리아** | [게임 및 웹 모의해킹/게임보안 분석 및 대응 담당/세계적 게임사](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55548080&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-12 (~ 11/26(목))** | `모의해킹`, `정보보안` |
+| **현대오토에버(주)** | [클라우드 보안성 검토 및 관리](https://career.rememberapp.co.kr/job/posting/347418) | 리멤버 | **D-12 (~11/26 목)** | `취약점 진단`, `정보보안` |
+| **현대오토에버(주)** | [북미 기술 보안 주재원 (Endpoint)](https://career.rememberapp.co.kr/job/posting/333894) | 리멤버 | **D-12 (~11/26 목)** | `정보보안` |
+| **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 리멤버, 잡코리아 | **D-12 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **현대오토에버(주)** | [정보보안 솔루션 구축/운영 (금융)](https://career.rememberapp.co.kr/job/posting/342314) | 리멤버 | **D-12 (~11/26 목)** | `정보보안` |
+| **㈜선익시스템** | [[선익시스템] IT팀 정보보안 경력 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50248199) | 잡코리아 | **D-12** | `정보보안` |
+| **시니어앤파트너즈** | [[화성.정남] 네트워크/보안 엔지니어(사원-대리급)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120000241) | 인크루트 | **D-12 (~11/26 목)** | `정보보안` |
+| **중고나라** | [정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/389366) | 원티드, 리멤버, 잡코리아 | **D-13** | `정보보호`, `정보보안` |
+| **SK(주)** | [정보보안 운영 전문가 영입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55338862&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 잡코리아 | **D-13 (~ 11/27(금))** | `정보보안` |
+| **(주) 케인앤클루컨설팅** | [보안진단(취약점진단/보안성검토) 대리급 경력사원 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554726&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-13 (~ 11/27(금))** | `취약점 진단`, `정보보안` |
+| **갓루트(GOTROOT)** | [[경력 무관] Offensive Security 컨설턴트 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50253569) | 잡코리아 | **D-13** | `모의해킹`, `정보보안` |
+| **에스케이** | [정보보안 운영 전문가 영입](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610030000081) | 인크루트 | **D-13 (~11/27 금)** | `정보보안` |
+| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 인크루트 | **D-13 (~11/27 금)** | `취약점 진단`, `정보보호`, `정보보안` |
+| **㈜위대한상상** | [[Security] Web & Application Security (5년 이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50068192) | 잡코리아 | **D-14** | `정보보안` |
+| **㈜웹젠** | [[웹젠] 인프라보안(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50072508) | 잡코리아 | **D-14** | `정보보안` |
+| **(주)코인원** | [Service Security Engineer(팀장)](https://www.jobkorea.co.kr/Recruit/GI_Read/50072314) | 잡코리아 | **D-14** | `정보보안` |
+| **(주)씨아이솔루션** | [보안관제 채용 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290000183) | 인크루트 | **D-14 (~11/28 토)** | `정보보안` |
+| **(주)유니코써치** | [[외국계/블루팀] Cyber Security Lead](https://career.rememberapp.co.kr/job/posting/353425) | 리멤버 | **D-15 (~11/29 일)** | `정보보안` |
+| **㈜위대한상상** | [[Security] Privacy Manager (개인정보보호 담당자/3년 이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50082650) | 잡코리아 | **D-15** | `정보보호`, `정보보안` |
+| **㈜숲(SOOP CO., LTD.)** | [[SOOP] 보안솔루션 운영 및 취약점 진단](https://www.jobkorea.co.kr/Recruit/GI_Read/50356584) | 잡코리아 | **D-15** | `취약점 진단`, `정보보안` |
+| **㈜시큐러스** | [[경력] 정보보안 컨설팅 컨설턴트 프리랜서 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50274614) | 잡코리아 | **D-15** | `정보보안` |
+| **그레이스앤파트너스** | [EDR 보안관제 경력/(5~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000899) | 인크루트 | **D-15 (~11/29 일)** | `정보보안` |
+| **부드러운돌멩이** | [전자금융 정보보안전문가 (3년~10년)](https://www.wanted.co.kr/wd/371674) | 원티드, 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
+| **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
+| **(주)에버스핀** | [취약점 분석 및 정보보안 모의해킹 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **(주)가비아** | [Security Engineer](https://career.rememberapp.co.kr/job/posting/339606) | 리멤버, 인크루트 | **D-16 (~11/30 월)** | `정보보안` |
+| **(주)네비웍스** | [[네비웍스] 품질팀 리더 (SW품질경영 & 전사 정보보안 총괄)](https://career.rememberapp.co.kr/job/posting/352753) | 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
+| **브리스캔영어쏘시에이츠(주)** | [정보보안 관리체계(정책) 담당자(시니어)](https://career.rememberapp.co.kr/job/posting/351600) | 리멤버 | **D-16 (~11/30 월)** | `정보보호`, `정보보안` |
+| **(주)씨앤씨인터내셔널** | [[화장품ODM상장사]IT/정보보안 담당](https://career.rememberapp.co.kr/job/posting/341715) | 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
+| **(주)프로써치코리아** | [정보보안 채용](https://career.rememberapp.co.kr/job/posting/290289) | 리멤버 | **D-16 (~11/30 월)** | `정보보안` |
+| **한국조선해양(주)** | [[HD한국조선해양] 선박보안 테스트 및 모의해킹](https://career.rememberapp.co.kr/job/posting/343623) | 리멤버 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
+| **주식회사스마일게이트** | [[스마일게이트] [정보보안] 정보보안 분석 담당 (팀장급)](https://www.jobkorea.co.kr/Recruit/GI_Read/50244585) | 잡코리아 | **D-16** | `정보보안` |
+| **에프알엘코리아㈜** | [[유니클로] 정보보안 담당자 Senior](https://www.jobkorea.co.kr/Recruit/GI_Read/50358217) | 잡코리아 | **D-16** | `정보보안` |
+| **에프알엘코리아㈜** | [[유니클로] 정보보안 담당자 Junior](https://www.jobkorea.co.kr/Recruit/GI_Read/50358204) | 잡코리아 | **D-16** | `정보보안` |
+| **주식회사스마일게이트** | [[스마일게이트] [정보보안] 게임 보안 SDK 개발 담당](https://www.jobkorea.co.kr/Recruit/GI_Read/50274592) | 잡코리아 | **D-16** | `정보보안` |
+| **㈜넥솔위즈빌** | [정보보안 관리업무](https://www.jobkorea.co.kr/Recruit/GI_Read/50116778) | 잡코리아 | **D-16** | `정보보안` |
+| **신한DS** | [정보보안LAB(레드팀) 경력직 수시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50258924) | 잡코리아 | **D-16** | `모의해킹`, `정보보안` |
+| **웍스피어(유)** | [[웍스피어] App Security 엔지니어 (4년이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50309164) | 잡코리아 | **D-16** | `정보보안` |
+| **(주)신한디에스** | [정보보안LAB(레드팀) 경력직 수시채용 (~채용 시 마감)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280002113) | 인크루트 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
+| **시큐어트리(주)** | [IT인프라 네트워크 보안 엔지니어](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611110000268) | 인크루트 | **D-16 (~11/30 월)** | `정보보안` |
+| **(주)에이치알맨파워그룹** | [[대기업-지주] AI 보안 담당 (서울)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610310000238) | 인크루트 | **D-16 (~11/30 월)** | `정보보안` |
+| **(주)비트러스트** | [정보보안솔루션(FW/WAF/IPS/DBSafer/NAC/DLP) 운영 엔지니어 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100002040) | 인크루트 | **D-17 (~11/30 월)** | `정보보안` |
+| **리브스메드** | [기업보안 담당자 (과장~차장)](https://www.jumpit.co.kr/position/55453157) | 점핏 | **D-17 (~12/01 화)** | `정보보안` |
+| **리브스메드** | [제품보안 담당자 (과장~차장)](https://www.jumpit.co.kr/position/55453172) | 점핏 | **D-17 (~12/01 화)** | `정보보안` |
+| **휴젤(주)** | [[보안1팀] 정보보안 운영/개인정보보호 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 잡코리아, 인크루트 | **D-19 (~ 12/03(목))** | `정보보호`, `정보보안` |
+| **㈜에스앤케이인스티튜트** | [정보보안솔루션 경력개발자](https://www.jobkorea.co.kr/Recruit/GI_Read/50297500) | 잡코리아 | **D-19** | `정보보안` |
+| **그레이스앤파트너스** | [보안관제/(3~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002809) | 인크루트 | **D-19 (~12/03 목)** | `정보보안` |
+| **그레이스앤파트너스** | [보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810) | 인크루트 | **D-19 (~12/03 목)** | `취약점 진단`, `정보보안` |
 | **십일번가(주)** | [[11번가] 정보보안 담당자 (계약직)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55552330&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-20 (~ 12/04(금))** | `정보보안` |
 | **팀스파르타(주)** | [[재택근무] 대규모 튜터 모집 (풀스택 / 정보보안 / PE)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55485188&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-20 (~ 12/04(금))** | `정보보안` |
 | **㈜메타넷엑스** | [[MetanetX] 정보보안 컨설턴트 (경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50304298) | 잡코리아 | **D-20** | `정보보안` |
@@ -403,6 +398,11 @@
 | **주식회사 무신사** | [Security Engineer (무신사페이먼츠)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2609170000001) | 인크루트 | **23시 마감** | `정보보안` |
 | **㈜메타엠** | [[메타엠] 정보보안 엔지니어 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50341352) | 잡코리아 | **D-26** | `정보보안` |
 | **엘지유플러스** | [[정보보안센터] AI보안 담당자 경력채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50354665) | 잡코리아 | **D-8** | `정보보안` |
+| **(주)시큐아이** | [[삼성SDS자회사] (주)시큐아이 경력사원 채용(보안컨설팅)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55567156&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-11 (~ 11/25(수))** | `정보보안` |
+| **(주)우리카드** | [[우리카드] 정보보안 경력직 채용](https://career.rememberapp.co.kr/job/posting/354554) | 리멤버, 인크루트 | **D-11 (~11/25 수)** | `정보보안` |
+| **(주)코리아인** | [[금융사/여의도] IT정보보안 솔루션 기술지원 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55564120&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-13 (~ 11/27(금))** | `정보보안` |
+| **(주)이글루코퍼레이션** | [[AI통합보안센터] 취약점 진단 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55287721&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
+| **㈜비트러스트** | [정보보안솔루션(FW/WAF/IPS/DBSafer/NAC/DLP) 운영 엔지니어 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50340997) | 잡코리아, 인크루트 | **D-16** | `정보보안` |
 
 [맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)
 
@@ -440,30 +440,8 @@
 | **에이스아메리칸화재해상보험** | [정보보호 GRC 매니저 (과장-차장)](https://www.jumpit.co.kr/position/55356774) | 점핏 | **D-5 (~11/19 목)** | `정보보호` |
 | **(주)미디어윌네트웍스** | [[알바천국본사] 정보보호 담당자 정규직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55423760&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-5 (~ 11/19(목))** | `정보보호` |
 | **(주)씨젠** | [[씨젠] 개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/351081) | 리멤버 | **D-5 (~11/19 목)** | `정보보호` |
-| **(주)현대그린푸드** | [현대그린푸드 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361802&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-11 (~ 11/25(수))** | `정보보호` |
-| **넷마블(주)** | [개인정보보호 관리체계 운영](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403681&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-11 (~ 11/25(수))** | `정보보호` |
-| **(주)알스퀘어** | [[라이프매니지먼트] 개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/342101) | 리멤버 | **D-11 (~11/25 수)** | `정보보호` |
-| **대진정보통신** | [PIA자격/개인정보보호컨설팅(1~3년)](https://www.jumpit.co.kr/position/55402895) | 점핏 | **D-12 (~11/26 목)** | `정보보호` |
-| **한화에어로스페이스(주)** | [[한화에어로스페이스] 해외사업 정보보호 담당자](https://career.rememberapp.co.kr/job/posting/353918) | 리멤버 | **D-12 (~11/26 목)** | `정보보호` |
-| **한화에어로스페이스㈜** | [지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50354257) | 잡코리아, 인크루트 | **D-13** | `정보보호` |
-| **중고나라** | [정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/389366) | 원티드, 리멤버, 잡코리아 | **D-13** | `정보보호`, `정보보안` |
-| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 인크루트 | **D-13 (~11/27 금)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **라온시큐어(주)** | [[라온시큐어] 정보보호 컨설턴트 수행원 (경력 1년이상)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55439240&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-15 (~ 11/29(일))** | `정보보호` |
-| **(주)보령** | [[보령] 정보보호 거버넌스 및 컴플라이언스(ISMS/개인정보보호) 담당자 (경력)](https://career.rememberapp.co.kr/job/posting/354094) | 리멤버, 인크루트 | **D-15 (~11/29 일)** | `정보보호` |
-| **㈜티빙** | [[티빙] Privacy(개인정보보호) Lead 경력채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50260163) | 잡코리아, 인크루트 | **D-15** | `정보보호` |
-| **㈜위대한상상** | [[Security] Privacy Manager (개인정보보호 담당자/3년 이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50082650) | 잡코리아 | **D-15** | `정보보호`, `정보보안` |
-| **(주)소만사** | [정보보호 및 개인정보보호 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55543032&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 원티드, 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `정보보호` |
-| **(주)에이피알** | [[경영지원] 정보보호 리더 경력사원 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55426955&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-16 (~ 11/30(월))** | `정보보호` |
-| **(주)대웅제약** | [[대웅] 준법경영본부 정보보호팀 계약직 채용(3개월)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394927&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-16 (~ 11/30(월))** | `정보보호` |
-| **(주)가비아** | [정보보호 및 개인정보보호](https://career.rememberapp.co.kr/job/posting/348990) | 리멤버, 인크루트 | **D-16 (~11/30 월)** | `정보보호` |
-| **브리스캔영어쏘시에이츠(주)** | [정보보안 관리체계(정책) 담당자(시니어)](https://career.rememberapp.co.kr/job/posting/351600) | 리멤버 | **D-16 (~11/30 월)** | `정보보호`, `정보보안` |
-| **㈜가비아** | [2026년 가비아 정보보호 및 개인정보보호 경력직 수시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50329018) | 잡코리아 | **D-16** | `정보보호` |
-| **(주)에스지시큐리티컨설팅** | [문화체육관광부 정보보호 및 개인정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55458701&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인, 잡코리아 | **D-18 (~ 12/02(수))** | `정보보호` |
-| **송암시스콤(주)** | [한전 정보보호시스템 개발/PM](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55466354&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-18 (~ 12/02(수))** | `정보보호` |
-| **휴젤(주)** | [[보안1팀] 정보보안 운영/개인정보보호 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 잡코리아, 인크루트 | **D-19 (~ 12/03(목))** | `정보보호`, `정보보안` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 원티드, 점핏 | **D-5 (~11/19 목)** | `취약점 진단`, `정보보호`, `정보보안` |
 | **탑커리어인사이트** | [정보보호 취약점분석, 대응 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000194) | 인크루트 | **D-5 (~11/19 목)** | `취약점 진단`, `정보보호` |
-| **한화에어로스페이스(주)** | [지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55562999&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인, 인크루트 | **D-12 (~ 11/26(목))** | `정보보호` |
 | **(주)시선인터내셔널** | [[(주)시선인터내셔널] 정보보안 경력직 모집 (ISMS 담당)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491789&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **채용시 마감** | `정보보호`, `정보보안` |
 | **(주)한국갤럽조사연구소** | [[한국갤럽] 정보보호팀 / 인프라 및 시스템 보안 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55504589&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **채용시 마감** | `정보보호`, `정보보안` |
 | **(주)싸이버원** | [[싸이버원] 관리체계/인프라 정보보호 컨설팅 신입/경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55038257&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **채용시 마감** | `정보보호` |
@@ -549,6 +527,27 @@
 | **에스케이쉴더스㈜** | [웹/애플리케이션 보안 경력직 채용(본사 정보보호그룹 근무)](https://www.jobkorea.co.kr/Recruit/GI_Read/50308131) | 잡코리아 | **D-8** | `정보보호`, `정보보안` |
 | **한화시스템** | [[한화시스템/방산부문] 정보보호](https://career.rememberapp.co.kr/job/posting/350647) | 리멤버 | **D-9 (~11/23 월)** | `정보보호` |
 | **CJ올리브네트웍스(주)** | [개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/341892) | 리멤버, 잡코리아 | **D-9** | `정보보호` |
+| **(주)현대그린푸드** | [현대그린푸드 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361802&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-11 (~ 11/25(수))** | `정보보호` |
+| **넷마블(주)** | [개인정보보호 관리체계 운영](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403681&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-11 (~ 11/25(수))** | `정보보호` |
+| **(주)알스퀘어** | [[라이프매니지먼트] 개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/342101) | 리멤버 | **D-11 (~11/25 수)** | `정보보호` |
+| **대진정보통신** | [PIA자격/개인정보보호컨설팅(1~3년)](https://www.jumpit.co.kr/position/55402895) | 점핏 | **D-12 (~11/26 목)** | `정보보호` |
+| **한화에어로스페이스(주)** | [[한화에어로스페이스] 해외사업 정보보호 담당자](https://career.rememberapp.co.kr/job/posting/353918) | 리멤버 | **D-12 (~11/26 목)** | `정보보호` |
+| **한화에어로스페이스㈜** | [지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50354257) | 잡코리아, 인크루트 | **D-13** | `정보보호` |
+| **중고나라** | [정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/389366) | 원티드, 리멤버, 잡코리아 | **D-13** | `정보보호`, `정보보안` |
+| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 인크루트 | **D-13 (~11/27 금)** | `취약점 진단`, `정보보호`, `정보보안` |
+| **라온시큐어(주)** | [[라온시큐어] 정보보호 컨설턴트 수행원 (경력 1년이상)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55439240&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-15 (~ 11/29(일))** | `정보보호` |
+| **(주)보령** | [[보령] 정보보호 거버넌스 및 컴플라이언스(ISMS/개인정보보호) 담당자 (경력)](https://career.rememberapp.co.kr/job/posting/354094) | 리멤버, 인크루트 | **D-15 (~11/29 일)** | `정보보호` |
+| **㈜티빙** | [[티빙] Privacy(개인정보보호) Lead 경력채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50260163) | 잡코리아, 인크루트 | **D-15** | `정보보호` |
+| **㈜위대한상상** | [[Security] Privacy Manager (개인정보보호 담당자/3년 이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50082650) | 잡코리아 | **D-15** | `정보보호`, `정보보안` |
+| **(주)소만사** | [정보보호 및 개인정보보호 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55543032&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 원티드, 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `정보보호` |
+| **(주)에이피알** | [[경영지원] 정보보호 리더 경력사원 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55426955&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-16 (~ 11/30(월))** | `정보보호` |
+| **(주)대웅제약** | [[대웅] 준법경영본부 정보보호팀 계약직 채용(3개월)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394927&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-16 (~ 11/30(월))** | `정보보호` |
+| **(주)가비아** | [정보보호 및 개인정보보호](https://career.rememberapp.co.kr/job/posting/348990) | 리멤버, 인크루트 | **D-16 (~11/30 월)** | `정보보호` |
+| **브리스캔영어쏘시에이츠(주)** | [정보보안 관리체계(정책) 담당자(시니어)](https://career.rememberapp.co.kr/job/posting/351600) | 리멤버 | **D-16 (~11/30 월)** | `정보보호`, `정보보안` |
+| **㈜가비아** | [2026년 가비아 정보보호 및 개인정보보호 경력직 수시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50329018) | 잡코리아 | **D-16** | `정보보호` |
+| **(주)에스지시큐리티컨설팅** | [문화체육관광부 정보보호 및 개인정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55458701&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인, 잡코리아 | **D-18 (~ 12/02(수))** | `정보보호` |
+| **송암시스콤(주)** | [한전 정보보호시스템 개발/PM](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55466354&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-18 (~ 12/02(수))** | `정보보호` |
+| **휴젤(주)** | [[보안1팀] 정보보안 운영/개인정보보호 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인, 잡코리아, 인크루트 | **D-19 (~ 12/03(목))** | `정보보호`, `정보보안` |
 | **(주)비즈테크온** | [[LG CNS 자회사] 비즈테크온 사내 정보보안. 개인정보보호 담당](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55496069&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-21 (~ 12/05(토))** | `정보보호`, `정보보안` |
 | **고려아연(주)** | [보안기획 [개인정보]](https://career.rememberapp.co.kr/job/posting/353868) | 리멤버 | **D-21 (~12/05 토)** | `정보보호`, `정보보안` |
 | **(주)유니코써치** | [[중견 게임개발사] 정보보호 보안관리 시니어급](https://career.rememberapp.co.kr/job/posting/354124) | 리멤버 | **D-22 (~12/06 일)** | `정보보호`, `정보보안` |
@@ -567,6 +566,7 @@
 | **컬리** | [정보보호 정책 담당자](https://www.wanted.co.kr/wd/377077) | 원티드, 잡코리아 | **D-55** | `정보보호` |
 | **쿠팡(주)** | [개인정보보호 Principal, Risk (Global)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55521285&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-55 (~ 01/08(금))** | `정보보호` |
 | **㈜휴먼센스** | [증권사 정보보호 인프라취약점진단](https://www.jobkorea.co.kr/Recruit/GI_Read/50343241) | 잡코리아 | **D-56** | `취약점 진단`, `정보보호` |
+| **한화에어로스페이스(주)** | [지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55562999&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인, 인크루트 | **D-12 (~ 11/26(목))** | `정보보호` |
 | **㈜비즈테크온** | [[LG CNS 자회사] 비즈테크온 사내 정보보호 ·개인정보보호 담당](https://www.jobkorea.co.kr/Recruit/GI_Read/50359511) | 잡코리아 | **D-29** | `정보보호` |
 | **㈜핀시큐리티** | [핀시큐리티 정보보호 컨설팅 관리체계진단 채용(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50342738) | 잡코리아 | **D-56** | `취약점 진단`, `정보보호` |
 
@@ -590,21 +590,8 @@
 | **포스켄㈜** | [증권사 인프라 취약점진단 운영](https://www.jobkorea.co.kr/Recruit/GI_Read/50346024) | 잡코리아 | **D-4** | `취약점 진단` |
 | **코리아써치** | [//금융·IT 환경의 보안 취약점 진단 및 위협 대응](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55494458&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **D-5 (~ 11/19(목))** | `취약점 진단`, `정보보안` |
 | **(주)써니즈** | [[써니즈][IT정보보안] 소스코드 취약점 진단(SAST) 경력 2년](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55559131&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-6 (~ 11/20(금))** | `취약점 진단`, `정보보안` |
-| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 원티드, 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
-| **(주)고른** | [[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
-| **현대오토에버(주)** | [클라우드 보안성 검토 및 관리](https://career.rememberapp.co.kr/job/posting/347418) | 리멤버 | **D-12 (~11/26 목)** | `취약점 진단`, `정보보안` |
-| **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 리멤버, 잡코리아 | **D-12 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
-| **현대오토에버㈜** | [DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영](https://www.jobkorea.co.kr/Recruit/GI_Read/50301974) | 잡코리아 | **D-12** | `모의해킹`, `취약점 진단` |
-| **(주) 케인앤클루컨설팅** | [보안진단(취약점진단/보안성검토) 대리급 경력사원 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554726&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-13 (~ 11/27(금))** | `취약점 진단`, `정보보안` |
-| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 인크루트 | **D-13 (~11/27 금)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **㈜숲(SOOP CO., LTD.)** | [[SOOP] 보안솔루션 운영 및 취약점 진단](https://www.jobkorea.co.kr/Recruit/GI_Read/50356584) | 잡코리아 | **D-15** | `취약점 진단`, `정보보안` |
-| **㈜이글루코퍼레이션** | [[인프라사업본부] 취약점진단 경력 채용(대전/세종/광주/진주)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55314263&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-17 (~ 11/30(월))** | `취약점 진단` |
-| **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
-| **(주)에버스핀** | [취약점 분석 및 정보보안 모의해킹 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `모의해킹`, `취약점 진단`, `정보보안` |
-| **그레이스앤파트너스** | [보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810) | 인크루트 | **D-19 (~12/03 목)** | `취약점 진단`, `정보보안` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 원티드, 점핏 | **D-5 (~11/19 목)** | `취약점 진단`, `정보보호`, `정보보안` |
 | **탑커리어인사이트** | [정보보호 취약점분석, 대응 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000194) | 인크루트 | **D-5 (~11/19 목)** | `취약점 진단`, `정보보호` |
-| **(주)이글루코퍼레이션** | [[AI통합보안센터] 취약점 진단 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55287721&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
 | **(주)아도스** | [모의해킹·취약점 진단 보안전문가 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55546877&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **채용시 마감** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **(주)골프존** | [[골프존] 보안 취약점 진단 담당자](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55054632&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **채용시 마감** | `취약점 진단`, `정보보안` |
 | **(주)케인앤클루컨설팅** | [정보보호(보안기획/진단) 대리(과장)급 경력사원 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120000902) | 인크루트 | **채용시 마감** | `취약점 진단`, `정보보호`, `정보보안` |
@@ -638,6 +625,18 @@
 | **클럼엘** | [정보보안 취약점 분석 및 CERT](https://career.rememberapp.co.kr/job/posting/214001) | 리멤버 | **상시채용** | `취약점 진단`, `정보보안` |
 | **㈜이글루코퍼레이션** | [[인프라사업본부] 취약점진단 분야 경력직 채용(대전/세종/광주/진주)](https://www.jobkorea.co.kr/Recruit/GI_Read/50187053) | 잡코리아 | **상시채용** | `취약점 진단` |
 | **(주)숲** | [[SOOP] 보안솔루션 운영 및 취약점 진단](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55557821&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **D-8 (~ 11/22(일))** | `취약점 진단`, `정보보안` |
+| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 원티드, 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
+| **(주)고른** | [[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
+| **현대오토에버(주)** | [클라우드 보안성 검토 및 관리](https://career.rememberapp.co.kr/job/posting/347418) | 리멤버 | **D-12 (~11/26 목)** | `취약점 진단`, `정보보안` |
+| **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 리멤버, 잡코리아 | **D-12 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **현대오토에버㈜** | [DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영](https://www.jobkorea.co.kr/Recruit/GI_Read/50301974) | 잡코리아 | **D-12** | `모의해킹`, `취약점 진단` |
+| **(주) 케인앤클루컨설팅** | [보안진단(취약점진단/보안성검토) 대리급 경력사원 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554726&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-13 (~ 11/27(금))** | `취약점 진단`, `정보보안` |
+| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 인크루트 | **D-13 (~11/27 금)** | `취약점 진단`, `정보보호`, `정보보안` |
+| **㈜숲(SOOP CO., LTD.)** | [[SOOP] 보안솔루션 운영 및 취약점 진단](https://www.jobkorea.co.kr/Recruit/GI_Read/50356584) | 잡코리아 | **D-15** | `취약점 진단`, `정보보안` |
+| **㈜이글루코퍼레이션** | [[인프라사업본부] 취약점진단 경력 채용(대전/세종/광주/진주)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55314263&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-17 (~ 11/30(월))** | `취약점 진단` |
+| **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
+| **(주)에버스핀** | [취약점 분석 및 정보보안 모의해킹 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **그레이스앤파트너스** | [보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810) | 인크루트 | **D-19 (~12/03 목)** | `취약점 진단`, `정보보안` |
 | **고려아연(주)** | [보안기획팀 [보안진단]](https://career.rememberapp.co.kr/job/posting/353857) | 리멤버 | **D-21 (~12/05 토)** | `취약점 진단`, `정보보안` |
 | **㈜아도스** | [모의해킹/취약점 진단/AI Agent for Security (경력직 채용)](https://www.jobkorea.co.kr/Recruit/GI_Read/50118492) | 잡코리아 | **D-21** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **토니서치** | [[국내유명 보안기업] 취약점진단 대리과장 [경남 진주시]](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55522574&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **D-25 (~ 12/09(수))** | `취약점 진단`, `정보보안` |
@@ -650,6 +649,7 @@
 | **(주)인더포레스트** | [[보안 컨설팅] 수준높은 취약점 진단, 모의해킹 컨설팅](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55489626&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-50 (~ 01/03(일))** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **㈜휴먼센스** | [증권사 정보보호 인프라취약점진단](https://www.jobkorea.co.kr/Recruit/GI_Read/50343241) | 잡코리아 | **D-56** | `취약점 진단`, `정보보호` |
 | **에이치케이시큐리티** | [보안컨설팅 관리/취약점진단/모의해킹 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55542050&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **D-57 (~ 01/10(일))** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **(주)이글루코퍼레이션** | [[AI통합보안센터] 취약점 진단 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55287721&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
 | **㈜핀시큐리티** | [핀시큐리티 정보보호 컨설팅 관리체계진단 채용(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50342738) | 잡코리아 | **D-56** | `취약점 진단`, `정보보호` |
 
 [맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)
@@ -666,17 +666,6 @@
 | **(주)웨일시큐리티** | [모의해킹(정보보안 컨설팅) 신입 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55343440&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-5 (~ 11/19(목))** | `모의해킹`, `정보보안` |
 | **(주)웨일시큐리티** | [모의해킹(정보보안 컨설팅) 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55344029&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-5 (~ 11/19(목))** | `모의해킹`, `정보보안` |
 | **(주)베이스라인시큐어** | [정보보안 컨설팅(모의해킹) 정규직 채용 - 신입/경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491375&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-6 (~ 11/20(금))** | `모의해킹`, `정보보안` |
-| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 원티드, 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
-| **(주)고른** | [[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
-| **에스케이쉴더스(주)** | [모의해킹 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹` |
-| **(주)에이치알비즈코리아** | [게임 및 웹 모의해킹/게임보안 분석 및 대응 담당/세계적 게임사](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55548080&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-12 (~ 11/26(목))** | `모의해킹`, `정보보안` |
-| **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 리멤버, 잡코리아 | **D-12 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
-| **현대오토에버㈜** | [DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영](https://www.jobkorea.co.kr/Recruit/GI_Read/50301974) | 잡코리아 | **D-12** | `모의해킹`, `취약점 진단` |
-| **갓루트(GOTROOT)** | [[경력 무관] Offensive Security 컨설턴트 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50253569) | 잡코리아 | **D-13** | `모의해킹`, `정보보안` |
-| **(주)에버스핀** | [취약점 분석 및 정보보안 모의해킹 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `모의해킹`, `취약점 진단`, `정보보안` |
-| **한국조선해양(주)** | [[HD한국조선해양] 선박보안 테스트 및 모의해킹](https://career.rememberapp.co.kr/job/posting/343623) | 리멤버 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
-| **신한DS** | [정보보안LAB(레드팀) 경력직 수시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50258924) | 잡코리아 | **D-16** | `모의해킹`, `정보보안` |
-| **(주)신한디에스** | [정보보안LAB(레드팀) 경력직 수시채용 (~채용 시 마감)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280002113) | 인크루트 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
 | **(주)아도스** | [모의해킹·취약점 진단 보안전문가 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55546877&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **채용시 마감** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **엔에이치엔클라우드(주)** | [[NHN Cloud] 모의해킹 및 Red Team 운영](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55524647&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아, 인크루트 | **채용시 마감** | `모의해킹` |
 | **(주)에프원시큐리티** | [모의해킹 신입 및 경력직 채용 공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55481184&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **채용시 마감** | `모의해킹` |
@@ -695,6 +684,17 @@
 | **엔에이치엔(주)** | [[NHN Cloud] 모의해킹 및 Red Team 운영](https://career.rememberapp.co.kr/job/posting/353439) | 리멤버 | **상시채용** | `모의해킹` |
 | **(주)지란지교에스앤씨** | [모의해킹/프리세일즈 엔지니어](https://career.rememberapp.co.kr/job/posting/336405) | 리멤버 | **상시채용** | `모의해킹` |
 | **㈜에스피씨지** | [(주)에스피씨지 모의해킹 신입 및 경력 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50304660) | 잡코리아 | **상시채용** | `모의해킹` |
+| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 원티드, 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
+| **(주)고른** | [[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹`, `취약점 진단` |
+| **에스케이쉴더스(주)** | [모의해킹 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-11 (~ 11/25(수))** | `모의해킹` |
+| **(주)에이치알비즈코리아** | [게임 및 웹 모의해킹/게임보안 분석 및 대응 담당/세계적 게임사](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55548080&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-12 (~ 11/26(목))** | `모의해킹`, `정보보안` |
+| **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 리멤버, 잡코리아 | **D-12 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **현대오토에버㈜** | [DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영](https://www.jobkorea.co.kr/Recruit/GI_Read/50301974) | 잡코리아 | **D-12** | `모의해킹`, `취약점 진단` |
+| **갓루트(GOTROOT)** | [[경력 무관] Offensive Security 컨설턴트 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50253569) | 잡코리아 | **D-13** | `모의해킹`, `정보보안` |
+| **(주)에버스핀** | [취약점 분석 및 정보보안 모의해킹 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55242403&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인, 잡코리아 | **D-16 (~ 11/30(월))** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **한국조선해양(주)** | [[HD한국조선해양] 선박보안 테스트 및 모의해킹](https://career.rememberapp.co.kr/job/posting/343623) | 리멤버 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
+| **신한DS** | [정보보안LAB(레드팀) 경력직 수시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50258924) | 잡코리아 | **D-16** | `모의해킹`, `정보보안` |
+| **(주)신한디에스** | [정보보안LAB(레드팀) 경력직 수시채용 (~채용 시 마감)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280002113) | 인크루트 | **D-16 (~11/30 월)** | `모의해킹`, `정보보안` |
 | **에스투더블유** | [AI Pentester](https://www.jumpit.co.kr/position/55507615) | 점핏 | **D-21 (~12/05 토)** | `모의해킹` |
 | **(주)지엔** | [모의해킹 및 보안 컨설턴트 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55496170&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-21 (~ 12/05(토))** | `모의해킹`, `정보보안` |
 | **㈜아도스** | [모의해킹/취약점 진단/AI Agent for Security (경력직 채용)](https://www.jobkorea.co.kr/Recruit/GI_Read/50118492) | 잡코리아 | **D-21** | `모의해킹`, `취약점 진단`, `정보보안` |
