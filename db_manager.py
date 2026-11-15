@@ -81,7 +81,33 @@ def init_db(db_path=DB_PATH):
     cur.execute("CREATE INDEX IF NOT EXISTS idx_summaries_cat_type ON study_summaries(category, sub_type);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_summaries_subject ON study_summaries(subject);")
     
-    # 4. DB 메타 정보 테이블
+    # 4. AI 기술·트렌드 인사이트 테이블
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS ai_insights (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item_key TEXT UNIQUE NOT NULL,
+        source TEXT NOT NULL,            -- Hugging Face, arXiv, Hacker News, GeekNews
+        title_ko TEXT NOT NULL,          -- 한국어 제목
+        title_orig TEXT NOT NULL,        -- 원문 제목
+        url TEXT NOT NULL,
+        category TEXT NOT NULL,          -- LLM·에이전트, AI 보안·안전, 모델·논문, 개발·오픈소스, 산업·트렌드
+        summary TEXT NOT NULL,           -- 한국어 핵심 요약
+        tech_insight TEXT NOT NULL,      -- 기술 포인트 및 시사점
+        tags TEXT NOT NULL,              -- JSON Array
+        is_featured INTEGER NOT NULL DEFAULT 0,
+        published_at TEXT,
+        score INTEGER DEFAULT 0,
+        analyzed_by TEXT,                -- exaone, cache, fallback
+        collected_at TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    );
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_ai_source ON ai_insights(source);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_ai_category ON ai_insights(category);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_ai_published ON ai_insights(published_at);")
+
+    # 5. DB 메타 정보 테이블
     cur.execute("""
     CREATE TABLE IF NOT EXISTS db_meta (
         key TEXT PRIMARY KEY,
@@ -321,6 +347,9 @@ def get_db_stats(db_path=DB_PATH):
     
     cur.execute("SELECT COUNT(*) FROM study_summaries;")
     total_summaries = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM ai_insights;")
+    total_ai = cur.fetchone()[0]
     
     conn.close()
     return {
@@ -328,8 +357,111 @@ def get_db_stats(db_path=DB_PATH):
         "expired_jobs": expired_jobs,
         "total_jobs": active_jobs + expired_jobs,
         "total_questions": total_questions,
-        "total_summaries": total_summaries
+        "total_summaries": total_summaries,
+        "total_ai_insights": total_ai
     }
+
+# ---------------------------------------------------------------------------
+# AI 기술·트렌드 인사이트 (ai_insights)
+# ---------------------------------------------------------------------------
+
+def upsert_ai_insights(items, db_path=DB_PATH):
+    """AI 기술·트렌드 분석 결과를 item_key 기준 UPSERT (중복 수집 대비)"""
+    if not items:
+        return 0
+
+    kst = timezone(timedelta(hours=9))
+    now_str = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
+
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    count = 0
+    for it in items:
+        cur.execute("""
+        INSERT INTO ai_insights (
+            item_key, source, title_ko, title_orig, url, category, summary, tech_insight,
+            tags, is_featured, published_at, score, analyzed_by, collected_at, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(item_key) DO UPDATE SET
+            source = excluded.source,
+            title_ko = excluded.title_ko,
+            title_orig = excluded.title_orig,
+            url = excluded.url,
+            category = excluded.category,
+            summary = excluded.summary,
+            tech_insight = excluded.tech_insight,
+            tags = excluded.tags,
+            is_featured = excluded.is_featured,
+            published_at = excluded.published_at,
+            score = excluded.score,
+            analyzed_by = excluded.analyzed_by,
+            collected_at = excluded.collected_at,
+            updated_at = excluded.updated_at;
+        """, (
+            it["item_key"],
+            it["source"],
+            it["title_ko"],
+            it["title_orig"],
+            it["url"],
+            it["category"],
+            it["summary"],
+            it["tech_insight"],
+            json.dumps(it.get("tags", []), ensure_ascii=False),
+            1 if it.get("is_featured") else 0,
+            it.get("published_at", ""),
+            int(it.get("score") or 0),
+            it.get("analyzed_by", "fallback"),
+            now_str, now_str, now_str
+        ))
+        count += 1
+    conn.commit()
+    conn.close()
+    return count
+
+def get_ai_insight_count(db_path=DB_PATH):
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM ai_insights;")
+    n = cur.fetchone()[0]
+    conn.close()
+    return n
+
+def get_ai_insights(limit=None, db_path=DB_PATH):
+    """AI 인사이트 조회 (주목할 기술 우선 → 최신순)"""
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    sql = """
+    SELECT item_key, source, title_ko, title_orig, url, category, summary, tech_insight,
+           tags, is_featured, published_at, score, analyzed_by, collected_at
+    FROM ai_insights
+    ORDER BY is_featured DESC, published_at DESC, score DESC, id DESC
+    """
+    params = ()
+    if limit:
+        sql += " LIMIT ?"
+        params = (int(limit),)
+    cur.execute(sql, params)
+    rows = cur.fetchall()
+    items = []
+    for r in rows:
+        items.append({
+            "item_key": r["item_key"],
+            "source": r["source"],
+            "title_ko": r["title_ko"],
+            "title_orig": r["title_orig"],
+            "url": r["url"],
+            "category": r["category"],
+            "summary": r["summary"],
+            "tech_insight": r["tech_insight"],
+            "tags": json.loads(r["tags"]) if r["tags"] else [],
+            "is_featured": bool(r["is_featured"]),
+            "published_at": r["published_at"] or "",
+            "score": r["score"] or 0,
+            "analyzed_by": r["analyzed_by"] or "",
+            "collected_at": r["collected_at"],
+        })
+    conn.close()
+    return items
 
 def export_jobs_to_json(out_path="jobs.json", db_path=DB_PATH):
     """DB의 활성 공고를 jobs.json으로 내보내기 (웹 프론트엔드 연동)"""

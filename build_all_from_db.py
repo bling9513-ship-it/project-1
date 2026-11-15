@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 SQLite DB(archive.db)를 Single Source of Truth로 하여
-채용 공고 대시보드(index.html, jobs.json) 및 시험 공부 허브(study.html, infosec_exam_data.js)를
-일괄 생성하고 동기화하는 마스터 빌드 스크립트.
+채용 공고 대시보드(index.html, jobs.json), 시험 공부 허브(study.html, infosec_exam_data.js),
+AI 기술·트렌드 브리핑(ai.html, ai_data.json)을 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
+
+※ AI 자료 수집·분석은 ai_news_crawler.py 가 담당한다(별도 실행).
+   이 스크립트는 DB에 적재된 ai_insights 를 ai.html로 빌드하는 역할만 한다.
 """
 import os
 import sys
@@ -57,12 +60,17 @@ def build_all():
     # 6. study.html 재생성
     import subprocess
     subprocess.run(["python3", "build_study_html.py"], cwd=os.path.dirname(__file__), check=True)
-    
+
+    # 7. ai.html 재생성 (archive.db 의 ai_insights 테이블 기반)
+    from build_ai_html import build as build_ai
+    ai_total = build_ai()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
     print(f"  - 시험 문제 총합: {stats['total_questions']}문항")
     print(f"  - 핵심 요약 총합: {stats['total_summaries']}선")
+    print(f"  - AI 기술·트렌드 인사이트: {ai_total}건")
 
 if __name__ == "__main__":
     build_all()

@@ -1047,6 +1047,13 @@
         line-height: 1.45;
       }
     }
+
+    /* 내비게이션 3탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    @media (max-width: 480px) {
+      .brand-name {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1062,13 +1069,14 @@
         <div class="nav-tabs">
           <a href="index.html" class="nav-tab-item active">보안 채용공고</a>
           <a href="study.html" class="nav-tab-item">시험 공부</a>
+          <a href="ai.html" class="nav-tab-item">AI 기술·트렌드</a>
         </div>
       </div>
 
       <div class="nav-actions">
         <div class="update-meta">
           <span class="live-dot"></span>
-          <span>2026-11-15 07:06:26 KST 기준</span>
+          <span>2026-11-15 09:37:42 KST 기준</span>
         </div>
         <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
           <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

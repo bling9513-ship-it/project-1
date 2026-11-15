@@ -1613,6 +1613,13 @@ def generate_html(jobs, update_time_str):
         line-height: 1.45;
       }}
     }}
+
+    /* 내비게이션 3탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    @media (max-width: 480px) {{
+      .brand-name {{
+        display: none;
+      }}
+    }}
   </style>
 </head>
 <body>
@@ -1628,6 +1635,7 @@ def generate_html(jobs, update_time_str):
         <div class="nav-tabs">
           <a href="index.html" class="nav-tab-item active">보안 채용공고</a>
           <a href="study.html" class="nav-tab-item">시험 공부</a>
+          <a href="ai.html" class="nav-tab-item">AI 기술·트렌드</a>
         </div>
       </div>
 
