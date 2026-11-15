@@ -1932,6 +1932,11 @@ def run():
     deadline = (time.monotonic() + budget) if budget > 0 else None
     items, _cache = analyze_items(items, deadline=deadline)
     payload = finalize_run(items)
+    # 일일 실행이 다시 수집한 AI 보안 저장소가 보안·도구 카테고리로 되돌아가지 않도록 재분류
+    try:
+        retag_existing_sec_tools()
+    except Exception as e:  # noqa: BLE001
+        print(f"  [AI보안툴] 재분류 건너뜀: {type(e).__name__}: {e}")
     return payload
 
 
