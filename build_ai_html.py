@@ -16,14 +16,15 @@ AI_DATA_JSON = os.path.join(BASE_DIR, "ai_data.json")
 AI_HTML = os.path.join(BASE_DIR, "ai.html")
 KST = timezone(timedelta(hours=9))
 
-CATEGORIES = ["LLM·에이전트", "AI 보안·안전", "모델·논문", "개발·오픈소스", "산업·트렌드"]
-SOURCES = ["Hugging Face", "arXiv", "Hacker News", "GeekNews"]
+CATEGORIES = ["AI 보안·안전", "AI 툴·서비스", "LLM·에이전트", "모델·논문", "산업·트렌드"]
+SOURCES = ["Hugging Face", "arXiv", "Hacker News", "Show HN", "GitHub", "GeekNews",
+           "The Hacker News", "Dark Reading", "Embrace the Red", "Simon Willison"]
 
 CAT_CLASS = {
-    "LLM·에이전트": "cat-llm",
     "AI 보안·안전": "cat-sec",
+    "AI 툴·서비스": "cat-tool",
+    "LLM·에이전트": "cat-llm",
     "모델·논문": "cat-paper",
-    "개발·오픈소스": "cat-dev",
     "산업·트렌드": "cat-trend",
 }
 
@@ -88,7 +89,7 @@ CSS = """
       --cat-llm-bg: #eff6ff;   --cat-llm-text: #2563eb;   --cat-llm-border: #bfdbfe;
       --cat-sec-bg: #fef2f2;   --cat-sec-text: #dc2626;   --cat-sec-border: #fecaca;
       --cat-paper-bg: #f5f3ff; --cat-paper-text: #7c3aed; --cat-paper-border: #ddd6fe;
-      --cat-dev-bg: #ecfdf5;   --cat-dev-text: #059669;   --cat-dev-border: #a7f3d0;
+      --cat-tool-bg: #ecfdf5;  --cat-tool-text: #047857;  --cat-tool-border: #a7f3d0;
       --cat-trend-bg: #fff7ed; --cat-trend-text: #c2410c; --cat-trend-border: #fed7aa;
 
       --insight-bg: #f8fafc;
@@ -123,7 +124,7 @@ CSS = """
       --cat-llm-bg: rgba(37, 99, 235, 0.16);   --cat-llm-text: #60a5fa;   --cat-llm-border: rgba(37, 99, 235, 0.3);
       --cat-sec-bg: rgba(239, 68, 68, 0.16);   --cat-sec-text: #f87171;   --cat-sec-border: rgba(239, 68, 68, 0.3);
       --cat-paper-bg: rgba(124, 58, 237, 0.16);--cat-paper-text: #a78bfa; --cat-paper-border: rgba(124, 58, 237, 0.3);
-      --cat-dev-bg: rgba(16, 185, 129, 0.16);  --cat-dev-text: #34d399;   --cat-dev-border: rgba(16, 185, 129, 0.3);
+      --cat-tool-bg: rgba(16, 185, 129, 0.16);  --cat-tool-text: #34d399;  --cat-tool-border: rgba(16, 185, 129, 0.3);
       --cat-trend-bg: rgba(234, 88, 12, 0.16); --cat-trend-text: #fb923c; --cat-trend-border: rgba(234, 88, 12, 0.3);
 
       --insight-bg: #1f1f23;
@@ -649,8 +650,20 @@ CSS = """
     .cat-llm { background: var(--cat-llm-bg); color: var(--cat-llm-text); border-color: var(--cat-llm-border); }
     .cat-sec { background: var(--cat-sec-bg); color: var(--cat-sec-text); border-color: var(--cat-sec-border); }
     .cat-paper { background: var(--cat-paper-bg); color: var(--cat-paper-text); border-color: var(--cat-paper-border); }
-    .cat-dev { background: var(--cat-dev-bg); color: var(--cat-dev-text); border-color: var(--cat-dev-border); }
+    .cat-tool { background: var(--cat-tool-bg); color: var(--cat-tool-text); border-color: var(--cat-tool-border); }
     .cat-trend { background: var(--cat-trend-bg); color: var(--cat-trend-text); border-color: var(--cat-trend-border); }
+
+    .star-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      padding: 3px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
 
     .src-badge {
       font-size: 11px;
@@ -837,7 +850,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · AI 기술·트렌드 브리핑</title>
-  <meta name="description" content="Hugging Face 데일리 논문, arXiv, Hacker News, GeekNews의 최신 AI 기술·논문·산업 동향을 매일 수집해 한국어로 분석·요약한 AI 기술 브리핑입니다.">
+  <meta name="description" content="AI 보안 소식과 AI 툴·오픈소스까지 한 번에 — arXiv·Hugging Face 논문, 보안 전문 매체(The Hacker News·Dark Reading·Embrace the Red), GitHub 트렌딩 저장소, Hacker News·Show HN·GeekNews를 매일 수집해 한국어로 분석·요약한 AI 기술 브리핑입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
@@ -906,7 +919,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <section class="hero">
       <span class="hero-pill">DAILY AI BRIEFING</span>
       <h1 class="hero-title">AI 기술·트렌드 브리핑</h1>
-      <p class="hero-desc">Hugging Face 데일리 논문 · arXiv 최신 AI/AI보안 논문 · Hacker News · GeekNews에서 하루의 AI 기술 자료를 모아, 한국어 요약과 기술·보안 시사점까지 정리합니다.</p>
+      <p class="hero-desc">AI 보안과 AI 툴까지 함께 모읍니다. arXiv·Hugging Face의 최신 논문, The Hacker News·Dark Reading·Embrace the Red의 AI 보안 소식, GitHub에서 주목받는 AI/LLM/에이전트/MCP 오픈소스 도구, Hacker News·Show HN·GeekNews의 실무 담론을 매일 수집해 한국어 요약과 기술·보안 시사점으로 정리합니다.</p>
       <div class="hero-stats">
         <span class="stat-chip">수집·분석 <strong>__TOTAL__건</strong></span>
         <span class="stat-chip">주목할 기술 <strong>__FEATURED__건</strong></span>
@@ -946,7 +959,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="제목, 요약, 키워드로 검색 (예: 에이전트, RAG, AI보안, 멀티모달)">
+        <input type="text" id="searchInput" class="search-input" placeholder="제목, 요약, 키워드로 검색 (예: 프롬프트 인젝션, 에이전트 보안, MCP, 오픈소스 툴)">
         <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
       </div>
 
@@ -984,7 +997,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <footer class="footer">
       Infosec Archive · AI 기술·트렌드 브리핑<br>
-      수집 출처: Hugging Face Daily Papers · arXiv(cs.AI·cs.CL·cs.CR) · Hacker News · GeekNews<br>
+      수집 출처: Hugging Face Daily Papers · arXiv(cs.AI·cs.CL·cs.CR) · GitHub · Hacker News · Show HN · GeekNews · The Hacker News · Dark Reading · Embrace the Red<br>
       모든 요약·분석은 원문을 바탕으로 AI가 한국어로 정리한 것이며, 정확한 내용은 원문 링크에서 확인하세요.
     </footer>
   </main>
@@ -1086,6 +1099,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const catCls = CAT_CLASS[item.category] || 'cat-trend';
       const tags = (item.tags || []).map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('');
       const featured = item.is_featured ? '<span class="featured-badge">주목</span>' : '';
+      const star = (item.source === 'GitHub' && item.score > 0)
+        ? `<span class="star-badge">스타 ${item.score >= 1000 ? (item.score / 1000).toFixed(1).replace(/\\.0$/, '') + 'k' : item.score}</span>` : '';
       const orig = item.title_orig && item.title_orig !== item.title_ko
         ? `<p class="ai-title-orig">${escapeHtml(item.title_orig)}</p>` : '';
       return `
@@ -1093,6 +1108,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <div class="card-top">
             <span class="cat-badge ${catCls}">${escapeHtml(item.category)}</span>
             <span class="src-badge">${escapeHtml(item.source)}</span>
+            ${star}
             ${featured}
             <span class="card-date">${formatDate(item.published_at)}</span>
           </div>
@@ -1187,12 +1203,29 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 
 # 페이지에 노출할 최대 건수 (매일 누적되는 DB 전체를 그대로 그리면 페이지가 계속 무거워지므로 상한을 둔다)
-DISPLAY_LIMIT = 80
+DISPLAY_LIMIT = 120
+
+
+def cap_featured(items, ratio=0.28, minimum=10, maximum=24):
+    """'주목할 기술'이 페이지 절반을 넘지 않도록 최신순으로 상한을 둔다.
+
+    (EXAONE가 배치마다 is_featured 를 넉넉하게 주기 때문에 그대로 두면 필터가 무의미해진다.)
+    """
+    featured = [it for it in items if it.get("is_featured")]
+    limit = max(minimum, min(maximum, round(len(items) * ratio)))
+    if len(featured) <= limit:
+        return items
+    featured.sort(key=lambda it: (it.get("published_at") or "", it.get("score") or 0), reverse=True)
+    keep = {it["item_key"] for it in featured[:limit]}
+    for it in items:
+        if it.get("is_featured") and it["item_key"] not in keep:
+            it["is_featured"] = False
+    return items
 
 
 def build():
     init_db()
-    items = get_ai_insights(limit=DISPLAY_LIMIT)
+    items = cap_featured(get_ai_insights(limit=DISPLAY_LIMIT))
 
     meta = load_meta()
     cells = meta.get("top_keywords") or []
@@ -1243,11 +1276,15 @@ def build():
         for s in SOURCES if src_counts.get(s, 0)
     )
 
+    def display_title(it):
+        # 'Show HN:' 같은 수집 접두어는 출처 배지로 이미 드러나므로 제목에서 걷어낸다
+        return re.sub(r"^(Show|Launch|Ask) HN\s*:\s*", "", it["title_ko"] or "").strip()
+
     payload_items = [
         {
             "item_key": it["item_key"],
             "source": it["source"],
-            "title_ko": it["title_ko"],
+            "title_ko": display_title(it),
             "title_orig": it["title_orig"],
             "url": it["url"],
             "category": it["category"],
