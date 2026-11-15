@@ -6,6 +6,8 @@
 대상 핵심 분야: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
 
+import os
+import sys
 import urllib.request
 import urllib.parse
 import json
@@ -2247,6 +2249,19 @@ def main():
     print("-> 'README.md' 생성 완료")
     
     print("\n모든 산출물이 성공적으로 생성되었습니다!")
+
+    # 7. (선택) AI 기술·트렌드 수집·분석 연동
+    #    기본 채용공고 갱신에는 영향이 없고, `python3 crawler.py --with-ai` 또는 WITH_AI=1 일 때만 실행한다.
+    #    (일일 자동화에서는 ai_news_crawler.py 를 별도로 호출해도 된다.)
+    if os.environ.get("WITH_AI") == "1" or "--with-ai" in sys.argv:
+        try:
+            import ai_news_crawler
+            from build_ai_html import build as build_ai
+            print("\n[AI] 기술·트렌드 수집·분석 시작")
+            ai_news_crawler.run()
+            build_ai()
+        except Exception as e:  # noqa: BLE001
+            print(f"[AI] 수집·분석을 건너뜁니다: {type(e).__name__}: {e}")
 
 if __name__ == "__main__":
     main()
