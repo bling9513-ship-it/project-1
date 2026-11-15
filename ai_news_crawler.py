@@ -49,6 +49,7 @@ ENV_FILE = os.path.join(BASE_DIR, ".env")
 AI_DATA_JSON = os.path.join(BASE_DIR, "ai_data.json")
 RUN_ITEMS_FILE = os.path.join(BASE_DIR, "ai_run_items.json")
 SEC_RUN_FILE = os.path.join(BASE_DIR, "ai_sec_run_items.json")
+SEC_MANUAL_FILE = os.path.join(BASE_DIR, "ai_sec_manual.json")
 
 KST = timezone(timedelta(hours=9))
 
@@ -1776,6 +1777,44 @@ def retag_existing_sec_tools():
     return moved
 
 
+def load_manual_overrides():
+    if not os.path.exists(SEC_MANUAL_FILE):
+        return {}
+    try:
+        with open(SEC_MANUAL_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def apply_manual_overrides(items):
+    """EXAONE 응답이 없어 폴백으로 남은 항목에 저장소 원문을 근거로 쓴 한국어 소개를 채운다.
+
+    (EXAONE 이 429 등으로 계속 막힐 때 카드가 영문 설명 그대로 노출되는 것을 막기 위한 보충이며,
+     EXAONE 분석이 성공한 항목은 건드리지 않는다.)
+    """
+    manual = load_manual_overrides()
+    applied = 0
+    for it in items:
+        if it.get("analyzed_by") == "exaone":
+            continue
+        m = manual.get(it.get("title_orig"))
+        if not m:
+            continue
+        it.update({
+            "title_ko": m["title_ko"],
+            "summary": m["summary"],
+            "tech_insight": m["tech_insight"],
+            "tags": m.get("tags") or it.get("tags") or [],
+            "is_featured": bool(m.get("is_featured")),
+            "analyzed_by": "manual",
+        })
+        applied += 1
+    if applied:
+        print(f"  [수동 정제] EXAONE 미응답 {applied}건에 검증된 한국어 소개 적용")
+    return items
+
+
 def run_sec_tools(budget=None):
     """AI 보안 오픈소스 툴만 전용 수집 → EXAONE 분석 → DB 적재 → 브리핑 갱신"""
     init_db_prep()
@@ -1786,6 +1825,7 @@ def run_sec_tools(budget=None):
         return None
     deadline = (time.monotonic() + budget) if budget and budget > 0 else None
     items, _cache = analyze_items(items, batch_size=3, max_calls=14, deadline=deadline, finalize=True)
+    apply_manual_overrides(items)
 
     from db_manager import upsert_ai_insights
     upsert_ai_insights(items)
@@ -1842,6 +1882,7 @@ def sec_finish(seconds=230):
     items = load_sec_items()
     items, _cache = analyze_items(items, batch_size=3, max_calls=5,
                                   deadline=time.monotonic() + seconds, finalize=True)
+    apply_manual_overrides(items)
     from db_manager import upsert_ai_insights
     upsert_ai_insights(items)
     retag_existing_sec_tools()
