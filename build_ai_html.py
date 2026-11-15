@@ -1186,9 +1186,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 """
 
 
+# 페이지에 노출할 최대 건수 (매일 누적되는 DB 전체를 그대로 그리면 페이지가 계속 무거워지므로 상한을 둔다)
+DISPLAY_LIMIT = 80
+
+
 def build():
     init_db()
-    items = get_ai_insights()
+    items = get_ai_insights(limit=DISPLAY_LIMIT)
 
     meta = load_meta()
     cells = meta.get("top_keywords") or []
