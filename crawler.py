@@ -6,6 +6,8 @@
 대상 핵심 분야: 정보보안, 정보보호, 취약점 진단, 모의해킹
 """
 
+import os
+import sys
 import urllib.request
 import urllib.parse
 import json
@@ -65,7 +67,7 @@ def clean_text(text):
     return re.sub(r"\s+", " ", text).strip()
 
 def is_urgent_deadline(dl):
-    """마감 임박 여부 판별 (D-Day, 오늘, 내일, D-1 ~ D-7)"""
+    """마감 임박 여부 판별 (D-Day, 오늘, 내일, D-1 ~ D-7, 날짜 없이 시각만 적힌 당일 마감)"""
     if not dl:
         return False
     if "D-Day" in dl or "오늘" in dl or "내일" in dl:
@@ -73,6 +75,9 @@ def is_urgent_deadline(dl):
     m = re.search(r"D-(\d+)", dl)
     if m:
         return int(m.group(1)) <= 7
+    # "16시 마감", "18:30 마감" 처럼 날짜 없이 시각만 적힌 당일 마감 표기
+    if re.match(r"^\d\d?(?::\d\d)?\s*시?\s*마감$", dl.strip()):
+        return True
     return False
 
 def is_security(title):
@@ -455,7 +460,15 @@ def fetch_incruit(today_date):
                                     else:
                                         deadline = f"D-{diff} (~{month:02d}/{day:02d}{w_str})"
                                 else:
-                                    deadline = raw_dl if raw_dl else "상시채용"
+                                    time_only = re.match(r'^(\d\d?(?::\d\d)?)\s*시?\s*마감$', raw_dl)
+                                    if time_only:
+                                        # 인크루트는 마감 당일이면 '16시 마감'처럼 시각만 표기한다.
+                                        # 날짜가 없으면 매일 D-Day로 남으므로 수집일(오늘)과 시각을 함께 표기한다.
+                                        ws = ["월", "화", "수", "목", "금", "토", "일"][today_date.weekday()]
+                                        deadline = (f"D-Day (~{today_date.month:02d}/{today_date.day:02d} {ws}) "
+                                                    f"{time_only.group(1)}시 마감")
+                                    else:
+                                        deadline = raw_dl if raw_dl else "상시채용"
                             
                             results.append({
                                 "platform": "인크루트",
@@ -1613,6 +1626,13 @@ def generate_html(jobs, update_time_str):
         line-height: 1.45;
       }}
     }}
+
+    /* 내비게이션 3탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    @media (max-width: 480px) {{
+      .brand-name {{
+        display: none;
+      }}
+    }}
   </style>
 </head>
 <body>
@@ -1628,6 +1648,7 @@ def generate_html(jobs, update_time_str):
         <div class="nav-tabs">
           <a href="index.html" class="nav-tab-item active">보안 채용공고</a>
           <a href="study.html" class="nav-tab-item">시험 공부</a>
+          <a href="ai.html" class="nav-tab-item">AI 기술·트렌드</a>
         </div>
       </div>
 
@@ -1841,6 +1862,9 @@ def generate_html(jobs, update_time_str):
         parsedDays = 0;
       }} else if (dl.includes('내일')) {{
         parsedDays = 1;
+      }} else if (/^\\d\\d?(:\\d\\d)?\\s*시?\\s*마감$/.test(dl)) {{
+        // 날짜 없이 시각만 적힌 당일 마감 표기("16시 마감", "18:30 마감")도 오늘 마감으로 본다
+        parsedDays = 0;
       }}
 
       if (parsedDays !== null) {{
@@ -2101,6 +2125,8 @@ def generate_readme(jobs, update_time_str):
         f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
         f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
+        "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",
+        "> **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)",
         "",
         "원티드, 점핏, 사람인, 리멤버, 잡코리아, 인크루트의 정보보안 포지션을 정밀 직무 필터링을 거쳐 선별하고 공유하는 정보 아카이브 레포지토리입니다.",
         "",
@@ -2202,6 +2228,7 @@ def main():
         ))
         
     # 2. 마감일 지난 공고 및 플랫폼에서 삭제된 공고 EXPIRED 처리
+    conn.commit()
     mark_expired_jobs(today_date)
     cur.execute("SELECT id, job_key, deadline FROM jobs WHERE status = 'ACTIVE';")
     active_rows = cur.fetchall()
@@ -2237,6 +2264,19 @@ def main():
     print("-> 'README.md' 생성 완료")
     
     print("\n모든 산출물이 성공적으로 생성되었습니다!")
+
+    # 7. (선택) AI 기술·트렌드 수집·분석 연동
+    #    기본 채용공고 갱신에는 영향이 없고, `python3 crawler.py --with-ai` 또는 WITH_AI=1 일 때만 실행한다.
+    #    (일일 자동화에서는 ai_news_crawler.py 를 별도로 호출해도 된다.)
+    if os.environ.get("WITH_AI") == "1" or "--with-ai" in sys.argv:
+        try:
+            import ai_news_crawler
+            from build_ai_html import build as build_ai
+            print("\n[AI] 기술·트렌드 수집·분석 시작")
+            ai_news_crawler.run()
+            build_ai()
+        except Exception as e:  # noqa: BLE001
+            print(f"[AI] 수집·분석을 건너뜁니다: {type(e).__name__}: {e}")
 
 if __name__ == "__main__":
     main()

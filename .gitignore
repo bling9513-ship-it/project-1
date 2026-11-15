@@ -4,4 +4,9 @@ __pycache__/
 *.env
 *secret*
 *key*
-
+ai_tech_cache.json
+ai_run.log
+ai_parse_fail_*.txt
+ai_run_items.json
+ai_sec_run_items.json
+_sec_tool_candidates.json
