@@ -2214,6 +2214,7 @@ def main():
         ))
         
     # 2. 마감일 지난 공고 및 플랫폼에서 삭제된 공고 EXPIRED 처리
+    conn.commit()
     mark_expired_jobs(today_date)
     cur.execute("SELECT id, job_key, deadline FROM jobs WHERE status = 'ACTIVE';")
     active_rows = cur.fetchall()
