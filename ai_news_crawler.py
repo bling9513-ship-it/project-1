@@ -665,6 +665,9 @@ GITHUB_QUERIES = (
     ("topic:mcp stars:>300 pushed:>2026-10-15", "stars"),
 )
 
+# 면접·강의·치트시트 모음처럼 '도구'가 아닌 저장소 제외
+GITHUB_DENY = re.compile(r"(面試|面试|interview|leetcode|cheat ?sheet|치트시트)", re.I)
+
 GITHUB_RELEVANT = re.compile(
     r"(ai|llm|agent|mcp|model|prompt|copilot|rag|gpt|claude|inference|embedding|"
     r"security|vulnerab|jailbreak|firewall|scanner|red.?team|guardrail|sandbox|audit)",
@@ -709,7 +712,7 @@ def collect_github_tools(per_query=5, days=60):
             desc = clean_text(repo.get("description") or "")
             if not full or full in seen or len(desc) < 12:
                 continue
-            if not GITHUB_RELEVANT.search(f"{full} {desc}"):
+            if not GITHUB_RELEVANT.search(f"{full} {desc}") or GITHUB_DENY.search(desc):
                 continue
             pushed = (repo.get("pushed_at") or "")[:10]
             if pushed and not _recent_enough(pushed, days):
@@ -733,7 +736,8 @@ def collect_github_tools(per_query=5, days=60):
                 "published_at": pushed,
                 "score": stars,
                 "source_hint": f"GitHub ★{stars:,}",
-                "track": "tool",
+                # AI 보안 주제 저장소는 보안 트랙으로 보내 AI 보안 카테고리에 갈 수 있게 한다
+                "track": "security" if i < 2 else "tool",
             })
             added += 1
         print(f"  [GitHub:{i + 1}] {added}건 수집")
@@ -765,7 +769,11 @@ def dedupe_and_mix(items, target=TARGET_TOTAL):
     def pick_quota(pool, quota):
         """트랙 쿼터 안에서도 출처가 골고루 섞이도록 라운드 로빈 선택"""
         by_src = {}
-        for it in latest_first(pool):
+        # GitHub은 pushed_at이 늘 오늘에 가까워 날짜 정렬이 의미가 없다 → 스타 우선
+        gh = sorted([i for i in pool if i.get("source") == "GitHub"],
+                    key=lambda x: (x.get("score") or 0, x.get("published_at") or ""), reverse=True)
+        non_gh = latest_first([i for i in pool if i.get("source") != "GitHub"])
+        for it in non_gh + gh:
             by_src.setdefault(it["source"], []).append(it)
         order = [s for s in INTERLEAVE_ORDER if s in by_src]
         chosen = []
