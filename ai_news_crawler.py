@@ -1543,7 +1543,14 @@ def run():
     items = collect_all()
     if len(items) < 25:
         print(f"⚠ 수집 건수가 {len(items)}건으로 목표(25건) 미만입니다.")
-    items, _cache = analyze_items(items)
+    # AI_RUN_TIME_BUDGET(초)을 두면 그 시간 안에서만 분석하고 나머지는 원문 정제로 마감한다.
+    # (EXAONE 혼잡으로 일일 자동화가 길어질 때 상한을 두는 용도. 0/미설정이면 무제한)
+    try:
+        budget = int(os.environ.get("AI_RUN_TIME_BUDGET") or 0)
+    except ValueError:
+        budget = 0
+    deadline = (time.monotonic() + budget) if budget > 0 else None
+    items, _cache = analyze_items(items, deadline=deadline)
     payload = finalize_run(items)
     return payload
 
