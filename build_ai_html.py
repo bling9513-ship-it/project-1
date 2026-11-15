@@ -535,6 +535,9 @@ CSS = """
 
     .filter-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 
+    /* 출처 필터는 스크롤되고, 정렬 필터는 좁아져도 항상 보이게 고정 */
+    .filter-row-sort { flex: 0 0 auto; }
+
     .filter-label {
       font-size: 12px;
       font-weight: 600;
@@ -977,7 +980,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             __SOURCE_PILLS__
           </div>
         </div>
-        <div class="filter-row">
+        <div class="filter-row filter-row-sort">
           <span class="filter-label">정렬</span>
           <div class="filter-pills-scroll" id="sortNav">
             <button class="filter-pill active" data-sort="featured">주목할 기술 우선</button>
