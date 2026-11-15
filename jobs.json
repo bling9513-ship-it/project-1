@@ -407,6 +407,48 @@
     "deadline_status": "D_DAY"
   },
   {
+    "company": "지에스건설(주)",
+    "title": "2026년 정보보안 / 신재생사업(재무·금융) / 시운전(Commissioning) 전문인력 정규직 경력사원 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55518674&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시마감",
+    "summary": "지에스건설 정보보안 및 신재생사업 분야 경력사원 채용",
+    "tags": [
+      "#정보보안",
+      "#신재생사업",
+      "#경력채용",
+      "#시운전"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "국민연금공단",
+    "title": "국민연금공단 정보보안전문가(전문계약직) 공개채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55496820&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "18시마감",
+    "summary": "국민연금공단 정보보안 전문가 전문계약직 공개채용",
+    "tags": [
+      "#정보보안",
+      "#보안전문가",
+      "#전문계약직",
+      "#공공기관"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
     "company": "(주)윈스테크넷",
     "title": "2026년 11월 월간채용(신입/경력) - 정보보안 및 클라우드",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55459904&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
@@ -424,6 +466,28 @@
       "#클라우드보안",
       "#신입경력채용",
       "#윈스테크넷"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "한국정보보호산업협회",
+    "title": "한국정보보호산업협회 일반직 직원 채용(재공고)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55469616&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 송파구",
+    "deadline": "18시마감",
+    "summary": "한국정보보호산업협회 일반직 직원 재공고 채용",
+    "tags": [
+      "#정보보호",
+      "#산업협회",
+      "#일반직",
+      "#채용"
     ],
     "deadline_status": "D_DAY"
   },
@@ -512,6 +576,47 @@
     "deadline_status": "D_DAY"
   },
   {
+    "company": "주식회사 윈스테크넷",
+    "title": "[중견기업 윈스테크넷]11월 월간채용(신입/경력) - 정보보안 및 클라우드",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001277",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감",
+    "summary": "정보보안 및 클라우드 분야 신입·경력 채용으로 보안 운영과 클라우드 보안 업무 수행",
+    "tags": [
+      "#정보보안",
+      "#클라우드보안",
+      "#보안운영"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "한국관광공사",
+    "title": "2026년 한국관광공사 개방형직위(정보보안파트장) 공개 모집",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000328",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "14시 마감",
+    "summary": "한국관광공사 정보보안파트장으로 조직 보안 정책과 체계를 총괄하는 개방형 직위 모집",
+    "tags": [
+      "#정보보안",
+      "#보안파트장",
+      "#보안정책",
+      "#공공기관"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
     "company": "국민연금공단",
     "title": "공인노무사 및 정보보안전문가(전문계약직) 공개채용 공고",
     "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000007",
@@ -531,6 +636,169 @@
       "#공인노무사",
       "#공공정보보안"
     ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "주식회사 윈스테크넷",
+    "title": "[중견기업 윈스테크넷] 부울경 정보보호서비스 경력 채용(관제, 진단, 개인정보)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001280",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감",
+    "summary": "부울경 지역 정보보호서비스 경력자로 관제·진단·개인정보 보호 업무를 담당하는 채용",
+    "tags": [
+      "#정보보호",
+      "#보안관제",
+      "#취약점진단",
+      "#개인정보보호"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "국가정보원",
+    "title": "[AI 경력직] AI 보안정책(특정6급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001096",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "16시 마감",
+    "summary": "국가정보원 AI 보안정책 특정6급 경력직으로 AI 보안 정책 수립과 관리 담당",
+    "tags": [
+      "#AI보안",
+      "#보안정책",
+      "#국가정보원",
+      "#경력직"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "국가정보원",
+    "title": "[AI 경력직] AI 보안 소프트웨어 개발(특정7급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001071",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "16시 마감",
+    "summary": "국가정보원 AI 경력직 특정7급으로 AI 보안 소프트웨어 개발 업무를 담당하는 공고입니다",
+    "tags": [
+      "#AI보안",
+      "#보안소프트웨어개발",
+      "#정보보호",
+      "#경력직"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "국가정보원",
+    "title": "[AI 경력직] AI 기반 취약점 점검(특정7급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001069",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단"
+    ],
+    "location": "",
+    "deadline": "16시 마감",
+    "summary": "국가정보원 AI 경력직 특정7급으로 AI 기반 취약점 점검 업무를 수행하는 공고입니다",
+    "tags": [
+      "#AI보안",
+      "#취약점점검",
+      "#보안점검",
+      "#정보보호"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "주식회사 윈스테크넷",
+    "title": "[중견기업 윈스테크넷]정보보호서비스 분야 경력 집중 채용(클라우드 관제, 분석)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001284",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감",
+    "summary": "윈스테크넷에서 클라우드 관제와 분석 중심 정보보호서비스 경력자를 집중 채용하는 공고입니다",
+    "tags": [
+      "#클라우드보안",
+      "#보안관제",
+      "#정보보호서비스",
+      "#경력채용"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "국민연금공단",
+    "title": "국민연금공단 공인노무사 및 정보보안전문가(전문계약직) 공개채용 공고",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000101",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "24시 마감",
+    "summary": "국민연금공단에서 공인노무사와 정보보안전문가를 전문계약직으로 공개 채용하는 공고입니다",
+    "tags": [
+      "#정보보안",
+      "#전문계약직",
+      "#공공기관보안",
+      "#정보보안전문가"
+    ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "보안운영 경력직 채용(당산)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060003906",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "에스케이쉴더스",
+    "title": "[관제사업팀] 취약점 진단 및 모의해킹 경력직 채용(인천)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290004120",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "23시 마감",
+    "summary": "",
+    "tags": [],
     "deadline_status": "D_DAY"
   },
   {
@@ -569,6 +837,22 @@
       "#컨설팅",
       "#컴플라이언스"
     ],
+    "deadline_status": "D_DAY"
+  },
+  {
+    "company": "한국관광공사",
+    "title": "한국관광공사 정보보안파트장(개방형직위) 공개모집",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55568119&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "14시마감",
+    "summary": "",
+    "tags": [],
     "deadline_status": "D_DAY"
   },
   {
@@ -6197,240 +6481,6 @@
     "deadline_status": "UPCOMING"
   },
   {
-    "company": "지에스건설(주)",
-    "title": "2026년 정보보안 / 신재생사업(재무·금융) / 시운전(Commissioning) 전문인력 정규직 경력사원 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55518674&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "23시마감",
-    "summary": "지에스건설 정보보안 및 신재생사업 분야 경력사원 채용",
-    "tags": [
-      "#정보보안",
-      "#신재생사업",
-      "#경력채용",
-      "#시운전"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "국민연금공단",
-    "title": "국민연금공단 정보보안전문가(전문계약직) 공개채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55496820&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "18시마감",
-    "summary": "국민연금공단 정보보안 전문가 전문계약직 공개채용",
-    "tags": [
-      "#정보보안",
-      "#보안전문가",
-      "#전문계약직",
-      "#공공기관"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "한국정보보호산업협회",
-    "title": "한국정보보호산업협회 일반직 직원 채용(재공고)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55469616&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 송파구",
-    "deadline": "18시마감",
-    "summary": "한국정보보호산업협회 일반직 직원 재공고 채용",
-    "tags": [
-      "#정보보호",
-      "#산업협회",
-      "#일반직",
-      "#채용"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "주식회사 윈스테크넷",
-    "title": "[중견기업 윈스테크넷]11월 월간채용(신입/경력) - 정보보안 및 클라우드",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001277",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "23시 마감",
-    "summary": "정보보안 및 클라우드 분야 신입·경력 채용으로 보안 운영과 클라우드 보안 업무 수행",
-    "tags": [
-      "#정보보안",
-      "#클라우드보안",
-      "#보안운영"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "한국관광공사",
-    "title": "2026년 한국관광공사 개방형직위(정보보안파트장) 공개 모집",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000328",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "14시 마감",
-    "summary": "한국관광공사 정보보안파트장으로 조직 보안 정책과 체계를 총괄하는 개방형 직위 모집",
-    "tags": [
-      "#정보보안",
-      "#보안파트장",
-      "#보안정책",
-      "#공공기관"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "주식회사 윈스테크넷",
-    "title": "[중견기업 윈스테크넷] 부울경 정보보호서비스 경력 채용(관제, 진단, 개인정보)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001280",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "23시 마감",
-    "summary": "부울경 지역 정보보호서비스 경력자로 관제·진단·개인정보 보호 업무를 담당하는 채용",
-    "tags": [
-      "#정보보호",
-      "#보안관제",
-      "#취약점진단",
-      "#개인정보보호"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "국가정보원",
-    "title": "[AI 경력직] AI 보안정책(특정6급)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001096",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "16시 마감",
-    "summary": "국가정보원 AI 보안정책 특정6급 경력직으로 AI 보안 정책 수립과 관리 담당",
-    "tags": [
-      "#AI보안",
-      "#보안정책",
-      "#국가정보원",
-      "#경력직"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "국가정보원",
-    "title": "[AI 경력직] AI 보안 소프트웨어 개발(특정7급)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001071",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "16시 마감",
-    "summary": "국가정보원 AI 경력직 특정7급으로 AI 보안 소프트웨어 개발 업무를 담당하는 공고입니다",
-    "tags": [
-      "#AI보안",
-      "#보안소프트웨어개발",
-      "#정보보호",
-      "#경력직"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "국가정보원",
-    "title": "[AI 경력직] AI 기반 취약점 점검(특정7급)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001069",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "취약점 진단"
-    ],
-    "location": "",
-    "deadline": "16시 마감",
-    "summary": "국가정보원 AI 경력직 특정7급으로 AI 기반 취약점 점검 업무를 수행하는 공고입니다",
-    "tags": [
-      "#AI보안",
-      "#취약점점검",
-      "#보안점검",
-      "#정보보호"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "주식회사 윈스테크넷",
-    "title": "[중견기업 윈스테크넷]정보보호서비스 분야 경력 집중 채용(클라우드 관제, 분석)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001284",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "23시 마감",
-    "summary": "윈스테크넷에서 클라우드 관제와 분석 중심 정보보호서비스 경력자를 집중 채용하는 공고입니다",
-    "tags": [
-      "#클라우드보안",
-      "#보안관제",
-      "#정보보호서비스",
-      "#경력채용"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "국민연금공단",
-    "title": "국민연금공단 공인노무사 및 정보보안전문가(전문계약직) 공개채용 공고",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030000101",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "24시 마감",
-    "summary": "국민연금공단에서 공인노무사와 정보보안전문가를 전문계약직으로 공개 채용하는 공고입니다",
-    "tags": [
-      "#정보보안",
-      "#전문계약직",
-      "#공공기관보안",
-      "#정보보안전문가"
-    ],
-    "deadline_status": "UPCOMING"
-  },
-  {
     "company": "이스트시큐리티",
     "title": "악성코드 탐지 엔진 개발 (경력)",
     "url": "https://www.jumpit.co.kr/position/55394459",
@@ -9421,40 +9471,6 @@
     "deadline_status": "UPCOMING"
   },
   {
-    "company": "에스케이쉴더스",
-    "title": "보안운영 경력직 채용(당산)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060003906",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "23시 마감",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "에스케이쉴더스",
-    "title": "[관제사업팀] 취약점 진단 및 모의해킹 경력직 채용(인천)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610290004120",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "23시 마감",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING"
-  },
-  {
     "company": "㈜메타엠",
     "title": "[메타엠] 정보보안 엔지니어 채용",
     "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50341352",
@@ -9606,22 +9622,6 @@
     ],
     "location": "서울 구로구",
     "deadline": "D-54",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING"
-  },
-  {
-    "company": "한국관광공사",
-    "title": "한국관광공사 정보보안파트장(개방형직위) 공개모집",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55568119&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "14시마감",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING"

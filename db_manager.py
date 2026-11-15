@@ -151,8 +151,35 @@ def parse_explicit_deadline_date(deadline_str, today_date=None):
             return None
     return target_date
 
-def parse_deadline_status(deadline_str, today_date=None):
-    """마감일 문자열을 분석하여 상태값과 마감 여부(ACTIVE/EXPIRED) 판별"""
+# 날짜 없이 시각만 적힌 당일 마감 표기: "16시 마감", "16시마감", "18:30 마감", "24시 마감"
+TIME_ONLY_DEADLINE_RE = re.compile(r"^\d\d?(?::\d\d)?\s*시?\s*마감$")
+
+
+def is_time_only_deadline(deadline_str):
+    """시각만 적힌 당일 마감 표기인지 판별 (인크루트 목록은 마감 당일이면 시각만 노출한다)"""
+    if not deadline_str:
+        return False
+    return bool(TIME_ONLY_DEADLINE_RE.match(deadline_str.strip()))
+
+
+def parse_seen_date(last_seen_at):
+    """'2026-11-16 06:34:21 KST' 형태의 수집 시각에서 날짜(date)만 추출. 해석 불가면 None."""
+    if not last_seen_at:
+        return None
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", str(last_seen_at))
+    if not m:
+        return None
+    try:
+        return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).date()
+    except ValueError:
+        return None
+
+
+def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
+    """마감일 문자열을 분석하여 상태값과 마감 여부(ACTIVE/EXPIRED) 판별
+
+    last_seen_at: 수집 시각(선택). 시각만 적힌 당일 마감 표기는 오늘 수집된 경우에만 D-Day로 본다.
+    """
     if not today_date:
         kst = timezone(timedelta(hours=9))
         today_date = datetime.now(kst).date()
@@ -178,6 +205,15 @@ def parse_deadline_status(deadline_str, today_date=None):
         else:
             return "UPCOMING", "ACTIVE"
         
+    # 2-b. 날짜 없이 시각만 적힌 당일 마감 ("16시 마감", "18:30 마감")
+    #      인크루트 목록은 마감 당일이 되면 시각만 표기하므로 당일 수집분은 D-Day로 판정한다.
+    #      오늘 수집되지 않은(=목록에서 사라진) 항목은 이미 마감된 것으로 정리한다.
+    if is_time_only_deadline(dl):
+        seen = parse_seen_date(last_seen_at)
+        if seen is not None and seen != today_date:
+            return "EXPIRED", "EXPIRED"
+        return "D_DAY", "ACTIVE"
+
     # 3. D-Day / 오늘 마감 (날짜 표기 없음)
     if "D-Day" in dl or "오늘" in dl:
         return "D_DAY", "ACTIVE"
@@ -220,12 +256,12 @@ def mark_expired_jobs(today_date=None, db_path=DB_PATH):
         
     conn = get_connection(db_path)
     cur = conn.cursor()
-    cur.execute("SELECT id, deadline, status FROM jobs WHERE status = 'ACTIVE';")
+    cur.execute("SELECT id, deadline, status, last_seen_at FROM jobs WHERE status = 'ACTIVE';")
     rows = cur.fetchall()
     
     expired_ids = []
     for row in rows:
-        dl_status, status = parse_deadline_status(row["deadline"], today_date)
+        dl_status, status = parse_deadline_status(row["deadline"], today_date, row["last_seen_at"])
         if status == "EXPIRED":
             expired_ids.append(row["id"])
             
@@ -246,13 +282,13 @@ def refresh_deadline_statuses(today_date=None, db_path=DB_PATH):
 
     conn = get_connection(db_path)
     cur = conn.cursor()
-    cur.execute("SELECT id, deadline, deadline_status FROM jobs WHERE status = 'ACTIVE';")
+    cur.execute("SELECT id, deadline, deadline_status, last_seen_at FROM jobs WHERE status = 'ACTIVE';")
     rows = cur.fetchall()
 
     updates = []
     unchanged = 0
     for row in rows:
-        dl_status, status = parse_deadline_status(row["deadline"], today_date)
+        dl_status, status = parse_deadline_status(row["deadline"], today_date, row["last_seen_at"])
         if status != "ACTIVE":
             # 마감 전환은 mark_expired_jobs 담당
             continue

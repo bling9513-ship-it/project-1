@@ -1248,6 +1248,10 @@ def build():
         top = " ".join(c.get("keyword", "") for c in cells[:3]) if cells else ""
         briefing = (f"오늘 수집된 AI 자료 {total}건을 분석했습니다. 핵심 키워드는 {top}이며, "
                     f"주목할 기술 {featured}건을 포함합니다. 각 카드의 기술 포인트 & 시사점에서 실무 적용 지점을 확인하세요.")
+    else:
+        # 수집 시점 브리핑의 '주목할 기술 N건'은 캡 적용 전 숫자라 상단 지표(실제 노출 수)와 어긋난다.
+        # 페이지에 그리는 값에 맞춰 문장 안의 수치를 교정한다.
+        briefing = re.sub(r"주목할 기술\s*\d+\s*건", f"주목할 기술 {featured}건", briefing)
 
     # 키워드 칩
     kw_html = "".join(

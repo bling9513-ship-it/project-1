@@ -67,7 +67,7 @@ def clean_text(text):
     return re.sub(r"\s+", " ", text).strip()
 
 def is_urgent_deadline(dl):
-    """마감 임박 여부 판별 (D-Day, 오늘, 내일, D-1 ~ D-7)"""
+    """마감 임박 여부 판별 (D-Day, 오늘, 내일, D-1 ~ D-7, 날짜 없이 시각만 적힌 당일 마감)"""
     if not dl:
         return False
     if "D-Day" in dl or "오늘" in dl or "내일" in dl:
@@ -75,6 +75,9 @@ def is_urgent_deadline(dl):
     m = re.search(r"D-(\d+)", dl)
     if m:
         return int(m.group(1)) <= 7
+    # "16시 마감", "18:30 마감" 처럼 날짜 없이 시각만 적힌 당일 마감 표기
+    if re.match(r"^\d\d?(?::\d\d)?\s*시?\s*마감$", dl.strip()):
+        return True
     return False
 
 def is_security(title):
@@ -457,7 +460,15 @@ def fetch_incruit(today_date):
                                     else:
                                         deadline = f"D-{diff} (~{month:02d}/{day:02d}{w_str})"
                                 else:
-                                    deadline = raw_dl if raw_dl else "상시채용"
+                                    time_only = re.match(r'^(\d\d?(?::\d\d)?)\s*시?\s*마감$', raw_dl)
+                                    if time_only:
+                                        # 인크루트는 마감 당일이면 '16시 마감'처럼 시각만 표기한다.
+                                        # 날짜가 없으면 매일 D-Day로 남으므로 수집일(오늘)과 시각을 함께 표기한다.
+                                        ws = ["월", "화", "수", "목", "금", "토", "일"][today_date.weekday()]
+                                        deadline = (f"D-Day (~{today_date.month:02d}/{today_date.day:02d} {ws}) "
+                                                    f"{time_only.group(1)}시 마감")
+                                    else:
+                                        deadline = raw_dl if raw_dl else "상시채용"
                             
                             results.append({
                                 "platform": "인크루트",
@@ -1851,6 +1862,9 @@ def generate_html(jobs, update_time_str):
         parsedDays = 0;
       }} else if (dl.includes('내일')) {{
         parsedDays = 1;
+      }} else if (/^\\d\\d?(:\\d\\d)?\\s*시?\\s*마감$/.test(dl)) {{
+        // 날짜 없이 시각만 적힌 당일 마감 표기("16시 마감", "18:30 마감")도 오늘 마감으로 본다
+        parsedDays = 0;
       }}
 
       if (parsedDays !== null) {{

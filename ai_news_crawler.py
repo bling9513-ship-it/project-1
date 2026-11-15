@@ -1915,6 +1915,11 @@ def finish_from_file():
     items = load_run_items()
     items, _cache = analyze_items(items, max_calls=8, deadline=time.monotonic() + 120, finalize=True)
     payload = finalize_run(items)
+    # 마무리 단계에서도 수집 트랙과 무관하게 AI 보안 저장소가 보안·도구 카테고리로 되돌아가지 않도록 재분류
+    try:
+        retag_existing_sec_tools()
+    except Exception as e:  # noqa: BLE001
+        print(f"  [AI보안툴] 재분류 건너뜀: {type(e).__name__}: {e}")
     return payload
 
 
