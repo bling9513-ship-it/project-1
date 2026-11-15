@@ -404,7 +404,6 @@ CSS = """
       height: 6px;
       border-radius: 3px;
       background: var(--accent-primary);
-      opacity: 0.8;
     }
 
     .dist-count { font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-align: right; }

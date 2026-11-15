@@ -2109,6 +2109,8 @@ def generate_readme(jobs, update_time_str):
         f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
         f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
+        "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",
+        "> **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)",
         "",
         "원티드, 점핏, 사람인, 리멤버, 잡코리아, 인크루트의 정보보안 포지션을 정밀 직무 필터링을 거쳐 선별하고 공유하는 정보 아카이브 레포지토리입니다.",
         "",
