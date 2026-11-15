@@ -392,13 +392,20 @@ CSS = """
     .dist-name { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
 
     .dist-track {
+      display: block;
       height: 6px;
       border-radius: 3px;
       background: var(--bg-subtle);
       overflow: hidden;
     }
 
-    .dist-bar { height: 100%; border-radius: 3px; background: var(--accent-primary); opacity: 0.75; }
+    .dist-bar {
+      display: block;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--accent-primary);
+      opacity: 0.8;
+    }
 
     .dist-count { font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-align: right; }
 
