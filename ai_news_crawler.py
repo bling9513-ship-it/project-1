@@ -48,10 +48,13 @@ CACHE_FILE = os.path.join(BASE_DIR, "ai_tech_cache.json")
 ENV_FILE = os.path.join(BASE_DIR, ".env")
 AI_DATA_JSON = os.path.join(BASE_DIR, "ai_data.json")
 RUN_ITEMS_FILE = os.path.join(BASE_DIR, "ai_run_items.json")
+SEC_RUN_FILE = os.path.join(BASE_DIR, "ai_sec_run_items.json")
 
 KST = timezone(timedelta(hours=9))
 
-CATEGORIES = ["AI 보안·안전", "AI 툴·서비스", "LLM·에이전트", "모델·논문", "산업·트렌드"]
+# 'AI 보안 툴'을 맨 앞에 두어 GitHub AI 보안 오픈소스 도구만 따로 모아볼 수 있게 한다.
+CATEGORIES = ["AI 보안 툴", "AI 보안·안전", "AI 툴·서비스", "LLM·에이전트", "모델·논문", "산업·트렌드"]
+AI_SEC_TOOL_CAT = "AI 보안 툴"
 
 # 옛 카테고리 → 새 카테고리 (캐시·DB 마이그레이션용)
 CATEGORY_ALIASES = {
@@ -61,6 +64,9 @@ CATEGORY_ALIASES = {
     "AI 툴": "AI 툴·서비스",
     "보안·안전": "AI 보안·안전",
     "AI보안": "AI 보안·안전",
+    "AI 보안 도구": "AI 보안 툴",
+    "AI 보안툴": "AI 보안 툴",
+    "AI 보안 오픈소스": "AI 보안 툴",
 }
 
 SOURCES = ["Hugging Face", "arXiv", "Hacker News", "Show HN", "GitHub", "GeekNews",
@@ -746,6 +752,198 @@ def collect_github_tools(per_query=5, days=60):
 
 INTERLEAVE_ORDER = SOURCES
 
+# ---------------------------------------------------------------------------
+# AI 보안 오픈소스 툴 전용 수집 (레드팀·가드레일·프롬프트 인젝션·MCP/에이전트 보안)
+#
+#  · 일반 AI 툴 수집과 분리해 'AI 보안 툴' 카테고리로 모은다.
+#  · 목록(awesome-*), 가이드·강의·치트시트, 취약 앱 실습장은 제외하고 실행 가능한 코드만 남긴다.
+# ---------------------------------------------------------------------------
+
+SEC_TOOL_QUERIES = (
+    ("topic:llm-security stars:>150", "stars"),
+    ("topic:ai-security stars:>150", "stars"),
+    ("topic:prompt-injection stars:>30", "stars"),
+    ("prompt injection detector in:description stars:>20", "stars"),
+    ("llm guardrail in:description stars:>150", "stars"),
+    ("topic:guardrails guardrail in:description stars:>150", "stars"),
+    ("topic:ai-red-teaming stars:>100", "stars"),
+    ("llm red team in:description stars:>100", "stars"),
+    ("ai pentest in:description stars:>150", "stars"),
+    ("topic:mcp-security stars:>100", "stars"),
+    ("mcp security in:description stars:>100", "stars"),
+    ("agent security in:description stars:>150", "stars"),
+    ("llm vulnerability scanner in:description stars:>30", "stars"),
+    ("ai firewall in:description stars:>30", "stars"),
+    ("topic:llm-safety stars:>150", "stars"),
+    ("jailbreak llm in:description stars:>80", "stars"),
+)
+
+# 도구가 아닌 저장소(목록·가이드·강의·취약 앱 실습장·프롬프트 모음) 제외
+SEC_TOOL_DENY = re.compile(
+    r"(awesome|curated|roadmap|tutorial|course|curriculum|cheat ?sheet|interview|leetcode|handbook|"
+    r"collection of|knowledge base|everything for|arsenal|papers?\b|newsletter|weekly|digest|"
+    r"deliberately vulnerable|vulnerable[-_ ]?(app|application|server|bank|lab)|playground|"
+    r"system[ -]prompts?|beginner|syllabus|list of|\bbook\b|dataset|training|\bgame\b|"
+    r"뉴스|논문|목록|가이드|강의|모음|레퍼런스|자료실|치트시트|로드맵|인터뷰|공부|강좌|다이제스트)",
+    re.I,
+)
+
+# AI 보안을 직접 겨냥한 표현 (기존 DB 재분류는 이 신호를 반드시 요구한다)
+SEC_TOOL_STRONG = re.compile(
+    r"(prompt injection|프롬프트 인젝션|jailbreak|탈옥|guardrail|가드레일|red.?team|레드팀|"
+    r"ai security|llm security|agent security|mcp security|ai firewall|agent firewall|"
+    r"ai pentest|ai penetration|llm vulnerab|model scann|mlsecops|ai safety|ai 안전|"
+    r"security (toolkit|scanner)|vulnerability scanner|ai 보안|llm 보안|에이전트 보안|mcp 보안|"
+    r"ai 방화벽|침투 테스트|보안 스캐너|보안 검사 도구|"
+    r"(codex|claude|llm|ai|agent)[- ]?(security|guard|safety)|unsafe|adversarial prompt)",
+    re.I,
+)
+
+# AI 보안 저장소를 가리키는 GitHub 토픽
+SEC_TOOL_TOPICS = {
+    "ai-security", "ai-security-tools", "ai-security-audit", "llm-security", "llm-security-scanner",
+    "security-scanners", "ai-penetration-testing", "ai-pentesting", "ai-red-teaming", "ai-red-team",
+    "llm-red-teaming", "ai-cybersecurity", "agent-security", "agentic-ai-security", "agent-security-audit",
+    "agent-runtime-security", "mcp-security", "prompt-injection", "prompt-injection-detection",
+    "guardrails", "llm-guardrails", "llm-safety", "ai-safety", "redteam", "adversarial-ai", "ai-attacks",
+}
+
+# 보안 도구답게 이름이 잡힌 저장소 (Tier B 판별용)
+SEC_TOOL_NAME = re.compile(
+    r"(guard|scan|secur|shield|sentinel|defend|firewall|red.?team|pentest|jailbreak|"
+    r"inject|audit|harden|defen[cs]e|armor|wall|sanitiz|observ)",
+    re.I,
+)
+
+# 손으로 검증한 대표 AI 보안 툴 (쿼리 결과에서 놓치지 않게 우선 포함)
+SEC_TOOL_SEED = {
+    "promptfoo/promptfoo", "giskard-ai/giskard-oss", "protectai/llm-guard", "microsoft/pyrit",
+    "nvidia/garak", "nvidia-nemo/guardrails", "confident-ai/deepteam", "msoedov/agentic_security",
+    "tencent/ai-infra-guard", "usestrix/strix", "keygraphhq/shannon", "openai/codex-security",
+    "snyk/agent-scan", "nvidia/skillspector", "superagent-ai/superagent", "stacklok/toolhive",
+    "akto-api-security/akto", "archestra-ai/openappa", "nolabs-ai/nono", "hashgraph-online/hol-guard",
+    "pipelab-org/pipelock",
+}
+
+# 토픽만 보고는 도구로 보기 어려운 저장소 (자동 판별 예외)
+SEC_TOOL_BLOCK = {"kingcharleslzy-ai/dsh-purge"}
+
+# 수집 단계 판별: AI 신호 + 보안 신호 + 코드 보유
+SEC_TOOL_AI = re.compile(
+    r"(\bai\b|a\.i\.|llm|large language|agent|agentic|\bmcp\b|prompt|model|gpt|claude|gemini|"
+    r"\brag\b|inference|chatbot|copilot|guardrail|jailbreak|openai|anthropic|codex|\bgen ?ai\b|"
+    r"에이전트|모델|프롬프트|챗봇|생성형|인공지능|머신러닝|코딩 에이전트)",
+    re.I,
+)
+SEC_TOOL_SEC = re.compile(
+    r"(security|보안|guardrail|firewall|scan|detect|red.?team|jailbreak|injection|safety|attack|"
+    r"vulnerab|pentest|penetration|audit|protect|defen[cs]e|shiel|exfiltrat|traversal|leak|"
+    r"malicious|threat|adversarial|poison|backdoor|safeguard|misuse|risk|sandbox|harden|"
+    r"취약|침투|방어|탐지|스캔|보안|인젝션|탈옥|레드팀|공격|유출|격리|검사|모니터링)",
+    re.I,
+)
+
+
+def is_ai_sec_tool_repo(name, desc, topics=(), language=None, size_kb=0, is_fork=False):
+    """실제로 실행·활용 가능한 AI 보안 오픈소스 도구인지 판별 (전용 쿼리 수집용)
+
+    검증 시드 > AI 보안 토픽 > (설명의 AI 보안 기능 + 이름의 보안 도구 신호) 순으로 인정한다.
+    """
+    blob = f"{name} {desc} {' '.join(topics or [])}"
+    if SEC_TOOL_DENY.search(blob):
+        return False
+    if (name or "").lower() in SEC_TOOL_BLOCK:
+        return False
+    if is_fork or not language or (size_kb or 0) < 300:  # 코드가 거의 없는 저장소 제외
+        return False
+    if (name or "").lower() in SEC_TOOL_SEED:
+        return True
+    if {t.lower() for t in (topics or [])} & SEC_TOOL_TOPICS and SEC_TOOL_SEC.search(desc):
+        return True
+    return bool(SEC_TOOL_STRONG.search(desc) and SEC_TOOL_NAME.search(name))
+
+
+def _github_search(q, sort, per_page, headers, tag="GitHub"):
+    """GitHub Search API 호출 (토큰 거부 시 익명 재시도)"""
+    url = ("https://api.github.com/search/repositories?"
+           + urllib.parse.urlencode({"q": q, "sort": sort, "order": "desc", "per_page": per_page}))
+    try:
+        return json.loads(fetch_bytes(url, timeout=30, headers=headers).decode("utf-8"))
+    except Exception as e:  # noqa: BLE001
+        if "Authorization" in headers:
+            print(f"  [{tag}] 토큰 인증 실패({e}) → 익명 요청으로 재시도")
+            headers.pop("Authorization", None)
+            time.sleep(6)
+            try:
+                return json.loads(fetch_bytes(url, timeout=30, headers=headers).decode("utf-8"))
+            except Exception as e2:  # noqa: BLE001
+                print(f"  [{tag}] 수집 실패: {e2}")
+                return {}
+        print(f"  [{tag}] 수집 실패: {e}")
+        return {}
+
+
+def collect_ai_sec_tools(per_query=3, days=240, max_items=28):
+    """AI 보안 오픈소스 툴 전용 수집 (GitHub Search API)"""
+    headers = {"Accept": "application/vnd.github+json"}
+    token = get_github_token()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    candidates = {}
+    for i, (q, sort) in enumerate(SEC_TOOL_QUERIES):
+        if i:
+            time.sleep(7 if "Authorization" not in headers else 2.5)
+        data = _github_search(q, sort, per_query * 4, headers, tag=f"AI보안툴 {i + 1}/{len(SEC_TOOL_QUERIES)}")
+        added = 0
+        for repo in data.get("items", []):
+            full = repo.get("full_name") or ""
+            is_seed = full.lower() in SEC_TOOL_SEED
+            if added >= per_query and not is_seed:
+                continue
+            desc = clean_text(repo.get("description") or "")
+            topics = repo.get("topics") or []
+            if not full or not desc:
+                continue
+            pushed = (repo.get("pushed_at") or "")[:10]
+            if pushed and not _recent_enough(pushed, days):
+                continue
+            if not is_ai_sec_tool_repo(full, desc, topics, repo.get("language"),
+                                      int(repo.get("size") or 0), bool(repo.get("fork"))):
+                continue
+            if full in candidates:
+                continue
+            stars = int(repo.get("stargazers_count") or 0)
+            extra = [f"언어 {repo.get('language')}", f"★ {stars:,}"]
+            if topics:
+                extra.append("토픽 " + ", ".join(topics[:6]))
+            if repo.get("created_at"):
+                extra.append(f"생성 {repo['created_at'][:10]}")
+            if repo.get("license") and repo["license"].get("spdx_id"):
+                extra.append(f"라이선스 {repo['license']['spdx_id']}")
+            candidates[full] = {
+                "source": "GitHub",
+                "item_key": item_key("GitHub", full, repo.get("html_url") or f"https://github.com/{full}"),
+                "title_orig": full,
+                "url": repo.get("html_url") or f"https://github.com/{full}",
+                "summary_orig": clean_text(f"{desc} ({' · '.join(extra)})", 1200),
+                "published_at": pushed,
+                "score": stars,
+                "source_hint": f"GitHub ★{stars:,} · AI 보안 도구",
+                "track": "sec_tool",
+                "sec_tool": True,
+                "seed": is_seed,
+            }
+            added += 1
+        print(f"  [AI보안툴 {i + 1}/{len(SEC_TOOL_QUERIES)}] {q} → {added}건")
+    allc = list(candidates.values())
+    seeded = sorted([c for c in allc if c.get("seed")], key=lambda x: -x["score"])
+    rest = sorted([c for c in allc if not c.get("seed")], key=lambda x: -x["score"])
+    picked = seeded + rest[:max(0, max_items - len(seeded))]
+    out = sorted(picked, key=lambda x: -x["score"])
+    print(f"  [AI보안툴] 후보 {len(allc)}건 중 {len(out)}건 채택 (검증 시드 {len(seeded)}건)")
+    return out
+
+
 
 def dedupe_and_mix(items, target=TARGET_TOTAL):
     """제목/URL 중복 제거 후, 보안·도구 최소 쿼터 + 출처 라운드 로빈으로 믹스"""
@@ -897,16 +1095,19 @@ def build_prompt(chunk):
         "각 항목은 아래 키를 모두 포함해야 합니다.\n"
         "- id: 입력 번호(정수)\n"
         "- title_ko: 자연스러운 한국어 제목 (번역투 금지, 20~45자, 기술명·모델명·기관명·저장소명은 원문 표기 유지)\n"
-        "- category: 다음 5개 중 정확히 1개\n"
+        "- category: 다음 6개 중 정확히 1개\n"
+        "    \"AI 보안 툴\" = 실제 실행해 쓸 수 있는 AI 보안 오픈소스 도구·스캐너·가드레일·프레임워크 (GitHub 저장소)\n"
         "    \"AI 보안·안전\" = AI/LLM 시스템의 공격·취특점·방어, 프롬프트 인젝션·탈옥, 에이전트 보안, 딥페이크, 모델 유출, AI 프라이버시·규제·안전\n"
         "    \"AI 툴·서비스\" = 개발자·실무자가 바로 쓰는 AI 도구·오픈소스 저장소·CLI·SDK·플랫폼·서비스 출시 (모델 성능 자체 연구는 모델·논문)\n"
         "    \"LLM·에이전트\" = LLM 활용 기법·에이전트 아키텍처·RAG·추론·프롬프트 설계\n"
         "    \"모델·논문\" = 새 모델·모델 구조·학습·양자화·벤치마크·데이터셋 연구\n"
         "    \"산업·트렌드\" = 시장·조직·정책·도입 사례·투자 동향\n"
         "- summary: 핵심 내용을 한국어 2~3문장으로 (무엇을 했고, 어떻게 했고, 결과가 무엇인지)\n"
+        "  · AI 보안 툴 항목: ①핵심 기능(스캔·프록시·가드레일·샌드박스·레드팀 자동화 등) ②탐지·방어 대상(프롬프트 인젝션·탈옥·MCP 도구 오남용·에이전트 권한·모델 유출 등)을 summary에 반드시 포함\n"
         "  · AI 보안 항목: 어떤 공격·취특점인지, 무엇이 영향을 받았는지(제품·에이전트·데이터)를 summary에 반드시 포함\n"
         "  · AI 툴 항목: 이 도구가 어떤 문제를 푸는지(핵심 기능·지원 범위)를 summary에 반드시 포함\n"
         "- tech_insight: 기술적 포인트와 실무·보안 관점의 시사점 1~2문장\n"
+        "  · AI 보안 툴 항목: 실무 활용 포인트(CI·배포 파이프라인 게이트, 런타임 프록시·게이트웨이, 에이전트 툴 호출 검증, 레드팀 자동화 중 해당되는 것)를 반드시 제시\n"
         "  · AI 보안 항목: 대응·완화 방안(패치·권한 최소화·입력 검증·모니터링·가드레일 중 해당되는 것)을 반드시 제시\n"
         "  · AI 툴 항목: 실무 활용법 + 보안 유의점(에이전트 권한, 데이터 노출, 공급망·설치 리스크 중 해당되는 것)\n"
         "  · GitHub 저장소 항목: 스타 수·언어·최근 업데이트를 참고해 성숙도와 도입 판단 포인트를 짚기\n"
@@ -1050,6 +1251,8 @@ def guess_category(item):
     """EXAONE 실패 시 원문 기반 카테고리 추정 (수집 트랙 우선)"""
     track = item.get("track")
     blob = f"{item.get('title_orig', '')} {item.get('summary_orig', '')} {item.get('source_hint', '')}"
+    if track == "sec_tool":
+        return AI_SEC_TOOL_CAT
     if track == "security" and SEC_TERMS.search(blob):
         return "AI 보안·안전"
     if track == "tool" and item.get("source") in ("GitHub", "Show HN"):
@@ -1081,6 +1284,7 @@ def fallback_insight(item):
     src = item.get("source", "")
     mapping = {
         "AI 보안·안전": "공격 경로를 확인한 뒤 프롬프트·도구 권한, 입출력 검증, 탐지·모니터링을 함께 점검해야 함을 시사합니다.",
+        "AI 보안 툴": "AI 시스템에 바로 붙여 쓸 수 있는 보안 도구로, 도입 시 탐지 범위·오탐률·유지보수 활도를 함께 확인해야 합니다.",
         "AI 툴·서비스": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다.",
         "LLM·에이전트": "에이전트·LLM 활용 구조를 설계할 때 참고할 만한 구현 포인트를 담고 있습니다.",
         "모델·논문": "모델 구조·학습 방식의 변화로 실무 적용 가능성을 판단할 근거가 됩니다.",
@@ -1120,12 +1324,16 @@ def build_briefing_fallback(items, top_keywords, cat_counts):
     kw = ", ".join(k[0] for k in top_keywords[:3]) or "LLM"
     featured = sum(1 for i in items if i.get("is_featured"))
     sec = cat_counts.get("AI 보안·안전", 0)
+    sectool = cat_counts.get(AI_SEC_TOOL_CAT, 0)
     tool = cat_counts.get("AI 툴·서비스", 0)
     sec_titles = [i.get("title_ko") or i["title_orig"] for i in items if i.get("category") == "AI 보안·안전"][:2]
+    sectool_titles = [i["title_orig"] for i in items if i.get("category") == AI_SEC_TOOL_CAT][:2]
     tool_titles = [i.get("title_ko") or i["title_orig"] for i in items if i.get("category") == "AI 툴·서비스"][:2]
     parts = [f"오늘 수집된 AI 자료 {total}건 중 '{top_cat}' 비중이 가장 큽니다. 핵심 키워드는 {kw}이며, 주목할 기술 {featured}건이 포함되어 있습니다."]
     if sec_titles:
         parts.append(f"AI 보안·안전 {sec}건 중에서는 " + " / ".join(sec_titles) + " 등이 눈에 띕니다.")
+    if sectool_titles:
+        parts.append(f"바로 도입을 검토해 볼 AI 보안 오픈소스 툴 {sectool}건도 모았습니다(" + " / ".join(sectool_titles) + " 등).")
     if tool_titles:
         parts.append(f"AI 툴·서비스 {tool}건에서는 " + " / ".join(tool_titles) + " 등을 바로 검토해 볼 만합니다.")
     return " ".join(parts)
@@ -1153,7 +1361,7 @@ def _unwrap_briefing(raw):
 
 def build_briefing_exaone(items, api_key, top_keywords, cat_counts):
     # 보안·도구 항목이 목록 앞쪽에 오도록 정렬해 브리핑 반영률을 높임
-    priority = [i for i in items if i.get("category") in ("AI 보안·안전", "AI 툴·서비스")]
+    priority = [i for i in items if i.get("category") in (AI_SEC_TOOL_CAT, "AI 보안·안전", "AI 툴·서비스")]
     others = [i for i in items if i not in priority]
     sample = []
     for it in (priority[:16] + others[:14]):
@@ -1233,6 +1441,9 @@ def enforce_track_categories(items):
             if TOOL_TERMS.search(blob) and not SEC_TERMS.search(blob):
                 it["category"] = "AI 툴·서비스"
                 fixed += 1
+        elif (track == "sec_tool" or it.get("sec_tool")) and cat != AI_SEC_TOOL_CAT:
+            it["category"] = AI_SEC_TOOL_CAT
+            fixed += 1
     if fixed:
         print(f"  [분류 보정] 수집 트랙 기준 카테고리 보정 {fixed}건")
     return items
@@ -1279,9 +1490,10 @@ def analyze_items(items, batch_size=3, max_calls=30, deadline=None, finalize=Tru
             it_dbg = now_kst().strftime("%H%M%S")
             content = None
             MAX_ATTEMPT = 6
+            _call_timeout = int(os.environ.get("AI_CALL_TIMEOUT") or 150)
             for attempt in range(MAX_ATTEMPT):
                 try:
-                    content = call_exaone(prompt, api_key, timeout=150)
+                    content = call_exaone(prompt, api_key, timeout=_call_timeout)
                     if not (content or "").strip():
                         raise RuntimeError("빈 응답")
                     break
@@ -1469,6 +1681,8 @@ def finalize_run(items):
     cat_counts, top_keywords, source_counts = compute_aggregates(items)
     if cat_counts.get("AI 보안·안전", 0) < 8:
         print(f"⚠ AI 보안·안전 카테고리가 {cat_counts.get('AI 보안·안전', 0)}건으로 목표(8건) 미만입니다.")
+    if cat_counts.get(AI_SEC_TOOL_CAT, 0) < 12:
+        print(f"⚠ {AI_SEC_TOOL_CAT} 카테고리가 {cat_counts.get(AI_SEC_TOOL_CAT, 0)}건으로 목표(12건) 미만입니다.")
     if cat_counts.get("AI 툴·서비스", 0) < 8:
         print(f"⚠ AI 툴·서비스 카테고리가 {cat_counts.get('AI 툴·서비스', 0)}건으로 목표(8건) 미만입니다.")
     briefing = build_briefing_fallback(items, top_keywords, cat_counts)
@@ -1495,9 +1709,11 @@ def finalize_run(items):
     print(f"  카테고리: " + ", ".join(f"{c} {n}" for c, n in cat_counts.items()))
     sec_samples = [(i.get("title_ko") or i["title_orig"])[:34]
                    for i in items if i.get("category") == "AI 보안·안전"][:4]
+    sectool_samples = [i["title_orig"] for i in items if i.get("category") == AI_SEC_TOOL_CAT][:6]
     tool_samples = [(i.get("title_ko") or i["title_orig"])[:34]
                     for i in items if i.get("category") == "AI 툴·서비스"][:4]
     print("  AI 보안 샘플: " + " | ".join(sec_samples))
+    print("  AI 보안 툴: " + " | ".join(sectool_samples))
     print("  AI 툴 샘플: " + " | ".join(tool_samples))
     print(f"  Top 키워드: " + ", ".join(f"{k}({v})" for k, v in top_keywords[:5]))
     print(f"  브리핑: {briefing[:160]}")
@@ -1522,6 +1738,121 @@ def collect_only():
     items = collect_all()
     save_run_items(items)
     print(f"-> 수집 결과 저장: {os.path.basename(RUN_ITEMS_FILE)} ({len(items)}건)")
+    return items
+
+
+# ---------------------------------------------------------------------------
+# AI 보안 툴 전용 수집·분석·적재 (--sec-tools)
+# ---------------------------------------------------------------------------
+
+def _looks_like_ai_sec_tool(title, text):
+    """DB에 이미 있는 저장소를 'AI 보안 툴'로 판단 (저장된 요약 기준)"""
+    blob = f"{title} {text}"
+    if SEC_TOOL_DENY.search(blob):
+        return False
+    return bool(SEC_TOOL_STRONG.search(blob))
+
+
+def retag_existing_sec_tools():
+    """기존 DB의 GitHub 저장소 중 AI 보안 도구를 'AI 보안 툴' 카테고리로 옮긴다.
+
+    (지난 수집분은 EXAONE이 'AI 보안·안전'이나 'AI 툴·서비스'로 분류했기 때문에,
+     AI 보안 뉴스·논문과 도구가 섞여 있었다.)
+    """
+    from db_manager import get_ai_insights, upsert_ai_insights
+    items = get_ai_insights()
+    moved = []
+    for it in items:
+        if it.get("source") != "GitHub" or it.get("category") == AI_SEC_TOOL_CAT:
+            continue
+        blob = f"{it.get('title_orig', '')} {it.get('summary', '')} {it.get('tech_insight', '')}"
+        if _looks_like_ai_sec_tool(it.get("title_orig", ""), blob):
+            it["category"] = AI_SEC_TOOL_CAT
+            it["published_at"] = it.get("published_at") or ""
+            moved.append(it)
+    if moved:
+        upsert_ai_insights(moved)
+    print(f"[AI보안툴] 기존 DB 저장소 재분류 {len(moved)}건: " + ", ".join(i["title_orig"] for i in moved))
+    return moved
+
+
+def run_sec_tools(budget=None):
+    """AI 보안 오픈소스 툴만 전용 수집 → EXAONE 분석 → DB 적재 → 브리핑 갱신"""
+    init_db_prep()
+    print("=== [AI 보안 툴] 전용 수집 시작 ===")
+    items = collect_ai_sec_tools()
+    if not items:
+        print("⚠ AI 보안 툴 수집 결과가 없습니다.")
+        return None
+    deadline = (time.monotonic() + budget) if budget and budget > 0 else None
+    items, _cache = analyze_items(items, batch_size=3, max_calls=14, deadline=deadline, finalize=True)
+
+    from db_manager import upsert_ai_insights
+    upsert_ai_insights(items)
+    retag_existing_sec_tools()
+
+    exa = sum(1 for it in items if it.get("analyzed_by") == "exaone")
+    print(f"\n=== AI 보안 툴 {len(items)}건 수집·분석 완료 (EXAONE {exa}건) ===")
+    for it in sorted(items, key=lambda x: -(x.get("score") or 0)):
+        print(f"  ★{(it.get('score') or 0):>6,}  {(it.get('title_ko') or '')[:40]:<42} {it['title_orig']}")
+
+    # DB 전체 기준으로 브리핑·ai_data.json 재생성 (ai.html 빌드용 메타)
+    try:
+        refresh_briefing()
+    except Exception as e:  # noqa: BLE001
+        print(f"  [브리핑] 갱신 실패: {type(e).__name__}: {e}")
+    return items
+
+
+# --- AI 보안 툴 수집 → 분석 → 마무리 단계 분리 실행 (EXAONE 혼잡·시간 상한 대응) ---
+
+def save_sec_items(items):
+    tmp = SEC_RUN_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=1)
+    os.replace(tmp, SEC_RUN_FILE)
+
+
+def load_sec_items():
+    with open(SEC_RUN_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def sec_collect():
+    items = collect_ai_sec_tools()
+    save_sec_items(items)
+    print(f"-> 수집본 저장: {os.path.basename(SEC_RUN_FILE)} ({len(items)}건)")
+    return items
+
+
+def sec_analyze(batch_budget=8, seconds=185):
+    """수집본에 대해 EXAONE 분석을 제한 시간만큼 진행 (여러 번 나눠 실행)"""
+    items = load_sec_items()
+    items, _cache = analyze_items(items, batch_size=1, max_calls=10,
+                                  deadline=time.monotonic() + seconds, finalize=False)
+    save_sec_items(items)
+    done = sum(1 for it in items if it.get("analyzed_by") == "exaone")
+    cached = sum(1 for it in items if it.get("analyzed_by") == "cache")
+    print(f"-> 분석 진행: EXAONE {done}건 / 캐시 {cached}건 / 전체 {len(items)}건")
+    return done + cached, len(items)
+
+
+def sec_finish(seconds=230):
+    """남은 항목을 폴백으로 마감하고 DB 적재·재분류·브리핑 갱신까지 마무리"""
+    items = load_sec_items()
+    items, _cache = analyze_items(items, batch_size=3, max_calls=5,
+                                  deadline=time.monotonic() + seconds, finalize=True)
+    from db_manager import upsert_ai_insights
+    upsert_ai_insights(items)
+    retag_existing_sec_tools()
+    exa = sum(1 for it in items if it.get("analyzed_by") == "exaone")
+    print(f"\n=== AI 보안 툴 {len(items)}건 적재 완료 (EXAONE {exa}건 / 폴백 {len(items) - exa}건) ===")
+    for it in sorted(items, key=lambda x: -(x.get("score") or 0)):
+        print(f"  ★{(it.get('score') or 0):>6,}  {it.get('analyzed_by'):<7} {it['title_orig']}")
+    try:
+        refresh_briefing()
+    except Exception as e:  # noqa: BLE001
+        print(f"  [브리핑] 갱신 실패: {type(e).__name__}: {e}")
     return items
 
 
@@ -1612,5 +1943,19 @@ if __name__ == "__main__":
         analyze_partial()
     elif "--finish" in sys.argv:
         finish_from_file()
+    elif "--sec-tools" in sys.argv:
+        try:
+            _b = int(os.environ.get("AI_RUN_TIME_BUDGET") or 0)
+        except ValueError:
+            _b = 0
+        run_sec_tools(budget=_b)
+    elif "--sec-collect" in sys.argv:
+        init_db_prep()
+        sec_collect()
+    elif "--sec-analyze" in sys.argv:
+        sec_analyze()
+    elif "--sec-finish" in sys.argv:
+        init_db_prep()
+        sec_finish()
     else:
         run()

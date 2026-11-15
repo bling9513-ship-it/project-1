@@ -16,11 +16,12 @@ AI_DATA_JSON = os.path.join(BASE_DIR, "ai_data.json")
 AI_HTML = os.path.join(BASE_DIR, "ai.html")
 KST = timezone(timedelta(hours=9))
 
-CATEGORIES = ["AI 보안·안전", "AI 툴·서비스", "LLM·에이전트", "모델·논문", "산업·트렌드"]
+CATEGORIES = ["AI 보안 툴", "AI 보안·안전", "AI 툴·서비스", "LLM·에이전트", "모델·논문", "산업·트렌드"]
 SOURCES = ["Hugging Face", "arXiv", "Hacker News", "Show HN", "GitHub", "GeekNews",
            "The Hacker News", "Dark Reading", "Embrace the Red", "Simon Willison"]
 
 CAT_CLASS = {
+    "AI 보안 툴": "cat-sectool",
     "AI 보안·안전": "cat-sec",
     "AI 툴·서비스": "cat-tool",
     "LLM·에이전트": "cat-llm",
@@ -88,6 +89,7 @@ CSS = """
 
       --cat-llm-bg: #eff6ff;   --cat-llm-text: #2563eb;   --cat-llm-border: #bfdbfe;
       --cat-sec-bg: #fef2f2;   --cat-sec-text: #dc2626;   --cat-sec-border: #fecaca;
+      --cat-sectool-bg: #eef2ff; --cat-sectool-text: #4338ca; --cat-sectool-border: #c7d2fe;
       --cat-paper-bg: #f5f3ff; --cat-paper-text: #7c3aed; --cat-paper-border: #ddd6fe;
       --cat-tool-bg: #ecfdf5;  --cat-tool-text: #047857;  --cat-tool-border: #a7f3d0;
       --cat-trend-bg: #fff7ed; --cat-trend-text: #c2410c; --cat-trend-border: #fed7aa;
@@ -121,8 +123,9 @@ CSS = """
       --tag-border: #3f3f46;
       --tag-text: #d4d4d8;
 
-      --cat-llm-bg: rgba(37, 99, 235, 0.16);   --cat-llm-text: #60a5fa;   --cat-llm-border: rgba(37, 99, 235, 0.3);
-      --cat-sec-bg: rgba(239, 68, 68, 0.16);   --cat-sec-text: #f87171;   --cat-sec-border: rgba(239, 68, 68, 0.3);
+      --cat-llm-bg: rgba(37, 99, 235, 0.16);    --cat-llm-text: #60a5fa;   --cat-llm-border: rgba(37, 99, 235, 0.3);
+      --cat-sec-bg: rgba(239, 68, 68, 0.16);    --cat-sec-text: #f87171;   --cat-sec-border: rgba(239, 68, 68, 0.3);
+      --cat-sectool-bg: rgba(79, 70, 229, 0.18); --cat-sectool-text: #a5b4fc; --cat-sectool-border: rgba(79, 70, 229, 0.32);
       --cat-paper-bg: rgba(124, 58, 237, 0.16);--cat-paper-text: #a78bfa; --cat-paper-border: rgba(124, 58, 237, 0.3);
       --cat-tool-bg: rgba(16, 185, 129, 0.16);  --cat-tool-text: #34d399;  --cat-tool-border: rgba(16, 185, 129, 0.3);
       --cat-trend-bg: rgba(234, 88, 12, 0.16); --cat-trend-text: #fb923c; --cat-trend-border: rgba(234, 88, 12, 0.3);
@@ -647,6 +650,7 @@ CSS = """
     }
 
     .cat-llm { background: var(--cat-llm-bg); color: var(--cat-llm-text); border-color: var(--cat-llm-border); }
+    .cat-sectool { background: var(--cat-sectool-bg); color: var(--cat-sectool-text); border-color: var(--cat-sectool-border); }
     .cat-sec { background: var(--cat-sec-bg); color: var(--cat-sec-text); border-color: var(--cat-sec-border); }
     .cat-paper { background: var(--cat-paper-bg); color: var(--cat-paper-text); border-color: var(--cat-paper-border); }
     .cat-tool { background: var(--cat-tool-bg); color: var(--cat-tool-text); border-color: var(--cat-tool-border); }
@@ -1202,7 +1206,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 
 # 페이지에 노출할 최대 건수 (매일 누적되는 DB 전체를 그대로 그리면 페이지가 계속 무거워지므로 상한을 둔다)
-DISPLAY_LIMIT = 120
+DISPLAY_LIMIT = 150
 
 
 def cap_featured(items, ratio=0.28, minimum=10, maximum=24):
