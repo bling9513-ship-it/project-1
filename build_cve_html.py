@@ -772,6 +772,7 @@ CSS = """
       .nav-tabs { margin-left: 6px; gap: 4px; }
       .nav-tab-item { padding: 4px 9px; font-size: 11.5px; border-radius: 14px; }
       .update-meta { display: none !important; }
+      .nav-actions a.icon-btn { display: none; }
       .container { padding: 16px 12px 60px; }
       .hero { margin-bottom: 16px; }
       .hero-title { font-size: 21px; }
@@ -794,6 +795,11 @@ CSS = """
       .card-date { margin-left: 0; }
       .cve-foot { align-items: flex-start; }
       .copy-btn { width: 100%; text-align: center; padding: 8px 11px; }
+    }
+
+    @media (max-width: 400px) {
+      .nav-tab-item { padding: 4px 7px; font-size: 11px; }
+      .nav-tabs { gap: 3px; margin-left: 4px; }
     }
 
     @media (max-width: 480px) {
