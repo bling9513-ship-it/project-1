@@ -5,8 +5,8 @@
     "high": 14,
     "kev": 25,
     "poc": 21,
-    "collected_at": "2026-11-16 20:36:00 KST",
-    "built_at": "2026-11-16 20:36 KST",
+    "collected_at": "2026-11-16 20:37:33 KST",
+    "built_at": "2026-11-16 20:37 KST",
     "sources": [
       "CISA KEV",
       "CIRCL CVE",
@@ -83,13 +83,13 @@
       ],
       "description_orig": "GitLab Community Edition and Enterprise Edition contain a integer overflow or wraparound vulnerability that could allow an unauthenticated user to execute arbitrary code on the GitLab server via a specially crafted regular expression in a CI/CD configuration, due to insufficient regular expression validation.",
       "published_at": "2026-10-29",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-116779",
-      "title_ko": "signalwire freeswitch 명령어 주입 취약점",
-      "summary_ko": "CVE-2026-116779는 CISA가 실제 공격 악용 정황을 확인해 KEV 목록에 등재한 signalwire freeswitch의 명령어 주입 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 2.5%(악용 위험 상위 15% 수준)입니다. CISA는 2026-11-09에 이 취약점을 알려진 악용 목록에 추가했습니다.",
+      "title_ko": "Signalwire freeswitch 명령어 주입 취약점",
+      "summary_ko": "CVE-2026-116779는 CISA가 실제 공격 악용 정황을 확인해 KEV 목록에 등재한 Signalwire freeswitch의 명령어 주입 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 2.5%(악용 위험 상위 15% 수준)입니다. CISA는 2026-11-09에 이 취약점을 알려진 악용 목록에 추가했습니다.",
       "impact_ko": "조작된 입력으로 서버 명령을 실행할 수 있어 시스템 장악과 데이터 유출로 이어질 수 있습니다. 실제 악용 사례가 확인된 만큼 인터넷에 노출된 자산은 즉시 영향 여부를 확인해야 합니다.",
       "remediation_ko": "① 벤더가 안내하는 완화 조치를 적용하고, 완화 조치가 없으면 해당 제품의 사용을 중단해야 합니다. ② 영향 범위는 1.11.3 미만 버전이며, 자산 목록과 대조해 1.11.3 이상 버전으로 업데이트하면 해결됩니다. ③ CISA는 2026-11-12까지 조치를 완료하도록 권고하고 있습니다. ④ 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -155,7 +155,7 @@
       ],
       "description_orig": "SignalWire FreeSwitch contains a code injection vulnerability that permits configuration and credential disclosure, arbitrary call control, and command execution.",
       "published_at": "2026-11-09",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -199,13 +199,13 @@
       ],
       "description_orig": "IBM Aspera Faspex contains an incorrect authorization vulnerability that could allow an authenticated user to craft a specific message to bypass authorization, causing privilege escalations.",
       "published_at": "2026-11-09",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-102895",
-      "title_ko": "gpustack 인증 우회 취약점",
-      "summary_ko": "CVE-2026-102895는 CISA가 실제 공격 악용 정황을 확인해 KEV 목록에 등재한 gpustack의 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다. CISA는 2026-11-09에 이 취약점을 알려진 악용 목록에 추가했습니다.",
+      "title_ko": "Gpustack 인증 우회 취약점",
+      "summary_ko": "CVE-2026-102895는 CISA가 실제 공격 악용 정황을 확인해 KEV 목록에 등재한 Gpustack의 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다. CISA는 2026-11-09에 이 취약점을 알려진 악용 목록에 추가했습니다.",
       "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다. 실제 악용 사례가 확인된 만큼 인터넷에 노출된 자산은 즉시 영향 여부를 확인해야 합니다.",
       "remediation_ko": "① 벤더가 안내하는 완화 조치를 적용하고, 완화 조치가 없으면 해당 제품의 사용을 중단해야 합니다. ② 영향 범위는 2.2.0 미만 버전이며, 자산 목록과 대조해 2.2.0 이상 버전으로 업데이트하면 해결됩니다. ③ CISA는 2026-11-12까지 조치를 완료하도록 권고하고 있습니다. ④ 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -257,7 +257,7 @@
       ],
       "description_orig": "GPUStack contains an improper authentication vulnerability which could allow unauthenticated administrative access, including user and model changes, persistent administrator API-key creation, disclosure of worker and cloud-provider secrets, and code execution through POST /v2/inference-backends/from-yaml.",
       "published_at": "2026-11-09",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -318,7 +318,7 @@
       ],
       "description_orig": "Adobe Commerce and Magento contain an unrestricted upload of file with dangerous type vulnerability that could result in arbitrary code execution in the context of the current user, potentially gaining elevated access or control over the victim's account or session.",
       "published_at": "2026-10-27",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -366,7 +366,7 @@
       ],
       "description_orig": "Barracuda Networks Email Security Gateway (ESG) contains an authentication bypass using an alternate path or channel that could allow an unauthenticated remote attacker to invoke a configuration-import function and restore a crafted, compatible backup archive, resulting in unauthorized modification of the appliance’s global configuration. This vulnerability can be chained with CVE-2026-111560.",
       "published_at": "2026-11-10",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -427,7 +427,7 @@
       ],
       "description_orig": "PHP contains a stale internal request-state vulnerability that allows for unauthenticated remote code execution.",
       "published_at": "2026-10-26",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -488,7 +488,7 @@
       ],
       "description_orig": "PHP contains an out-of-memory corruption vulnerability that allows for unauthenticated remote code execution.",
       "published_at": "2026-10-26",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -551,7 +551,7 @@
       ],
       "description_orig": "Google Brotli contains an unchecked return value vulnerability that allows a remote unauthenticated attacker to corrupt adjacent decoder state memory, disclose sensitive memory contents, cause a denial of service, or potentially execute arbitrary code using a crafted Brotli-compressed stream.",
       "published_at": "2026-10-27",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -604,13 +604,13 @@
       ],
       "description_orig": "Barracuda Networks Email Security Gateway (ESG), Load Balancer, Application Delivery Controller (ADC), Message Archiver (BMA), WAF Control Center (WCC), Web Application Firewall (WAF), and Web Security Gateway (WSG) contain an OS command injection vulnerability. This vulnerability could allow an authenticated administrator to inject OS commands that execute with root privileges when the crafted timezone value is subsequently processed. This vulnerability can be chained with CVE-2026-116606",
       "published_at": "2026-11-10",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-76418",
-      "title_ko": "Cisco Secure Firewall Adaptive Security Appliance (ASA) Soft… 서비스 거부(DoS) 취약점",
-      "summary_ko": "CVE-2026-76418는 CISA가 실제 공격 악용 정황을 확인해 KEV 목록에 등재한 Cisco Secure Firewall Adaptive Security Appliance (ASA) Soft…의 서비스 거부(DoS) 취약점입니다. CVSS 8.6점(높음)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 42% 수준)입니다. CISA는 2026-10-29에 이 취약점을 알려진 악용 목록에 추가했습니다.",
+      "title_ko": "Cisco Secure Firewall Adaptive Security Appliance (ASA) Software 서비스 거부(DoS) 취약점",
+      "summary_ko": "CVE-2026-76418는 CISA가 실제 공격 악용 정황을 확인해 KEV 목록에 등재한 Cisco Secure Firewall Adaptive Security Appliance (ASA) Software의 서비스 거부(DoS) 취약점입니다. CVSS 8.6점(높음)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 42% 수준)입니다. CISA는 2026-10-29에 이 취약점을 알려진 악용 목록에 추가했습니다.",
       "impact_ko": "반복 요청으로 서비스 응답이 멈추거나 지연되어 정상 사용자가 서비스를 이용하지 못합니다. 실제 악용 사례가 확인된 만큼 인터넷에 노출된 자산은 즉시 영향 여부를 확인해야 합니다.",
       "remediation_ko": "① 벤더가 안내하는 완화 조치를 적용하고, 완화 조치가 없으면 해당 제품의 사용을 중단해야 합니다. ② 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ③ CISA는 2026-11-01까지 조치를 완료하도록 권고하고 있습니다. ④ 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 8.6,
@@ -641,7 +641,7 @@
       ],
       "description_orig": "Cisco Secure Firewall ASA Software and Cisco Secure FTD Software contains an unchecked return value to NULL pointer dereference vulnerability that could allow an unauthenticated, remote attacker to cause the device to reload unexpectedly, resulting in a denial of service (DoS) condition.",
       "published_at": "2026-10-29",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -707,7 +707,7 @@
       ],
       "description_orig": "UnrealIRCd UnrealIRCd contains an improper neutralization of delimiters vulnerability that allows any user on a network with two or more linked servers to inject server-to-server commands that are executed with server authority.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -793,7 +793,7 @@
       ],
       "description_orig": "OpenBSD OpenSSH on Linux contains an unexpected status code or return value vulnerability that could allow for authentication bypass.",
       "published_at": "2026-11-09",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -879,7 +879,7 @@
       ],
       "description_orig": "WordPress WordPress Core contains a time-of-check time-of-use (TOCTOU) race condition vulnerability that could allow unauthenticated attackers to execute code on the server during the upgrade window. This is due to predictable, web-accessible staging paths used during full-package core upgrades.",
       "published_at": "2026-11-03",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -964,7 +964,7 @@
       "cwe": [],
       "description_orig": "Linux Kernel contains a missing initialization of a variable vulnerability that could allow for unintended modification of page-cache-backed data via failure to preserve the shared-fragment marker during socket buffer coalescing, causing ESP input processing to decrypt shared fragments in place. This vulnerability can be chained with CVE-2026-109618 and CVE-2026-109619 to implant PHP webshells and run commands as root.",
       "published_at": "2026-10-28",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1017,7 +1017,7 @@
       ],
       "description_orig": "Check Point Firewall, Multi-Domain Security Management Server, Scalable Platforms, Security Gateway, and Security Management Server contain an incorrect permissions assignment for critical resources vulnerability when the Gaia OS DynamicCLI daemon runs as root and listens on a world-writable local socket without authenticating connecting processes. An authenticated local user can send a command to the socket and have it executed as root.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1053,7 +1053,7 @@
       ],
       "description_orig": "Cisco BroadWorks contains an improper restriction of XML external entity reference vulnerability that could allow an unauthenticated, remote attacker to read sensitive configuration information on an affected system.",
       "published_at": "2026-11-10",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1093,7 +1093,7 @@
       ],
       "description_orig": "Ivanti Connect Secure contains a missing authentication for critical function vulnerability that could allow a local authenticated attacker to escalate their privileges. This vulnerability can be chained with CVE-2026-104935 and CVE-2026-118527.",
       "published_at": "2026-10-30",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1153,7 +1153,7 @@
       ],
       "description_orig": "Microsoft Office Outlook contains a missing user interaction for potentially unsafe action vulnerability that allows an unauthorized attacker to perform spoofing over a network.",
       "published_at": "2026-11-10",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1189,7 +1189,7 @@
       ],
       "description_orig": "Ivanti Connect Secure contains a generation of predictable numbers or identifiers vulnerability that allows a remote authenticated attacker to upload files with attacker-controlled content to a known location on disk. This vulnerability can be chained with CVE-2026-104935 and CVE-2026-111357.",
       "published_at": "2026-10-30",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1229,7 +1229,7 @@
       ],
       "description_orig": "Openwave Messaging Limited Webtop Media Transcoder contains an incorrect resource transfer between spheres vulnerability that may allow an authenticated user to process and convert unintended document types if bypassing the Webmail experience.",
       "published_at": "2026-11-10",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1268,7 +1268,7 @@
       ],
       "description_orig": "Broadcom VMWare ESX contains an insufficient logging vulnerability that could allow a malicious actor with admin access to perform certain operations without being logged.",
       "published_at": "2026-10-28",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1326,7 +1326,7 @@
       "cwe": [],
       "description_orig": "Apple iOS, iPadOS, macOS, Safari, tvOS and watchOS 10.5 contain an improper authentication vulnerability which could allow an attacker with arbitrary read and write capability to bypass pointer authentication.",
       "published_at": "2026-11-04",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1388,7 +1388,7 @@
       ],
       "description_orig": "Google Chromium contains a use-after-free vulnerability in the XML component that could allow a remote attacker to execute arbitrary code inside the sandbox via a specially crafted webpage. This vulnerability could affect multiple web browsers that utilize Chromium, including, but not limited to, Google Chrome, Microsoft Edge, and Opera.",
       "published_at": "2026-11-10",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1439,7 +1439,7 @@
       ],
       "description_orig": "SonicWall SonicOS SSLVPN contains a use of single-factor authentication vulnerability that may allow a user with valid credentials for an alternate authentication method to bypass SAML authentication controls. Successful exploitation may also bypass SAML-enforced multi-factor authentication (MFA).",
       "published_at": "2026-11-06",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1504,7 +1504,7 @@
       ],
       "description_orig": "A vulnerability was detected in D-Link DIR-600L 2.17/2.17b02. Affected by this vulnerability is the function authenticationcgi_main of the file authentication.cgi. Performing a manipulation of the argument id/password results in stack-based buffer overflow. Remote exploitation of the attack is possible. The exploit is now public and may be used.",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1565,7 +1565,7 @@
       ],
       "description_orig": "A security vulnerability has been detected in TRENDnet TEW-657BRM 1.00.1. This vulnerability affects the function sprintf of the file /setup.cgi of the component mini_httpd. Such manipulation leads to out-of-bounds write. The attack can be executed remotely. The exploit has been disclosed publicly and may be used. The vendor explains: \"\"I am not able to confirm if such vulnerability exists as the product has been EOL for more than 15 years. We will send out an announcement letting customers know.\" This vulnerability only affects products that are no longer supported by the maintainer.",
       "published_at": "2026-11-14",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1630,7 +1630,7 @@
       ],
       "description_orig": "A flaw has been found in D-Link DIR-600L 2.17b02. Affected by this issue is the function hnap_main of the file htdocs/cgibin of the component HNAP Handler. Executing a manipulation can lead to stack-based buffer overflow. The attack can be executed remotely. The exploit has been published and may be used.",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1687,13 +1687,13 @@
       ],
       "description_orig": "A vulnerability was identified in D-Link DSL-6740C 20131126. This affects an unknown function of the file /etc/templates/ftpd/ftpd_conf.php of the component FTP Daemon. Such manipulation leads to hard-coded credentials. The attack can be executed remotely. The exploit is publicly available and might be used.",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-129433",
-      "title_ko": "dokploy 명령어 주입 취약점",
-      "summary_ko": "CVE-2026-129433는 dokploy에서 확인된 명령어 주입 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 2.4%(악용 위험 상위 16% 수준)입니다.",
+      "title_ko": "Dokploy 명령어 주입 취약점",
+      "summary_ko": "CVE-2026-129433는 Dokploy에서 확인된 명령어 주입 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 2.4%(악용 위험 상위 16% 수준)입니다.",
       "impact_ko": "조작된 입력으로 서버 명령을 실행할 수 있어 시스템 장악과 데이터 유출로 이어질 수 있습니다.",
       "remediation_ko": "① 영향 범위는 0.31.1 미만 버전이며, 자산 목록과 대조해 0.31.1 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.9,
@@ -1747,7 +1747,7 @@
       ],
       "description_orig": "Dokploy before 0.31.1 contains an OS command injection vulnerability in getComposeContainerCommand() that allows authenticated organization members to execute shell commands via the serviceName parameter. Attackers can store serviceName values with shell metacharacters through backup.create or backup.update tRPC procedures, executing commands as root when scheduled backups run and taking over the host via the mounted Docker socket.",
       "published_at": "2026-11-14",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1800,13 +1800,13 @@
       ],
       "description_orig": "A security vulnerability has been detected in Edimax BR6478ACV2 1.23. The impacted element is the function formPPTPSetup of the file webs. The manipulation of the argument pptpUserName leads to buffer overflow. It is possible to initiate the attack remotely. The exploit has been disclosed publicly and may be used. The vendor was contacted early about this disclosure but did not respond in any way.",
       "published_at": "2026-11-14",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-125851",
-      "title_ko": "themagnifico52 Hotel Booking Lite 파일 업로드 취약점",
-      "summary_ko": "CVE-2026-125851는 themagnifico52 Hotel Booking Lite에서 확인된 파일 업로드 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 71% 수준)입니다.",
+      "title_ko": "Themagnifico52 Hotel Booking Lite 파일 업로드 취약점",
+      "summary_ko": "CVE-2026-125851는 Themagnifico52 Hotel Booking Lite에서 확인된 파일 업로드 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 71% 수준)입니다.",
       "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
       "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.9,
@@ -1836,7 +1836,7 @@
       ],
       "description_orig": "Unrestricted Upload of File with Dangerous Type vulnerability in themagnifico52 Hotel Booking Lite hotel-booking-lite allows Upload a Web Shell to a Web Server.This issue affects Hotel Booking Lite: from n/a through 2.5.1.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1884,7 +1884,7 @@
       ],
       "description_orig": "A prompt injection vulnerability in all versions of Jet Admin Cloud Platform allows a remote attacker with a free account to expose sensitive .env configuration files and exfiltrate critical credentials. Mitigated via sandbox component around October 29, 2026.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1941,7 +1941,7 @@
       ],
       "description_orig": "A vulnerability was found in DrayTek Vigor2960 1.5.1.6. This issue affects the function check_file_exist of the file /cgi-bin/mainfunction.cgi of the component File Existence Check. Performing a manipulation of the argument upload_name results in heap-based buffer overflow. The attack may be initiated remotely. The exploit has been made public and could be used. Upgrading to version 1.5.1.7 is capable of addressing this issue. Upgrading the affected component is recommended. The vendor recommends: \"1.5.1.6 isn't the latest version of 2960, the latest version fixes many security issues. And we have another one in our release plan which should solve the issues reported.\"",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -1997,7 +1997,7 @@
       ],
       "description_orig": "A flaw has been found in DrayTek Vigor2960 up to 1.5.1.6. This affects the function app_guest_export of the file /cgi-bin/mainfunction.cgi. This manipulation of the argument filename causes path traversal. The attack can be initiated remotely. The exploit has been published and may be used. Upgrading to version 1.5.1.7 is able to mitigate this issue. The affected component should be upgraded. The vendor recommends: \"1.5.1.6 isn't the latest version of 2960, the latest version fixes many security issues. And we have another one in our release plan which should solve the issues reported.\"",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2053,7 +2053,7 @@
       ],
       "description_orig": "A vulnerability was detected in DrayTek Vigor2960 1.5.1.6. Affected by this issue is the function sub_1E084 of the file /cgi-bin/mainfunction.cgi?action=doWebBackup. The manipulation of the argument option results in path traversal. It is possible to launch the attack remotely. The exploit is now public and may be used. Upgrading to version 1.5.1.7 can resolve this issue. You should upgrade the affected component. The vendor recommends: \"1.5.1.6 isn't the latest version of 2960, the latest version fixes many security issues. And we have another one in our release plan which should solve the issues reported.\"",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2110,7 +2110,7 @@
       ],
       "description_orig": "A security vulnerability has been detected in DrayTek Vigor2960 up to 1.5.1.6. Affected by this vulnerability is the function sub_14914 of the file /cgi-bin/mainfunction.cgi. The manipulation of the argument swmconfigupload leads to command injection. It is possible to initiate the attack remotely. The exploit has been disclosed publicly and may be used. Upgrading to version 1.5.1.7 addresses this issue. It is advisable to upgrade the affected component. The vendor recommends: \"1.5.1.6 isn't the latest version of 2960, the latest version fixes many security issues. And we have another one in our release plan which should solve the issues reported.\"",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2151,13 +2151,13 @@
       ],
       "description_orig": "VITEC EZ TV Platform Server before 8.5.0 contains an unrestricted file upload vulnerability in the upload handler that allows unauthenticated remote attackers to upload arbitrary files by supplying a target filename in the X-FILENAME request header with no authentication or file type validation required. Attackers can upload a malicious ASPX file directly to the web-accessible uploads directory, where it is immediately executable by the web server, achieving remote code execution in the context of the web server process. Patches are available for versions 8.3.0, 8.3.1, 8.4.0, and 8.4.1. Users running releases prior to 8.3.0 should upgrade to 8.5.0+.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-129110",
-      "title_ko": "nuxsmin sysPass 인증 우회 취약점",
-      "summary_ko": "CVE-2026-129110는 nuxsmin sysPass에서 확인된 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
+      "title_ko": "Nuxsmin sysPass 인증 우회 취약점",
+      "summary_ko": "CVE-2026-129110는 Nuxsmin sysPass에서 확인된 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
       "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
       "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -2203,13 +2203,13 @@
       ],
       "description_orig": "sysPass 3.0.1 through 3.2.11 contains an authentication bypass vulnerability that allows unauthenticated attackers to reinstall an already-installed instance by POSTing to the install/install handler, which never checks isInstalled(). Attackers can overwrite config.xml, point the application at an attacker-controlled database, create an administrator account, and plant serialized PublicLink gadget chains triggered via account/viewLink to execute commands.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-120522",
-      "title_ko": "fluentwiz Cloud Storage Manager for Fluent Forms – Google Dr… 경로 순회 취약점",
-      "summary_ko": "CVE-2026-120522는 fluentwiz Cloud Storage Manager for Fluent Forms – Google Dr…에서 확인된 경로 순회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
+      "title_ko": "Fluentwiz Cloud Storage Manager for Fluent Forms – Google Drive, Dropb… 경로 순회 취약점",
+      "summary_ko": "CVE-2026-120522는 Fluentwiz Cloud Storage Manager for Fluent Forms – Google Drive, Dropb…에서 확인된 경로 순회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
       "impact_ko": "서버 파일 시스템의 중요 파일을 읽거나 조작해 설정·자격 증명이 노출될 수 있습니다.",
       "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -2243,13 +2243,13 @@
       ],
       "description_orig": "The Cloud Storage Manager for Fluent Forms – Google Drive, Dropbox, OneDrive, S3 Uploads plugin for WordPress is vulnerable to Arbitrary File Write in all versions up to, and including, 1.2.0. This is due to missing authorization checks on the `connection/{driver}/save` and `/download/single-file` REST endpoints, combined with insufficient path validation in the Google Drive `downloadFile()` function, where the Google Drive metadata `name` value is concatenated into a local path without `basename()`, `sanitize_file_name()`, or canonical path validation. This makes it possible for unauthenticated attackers to store attacker-controlled Google Drive credentials, trigger a download of an attacker-owned file whose provider-returned filename contains path traversal, and write attacker-controlled content outside the intended `downloads` directory. When the written file has a PHP extension and lands in a web-accessible location, this can lead to remote code execution.",
       "published_at": "2026-11-14",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-63079",
-      "title_ko": "its deprecated .NET Remoting service 역직렬화 취약점",
-      "summary_ko": "CVE-2026-63079는 its deprecated .NET Remoting service에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.7%(악용 위험 상위 47% 수준)입니다.",
+      "title_ko": "Its deprecated .NET Remoting service 역직렬화 취약점",
+      "summary_ko": "CVE-2026-63079는 Its deprecated .NET Remoting service에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.7%(악용 위험 상위 47% 수준)입니다.",
       "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
       "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -2287,7 +2287,7 @@
       ],
       "description_orig": "RBH Access Technologies Integra32 Security Management System 5.1.11 R5.0 contains an unauthenticated deserialization vulnerability in its deprecated .NET Remoting service, exposed on TCP port 2001 via the AxcvcLt.dll library using BinaryServerFormatterSinkProvider at TypeFilterLevel.Full without requiring authentication. A remote unauthenticated attacker can send a malicious serialized gadget payload (such as a ysoserial.net TypeConfuseDelegate chain) to the IntegraURI object endpoint, or exploit MarshalByRefObject/MarshalByValue unmarshalling for arbitrary file read/write and SMB/NTLMv2 credential coercion, to achieve remote code execution as NT AUTHORITY\\SYSTEM and fully compromise the host.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2327,7 +2327,7 @@
       ],
       "description_orig": "The AutomatorWP Pro plugin for WordPress' webhook addon is vulnerable to authorization bypass in all versions up to, and including, 1.4.4. This is due to the plugin not properly verifying that a user is authorized to perform an action. This makes it possible for unauthenticated attackers to reset the password of any WordPress account, including administrators, resulting in full account takeover. This is only exploitable when an administrator has configured an automation pairing a Receive Webhook trigger — with an 'Is the user ID' field — to an Update-User action whose User ID field is left blank and whose Password field is mapped to the webhook password tag, which is a documented, supported plugin configuration.",
       "published_at": "2026-11-14",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2367,7 +2367,7 @@
       ],
       "description_orig": "The Shipo plugin for WordPress is vulnerable to Authentication Bypass in versions 1.6 through 1.8.0. This is due to the `authenticate_rest_user()` function parsing the `LOGGED_IN_COOKIE` value and authenticating the named user without verifying the cookie's cryptographic signature. The function's intended `/wp-json/shipo/` route restriction can also be bypassed by placing that substring in the query string of an unrelated REST endpoint. This makes it possible for unauthenticated attackers who know an existing username to impersonate that user, including an administrator, and perform authorized actions through the REST API, including creating another administrator account.",
       "published_at": "2026-11-14",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2407,13 +2407,13 @@
       ],
       "description_orig": "PLANET GS-5220-8P2T2S (hardware version 3.0) firmware versions before 3.2412b261008 contains a stack-based buffer overflow vulnerability that allows unauthenticated attackers to corrupt stack memory by submitting an oversized webstax_auth HTTP Cookie value that is copied into a fixed-size stack buffer without length validation. Attackers can send a crafted unauthenticated HTTP request with an oversized cookie to overwrite the saved return address and corrupt stack memory, leading to memory corruption and potential denial of service on the device.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-129171",
-      "title_ko": "likaia NginxPulse SQL 주입 취약점",
-      "summary_ko": "CVE-2026-129171는 likaia NginxPulse에서 확인된 SQL 주입 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 64% 수준)입니다.",
+      "title_ko": "Likaia NginxPulse SQL 주입 취약점",
+      "summary_ko": "CVE-2026-129171는 Likaia NginxPulse에서 확인된 SQL 주입 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 64% 수준)입니다.",
       "impact_ko": "데이터베이스 조회·변조·삭제가 가능해 계정 정보와 주요 데이터가 유출될 수 있습니다.",
       "remediation_ko": "① 영향 범위는 1.6.26 미만 버전이며, 자산 목록과 대조해 1.6.26 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -2463,13 +2463,13 @@
       ],
       "description_orig": "NginxPulse 1.5.0 before 1.6.26 contains an unauthenticated sql injection vulnerability that allows remote attackers to append SQL via the id and locationType parameters of /api/stats/:type. Attackers can close the quoted table-name identifier and use error-based output to read database contents, and read or write server files via PostgreSQL superuser functions.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-125855",
-      "title_ko": "Elextensions ELEX WordPress HelpDesk & Customer Ticketing Sy… 역직렬화 취약점",
-      "summary_ko": "CVE-2026-125855는 Elextensions ELEX WordPress HelpDesk & Customer Ticketing Sy…에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 64% 수준)입니다.",
+      "title_ko": "Elextensions ELEX WordPress HelpDesk & Customer Ticketing System 역직렬화 취약점",
+      "summary_ko": "CVE-2026-125855는 Elextensions ELEX WordPress HelpDesk & Customer Ticketing System에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 64% 수준)입니다.",
       "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
       "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 9.8,
@@ -2499,7 +2499,7 @@
       ],
       "description_orig": "Deserialization of Untrusted Data vulnerability in Elextensions ELEX WordPress HelpDesk & Customer Ticketing System elex-helpdesk-customer-support-ticket-system allows Object Injection.This issue affects ELEX WordPress HelpDesk & Customer Ticketing System: from n/a through 3.3.9.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2535,7 +2535,7 @@
       ],
       "description_orig": "Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Estatik Estatik estatik allows PHP Local File Inclusion.This issue affects Estatik: from n/a through 4.3.6.",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2571,7 +2571,7 @@
       ],
       "description_orig": "Incorrect Privilege Assignment vulnerability in Nasir Ahmed Advanced Form Integration advanced-form-integration allows Privilege Escalation.This issue affects Advanced Form Integration: from n/a through 2.11.3.",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2607,7 +2607,7 @@
       ],
       "description_orig": "Deserialization of Untrusted Data vulnerability in Barn2 Plugins Document Library Pro document-library-pro allows Object Injection.This issue affects Document Library Pro: from n/a before 4.2.2.",
       "published_at": "2026-11-15",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2647,13 +2647,13 @@
       ],
       "description_orig": "OS command injection in the TFTP provisioning module of Zenitel EdgeAudioClient before 9.6.3.0, and 10.x before 10.1.3.0, on VSFF6, VSFF8, VSFF8MP, VSFF8MN, and VSFT devices allows unauthenticated adjacent attackers to execute arbitrary commands as root via a crafted DHCP option 66 (TFTP Server Name) value supplied by a rogue DHCP server on the same network segment. The DHCP-supplied value is passed to a shell without sanitization. Devices using DHCP, the default configuration, are affected on every boot and lease renewal. The same injection is also reachable via the config_update_tftp_server and sw_update_tftp_server configuration fields by an attacker able to modify the device configuration.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
       "cve_id": "CVE-2026-105925",
-      "title_ko": "qt 서비스 거부(DoS) 취약점",
-      "summary_ko": "CVE-2026-105925는 qt에서 확인된 서비스 거부(DoS) 취약점입니다. CVSS 8.2점(높음)으로 평가됐습니다.",
+      "title_ko": "Qt 서비스 거부(DoS) 취약점",
+      "summary_ko": "CVE-2026-105925는 Qt에서 확인된 서비스 거부(DoS) 취약점입니다. CVSS 8.2점(높음)으로 평가됐습니다.",
       "impact_ko": "반복 요청으로 서비스 응답이 멈추거나 지연되어 정상 사용자가 서비스를 이용하지 못합니다.",
       "remediation_ko": "① 영향 범위는 5.0.0·6.8.10·6.11.3 미만 버전이며, 자산 목록과 대조해 5.0.0·6.8.10·6.11.3 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
       "cvss_score": 8.2,
@@ -2699,7 +2699,7 @@
       ],
       "description_orig": "A denial of service vulnerability in the Qt QXmlSimpleReader class of the Qt 5 Core Compatibility APIs module (Qt 6) and the Qt XML module (Qt 5).",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2736,7 +2736,7 @@
       ],
       "description_orig": "In the vulnerability-lookup web application, the authentication decorators for feed-key requests (auth_feedkey_func in website/decorators.py) and API-key requests (auth_func in website/web/api/v1/common.py) called Flask-Login's login_user() function. This caused the HTTP response to a request authenticated solely by a feed key (supplied as the X-FEED-KEY URL parameter) or an API key (supplied as the X-API-KEY header) to set a session cookie that grants full authenticated access to every page in the application, without requiring a password or two-factor authentication. The practical impact is that any party possessing a leaked feed URL (a common occurrence, as feed URLs are shared with RSS readers) or an API key could obtain a valid web session for the associated account. This session provides access to the user's account page, which exposes the API key and other profile data, and for accounts with the administrator role, access to the /admin interface, enabling full administrative control of the application. The vulnerability affects all users whose feed key or API key is exposed. No prior authentication, user interaction, or special network conditions are required; a single HTTP request with the token is sufficient to establish the session. The session persists until it expires, and because it is not bound to the original credential (a related CWE-613 issue noted by the developers), revoking the feed key or API key does not invalidate the already-created session. The fix replaces the login_user() call with assignment to g._login_user, which Flask-Login's current_user property reads for the current request only, without writing any session cookie. The affected views remain unchanged and continue to see the authenticated user for the single request.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2770,7 +2770,7 @@
       "cwe": [],
       "description_orig": "The Burst Statistics WordPress plugin before 3.7.5 does not verify that a request is actually being routed to its own REST API before unloading every other active plugin for that request, allowing unauthenticated attackers to have requests processed with other plugins' protections (such as REST access restrictions, hidden login pages and two-factor authentication) switched off, and to cause other plugins' scheduled tasks to be discarded.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2806,7 +2806,7 @@
       ],
       "description_orig": "Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') vulnerability in Samsung Open Source mTower allows Overflow Buffers.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2846,7 +2846,7 @@
       ],
       "description_orig": "An inclusion of web functionality from an untrusted source could allow remote code execution on SpaceCom",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2887,7 +2887,7 @@
       ],
       "description_orig": "An Out-Of-Bounds Write due to missing input validation is possible in the autoprogramming interface of SpaceCom and Space Battery pack with WiFi which could lead to a denial of service of the affected communication device.",
       "published_at": "2026-11-13",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2928,7 +2928,7 @@
       ],
       "description_orig": "Dell PowerStore contains a stored cross-site scripting (XSS) vulnerability. A low-privileged authenticated attacker could exploit this vulnerability, potentially leading to execution of malicious script in a higher-privileged user's session.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2964,7 +2964,7 @@
       ],
       "description_orig": "In the vulnerability-lookup web application, the Flask-Login session identifier was set to the bare numeric user ID (User.get_id() returned self.id). Because the session ID contained no component derived from the user's credential, it remained valid indefinitely regardless of any subsequent password change, account recovery, or administrator-initiated password reset. An attacker who had obtained a valid session for a user account (for example through cross-site scripting, session hijacking, or a previously exposed feed or API key) could continue to access that user's account after the user changed their password, because the session cookie still carried the same static user ID and the user_loader accepted it without any credential-bound validation. The affected component is the session management layer of the vulnerability-lookup Flask application, specifically the User.get_id() method in website/models/user.py and the load_user callback in website/web/views/session_mgmt.py. The vulnerability required that an attacker already possessed a valid session for the target user; no additional authentication or special deployment configuration was needed beyond a standard deployment of the application. The security impact is that a user cannot effectively revoke an attacker's access by changing their password, performing an account recovery, or having an administrator reset the credential. The attacker retains full authenticated access to the user's profile, subscriptions, and any role-gated functionality for the lifetime of the session cookie. Additionally, sessions that were opened via a feed key or API key before a prior fix (commit 3605d5b6) also persisted indefinitely.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -2998,7 +2998,7 @@
       "cwe": [],
       "description_orig": "The Kadence Memberships WordPress plugin before 4.0.6 does not check that the membership level submitted when renewing a membership matches the level being renewed, pricing the renewal from the submitted level while activating the membership at its own level, allowing unauthenticated users to activate a paid membership without paying on sites that also offer a free level.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     },
     {
@@ -3032,7 +3032,7 @@
       "cwe": [],
       "description_orig": "The Social Viral Downloader WordPress plugin through 2.0.3 does not have authorisation or nonce checks on a log export action available to unauthenticated users, which could allow them to export the download log, including registered users' email addresses and IP addresses, to a publicly accessible file.",
       "published_at": "2026-11-16",
-      "updated_at": "2026-11-16 20:36:00 KST",
+      "updated_at": "2026-11-16 20:37:33 KST",
       "analyzed_by": "fallback"
     }
   ]
