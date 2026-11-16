@@ -779,6 +779,8 @@ html_content = """<!DOCTYPE html>
       font-weight: 600;
       padding: 2px 7px;
       border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
       background: var(--accent-subtle);
       color: var(--accent-primary);
       border: 1px solid rgba(37, 99, 235, 0.2);
@@ -1025,6 +1027,22 @@ html_content = """<!DOCTYPE html>
         height: 20px;
         font-size: 11px;
         margin-top: 1px;
+      }
+      .summary-card {
+        padding: 16px 14px;
+      }
+      .summary-header {
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .summary-title {
+        font-size: 14.5px;
+        line-height: 1.45;
+        min-width: 0;
+      }
+      .summary-badge {
+        font-size: 10px;
+        padding: 2px 6px;
       }
     }
 
