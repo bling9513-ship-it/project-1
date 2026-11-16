@@ -66,7 +66,7 @@ NVD_DAYS = 3            # NVD 최근 공개 범위(일)
 NVD_LIMIT = 25          # NVD 신규 CVE 최대 건수
 CIRCL_EXTRA_LIMIT = 10  # CIRCL 피드 보강 건수
 POC_QUERY_LIMIT = 38    # GitHub PoC 조회 최대 CVE 수
-AI_BATCH = 4            # EXAONE 1회 호출당 CVE 수
+AI_BATCH = int(os.environ.get("CVE_AI_BATCH", "4"))     # EXAONE 1회 호출당 CVE 수
 AI_TIME_BUDGET = int(os.environ.get("CVE_AI_TIME_BUDGET", "1500"))
 
 SEVERITY_KO = {"CRITICAL": "치명적", "HIGH": "높음", "MEDIUM": "보통", "LOW": "낮음", "UNKNOWN": "미평가"}
@@ -589,6 +589,9 @@ def guess_vuln_type(rec):
 def product_label(rec):
     prod = clean(rec.get("product") or "")
     vendor = clean(rec.get("vendor") or "")
+    if vendor.lower() in ("unknown", "n/a", "none"):
+        vendor = ""
+    prod = re.sub(r"^(?:unknown|n/a)\s+", "", prod, flags=re.I)
     if prod.lower() in ("multiple products", "multiple products and versions", "multiple", "various"):
         affected = rec.get("affected_products") or []
         if affected:
@@ -665,17 +668,20 @@ def fallback_korean(rec, reason=""):
     act = action_ko(rec.get("kev_required_action"))
     if act:
         steps.append(act)
-    # 수집 원문에 적힌 수정 버전 기준을 찾아 구체적으로 안내
-    fixed = ""
+    # 수집 원문에 적힌 수정 버전 기준을 찾아 구체적으로 안내 (커밋 해시 등 버전이 아닌 값은 제외)
+    fixed_list = []
     for p in rec.get("affected_products") or []:
-        m = re.search(r"<\s*([0-9][\w.\-]*)", p)
-        if m:
-            fixed = m.group(1)
-            break
-    if not fixed:
+        for m in re.finditer(r"<\s*([0-9][\w.\-]*)", p):
+            v = m.group(1)
+            if re.fullmatch(r"[0-9a-f]{12,}", v):
+                continue
+            if v not in fixed_list:
+                fixed_list.append(v)
+    if not fixed_list:
         m = re.search(r"(?:fixed|resolved|patched|corrected|addressed) (?:in|by) (?:version |v)?([0-9][\w.\-]*)", rec.get("description_orig", ""), re.I)
         if m:
-            fixed = m.group(1)
+            fixed_list.append(m.group(1))
+    fixed = "·".join(fixed_list[:3])
     if fixed:
         steps.append(f"영향 범위는 {fixed} 미만 버전이며, 자산 목록과 대조해 {fixed} 이상 버전으로 업데이트하면 해결됩니다.")
     else:
@@ -988,8 +994,10 @@ def fetch_circl_detail(cve_id):
 
 
 def enrich_records(records):
-    """CVSS·제품 정보가 빈 항목(주로 KEV)을 CIRCL 개별 레코드로 보강"""
-    targets = [r for r in records if r.get("cvss_score") is None or not r.get("affected_products")]
+    """CVSS·제품 정보를 CIRCL 개별 레코드(CNA 원문)로 보강한다.
+    NVD 신규 CVE는 CPE 분석 전(configurations=null)이라 제품명이 설명문 추출값이므로,
+    CNA의 affected(vendor·product)가 있으면 그것을 우선한다."""
+    targets = records
     print(f"  [CIRCL] 상세 보강 대상 {len(targets)}건")
     filled = 0
     for r in targets:
@@ -998,7 +1006,10 @@ def enrich_records(records):
             continue
         for k, v in detail.items():
             if k in ("affected_products", "references", "cwe"):
-                if v and (not r.get(k) or r.get("source") == "CISA KEV"):
+                if v and (k != "affected_products" or len(v) >= 1):
+                    r[k] = v
+            elif k in ("vendor", "product"):
+                if v:
                     r[k] = v
             elif v and not r.get(k):
                 r[k] = v

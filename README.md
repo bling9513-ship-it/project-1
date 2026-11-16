@@ -1,7 +1,7 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-16 20:05:17 KST` (매일 06:30 KST 자동 수집)
+> **마지막 업데이트**: `2026-11-16 20:36:00 KST` (매일 06:30 KST 자동 수집)
 > **아카이빙된 보안 공고**: 총 **535**개 (직무 검증 및 중복 제거 완료)
 > **마감 임박 공고**: 총 **108**개 (D-Day 및 마감 기한 순 정렬)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
