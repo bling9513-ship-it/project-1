@@ -331,6 +331,9 @@ def get_practical_summary():
 
     items.extend(get_extra_practical_terms())
 
+    # 표시 순서 정리: 내용별 카드(50선)를 먼저, 용어 카드를 뒤에 배치 (안정 정렬)
+    items.sort(key=lambda it: 0 if it.get("type") == "content" else 1)
+
     return {
         "title": "2026 이기적 정보보안기사 실기 핵심 실무 가이드 35선 & 단답형 족보 60선 (총 95선)",
         "items": items

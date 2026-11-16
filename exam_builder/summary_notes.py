@@ -765,6 +765,9 @@ def get_written_summary():
     items.extend(get_extra_written_content())
     items.extend(get_extra_written_terms())
 
+    # 표시 순서 정리: 내용별 카드(50선)를 먼저, 용어 카드를 뒤에 배치 (안정 정렬)
+    items.sort(key=lambda it: 0 if it.get("type") == "content" else 1)
+
     return {
         "title": "2026 이기적 정보보안기사 필기 내용별 심층 요약 50선 & 필수 용어 사전 108선 (총 158선)",
         "items": items

@@ -1781,7 +1781,6 @@ html_content = """<!DOCTYPE html>
         chips.push({ key: 'app', label: '애플리케이션 보안' });
         chips.push({ key: 'crypto', label: '암호학·인증' });
         chips.push({ key: 'law', label: '포렌식·법률' });
-        chips.push({ key: 'general', label: '보안관리·기타' });
       }
       bar.innerHTML = chips.map(ch =>
         `<button class="summary-chip-btn${ch.key === 'all' ? ' active' : ''}" data-filter="${ch.key}" onclick="setSummaryFilter('${ch.key}')">${escapeHtml(ch.label)}</button>`

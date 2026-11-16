@@ -403,7 +403,7 @@ def get_extra_practical_terms():
     items = []
     for name, keyword, exam, tip in PRACTICAL_TERMS_EXT:
         cat = "system"
-        if any(k in name for k in ["TCP", "Snort", "tcpdump", "nmap", "WPA", "IPSec", "SSL"]):
+        if any(k in name for k in ["TCP", "Snort", "tcpdump", "nmap", "WPA", "IPSec", "SSL", "FIN", "iptables", "DDoS"]):
             cat = "network"
         elif any(k in name for k in ["SQL", "XSS", "CSRF", "파일 업로드"]):
             cat = "app"
@@ -415,7 +415,7 @@ def get_extra_practical_terms():
             "id": "prac_term_ext_" + str(len(items) + 31).zfill(2),
             "type": "term",
             "category": cat,
-            "category_name": "실기 단답형 용어 (핵심 족보)",
+            "category_name": "실기 단답형 용어 (" + {"system": "시스템", "network": "네트워크", "app": "웹/앱", "crypto": "암호학", "law": "포렌식"}[cat] + ")",
             "title": f"[실기 단답] {name}",
             "term": name,
             "badge": "단답형 족보",
