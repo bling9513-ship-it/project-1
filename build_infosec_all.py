@@ -107,22 +107,28 @@ ismsp_data = {
     "summaries": ismsp_summary_data
 }
 
-js_content = f"""// infosec_exam_data.js
-// 2026 이기적 정보보안기사 필기+실기 올인원(영진닷컴) 및 ISMS-P 인증심사원 완전판 데이터셋
-// 필기 200문항 (1~4회 각 50제) | 실기 100문항 (단답 50제 + 서술실무 50제) | ISMS-P 30문항 (1·2회 각 15제)
+def _write_legacy_dataset():
+    """과거 빌더 직접 출력 경로 (archive.db 파이프라인 도입 후에는 수동 실행 시에만 사용)."""
+    js_content = f"""// infosec_exam_data.js
+    // 2026 이기적 정보보안기사 필기+실기 올인원(영진닷컴) 및 ISMS-P 인증심사원 완전판 데이터셋
+    // 필기 200문항 (1~4회 각 50제) | 실기 100문항 (단답 50제 + 서술실무 50제) | ISMS-P 30문항 (1·2회 각 15제)
 
-window.INFOSEC_WRITTEN_DATA = {json.dumps(written_data, ensure_ascii=False, indent=2)};
+    window.INFOSEC_WRITTEN_DATA = {json.dumps(written_data, ensure_ascii=False, indent=2)};
 
-window.INFOSEC_PRACTICAL_DATA = {json.dumps(practical_data, ensure_ascii=False, indent=2)};
+    window.INFOSEC_PRACTICAL_DATA = {json.dumps(practical_data, ensure_ascii=False, indent=2)};
 
-window.ISMSP_AUDITOR_DATA = {json.dumps(ismsp_data, ensure_ascii=False, indent=2)};
-"""
+    window.ISMSP_AUDITOR_DATA = {json.dumps(ismsp_data, ensure_ascii=False, indent=2)};
+    """
 
-out_path = os.path.join(os.path.dirname(__file__), "infosec_exam_data.js")
-with open(out_path, "w", encoding="utf-8") as f:
-    f.write(js_content)
+    out_path = os.path.join(os.path.dirname(__file__), "infosec_exam_data.js")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(js_content)
 
-print(f"Successfully generated infosec_exam_data.js!")
-print(f"- Written questions: {len(written_qs)}")
-print(f"- Practical questions: {len(practical_qs)}")
-print(f"- ISMS-P questions: {len(ismsp_qs)}")
+    print(f"Successfully generated infosec_exam_data.js!")
+    print(f"- Written questions: {len(written_qs)}")
+    print(f"- Practical questions: {len(practical_qs)}")
+    print(f"- ISMS-P questions: {len(ismsp_qs)}")
+
+
+if __name__ == "__main__":
+    _write_legacy_dataset()

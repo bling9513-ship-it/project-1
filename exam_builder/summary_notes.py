@@ -106,6 +106,44 @@ def get_written_summary():
         ]
     })
 
+    items.append({
+        "id": "sys_content_06",
+        "type": "content",
+        "category": "system",
+        "category_name": "시스템 보안",
+        "title": "파일 무결성 점검(AIDE·Tripwire) 및 윈도우 이벤트 로그·감사 정책",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>파일 무결성 검증(FIM) 개념:</strong> 중요 파일의 해시값(SHA-256 권장)과 소유자·권한·크기 등 메타데이터를 기준선(Baseline)으로 저장한 뒤 주기적으로 재수집·대조하여 무단 변경·백도어 설치를 탐지. 대표 도구: <code>Tripwire</code>(상용 표준), <code>AIDE</code>(오픈소스), Samhain, md5deep.",
+            "<strong>운영 절차:</strong> ① 최초 정상 상태 스냅샷 DB 생성 → ② 주기적 재수집(cron) → ③ 해시 비교 → ④ 변조 탐지 시 관리자 경보. 점검 대상: /etc/passwd, /etc/shadow, /etc/sudoers, /etc/pam.d/*, 웹 루트, 주요 바이너리(/bin, /sbin).",
+            "<strong>리눅스 불변 속성:</strong> <code>chattr +i</code>(Immutable)는 root 조차 수정·삭제·이름변경·링크 생성이 불가하며, <code>chattr +a</code>(Append only)는 추가만 허용. <code>lsattr</code>로 속성 확인. 무결성 도구와 병행해야 실효적.",
+            "<strong>윈도우 이벤트 로그 3종:</strong> Application, System, Security 로그가 <code>%SystemRoot%\\System32\\winevt\\Logs</code>에 .evtx로 저장되며, <code>Event Viewer</code>·<code>wevtutil</code>로 조회.",
+            "<strong>핵심 보안 감사 이벤트 ID:</strong> <code>4624</code>(로그온 성공), <code>4625</code>(로그온 실패), <code>4634</code>(로그오프), <code>4672</code>(특권 사용), <code>4719</code>(감사 정책 변경), <code>4720</code>(계정 생성), <code>4726</code>(계정 삭제), <code>4740</code>(계정 잠금). 실패한 로그온이 짧은 시간에 반복되면 무차별 대입 공격 신호.",
+            "<strong>감사 정책(Audit Policy) 설정:</strong> 계정 로그온 이벤트, 계정 관리, 정책 변경, 특권 사용, 개체 액세스, 프로세스 추적 항목을 성공·실패 모두 감사하도록 설정하고, 로그 덮어쓰기 방지 및 최대 로그 크기를 조정.",
+            "<strong>레지스트리 보안 점검:</strong> <code>HKLM\\SAM</code>(계정 해시), <code>HKLM\\SECURITY</code>(LSA 비밀), <code>LMCompatibilityLevel</code> 3 이상(LM/NTLMv1 차단), <code>Run</code>/<code>RunOnce</code> 키(자동 실행 악성코드) 상시 점검.",
+            "<strong>로그 보존·위변조 방지:</strong> 접속기록 최소 1년(5만 명 이상 민감·고유식별정보 처리 시 2년) 보관, 원격 로그 서버(rsyslog/syslog-ng)로 이중 전송, 분석 전 <code>NTP</code> 시간 동기화로 타임스탬프 신뢰성 확보."
+        ]
+    })
+
+    items.append({
+        "id": "sys_content_07",
+        "type": "content",
+        "category": "system",
+        "category_name": "시스템 보안",
+        "title": "접근통제 3요소·정책 모델(DAC·MAC·RBAC) 및 인증·SSO 기법",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>접근통제 3단계:</strong> 인증(Authentication, 주체 신원 확인) → 인가(Authorization, 객체별 권한 부여) → 계정관리(Accounting, 사용 이력 추적). 인증 요소는 아는 것(패스워드·PIN), 가진 것(OTP·스마트카드·공인인증서), 존재하는 것(지문·홍채·정맥)이며 2개 이상 조합 시 다중 인증(MFA).",
+            "<strong>DAC (임의적 접근통제):</strong> 객체 소유자가 <code>GRANT/REVOKE</code>로 권한을 임의 부여. 유연하지만 권한 확산(권한 전이)과 관리 복잡성 문제. 유닉스 rwx 권한, DB 객체 권한이 대표.",
+            "<strong>MAC (강제적 접근통제):</strong> 주체·객체에 부여된 보안 레이블(기밀등급)을 비교하여 시스템이 강제 판정하며 사용자는 변경 불가. BLP(기밀성)·Biba(무결성)·격자(Lattice) 모델 기반, 군·정부 환경 적용.",
+            "<strong>RBAC (역할기반 접근통제):</strong> 직무·역할에 권한 집합을 매핑하고 사용자에게 역할을 부여. 최소권한·직무분리(Separation of Duty) 구현에 최적이며 인사 이동 시 역할만 교체. ABAC는 속성(시간·위치·부서) 기반으로 더 세밀한 통제.",
+            "<strong>OTP 방식 구분:</strong> <code>HOTP</code>(RFC 4226, 이벤트 카운터 기반 — 버튼을 누를 때마다 증가) vs <code>TOTP</code>(RFC 6238, 시간 동기 기반 — 30초마다 갱신). 질의-응답(Challenge-Response) 방식은 서버가 난수를 제시하고 단말이 서명·해시하여 응답.",
+            "<strong>SSO (Single Sign-On):</strong> 한 번 인증으로 다수 시스템 접근. <code>Kerberos</code>(대칭키 티켓: AS에서 TGT 발급 → TGS에서 서비스 티켓 발급 → AP 교환), SAML(XML 어서션), OAuth 2.0(인가 위임), OIDC(인증 계층). SSO는 단일 실패점이므로 2차 인증 병행이 필수.",
+            "<strong>커버로스 3단계:</strong> ① AS-REQ/AS-REP로 <code>TGT</code>(Ticket Granting Ticket) 획득 → ② TGS-REQ/TGS-REP로 서비스별 티켓 획득 → ③ AP-REQ/AP-REP로 서비스 접근. KDC가 신뢰기관이며 티켓에 타임스탬프를 넣어 재전송 공격을 차단.",
+            "<strong>접근통제 기본 원칙:</strong> 최소권한(Least Privilege), 직무분리, Need-to-Know(알 필요성), 심층 방어, 기본 거부(Default Deny), 실패 안전(Fail-Safe)."
+        ]
+    })
+
     # =========================================================================
     # 2. 네트워크 보안 - 내용별 심층 정리
     # =========================================================================
@@ -220,6 +258,44 @@ def get_written_summary():
         ]
     })
 
+    items.append({
+        "id": "net_content_07",
+        "type": "content",
+        "category": "network",
+        "category_name": "네트워크 보안",
+        "title": "SSL/TLS 핸드셰이크 구조 및 IPSec VPN vs SSL VPN 비교",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>SSL/TLS의 위치:</strong> 전송계층(TCP)과 응용계층 사이에서 응용 데이터를 암호화하는 세션 계층 프로토콜. HTTP(443), SMTP(465/587), LDAPS(636), FTPS 등에 적용. TLS 1.2까지 RSA 키교환 방식이 쓰였고, TLS 1.3은 핸드셰이크를 1-RTT(재개 시 0-RTT)로 단축하고 RSA 키교환·RC4·SHA-1·CBC 계열 취약 조합을 제거.",
+            "<strong>TLS 1.2 핸드셰이크:</strong> ClientHello(지원 Cipher Suite, Client Random) → ServerHello(선택 Cipher Suite, Server Random) + Certificate + ServerKeyExchange + ServerHelloDone → ClientKeyExchange(Pre-Master Secret 전달) → ChangeCipherSpec → Finished. 이후 도출한 대칭 세션키로 암호화 통신.",
+            "<strong>키 도출:</strong> Client Random + Server Random + Pre-Master Secret을 PRF로 조합해 Master Secret을 만들고, 다시 세션키(암호화 키·MAC 키·IV)를 생성. 세션 재개는 Session ID 또는 Session Ticket으로 핸드셰이크를 생략.",
+            "<strong>레코드 계층 처리 순서:</strong> 단편화 → 압축(CRIME 취약점 때문에 비활성 권장) → MAC(HMAC) → 암호화. 최근에는 암호화와 무결성을 한 번에 처리하는 <code>AEAD</code>(AES-GCM, ChaCha20-Poly1305) 사용.",
+            "<strong>대표 취약점:</strong> <code>POODLE</code>(SSL 3.0 다운그레이드 후 CBC 패딩 오라클), <code>Heartbleed</code>(하트비트 확장 길이 검증 누락으로 서버 메모리 64KB 유출·개인키 탈취), <code>BEAST</code>(CBC IV 예측), <code>FREAK/Logjam</code>(약한 수출용 키·DH 파라미터), <code>CRIME/BREACH</code>(압축 부채널), <code>Lucky13</code>(MAC 타이밍). 대응: TLS 1.2 이상 강제, HSTS, 안전한 Cipher Suite 고정, 정기 패치.",
+            "<strong>IPSec VPN:</strong> 네트워크 계층(L3)에서 동작하여 IP 패킷 전체를 보호. <code>사이트-투-사이트</code>(지사-본사 게이트웨이 간)와 원격 접속에 모두 사용하며, 단말에 클라이언트 SW가 필요하고 NAT 환경에서는 <code>NAT-T(UDP 4500)</code>가 필요. AH(인증·무결성, NAT 불가) / ESP(암호화+인증) 프로토콜과 전송 모드(호스트 간, 원 IP 헤더 유지)·터널 모드(게이트웨이 간, 패킷 전체 캡슐화)로 구성.",
+            "<strong>SSL VPN:</strong> 4~7계층에서 443 포트로 동작하여 방화벽·NAT 통과가 쉽고, 브라우저만으로 접속(Clientless)하거나 Thin/Thick 클라이언트로 특정 응용만 터널링. 개인 단말(BYOD)·재택근무에 적합하나 네트워크 전체 보호는 불가하고 웹 취약점에 그대로 노출되는 한계.",
+            "<strong>키 관리:</strong> IKE Phase 1(Main/Aggressive 모드, ISAKMP SA 협상) → Phase 2(Quick 모드, IPSec SA 협상). <code>PFS</code>를 적용하면 Phase 2마다 새 DH 교환으로 세션키를 생성해 장기키 노출 시 과거 트래픽 복호화를 차단."
+        ]
+    })
+
+    items.append({
+        "id": "net_content_08",
+        "type": "content",
+        "category": "network",
+        "category_name": "네트워크 보안",
+        "title": "방화벽 세대별 유형·DMZ 구성 및 IDS/IPS·NAC 네트워크 접근통제",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>방화벽 세대:</strong> 1세대 <code>패킷 필터링</code>(IP·Port ACL, 스테이트리스) → 2세대 <code>상태 기반(Stateful Inspection)</code>(세션 테이블로 연결 상태 추적, 비대칭 라우팅·단편화 우회 방어) → 3세대 <code>애플리케이션 프록시</code>(응용별 프록시) → 4세대 <code>NGFW</code>(DPI, IPS, 애플리케이션 제어, SSL 복호화, 사용자 인지).",
+            "<strong>패킷 필터링의 한계:</strong> IP 스푸핑·소스 라우팅, 단편화·IP 옵션 악용, 응용 계층 공격과 악성 페이로드 탐지 불가, 스테이트리스이므로 ACK 위조 통과.",
+            "<strong>프록시 방화벽:</strong> 내부와 외부 사이에서 연결을 대신 수립(중계)하여 내부 IP 은닉, 응용별 로깅·캐시·인증 수행. 대신 세션 부하로 성능이 저하되고 응용별 프록시를 각각 구현해야 함.",
+            "<strong>DMZ(비무장지대):</strong> 외부에 공개하는 웹·메일·DNS 서버를 내부망과 분리 배치. 구성: 외부 → 스크리닝 라우터 → 외부 방화벽 → DMZ → 내부 방화벽 → 내부망. DMZ 서버 침해 시에도 내부망 2차 방어선 유지.",
+            "<strong>IDS vs IPS:</strong> <code>IDS</code>는 미러링(TAP/SPAN)으로 사본을 분석해 경보만 발생(수동, 오탐이 서비스에 영향 없음), <code>IPS</code>는 인라인으로 배치되어 악성 트래픽을 즉시 차단(능동, 오탐 시 정상 서비스 차단 위험).",
+            "<strong>탐지 방식:</strong> <code>오용(시그니처) 탐지</code>는 알려진 공격 패턴과 비교하므로 오탐이 적고 신규·변종 공격은 탐지 불가, <code>이상(행위) 탐지</code>는 정상 프로파일에서 벗어난 행위를 탐지해 신규 공격은 잡지만 오탐이 많음. 실무는 두 방식을 병행하는 하이브리드.",
+            "<strong>NAC (Network Access Control):</strong> 단말이 네트워크에 접속하기 전에 백신·패치·OS 버전 등 보안 상태를 검사하여 허용·격리·치료 VLAN으로 분기. 비인가 단말의 내부망 접속을 원천 차단.",
+            "<strong>802.1X 구성요소:</strong> <code>Supplicant</code>(단말 인증 클라이언트) · <code>Authenticator</code>(스위치·무선 AP, EAP 중계) · <code>Authentication Server</code>(RADIUS, 실제 인증 판정). EAP 방식으로 EAP-TLS(상호 인증서), PEAP/EAP-TTLS(서버 인증서+내부 인증) 사용."
+        ]
+    })
+
     # =========================================================================
     # 3. 애플리케이션 보안 - 내용별 심층 정리
     # =========================================================================
@@ -329,6 +405,24 @@ def get_written_summary():
         ]
     })
 
+    items.append({
+        "id": "app_content_07",
+        "type": "content",
+        "category": "app",
+        "category_name": "애플리케이션 보안",
+        "title": "SW 개발 보안 생명주기·시큐어코딩 7대 원칙 및 OWASP Top 10",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>SW 개발 보안:</strong> 개발 생명주기(SDLC)의 각 단계에 보안 활동을 내재화하여 구현 이후가 아니라 설계·구현 단계에서 취약점을 제거하는 접근. 요구사항 분석 → 설계 → 구현 → 시험 → 배포·운영.",
+            "<strong>단계별 활동:</strong> 요구사항(보안 요구사항·법규 식별), 설계(<code>위협 모델링 STRIDE</code>, 위험 분석, 보안 아키텍처), 구현(시큐어코딩·코드 리뷰·정적 분석 <code>SAST</code>), 시험(동적 분석 <code>DAST</code>·모의해킹·퍼징), 운영(취약점 점검·패치, <code>SCA</code>로 오픈소스 컴포넌트 추적).",
+            "<strong>시큐어코딩 7대 원칙:</strong> ① 입력 데이터 검증 및 표현(검증·인코딩) ② 보안 기능(인증·접근통제·암호화의 올바른 구현) ③ 시간 및 상태(경쟁조건·TOCTOU) ④ 에러 처리(오류 메시지에 시스템 정보 노출 금지) ⑤ 코드 오류(형 변환·자원 반환 누락·NULL 역참조) ⑥ 캡슐화(디버그 코드·민감 정보 노출 금지) ⑦ API 오용(취약 API 사용 금지).",
+            "<strong>OWASP Top 10 (2021):</strong> <code>A01</code> 접근통제 취약점 → <code>A02</code> 암호화 실패 → <code>A03</code> 인젝션 → <code>A04</code> 안전하지 않은 설계 → <code>A05</code> 보안 설정 오류 → <code>A06</code> 취약하거나 오래된 컴포넌트 → <code>A07</code> 식별·인증 실패 → <code>A08</code> 소프트웨어·데이터 무결성 실패 → <code>A09</code> 보안 로깅·모니터링 실패 → <code>A10</code> SSRF.",
+            "<strong>보안 설계 원칙:</strong> 최소 권한, 직무분리, 심층 방어, 완전 중재(모든 접근은 매번 검사), 최소 공통 메커니즘, 실패 안전(Fail-Safe), 심리적 수용성. 인가 검사는 반드시 서버 측에서 수행(클라이언트 측 검증은 우회 가능).",
+            "<strong>취약점 점검 도구 구분:</strong> <code>SAST</code>(소스 기반 정적 분석 — 조기 발견, 오탐 많음), <code>DAST</code>(실행 중 애플리케이션 동적 분석 — 실제 악용 가능성 확인), <code>IAST</code>(계측 기반), <code>SCA</code>(라이브러리·의존성 취약점 및 SBOM 관리).",
+            "<strong>구현 예시:</strong> SQL은 <code>PreparedStatement</code>(바인딩 변수)로 처리, 입력은 화이트리스트 검증, 출력은 컨텍스트별 인코딩, 비밀번호는 솔트+Key Stretching 해시, 난수는 <code>SecureRandom</code>, 비밀키 하드코딩 금지(설정·KMS 분리)."
+        ]
+    })
+
     # =========================================================================
     # 4. 정보보안 일반 및 암호학 - 내용별 심층 정리
     # =========================================================================
@@ -424,6 +518,24 @@ def get_written_summary():
             "• <code>*(스타) 무결성 속성 (No Write Up)</code>: 주체는 자신보다 높은 무결성 등급의 객체에 데이터를 쓸 수 없음 (상위 신뢰 데이터 오염 방지).",
             "<strong>Clark-Wilson 모델:</strong> 잘 형성된 트랜잭션(Well-formed Transaction)과 엄격한 직무 분리(Separation of Duties)를 통해 기업 회계 및 금융 무결성 보장.",
             "<strong>만리장성(Chinese Wall / Brewer-Nash) 모델:</strong> 이해관계 상충(Conflict of Interest)을 방지하기 위해, 사용자의 이전 접근 이력에 따라 충돌 집합에 속한 타 경쟁사의 데이터 접근을 동적으로 차단하는 상업 윤리 모델."
+        ]
+    })
+
+    items.append({
+        "id": "crypto_content_06",
+        "type": "content",
+        "category": "crypto",
+        "category_name": "정보보안 일반·암호학",
+        "title": "키 교환(Diffie-Hellman)·HMAC 및 해시 함수 취약점(SHA-1·MD5)",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>Diffie-Hellman 키 교환:</strong> 이산대수 문제에 기반해 사전 공유 비밀 없이 세션키를 합의. 소수 p와 원시근 g를 공개하고 각자의 개인키 a, b로 A=g^a mod p, B=g^b mod p를 교환한 뒤 K=B^a=A^b=g^(ab) mod p를 계산. 키 자체는 전송되지 않음.",
+            "<strong>DH 취약점과 대응:</strong> 인증이 없어 중간자 공격(MITM)에 노출되므로 인증서·전자서명으로 상대를 검증해야 함. 512~1024비트 약한 파라미터는 <code>Logjam</code> 공격으로 붕괴(2048비트 이상 권장), 정적 DH는 순방향 비밀성이 없어 <code>DHE/ECDHE</code>(임시 키)를 사용.",
+            "<strong>HMAC 구조:</strong> <code>HMAC(K, M) = H((K⊕opad) ‖ H((K⊕ipad) ‖ M))</code>. 해시 함수에 비밀키를 결합해 무결성과 송신자 인증을 동시에 제공하며, 단순 H(K‖M) 방식의 <code>길이 확장 공격(Length Extension)</code>에 안전.",
+            "<strong>MAC vs 전자서명:</strong> MAC은 대칭키를 공유하므로 제3자 검증과 부인방지가 불가능(당사자 모두 생성 가능), 전자서명은 개인키로 서명하고 공개키로 검증하여 부인방지와 제3자 검증이 가능.",
+            "<strong>해시 함수 3대 안전성:</strong> 역상 저항성(해시값으로 원문을 찾기 불가), 제2역상 저항성(주어진 x에 대해 H(x)=H(y)인 y를 찾기 불가), 충돌 저항성(임의의 서로 다른 x, y로 충돌을 찾기 불가).",
+            "<strong>생일 공격(Birthday Attack):</strong> n비트 해시에서 약 2^(n/2)번 시도로 충돌을 찾을 수 있음. MD5(128비트)는 2004년 이후 실충돌이 가능해 악성 인증서 위조(Flame)에 악용되었고, SHA-1(160비트)도 2017년 <code>SHAttered</code>로 실충돌이 공개되어 사용 금지. <code>SHA-256/512, SHA-3</code> 권장.",
+            "<strong>해시 활용:</strong> 무결성 검증(다운로드 파일 체크섬), 전자서명(원문을 해시한 뒤 서명 — 속도·길이 고정), 비밀번호 저장(솔트 + PBKDF2/bcrypt/Argon2), HMAC. 비밀번호는 절대 단순 MD5/SHA-1로 저장하지 않음."
         ]
     })
 
@@ -526,6 +638,43 @@ def get_written_summary():
             "• <code>1영역 관리체계 수립 및 운영 (16개)</code>: 경영진 참여, 위험관리, 정책 수립 등.",
             "• <code>2영역 보호대책 요구사항 (64개)</code>: 자산 관리, 접근 통제, 암호화, 시스템 개발, 물리 보안 등.",
             "• <code>3영역 개인정보 처리단계별 요구사항 (22개)</code>: 수집, 이용·제공, 파기, 정보주체 권리 보장 등."
+        ]
+    })
+
+    items.append({
+        "id": "law_content_06",
+        "type": "content",
+        "category": "law",
+        "category_name": "정보보안 관리·법률",
+        "title": "재해복구 목표지표(RTO·RPO·MTD) 및 DR센터 4유형·백업 방식",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>복구 목표지표:</strong> <code>RTO</code>(Recovery Time Objective, 재해 후 업무를 복구해야 하는 허용 최대 시간) · <code>RPO</code>(Recovery Point Objective, 허용 가능한 최대 데이터 유실 시점) · <code>MTD</code>(Maximum Tolerable Downtime, 업무 중단 허용 한계). 관계는 <code>RTO ≤ MTD</code>, RPO가 0에 가까우면 실시간 동기 복제가 필요.",
+            "<strong>복구 수준 설계:</strong> RTO가 짧을수록 비용이 기하급수적으로 증가하므로 BIA(업무영향분석)로 업무별 등급을 정하고 차등 설계. RPO는 백업 주기(증분 주기)로 결정.",
+            "<strong>DR센터 4유형:</strong> <code>미러 사이트</code>(주센터와 동시 운영, RTO≈0, 비용 최고) → <code>핫 사이트</code>(전산 장비·데이터 상시 대기, 수시간 내 복구) → <code>웜 사이트</code>(장비 일부·데이터 주기적 반영, 수일) → <code>콜드 사이트</code>(공간만 확보, 장비 반입·설치로 수주~수개월).",
+            "<strong>가용성 지표:</strong> 가용성 = <code>MTBF / (MTBF + MTTR)</code>. MTBF(평균 고장 간격)를 높이고 MTTR(평균 복구 시간)을 낮추는 것이 핵심. 이중화는 단일 실패점(SPOF) 제거가 목적.",
+            "<strong>RAID 수준:</strong> <code>RAID 0</code>(스트라이프, 성능↑ 무결성 없음), <code>RAID 1</code>(미러, 2배 비용), <code>RAID 5</code>(분산 패리티, 디스크 1개 고장 허용), <code>RAID 6</code>(이중 패리티, 2개 허용), <code>RAID 10</code>(미러+스트라이프, 성능·복구성 우수). RAID는 이중화일 뿐 백업이 아님.",
+            "<strong>백업 방식:</strong> <code>전체(Full)</code> / <code>차등(Differential)</code>(마지막 전체 백업 이후 변경분 — 복구 시 전체+최근 차등 2개) / <code>증분(Incremental)</code>(마지막 백업 이후 변경분 — 복구 시 전체+모든 증분 필요). 증분은 백업이 빠르고 용량이 작지만 복구가 느리고, 차등은 반대.",
+            "<strong>3-2-1 규칙:</strong> 최소 3개의 사본, 2종 이상의 매체, 1개는 오프사이트(물리적 격리) 보관. 랜섬웨어 대응을 위해 오프라인·불변(WORM) 백업과 복구 리허설 필수.",
+            "<strong>복구 계획 수립 절차:</strong> BIA → 위험 평가 → 복구 전략·대안 사이트 선정 → BCP/DRP 문서화 → 시험·훈련 → 유지보수. 시험 방법은 체크리스트 → 워크스루 → 시뮬레이션 → 병행(Parallel) → 완전 중단(Failover) 순으로 현실성과 위험이 커짐."
+        ]
+    })
+
+    items.append({
+        "id": "law_content_07",
+        "type": "content",
+        "category": "law",
+        "category_name": "정보보안 관리·법률",
+        "title": "개인정보 파기 기준·방법 및 가명정보 처리 절차",
+        "badge": "내용별 핵심정리",
+        "points": [
+            "<strong>파기 사유:</strong> 보유기간 경과, 처리 목적 달성, 정보주체의 동의 철회, 법령상 파기 요구. 파기 사유가 발생한 날로부터 <strong>5일 이내</strong>에 파기(정당한 사유가 없는 한 지체 없이).",
+            "<strong>파기 방법:</strong> 종이 문서는 <code>분쇄 또는 소각</code>, 전자적 파일은 <code>복원이 불가능한 방법</code>으로 영구 삭제(디가우징·물리적 파괴·안전한 덮어쓰기). 파기 결과는 개인정보파기 관리대장에 기록·관리.",
+            "<strong>법령상 보존 예외:</strong> 다른 법령에 따라 보존해야 하는 경우 해당 개인정보를 <code>다른 개인정보와 분리</code>하여 보관(전자상거래법 5년, 통신비밀보호법 3개월 등). 분리 보관 시에도 접근통제·암호화 적용.",
+            "<strong>가명정보 개념:</strong> 추가 정보 없이는 특정 개인을 알아볼 수 없도록 처리한 정보. 통계 작성, 과학적 연구, 공익적 기록보존 목적으로 정보주체 동의 없이 처리 가능(가명정보에 해당하는지 판단은 결합 가능성 기준).",
+            "<strong>가명정보 결합 절차:</strong> 결합 신청 → <code>결합전문기관</code>(한국인터넷진흥원·통계청 등)의 적정성 검토 → 결합 키 관리 → 반출 심사 → 반출. 가명정보는 특정 개인을 알아보기 위한 목적으로 처리 금지.",
+            "<strong>정보주체 권리:</strong> 열람, 정정·삭제, 처리정지, 전송요구(개인정보 전송요구권). 14세 미만 아동은 법정대리인 동의 필요. 정보주체는 언제든 동의를 철회할 수 있음.",
+            "<strong>개인정보 처리방침:</strong> 처리 목적·항목·보유기간·제3자 제공·위탁·파기 방법·정보주체 권리·보호책임자 등을 공개해야 하며, 변경 시 사전 공지(최소 7일, 정보주체에게 불리한 변경은 30일)."
         ]
     })
 
