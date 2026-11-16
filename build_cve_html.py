@@ -786,6 +786,7 @@ CSS = """
       .toolbar { padding: 12px; border-radius: 12px; gap: 10px; }
       .search-input { padding: 9px 34px 9px 36px; font-size: 13px; }
       .segment-btn { padding: 6px 10px; font-size: 12px; }
+      .segmented-control { flex-wrap: wrap; overflow-x: visible; }
       .cve-list { gap: 12px; }
       .cve-card { padding: 15px 14px 12px; border-radius: 12px; }
       .cve-title { font-size: 15px; }
