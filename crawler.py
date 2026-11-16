@@ -1561,6 +1561,9 @@ def generate_html(jobs, update_time_str):
       .update-meta {{
         display: none !important;
       }}
+      .nav-actions a.icon-btn {{
+        display: none;
+      }}
       .container {{
         padding: 16px 12px 60px;
       }}

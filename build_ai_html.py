@@ -819,6 +819,7 @@ CSS = """
       .nav-tabs { margin-left: 6px; gap: 4px; }
       .nav-tab-item { padding: 4px 9px; font-size: 11.5px; border-radius: 14px; }
       .update-meta { display: none !important; }
+      .nav-actions a.icon-btn { display: none; }
       .container { padding: 16px 12px 60px; }
       .hero { margin-bottom: 16px; }
       .hero-title { font-size: 21px; }

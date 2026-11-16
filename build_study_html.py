@@ -955,6 +955,9 @@ html_content = """<!DOCTYPE html>
       .update-meta {
         display: none !important;
       }
+      .nav-actions a.icon-btn {
+        display: none;
+      }
       .main-wrap {
         padding: 16px 12px 60px;
       }
