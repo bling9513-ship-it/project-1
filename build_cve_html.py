@@ -333,9 +333,12 @@ CSS = """
       margin-left: auto;
       font-size: 11.5px;
       font-weight: 600;
-      color: var(--sev-critical-text);
+      color: var(--sev-high-text);
       white-space: nowrap;
     }
+
+    .priority-row .due-over { color: var(--sev-critical-text); }
+    .priority-row .due-today { color: var(--sev-high-text); }
 
     /* Toolbar */
     .toolbar {
@@ -1042,7 +1045,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       if (ep) metrics.push('<span><b>' + escapeHtml(ep) + '</b></span>');
       if (it.kev_due_date) metrics.push('<span>조치 기한 <b>' + escapeHtml(formatDate(it.kev_due_date)) + '</b></span>');
       if (it.cwe && it.cwe.length) metrics.push('<span>' + escapeHtml(it.cwe.join(' · ')) + '</span>');
-      if (it.analyzed_by && it.analyzed_by.indexOf('fallback') === 0) metrics.push('<span>AI 분석 대기</span>');
 
       const chips = (it.affected_products || []).slice(0, 4)
         .map(p => '<span class="chip">' + escapeHtml(p) + '</span>').join('');
@@ -1213,8 +1215,18 @@ def build_briefing(items):
     poc_items = [i for i in items if i.get("poc_links")]
     crit = sum(1 for i in items if i.get("severity") == "CRITICAL")
     high = sum(1 for i in items if i.get("severity") == "HIGH")
-    dated = [i for i in kev_items if i.get("kev_due_date")]
-    dated.sort(key=lambda i: i["kev_due_date"])
+    today = datetime.now(KST).date()
+
+    def due_date(i):
+        try:
+            return datetime.strptime((i.get("kev_due_date") or "")[:10], "%Y-%m-%d").date()
+        except ValueError:
+            return None
+
+    dated = [i for i in kev_items if due_date(i)]
+    dated.sort(key=due_date)
+    overdue = [i for i in dated if due_date(i) < today]
+    imminent = [i for i in dated if due_date(i) >= today]
 
     if not items:
         return ("아직 수집된 CVE가 없습니다. cve_crawler.py 실행 후 다시 빌드하세요.", [])
@@ -1222,20 +1234,33 @@ def build_briefing(items):
     parts = [f"최근 수집된 CVE {len(items)}건 중 {len(kev_items)}건이 CISA KEV에 등재된 실제 악용 취약점입니다."]
     if crit or high:
         parts.append(f"CVSS 기준 Critical {crit}건, High {high}건이며, 공개 PoC가 확인된 항목은 {len(poc_items)}건입니다.")
-    if dated:
-        parts.append("아래는 CISA 조치 기한이 임박한 항목입니다. 인터넷에 노출된 자산이라면 먼저 확인하세요.")
-    elif kev_items:
+    if overdue:
+        parts.append(f"CISA 조치 기한이 이미 지난 KEV 항목이 {len(overdue)}건 있습니다. 해당 제품을 운영 중이라면 패치 적용 여부를 먼저 확인하세요.")
+    if imminent:
+        parts.append(f"기한이 남은 항목 중 가장 임박한 것은 {imminent[0]['kev_due_date']}까지입니다.")
+    elif not overdue and kev_items:
         parts.append("KEV 등재 항목은 패치 적용 여부를 우선 확인하세요.")
     briefing = " ".join(parts)
 
     rows = []
-    for it in dated[:4]:
+    # 기한 경과 → 임박 순으로 최대 4건 노출
+    for it in (overdue[-2:] + imminent)[:4]:
         prod = it.get("product") or it.get("vendor") or "영향 제품"
+        d = due_date(it)
+        if d < today:
+            tag = f"기한 경과 {(today - d).days}일"
+            cls = "due due-over"
+        elif d == today:
+            tag = "오늘 마감"
+            cls = "due due-today"
+        else:
+            tag = f"D-{(d - today).days}"
+            cls = "due"
         rows.append(
             '<div class="priority-row">'
             f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
             f'<span>{esc(prod)} · {esc(it.get("title_ko", ""))}</span>'
-            f'<span class="due">기한 {esc(it["kev_due_date"])}</span>'
+            f'<span class="{cls}">{tag} ({esc(it["kev_due_date"])})</span>'
             "</div>"
         )
     if not rows:
