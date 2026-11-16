@@ -826,7 +826,8 @@ def export_study_data_from_db(db_path=DB_PATH):
         q["id"] = f"e{q['exam']}_q{q['id'].split('_q')[-1]}"
         q["subject"] = q.pop("subject_name")
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.js"), "w", encoding="utf-8") as f:
-        f.write(f"window.CPPG_QUESTIONS = {json.dumps(cppg_list, ensure_ascii=False, indent=2)};\n")
+        # study.html 은 window.ALL_QUESTIONS 를 읽는다 (구 산출물 호환)
+        f.write(f"window.ALL_QUESTIONS = {json.dumps(cppg_list, ensure_ascii=False, indent=2)};\n")
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.json"), "w", encoding="utf-8") as f:
         json.dump(cppg_list, f, ensure_ascii=False, indent=2)
 
