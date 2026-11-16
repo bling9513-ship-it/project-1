@@ -721,138 +721,139 @@ def export_jobs_to_json(out_path="jobs.json", db_path=DB_PATH):
         json.dump(jobs, f, ensure_ascii=False, indent=2)
     return len(jobs)
 
+def _round_num(round_id, default=1):
+    """'r3' -> 3. 화면의 회차 필터(exam)와 DB round_id를 일치시킨다."""
+    try:
+        return int(str(round_id).lstrip("rR"))
+    except (TypeError, ValueError):
+        return default
+
+
+_SUMMARY_CATEGORY_CODES = {
+    "시스템 보안": "system", "시스템 필수 용어": "system",
+    "네트워크 보안": "network", "네트워크 필수 용어": "network",
+    "애플리케이션 보안": "app", "애플리케이션 필수 용어": "app",
+    "정보보안 일반·암호학": "crypto", "암호학 필수 용어": "crypto",
+    "정보보안 관리·법률": "law", "관리·법률 필수 용어": "law",
+    "디지털 포렌식 & 법률": "law",
+}
+
+
+def _summary_category_code(subject):
+    """요약 카드의 과목 필터 코드(system/network/app/crypto/law)를 subject 표시명에서 복원."""
+    subject = (subject or "").strip()
+    if subject in _SUMMARY_CATEGORY_CODES:
+        return _SUMMARY_CATEGORY_CODES[subject]
+    if "시스템" in subject or "보안관제" in subject:
+        return "system"
+    if "네트워크" in subject:
+        return "network"
+    if "애플리케이션" in subject or "웹" in subject or "앱" in subject:
+        return "app"
+    if "암호" in subject:
+        return "crypto"
+    return "law"
+
+
 def export_study_data_from_db(db_path=DB_PATH):
     """DB에서 시험 문제 및 요약 데이터를 읽어와 웹 프론트엔드용 JS 파일들로 빌드"""
     conn = get_connection(db_path)
     cur = conn.cursor()
-    
+
+    def load_summaries(category):
+        cur.execute("""
+        SELECT sub_type, subject, title, content, data_json
+        FROM study_summaries
+        WHERE category = ?
+        ORDER BY id ASC;
+        """, (category,))
+        rows = cur.fetchall()
+        out = []
+        for r in rows:
+            out.append({
+                "type": r["sub_type"],
+                "category": _summary_category_code(r["subject"]),
+                "category_name": r["subject"],
+                "title": r["title"],
+                "badge": r["content"],
+                "points": json.loads(r["data_json"]) if r["data_json"] else []
+            })
+        return out
+
+    def load_questions(category, id_prefix, with_type=False):
+        """회차(round) 단위로 정렬하고 회차/문항 고유 ID를 부여한다."""
+        cols = "round_id, round_name, question_num, prompt, choices, answer, explanation, subject, question_type"
+        cur.execute(f"""
+        SELECT {cols}
+        FROM study_questions
+        WHERE category = ?
+        ORDER BY CAST(SUBSTR(round_id, 2) AS INTEGER) ASC, question_num ASC;
+        """, (category,))
+        out = []
+        for r in cur.fetchall():
+            exam = _round_num(r["round_id"])
+            q_num = r["question_num"]
+            try:
+                choices = json.loads(r["choices"]) if r["choices"] else []
+            except (TypeError, ValueError):
+                choices = []
+            answer_raw = r["answer"]
+            answer = int(answer_raw) if str(answer_raw).isdigit() else answer_raw
+            subject = r["subject"] or ""
+            subject_id = 0
+            m = re.match(r"^\s*(\d)", subject)
+            if m:
+                subject_id = int(m.group(1))
+            item = {
+                "id": f"{id_prefix}_r{exam}_q{q_num}",
+                "exam": exam,
+                "exam_name": r["round_name"],
+                "subject_id": subject_id,
+                "subject_name": subject,
+                "prompt": r["prompt"],
+                "choices": choices,
+                "answer": answer,
+                "explanation": r["explanation"] or ""
+            }
+            if with_type:
+                item["type"] = r["question_type"]
+            out.append(item)
+        return out
+
     # 1. CPPG 300제
-    cur.execute("""
-    SELECT question_num, prompt, choices, answer, explanation, subject
-    FROM study_questions
-    WHERE category = 'cppg'
-    ORDER BY question_num ASC;
-    """)
-    cppg_rows = cur.fetchall()
-    cppg_list = []
-    for r in cppg_rows:
-        cppg_list.append({
-            "id": f"e{((r['question_num']-1)//100)+1}_q{r['question_num']}",
-            "prompt": r["prompt"],
-            "choices": json.loads(r["choices"]),
-            "answer": int(r["answer"]) if r["answer"].isdigit() else r["answer"],
-            "explanation": r["explanation"],
-            "subject": r["subject"]
-        })
+    cppg_list = load_questions("cppg", "cppg")
+    for q in cppg_list:
+        q["id"] = f"e{q['exam']}_q{q['id'].split('_q')[-1]}"
+        q["subject"] = q.pop("subject_name")
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.js"), "w", encoding="utf-8") as f:
-        f.write(f"window.CPPG_QUESTIONS = {json.dumps(cppg_list, ensure_ascii=False, indent=2)};\n")
+        # study.html 은 window.ALL_QUESTIONS 를 읽는다 (구 산출물 호환)
+        f.write(f"window.ALL_QUESTIONS = {json.dumps(cppg_list, ensure_ascii=False, indent=2)};\n")
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.json"), "w", encoding="utf-8") as f:
         json.dump(cppg_list, f, ensure_ascii=False, indent=2)
-        
-    # 2. 정보보안기사 필기
-    cur.execute("""
-    SELECT question_num, prompt, choices, answer, explanation, subject
-    FROM study_questions
-    WHERE category = 'infosec_written'
-    ORDER BY question_num ASC;
-    """)
-    written_q_rows = cur.fetchall()
-    written_qs = []
-    for r in written_q_rows:
-        written_qs.append({
-            "id": f"written_q{r['question_num']}",
-            "prompt": r["prompt"],
-            "choices": json.loads(r["choices"]),
-            "answer": int(r["answer"]) if r["answer"].isdigit() else r["answer"],
-            "explanation": r["explanation"],
-            "subject": r["subject"]
-        })
-        
-    cur.execute("""
-    SELECT sub_type, subject, title, content, data_json
-    FROM study_summaries
-    WHERE category = 'infosec_written';
-    """)
-    written_s_rows = cur.fetchall()
-    written_summaries = []
-    for r in written_s_rows:
-        written_summaries.append({
-            "type": r["sub_type"],
-            "category_name": r["subject"],
-            "title": r["title"],
-            "badge": r["content"],
-            "points": json.loads(r["data_json"])
-        })
-        
+
+    # 2. 정보보안기사 필기 200제 (1~4회 각 50제) + 내용별 35선 · 용어사전 45선 = 80선
+    written_qs = load_questions("infosec_written", "written")
+    written_summaries = load_summaries("infosec_written")
     written_data = {
         "title": "2026 이기적 정보보안기사 (필기) 200제 & 내용별 심층요약·용어사전 80선",
         "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
         "questions": written_qs,
         "summaries": written_summaries
     }
-    
-    # 3. 정보보안기사 실기
-    cur.execute("""
-    SELECT question_num, prompt, choices, answer, explanation, subject, question_type
-    FROM study_questions
-    WHERE category = 'infosec_practical'
-    ORDER BY question_num ASC;
-    """)
-    prac_q_rows = cur.fetchall()
-    practical_qs = []
-    for r in prac_q_rows:
-        practical_qs.append({
-            "id": f"prac_q{r['question_num']}",
-            "prompt": r["prompt"],
-            "choices": json.loads(r["choices"]),
-            "answer": r["answer"],
-            "explanation": r["explanation"],
-            "subject": r["subject"],
-            "type": r["question_type"]
-        })
-        
-    cur.execute("""
-    SELECT sub_type, subject, title, content, data_json
-    FROM study_summaries
-    WHERE category = 'infosec_practical';
-    """)
-    prac_s_rows = cur.fetchall()
-    practical_summaries = []
-    for r in prac_s_rows:
-        practical_summaries.append({
-            "type": r["sub_type"],
-            "category_name": r["subject"],
-            "title": r["title"],
-            "badge": r["content"],
-            "points": json.loads(r["data_json"])
-        })
-        
+
+    # 3. 정보보안기사 실기 100제 (1~4회 각 25제) + 내용별 20선 + 단답형 족보 30선
+    practical_qs = load_questions("infosec_practical", "prac", with_type=True)
+    practical_summaries = load_summaries("infosec_practical")
     practical_data = {
         "title": "2026 이기적 정보보안기사 (실기) 100제 & 단답형 족보·실무 가이드 50선",
         "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 20선 + 단답형 족보 30선",
         "questions": practical_qs,
         "summaries": practical_summaries
     }
-    
-    # 4. ISMS-P 인증심사원
-    cur.execute("""
-    SELECT question_num, prompt, choices, answer, explanation, subject
-    FROM study_questions
-    WHERE category = 'ismsp_auditor'
-    ORDER BY question_num ASC;
-    """)
-    ismsp_q_rows = cur.fetchall()
-    ismsp_qs = []
-    for r in ismsp_q_rows:
-        ismsp_qs.append({
-            "id": f"ismsp_q{r['question_num']}",
-            "prompt": r["prompt"],
-            "choices": json.loads(r["choices"]),
-            "answer": int(r["answer"]) if r["answer"].isdigit() else r["answer"],
-            "explanation": r["explanation"],
-            "subject": r["subject"]
-        })
-        
+
+    # 4. ISMS-P 인증심사원 30제 (1·2회 각 15제)
+    ismsp_qs = load_questions("ismsp_auditor", "ismsp")
+
     from build_infosec_all import ismsp_summary_data
     ismsp_data = {
         "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 102개 기준 결함사례",
@@ -860,7 +861,7 @@ def export_study_data_from_db(db_path=DB_PATH):
         "questions": ismsp_qs,
         "summaries": ismsp_summary_data
     }
-    
+
     js_content = f"""// infosec_exam_data.js
 // SQLite DB(archive.db)에서 자동 생성된 최신 데이터셋
 // 필기 200문항 | 실기 100문항 | ISMS-P 30문항
@@ -874,9 +875,26 @@ window.ISMSP_AUDITOR_DATA = {json.dumps(ismsp_data, ensure_ascii=False, indent=2
     out_path = os.path.join(os.path.dirname(__file__), "infosec_exam_data.js")
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(js_content)
-        
+
+    # 5. 내보내기 자체 검증 (빈 본문/빈 선지/회차 유실 방지)
+    empty_prompt = sum(1 for q in written_qs + practical_qs + ismsp_qs if not str(q["prompt"]).strip())
+    empty_choices = sum(1 for q in written_qs + ismsp_qs if not q["choices"])
+    if empty_prompt or empty_choices:
+        raise SystemExit(f"[실패] 내보내기 검증 실패: 빈 본문 {empty_prompt}건 / 빈 선지 {empty_choices}건")
+    print(f"[DB -> Web] 시험 공부 데이터셋 동기화 빌드 완료! "
+          f"(필기 {len(written_qs)}문항·요약 {len(written_summaries)}선 / "
+          f"실기 {len(practical_qs)}문항·요약 {len(practical_summaries)}선 / "
+          f"ISMS-P {len(ismsp_qs)}문항·요약 {len(ismsp_data['summaries'])}선)")
+
     conn.close()
-    print("[DB -> Web] 시험 공부 데이터셋 동기화 빌드 완료!")
+    return {
+        "written_questions": len(written_qs),
+        "written_summaries": len(written_summaries),
+        "practical_questions": len(practical_qs),
+        "practical_summaries": len(practical_summaries),
+        "ismsp_questions": len(ismsp_qs),
+    }
+
 
 if __name__ == "__main__":
     init_db()
