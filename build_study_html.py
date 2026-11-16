@@ -1813,7 +1813,8 @@ html_content = """<!DOCTYPE html>
       const total = counts.reduce((a, b) => a + b, 0);
       let html = `<button class="summary-chip-btn active" data-filter="all" onclick="setIsmspFilter('all')">전체 (${total})</button>`;
       sums.forEach((s, i) => {
-        const area = (s.title || '').split('.')[0] + '영역';
+        let area = (s.title || '').split('.')[0].trim();
+        if (!area.endsWith('영역')) area += '영역';
         html += `<button class="summary-chip-btn" data-filter="sec${i}" onclick="setIsmspFilter('sec${i}')">${escapeHtml(area)} (${counts[i]})</button>`;
       });
       bar.innerHTML = html;
