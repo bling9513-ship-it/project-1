@@ -1330,8 +1330,8 @@
       },
       infosec_written: {
         title: "정보보안기사 (필기)",
-        mainTitle: "2026 이기적 정보보안기사 필기 200제 & 내용별 심층요약·용어사전 80선",
-        mainDesc: "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
+        mainTitle: "2026 이기적 정보보안기사 필기 200제 & 내용별 심층요약·용어사전 158선",
+        mainDesc: "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 50선 + 필수 핵심 용어사전 108선",
         quizLabel: "필기 모의고사 (200제)",
         quizLabelShort: "필기 200제",
         exams: [
@@ -1352,8 +1352,8 @@
       },
       infosec_practical: {
         title: "정보보안기사 (실기)",
-        mainTitle: "2026 이기적 정보보안기사 실기 100제 & 단답형 족보·실무 가이드 50선",
-        mainDesc: "2026 이기적 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 20선 + 단답형 족보 30선",
+        mainTitle: "2026 이기적 정보보안기사 실기 100제 & 단답형 족보·실무 가이드 95선",
+        mainDesc: "2026 이기적 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 35선 + 단답형 족보 60선",
         quizLabel: "실기 실전 문제 (100제)",
         quizLabelShort: "실기 100제",
         exams: [
@@ -1373,8 +1373,8 @@
       },
       ismsp_auditor: {
         title: "ISMS-P 인증심사원",
-        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 102개 기준 결함사례",
-        mainDesc: "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 기준별 결함사례 총람",
+        mainTitle: "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 인증기준 심층 요약 25선",
+        mainDesc: "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 인증기준별 요구사항·결함 판정 포인트 25선",
         quizLabel: "실전 결함 퀴즈 (30제)",
         quizLabelShort: "결함 30제",
         exams: [
@@ -1722,6 +1722,121 @@
       renderSummaryCardsOnly();
     };
 
+    // 요약 카드 개수는 하드코딩하지 않고 실제 데이터에서 계산한다(칩 카운트 = 데이터 100% 일치)
+    function summaryCounts(catKey) {
+      let d = null;
+      if (catKey === 'infosec_written') d = window.INFOSEC_WRITTEN_DATA || {};
+      else if (catKey === 'infosec_practical') d = window.INFOSEC_PRACTICAL_DATA || {};
+      const items = (d && d.summaries) || [];
+      return {
+        total: items.length,
+        content: items.filter(s => s.type === 'content').length,
+        term: items.filter(s => s.type === 'term').length
+      };
+    }
+
+    function buildSummaryChips(catKey) {
+      const bar = document.getElementById('summaryChipsBar');
+      if (!bar) return;
+      const c = summaryCounts(catKey);
+      const chips = [{ key: 'all', label: `전체 (${c.total})` }];
+      if (catKey === 'infosec_written') {
+        chips.push({ key: 'content', label: `내용별 핵심정리 (${c.content})` });
+        chips.push({ key: 'term', label: `필수 용어사전 (${c.term})` });
+        chips.push({ key: 'system', label: '시스템 보안' });
+        chips.push({ key: 'network', label: '네트워크 보안' });
+        chips.push({ key: 'app', label: '애플리케이션 보안' });
+        chips.push({ key: 'crypto', label: '암호학·일반' });
+        chips.push({ key: 'law', label: '관리 및 법률' });
+      } else {
+        chips.push({ key: 'term', label: `단답형 족보 (${c.term})` });
+        chips.push({ key: 'content', label: `내용별 핵심 (${c.content})` });
+        chips.push({ key: 'system', label: '시스템 보안' });
+        chips.push({ key: 'network', label: '네트워크 보안' });
+        chips.push({ key: 'app', label: '애플리케이션 보안' });
+        chips.push({ key: 'crypto', label: '암호학·인증' });
+        chips.push({ key: 'law', label: '포렌식·법률' });
+        chips.push({ key: 'general', label: '보안관리·기타' });
+      }
+      bar.innerHTML = chips.map(ch =>
+        `<button class="summary-chip-btn${ch.key === 'all' ? ' active' : ''}" data-filter="${ch.key}" onclick="setSummaryFilter('${ch.key}')">${escapeHtml(ch.label)}</button>`
+      ).join('');
+    }
+
+    // ---- ISMS-P 인증기준 요약: 영역 필터 + 검색 ----
+    let ismspSectionFilter = 'all';
+    let ismspSearchQuery = '';
+
+    window.setIsmspFilter = function(key) {
+      ismspSectionFilter = key;
+      document.querySelectorAll('#ismspChipsBar .summary-chip-btn').forEach(c => {
+        if (c.getAttribute('data-filter') === key) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+      renderIsmspCards();
+    };
+
+    window.handleIsmspSearch = function(val) {
+      ismspSearchQuery = (val || '').trim().toLowerCase();
+      renderIsmspCards();
+    };
+
+    function buildIsmspChips() {
+      const bar = document.getElementById('ismspChipsBar');
+      if (!bar) return;
+      const sums = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
+      const counts = sums.map(s => (s.topics || []).length);
+      const total = counts.reduce((a, b) => a + b, 0);
+      let html = `<button class="summary-chip-btn active" data-filter="all" onclick="setIsmspFilter('all')">전체 (${total})</button>`;
+      sums.forEach((s, i) => {
+        const area = (s.title || '').split('.')[0] + '영역';
+        html += `<button class="summary-chip-btn" data-filter="sec${i}" onclick="setIsmspFilter('sec${i}')">${escapeHtml(area)} (${counts[i]})</button>`;
+      });
+      bar.innerHTML = html;
+    }
+
+    function renderIsmspCards() {
+      const container = document.getElementById('ismspCardsContainer');
+      if (!container) return;
+      const sums = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
+      let shown = 0;
+      container.innerHTML = '';
+      sums.forEach((s, idx) => {
+        if (ismspSectionFilter !== 'all' && ismspSectionFilter !== `sec${idx}`) return;
+        let topicsHtml = '';
+        (s.topics || []).forEach(t => {
+          const text = (t.name || '') + ' ' + (t.points || []).join(' ');
+          if (ismspSearchQuery && !text.toLowerCase().includes(ismspSearchQuery)) return;
+          let pts = '';
+          (t.points || []).forEach(p => { pts += `<li>${p}</li>`; });
+          topicsHtml += `
+            <div class="summary-topic">
+              <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
+              <ul>${pts}</ul>
+            </div>
+          `;
+          shown++;
+        });
+        if (!topicsHtml) return;
+        container.innerHTML += `
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title">${escapeHtml(s.title)}</div>
+              <div class="summary-badge">인증기준 요약</div>
+            </div>
+            ${topicsHtml}
+          </div>
+        `;
+      });
+      if (shown === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:48px 16px; color:var(--text-muted); font-size:13px;">
+            일치하는 인증기준이 없습니다. 검색어를 변경해 보세요.
+          </div>
+        `;
+      }
+    }
+
     function renderSummaryCardsOnly() {
       const container = document.getElementById('summaryCardsContainer');
       if (!container) return;
@@ -1877,19 +1992,11 @@
             <input type="text" id="summarySearchBox" class="summary-search-box"
                    placeholder="궁금한 용어나 개념 검색 (예: ASLR, PAM, IPSec, 유출통지)..."
                    oninput="handleSummarySearch(this.value)">
-            <div class="summary-chips-scroll" id="summaryChipsBar">
-              <button class="summary-chip-btn active" data-filter="all" onclick="setSummaryFilter('all')">전체 (80)</button>
-              <button class="summary-chip-btn" data-filter="content" onclick="setSummaryFilter('content')">내용별 핵심정리 (35)</button>
-              <button class="summary-chip-btn" data-filter="term" onclick="setSummaryFilter('term')">필수 용어사전 (45)</button>
-              <button class="summary-chip-btn" data-filter="system" onclick="setSummaryFilter('system')">시스템 보안</button>
-              <button class="summary-chip-btn" data-filter="network" onclick="setSummaryFilter('network')">네트워크 보안</button>
-              <button class="summary-chip-btn" data-filter="app" onclick="setSummaryFilter('app')">애플리케이션 보안</button>
-              <button class="summary-chip-btn" data-filter="crypto" onclick="setSummaryFilter('crypto')">암호학·일반</button>
-              <button class="summary-chip-btn" data-filter="law" onclick="setSummaryFilter('law')">관리 및 법률</button>
-            </div>
+            <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
           <div id="summaryCardsContainer" class="summary-section"></div>
         `;
+        buildSummaryChips('infosec_written');
         renderSummaryCardsOnly();
       } else if (currentCategory === 'infosec_practical') {
         summarySection.innerHTML = `
@@ -1897,43 +2004,24 @@
             <input type="text" id="summarySearchBox" class="summary-search-box"
                    placeholder="실기 명령어 또는 실무 가이드 검색 (예: find, umask, SQLi, Snort)..."
                    oninput="handleSummarySearch(this.value)">
-            <div class="summary-chips-scroll" id="summaryChipsBar">
-              <button class="summary-chip-btn active" data-filter="all" onclick="setSummaryFilter('all')">전체 (50)</button>
-              <button class="summary-chip-btn" data-filter="term" onclick="setSummaryFilter('term')">단답형 족보 (30)</button>
-              <button class="summary-chip-btn" data-filter="content" onclick="setSummaryFilter('content')">내용별 핵심 (20)</button>
-              <button class="summary-chip-btn" data-filter="system" onclick="setSummaryFilter('system')">시스템 보안</button>
-              <button class="summary-chip-btn" data-filter="network" onclick="setSummaryFilter('network')">네트워크 보안</button>
-              <button class="summary-chip-btn" data-filter="app" onclick="setSummaryFilter('app')">애플리케이션 보안</button>
-              <button class="summary-chip-btn" data-filter="law" onclick="setSummaryFilter('law')">포렌식·법률</button>
-            </div>
+            <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
           <div id="summaryCardsContainer" class="summary-section"></div>
         `;
+        buildSummaryChips('infosec_practical');
         renderSummaryCardsOnly();
       } else if (currentCategory === 'ismsp_auditor') {
-        const summaries = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
-        summaries.forEach(s => {
-          let topicsHtml = '';
-          s.topics.forEach(t => {
-            let pts = '';
-            t.points.forEach(p => { pts += `<li>${escapeHtml(p)}</li>`; });
-            topicsHtml += `
-              <div class="summary-topic">
-                <div class="summary-topic-title">• ${escapeHtml(t.name)}</div>
-                <ul>${pts}</ul>
-              </div>
-            `;
-          });
-          summarySection.innerHTML += `
-            <div class="summary-card">
-              <div class="summary-header">
-                <div class="summary-title">${escapeHtml(s.title)}</div>
-                <div class="summary-badge">102개 기준 요약</div>
-              </div>
-              ${topicsHtml}
-            </div>
-          `;
-        });
+        summarySection.innerHTML = `
+          <div class="summary-toolbar">
+            <input type="text" id="ismspSearchBox" class="summary-search-box"
+                   placeholder="인증기준 번호나 요구사항 검색 (예: 2.5.4, 위탁, 파기, 접속기록, 결함)..."
+                   oninput="handleIsmspSearch(this.value)">
+            <div class="summary-chips-scroll" id="ismspChipsBar"></div>
+          </div>
+          <div id="ismspCardsContainer" class="summary-section"></div>
+        `;
+        buildIsmspChips();
+        renderIsmspCards();
       }
     }
 

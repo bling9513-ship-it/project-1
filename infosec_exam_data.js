@@ -3,8 +3,8 @@
 // 필기 200문항 | 실기 100문항 | ISMS-P 30문항
 
 window.INFOSEC_WRITTEN_DATA = {
-  "title": "2026 이기적 정보보안기사 (필기) 200제 & 내용별 심층요약·용어사전 80선",
-  "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
+  "title": "2026 이기적 정보보안기사 (필기) 200제 & 내용별 심층요약·용어사전 158선",
+  "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 50선 + 필수 핵심 용어사전 108선",
   "questions": [
     {
       "id": "written_r1_q1",
@@ -3998,7 +3998,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] ASLR (Address Space Layout Randomization)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 프로그램 실행 시마다 스택, 힙, 라이브러리 메모리 주소를 난수화하여 고정된 주소를 노리는 셸코드 실행을 차단하는 메모리 보호 기법."
+        "<strong>핵심 정의:</strong> 프로그램 실행 시마다 스택, 힙, 라이브러리 메모리 주소를 난수화하여 고정된 주소를 노리는 셸코드 실행을 차단하는 메모리 보호 기법.",
+        "<strong>출제 포인트:</strong> 메모리 보호 기법 5종(ASLR·DEP·Canary·SafeSEH·ASCII Armor)을 묶어 묻고, ASLR은 '주소 난수화', DEP는 '실행 권한 박탈'로 역할을 구분시키는 문제가 단골이다.",
+        "<strong>함정·암기:</strong> ASLR만으로는 우회 가능(Bruteforce·정보 유출 결합)하므로 DEP·Canary와 다계층으로 적용해야 한다."
       ]
     },
     {
@@ -4008,7 +4010,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] DEP / NX (Data Execution Prevention / No-Execute)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 스택 및 힙 메모리 영역의 실행 권한을 원천 박탈하여 버퍼에 삽입된 악성 바이트 코드가 구동되지 못하도록 차단하는 기술."
+        "<strong>핵심 정의:</strong> 스택 및 힙 메모리 영역의 실행 권한을 원천 박탈하여 버퍼에 삽입된 악성 바이트 코드가 구동되지 못하도록 차단하는 기술.",
+        "<strong>출제 포인트:</strong> DEP는 NX 비트로 스택·힙의 실행 권한을 제거해 셸코드 실행을 막고, 우회 기법으로 ROP(Return Oriented Programming)가 출제된다.",
+        "<strong>함정·암기:</strong> DEP는 '데이터 실행 차단', ASLR은 '주소 은닉'이다. 두 기법의 대상이 다르다."
       ]
     },
     {
@@ -4018,7 +4022,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Stack Canary (스택 카나리 (스택 가드))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 함수의 지역변수와 SFP(복귀주소) 사이에 무작위 난수 카나리 값을 삽입하여, 함수 종료 시 카나리 변조 여부를 검사해 오버플로우를 감지하는 기법."
+        "<strong>핵심 정의:</strong> 함수의 지역변수와 SFP(복귀주소) 사이에 무작위 난수 카나리 값을 삽입하여, 함수 종료 시 카나리 변조 여부를 검사해 오버플로우를 감지하는 기법.",
+        "<strong>출제 포인트:</strong> 함수 진입 시 카나리를 삽입하고 종료 시 검증해 __stack_chk_fail로 프로세스를 종료하는 원리, 카나리 값 유출·우회(SRP)가 출제된다.",
+        "<strong>함정·암기:</strong> 카나리는 '반환 주소 변조 탐지'일 뿐 복구 기능은 없다. 프로세스는 종료된다."
       ]
     },
     {
@@ -4028,7 +4034,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] TOCTOU (Time of Check to Time of Use)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 권한 검사 시점과 실제 자원 사용 시점 사이의 극미한 시간차를 악용하여 심볼릭 링크를 교체해 관리자 권한을 탈취하는 경쟁 조건 취약점."
+        "<strong>핵심 정의:</strong> 권한 검사 시점과 실제 자원 사용 시점 사이의 극미한 시간차를 악용하여 심볼릭 링크를 교체해 관리자 권한을 탈취하는 경쟁 조건 취약점.",
+        "<strong>출제 포인트:</strong> 경쟁 조건의 대표 유형으로, 권한 검사 시점과 사용 시점 사이의 시간차를 노리는 공격. 대응은 원자적 연산·파일 디스크립터 기반 처리다.",
+        "<strong>함정·암기:</strong> 심볼릭 링크 교체로 root 파일을 덮어쓰는 시나리오가 대표 사례다. '검사'와 '사용' 사이가 핵심이다."
       ]
     },
     {
@@ -4038,7 +4046,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Rootkit (루트킷)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 시스템 관리자 권한을 획득한 후 침투 사실을 숨기기 위해 ps, ls, netstat 등 명령어를 변조하거나 커널 LKM을 조작하여 프로세스 및 파일을 은닉하는 도구 세트."
+        "<strong>핵심 정의:</strong> 시스템 관리자 권한을 획득한 후 침투 사실을 숨기기 위해 ps, ls, netstat 등 명령어를 변조하거나 커널 LKM을 조작하여 프로세스 및 파일을 은닉하는 도구 세트.",
+        "<strong>출제 포인트:</strong> 사용자 영역·커널 영역 루트킷의 차이, 탐지(rkhunter·chkrootkit), 커널 감염 시 신뢰 부팅 매체 사용이 출제된다.",
+        "<strong>함정·암기:</strong> ps·ls 결과를 신뢰할 수 없게 만드는 것이 목적이다. 라이브 시스템 검사만으로는 불충분하다."
       ]
     },
     {
@@ -4048,7 +4058,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] wtmp / utmp (리눅스 로그인 계정 로그)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> wtmp는 성공한 로그인/로그아웃/재부팅 전체 누적 이력(last 조회), utmp는 현재 접속 중인 활성 사용자 상태(who/w 조회)를 기록하는 바이너리 로그."
+        "<strong>핵심 정의:</strong> wtmp는 성공한 로그인/로그아웃/재부팅 전체 누적 이력(last 조회), utmp는 현재 접속 중인 활성 사용자 상태(who/w 조회)를 기록하는 바이너리 로그.",
+        "<strong>출제 포인트:</strong> last(wtmp), who/w/users(utmp) 명령 매칭 문제로 출제된다. wtmp는 이력, utmp는 현재 접속 상태다.",
+        "<strong>함정·암기:</strong> wtmp는 '과거 로그인 기록', utmp는 '지금 접속 중'이다. 두 파일을 바꿔 외우면 오답이 된다."
       ]
     },
     {
@@ -4058,7 +4070,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] btmp / lastlog (접속 실패 및 최종 접속 로그)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> btmp는 로그인 실패 시도 이력(lastb 조회), lastlog는 각 사용자 계정별 최종 접속 일시 및 출발지 IP(lastlog 조회)를 기록하는 바이너리 로그."
+        "<strong>핵심 정의:</strong> btmp는 로그인 실패 시도 이력(lastb 조회), lastlog는 각 사용자 계정별 최종 접속 일시 및 출발지 IP(lastlog 조회)를 기록하는 바이너리 로그.",
+        "<strong>출제 포인트:</strong> lastb(btmp, 실패 이력)와 lastlog(계정별 최종 접속)의 구분, 무차별 대입 탐지에 활용되는 점이 출제된다.",
+        "<strong>함정·암기:</strong> btmp는 '실패', lastlog는 '계정별 마지막 성공'이다. 파일 권한(600)과 무결성도 확인 대상이다."
       ]
     },
     {
@@ -4068,7 +4082,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Sticky Bit (스티키 비트 (1000))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> /tmp 공용 디렉토리에 부여되어 누구나 파일을 생성할 수 있으나, 삭제 및 수정은 오직 해당 파일의 소유자와 root만 가능하도록 제한하는 특수 권한 비트."
+        "<strong>핵심 정의:</strong> /tmp 공용 디렉토리에 부여되어 누구나 파일을 생성할 수 있으나, 삭제 및 수정은 오직 해당 파일의 소유자와 root만 가능하도록 제한하는 특수 권한 비트.",
+        "<strong>출제 포인트:</strong> /tmp처럼 공용 디렉터리에 설정해 파일 소유자·root만 삭제 가능하게 하는 권한(1000, drwxrwxrwt)으로 출제된다.",
+        "<strong>함정·암기:</strong> SetUID(4000)·SetGID(2000)·Sticky(1000)의 숫자와 효과를 3종 세트로 외운다. t는 실행 권한 있음, T는 없음이다."
       ]
     },
     {
@@ -4078,7 +4094,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] PAM (Pluggable Authentication Modules)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 응용프로그램 재컴파일 없이 시스템 인증 정책을 교체할 수 있는 플러그인 모듈 인터페이스 (required, requisite, sufficient, optional 플래그 운영)."
+        "<strong>핵심 정의:</strong> 응용프로그램 재컴파일 없이 시스템 인증 정책을 교체할 수 있는 플러그인 모듈 인터페이스 (required, requisite, sufficient, optional 플래그 운영).",
+        "<strong>출제 포인트:</strong> auth·account·password·session 4개 모듈 타입과 required·requisite·sufficient·optional 4개 제어 플래그의 동작 차이가 출제된다.",
+        "<strong>함정·암기:</strong> required는 실패해도 나머지를 수행(원인 은닉), requisite는 즉시 중단이다. 이 차이가 핵심 함정이다."
       ]
     },
     {
@@ -4088,7 +4106,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] chattr (+i) (파일 불변 속성 설정)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 리눅스 파일에 +i(Immutable) 속성을 부여할 경우 root 권한자라 할지라도 파일의 수정, 삭제, 이름 변경, 링크 생성을 원천 차단하는 명령어."
+        "<strong>핵심 정의:</strong> 리눅스 파일에 +i(Immutable) 속성을 부여할 경우 root 권한자라 할지라도 파일의 수정, 삭제, 이름 변경, 링크 생성을 원천 차단하는 명령어.",
+        "<strong>출제 포인트:</strong> 불변(+i)·추가만 허용(+a) 속성과 lsattr 확인, root도 삭제 불가라는 점이 출제된다.",
+        "<strong>함정·암기:</strong> 파일 권한(chmod)과 속성(chattr)은 다르다. +i는 삭제·수정·이름변경 모두 차단한다."
       ]
     },
     {
@@ -4098,7 +4118,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] SYN Cookie (신 쿠키)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> SYN Flooding 공격 시 서버 메모리 백로그 큐를 소진하지 않고, 클라이언트 연결 정보를 암호화 해시하여 TCP Sequence Number에 인코딩해 회신하는 방어 기법."
+        "<strong>핵심 정의:</strong> SYN Flooding 공격 시 서버 메모리 백로그 큐를 소진하지 않고, 클라이언트 연결 정보를 암호화 해시하여 TCP Sequence Number에 인코딩해 회신하는 방어 기법.",
+        "<strong>출제 포인트:</strong> SYN 플러드 대응으로 백로그가 차기 전에 쿠키(시퀀스 번호에 MAC 결합)를 생성해 핸드셰이크를 완성하는 원리가 출제된다.",
+        "<strong>함정·암기:</strong> 쿠키는 '상태를 저장하지 않는' 기법이다. 커넥션 테이블 고갈 자체를 막는 것이 목적이다."
       ]
     },
     {
@@ -4108,7 +4130,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Land Attack (랜드 어택)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 패킷의 출발지 IP/Port와 목적지 IP/Port를 희생자 자신의 IP/Port로 조작하여 자기 자신과 무한 루프 연결을 유발시키는 서비스 거부 공격."
+        "<strong>핵심 정의:</strong> 패킷의 출발지 IP/Port와 목적지 IP/Port를 희생자 자신의 IP/Port로 조작하여 자기 자신과 무한 루프 연결을 유발시키는 서비스 거부 공격.",
+        "<strong>출제 포인트:</strong> 출발지 IP·포트를 목적지와 동일하게 위조해 수신 측이 자기 자신에게 응답하게 만드는 고전 DoS로, 라우터의 ingress 필터링으로 차단한다.",
+        "<strong>함정·암기:</strong> 현대 장비는 대부분 패치되어 통하지 않는다. '고전 공격'이라는 위치를 기억한다."
       ]
     },
     {
@@ -4118,7 +4142,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Smurf Attack (스머프 어택)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 출발지 IP를 희생자 IP로 위조한 후 다이렉트 브로드캐스트 주소로 ICMP Echo Request를 전송하여 네트워크 내 모든 호스트의 응답을 희생자에게 증폭 집중시키는 공격."
+        "<strong>핵심 정의:</strong> 출발지 IP를 희생자 IP로 위조한 후 다이렉트 브로드캐스트 주소로 ICMP Echo Request를 전송하여 네트워크 내 모든 호스트의 응답을 희생자에게 증폭 집중시키는 공격.",
+        "<strong>출제 포인트:</strong> 출발지 IP를 피해자로 스푸핑한 ICMP Echo를 브로드캐스트로 보내 다수 호스트의 응답을 피해자에게 집중시키는 증폭 공격이다.",
+        "<strong>함정·암기:</strong> 증폭률은 브로드캐스트 응답 수에 비례한다. 대응은 directed broadcast 차단과 IP 스푸핑 필터링이다."
       ]
     },
     {
@@ -4128,7 +4154,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] TearDrop (티어드롭 어택)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> IP 패킷 단편화 시 오프셋 값을 인위적으로 중첩·왜곡시켜 수신 호스트가 패킷을 재조합하는 과정에서 크래시 및 재부팅을 유발하는 취약점 공격."
+        "<strong>핵심 정의:</strong> IP 패킷 단편화 시 오프셋 값을 인위적으로 중첩·왜곡시켜 수신 호스트가 패킷을 재조합하는 과정에서 크래시 및 재부팅을 유발하는 취약점 공격.",
+        "<strong>출제 포인트:</strong> IP 단편화 오프셋을 조작해 재조립 시 오버랩·길이 오류를 유발하는 공격으로, OS 패치와 단편화 검사로 대응한다.",
+        "<strong>함정·암기:</strong> '단편화 조작' 계열(Teardrop·Ping of Death·Jolt2)을 함께 묶어 외운다."
       ]
     },
     {
@@ -4138,7 +4166,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Slowloris (슬로로리스)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> HTTP 요청 헤더의 끝을 알리는 개행문자(\\r\\n\\r\\n)를 전송하지 않고 불완전한 헤더를 천천히 유지하여 웹 서버의 가용 연결 슬롯을 고갈시키는 L7 DoS 공격."
+        "<strong>핵심 정의:</strong> HTTP 요청 헤더의 끝을 알리는 개행문자(\\r\\n\\r\\n)를 전송하지 않고 불완전한 헤더를 천천히 유지하여 웹 서버의 가용 연결 슬롯을 고갈시키는 L7 DoS 공격.",
+        "<strong>출제 포인트:</strong> HTTP 헤더를 아주 느리게 나눠 전송해 커넥션을 오래 점유하는 L7 DoS. 대응은 커넥션 타임아웃·최대 헤더 수·리버스 프록시 버퍼링이다.",
+        "<strong>함정·암기:</strong> 패킷량이 적어 트래픽 기반 탐지를 우회한다. '동시 연결 수'와 '응답 완료 시간' 지표가 탐지 포인트다."
       ]
     },
     {
@@ -4148,7 +4178,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] RUDY (R-U-Dead-Yet (Slow HTTP POST))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> HTTP POST 요청 시 Content-Length를 거대하게 설정하고 본문 바이트 데이터를 극도로 느린 속도로 분할 전송하여 서버 연결을 장시간 점유하는 공격."
+        "<strong>핵심 정의:</strong> HTTP POST 요청 시 Content-Length를 거대하게 설정하고 본문 바이트 데이터를 극도로 느린 속도로 분할 전송하여 서버 연결을 장시간 점유하는 공격.",
+        "<strong>출제 포인트:</strong> Content-Length를 크게 선언하고 본문을 1바이트씩 천천히 보내 커넥션을 점유하는 Slow HTTP POST 공격이다.",
+        "<strong>함정·암기:</strong> Slowloris(헤더)·RUDY(본문)·Slow Read(응답) 3종을 나눠 외운다."
       ]
     },
     {
@@ -4158,7 +4190,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] IPSec (AH / ESP) (IP Security Protocol)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 네트워크 계층(L3) VPN 표준 프로토콜로, AH는 인증과 무결성만 제공(NAT 불가), ESP는 기밀성(암호화), 무결성, 인증을 모두 제공(NAT-T 지원)."
+        "<strong>핵심 정의:</strong> 네트워크 계층(L3) VPN 표준 프로토콜로, AH는 인증과 무결성만 제공(NAT 불가), ESP는 기밀성(암호화), 무결성, 인증을 모두 제공(NAT-T 지원).",
+        "<strong>출제 포인트:</strong> AH(무결성·인증, 암호화 없음, 프로토콜 51)와 ESP(암호화+무결성, 프로토콜 50), 전송 모드·터널 모드 조합이 출제된다.",
+        "<strong>함정·암기:</strong> AH는 NAT 통과가 불가능해 실무에서는 ESP를 쓴다. 'AH=인증만, ESP=암호화+인증'이 핵심이다."
       ]
     },
     {
@@ -4168,7 +4202,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] IKE (Internet Key Exchange (UDP 500))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> IPSec에서 양단 호스트 간 보안 결합(SA) 협상 및 대칭 세션키를 Diffie-Hellman 알고리즘으로 안전하게 자동 생성·교환하는 표준 프로토콜."
+        "<strong>핵심 정의:</strong> IPSec에서 양단 호스트 간 보안 결합(SA) 협상 및 대칭 세션키를 Diffie-Hellman 알고리즘으로 안전하게 자동 생성·교환하는 표준 프로토콜.",
+        "<strong>출제 포인트:</strong> UDP 500(및 NAT-T 4500) 기반으로 SA를 협상하는 프로토콜, Phase 1(ISAKMP SA)·Phase 2(IPSec SA) 2단계 구조가 출제된다.",
+        "<strong>함정·암기:</strong> IKE는 '키 교환·협상'이고 실제 데이터 보호는 ESP/AH가 담당한다."
       ]
     },
     {
@@ -4178,7 +4214,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] WPA3 SAE (동등동시인증 (SAE Handshake))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> WPA3 무선 LAN 표준에 도입된 상호 인증 프로토콜로, 강력한 암호화 키 교환을 통해 기존 4-Way Handshake의 오프라인 사전 대입 공격을 원천 무력화함."
+        "<strong>핵심 정의:</strong> WPA3 무선 LAN 표준에 도입된 상호 인증 프로토콜로, 강력한 암호화 키 교환을 통해 기존 4-Way Handshake의 오프라인 사전 대입 공격을 원천 무력화함.",
+        "<strong>출제 포인트:</strong> SAE(Dragonfly)로 오프라인 사전공격을 무력화하고 PFS를 제공하며, OWE·192bit Suite-B·802.11w 관리프레임 보호가 함께 출제된다.",
+        "<strong>함정·암기:</strong> WPA2-PSK는 4-way handshake 캡처로 오프라인 크래킹이 가능하지만 SAE는 매 접속마다 상호 인증이 필요하다."
       ]
     },
     {
@@ -4188,7 +4226,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] DNSSEC (DNS 보안 확장 프로토콜)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> DNS 응답 데이터에 공개키 기반 전자서명(RRSIG)을 부착하여 악의적인 DNS 캐시 포이즈닝 및 도메인 파밍을 방지하는 보안 표준."
+        "<strong>핵심 정의:</strong> DNS 응답 데이터에 공개키 기반 전자서명(RRSIG)을 부착하여 악의적인 DNS 캐시 포이즈닝 및 도메인 파밍을 방지하는 보안 표준.",
+        "<strong>출제 포인트:</strong> RRSIG·DNSKEY·DS·NSEC 레코드로 응답의 출처 인증과 무결성을 보장하는 확장으로, 기밀성은 제공하지 않는다.",
+        "<strong>함정·암기:</strong> DNSSEC는 '서명 검증'이지 '암호화'가 아니다. DNS over HTTPS와 구분해야 한다."
       ]
     },
     {
@@ -4198,7 +4238,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] PreparedStatement (파라미터화된 쿼리 (바인딩 변수))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> SQL 쿼리 컴파일 시점에 입력값을 데이터 리터럴로 고정 바인딩하여, 사용자 입력값이 쿼리 문법 구조를 변조하지 못하도록 만드는 SQLi 최우선 방어책."
+        "<strong>핵심 정의:</strong> SQL 쿼리 컴파일 시점에 입력값을 데이터 리터럴로 고정 바인딩하여, 사용자 입력값이 쿼리 문법 구조를 변조하지 못하도록 만드는 SQLi 최우선 방어책.",
+        "<strong>출제 포인트:</strong> SQLi 근본 대책으로, SQL 구조를 미리 컴파일하고 값만 바인딩해 코드와 데이터를 분리하는 원리가 출제된다.",
+        "<strong>함정·암기:</strong> 입력 검증·이스케이프는 보조 수단이다. '바인딩 변수'가 정답 키워드다."
       ]
     },
     {
@@ -4208,7 +4250,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Stored XSS (저장형 크로스사이트 스크립팅)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 공격자가 삽입한 악성 자바스크립트가 게시판 DB에 영구 저장되어, 해당 글을 조회하는 모든 무고한 사용자의 브라우저에서 자동 실행되는 가장 치명적인 XSS."
+        "<strong>핵심 정의:</strong> 공격자가 삽입한 악성 자바스크립트가 게시판 DB에 영구 저장되어, 해당 글을 조회하는 모든 무고한 사용자의 브라우저에서 자동 실행되는 가장 치명적인 XSS.",
+        "<strong>출제 포인트:</strong> 게시판·프로필에 악성 스크립트가 저장되어 다수 사용자에게 실행되는 유형으로, 출력 인코딩과 CSP가 대응책이다.",
+        "<strong>함정·암기:</strong> 반사형(Reflected)·DOM 기반과 구분한다. 저장형은 '지속성'이 특징이다."
       ]
     },
     {
@@ -4218,7 +4262,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] CSRF Token (크로스사이트 요청 위조 방지 토큰)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 사용자의 세션마다 서버가 예측 불가능한 난수 토큰을 발급하여 폼 전송 시 검증함으로써, 타 사이트로부터 위조된 비인가 상태 변경 요청을 차단하는 기법."
+        "<strong>핵심 정의:</strong> 사용자의 세션마다 서버가 예측 불가능한 난수 토큰을 발급하여 폼 전송 시 검증함으로써, 타 사이트로부터 위조된 비인가 상태 변경 요청을 차단하는 기법.",
+        "<strong>출제 포인트:</strong> 추측 불가능한 토큰을 세션에 묶어 요청마다 검증하는 CSRF 방어 기법으로, SameSite 쿠키와 병행한다.",
+        "<strong>함정·암기:</strong> CSRF는 '인증된 사용자의 브라우저'를 이용한다. 토큰·Referer 검증·SameSite가 3대 대책이다."
       ]
     },
     {
@@ -4228,7 +4274,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] SSRF (Server-Side Request Forgery)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 웹 서버가 취약한 URL 요청 파라미터를 그대로 처리할 때, 공격자가 서버를 중계 삼아 접근 통제된 내부망 인트라넷이나 클라우드 메타데이터 API를 호출하는 공격."
+        "<strong>핵심 정의:</strong> 웹 서버가 취약한 URL 요청 파라미터를 그대로 처리할 때, 공격자가 서버를 중계 삼아 접근 통제된 내부망 인트라넷이나 클라우드 메타데이터 API를 호출하는 공격.",
+        "<strong>출제 포인트:</strong> 서버가 사용자 입력 URL로 요청을 보내 내부망·클라우드 메타데이터(169.254.169.254)에 접근하는 취약점. 화이트리스트·아웃바운드 차단이 대응이다.",
+        "<strong>함정·암기:</strong> XXE와 결과가 비슷하지만 원인이 다르다. SSRF는 'URL 요청 기능' 자체를 악용한다."
       ]
     },
     {
@@ -4238,7 +4286,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] HttpOnly (쿠키 보안 플래그)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 브라우저 자바스크립트의 document.cookie 객체 접근을 원천 차단하여, XSS 공격이 발생하더라도 세션 하이재킹용 쿠키 탈취를 방지하는 설정."
+        "<strong>핵심 정의:</strong> 브라우저 자바스크립트의 document.cookie 객체 접근을 원천 차단하여, XSS 공격이 발생하더라도 세션 하이재킹용 쿠키 탈취를 방지하는 설정.",
+        "<strong>출제 포인트:</strong> document.cookie 접근을 차단해 XSS로 인한 세션 쿠키 탈취를 막는 플래그로, Secure·SameSite와 함께 출제된다.",
+        "<strong>함정·암기:</strong> XSS 실행 자체를 막지 못한다. '쿠키 탈취만 차단'이라는 범위를 정확히 기억한다."
       ]
     },
     {
@@ -4248,7 +4298,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] SameSite Cookie (쿠키 전송 범위 제어 속성)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> Strict(타 사이트 링크 시 쿠키 전송 완전 차단) 또는 Lax(안전한 GET 탐색만 허용)를 설정하여 서드파티 컨텍스트에서의 CSRF 공격을 방어하는 최신 표준."
+        "<strong>핵심 정의:</strong> Strict(타 사이트 링크 시 쿠키 전송 완전 차단) 또는 Lax(안전한 GET 탐색만 허용)를 설정하여 서드파티 컨텍스트에서의 CSRF 공격을 방어하는 최신 표준.",
+        "<strong>출제 포인트:</strong> Strict·Lax·None 3값으로 서드파티 컨텍스트의 쿠키 전송을 제어해 CSRF를 완화한다.",
+        "<strong>함정·암기:</strong> None 사용 시 Secure가 필수다. Strict는 외부 링크 진입 시 로그인이 풀리는 부작용이 있다."
       ]
     },
     {
@@ -4258,7 +4310,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] HSTS (HTTP Strict Transport Security)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 브라우저가 해당 도메인 접속 시 첫 연결부터 모든 통신을 오직 HTTPS로만 강제 연결하도록 지시하여 평문 다운그레이드(SSL Stripping)를 방어하는 헤더."
+        "<strong>핵심 정의:</strong> 브라우저가 해당 도메인 접속 시 첫 연결부터 모든 통신을 오직 HTTPS로만 강제 연결하도록 지시하여 평문 다운그레이드(SSL Stripping)를 방어하는 헤더.",
+        "<strong>출제 포인트:</strong> 첫 접속부터 HTTPS를 강제해 SSL Stripping·다운그레이드를 막는 헤더, max-age·includeSubDomains·preload 옵션이 출제된다.",
+        "<strong>함정·암기:</strong> 최초 평문 요청은 여전히 노출되므로 preload 목록 등록이 필요하다."
       ]
     },
     {
@@ -4268,7 +4322,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] CSP (Content Security Policy)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 웹 브라우저가 스크립트, 스타일, 이미지 등을 로드하고 실행할 수 있는 신뢰할 수 있는 출처 도메인을 화이트리스트로 지정하여 XSS 및 인젝션을 차단하는 헤더."
+        "<strong>핵심 정의:</strong> 웹 브라우저가 스크립트, 스타일, 이미지 등을 로드하고 실행할 수 있는 신뢰할 수 있는 출처 도메인을 화이트리스트로 지정하여 XSS 및 인젝션을 차단하는 헤더.",
+        "<strong>출제 포인트:</strong> script-src·default-src·frame-ancestors 등으로 로드 출처를 화이트리스트화해 XSS·클릭재킹을 완화하는 헤더다.",
+        "<strong>함정·암기:</strong> unsafe-inline 허용 시 XSS 방어 효과가 크게 떨어진다. '정책 위반 보고'는 report-uri로 수집한다."
       ]
     },
     {
@@ -4278,7 +4334,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] TDE (Transparent Data Encryption)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> DBMS 스토리지 파일 레벨에서 자동으로 실시간 암·복호화를 수행하여, 응용프로그램 수정 없이 백업 파일 유출 시 데이터 평문 유출을 방지하는 투명 암호화."
+        "<strong>핵심 정의:</strong> DBMS 스토리지 파일 레벨에서 자동으로 실시간 암·복호화를 수행하여, 응용프로그램 수정 없이 백업 파일 유출 시 데이터 평문 유출을 방지하는 투명 암호화.",
+        "<strong>출제 포인트:</strong> DB 파일 수준에서 자동 암·복호화해 애플리케이션 수정 없이 백업 유출을 막는 방식으로, API·Plug-in 방식과 비교 출제된다.",
+        "<strong>함정·암기:</strong> TDE는 '저장 데이터'만 보호하고 전송 구간·컬럼 단위 암호화는 별도다. 키 관리가 핵심 취약점이다."
       ]
     },
     {
@@ -4288,7 +4346,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Dual Signature (이중 서명 (SET 프로토콜))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 전자상거래에서 주문정보 해시와 결제정보 해시를 결합하여 한 번에 전자서명함으로써, 상점은 카드번호를 못 보고 카드사는 주문 품목을 알 수 없게 보장하는 기법."
+        "<strong>핵심 정의:</strong> 전자상거래에서 주문정보 해시와 결제정보 해시를 결합하여 한 번에 전자서명함으로써, 상점은 카드번호를 못 보고 카드사는 주문 품목을 알 수 없게 보장하는 기법.",
+        "<strong>출제 포인트:</strong> SET에서 OI·PI 해시를 결합해 한 번만 서명함으로써 상점은 카드정보를, 카드사는 주문내역을 볼 수 없게 하는 기법이다.",
+        "<strong>함정·암기:</strong> 목적이 '프라이버시 보호 + 부인방지'라는 점을 기억한다. 현재는 토큰화·3-D Secure가 대체한다."
       ]
     },
     {
@@ -4298,7 +4358,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Feistel vs SPN (블록 암호 구조)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> Feistel은 평문을 좌우 분할하여 스왑하며 암·복호화 구조가 동일(DES, SEED), SPN은 치환(S-Box)과 순열(P-Box)을 반복해 병렬 연산에 최적화(AES, ARIA)."
+        "<strong>핵심 정의:</strong> Feistel은 평문을 좌우 분할하여 스왑하며 암·복호화 구조가 동일(DES, SEED), SPN은 치환(S-Box)과 순열(P-Box)을 반복해 병렬 연산에 최적화(AES, ARIA).",
+        "<strong>출제 포인트:</strong> Feistel(DES·SEED, 좌우 분할·라운드 함수, 암복호 구조 동일)과 SPN(AES·ARIA, S-Box 치환·확산, 병렬성 우수)의 구조 비교가 출제된다.",
+        "<strong>함정·암기:</strong> Feistel은 복호화에 별도 역함수가 필요 없다는 장점이 있다."
       ]
     },
     {
@@ -4308,7 +4370,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] AES (Advanced Encryption Standard)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> Rijndael 알고리즘 기반 전 세계 표준 대칭키 블록 암호. 128비트 블록 크기, 128/192/256비트 키 길이를 지원하며 고속 하드웨어 연산 지원."
+        "<strong>핵심 정의:</strong> Rijndael 알고리즘 기반 전 세계 표준 대칭키 블록 암호. 128비트 블록 크기, 128/192/256비트 키 길이를 지원하며 고속 하드웨어 연산 지원.",
+        "<strong>출제 포인트:</strong> 128bit 블록, 128/192/256bit 키, 10/12/14라운드, SubBytes·ShiftRows·MixColumns·AddRoundKey 4단계가 출제된다.",
+        "<strong>함정·암기:</strong> AES는 '블록 암호'이며 운용모드(CBC·GCM)가 함께 지정되어야 실제 암호화가 완성된다."
       ]
     },
     {
@@ -4318,7 +4382,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] CTR Mode (카운터 운영 모드)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 1씩 증가하는 카운터 값을 블록 암호화한 뒤 평문과 XOR 연산하는 운영 모드로, 완벽한 병렬 처리가 가능하여 최신 고속 보안 통신에서 널리 활용."
+        "<strong>핵심 정의:</strong> 1씩 증가하는 카운터 값을 블록 암호화한 뒤 평문과 XOR 연산하는 운영 모드로, 완벽한 병렬 처리가 가능하여 최신 고속 보안 통신에서 널리 활용.",
+        "<strong>출제 포인트:</strong> 카운터를 암호화해 키스트림을 만들고 XOR하는 모드로, 병렬 처리·랜덤 액세스가 가능하지만 nonce 재사용 시 치명적이다.",
+        "<strong>함정·암기:</strong> 같은 키·같은 nonce로 두 번 암호화하면 두 평문의 XOR이 노출된다."
       ]
     },
     {
@@ -4328,7 +4394,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] RSA (소인수분해 기반 공개키 암호)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 거대한 두 소수의 곱을 구하기는 쉬우나 합성수를 소인수분해하기는 극도로 어렵다는 수학적 난해성을 활용한 공개키 암호 및 전자서명 알고리즘."
+        "<strong>핵심 정의:</strong> 거대한 두 소수의 곱을 구하기는 쉬우나 합성수를 소인수분해하기는 극도로 어렵다는 수학적 난해성을 활용한 공개키 암호 및 전자서명 알고리즘.",
+        "<strong>출제 포인트:</strong> 소인수분해 기반, 키 길이 2048bit 이상 권고, 암호화·전자서명 모두 사용 가능하나 처리 속도가 느려 하이브리드로 운용한다.",
+        "<strong>함정·암기:</strong> RSA는 대칭키 암호화보다 1000배 이상 느리다. 그래서 전자봉투(하이브리드)를 쓴다."
       ]
     },
     {
@@ -4338,7 +4406,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] ECC (타원곡선 암호 (Elliptic Curve))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 타원곡선 상의 이산대수 난해성에 기반하여, 256비트의 매우 짧은 키 길이로 RSA 3,072비트와 동등한 안전성을 제공하는 모바일/경량 표준 공개키 암호."
+        "<strong>핵심 정의:</strong> 타원곡선 상의 이산대수 난해성에 기반하여, 256비트의 매우 짧은 키 길이로 RSA 3,072비트와 동등한 안전성을 제공하는 모바일/경량 표준 공개키 암호.",
+        "<strong>출제 포인트:</strong> 타원곡선 이산대수 기반으로 256bit가 RSA 3072bit와 동등한 안전성을 제공해 모바일·IoT·인증서에 적합하다.",
+        "<strong>함정·암기:</strong> 키 길이 대비 안전성이 높다는 점이 장점이며, 양자컴퓨터에는 RSA와 함께 취약하다."
       ]
     },
     {
@@ -4348,7 +4418,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Collision Resistance (충돌 저항성)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 단방향 해시 함수에서 H(x) = H(y)를 만족하는 임의의 서로 다른 두 입력값 쌍 (x, y)를 찾아내는 것이 계산상 불가능해야 한다는 안전성 특성."
+        "<strong>핵심 정의:</strong> 단방향 해시 함수에서 H(x) = H(y)를 만족하는 임의의 서로 다른 두 입력값 쌍 (x, y)를 찾아내는 것이 계산상 불가능해야 한다는 안전성 특성.",
+        "<strong>출제 포인트:</strong> 역상 저항성·제2역상 저항성·충돌 저항성 3대 특성의 정의를 구분하는 문제가 출제된다.",
+        "<strong>함정·암기:</strong> 충돌 저항성은 '서로 다른 두 입력'에서 같은 해시가 나오는 것을 찾기 어려워야 한다는 성질이다."
       ]
     },
     {
@@ -4358,7 +4430,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] OCSP (Online Certificate Status Protocol)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 인증서 폐지 목록(CRL) 파일 전체를 다운로드하지 않고, 단일 인증서의 시리얼 번호로 폐지 여부(Good/Revoked/Unknown)를 실시간 온라인 조회하는 프로토콜."
+        "<strong>핵심 정의:</strong> 인증서 폐지 목록(CRL) 파일 전체를 다운로드하지 않고, 단일 인증서의 시리얼 번호로 폐지 여부(Good/Revoked/Unknown)를 실시간 온라인 조회하는 프로토콜.",
+        "<strong>출제 포인트:</strong> 인증서 시리얼로 폐지 여부를 실시간 조회하는 프로토콜로, CRL(목록 전체 다운로드)과 비교 출제된다.",
+        "<strong>함정·암기:</strong> OCSP 응답은 서명 검증이 필요하며, 응답 지연·프라이버시 문제로 Stapling이 쓰인다."
       ]
     },
     {
@@ -4368,7 +4442,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Digital Envelope (전자봉투)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 대용량 본문은 빠른 대칭 세션키로 암호화하고, 그 세션키만을 수신자의 공개키로 암호화하여 함께 전달하는 안전하고 효율적인 하이브리드 암호 전달 기법."
+        "<strong>핵심 정의:</strong> 대용량 본문은 빠른 대칭 세션키로 암호화하고, 그 세션키만을 수신자의 공개키로 암호화하여 함께 전달하는 안전하고 효율적인 하이브리드 암호 전달 기법.",
+        "<strong>출제 포인트:</strong> 대칭키로 본문을 암호화하고 세션키를 수신자 공개키로 암호화하는 하이브리드 구조가 출제된다.",
+        "<strong>함정·암기:</strong> 기밀성은 확보하지만 송신자 인증·부인방지는 별도 전자서명이 필요하다."
       ]
     },
     {
@@ -4378,7 +4454,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] PBKDF2 / bcrypt (패스워드 전용 해시 함수)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 단방향 해시 시 솔트(Salt)를 추가하고 수만 번의 반복 연산(Key Stretching)을 강제하여 GPU 및 전용 하드웨어를 통한 고속 레인보우 테이블 무차별 대입을 무력화함."
+        "<strong>핵심 정의:</strong> 단방향 해시 시 솔트(Salt)를 추가하고 수만 번의 반복 연산(Key Stretching)을 강제하여 GPU 및 전용 하드웨어를 통한 고속 레인보우 테이블 무차별 대입을 무력화함.",
+        "<strong>출제 포인트:</strong> salt + 반복 연산(Key Stretching)으로 무차별 대입 비용을 높이는 패스워드 저장 기법, bcrypt·scrypt·Argon2 비교가 출제된다.",
+        "<strong>함정·암기:</strong> SHA-256 단독 해시는 속도가 빨라 크래킹에 유리하다. 전용 함수를 써야 한다."
       ]
     },
     {
@@ -4388,7 +4466,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] BLP Model (Bell-LaPadula (기밀성 모델))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> No Read Up(상위 등급 읽기 금지), No Write Down(하위 등급 쓰기 금지) 원칙을 통해 상위 기밀 데이터의 하위 등급 유출을 철저히 차단하는 군사 보안 모델."
+        "<strong>핵심 정의:</strong> No Read Up(상위 등급 읽기 금지), No Write Down(하위 등급 쓰기 금지) 원칙을 통해 상위 기밀 데이터의 하위 등급 유출을 철저히 차단하는 군사 보안 모델.",
+        "<strong>출제 포인트:</strong> No Read Up·No Write Down(★속성)으로 기밀성을 보장하는 모델, Biba와의 대칭 관계가 출제된다.",
+        "<strong>함정·암기:</strong> BLP=기밀성, Biba=무결성. 읽기·쓰기 방향을 반대로 외우면 둘 다 틀린다."
       ]
     },
     {
@@ -4398,7 +4478,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Biba Model (비바 무결성 모델)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> No Read Down(하위 무결성 읽기 금지), No Write Up(상위 무결성 쓰기 금지) 원칙을 적용하여 신뢰할 수 없는 오염된 데이터가 상위 시스템으로 유입되는 것을 방지."
+        "<strong>핵심 정의:</strong> No Read Down(하위 무결성 읽기 금지), No Write Up(상위 무결성 쓰기 금지) 원칙을 적용하여 신뢰할 수 없는 오염된 데이터가 상위 시스템으로 유입되는 것을 방지.",
+        "<strong>출제 포인트:</strong> No Read Down·No Write Up으로 무결성을 보장하는 모델로, †속성이라고도 한다.",
+        "<strong>함정·암기:</strong> Biba는 '오염된 하위 데이터가 상위로 유입되는 것'을 막는다."
       ]
     },
     {
@@ -4408,7 +4490,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] Chinese Wall (만리장성 모델 (이해관계 상충 방지))",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 금융 및 컨설팅 기업에서 사용자의 이전 데이터 접근 이력에 따라 이해관계가 상충되는 경쟁사의 기밀 데이터 접근을 동적으로 차단하는 상업 보안 모델."
+        "<strong>핵심 정의:</strong> 금융 및 컨설팅 기업에서 사용자의 이전 데이터 접근 이력에 따라 이해관계가 상충되는 경쟁사의 기밀 데이터 접근을 동적으로 차단하는 상업 보안 모델.",
+        "<strong>출제 포인트:</strong> 이해관계 충돌 방지를 위해 이전 접근 이력에 따라 동적으로 접근을 차단하는 상업적 보안 모델이다.",
+        "<strong>함정·암기:</strong> 금융·컨설팅의 '경쟁사 정보 분리'가 대표 사례다. 정적 규칙이 아니라 이력 기반이다."
       ]
     },
     {
@@ -4418,7 +4502,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] ALE / SLE / ARO (정량적 위험분석 3대 공식)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> SLE(단일손실예상액) = 자산가치 × 노출계수, ALE(연간손실예상액) = SLE × ARO(연간발생빈도). 통제 대책 도입 타당성은 통제 전후 ALE 절감액으로 평가."
+        "<strong>핵심 정의:</strong> SLE(단일손실예상액) = 자산가치 × 노출계수, ALE(연간손실예상액) = SLE × ARO(연간발생빈도). 통제 대책 도입 타당성은 통제 전후 ALE 절감액으로 평가.",
+        "<strong>출제 포인트:</strong> SLE=자산가치×노출계수, ALE=SLE×ARO 공식 계산 문제가 출제된다. 대책 도입 판단은 ALE 절감액과 비용 비교다.",
+        "<strong>함정·암기:</strong> ALE는 '연간' 기준이다. ARO는 횟수(빈도), 노출계수(EF)는 손실 비율(%)이다."
       ]
     },
     {
@@ -4428,7 +4514,9 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] RTO vs RPO (재해복구 목표 지표)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> RTO(목표 복구 시간)는 재해 발생 후 업무가 정상 복구될 때까지 허용 가능한 최대 다운타임, RPO(목표 복구 시점)는 허용 가능한 최대 데이터 유실 시점."
+        "<strong>핵심 정의:</strong> RTO(목표 복구 시간)는 재해 발생 후 업무가 정상 복구될 때까지 허용 가능한 최대 다운타임, RPO(목표 복구 시점)는 허용 가능한 최대 데이터 유실 시점.",
+        "<strong>출제 포인트:</strong> RTO는 허용 다운타임, RPO는 허용 데이터 유실 시점, MTD는 최대 허용 중단 시간으로 구분하는 문제가 출제된다.",
+        "<strong>함정·암기:</strong> RTO는 '시간', RPO는 '시점(데이터)'이다. 숫자가 작을수록 비용이 급증한다."
       ]
     },
     {
@@ -4438,15 +4526,1022 @@ window.INFOSEC_WRITTEN_DATA = {
       "title": "[용어] 72시간 통지 의무 (개인정보 유출 신고 시한)",
       "badge": "필수 용어사전",
       "points": [
-        "<strong>핵심 정의:</strong> 개인정보 유출 사고 확인 시 정당한 사유가 없는 한 72시간 이내에 정보주체에게 통지하고, 1천 명 이상 유출 시 개인정보위 또는 KISA에 법적 필수 신고."
+        "<strong>핵심 정의:</strong> 개인정보 유출 사고 확인 시 정당한 사유가 없는 한 72시간 이내에 정보주체에게 통지하고, 1천 명 이상 유출 시 개인정보위 또는 KISA에 법적 필수 신고.",
+        "<strong>출제 포인트:</strong> 개인정보 유출 인지 후 72시간 이내 정보주체 통지, 1천 명 이상 유출 시 보호위·KISA 신고 의무가 출제된다.",
+        "<strong>함정·암기:</strong> 기산점은 '유출 인지 시점'이다. 통지와 신고의 대상·기한을 구분해 외운다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "윈도우 레지스트리 구조·로컬 보안 정책·계정 잠금 정책",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>레지스트리 5대 루트 키:</strong> HKLM(시스템 전역 정책), HKCU(현재 사용자 프로필), HKCR(파일 확장자 연결), HKU(모든 사용자), HKCC(하드웨어 임시 정보). 실체 파일은 <code>%SystemRoot%\\System32\\config</code>의 SAM·SECURITY·SOFTWARE·SYSTEM 하이브이며, 관리자도 실행 중에는 직접 편집할 수 없고 <code>regedit</code>의 하이브 로드 또는 <code>reg save</code>로만 추출된다.",
+        "<strong>악성코드가 즐겨 쓰는 자동실행 키:</strong> <code>HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run</code>, <code>RunOnce</code>, <code>Winlogon\\Userinit</code>, <code>Image File Execution Options</code>(디버거 하이재킹). 서비스 등록은 <code>HKLM\\SYSTEM\\CurrentControlSet\\Services</code>에서 이루어지므로 점검 대상 1순위.",
+        "<strong>계정 정책(secpol.msc → 보안 설정 → 계정 정책):</strong> 암호 최소 길이 8자 이상, 암호 복잡성 사용, 최대 사용 기간 90일(또는 60일), 최근 암호 기억 24개, 최소 사용 기간 1일. KISA 서버 취약점 점검 기준과 동일한 수치.",
+        "<strong>계정 잠금 정책:</strong> 잠금 임계값 5회 이하, 잠금 기간 30분 이상, 잠금 카운터 재설정 30분 이상. 임계값을 1~2회로 과도하게 낮추면 타인이 계정을 고의로 잠그는 <strong>계정 잠금 DoS</strong>에 노출되므로 5회 전후가 표준.",
+        "<strong>감사 정책(auditpol):</strong> 로그온 감사 성공 4624 / 실패 4625, 명시적 자격증명 4648(원격 실행 정황), 특수 권한 할당 4672, 계정 생성 4720·삭제 4726, 그룹 추가 4732, 감사 로그 삭제 1102. <code>auditpol /get /category:*</code>로 현재 설정 전수 확인, <code>secedit /export /cfg policy.inf</code>로 정책 백업.",
+        "<strong>위험 레지스트리 설정:</strong> 자동 로그온 <code>Winlogon\\DefaultPassword</code> 평문 저장, <code>AlwaysInstallElevated=1</code>(일반 사용자도 MSI 설치 시 SYSTEM 권한 → 권한 상승), 익명 SID 변환 허용 <code>RestrictAnonymous=0</code>, SMB 서명 미사용 <code>RequireSecuritySignature=0</code>.",
+        "<strong>권한 모델:</strong> 공유 권한(최대 Full Control)과 NTFS ACL(17개 세부 권한) 중 <strong>더 제한적인 쪽이 최종 적용</strong>. 상속 차단 후 <code>icacls</code>로 명시 ACE 부여, <code>Everyone</code>·<code>Users</code>의 쓰기 권한은 제거 원칙."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "리눅스 강제접근통제(SELinux·AppArmor)와 샌드박스 격리",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>DAC vs MAC:</strong> DAC(파일 소유자·권한 비트)는 root가 모든 통제를 우회할 수 있다는 한계가 있어, 커널이 정책으로 판단하는 MAC을 병행한다. root도 SELinux 정책을 위반하면 <strong>Permission denied</strong>가 발생한다.",
+        "<strong>SELinux 3모드:</strong> <code>enforcing</code>(위반 차단+로그), <code>permissive</code>(차단 없이 로그만, 정책 개발용), <code>disabled</code>(커널 기능 자체 미동작). 확인 <code>getenforce</code>, 임시 전환 <code>setenforce 0</code>, 영구 설정 <code>/etc/selinux/config</code>의 <code>SELINUX=</code>.",
+        "<strong>보안 컨텍스트 4요소:</strong> <code>user:role:type:level</code> (예: system_u:object_r:httpd_sys_content_t:s0). 실무에서 실제 판단 기준은 <strong>type</strong>이며, <code>ls -Z</code>로 확인, <code>chcon -t</code>로 임시 변경, <code>semanage fcontext -a -t</code> + <code>restorecon -Rv</code>로 영구 규칙 적용.",
+        "<strong>정책 유형:</strong> targeted(기본, 네트워크 데몬만 제한), minimum(최소), mls(군사용 다중등급). 부울 설정은 <code>getsebool -a</code>, <code>setsebool -P httpd_can_network_connect on</code>(-P는 재부팅 후 유지).",
+        "<strong>거부 로그 추적:</strong> <code>/var/log/audit/audit.log</code>의 AVC denied 메시지를 <code>ausearch -m avc -ts recent</code>, <code>sealert -a</code>로 분석. 웹 루트에 파일을 옮긴 뒤 403이 뜨는 전형적 원인이 컨텍스트 불일치다.",
+        "<strong>AppArmor:</strong> 경로 기반 프로파일(<code>/etc/apparmor.d/</code>)로 SELinux보다 문법이 단순. <code>aa-status</code>(적용 현황), <code>aa-enforce</code>/<code>aa-complain</code>(모드 전환), <code>aa-genprof</code>(프로파일 생성).",
+        "<strong>샌드박스 격리 기법:</strong> <code>chroot</code>(루트 디렉터리 변경, 단 root 권한 프로세스는 탈출 가능), namespace(pid·net·mnt·user 격리)+cgroup(자원 제한) 조합이 컨테이너의 기반, seccomp로 시스템 콜 화이트리스트 적용, <code>systemd</code>의 PrivateTmp·ProtectSystem 지시자.",
+        "<strong>마운트 옵션 강화:</strong> <code>/etc/fstab</code>에 <code>nosuid</code>(SetUID 무시), <code>noexec</code>(실행 차단), <code>nodev</code>(장치 파일 무시), <code>ro</code>. /tmp·/var/tmp·/home을 별도 파티션으로 분리하고 nosuid·noexec를 적용하는 것이 KISA 권고."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "악성코드 7대 유형·감염 경로·탐지 기법과 랜섬웨어 대응",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>바이러스 vs 웜:</strong> 바이러스는 숙주 파일·부트섹터·매크로에 기생해 사용자 실행 시 전파, 웜은 숙주 없이 스스로 네트워크를 통해 전파. 대표 웜: 슬래머(SQL Server 1434/UDP), 블래스터(RPC 135), 코드레드(IIS 80), 님다(다중 벡터).",
+        "<strong>트로이목마·백도어:</strong> 정상 프로그램으로 위장해 설치되며 원격 제어(백도어), 정보 유출, 추가 악성코드 다운로드 기능. 서버형(RAT)·클라이언트형·프락시형으로 분류.",
+        "<strong>랜섬웨어:</strong> 파일을 암호화한 뒤 복호화 대가를 요구. 워너크라이(2017, SMB 445/MS17-010 이터널블루)처럼 취약점으로 자체 전파하는 웜형, 최근에는 <strong>이중 갈취</strong>(암호화 + 탈취 데이터 공개 협박)와 서비스형(RaaS) 모델이 표준.",
+        "<strong>그 외 유형:</strong> 루트킷(커널 LKM·부트킷으로 프로세스·파일·포트 은닉), 스파이웨어·키로거, 애드웨어, 논리폭탄(특정 날짜·조건 트리거), 봇(좀비)·다운로더, 파일리스 악성코드(PowerShell·WMI·레지스트리 상주).",
+        "<strong>감염 경로:</strong> 악성 첨부·URL 메일(피싱), 웹 드라이브바이 다운로드, 공급망(정품 업데이트·오픈소스 패키지), P2P·불법 SW, USB 자동실행(autorun.inf), 원격접속 취약 계정(RDP 3389 무차별 대입).",
+        "<strong>탐지 3계열:</strong> 시그니처(알려진 해시·패턴, 오탐 낮고 신종 미탐), 휴리스틱·행위기반(API 호출·파일 암호화 대량 발생 등 행위 판단), 샌드박스(가상 환경 실행 관찰). EDR은 프로세스 계보·네트워크 연결·레지스트리 변경을 상시 수집해 탐지·차단·롤백을 수행.",
+        "<strong>랜섬웨어 대응:</strong> ① 네트워크 즉시 격리 ② 감염 단말 전원 유지(메모리 증거 보존) 및 이미지 백업 ③ <code>3-2-1 백업</code>(사본 3, 매체 2, 오프라인 1) 확인 후 복구 ④ 복구 전 백업 무결성·랜섬웨어 잔존 검사 ⑤ 복호화 도구 배포 여부 확인 후 신고(KISA 118).",
+        "<strong>사후 조치:</strong> 침입 경로(IOC) 분석 → 취약점 패치 → 계정·권한 재설정 → 재발방지 대책 문서화. 백업은 반드시 <strong>복구 모의훈련</strong>까지 수행해야 실효가 있다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "가상화·클라우드·컨테이너 보안과 책임분담모델",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>가상화 위협:</strong> 하이퍼바이저 취약점을 악용한 <strong>VM 이스케이프</strong>(게스트 → 호스트 권한 획득), VM 스프롤(방치된 가상머신), 스냅샷·템플릿 이미지에 남은 계정·키, 가상 스위치 트래픽 도청.",
+        "<strong>클라우드 책임분담모델:</strong> IaaS는 고객이 OS·미들웨어·애플리케이션·데이터까지, PaaS는 애플리케이션·데이터, SaaS는 데이터·계정·권한을 책임진다. 물리·네트워크·하이퍼바이저는 사업자 책임 — 경계를 오해하면 <strong>설정 오류</strong>가 곧 유출 사고가 된다.",
+        "<strong>대표 클라우드 사고 원인:</strong> 공용 스토리지(S3 버킷) 공개 설정, 과도한 IAM 권한(<code>*:*</code>), 액세스 키 하드코딩, 메타데이터 서비스(169.254.169.254) SSRF 악용, 보안그룹 0.0.0.0/0 허용, 로그 미수집.",
+        "<strong>컨테이너 격리:</strong> 리눅스 namespace(프로세스·네트워크·마운트·사용자) + cgroup(CPU·메모리)로 격리하며 VM보다 격리 강도가 약하다. root로 실행되는 컨테이너, <code>--privileged</code>, 호스트 디렉터리 마운트는 탈출 위험.",
+        "<strong>이미지·파이프라인 보안:</strong> 공식 이미지 사용 및 digest 고정, 취약 패키지 스캔(Trivy·Grype), 최소 베이스 이미지(distroless), 이미지 서명·검증, CI/CD 시크릿 분리, IaC 스캔(Terraform <code>tfsec</code>).",
+        "<strong>쿠버네티스 설정:</strong> RBAC 최소 권한(ClusterRole 광범위 부여 금지), NetworkPolicy로 네임스페이스 간 통신 차단, Secret은 etcd 암호화 및 외부 KMS 연동, <code>kubelet</code> 익명 인증 비활성, CIS Benchmark 점검.",
+        "<strong>점검 도구·기준:</strong> CSPM(설정 오류 상시 점검), CWPP(워크로드 보호), CIS Benchmark, CSA CCM. 국내는 클라우드 보안인증(CSAP)과 ISMS-P의 가상화·클라우드 기준을 함께 본다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "ARP 스푸핑·DNS 캐시 포이즈닝 등 스푸핑/스니핑 공격과 대응",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>ARP 동작 원리:</strong> 요청은 브로드캐스트, 응답은 유니캐스트이며 <strong>응답을 받지 않은 상태에서도 갱신</strong>(무상태)한다. 이 구조적 결함이 ARP 스푸핑의 근본 원인이다.",
+        "<strong>ARP 스푸핑:</strong> 게이트웨이 IP에 공격자 MAC을 매핑한 위조 ARP Reply를 지속 송신해 피해자 트래픽을 자신을 경유시킨다(MITM). 이후 스니핑·세션 하이재킹·SSL Stripping으로 확장된다.",
+        "<strong>탐지·대응:</strong> <code>arp -a</code>에서 동일 MAC이 서로 다른 IP에 매핑되는지 확인, <code>arpwatch</code>·XArp 경보, 정적 ARP 등록(<code>arp -s</code>), 스위치의 <strong>DAI(Dynamic ARP Inspection)</strong> + DHCP Snooping 신뢰 포트 설정, 포트 보안(sticky MAC), 중요 구간 암호화(IPSec·TLS).",
+        "<strong>DNS 캐시 포이즈닝:</strong> 재귀 질의의 TXID(16bit)와 소스 포트를 추측해 위조 응답을 먼저 주입, 캐시를 오염시켜 다수 사용자를 악성 사이트로 유도(Kaminsky 공격, 2008).",
+        "<strong>DNS 대응:</strong> DNSSEC(응답 서명·무결성 검증), 무작위 소스 포트·TXID, 0x20 인코딩(질의 이름 대소문자 무작위화), 응답률 제한(RRL), 외부·내부 DNS 분리, 재귀 질의 제한(<code>allow-recursion</code>), DNS over HTTPS/TLS.",
+        "<strong>DNS 악용 공격:</strong> DNS 터널링(iodine·dnscat2, TXT·NULL 레코드로 데이터 은닉), DNS 증폭·반사(ANY·DNSSEC 레코드, 53/UDP 스푸핑), Fast Flux·DGA(도메인 자동 생성으로 C&C 은닉), 타이포스쿼팅.",
+        "<strong>스니핑:</strong> NIC를 무차별(Promiscuous) 모드로 전환해 동일 세그먼트 패킷을 도청. 허브 환경에서는 즉시 가능하지만 스위치 환경에서는 <strong>MAC 플러딩이나 ARP 스푸핑이 선행</strong>되어야 한다. 대응은 스위치 포트 미러링 통제, 암호화 통신(SSH·TLS·IPSec), 스니핑 탐지 도구(ARPWatch·Snort 룰).",
+        "<strong>스푸핑 계열 정리:</strong> IP 스푸핑(반사·증폭 공격, TCP는 3-way 핸드셰이크 때문에 세션 탈취 불가), MAC 스푸핑, 이메일 스푸핑(SPF·DKIM·DMARC로 대응), 웹 스푸핑(클릭재킹)."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "라우팅 프로토콜 보안(BGP·OSPF)과 L2 스위치 보안",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>OSPF 기본:</strong> 링크상태 라우팅, Hello 패킷 224.0.0.5(DR/BDR은 224.0.0.6), Area 0이 백본이며 타 Area는 반드시 Area 0 경유. 관리거리 110, 프로토콜 번호 89.",
+        "<strong>OSPF 보안:</strong> <code>area 0 authentication message-digest</code>로 MD5/SHA 인증(평문 인증은 스니핑에 취약), <code>passive-interface</code>로 사용자 구간 광고 차단, 라우터 ID 고정, 인접 라우터에만 Update 허용, 필요 시 가상링크 최소화.",
+        "<strong>BGP 위협:</strong> TCP 179 기반, AS-PATH로 최적 경로를 판단하므로 <strong>위조 AS-PATH를 앞세운 경로 하이재킹</strong>, 상위 ISP로 사설 경로를 누출하는 route leak, 세션 재설정 유발 DoS가 대표적.",
+        "<strong>BGP 보안:</strong> RPKI(ROA로 발신 AS·prefix 검증) + ROV, prefix-list·filter-list, 최대 prefix 수 제한(<code>maximum-prefix</code>), TTL Security(GTSM, 255 고정), TCP MD5, <code>bgp dampening</code>으로 플래핑 억제.",
+        "<strong>L2 위협 1 — MAC 플러딩:</strong> 위조 출발 MAC을 대량 학습시켜 CAM 테이블을 포화시킨다. 스위치가 미지 목적지 패킷을 모든 포트로 <strong>플러딩(hub처럼 동작)</strong>해 스니핑이 가능해진다. 대응: <code>switchport port-security maximum 3</code>, <code>violation shutdown</code>.",
+        "<strong>L2 위협 2 — VLAN 호핑:</strong> 스위치 간 링크를 trunk로 협상시키는 Switch Spoofing(DTP), 이중 802.1Q 태그를 붙이는 Double Tagging으로 다른 VLAN에 접근. 대응: 미사용 포트 <code>switchport mode access</code>, <code>switchport nonegotiate</code>, native VLAN을 사용하지 않는 ID로 변경.",
+        "<strong>L2 위협 3 — STP 루트 하이재킹:</strong> 우선순위가 낮은(0) BPDU를 위조 송신해 자신을 루트 브리지로 선출시키고 전 트래픽을 경유시킨다. 대응: <code>spanning-tree bpduguard enable</code>(사용자 포트 BPDU 수신 시 차단), <code>root guard</code>(상위 포트의 우수 BPDU 차단).",
+        "<strong>기타 L2 통제:</strong> DHCP Snooping(위조 DHCP 서버 차단), IP Source Guard(출발지 IP·MAC 검증), ARP Inspection, 802.1X 포트 인증, NAC로 미등록 단말 격리."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "무선랜 인증 체계(802.1X·EAP·RADIUS)와 무선 침해 대응",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>무선 3대 구성요소:</strong> STA(단말) — AP(인증자/Authenticator) — <strong>RADIUS(인증서버, UDP 1812 인증/1813 과금)</strong>. 802.1X는 이 3자 구조로 포트 기반 인증을 수행하며, 인증 전에는 EAPOL 트래픽 외 차단(Controlled Port).",
+        "<strong>EAP 프로토콜 비교:</strong> EAP-MD5(단방향·해시만, 취약), LEAP(시스코 독자, MS-CHAPv2 사전공격에 취약), <strong>EAP-TLS(서버·클라이언트 상호 인증서, 가장 강력하나 인증서 배포 부담)</strong>, PEAP(서버 인증서로 TLS 터널을 만든 뒤 내부 MS-CHAPv2 인증), EAP-TTLS(터널 내 다양한 레거시 인증 허용).",
+        "<strong>WPA2 4-Way Handshake:</strong> PSK(또는 802.1X 결과)인 PMK로 ANonce·SNonce·MAC 주소를 섞어 PTK를 유도하고, 마지막에 GTK를 전달·MIC 검증. <strong>KRACK(2017)</strong>은 이 핸드셰이크의 키 재설치 취약점으로 패치가 필요하다.",
+        "<strong>WPA3:</strong> SAE(Dragonfly)로 오프라인 사전공격을 무력화하고, 개방형 망에서도 OWE로 암호화, 192bit Suite-B(Enterprise) 지원, 관리프레임 보호(802.11w) 기본 적용.",
+        "<strong>무선 침해 유형:</strong> War Driving(대역 스캔), Evil Twin(동일 SSID 위장 AP로 피싱), Rogue AP(내부에 무단 설치), <strong>Deauth Flood</strong>(관리프레임 위조로 연결 강제 종료 후 가짜 AP 유도), WPS PIN 무차별 대입, PMKID 캡처를 통한 오프라인 크래킹.",
+        "<strong>무선 대응:</strong> WPA3 또는 WPA2-AES(CCMP) 강제, TKIP·WEP 비활성, WPS OFF, RADIUS 기반 EAP-TLS/PEAP, <strong>WIPS</strong>로 비인가 AP·Deauth 공격 탐지, 802.11w 관리프레임 보호, SSID 은닉은 보안 대책이 아님(스캔으로 쉽게 노출).",
+        "<strong>게스트망 분리:</strong> 사내망과 VLAN·정책을 분리하고, 캡티브 포털은 인증 우회 취약점에 주의하며, IoT 구간은 별도 SSID·별도 VLAN으로 격리한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "app",
+      "category_name": "애플리케이션 보안",
+      "title": "XXE(XML 외부 엔티티) 공격 원리와 파서별 방어 설정",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>원리:</strong> XML 파서가 DOCTYPE 내부의 외부 엔티티(SYSTEM) 선언을 처리하는 기능을 악용한다. <code>&lt;!DOCTYPE foo [&lt;!ENTITY xxe SYSTEM \"file:///etc/passwd\"&gt;]&gt;&lt;foo&gt;&amp;xxe;&lt;/foo&gt;</code>처럼 선언 후 참조하면 응답에 파일 내용이 반영된다.",
+        "<strong>3대 영향:</strong> ① 로컬 파일 읽기(설정·키·계정 파일) ② <strong>SSRF</strong>(<code>http://169.254.169.254/</code> 클라우드 메타데이터 조회, 내부망 스캔) ③ Billion Laughs(엔티티 재귀 확장으로 메모리 고갈 → DoS).",
+        "<strong>블라인드 XXE(OOB):</strong> 응답에 결과가 보이지 않을 때 외부 DTD를 공격자 서버에 두고 <code>%</code> 파라미터 엔티티로 파일 내용을 아웃오브밴드 채널로 전송한다. <code>ftp</code>/<code>http</code> 스킴과 DNS 질의가 유출 경로로 쓰인다.",
+        "<strong>Java 방어:</strong> <code>DocumentBuilderFactory</code>에 <code>setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true)</code>, <code>external-general-entities</code>/<code>external-parameter-entities</code> false, <code>XMLConstants.FEATURE_SECURE_PROCESSING</code> true. JAXB·SOAP 라이브러리도 동일 설정 필요.",
+        "<strong>언어별 방어:</strong> PHP는 libxml2 2.9 이상에서 <code>libxml_disable_entity_loader(true)</code>(PHP 8부터 기본 비활성), .NET은 <code>XmlReaderSettings.DtdProcessing = Prohibit</code>·<code>XmlResolver = null</code>, Python은 <code>defusedxml</code> 또는 lxml <code>resolve_entities=False</code>.",
+        "<strong>근본 대책:</strong> XML 대신 JSON 사용, DTD·외부 스키마 참조 금지, XSD 기반 화이트리스트 검증, 파서 라이브러리 최신화. WAF는 인코딩·중첩 우회로 일부만 방어하므로 근본 대책이 아니다.",
+        "<strong>유사 취약점 비교:</strong> <strong>SSRF</strong>는 서버가 임의 URL로 요청하는 취약점(내부망·메타데이터 접근), <strong>SSTI</strong>는 템플릿 엔진에 사용자 입력이 코드로 삽입되는 취약점, <strong>XPath Injection</strong>은 XPath 질의 조작으로 인증 우회. 셋 다 '입력이 해석기로 전달되는 경계' 문제라는 공통점이 있다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "app",
+      "category_name": "애플리케이션 보안",
+      "title": "SQL Injection 고급 유형(Blind·Time-based·2차)과 DB별 우회·방어",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>Error-based:</strong> <code>' AND 1=1 --</code> 등으로 오류 메시지에 DB 정보를 노출. MySQL <code>extractvalue()</code>·<code>updatexml()</code>, MSSQL <code>convert(int, @@version)</code>로 버전·테이블명을 뽑는다.",
+        "<strong>Union-based:</strong> <code>ORDER BY n</code>으로 컬럼 수를 맞춘 뒤 <code>UNION SELECT null, username, password FROM users</code>로 데이터를 한 번에 추출. 컬럼 타입이 맞아야 출력된다.",
+        "<strong>Blind(Boolean):</strong> 응답 내용 대신 참/거짓 차이(정상 페이지 vs 빈 페이지)로 한 글자씩 추론. <code>SUBSTRING()</code>·<code>ASCII()</code>와 함께 사용.",
+        "<strong>Time-based Blind:</strong> MySQL <code>SLEEP(5)</code>, PostgreSQL <code>pg_sleep()</code>, MSSQL <code>WAITFOR DELAY '0:0:5'</code>, Oracle <code>dbms_lock.sleep()</code>. 응답 지연 여부로 판별하며 로그에 흔적이 적다.",
+        "<strong>2차(Stored) Injection:</strong> 게시글·프로필 등에 저장된 값이 이후 다른 기능(관리자 화면·통계 배치)에서 검증 없이 질의에 결합되어 실행. 입력 시점이 아니라 <strong>사용 시점</strong>에 터지므로 저장 단계 필터만으로는 막을 수 없다.",
+        "<strong>우회 기법:</strong> 공백 대신 <code>/**/</code>·<code>%09</code>·괄호, 대소문자 혼용(<code>UnIoN</code>), 인코딩(URL·유니코드·16진수), 주석으로 뒷부분 절단(<code>--</code>, <code>#</code>), <code>OR '1'='1' --</code>로 인증 우회.",
+        "<strong>피해 범위:</strong> 인증 우회, 개인정보 대량 유출, 파일 읽기·쓰기(<code>INTO OUTFILE</code>로 웹셸), MSSQL <code>xp_cmdshell</code>로 OS 명령 실행, 계정 권한 상승.",
+        "<strong>방어 5계층:</strong> ① <strong>PreparedStatement(바인딩 변수)</strong>로 코드와 데이터 분리 ② 최소 권한 DB 계정(애플리케이션 계정에 DROP·FILE 권한 금지) ③ 저장 프로시저·ORM 화이트리스트 ④ 오류 메시지 일반화 및 DB 버전 은닉 ⑤ WAF·입력 검증(길이·타입·허용 문자). 근본 대책은 언제나 ①이다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "app",
+      "category_name": "애플리케이션 보안",
+      "title": "취약점 진단 도구·모의해킹 5단계·CVSS 위험도 산정",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>모의해킹 5단계:</strong> ① 정보수집(Footprinting/OSINT — WHOIS, DNS, 구글 해킹, <code>theHarvester</code>) ② 스캐닝(<code>nmap</code>, <code>masscan</code>) ③ 취약점 분석(<code>Nessus</code>, <code>OpenVAS</code>, <code>Nikto</code>) ④ 익스플로잇(<code>Metasploit</code>, <code>sqlmap</code>, <code>Burp</code>) ⑤ 보고서 작성·검증.",
+        "<strong>Nmap 주요 옵션:</strong> <code>-sS</code>(SYN 스텔스, root 필요), <code>-sT</code>(TCP connect), <code>-sU</code>(UDP), <code>-sV</code>(버전 탐지), <code>-O</code>(OS 추정), <code>-p-</code>(전체 65535), <code>-Pn</code>(ICMP 무시), <code>-T4</code>(속도), <code>--script vuln</code>(NSE 취약점 스크립트), <code>-oX</code>(XML 출력).",
+        "<strong>스캔 응답 판별:</strong> SYN+ACK=열림, RST=닫힘, 무응답=필터링(방화벽 DROP). <code>-sF</code>/<code>-sN</code>/<code>-sX</code>는 닫힌 포트가 RST를 보내지 않는 RFC 793 동작을 이용한 스텔스 스캔이며, 윈도우 대상으로는 신뢰할 수 없다.",
+        "<strong>웹 진단 도구:</strong> Burp Suite·OWASP ZAP(프록시·리피터·스캐너), <code>sqlmap</code>(자동 SQLi), <code>Nikto</code>(서버 설정·구버전 점검), <code>dirb</code>/<code>gobuster</code>(디렉터리 탐색), <code>wfuzz</code>(파라미터 퍼징), <code>Searchsploit</code>(익스플로잇 DB 검색).",
+        "<strong>CVSS v3.1:</strong> 기본 점수 0.0~10.0, 8개 지표 — AV(공격 경로), AC(공격 복잡도), PR(필요 권한), UI(사용자 상호작용), S(범위 변경), C/I/A(기밀성·무결성·가용성 영향). 0.1~3.9 Low, 4.0~6.9 Medium, 7.0~8.9 High, 9.0~10.0 Critical. 시간·환경 지표로 조정.",
+        "<strong>식별자 체계:</strong> CVE(공개 취약점 고유 번호), CWE(취약점 유형 분류, 예: CWE-89 SQLi, CWE-79 XSS), CVSS(심각도 점수), KISA 취약점 점검 기준(리눅스 U-01~U-73, 윈도우 W-01~W-xx).",
+        "<strong>법적 전제:</strong> 정보통신망법 제48조(침해금지)에 따라 <strong>사전 서면 동의(진단 범위·기간·시간대)</strong> 없이 스캔·익스플로잇을 수행하면 불법이다. 운영 중 서비스는 부하·가용성 영향을 고려해 시간대를 합의한다.",
+        "<strong>보고서 구성:</strong> 개요·범위·방법론 → 요약(위험도 분포) → 취약점별 상세(항목·위험도·재현 절차·증적 캡처·영향) → 조치 권고(단기·중기·장기) → 재진단 결과. 위험도는 CVSS와 자산 중요도를 함께 반영한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "crypto",
+      "category_name": "암호학·정보보안 일반",
+      "title": "블록암호 인증 운영모드(ECB·CBC·CTR·GCM·CCM)와 패딩 오라클",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>ECB:</strong> 블록마다 독립 암호화. 동일 평문 블록이 동일 암호문이 되어 패턴이 노출(펭귄 이미지 사례). 병렬 처리 가능, IV 불필요하지만 <strong>실무 사용 금지</strong>.",
+        "<strong>CBC:</strong> 직전 암호문과 XOR 후 암호화. 암호화는 순차, 복호화는 병렬 가능. <strong>IV 재사용 금지</strong>, PKCS#7 패딩 필요. 비트 플리핑으로 앞 블록 평문을 변조할 수 있고, 패딩 검증 오류 메시지가 다르면 <strong>패딩 오라클 공격</strong>(POODLE·BEAST 계열)에 노출된다.",
+        "<strong>CFB/OFB:</strong> 블록 암호를 스트림 암호처럼 운용. CFB는 이전 암호문을 피드백(복호화 병렬 불가), OFB는 이전 출력을 피드백(오류 전파 없음, 동기화 필요).",
+        "<strong>CTR:</strong> <code>Nonce||Counter</code>를 암호화한 키스트림과 평문을 XOR. 완전 병렬·랜덤 액세스 가능, 패딩 불필요. <strong>같은 키에서 nonce가 재사용되면 키스트림이 재사용</strong>되어 두 평문의 XOR이 노출된다.",
+        "<strong>GCM:</strong> CTR 암호화 + GHASH 인증 태그를 결합한 <strong>AEAD</strong> 모드. 기밀성과 무결성을 동시 제공하며 96bit IV, 128bit 태그가 권장. IV(카운터) 재사용 시 인증키(H)가 복원되어 위조가 가능하므로 <strong>nonce 관리가 생명</strong>이다.",
+        "<strong>CCM:</strong> CTR + CBC-MAC 조합의 AEAD. 무선 802.11i(CCMP)에서 사용. GCM보다 구현이 단순하지만 병렬성은 낮다.",
+        "<strong>모드 선택 기준:</strong> 저장 데이터(디스크)는 XTS/CBC, 네트워크 전송은 GCM(AEAD), 하드웨어 제약 환경은 CCM. 인증 없는 CBC·CTR 단독 사용은 무결성 결여로 위험.",
+        "<strong>관련 공격:</strong> 패딩 오라클(CBC, 오류 응답 차이), 비트 플리핑(CBC·CTR), IV 재사용(CTR·GCM), sweet32(64bit 블록 암호 대량 트래픽 충돌)."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "crypto",
+      "category_name": "암호학·정보보안 일반",
+      "title": "Kerberos 인증 흐름·전자봉투·이중서명(SET) 구조 비교",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>Kerberos 개요:</strong> 대칭키 기반 티켓 인증 프로토콜, <strong>KDC(AS + TGS)</strong>, 포트 <strong>88/TCP·UDP</strong>. 사용자 비밀번호 해시를 마스터키로 사용하며 평문 비밀번호는 네트워크에 전송하지 않는다.",
+        "<strong>3단계 흐름:</strong> ① <code>AS-REQ/AS-REP</code> — 인증 후 <strong>TGT</strong>와 세션키 발급 ② <code>TGS-REQ/TGS-REP</code> — TGT로 접근할 서비스의 <strong>Service Ticket</strong> 발급 ③ <code>AP-REQ/AP-REP</code> — 서버에 티켓 제시, 상호 인증. 이후 티켓 갱신(<code>TGS-REQ</code>)으로 재인증 없이 사용.",
+        "<strong>취약점·공격:</strong> AS-REP Roasting(사전 인증 비활성 계정), <strong>Kerberoasting</strong>(SPN 계정 티켓을 오프라인 크래킹), Golden Ticket(krbtgt 해시로 무제한 위조), Silver Ticket(서비스 계정 해시), 시간 오차 5분 초과 시 인증 실패, KDC 단일 장애점.",
+        "<strong>대응:</strong> 사전 인증 강제, 서비스 계정 긴 랜덤 암호(25자 이상)·gMSA, krbtgt 주기 변경, AES 전용( RC4 비활성), 관리자 계정 티켓 수명 단축, NTP 시간 동기화, 이벤트 4768·4769 모니터링.",
+        "<strong>전자봉투:</strong> 대용량 문서는 속도가 빠른 <strong>대칭키(세션키)</strong>로 암호화하고, 그 세션키만 수신자의 <strong>공개키</strong>로 암호화해 함께 보낸다. 하이브리드 방식으로 기밀성과 성능을 동시에 확보하며, 세션키는 매 건 새로 생성한다.",
+        "<strong>이중서명(SET):</strong> 구매자는 OI(주문정보) 해시와 PI(지불정보) 해시를 결합해 한 번만 서명한다. 상점은 PI를 볼 수 없고 카드사는 OI를 볼 수 없어 <strong>프라이버시와 부인방지</strong>를 동시에 만족한다. 현재는 토큰화(PAN 대체)·3-D Secure가 실무 표준.",
+        "<strong>전자서명과의 구분:</strong> 전자서명은 무결성·인증·부인방지 3가지를 보장하지만 <strong>기밀성은 제공하지 않는다</strong>. 기밀성이 필요하면 서명 후 암호화(또는 전자봉투)를 별도로 적용해야 한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "law",
+      "category_name": "보안 관리·법규",
+      "title": "디지털 포렌식 증거 수집 절차·휘발성 순서·연계보관성",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>5대 원칙:</strong> ① 정당성(적법 절차·영장·동의) ② 재현성(동일 절차로 동일 결과) ③ 신속성(휘발성 데이터 선점) ④ <strong>연계보관성(Chain of Custody — 수집·이송·보관·분석·제출 각 단계의 취급자·일시·장소 기록)</strong> ⑤ 무결성(해시값으로 원본과 사본 동일성 증명).",
+        "<strong>휘발성 순서(RFC 3227):</strong> CPU 레지스터·캐시 → 라우팅 테이블·ARP 캐시·프로세스 목록 → <strong>RAM(메모리 덤프)</strong> → 임시 파일·스왑 → 디스크(비휘발성) → 원격 모니터링·로그 → 백업·아카이브. 위에서 아래로 갈수록 휘발성이 낮다.",
+        "<strong>절차:</strong> 사전 준비(영장·도구·인력) → 현장 보존(사진·출입통제) → 휘발성 증거 수집 → 디스크 이미징(<code>dd</code>·<code>dcfldd</code>·FTK Imager, <strong>Write Blocker</strong> 사용) → 증거 포장·이송 → 분석 → 보고서 → 법정 제출.",
+        "<strong>도구:</strong> EnCase·FTK(상용 종합), Autopsy·TSK(오픈소스), Volatility(메모리 분석), <code>dd</code>/<code>dcfldd</code>(이미징), <code>sha256sum</code>(무결성), Wireshark·tcpdump(네트워크 증거), <code>sleuthkit</code>(파일시스템).",
+        "<strong>무결성 검증:</strong> 수집 즉시 원본과 사본의 SHA-256 해시를 계산해 대조하고, 원본은 봉인 보관, 분석은 <strong>사본</strong>으로 수행. 해시가 다르면 증거 능력이 상실된다.",
+        "<strong>안티포렌식:</strong> 타임스탬프 조작(<code>touch -d</code>), 로그 삭제·와이핑(<code>shred</code>·<code>cipher /w</code>), 파일 슬랙·MFT 조작, 스테가노그래피, 암호화(랜섬웨어·볼륨 암호화), USB 흔적 삭제. 대응은 아티팩트 교차 검증(레지스트리·프리페치·이벤트로그·$MFT·저널).",
+        "<strong>윈도우 아티팩트:</strong> <code>NTUSER.DAT</code>·<code>UsrClass.dat</code>(사용자 행위), <code>Amcache</code>·<code>Prefetch</code>(실행 흔적), <code>$MFT</code>·<code>$UsnJrnl</code>(파일 생성·변경), 이벤트 로그(4624·4625·4688·7045), 브라우저 히스토리, <code>pagefile.sys</code>·<code>hiberfil.sys</code>.",
+        "<strong>법적 효력:</strong> 위법 수집 증거는 배제될 수 있고, 디지털 증거는 전문법칙의 예외(제313조) 요건을 충족해야 증거 능력이 인정된다. 그래서 연계보관성 기록이 곧 증거 능력이다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "law",
+      "category_name": "보안 관리·법규",
+      "title": "침해사고 대응 절차 7단계와 신고·공유 체계",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>7단계(국내 실무 기준):</strong> ① 사전 준비(대응 조직·연락망·도구·모의훈련) ② 징후 포착(IDS·SIEM 경보, 사용자 신고) ③ 정밀 분석(로그·패킷·악성코드 분석으로 공격 경로 규명) ④ 전파 및 보고(내부 보고 체계, 외부 신고) ⑤ 대응·억제(격리·차단·계정 잠금) ⑥ 복구(백업 복원·서비스 정상화) ⑦ 보안강화 및 사후 분석(원인 분석·재발방지).",
+        "<strong>NIST 800-61과 대응:</strong> 준비 → 탐지·분석 → 억제·근절·복구 → 사후 활동. 국내 7단계와 순서만 다를 뿐 <strong>증거 보존 → 격리 → 근절 → 복구 → 학습</strong>의 흐름은 동일하다.",
+        "<strong>억제 전략:</strong> 감염 단말 네트워크 차단(스위치 포트 shutdown·VLAN 격리), 방화벽·IPS 룰로 C&C IP·도메인 차단, 침해 계정 비활성·비밀번호 일괄 변경, 필요 시 서비스 일시 중단. 억제보다 <strong>증거 보존이 우선</strong>되는 경우(포렌식 대상)를 먼저 판단한다.",
+        "<strong>신고 시한:</strong> 개인정보 유출은 인지 후 <strong>72시간 이내</strong> 정보주체 통지(1천 명 이상 유출 시 개인정보보호위원회·KISA 신고), 정보통신서비스 침해사고는 <strong>24시간 이내</strong> KISA(118) 신고(망법 제48조의3), 전자금융사고는 금융회사가 금융감독원에 지체 없이 보고.",
+        "<strong>공유 체계:</strong> KISA KrCERT/CC(침해사고 접수·기술 지원), ISAC(업종별 정보공유분석센터 — 금융·통신·에너지), CERT(기업 내부 대응팀), 경찰청 사이버수사국(형사 사건), 과기정통부(정책).",
+        "<strong>대응 조직 역할:</strong> CISO(의사결정·대외 보고), 보안관제팀(24×7 모니터링), 사고대응팀(분석·복구), 법무·홍보(법적 검토·공지), 서비스 운영팀(복구 협조). 사전에 <strong>의사결정 권한과 연락망</strong>을 문서화해야 한다.",
+        "<strong>사후 활동:</strong> 타임라인 재구성, 근본원인분석(RCA), IOC 추출·공유, 취약점 패치·정책 개선, 재발방지 대책 이행 점검, 모의훈련(레드팀·테이블톱)으로 검증.",
+        "<strong>실무 함정:</strong> 증거 확보 없이 재부팅·재설치를 먼저 하면 원인 규명이 불가능해지고, 신고 시한을 넘기면 과태료·과징금 대상이 된다. 통지는 <strong>유출 인지 시점</strong>부터 기산한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "law",
+      "category_name": "보안 관리·법규",
+      "title": "정보통신망법 vs 전자서명법 vs 전자금융거래법 핵심 비교",
+      "badge": "내용별 핵심정리",
+      "points": [
+        "<strong>정보통신망법:</strong> 정보통신서비스 제공자의 안전성 확보조치(제45조), 침해사고 신고·통지(제48조의3), 이용자 정보 보호, 스팸规制. 2020년 데이터 3법 개정으로 개인정보 관련 조항 상당수가 <strong>개인정보보호법으로 이관</strong>되어 일반법은 개인정보보호법, 망법은 통신서비스 특례를 담당한다.",
+        "<strong>전자서명법:</strong> 2020년 12월 전부개정으로 <strong>공인전자서명·공인인증기관 제도 폐지</strong>. 전자서명은 법령이 정한 경우 또는 당사자 약정에 따라 효력이 인정되며, 인증기관은 자유롭게 사업 가능(평가·인정은 민간). 전자문서의 서면 효력은 전자문서법이 담당.",
+        "<strong>전자금융거래법:</strong> 전자금융거래의 안전성·신뢰성 확보. <strong>접근매체(비밀번호·OTP·인증서·생체정보)</strong>의 양도·대여·대출 금지, 전자금융사고 신고·이용자 통지 의무, 사고 책임 원칙 — 이용자의 고의·중과실이 없으면 금융회사·전자금융업자가 손실을 부담.",
+        "<strong>비교 축:</strong> ① 목적(망 이용 촉진·정보보호 / 전자서명 효력·인증 신뢰 / 금융거래 안전) ② 적용대상(정보통신서비스 제공자 / 서명·인증 사업자·이용자 / 금융회사·전자금융업자·이용자) ③ 핵심 의무(안전조치·신고 / 효력 요건·인증 / 접근매체 관리·사고 책임).",
+        "<strong>벌칙 비교:</strong> 망법상 침해사고 신고 태만은 과태료, 개인정보 유출·목적 외 이용은 개인정보보호법에 따라 <strong>5년 이하 징역 또는 5천만원 이하 벌금</strong> 및 전체 매출액의 3% 이하 과징금. 전금법상 접근매체 양도·대여는 <strong>3년 이하 징역 또는 2천만원 이하 벌금</strong>.",
+        "<strong>겸직·조직 규정:</strong> 망법상 일정 규모 이상 정보통신서비스 제공자는 정보보호 최고책임자(CISO)를 지정해야 하고, 자산 5조원 이상(또는 5천억원 이상 + ISMS 의무) 기업의 CISO는 CIO 등 타 업무 총괄 임원 겸직이 제한된다.",
+        "<strong>시험 포인트:</strong> 신고 시한(개인정보 72시간 / 침해사고 24시간), 접근매체 정의, 공인인증 폐지 시점(2020.12.10), 데이터 3법 이관(2020.8.5)을 연도와 함께 묶어 외운다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] chroot (루트 디렉터리 변경 (감옥))",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 프로세스가 인식하는 루트 디렉터리를 특정 경로로 변경하여 그 상위 디렉터리로의 접근을 차단하는 리눅스 격리 기법. FTP·DNS 등 서비스의 홈을 /var/ftp로 묶어 탈출 피해를 줄인다.",
+        "<strong>출제:</strong> chroot와 컨테이너(namespace)의 차이를 묻는다. chroot는 파일시스템 경로만 가두고 프로세스·네트워크·사용자 격리는 하지 않는다.",
+        "<strong>함정·암기:</strong> chroot 내부에서 root 권한을 얻으면 chroot()를 다시 호출해 탈출할 수 있으므로 완전한 보안 경계가 아니다. 권한 분리(비root 실행)가 병행되어야 한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] inetd / xinetd (슈퍼 데몬)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 여러 네트워크 서비스(telnet·ftp·pop3 등)를 상시 구동하지 않고 요청이 올 때만 해당 데몬을 대신 실행해 주는 슈퍼 서버. 설정은 /etc/inetd.conf, 확장판 xinetd는 /etc/xinetd.d/ 서비스별 파일을 사용한다.",
+        "<strong>출제:</strong> standalone 방식(데몬이 직접 대기, 응답 빠름·자원 상시 점유)과 슈퍼 데몬 방식(자원 절약·응답 지연)의 장단점 비교가 단골.",
+        "<strong>함정·암기:</strong> 불필요 서비스(echo·daytime·chargen)가 살아 있으면 증폭·DoS 경로가 된다. xinetd의 disable=yes, TCP Wrapper 연동을 함께 본다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] TCP Wrapper (tcpd) (호스트 접근 제어)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> /etc/hosts.allow와 /etc/hosts.deny로 서비스별 접속 허용·차단 호스트를 지정하는 접근통제 도구. sshd: 192.168.1.0/255.255.255.0 처럼 서비스:호스트 형식으로 기술한다.",
+        "<strong>출제:</strong> 두 파일에 동시에 매칭되면 allow가 우선한다는 점, ALL·LOCAL·EXCEPT 키워드 사용법, spawn으로 접속 로그를 남기는 설정이 출제된다.",
+        "<strong>함정·암기:</strong> 커널 수준 방화벽이 아니므로 우회 가능성이 있고, xinetd에 tcpd가 내장된 경우 별도 실행이 필요 없다. 순서는 allow → deny."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] SELinux (보안 강화 리눅스)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 미국 NSA가 개발해 커널에 내장한 강제접근통제(MAC) 구현. 모든 주체·객체에 보안 컨텍스트(사용자:역할:타입:등급)를 부여하고 정책 위반을 커널이 차단한다. 모드는 enforcing/permissive/disabled 3종.",
+        "<strong>출제:</strong> DAC(소유자 권한)와 MAC(정책)의 차이, getenforce·setenforce·/etc/selinux/config, ls -Z·chcon·restorecon, AVC denied 로그가 한 세트로 나온다.",
+        "<strong>함정·암기:</strong> root도 정책 위반 시 차단되며, 파일을 옮긴 뒤 웹 403 오류가 나면 대부분 컨텍스트 불일치다. permissive는 '차단하지 않고 기록만' 한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] auditd / auditctl (리눅스 감사)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 커널 감사 서브시스템으로, 파일 접근·시스템 콜·권한 변경을 정책에 따라 기록하는 데몬. auditctl -w /etc/passwd -p wa -k passwd_changes 처럼 감시 규칙을 등록하고 감사 로그는 /var/log/audit/audit.log에 남는다.",
+        "<strong>출제:</strong> -w(감시 경로), -p(권한 r/w/x/a), -k(검색 키), -a always,exit -S(시스템 콜) 옵션과 ausearch·aureport 조회 명령이 함께 출제된다.",
+        "<strong>함정·암기:</strong> 감사 규칙은 재부팅 시 사라지므로 /etc/audit/rules.d/에 영구 등록해야 하고, 로그 변조 방지를 위해 원격 전송과 무결성 보호를 병행한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] syslog / rsyslog (시스템 로그 전달)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 커널·데몬의 로그를 facility(로그 종류: kern·user·auth·authpriv·cron·daemon·local0~7)와 priority(emerg 0 ~ debug 7) 조합으로 분류해 파일·원격 서버로 전달하는 표준 로깅 체계.",
+        "<strong>출제:</strong> /etc/rsyslog.conf의 authpriv.* /var/log/secure 규칙 형식, 원격 전송 시 @(UDP 514)·@@(TCP 514) 구분, priority가 낮은 숫자가 더 심각하다는 점.",
+        "<strong>함정·암기:</strong> UDP는 유실·변조에 취약해 중요 로그는 TCP/TLS(rsyslog RELP)로 전송하고, 로그 서버를 별도 분리해야 공격자가 흔적을 지울 수 없다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] LKM 루트킷 (커널 모듈 악성코드)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> Loadable Kernel Module은 커널 기능을 동적으로 확장하는 기법으로, 악성 루트킷이 이 구조를 이용해 시스템 콜 테이블을 후킹하여 프로세스·파일·포트·모듈 목록을 은닉한다.",
+        "<strong>출제:</strong> lsmod·/proc/modules 확인, insmod·modprobe·rmmod 명령, 커널 모듈 서명 검증, 사용자 영역 루트킷과의 차이가 출제된다.",
+        "<strong>함정·암기:</strong> ps로 보이지 않는 프로세스도 /proc을 직접 대조하면 드러나며, 커널 감염 시에는 신뢰할 수 있는 부팅 매체로 재부팅해 검사해야 한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] 랜섬웨어 (Ransomware)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 파일·디스크를 암호화하고 복호화 대가를 요구하는 악성코드. 최근에는 탈취 데이터 공개를 함께 협박하는 이중 갈취와 서비스형(RaaS) 생태계가 표준이다. 대표 사례는 SMB 취약점으로 자체 전파한 워너크라이(2017).",
+        "<strong>출제:</strong> 감염 경로(RDP 무차별 대입·피싱 첨부·취약점), 대응 절차(격리→증거보존→백업 확인→복구→신고), 3-2-1 백업 원칙이 출제된다.",
+        "<strong>함정·암기:</strong> 결제·복호화 도구 신뢰는 금지이며, 백업이 있어도 복구 모의훈련을 하지 않으면 실제 복구에 실패한다. 감염 후 재부팅은 메모리 증거를 소멸시킨다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] Windows SAM / NTLM (계정 데이터베이스·해시)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> SAM(Security Account Manager)은 로컬 계정과 암호 해시를 저장하는 하이브(%SystemRoot%\\System32\\config\\SAM)로, 부팅 시 syskey(BootKey)로 암호화된다. NTLM은 도전-응답 방식 인증 프로토콜이며 NTLM 해시는 salt가 없어 빠르게 크래킹된다.",
+        "<strong>출제:</strong> SAM·SYSTEM 파일을 함께 덤프해야 복호화가 가능하다는 점, Pass-the-Hash(NTLM 해시 재사용 인증), mimikatz 도구, 이벤트 4624(성공)·4625(실패)가 출제된다.",
+        "<strong>함정·암기:</strong> LM 해시는 대소문자 구분이 없어 14자에서 분할 저장되고 즉시 크래킹된다. NTLMv1 차단·Kerberos 우선 정책이 대책이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] 계정 잠금 정책 (Account Lockout)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 일정 횟수 인증 실패 시 계정을 일정 시간 사용할 수 없게 만드는 정책. 임계값(Threshold), 잠금 기간(Duration), 카운터 재설정 시간(Reset) 3요소로 구성된다.",
+        "<strong>출제:</strong> KISA 권고치는 임계값 5회 이하·잠금 기간 30분 이상·재설정 30분 이상이며, 윈도우는 secpol.msc, 리눅스는 pam_faillock deny=5 unlock_time=1200으로 설정한다.",
+        "<strong>함정·암기:</strong> 임계값을 1~2회로 낮추면 타인이 고의로 계정을 잠그는 계정 잠금 DoS에 노출된다. 무차별 대입 방어와 가용성의 균형점이 5회다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] BitLocker / EFS (윈도우 암호화)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> BitLocker는 볼륨 전체를 암호화하는 전디스크 암호화(AES-XTS, TPM 1.2/2.0과 PIN·복구키 연동, 부팅 무결성 측정). EFS는 NTFS 파일 단위 암호화로 사용자 인증서·개인키 기반이며 사용자 프로필에 키가 묶인다.",
+        "<strong>출제:</strong> BitLocker(볼륨·부팅 전 인증·TPM)와 EFS(파일 단위·사용자 키)의 적용 범위 차이, 복구키 보관, BitLocker To Go(이동식)가 출제된다.",
+        "<strong>함정·암기:</strong> EFS는 파일을 다른 계정·다른 서버로 복사하면 복호화가 불가능해지고, BitLocker도 부팅 중에는 복호화된 상태이므로 실행 중 메모리 공격은 막지 못한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] 안전한 문자열 함수 (CWE-120 대응)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 경계 검사를 하지 않는 위험 함수를 길이를 지정하는 안전 함수로 교체하는 시큐어코딩 원칙. strcpy→strlcpy/strncpy, strcat→strlcat/strncat, gets→fgets, sprintf→snprintf, scanf→sscanf(길이 지정)로 대체한다.",
+        "<strong>출제:</strong> 버퍼 오버플로우(CWE-120) 취약 코드와 수정 코드를 짝지어 고르는 문제, NULL 종료 보장 필요성, 컴파일러 _FORTIFY_SOURCE·Stack Canary 병행이 출제된다.",
+        "<strong>함정·암기:</strong> strncpy는 NULL 종료를 보장하지 않아 buf[len-1]=0 처리가 필요하고, 길이 계산 오류(off-by-one)는 여전히 남는다. strlcpy는 BSD 계열에 한정된다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "system",
+      "category_name": "시스템 필수 용어",
+      "title": "[용어] 마운트 옵션 (noexec·nosuid·nodev)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> /etc/fstab의 파티션 옵션으로 파일시스템별 권한·실행 정책을 강제하는 설정. nosuid(SetUID 무시), noexec(실행 금지), nodev(장치 파일 무시), ro(읽기 전용)를 조합한다.",
+        "<strong>출제:</strong> /tmp·/var/tmp·/home에 nosuid·noexec를 적용하는 이유(공용 디렉터리를 통한 권한 상승·악성 실행 차단), KISA U-58·U-59 항목과 연결된다.",
+        "<strong>함정·암기:</strong> noexec를 걸어도 스크립트는 셸이 읽어 실행할 수 있어 완전 차단이 아니며, 운영 중인 응용프로그램이 /tmp에 실행 파일을 두면 장애가 발생할 수 있다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] ARP 스푸핑 (ARP Spoofing / Poisoning)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> ARP 응답을 위조해 피해자의 ARP 캐시에 공격자 MAC을 게이트웨이 IP로 등록시키는 공격. 이후 모든 트래픽을 공격자를 경유시켜 도청·변조(MITM)한다.",
+        "<strong>출제:</strong> ARP가 무상태(요청하지 않아도 응답을 수용)라는 구조적 결함, 탐지(arp -a의 중복 MAC·arpwatch), 대응(DAI+DHCP Snooping, 정적 ARP, 암호화)이 출제된다.",
+        "<strong>함정·암기:</strong> 스위치 환경에서 스니핑의 전제 조건이 되는 공격이다. SSL Stripping·세션 하이재킹과 연결해 서술형으로 자주 나온다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] DNS 캐시 포이즈닝 (DNS Cache Poisoning)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 재귀 질의 과정에서 TXID(16bit)와 출발지 포트를 추측해 위조 응답을 정상 응답보다 먼저 주입, DNS 캐시를 오염시켜 다수 사용자를 악성 사이트로 유도하는 공격(Kaminsky, 2008).",
+        "<strong>출제:</strong> 대응책으로 DNSSEC, 소스 포트·TXID 무작위화, 0x20 인코딩, 응답률 제한(RRL), 재귀 질의 제한이 묶여 출제된다.",
+        "<strong>함정·암기:</strong> DNSSEC는 서명 검증으로 무결성만 보장하며 기밀성은 제공하지 않는다. 사설 DNS와 공용 DNS의 신뢰 경계도 함께 확인한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] 스니핑 (Sniffing / 도청)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 네트워크를 흐르는 패킷을 수집·열람하는 행위. NIC를 무차별(Promiscuous) 모드로 전환하며, 허브 환경에서는 같은 세그먼트 전체가 보이고 스위치 환경에서는 MAC 플러딩·ARP 스푸핑이 선행되어야 한다.",
+        "<strong>출제:</strong> 수동적 스니핑과 능동적 스니핑의 구분, 탐지 도구(ARPWatch·Snort), 대응(암호화·포트 미러링 통제·스위치 포트 보안)이 출제된다.",
+        "<strong>함정·암기:</strong> 스니핑 자체는 흔적이 거의 남지 않아 사후 탐지가 어렵다. 그래서 암호화(SSH·TLS·IPSec)가 근본 대책이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] MAC 플러딩 (CAM Table Overflow)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 위조 출발지 MAC을 대량으로 송신해 스위치의 CAM(MAC 주소) 테이블을 포화시키는 공격. 테이블이 가득 차면 스위치가 미지 목적지 프레임을 모든 포트로 플러딩해 허브처럼 동작하므로 스니핑이 가능해진다.",
+        "<strong>출제:</strong> port-security maximum·violation(protect/restrict/shutdown) 설정, sticky MAC, 포트별 학습 수 제한이 대응책으로 출제된다.",
+        "<strong>함정·암기:</strong> 플러딩은 정상 동작(미지 유니캐스트)의 부작용이므로 테이블 크기를 늘리는 것만으로는 근본 대응이 되지 않는다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] VLAN 호핑 (VLAN Hopping)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 다른 VLAN으로 우회 접근하는 L2 공격. 스위치 간 링크를 trunk로 협상시키는 Switch Spoofing(DTP 악용)과, 태그를 두 번 붙여 native VLAN에서 벗어나는 Double Tagging(802.1Q) 방식이 있다.",
+        "<strong>출제:</strong> 대응으로 switchport mode access·nonegotiate, 미사용 포트 shutdown, native VLAN을 사용하지 않는 ID로 변경, 태그되지 않은 프레임 차단이 출제된다.",
+        "<strong>함정·암기:</strong> Double Tagging은 단방향(공격자→피해자)만 가능해 응답을 받을 수 없고, native VLAN이 모든 스위치에서 동일할 때 성립한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] BPDU 가드 / 루트 가드 (STP 보호)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> STP 루트 브리지 하이재킹(우선순위 0의 위조 BPDU로 루트 선출을 탈취)을 막는 기능. BPDU Guard는 사용자 포트에서 BPDU 수신 시 포트를 차단(err-disabled)하고, Root Guard는 상위 포트에서 우수 BPDU가 오면 차단한다.",
+        "<strong>출제:</strong> BPDU Guard(말단 포트 보호)와 Root Guard(경계 포트 보호)의 적용 위치 차이, Loop Guard·Storm Control과의 구분이 출제된다.",
+        "<strong>함정·암기:</strong> BPDU Guard는 스위치 간 연결 포트에 걸면 정상 토폴로지가 끊긴다. 어디에 거는지가 핵심이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] BGP 하이재킹 (BGP Hijacking)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> BGP는 AS-PATH로 경로를 선택하므로, 위조 AS-PATH나 더 구체적인 prefix(/24 등)를 광고해 타 기관의 트래픽을 가로채는 공격. 라우팅 테이블 오염으로 대규모 통신 장애·중간자 공격을 유발한다.",
+        "<strong>출제:</strong> 대응으로 RPKI(ROA 기반 발신 검증)·ROV, prefix-list, maximum-prefix, TTL Security(GTSM), TCP MD5가 출제된다. 포트는 179/TCP.",
+        "<strong>함정·암기:</strong> BGP에는 자체 인증이 없어 ISP 간 상호 신뢰에 의존한다. route leak(사설 경로 광고)도 같은 계열 사고다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] OSPF 인증 (OSPF Authentication)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> OSPF 라우터 간 Hello·LSA 교환의 신뢰성을 보장하기 위한 인증. 평문 인증과 MD5/SHA 메시지 다이제스트 인증이 있으며, 영역(Area) 단위로 활성화한다.",
+        "<strong>출제:</strong> 링크상태 라우팅·Area 0 백본·관리거리 110·프로토콜 89·224.0.0.5(DR/BDR 224.0.0.6)와 함께 passive-interface 설정이 출제된다.",
+        "<strong>함정·암기:</strong> 평문 인증은 스니핑으로 그대로 노출되므로 MD5 이상을 써야 하며, 인증 키가 다르면 인접(Adjacency)이 맺어지지 않아 라우팅이 끊긴다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] 802.1X (포트 기반 네트워크 접근제어)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 단말(Supplicant)·스위치/AP(Authenticator)·RADIUS(Authentication Server) 3자 구조로 인증 전에는 네트워크 접근을 차단하는 표준. 무선은 EAP, 유선은 EAPOL로 인증하며 RADIUS는 1812(인증)/1813(과금)을 쓴다.",
+        "<strong>출제:</strong> EAP-MD5(취약)·LEAP(취약)·EAP-TLS(상호 인증서)·PEAP(서버 인증서+TLS 터널)·EAP-TTLS의 비교, Controlled/Uncontrolled Port 개념이 출제된다.",
+        "<strong>함정·암기:</strong> PEAP는 서버 인증서 검증을 클라이언트가 생략하도록 설정하면 Evil Twin에 무력하다. 인증서 검증 강제가 핵심이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] WEP IV 취약점 (Wired Equivalent Privacy)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> WEP은 RC4에 24bit IV를 붙여 사용하는데, IV 공간이 작아 재사용이 빈번하고 RC4의 약한 키 스케줄과 결합되어 FMS 공격으로 수집 패킷 수만으로 키를 복원할 수 있다(실습 환경에서 수 분 내).",
+        "<strong>출제:</strong> WEP→WPA(TKIP+MIC)→WPA2(AES-CCMP)→WPA3(SAE) 세대별 알고리즘 비교가 단골이며, WEP은 사용 금지로 서술한다.",
+        "<strong>함정·암기:</strong> WEP의 IV는 암호화되지 않고 평문 전송되며, 키 길이를 늘려도 IV 재사용 문제는 해결되지 않는다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] NAC (Network Access Control)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 단말이 네트워크에 접속하기 전에 보안 정책 준수 여부(백신·패치·OS 버전·계정)를 검사해 허용·격리·차단을 결정하는 접근통제 체계. 802.1X·DHCP·에이전트 기반으로 구현한다.",
+        "<strong>출제:</strong> NAC의 3요소(정책 서버·인증/ Enforcement 지점·단말 에이전트), 사전/사후 검사, 격리 VLAN 운용이 출제된다.",
+        "<strong>함정·암기:</strong> 비인가 단말을 막는 것이지 내부자 행위를 막는 것이 아니며, 에이전트 없는 단말은 정책 적용이 제한된다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] 봇넷 / C&C (Botnet / Command & Control)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 악성코드에 감염된 다수 좀비 PC(봇)를 원격 명령 서버(C&C)로 통제하는 네트워크. DDoS·스팸·가상화폐 채굴·정보 탈취에 동원되며, Fast Flux와 DGA(도메인 자동 생성)로 추적을 회피한다.",
+        "<strong>출제:</strong> 중앙집중형(IRC·HTTP)과 분산형(P2P) C&C 구조, DGA·도메인 플럭싱, 싱크홀·테이크다운 대응이 출제된다.",
+        "<strong>함정·암기:</strong> C&C 도메인 차단만으로는 DGA에 무력하다. 주기적 비컨 트래픽 패턴 탐지가 병행되어야 한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] IP 스푸핑 (IP Spoofing)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 출발지 IP를 위조해 송신하는 공격. UDP·ICMP 기반 반사·증폭 공격(Smurf, DNS/NTP 증폭)에 쓰이며, TCP는 3-way 핸드셰이크 응답을 받을 수 없어 세션 탈취에는 제한적이다.",
+        "<strong>출제:</strong> 인그레스/이그레스 필터링(RFC 2827, uRPF), 증폭 공격의 반사율(DNS ANY·NTP monlist), TCP에서 스푸핑이 어려운 이유가 출제된다.",
+        "<strong>함정·암기:</strong> SYN 플러드에서 스푸핑을 쓰면 SYN Cookie로 방어하며, 스푸핑 자체를 막는 것은 네트워크 경계의 필터링이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "network",
+      "category_name": "네트워크 필수 용어",
+      "title": "[용어] 리버스 프록시 / WAF (Reverse Proxy / Web Application Firewall)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 리버스 프록시는 클라이언트 요청을 대신 받아 내부 서버로 전달하며 캐싱·부하분산·TLS 종단을 담당하고, WAF는 HTTP 요청·응답을 검사해 SQLi·XSS·업로드 공격을 차단한다.",
+        "<strong>출제:</strong> 포워드 프록시(내부→외부)와 리버스 프록시(외부→내부)의 방향 차이, WAF의 블랙리스트/화이트리스트 방식과 우회 한계가 출제된다.",
+        "<strong>함정·암기:</strong> WAF는 근본 대책이 아니며 시그니처 우회(인코딩·분할)가 가능하다. 시큐어코딩이 항상 우선이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] XXE (XML External Entity)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> XML 파서가 외부 엔티티(SYSTEM 선언)를 처리하는 기능을 악용해 로컬 파일을 읽거나(SSRF) 내부망을 탐색하고, 엔티티 재귀 확장으로 DoS(Billion Laughs)를 유발하는 취약점.",
+        "<strong>출제:</strong> PoC 구성(DOCTYPE+ENTITY 선언 후 &xxe; 참조), 블라인드 XXE(OOB), Java·PHP·.NET 파서별 방어 설정이 출제된다.",
+        "<strong>함정·암기:</strong> DTD 처리를 금지하면 대부분 해결되지만 일부 라이브러리는 기본값이 위험하다. JSON 사용이 가장 단순한 회피책이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] LDAP Injection (LDAP 삽입)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 사용자 입력이 LDAP 검색 필터에 그대로 결합되어 인증 우회나 디렉터리 정보 대량 조회를 유발하는 취약점. *(와일드카드), )(, |(OR) 같은 필터 메타 문자를 조작한다.",
+        "<strong>출제:</strong> 입력값에 대한 특수문자 이스케이프(\\2a, \\28, \\29, \\5c), 화이트리스트 검증, 최소 권한 바인드 계정이 대응책으로 출제된다.",
+        "<strong>함정·암기:</strong> SQLi와 문법이 다르다. LDAP 필터는 괄호 구조를 맞춰야 하므로 이스케이프 대상 문자를 정확히 외운다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] OS Command Injection (명령어 삽입)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 웹 애플리케이션이 사용자 입력을 셸 명령에 그대로 결합해 실행하는 취약점. 세미콜론(;), 파이프(|), 역따옴표, $() 등으로 추가 명령을 실행하며 시스템 권한을 획득한다.",
+        "<strong>출제:</strong> system()·exec()·Runtime.exec() 사용 금지, 허용 목록 기반 인자 검증, 최소 권한 실행, escapeshellarg 적용이 대응책으로 출제된다.",
+        "<strong>함정·암기:</strong> 입력값 필터링만으로는 우회가 쉬워 근본 대책이 되지 않는다. 셸을 거치지 않는 API 사용이 원칙이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] IDOR (Insecure Direct Object Reference)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 객체 식별자(게시물 번호·계좌번호·파일명)를 요청 파라미터로 받으면서 소유권·권한 검사를 하지 않아, 값을 바꾸면 타인의 자원에 접근할 수 있는 취약점. 접근통제 결함(BOLA)의 대표 유형.",
+        "<strong>출제:</strong> 수평적 권한 상승(같은 등급의 타 사용자 자원 접근)과 수직적 권한 상승(관리자 기능 접근)의 구분, 서버 측 권한 검증 필수 원칙이 출제된다.",
+        "<strong>함정·암기:</strong> 식별자를 추측 불가능한 값(UUID)으로 바꾸는 것은 완화일 뿐, 근본 대책은 매 요청마다 세션 사용자와 자원 소유자 일치 검증이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] 웹셸 (Web Shell)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 서버에 업로드된 스크립트(jsp·php·asp)로 원격에서 명령 실행·파일 업로드·DB 접근을 수행하는 백도어. 파일 업로드 취약점, 취약한 플러그인, 탈취된 관리자 계정을 통해 설치된다.",
+        "<strong>출제:</strong> 업로드 확장자·MIME·매직바이트 검증, 업로드 디렉터리 실행 권한 제거, 파일명 난수화, 웹쉘 탐지(문자열 패턴·행위)가 출제된다.",
+        "<strong>함정·암기:</strong> 확장자만 막으면 .phtml·이중 확장자·Content-Type 조작으로 우회된다. 서버 설정(실행 금지)이 확장자 검증보다 강력하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] 세션 고정 (Session Fixation)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 공격자가 미리 알고 있는 세션 ID를 피해자에게 사용하게 만든 뒤 그 ID로 로그인 상태를 탈취하는 공격. 서버가 로그인 후 세션 ID를 재발급하지 않을 때 성립한다.",
+        "<strong>출제:</strong> 로그인 성공 시 세션 ID 재발급(session_regenerate_id), 세션 쿠키 HttpOnly·Secure·SameSite, 세션 만료 시간 설정이 대응책으로 출제된다.",
+        "<strong>함정·암기:</strong> 세션 하이재킹은 세션 ID를 '훔치는' 공격이고, 고정은 '미리 심어두는' 공격이다. 원인이 다르다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] 세션 하이재킹 (Session Hijacking)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 세션 ID·쿠키를 탈취해 사용자로 위장하는 공격. XSS(document.cookie), 스니핑(평문 전송), 세션 고정, 추측 가능한 ID, 물리적 접근으로 이루어진다.",
+        "<strong>출제:</strong> 대응(HttpOnly·Secure·SameSite, HTTPS 전구간, 세션 ID 난수화·길이, IP·UA 바인딩, 재인증)이 출제된다.",
+        "<strong>함정·암기:</strong> HttpOnly는 XSS를 막지 못하고 쿠키 탈취만 막는다. XSS 대응과 별개로 봐야 한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] 패스워드 크래킹 (Password Cracking)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 사전 공격(단어 목록), 무차별 대입(Brute Force), 레인보우 테이블(사전 계산 해시), 패스워드 스프레이(소수 암호를 다수 계정에 시도), 크리덴셜 스터핑(유출 재사용)으로 암호를 알아내는 기법.",
+        "<strong>출제:</strong> Salt·Key Stretching(PBKDF2·bcrypt·Argon2)의 역할, 계정 잠금·지연·CAPTCHA·MFA 대응이 출제된다.",
+        "<strong>함정·암기:</strong> 해시 함수를 빠른 것으로 쓰는 것이 취약점이며, SHA-256 단독보다 bcrypt 같은 전용 함수가 안전하다. 스프레이는 잠금 정책을 우회한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] 화이트리스트 검증 (허용 목록 기반 입력 검증)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 허용된 문자·형식·길이·범위만 통과시키고 나머지를 거부하는 입력 검증 방식. 블랙리스트(금지 문자 차단)보다 우회 가능성이 현저히 낮다.",
+        "<strong>출제:</strong> 서버 측 검증 필수, 정규식·형변환·길이 제한, 컨텍스트별 인코딩(HTML·URL·JS·SQL)과 결합이 출제된다.",
+        "<strong>함정·암기:</strong> 클라이언트 측 검증은 우회 가능하므로 참고용일 뿐이며, 검증(Validation)과 인코딩(Encoding)은 서로 대체할 수 없다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] OWASP Top 10 (웹 취약점 10대 목록)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> OWASP가 3~4년 주기로 발표하는 웹 애플리케이션 최대 위험 목록. 2021년판은 A01 접근통제 실패, A02 암호화 실패, A03 인젝션, A04 안전하지 않은 설계, A05 보안 설정 오류, A06 취약·오래된 구성요소, A07 인증 실패, A08 무결성 실패, A09 로깅·모니터링 실패, A10 SSRF다.",
+        "<strong>출제:</strong> 2021년 개정에서 A01이 접근통제로 바뀌고 A04(안전하지 않은 설계)가 신설되었으며, XSS가 A03 인젝션으로 통합된 점이 출제된다.",
+        "<strong>함정·암기:</strong> 2017년판(A1 인젝션, A7 XSS 별도)과 섞어 외우지 않는다. SSRF가 A10으로 신설된 것도 개정 포인트다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] OAuth 2.0 / OIDC (위임 인가 프레임워크)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> OAuth 2.0은 사용자 자격증명을 넘기지 않고 제3자 앱에 제한된 권한(scope)을 위임하는 인가 프레임워크로 Access Token을 발급한다. OpenID Connect는 그 위에 ID Token(JWT)을 추가해 인증까지 제공한다.",
+        "<strong>출제:</strong> Authorization Code Grant(+PKCE), Implicit Grant 폐지 흐름, Client Credentials, Redirect URI 검증, state 파라미터(CSRF 방지)가 출제된다.",
+        "<strong>함정·암기:</strong> OAuth 2.0은 인증 프로토콜이 아니라 인가 프로토콜이다. '소셜 로그인'은 OIDC가 담당한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] JWT (JSON Web Token)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 헤더·페이로드·서명 3부분을 Base64URL로 인코딩한 토큰(header.payload.signature). 서명으로 무결성을 보장하지만 페이로드는 <strong>암호화되지 않아 누구나 디코딩</strong>할 수 있다.",
+        "<strong>출제:</strong> alg=none 우회, HS256/RS256 혼동 공격, exp·nbf·iss·aud 검증 누락, 즉시 폐기(블랙리스트) 어려움이 출제된다.",
+        "<strong>함정·암기:</strong> JWT에 개인정보·비밀을 담으면 안 되며, 로그아웃 즉시 무효화가 필요하면 서버 측 세션 저장소를 병행한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] API 보안 (REST/GraphQL 보안)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> API 고유의 위협으로 과도한 데이터 노출, 객체 단위 권한 검증 누락(BOLA), 속도·횟수 제한 부재, 키 노출, GraphQL 질의 깊이·복잡도 공격이 있다.",
+        "<strong>출제:</strong> Rate Limiting·쿼터, API 게이트웨이, 스키마 검증, OAuth scope 최소화, mTLS, 요청 서명이 대응책으로 출제된다.",
+        "<strong>함정·암기:</strong> 웹 화면에서 숨긴 필드도 API 응답에 포함되면 노출된다. 응답 필드 화이트리스트가 필요하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] X-Frame-Options (클릭재킹 방지 헤더)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 웹 페이지를 다른 사이트의 프레임(iframe) 안에 삽입할 수 있는지를 제어하는 응답 헤더. DENY(모두 금지), SAMEORIGIN(동일 출처만 허용), ALLOW-FROM(지정 출처) 값을 사용하며, 최신 표준은 CSP의 frame-ancestors 지시자다.",
+        "<strong>출제:</strong> 클릭재킹(투명 iframe으로 관리자 클릭 유도) 방어 수단으로 X-Frame-Options와 CSP frame-ancestors가 함께 출제된다.",
+        "<strong>함정·암기:</strong> DENY와 SAMEORIGIN을 혼동하면 오답이다. X-Frame-Options는 iframe 삽입만 막고 XSS나 CSRF 자체를 막지는 못한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "app",
+      "category_name": "애플리케이션 필수 용어",
+      "title": "[용어] 클라우드 책임분담모델 (Shared Responsibility)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 클라우드 사업자와 고객이 보안 책임을 나누는 모델. IaaS는 고객이 OS·미들웨어·앱·데이터, PaaS는 앱·데이터, SaaS는 데이터·계정·권한을 책임지고 물리·하이퍼바이저는 사업자가 담당한다.",
+        "<strong>출제:</strong> 서비스 모델별 책임 경계, 설정 오류(공개 버킷·과도한 IAM), CSPM·CWPP·CSAP 인증이 출제된다.",
+        "<strong>함정·암기:</strong> '클라우드는 사업자가 다 알아서 한다'는 오해가 대형 유출의 주원인이다. 대부분의 사고는 고객 영역 설정 오류다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] DES / 3DES (데이터 암호화 표준)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> DES는 64bit 블록·56bit 키의 Feistel 구조 대칭키 암호로 16라운드를 수행하며, 키 공간이 작아 전수조사에 취약(1999년 22시간). 3DES는 DES를 2~3회 적용(EDE)해 키 길이를 112·168bit로 늘린다.",
+        "<strong>출제:</strong> DES의 56bit 유효 키, 3DES의 EDE 순서(암호화-복호화-암호화), 블록 크기 64bit로 인한 sweet32 충돌 위험이 출제된다.",
+        "<strong>함정·암기:</strong> 3DES는 안전성은 확보되나 성능이 낮고 64bit 블록 한계로 신규 사용이 배제되어 AES로 대체되었다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] SEED / ARIA (국내 표준 블록암호)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> SEED는 1999년 국내 개발된 128bit 블록·128/256bit 키 Feistel 구조 암호로 전자상거래·공인인증에서 사용되었다. ARIA는 2004년 국가 공인 경량 암호로 128bit 블록, 128/192/256bit 키, SPN 구조(AES와 유사)다.",
+        "<strong>출제:</strong> SEED(Feistel)와 ARIA(SPN)의 구조 차이, AES·ARIA의 키 길이 조합, 국내 표준 알고리즘 사용 의무 분야가 출제된다.",
+        "<strong>함정·암기:</strong> SEED는 블록·키가 128/256bit 조합이지만 ARIA는 128/192/256까지 지원한다. LEA는 128bit 블록 경량 암호(모바일·IoT)다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] SHA-1 취약 (해시 함수 안전성)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> SHA-1은 160bit 출력의 해시 함수로 2005년 SHAttered 등 충돌 쌍이 실제 생성되어 충돌 저항성이 붕괴했다. SHA-2 계열(SHA-256/384/512)과 SHA-3(Keccak)로 대체해야 한다.",
+        "<strong>출제:</strong> 해시의 3대 안전성(역상·제2역상·충돌 저항성), MD5·SHA-1 사용 금지, 전자서명·무결성 검증에서의 사용 제한이 출제된다.",
+        "<strong>함정·암기:</strong> SHA-1은 충돌은 깨졌지만 역상 공격은 여전히 어렵다. '완전히 무의미'가 아니라 '충돌 저항성 상실'로 서술해야 정확하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] HMAC (해시 기반 메시지 인증)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 비밀키와 해시 함수를 결합해 메시지 무결성과 송신자 인증을 제공하는 MAC(메시지 인증 코드). HMAC = H((K⊕opad) || H((K⊕ipad) || M)) 구조로 길이 확장 공격을 방어한다.",
+        "<strong>출제:</strong> MAC(대칭키 기반, 부인방지 불가)과 전자서명(비대칭키, 부인방지 가능)의 차이, HMAC-SHA256 사용이 출제된다.",
+        "<strong>함정·암기:</strong> H(K||M) 같은 단순 결합은 길이 확장 공격에 취약하다. HMAC 구조를 쓰는 이유가 바로 이것이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] Diffie-Hellman (키 교환 알고리즘)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 이산대수 문제의 난해성을 이용해 안전하지 않은 채널에서 두 당사자가 동일한 대칭 세션키를 합의하는 키 교환 프로토콜. 키를 전송하지 않고 계산으로 도출한다.",
+        "<strong>출제:</strong> 중간자 공격(MITM)에 취약해 인증이 필요하다는 점, DH vs ECDH, PFS(순방향 비밀성) 제공, 로그 재사용 공격이 출제된다.",
+        "<strong>함정·암기:</strong> DH는 기밀성만 제공하고 상대 인증은 하지 않는다. 전자서명·인증서와 결합해야 MITM을 막을 수 있다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] PKI / CRL (공개키 기반구조)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 인증서 발급·관리·폐지의 신뢰 체계. CA가 인증서에 서명하고, RA가 신원 확인, 저장소가 인증서·CRL을 배포한다. CRL은 폐지 인증서 목록이며 OCSP는 실시간 온라인 조회다.",
+        "<strong>출제:</strong> 인증서 폐지 확인(CRL vs OCSP), 인증서 체인 검증, CA·RA·VA의 역할, 공인인증 폐지(2020) 이후 민간 인증 구조가 출제된다.",
+        "<strong>함정·암기:</strong> CRL은 배포 주기 사이의 공백이 있어 실시간성이 떨어지고, OCSP는 응답 지연과 프라이버시 이슈가 있다. OCSP Stapling이 절충안이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] 전자서명 (Digital Signature)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 송신자가 메시지의 해시값을 자신의 개인키로 암호화(서명)하고 수신자가 공개키로 검증하는 기법. 무결성·인증·부인방지 3가지를 보장한다.",
+        "<strong>출제:</strong> 서명 생성/검증 절차 순서, 기밀성은 제공하지 않는다는 점, RSA-PSS·ECDSA·KCDSA, 전자서명법상 효력이 출제된다.",
+        "<strong>함정·암기:</strong> '개인키로 암호화 = 서명'이라는 설명은 RSA에 한정된 표현이며, 실제로는 해시 후 서명한다. 기밀성은 별도 암호화가 필요하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] 키 생명주기 (Key Management)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 암호키의 생성→배포→저장→사용→갱신→폐기→파기까지 전 단계를 관리하는 체계. 키는 목적별로 분리(데이터 키·키 암호화 키·서명 키)하고 주기적으로 갱신한다.",
+        "<strong>출제:</strong> KEK/DEK 계층 구조, 키 에스크로(복구), HSM·KMS 보관, 키 분리·이중통제 원칙이 출제된다.",
+        "<strong>함정·암기:</strong> 키를 소스코드·설정파일에 하드코딩하면 암호화의 의미가 사라진다. 비밀 관리 전용 저장소(Vault·KMS)가 필요하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] 양자내성암호 (Post-Quantum Cryptography)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 양자컴퓨터의 쇼어 알고리즘(RSA·ECC 무력화)과 그로버 알고리즘(대칭키 안전성 절반 감소)에 대응하는 차세대 공개키 암호. 격자 기반·코드 기반·해시 기반·다변수 방식이 후보이며 NIST가 ML-KEM(Kyber)·ML-DSA(Dilithium) 등을 표준화했다.",
+        "<strong>출제:</strong> 쇼어/그로버 알고리즘의 영향 범위, 대칭키는 키 길이 2배(AES-256)로 대응, 하이브리드 전환(PQC+TLS)이 출제된다.",
+        "<strong>함정·암기:</strong> '양자컴퓨터가 나오면 모든 암호가 깨진다'는 오해다. 대칭키·해시는 키 길이 확장으로 대응 가능하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] RC4 / 스트림 암호 (Stream Cipher)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 평문을 비트·바이트 단위로 키스트림과 XOR하는 암호. RC4는 256바이트 상태 배열 기반으로 WEP·SSL 초기 버전에 쓰였으나 키 스트림 편향(처음 256바이트)으로 폐기되었다.",
+        "<strong>출제:</strong> 블록 암호(패딩·모드 필요)와 스트림 암호(패딩 불필요·실시간)의 비교, RC4·WEP 사용 금지, ChaCha20이 출제된다.",
+        "<strong>함정·암기:</strong> 스트림 암호는 같은 키스트림을 재사용하면 두 암호문의 XOR로 평문이 노출된다(nonce 재사용 금지)."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] CSPRNG (암호학적 안전 난수)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 예측 불가능성을 보장하는 난수 생성기. 세션 ID·salt·IV·토큰 생성에 사용하며 /dev/random·/dev/urandom, Java SecureRandom, Python secrets 모듈이 해당한다.",
+        "<strong>출제:</strong> 일반 난수(rand·Math.random, 선형 합동)는 시드 예측이 가능해 보안 용도로 부적합하다는 점이 출제된다.",
+        "<strong>함정·암기:</strong> IV·salt는 비밀이 아니지만 '예측 불가'해야 하며, 세션 ID가 짧거나 순차적이면 세션 예측 공격에 노출된다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "crypto",
+      "category_name": "암호학 필수 용어",
+      "title": "[용어] 스테가노그래피 (Steganography)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 이미지·음성·문서 등에 데이터를 육안으로 인지되지 않게 은닉하는 기법(LSB 삽입, 워터마크). 암호화(내용을 읽을 수 없게)와 달리 존재 자체를 숨긴다.",
+        "<strong>출제:</strong> 암호화와의 차이, 안티포렌식·악성코드 은닉 악용, 탐지(통계 분석·LSB 대조), 포렌식에서의 대응이 출제된다.",
+        "<strong>함정·암기:</strong> 스테가노그래피는 기밀성을 보장하지 않으므로 암호화와 병행하며, 원본 대조가 있으면 LSB 분석으로 드러난다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] 개인정보 영향평가 (PIA)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 개인정보 처리로 정보주체의 권리가 침해될 위험을 사전에 분석·개선하는 절차. 공공기관은 의무이며 민간은 자율이지만, 100만 명 이상 민감정보 처리 등 일정 요건에서 의무화된다.",
+        "<strong>출제:</strong> 영향평가와 사전협의(공공기관), 개인정보보호법 제33조, 평가 항목(처리 목적·범위·수집 출처·보유 기간·제3자 제공)이 출제된다.",
+        "<strong>함정·암기:</strong> 영향평가는 '사후 점검'이 아니라 '사전' 절차다. ISMS-P의 위험평가와도 구분한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] 가명정보 / 익명정보 (Pseudonymized / Anonymous)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 가명정보는 추가 정보 없이는 특정 개인을 알아볼 수 없도록 처리한 정보로 통계·연구·공익 기록 목적으로 동의 없이 활용 가능하며, 익명정보는 더 이상 개인을 알아볼 수 없어 개인정보보호법 적용 대상에서 제외된다.",
+        "<strong>출제:</strong> 가명처리 적정성 검토, 목적 외 제3자 제공 시 별도 심의, 결합 전문기관(가명정보 결합), 재식별 금지 의무가 출제된다.",
+        "<strong>함정·암기:</strong> 가명정보는 여전히 '개인정보'라서 안전조치 의무가 적용된다. 익명정보와 혼동하면 오답이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] 정보주체 권리 (Data Subject Rights)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 정보주체의 권리 5종: 개인정보 처리 현황 열람, 오류 정정·삭제, 처리 정지 요구, 동의 철회, 자동화 결정 거부. 요구 접수 후 <strong>10일 이내</strong> 조치·통지해야 한다.",
+        "<strong>출제:</strong> 열람 요구 방법(서면·전자적), 10일 이내 조치, 정정·삭제 요구 시 지체 없이 조치, 처리정지 시 즉시 중단이 출제된다.",
+        "<strong>함정·암기:</strong> 열람 제한 사유(법령상 금지·타인 권리 침해)가 있으며, 권리 행사는 대리인도 가능하고 수수료는 원칙적으로 실비 범위다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] CPO (개인정보보호책임자)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 개인정보 처리 업무를 총괄하는 책임자. 개인정보보호법상 일정 요건(민감정보·고유식별정보 5만 건 이상 처리 등)에서 지정 의무가 있고, 정당한 사유 없이 불이익 처우를 금지한다.",
+        "<strong>출제:</strong> CPO와 CISO의 역할 구분(CPO=개인정보, CISO=정보보호), 지정 기준, 겸직 가능 여부, 연 1회 이상 교육이 출제된다.",
+        "<strong>함정·암기:</strong> CPO는 임원급이 아니어도 지정 가능하지만 실질적 권한이 필요하고, 개인정보보호법과 망법의 지정 기준이 다르다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] CISO (정보보호 최고책임자)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 정보통신망법에 따라 정보보호 업무를 총괄하는 임원급 책임자. 자산 5조원 이상(또는 5천억원 이상 + ISMS 의무 대상) 기업은 CIO 등 타 업무 총괄 임원과의 겸직이 제한된다.",
+        "<strong>출제:</strong> CISO 지정 의무 대상, 겸직 금지 요건, 연 1회 이상 이사회 보고, ISMS-P 인증과의 연계가 출제된다.",
+        "<strong>함정·암기:</strong> CISO는 '임원'이어야 하며 실무 담당자 지정으로 갈음할 수 없다. 겸직 제한은 규모 요건에 따른다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] ISO/IEC 27001 (정보보호 경영시스템)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 정보보호 경영시스템(ISMS)의 국제 표준으로 PDCA(계획-실행-점검-개선) 사이클과 4개 장(조직 상황·리더십·계획·지원 및 운영·성과평가·개선) 구조를 갖는다. 부속서 A에 통제 항목(2022년판 93개)을 둔다.",
+        "<strong>출제:</strong> ISO 27001(인증 요구사항)과 27002(실행 지침)의 차이, 위험 기반 접근, ISMS-P와의 매핑이 출제된다.",
+        "<strong>함정·암기:</strong> ISO 27001은 국제 표준 인증, ISMS·ISMS-P는 국내 법정 인증이다. 인증 기관·근거 법령이 다르다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] 정보자산 분류 (자산 식별·등급화)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 정보자산을 식별해 기밀성·무결성·가용성(CIA) 관점의 중요도를 평가하고 등급(기밀·대외비·일반 등)을 부여해 차등 보호하는 절차. 자산대장·소유자 지정·주기적 재검토가 포함된다.",
+        "<strong>출제:</strong> 자산 분류 기준(3요소), 소유자·관리자·사용자 역할, ISMS-P 2.1·2.2 자산 관리 기준이 출제된다.",
+        "<strong>함정·암기:</strong> 분류는 문서 작성으로 끝나지 않고 접근권한·암호화·백업 정책에 반영되어야 하며, 방치된 자산(shadow IT)이 최대 사각지대다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] ISMS-P 102개 기준 (국내 인증 기준 체계)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> ISMS-P 인증기준은 1영역 관리체계 수립·운영 16개, 2영역 보호대책 요구사항 64개, 3영역 개인정보 처리단계별 요구사항 22개로 총 102개다. ISMS는 이 중 개인정보 관련 22개를 제외한 80개를 심사한다.",
+        "<strong>출제:</strong> 영역별 기준 개수(16·64·22 = 102), ISMS(80개)와 ISMS-P(102개)의 차이, 인증 유효기간 3년·사후심사 주기가 출제된다.",
+        "<strong>함정·암기:</strong> 개수와 영역 구분을 뒤섞는 오답이 많다. 1영역 16 / 2영역 64 / 3영역 22를 숫자로 고정해 외운다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "관리·법률 필수 용어",
+      "title": "[용어] 개인정보 국외이전 (Cross-border Transfer)",
+      "badge": "필수 용어사전",
+      "points": [
+        "<strong>핵심 정의:</strong> 개인정보를 국외로 이전하는 경우 정보주체 동의, 법률의 특별 규정, 계약 체결·이행, 인증 등 적법 근거가 필요하며, 이전받는 자·국가·일시·목적·항목·보유기간·거부 방법을 사전에 고지해야 한다.",
+        "<strong>출제:</strong> 2023년 개정으로 도입된 국외이전 조항(제28조의8), 동의 요건, 국외 재이전 제한, 보호조치(안전성 확보조치 수준)가 출제된다.",
+        "<strong>함정·암기:</strong> 클라우드·SaaS 사용도 국외이전에 해당할 수 있으며, 단순 위탁과 이전의 구분이 실무 함정이다."
       ]
     }
   ]
 };
 
 window.INFOSEC_PRACTICAL_DATA = {
-  "title": "2026 이기적 정보보안기사 (실기) 100제 & 단답형 족보·실무 가이드 50선",
-  "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 20선 + 단답형 족보 30선",
+  "title": "2026 이기적 정보보안기사 (실기) 100제 & 단답형 족보·실무 가이드 95선",
+  "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 35선 + 단답형 족보 60선",
   "questions": [
     {
       "id": "prac_r1_q1",
@@ -6492,13 +7587,269 @@ window.INFOSEC_PRACTICAL_DATA = {
       ]
     },
     {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "Snort 룰 헤더·옵션 총정리와 룰 작성 실전",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>룰 7필드 구조:</strong> <code>action proto src_ip src_port -&gt; dst_ip dst_port (options)</code>. 예: <code>alert tcp any any -&gt; 192.168.0.10 80 (msg:\"WEB SQLi\"; content:\"union select\"; nocase; sid:1000001; rev:1;)</code>",
+        "<strong>action 5종:</strong> <code>alert</code>(경보), <code>log</code>(기록), <code>pass</code>(무시), <code>drop</code>(차단, IPS 모드), <code>reject</code>(차단+거부 응답). 차단은 inline(af_packet/NFQ) 모드에서만 동작한다.",
+        "<strong>방향 연산자:</strong> <code>-&gt;</code>(단방향), <code>&lt;&gt;</code>(양방향). 변수는 <code>$HOME_NET</code>, <code>$EXTERNAL_NET</code>, <code>any</code>, <code>!192.168.0.0/16</code>(부정). 포트는 <code>[80,443]</code>, <code>1:1024</code> 범위 표기.",
+        "<strong>핵심 옵션:</strong> <code>msg</code>, <code>sid</code>(1000001~ 로컬, 1~999999 예약), <code>rev</code>, <code>content</code>(바이트 매칭), <code>nocase</code>, <code>depth</code>/<code>offset</code>(시작 구간 제한), <code>distance</code>/<code>within</code>(이전 매칭 기준 상대 위치), <code>pcre</code>(정규식), <code>flow:established,to_server</code>, <code>flags:S</code>, <code>threshold</code>/<code>detection_filter</code>(경보 빈도 제어).",
+        "<strong>룰 예시 — SQLi:</strong> <code>alert tcp $EXTERNAL_NET any -&gt; $HTTP_SERVERS $HTTP_PORTS (msg:\"SQL Injection attempt\"; flow:to_server,established; content:\"union\"; nocase; content:\"select\"; nocase; distance:0; classtype:web-application-attack; sid:1000010; rev:2;)</code>",
+        "<strong>룰 예시 — SYN 플러드:</strong> <code>alert tcp $EXTERNAL_NET any -&gt; $HOME_NET any (msg:\"SYN Flood\"; flags:S; threshold:type both, track by_dst, count 200, seconds 10; sid:1000020; rev:1;)</code>",
+        "<strong>성능·운영:</strong> content는 빠른 패턴을 앞에 두고 <code>fast_pattern</code>을 지정, 룰 수보다 <code>flow</code>·<code>ports</code> 제한으로 검사 범위를 줄인다. <code>snort -T -c /etc/snort/snort.conf</code>로 문법 검증, <code>-A console</code>로 실시간 경보 확인.",
+        "<strong>탐지 위치:</strong> 네트워크 IDS는 우회(단편화·인코딩)에 취약하므로 호스트 기반 로그와 상관분석이 필요하다. Snort 3는 <code>snort.lua</code> 설정으로 전환되었다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "iptables·nftables 체인·타겟·상태추적(stateful) 실전",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>테이블·체인:</strong> filter(INPUT·FORWARD·OUTPUT), nat(PREROUTING·POSTROUTING), mangle, raw. 규칙은 위에서 아래로 <strong>첫 매칭 시 종료</strong>되므로 순서가 곧 정책이다.",
+        "<strong>기본 정책:</strong> <code>iptables -P INPUT DROP</code>, <code>-P FORWARD DROP</code>, <code>-P OUTPUT ACCEPT</code>. 정책을 DROP으로 두고 허용 규칙만 추가하는 화이트리스트 방식이 원칙.",
+        "<strong>필수 허용 세트:</strong> <code>-A INPUT -i lo -j ACCEPT</code>, <code>-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</code>, <code>-A INPUT -p tcp --dport 22 -s 10.0.0.0/24 -j ACCEPT</code>, <code>-A INPUT -p icmp --icmp-type echo-request -j ACCEPT</code>.",
+        "<strong>타겟:</strong> ACCEPT(통과), DROP(응답 없이 폐기), REJECT(거부 응답 — <code>--reject-with tcp-reset</code>), LOG(기록 후 다음 규칙 계속), RETURN(상위 체인 복귀), SNAT/DNAT/MASQUERADE.",
+        "<strong>NAT 예:</strong> <code>iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE</code>(공유), <code>-A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.0.0.5:8080</code>(포트 포워딩). <code>net.ipv4.ip_forward=1</code> 필요.",
+        "<strong>상태 추적:</strong> <code>-m conntrack --ctstate NEW,ESTABLISHED,RELATED,INVALID</code>. INVALID는 DROP, ESTABLISHED·RELATED는 초반에 ACCEPT해 성능·가용성을 확보한다.",
+        "<strong>보호 기법:</strong> <code>-m limit --limit 10/min --limit-burst 20</code>(연결 폭주 제한), <code>-m recent</code>(반복 접속 차단), <code>-m geoip</code>, 포트 스캔 탐지(<code>--tcp-flags ALL NONE</code> DROP), <code>fail2ban</code> 연동.",
+        "<strong>nftables 전환:</strong> <code>nft add table inet filter</code>, <code>nft add chain inet filter input { type filter hook input priority 0 \\; policy drop \\; }</code>, <code>nft add rule inet filter input ct state established,related accept</code>. 규칙 저장은 <code>iptables-save</code>/<code>nft list ruleset</code>."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "app",
+      "category_name": "애플리케이션 보안",
+      "title": "Apache·Nginx·IIS 웹 로그 공격 패턴 판별법",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>Apache access 로그 형식:</strong> <code>%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"</code> — IP, 사용자, 시각, 요청라인, 상태코드, 바이트, 리퍼러, UA. 결합 로그(combined)가 기본.",
+        "<strong>SQLi 흔적:</strong> <code>union+select</code>, <code>%27</code>(작은따옴표), <code>or+1%3D1</code>, <code>information_schema</code>, <code>sleep(</code>, <code>benchmark(</code>가 URL 쿼리에 등장. 200 응답이 반복되면 Blind 추출 시도로 판단.",
+        "<strong>XSS·LFI 흔적:</strong> <code>&lt;script&gt;</code>, <code>%3Cscript%3E</code>, <code>onerror=</code>, <code>javascript:</code> / <code>../../../etc/passwd</code>, <code>..%2f..%2f</code>, <code>php://filter</code>, <code>/proc/self/environ</code>.",
+        "<strong>웹셸·스캔 흔적:</strong> <code>.php</code>·<code>.jsp</code> 업로드 후 <code>POST</code> 반복, <code>cmd=</code>, <code>eval(</code>, <code>base64_decode(</code>, 404를 대량 발생시키는 디렉터리 스캔(<code>/admin</code>, <code>/backup.zip</code>, <code>/.git</code>), Nikto·sqlmap UA(<code>sqlmap/1.x</code>, <code>Nikto</code>).",
+        "<strong>상태코드 판독:</strong> 200(성공·침해 의심), 302(리다이렉트·인증 우회 시도), 403(권한 차단 시도 반복), 404(스캔), 500(인젝션·파일 조작으로 인한 오류). <strong>동일 IP의 404 폭증 → 이후 200 등장</strong>은 성공한 공격의 전형적 신호.",
+        "<strong>Nginx 로그:</strong> <code>log_format main '$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" $request_time';</code> — 기본 access_log에는 <code>$request_body</code>가 없어 POST 본문은 별도 설정이 필요하다.",
+        "<strong>IIS 로그:</strong> <code>%date %time %s-ip %cs-method %cs-uri-stem %cs-uri-query %s-port %cs(User-Agent) %sc-status</code> 형식, 기본 경로 <code>%SystemRoot%\\System32\\LogFiles\\W3SVC1</code>, 필드는 사이트별로 선택 가능(cs-uri-query 활성화 여부 확인).",
+        "<strong>로그 분석 실무:</strong> <code>awk '{print $1}' access.log | sort | uniq -c | sort -rn | head</code>(상위 IP), 400·500만 추출, 시간대별 급증 확인, 에러 로그(<code>error.log</code>)와 대조, 침해 시 <strong>로그 보존(원본 해시)</strong>이 우선."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "app",
+      "category_name": "애플리케이션 보안",
+      "title": "Java·PHP·Python 시큐어코딩 취약 코드 vs 수정 코드",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>Java — SQL 삽입:</strong> 취약 <code>String q = \"SELECT * FROM users WHERE id='\" + id + \"'\"; stmt.executeQuery(q);</code> → 수정 <code>PreparedStatement ps = con.prepareStatement(\"SELECT * FROM users WHERE id=?\"); ps.setString(1, id);</code>",
+        "<strong>Java — XSS·경로 조작:</strong> 취약 <code>out.println(\"<div>\" + name + \"</div>\");</code> → 수정 <code>ESAPI.encoder().encodeForHTML(name)</code> 또는 JSTL <code>&lt;c:out&gt;</code>. 파일 경로는 <code>new File(base, filename).getCanonicalPath().startsWith(base)</code>로 검증.",
+        "<strong>Java — 역직렬화·XXE:</strong> <code>ObjectInputStream</code> 사용 금지(화이트리스트 <code>ObjectInputFilter</code>), <code>DocumentBuilderFactory</code>에 <code>disallow-doctype-decl=true</code> 설정, <code>Runtime.exec()</code> 대신 인자 분리 API 사용.",
+        "<strong>PHP — 명령·파일 삽입:</strong> 취약 <code>system(\"ping -c 1 \".$_GET['ip']);</code> → 수정 <code>escapeshellarg($ip)</code> 또는 <code>filter_var($ip, FILTER_VALIDATE_IP)</code> 후 <code>exec</code> 인자 배열 사용. 파일 포함은 취약 <code>include($_GET['page'].'.php')</code> → 화이트리스트 매핑 배열 사용.",
+        "<strong>PHP — 업로드·출력:</strong> <code>move_uploaded_file</code> 전 <code>finfo_file()</code>로 MIME 확인, 확장자 화이트리스트, 저장 파일명 난수화(<code>bin2hex(random_bytes(16))</code>), 출력 시 <code>htmlspecialchars($v, ENT_QUOTES, 'UTF-8')</code>.",
+        "<strong>Python — SQL·명령·역직렬화:</strong> 취약 <code>cursor.execute(\"SELECT * FROM t WHERE id='%s'\" % id)</code> → 수정 <code>cursor.execute(\"SELECT * FROM t WHERE id=%s\", (id,))</code>. 취약 <code>os.system(\"ping \" + host)</code> → <code>subprocess.run([\"ping\", \"-c\", \"1\", host], shell=False)</code>. <code>pickle.loads()</code>·<code>yaml.load()</code> 대신 <code>yaml.safe_load()</code>.",
+        "<strong>공통 원칙 7:</strong> ① 입력 검증(서버 측·화이트리스트) ② 출력 인코딩(컨텍스트별) ③ 인증·권한 검사(매 요청) ④ 에러 메시지 일반화 ⑤ 최소 권한 실행 ⑥ 안전한 기본값(보안 헤더·세션 플래그) ⑦ 의존성·라이브러리 최신화.",
+        "<strong>실기 서술 포인트:</strong> '취약 코드 → 공격 시나리오 → 수정 코드 → 재발방지'의 4단으로 쓰면 감점이 없다. 수정 코드에는 반드시 <strong>검증·인코딩·권한</strong> 중 무엇을 적용했는지 명시한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "리눅스 U-01~U-73 주요 취약점 점검 항목과 조치법",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>U-01 root 원격 접속 제한:</strong> <code>/etc/ssh/sshd_config</code>에 <code>PermitRootLogin no</code>, <code>/etc/pam.d/sshd</code> 또는 <code>/etc/securetty</code>로 tty 제한. 점검: <code>grep -i permitrootlogin /etc/ssh/sshd_config</code>.",
+        "<strong>U-02 비밀번호 복잡성:</strong> <code>/etc/pam.d/system-auth</code>에 <code>pam_pwquality.so minlen=8 dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 retry=3</code>, <code>pam_pwhistory.so remember=4</code>.",
+        "<strong>U-03 계정 잠금:</strong> <code>pam_faillock.so deny=5 unlock_time=1200</code>(또는 <code>pam_tally2 --deny=5</code>), <code>/etc/login.defs</code>의 <code>PASS_MAX_DAYS 90</code>. 점검: <code>grep -E 'deny|unlock_time' /etc/pam.d/*</code>.",
+        "<strong>U-04 패스워드 파일 보호:</strong> <code>/etc/shadow</code> 사용 여부(<code>passwd: files shadow</code>), <code>/etc/passwd</code> 두 번째 필드가 <code>x</code>인지 확인. 권한은 400·소유자 root.",
+        "<strong>U-05~U-08 계정·환경:</strong> 불필요 계정(adm·lp·uucp·nuucp) 셸 <code>/sbin/nologin</code>, UID 0 중복 계정 제거, <code>/etc/profile</code>의 <code>umask 022</code>, PATH에 <code>.</code>(현재 디렉터리) 미포함.",
+        "<strong>U-09~U-13 서비스·파일:</strong> <code>ls -l</code>로 <code>/etc/passwd</code>·<code>shadow</code>·<code>services</code>·<code>hosts</code> 권한 확인(644/600), SUID/SGID 파일 전수 검색(<code>find / -perm -4000 -o -perm -2000</code>), world-writable 파일(<code>-perm -2</code>) 점검.",
+        "<strong>U-14~U-20 서비스 관리:</strong> 불필요 RPC·NFS·FTP·telnet·SMTP 서비스 중지(<code>systemctl disable --now telnet.socket</code>), anonymous FTP 차단, <code>/etc/exports</code>에 <code>everyone</code>·<code>*</code> 미사용, DNS zone transfer 제한(<code>allow-transfer { none; }</code>).",
+        "<strong>U-21~U-30·U-40번대:</strong> <code>/etc/hosts.equiv</code>·<code>.rhosts</code> 제거, cron·at 권한(<code>at.allow</code>·<code>cron.allow</code>, <code>at.deny</code> 비움), NFS 접근통제, finger·r계열 서비스 중지, 각종 서비스 배너·버전 은닉(<code>ServerTokens Prod</code>)을 함께 점검한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "nmap 옵션별 패킷 응답 분석과 스캔 결과 해석",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>SYN 스텔스(<code>-sS</code>):</strong> SYN만 보내고 응답이 SYN+ACK면 열림, RST면 닫힘. 연결을 완성하지 않아 로그가 적게 남는다(root 권한 필요).",
+        "<strong>Connect 스캔(<code>-sT</code>):</strong> OS의 connect()를 사용해 3-way 핸드셰이크 완성 후 종료. 애플리케이션 로그에 남고 권한이 필요 없다.",
+        "<strong>FIN/NULL/XMAS(<code>-sF -sN -sX</code>):</strong> RFC 793의 '닫힌 포트는 RST 응답' 특성을 이용. 열린 포트는 무응답, 닫힌 포트는 RST. <strong>윈도우는 무관하게 RST를 보내 판별 불가</strong>.",
+        "<strong>UDP 스캔(<code>-sU</code>):</strong> 응답이 없으면 open|filtered, ICMP port unreachable(3/3)이 오면 closed. 느리고 신뢰도가 낮아 161(SNMP)·53(DNS)·123(NTP) 등 주요 포트만 검사한다.",
+        "<strong>탐지·지문:</strong> <code>-sV</code>(서비스 버전), <code>-O</code>(OS 추정, 열린 1·닫힌 1 포트 필요), <code>--script=banner,vuln</code>(NSE), <code>-A</code>(종합), <code>--traceroute</code>.",
+        "<strong>속도·은닉:</strong> <code>-T0~-T5</code>(높을수록 빠르고 흔적↑), <code>--max-retries 1</code>, <code>-D RND:10</code>(디코이), <code>--spoof-mac</code>, <code>-f</code>(단편화), <code>--data-length</code>. 방화벽 DROP 정책이면 <code>-Pn</code>으로 호스트 생존 판정을 생략.",
+        "<strong>결과 표기:</strong> <code>open</code>(응답 있음), <code>closed</code>(RST 수신), <code>filtered</code>(무응답·방화벽), <code>open|filtered</code>(구분 불가), <code>unfiltered</code>(도달하나 상태 미확정).",
+        "<strong>실무 해석:</strong> 22·3306·1521이 외부에 열려 있으면 즉각 취약 후보, 445·3389 노출은 랜섬웨어·RDP 공격의 전조다. 스캔 결과는 자산 대장과 대조해 미등록 서비스를 찾는 데 쓴다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "network",
+      "category_name": "네트워크 보안",
+      "title": "tcpdump·Wireshark 캡처 필터 문법과 패킷 분석",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>tcpdump 기본:</strong> <code>tcpdump -i eth0 -nn -s 0 -w cap.pcap</code>(-nn: 이름 해석 금지, -s 0: 전체 캡처, -w: 파일 저장), 읽기는 <code>-r cap.pcap</code>, 화면 확인은 <code>-A</code>(ASCII)·<code>-X</code>(HEX+ASCII).",
+        "<strong>BPF 필터:</strong> <code>host 10.0.0.5</code>, <code>src host</code>, <code>dst port 80</code>, <code>net 192.168.1.0/24</code>, <code>tcp and port 443</code>, <code>not port 22</code>, <code>tcp[13] &amp; 2 != 0</code>(SYN 플래그만), <code>icmp[icmptype] == 8</code>(echo request).",
+        "<strong>실전 예:</strong> <code>tcpdump -i any -nn 'tcp port 80 and host 10.0.0.5' -c 100</code>, SYN만 보기 <code>'tcp[tcpflags] &amp; tcp-syn != 0'</code>, DNS <code>udp port 53</code>, ARP <code>arp</code>.",
+        "<strong>Wireshark 디스플레이 필터:</strong> <code>ip.addr==10.0.0.5</code>, <code>tcp.port==80</code>, <code>http.request.method==\"POST\"</code>, <code>http.response.code==404</code>, <code>tcp.flags.syn==1 and tcp.flags.ack==0</code>, <code>dns.qry.name contains \"malicious\"</code>, <code>tls.handshake.type==1</code>(ClientHello).",
+        "<strong>유용 기능:</strong> Statistics → Conversations(통신량 상위 IP), Follow TCP Stream(세션 재조립), Expert Information(재전송·RST·체크섬 오류), <code>tcp.analysis.retransmission</code>, 파일 추출 File → Export Objects → HTTP.",
+        "<strong>공격 패턴 판독:</strong> 다수 IP의 SYN만 반복(플러드), 1:1로 같은 크기 요청 반복(Slowloris), 80 포트에 <code>union select</code> 문자열, 대량 DNS 질의(터널링), ARP 응답 폭주(스푸핑), ICMP 대형 패킷(터널링).",
+        "<strong>캡처 주의:</strong> 스위치 환경에서 전체 트래픽이 보이지 않으므로 SPAN(포트 미러링)·TAP을 사용하고, 증거용 캡처는 <code>sha256sum</code>으로 무결성을 기록하며 개인정보 포함 여부를 검토한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "law",
+      "category_name": "디지털 포렌식 & 법률",
+      "title": "위험도 산정과 정보보호 관리체계 서술형 답안 템플릿",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>정량적 산정:</strong> 자산가치(AV) × 노출계수(EF) = SLE, SLE × 연간발생빈도(ARO) = <strong>ALE</strong>. 대책 도입 판단은 <code>ALE(대책 전) - ALE(대책 후) &gt; 대책 비용</code>일 때 타당하다.",
+        "<strong>정성적 산정:</strong> 발생가능성(상·중·하) × 영향도(상·중·하) 매트릭스로 위험등급(심각·높음·보통·낮음)을 결정. 정량화가 어려운 신규 위협·규제 리스크에 적합하다.",
+        "<strong>위험 처리 4전략:</strong> 감소(통제 적용), 회피(서비스·기능 중단), 전가(보험·외주), 수용(잔여 위험 승인). 처리 결과는 <strong>잔여 위험</strong>으로 문서화하고 경영진 승인을 받는다.",
+        "<strong>서술형 기본 골격:</strong> ① 현황·문제 정의 ② 관련 기준·법령 근거(ISMS-P 2.x, 개인정보보호법 제29조 등) ③ 위험 분석(자산-위협-취약점) ④ 대책(예방·탐지·대응·복구) ⑤ 기대효과·이행 일정 ⑥ 검증 방법.",
+        "<strong>대책 서술 4분류:</strong> 예방(접근통제·암호화·교육), 탐지(IDS·SIEM·로그 점검), 대응(격리·차단·신고), 복구(백업·DR·대체 절차). 한 항목만 쓰면 감점, 네 층을 모두 제시해야 완성된다.",
+        "<strong>수치 근거 제시:</strong> 접속기록 1년(5만명 이상 2년), 비밀번호 3종 8자리/2종 10자리, 유출 통지 72시간, 침해사고 신고 24시간, 백업 복구 훈련 연 1회 — 숫자를 포함하면 논리적 완결성이 올라간다.",
+        "<strong>감점 회피:</strong> '철저히 관리한다' 같은 선언적 표현 대신 <strong>주체·주기·산출물</strong>을 명시한다(예: '보안담당자는 월 1회 접속기록을 점검하고 점검 결과를 CISO에 보고한다').",
+        "<strong>ISMS-P 심사 연계 답안:</strong> 기준 번호(예: 2.5.1 사용자 계정 관리)를 제시하고, 요구사항 → 확인 증적(정책서·로그·승인서) → 결함 판정 포인트 순으로 3단 서술하면 실기 서술형과 인증심사 실무 모두에 통한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "윈도우 서버 취약점 점검 항목(W 항목)과 조치",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>계정·암호:</strong> Administrator 이름 변경 및 사용 중지, Guest 비활성, 암호 최대 사용 기간 90일·복잡성 사용, <strong>계정 잠금 임계값 5회</strong>, 최근 암호 기억 24개. 확인: <code>net user</code>, <code>secpol.msc</code>.",
+        "<strong>서비스·포트:</strong> 불필요 서비스(Telnet·Simple TCP/IP·SNMP·FTP Publishing) 중지, <code>netstat -ano</code>로 LISTENING 포트 확인, 445·3389 외부 노출 차단, SMBv1 제거(<code>Disable-WindowsOptionalFeature -FeatureName SMB1Protocol</code>).",
+        "<strong>공유·권한:</strong> <code>net share</code>로 불필요 공유 제거(IPC$·C$는 기본), 공유 권한과 NTFS 권한 중 더 제한적인 값 적용, Everyone 쓰기 권한 제거, <code>icacls</code>로 상속 정리.",
+        "<strong>감사·로그:</strong> 로그온 성공·실패, 계정 관리, 정책 변경, 객체 액세스 감사 활성화, 보안 로그 크기 20MB 이상·덮어쓰기 정책, 원격 로그 전송(WEF)으로 변조 대비. 이벤트 4624·4625·4720·4672·1102.",
+        "<strong>레지스트리·정책:</strong> <code>AlwaysInstallElevated=0</code>, <code>RestrictAnonymous=1</code>, 자동 로그온 비활성, 화면 보호기 잠금(스크린세이버 암호), LM 해시 저장 차단(<code>NoLMHash=1</code>), <code>secedit /export</code>로 정책 백업.",
+        "<strong>패치·백신:</strong> 최신 보안 업데이트 적용(WSUS), 백신 실시간 감시·정의 업데이트, Windows Defender 방화벽 도메인·개인·공용 프로필 모두 활성, 불필요 기능(파워셸 v2·SMB1) 제거.",
+        "<strong>원격·웹:</strong> RDP NLA 강제·포트 변경(보안 효과 미미, 접근제어 병행), IIS 불필요 모듈·디렉터리 브라우징 제거, <code>Server</code> 헤더 은닉, FTP 대신 SFTP, 관리 콘솔 접근 IP 제한.",
+        "<strong>점검 절차:</strong> 자산·OS 버전 확인 → 계정·서비스·공유·레지스트리·감사 순으로 스크립트 점검(또는 CIS Benchmark 도구) → 항목별 양호/취약/수동 판정 → 취약 항목 조치 후 <strong>재점검 증적</strong> 확보."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "DBMS(MySQL·Oracle) 취약점 점검과 권한 관리",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>계정·권한 원칙:</strong> 애플리케이션 계정은 DML만, 관리 계정은 원격 접속 차단, <code>root</code>·<code>SYSTEM</code>·<code>SYS</code> 직접 사용 금지, 계정별 출발지 IP 제한(<code>'user'@'10.0.0.%'</code>).",
+        "<strong>MySQL 점검:</strong> <code>SELECT user, host, authentication_string FROM mysql.user;</code>로 빈 암호·% 호스트 계정 확인, <code>SHOW GRANTS FOR 'app'@'%';</code>로 과도 권한 확인, <code>FILE</code>·<code>SUPER</code>·<code>PROCESS</code> 권한 회수, <code>local_infile=OFF</code>.",
+        "<strong>MySQL 설정:</strong> <code>skip-grant-tables</code> 사용 금지, <code>bind-address=127.0.0.1</code> 또는 내부 IP, <code>--skip-symbolic-links</code>, 히스토리 파일 노출 방지, <code>general_log</code> 운영 중 상시 활성 금지(개인정보 포함).",
+        "<strong>Oracle 점검:</strong> <code>SELECT username, account_status FROM dba_users;</code>, 기본 계정(SCOTT·OUTLN·DBSNMP) 잠금·삭제, <code>dba_sys_privs</code>에서 <code>ANY</code> 권한 회수, <code>REMOTE_OS_AUTHENT=FALSE</code>, <code>O7_DICTIONARY_ACCESSIBILITY=FALSE</code>, <code>sec_case_sensitive_logon=TRUE</code>.",
+        "<strong>Oracle 프로파일:</strong> <code>FAILED_LOGIN_ATTEMPTS 5</code>, <code>PASSWORD_LIFE_TIME 90</code>, <code>PASSWORD_REUSE_MAX 4</code>, <code>PASSWORD_VERIFY_FUNCTION</code> 지정. TNS 리스너 원격 관리(<code>admin</code>) 사용 금지.",
+        "<strong>감사·로그:</strong> MySQL <code>audit_log</code> 플러그인, Oracle <code>AUDIT_TRAIL=DB,EXTENDED</code> 및 <code>DBMS_AUDIT_MGMT</code> 보관 주기, 접속 실패·DDL·권한 변경 감사, 로그 접근 권한 분리.",
+        "<strong>암호화:</strong> 저장 데이터(TDE·컬럼 암호화), 전송 구간(TLS 강제, MySQL <code>require_secure_transport=ON</code>), 백업 파일 암호화, 키 관리는 DB 외부(KMS·HSM).",
+        "<strong>SQLi 대비:</strong> 애플리케이션 계정에 메타데이터 조회 권한(<code>information_schema</code> 전체)을 주지 않고, 오류 메시지를 클라이언트에 노출하지 않으며, 웹 계정과 배치 계정을 분리한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "app",
+      "category_name": "애플리케이션 보안",
+      "title": "웹 취약점 진단 실무 — 점검 항목·도구·증적",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>진단 순서:</strong> 범위·계정 확보 → 사이트맵·엔드포인트 수집(크롤링) → 입력 지점 목록화(파라미터·헤더·쿠키·업로드) → 항목별 수동 점검 → 자동 스캔 교차 확인 → 증적 정리.",
+        "<strong>Burp Suite 활용:</strong> Proxy로 전 트래픽 기록 → Repeater에서 요청 1건씩 변조 → Intruder로 페이로드 자동 대입 → Scanner(Pro) 결과를 <strong>수동 재검증</strong>. <code>sqlmap -r req.txt --batch --dbs</code>는 사전 승인 범위에서만.",
+        "<strong>인증·세션 점검:</strong> 로그인 후 세션 ID 재발급 여부, 쿠키 HttpOnly·Secure·SameSite, 로그아웃 후 세션 무효화, 동시 로그인·세션 만료, 비밀번호 정책·잠금, 캡차·MFA.",
+        "<strong>접근통제 점검:</strong> URL 직접 접근(<code>/admin/main.do</code>), 파라미터 변조로 타 사용자 조회(IDOR), 관리자 기능 호출, HTTP 메서드(<code>PUT</code>·<code>DELETE</code>) 허용 여부, 디렉터리 리스팅.",
+        "<strong>인젝션·스크립트 점검:</strong> SQLi(에러·Union·Blind), XSS(반사·저장·DOM), XXE, SSRF(<code>url=http://169.254.169.254/</code>), 명령 삽입, 경로 조작(<code>../../etc/passwd</code>), 파일 업로드(웹셸).",
+        "<strong>설정·정보노출:</strong> 보안 헤더(HSTS·CSP·X-Frame-Options·X-Content-Type-Options), 서버 버전·스택트레이스 노출, 주석·백업파일(<code>.git</code>·<code>.env</code>·<code>web.config</code>), 에러 페이지, HTTPS 혼용 콘텐츠.",
+        "<strong>증적 정리:</strong> 요청·응답 원문(스크린샷 + HTTP 메시지), 재현 절차 5단계, 영향(개인정보 건수·권한), 위험도(CVSS), 조치 권고(파라미터 바인딩·인코딩·권한검사)를 세트로 남긴다.",
+        "<strong>주의사항:</strong> 운영 데이터 변조·대량 요청 금지, 테스트 데이터 사용, 발견 즉시 중요 취약점(인증 우회·개인정보 노출)은 담당자에게 <strong>구두 즉시 통보</strong>, 결과물은 암호화 보관."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "system",
+      "category_name": "시스템 보안",
+      "title": "리눅스 침해 흔적 추적 — 프로세스·크론·웹셸·계정",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>계정 흔적:</strong> <code>awk -F: '$3==0{print $1}' /etc/passwd</code>(UID 0 계정), 최근 생성 계정 <code>ls -lt /etc/passwd</code>, <code>/etc/shadow</code> 암호 없는 계정, <code>lastlog</code>·<code>last</code>로 비정상 로그인 시간대 확인.",
+        "<strong>프로세스·포트:</strong> <code>ps -ef --forest</code>, <code>ls -l /proc/[PID]/exe</code>(실행 경로), <code>/proc/[PID]/cwd</code>, 삭제된 파일 참조(<code>lsof +L1</code>), <code>ss -antp</code>·<code>netstat -antp</code>로 외부 연결, <code>/etc/services</code>에 없는 포트 리스닝.",
+        "<strong>자동 실행·지속성:</strong> <code>crontab -l</code>·<code>/etc/cron.*</code>·<code>/var/spool/cron</code>, <code>/etc/rc.local</code>, <code>systemctl list-unit-files --state=enabled</code>, <code>/etc/init.d</code>, 사용자 <code>.bashrc</code>·<code>.profile</code>, <code>/etc/ld.so.preload</code>(라이브러리 후킹).",
+        "<strong>웹셸 탐색:</strong> 웹 루트에서 최근 생성 파일(<code>find /var/www -mtime -7 -type f</code>), 의심 문자열(<code>grep -rEl 'eval\\(|base64_decode|system\\(|passthru' /var/www</code>), 업로드 디렉터리 실행 권한 확인.",
+        "<strong>바이너리·무결성:</strong> <code>rpm -Va</code>·<code>debsums</code>로 패키지 변조 확인, <code>find / -perm -4000 -type f</code>(SUID 증가), <code>lsattr</code>로 불변 속성, Tripwire·AIDE 기준선 대조, <code>sha256sum</code>으로 의심 파일 해시 확보.",
+        "<strong>로그 분석:</strong> <code>/var/log/secure</code>(SSH 인증·sudo), <code>messages</code>, <code>auth.log</code>, 웹 access/error 로그의 시간대별 급증, 실패 후 성공(4625→4624 유사 패턴), 계정 삭제·로그 초기화 흔적.",
+        "<strong>은닉 탐지:</strong> <code>ps</code>와 <code>/proc</code> 목록 대조, 커널 모듈(<code>lsmod</code>·<code>/proc/modules</code>) 이상 항목, 루트킷 검사(<code>rkhunter</code>·<code>chkrootkit</code>·<code>unhide</code>), <code>ss</code>와 <code>/proc/net/tcp</code> 교차 확인.",
+        "<strong>대응 순서:</strong> 라이브 응답(메모리·프로세스·연결) 기록 → 네트워크 격리 → 이미지 백업 → 계정·서비스 정리 → 재설치·복구 → 재발방지. <strong>재부팅·프로세스 종료 전에 증거를 남긴다.</strong>"
+      ]
+    },
+    {
+      "type": "content",
+      "category": "law",
+      "category_name": "디지털 포렌식 & 법률",
+      "title": "디스크·메모리 포렌식 실무(dd·FTK·Volatility)",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>이미징:</strong> <code>dcfldd if=/dev/sda of=/evidence/sda.dd hash=sha256 bs=512 conv=noerror,sync</code>, 쓰기 방지(Write Blocker) 필수, 원본은 봉인. <code>dd</code>는 <code>conv=noerror,sync</code>를 빠뜨리면 오류 구간에서 크기가 어긋난다.",
+        "<strong>무결성:</strong> 원본·사본 해시 동시 기록(<code>sha256sum</code>), 해시 목록을 증거와 함께 보관, 분석은 사본으로만 수행, 연계보관성 대장에 취급자·일시·장소를 기록한다.",
+        "<strong>메모리 수집:</strong> <code>LiME</code>(리눅스), <code>DumpIt</code>·<code>winpmem</code>·FTK Imager(윈도우). 메모리에는 프로세스·네트워크 연결·암호화 키·악성코드 평문이 남아 <strong>가장 먼저 수집</strong>해야 한다.",
+        "<strong>Volatility 실무:</strong> <code>volatility -f mem.raw imageinfo</code>(프로파일 확인) → <code>pslist</code>·<code>psscan</code>(프로세스) → <code>netscan</code>(연결) → <code>malfind</code>(주입 코드) → <code>dlllist</code>·<code>cmdline</code>·<code>hashdump</code>. Volatility 3는 <code>vol -f mem.raw windows.pslist</code> 형식.",
+        "<strong>파일시스템 분석:</strong> Autopsy·TSK(<code>fls</code>·<code>icat</code>)로 삭제 파일 복구, <code>$MFT</code>·<code>$UsnJrnl</code>으로 생성·변경 이력, 슬랙·미할당 영역, 타임라인(<code>mactime</code>)으로 사건 재구성.",
+        "<strong>아티팩트:</strong> 윈도우 Prefetch·Amcache·Shimcache(실행 흔적), 이벤트 로그(EVTX), 브라우저 히스토리·캐시, USB 흔적(레지스트리 USBSTOR), <code>pagefile.sys</code>·<code>hiberfil.sys</code>, 썸네일 캐시.",
+        "<strong>안티포렌식 대응:</strong> 타임스탬프 불일치(<code>stat</code>의 mtime vs ctime), 로그 공백, 대량 삭제 흔적, 암호화 볼륨, 스테가노그래피 의심 파일. 여러 아티팩트를 교차 검증해 위조를 판별한다.",
+        "<strong>보고서:</strong> 수집 대상·도구·절차, 해시값, 분석 결과(타임라인), 결론, 증거 목록을 기술하고 <strong>법정 제출 요건</strong>(원본성·연속성·재현성)을 충족해야 한다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "crypto",
+      "category_name": "암호학·인증 실무",
+      "title": "OpenSSL 실무 명령 — 키·CSR·인증서·TLS 점검",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>키 생성:</strong> <code>openssl genrsa -aes256 -out priv.key 2048</code>, EC는 <code>openssl ecparam -name prime256v1 -genkey -noout -out ec.key</code>. 개인키 권한은 600으로 제한한다.",
+        "<strong>CSR 생성·확인:</strong> <code>openssl req -new -key priv.key -out req.csr -subj \"/C=KR/O=Example/CN=example.com\"</code>, 내용 확인 <code>openssl req -in req.csr -noout -text</code>(SAN 항목 포함 여부 필수 확인).",
+        "<strong>자체서명·서명:</strong> <code>openssl req -x509 -new -key priv.key -days 365 -out cert.crt</code>, CA 서명 <code>openssl x509 -req -in req.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out cert.crt -days 365</code>.",
+        "<strong>인증서 확인:</strong> <code>openssl x509 -in cert.crt -noout -text</code>(Subject·Issuer·Validity·SAN·KeyUsage·BasicConstraints), 만료 확인 <code>openssl x509 -enddate -noout -in cert.crt</code>, 체인 검증 <code>openssl verify -CAfile ca.crt cert.crt</code>.",
+        "<strong>TLS 연결 점검:</strong> <code>openssl s_client -connect example.com:443 -servername example.com</code>, 프로토콜 제한 <code>-tls1_2</code>, 취약 프로토콜 확인(<code>-tls1</code>·<code>-ssl3</code> 응답 여부), 인증서 체인 표시 <code>-showcerts</code>, 세션 재사용·암호 스위트 확인.",
+        "<strong>암호 스위트·취약점:</strong> <code>openssl ciphers -v 'HIGH:!aNULL:!MD5'</code>, RC4·3DES·NULL·EXPORT 제거, TLS 1.0/1.1 비활성(2020년 이후 사실상 폐기), <code>nmap --script ssl-enum-ciphers -p 443 host</code>로 전수 점검.",
+        "<strong>해시·무결성:</strong> <code>openssl dgst -sha256 file</code>, <code>openssl passwd -6</code>(SHA-512 해시), <code>openssl rand -base64 32</code>(세션키·salt 생성), <code>openssl enc -aes-256-cbc -pbkdf2 -salt -in f -out f.enc</code>.",
+        "<strong>실무 함정:</strong> CN만 있고 SAN이 없으면 최신 브라우저가 거부하고, 개인키에 암호를 걸면 서비스 자동 시작 시 복호화 실패가 발생하며, 인증서 만료 자동 점검(30일 전 알림)이 운영 필수 항목이다."
+      ]
+    },
+    {
+      "type": "content",
+      "category": "law",
+      "category_name": "디지털 포렌식 & 법률",
+      "title": "침해사고 분석형 서술 답안 — 로그 타임라인과 공격 재구성",
+      "badge": "실기 단답·실무",
+      "points": [
+        "<strong>답안 구조:</strong> ① 사고 개요(일시·대상·영향) ② 침해 지표(IOC) ③ <strong>공격 단계별 타임라인</strong> ④ 공격자 행위·권한 ⑤ 유출 범위 ⑥ 대응·복구 ⑦ 재발방지. 타임라인은 반드시 '시각 — 근거 로그 — 해석' 3열로 정리한다.",
+        "<strong>공격 단계 매핑(MITRE ATT&CK):</strong> 정찰(스캔) → 초기 침투(취약점·피싱) → 실행·지속성(크론·서비스 등록) → 권한 상승(SUID·커널 취약점) → 자격증명 탈취 → 내부 확산 → 유출·파괴.",
+        "<strong>로그 대조:</strong> 방화벽(허용·차단 시각) → 웹 access/error(요청 라인·상태코드) → 인증 로그(4624·4625 / secure) → 프로세스·네트워크(EDR·NetFlow) → 파일 변경($MFT·audit). 시각은 <strong>KST로 통일</strong>하고 NTP 오차를 명시한다.",
+        "<strong>전형적 서술 예:</strong> '09:12 외부 IP가 /bbs/board.php에 union select 요청(200) → 09:15 업로드 경로에 shell.php 생성 → 09:16 shell.php로 POST 명령 3회 → 09:18 DB 계정으로 대량 조회(5만 건) → 09:22 외부 443으로 1.2GB 전송'.",
+        "<strong>영향 산정:</strong> 유출 항목·건수, 암호화 여부, 정보주체 범위, 서비스 중단 시간, 2차 피해 가능성. 개인정보라면 <strong>72시간 통지</strong>·1천 명 이상 신고 대상 여부를 함께 판단한다.",
+        "<strong>대응 서술:</strong> 즉시 조치(계정 잠금·차단·격리), 증거 보존, 복구(백업 시점 확인), 신고(KISA 118·개인정보위), 정보주체 통지, 재발방지(취약점 조치·WAF 룰·권한 최소화·모니터링 강화).",
+        "<strong>감점 회피:</strong> '해킹당했다'는 결론만 쓰면 0점에 가깝다. <strong>어떤 로그의 어떤 필드</strong>에서 무엇을 확인했는지 근거를 붙이고, 확인되지 않은 부분은 '추정'으로 명시해 단정하지 않는다.",
+        "<strong>마무리 문장:</strong> '침입 경로는 OO 취약점이며, 동일 취약점이 잔존하는 시스템 N대에 대해 조치 완료, 재점검 결과 양호'로 끝맺으면 실무형 답안의 완성도가 올라간다."
+      ]
+    },
+    {
       "type": "term",
       "category": "system",
       "category_name": "실기 단답형 용어 (시스템)",
       "title": "[실기 단답] find (-perm -4000)",
       "badge": "단답형 족보",
       "points": [
-        "SetUID가 설정된 실행 바이너리를 전수 검색하여 권한 상승 취약점을 탐지하는 리눅스 명령어."
+        "SetUID가 설정된 실행 바이너리를 전수 검색하여 권한 상승 취약점을 탐지하는 리눅스 명령어.",
+        "<strong>출제 형태:</strong> 실기 단답: 'SetUID 파일을 찾는 명령어' 또는 'SUID 취약 파일 전수조사' 문제로 나온다.",
+        "<strong>암기 팁:</strong> -perm -4000의 '-'를 빠트리면 4000과 정확히 일치하는 파일만 찾게 된다. 2>/dev/null로 권한 오류를 숨긴다."
       ]
     },
     {
@@ -6508,7 +7859,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] netstat (-antp)",
       "badge": "단답형 족보",
       "points": [
-        "활성 TCP/UDP 네트워크 소켓, 수신 포트, PID 및 프로세스명을 조회하는 핵심 포트 점검 명령어."
+        "활성 TCP/UDP 네트워크 소켓, 수신 포트, PID 및 프로세스명을 조회하는 핵심 포트 점검 명령어.",
+        "<strong>출제 형태:</strong> 실기 단답: '포트·프로세스 확인 명령' 또는 '비정상 리스닝 포트 찾기' 문제.",
+        "<strong>암기 팁:</strong> -a 전체, -n 숫자, -t TCP, -p PID. 최근에는 ss -antp를 쓰지만 시험은 netstat이 기준이다."
       ]
     },
     {
@@ -6518,7 +7871,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] umask (027)",
       "badge": "단답형 족보",
       "points": [
-        "신규 파일 생성 시 640(-rw-r-----), 디렉토리 생성 시 750(drwxr-x---) 권한을 강제 부여하는 마스크값."
+        "신규 파일 생성 시 640(-rw-r-----), 디렉토리 생성 시 750(drwxr-x---) 권한을 강제 부여하는 마스크값.",
+        "<strong>출제 형태:</strong> 실기 계산: umask 027일 때 파일 640, 디렉터리 750을 구하는 문제.",
+        "<strong>암기 팁:</strong> 파일 666-027=640, 디렉터리 777-027=750. KISA 권고 umask는 022 또는 027이다."
       ]
     },
     {
@@ -6528,7 +7883,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] chattr (+i / -i)",
       "badge": "단답형 족보",
       "points": [
-        "root 사용자라도 파일을 삭제, 수정, 이름 변경할 수 없도록 속성을 불변(Immutable) 상태로 잠그는 명령어."
+        "root 사용자라도 파일을 삭제, 수정, 이름 변경할 수 없도록 속성을 불변(Immutable) 상태로 잠그는 명령어.",
+        "<strong>출제 형태:</strong> 실기 단답: root도 삭제 불가하게 만드는 명령, 확인은 lsattr.",
+        "<strong>암기 팁:</strong> +i 불변, +a 추가만 허용. chmod(권한)와 chattr(속성)는 다른 계층이다."
       ]
     },
     {
@@ -6538,7 +7895,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] lastlog (/var/log/lastlog)",
       "badge": "단답형 족보",
       "points": [
-        "시스템 내 모든 사용자의 최근 로그인 일시와 출발지 IP를 확인하는 바이너리 로그 조회 명령어."
+        "시스템 내 모든 사용자의 최근 로그인 일시와 출발지 IP를 확인하는 바이너리 로그 조회 명령어.",
+        "<strong>출제 형태:</strong> 실기 단답: 계정별 최근 로그인 시각·IP를 확인하는 명령과 로그 파일 경로.",
+        "<strong>암기 팁:</strong> last(wtmp, 전체 이력)·who(utmp, 현재)·lastb(btmp, 실패)·lastlog(계정별 최종) 4종을 세트로 외운다."
       ]
     },
     {
@@ -6548,7 +7907,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] tcpdump",
       "badge": "단답형 족보",
       "points": [
-        "네트워크 인터페이스(eth0 등)를 통과하는 패킷의 헤더와 페이로드를 실시간 캡처 및 필터링하는 도구."
+        "네트워크 인터페이스(eth0 등)를 통과하는 패킷의 헤더와 페이로드를 실시간 캡처 및 필터링하는 도구.",
+        "<strong>출제 형태:</strong> 실기 단답: 특정 호스트·포트 패킷을 파일로 저장하는 명령 작성.",
+        "<strong>암기 팁:</strong> -nn(이름 해석 금지), -s 0(전체 캡처), -w(저장), -r(읽기), -A(ASCII). BPF 필터는 and/or로 연결한다."
       ]
     },
     {
@@ -6558,7 +7919,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] icacls",
       "badge": "단답형 족보",
       "points": [
-        "윈도우 NTFS 파일 시스템에서 파일 및 폴더의 접근 제어 목록(ACL) 권한을 명령줄에서 확인·수정하는 도구."
+        "윈도우 NTFS 파일 시스템에서 파일 및 폴더의 접근 제어 목록(ACL) 권한을 명령줄에서 확인·수정하는 도구.",
+        "<strong>출제 형태:</strong> 실기 단답: 윈도우 NTFS ACL 확인·부여 명령(Linux chmod/chown 대응).",
+        "<strong>암기 팁:</strong> /grant:r, /remove, /inheritance:r 옵션. 공유 권한과 NTFS 권한 중 더 제한적인 것이 적용된다."
       ]
     },
     {
@@ -6568,7 +7931,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] distance (Snort)",
       "badge": "단답형 족보",
       "points": [
-        "직전 content 패턴 매칭 끝 지점으로부터 다음 패턴을 탐색할 상대적 시작 거리를 바이트 단위로 지정하는 Snort 옵션."
+        "직전 content 패턴 매칭 끝 지점으로부터 다음 패턴을 탐색할 상대적 시작 거리를 바이트 단위로 지정하는 Snort 옵션.",
+        "<strong>출제 형태:</strong> 실기 단답: content 매칭 이후 상대 위치 지정 옵션의 의미.",
+        "<strong>암기 팁:</strong> offset은 패킷 시작 기준, distance는 직전 매칭 끝 기준, within은 distance 이후 탐색 범위다."
       ]
     },
     {
@@ -6578,7 +7943,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] within (Snort)",
       "badge": "단답형 족보",
       "points": [
-        "distance 지점부터 최대 몇 바이트 범위 안에서 다음 패턴을 찾아야 하는지 탐색 범위를 한정하는 Snort 옵션."
+        "distance 지점부터 최대 몇 바이트 범위 안에서 다음 패턴을 찾아야 하는지 탐색 범위를 한정하는 Snort 옵션.",
+        "<strong>출제 형태:</strong> 실기 단답: distance와 짝을 이루는 탐색 범위 제한 옵션.",
+        "<strong>암기 팁:</strong> 'distance로 출발점, within으로 도착 범위'로 묶어 기억한다."
       ]
     },
     {
@@ -6588,7 +7955,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] iptables REJECT",
       "badge": "단답형 족보",
       "points": [
-        "접속 패킷을 차단할 때 송신자에게 ICMP unreachable 또는 TCP RST 거부 응답을 명시적으로 회신하는 타겟."
+        "접속 패킷을 차단할 때 송신자에게 ICMP unreachable 또는 TCP RST 거부 응답을 명시적으로 회신하는 타겟.",
+        "<strong>출제 형태:</strong> 실기 단답: DROP과 REJECT의 차이, --reject-with 옵션.",
+        "<strong>암기 팁:</strong> DROP은 무응답(지연), REJECT는 즉시 거부 응답(ICMP unreachable·tcp-reset)이다."
       ]
     },
     {
@@ -6598,7 +7967,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] PreparedStatement",
       "badge": "단답형 족보",
       "points": [
-        "SQL 쿼리를 사전 컴파일하고 입력값을 파라미터로 안전하게 바인딩하여 SQL Injection을 원천 차단하는 인터페이스."
+        "SQL 쿼리를 사전 컴파일하고 입력값을 파라미터로 안전하게 바인딩하여 SQL Injection을 원천 차단하는 인터페이스.",
+        "<strong>출제 형태:</strong> 실기 단답: SQLi 근본 대책 키워드로 반드시 등장한다.",
+        "<strong>암기 팁:</strong> '사전 컴파일 + 파라미터 바인딩'이 정답 문구. 입력 검증·이스케이프는 보조 수단이다."
       ]
     },
     {
@@ -6608,7 +7979,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] SameSite=Lax",
       "badge": "단답형 족보",
       "points": [
-        "타 사이트에서의 안전한 GET 최상위 링크 이동만 허용하고, 외부 POST 등 비인가 요청에서 쿠키 전송을 막는 CSRF 방어 속성."
+        "타 사이트에서의 안전한 GET 최상위 링크 이동만 허용하고, 외부 POST 등 비인가 요청에서 쿠키 전송을 막는 CSRF 방어 속성.",
+        "<strong>출제 형태:</strong> 실기 단답: CSRF 방어를 위한 쿠키 속성 3값(Strict·Lax·None).",
+        "<strong>암기 팁:</strong> Lax는 최상위 GET 이동만 허용, Strict는 외부 진입 시 로그인 풀림, None은 Secure 필수다."
       ]
     },
     {
@@ -6618,7 +7991,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Strict-Transport-Security (HSTS)",
       "badge": "단답형 족보",
       "points": [
-        "웹 브라우저가 평문 HTTP 연결을 일절 시도하지 않고 오직 HTTPS로만 통신하도록 강제하는 보안 헤더."
+        "웹 브라우저가 평문 HTTP 연결을 일절 시도하지 않고 오직 HTTPS로만 통신하도록 강제하는 보안 헤더.",
+        "<strong>출제 형태:</strong> 실기 단답: SSL Stripping 방어 헤더 이름과 max-age 설정.",
+        "<strong>암기 팁:</strong> max-age=31536000; includeSubDomains; preload. 최초 평문 요청은 preload로만 막힌다."
       ]
     },
     {
@@ -6628,7 +8003,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Content-Security-Policy (CSP)",
       "badge": "단답형 족보",
       "points": [
-        "브라우저에서 실행 가능한 스크립트, 스타일, 이미지 등의 신뢰 출처를 지정하여 XSS 공격을 방어하는 보안 헤더."
+        "브라우저에서 실행 가능한 스크립트, 스타일, 이미지 등의 신뢰 출처를 지정하여 XSS 공격을 방어하는 보안 헤더.",
+        "<strong>출제 형태:</strong> 실기 단답: XSS 방어 헤더와 default-src·script-src 지시자.",
+        "<strong>암기 팁:</strong> unsafe-inline을 허용하면 XSS 방어 효과가 사라진다. frame-ancestors는 클릭재킹 방어다."
       ]
     },
     {
@@ -6638,7 +8015,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Volatility",
       "badge": "단답형 족보",
       "points": [
-        "물리 RAM 메모리 덤프 파일을 파싱하여 프로세스 트리, 네트워크 소켓, 셸코드 등을 역공학 분석하는 메모리 포렌식 도구."
+        "물리 RAM 메모리 덤프 파일을 파싱하여 프로세스 트리, 네트워크 소켓, 셸코드 등을 역공학 분석하는 메모리 포렌식 도구.",
+        "<strong>출제 형태:</strong> 실기 단답: 메모리 덤프 분석 도구 이름과 대표 플러그인(pslist·netscan·malfind).",
+        "<strong>암기 팁:</strong> 메모리는 휘발성이 가장 높아 최우선 수집 대상이다. imageinfo로 프로파일을 먼저 확인한다."
       ]
     },
     {
@@ -6648,7 +8027,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] SBOM",
       "badge": "단답형 족보",
       "points": [
-        "소프트웨어 공급망 보안을 위해 오픈소스 라이브러리, 패키지 버전, 의존성 관계를 기계 판독 가능하게 작성한 소프트웨어 자재 명세서."
+        "소프트웨어 공급망 보안을 위해 오픈소스 라이브러리, 패키지 버전, 의존성 관계를 기계 판독 가능하게 작성한 소프트웨어 자재 명세서.",
+        "<strong>출제 형태:</strong> 실기 단답: 공급망 보안 요소(SPDX·CycloneDX)와 취약점 관리 연계.",
+        "<strong>암기 팁:</strong> '소프트웨어 자재 명세서'가 정답 키워드. Log4j 사고 이후 의무화 논의가 확대되었다."
       ]
     },
     {
@@ -6658,7 +8039,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] SOAR",
       "badge": "단답형 족보",
       "points": [
-        "보안 솔루션 경보를 통합하고 사전 정의된 플레이북(Playbook)에 따라 침해 대응 프로세스를 자동 오케스트레이션하는 관제 기술."
+        "보안 솔루션 경보를 통합하고 사전 정의된 플레이북(Playbook)에 따라 침해 대응 프로세스를 자동 오케스트레이션하는 관제 기술.",
+        "<strong>출제 형태:</strong> 실기 단답: SIEM·SOAR·EDR의 역할 차이 구분.",
+        "<strong>암기 팁:</strong> SIEM=수집·상관분석, SOAR=플레이북 자동화, EDR=단말 행위 탐지·격리. 세 글자 약어의 역할을 구분한다."
       ]
     },
     {
@@ -6668,7 +8051,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] EDR",
       "badge": "단답형 족보",
       "points": [
-        "단말기(엔드포인트)의 프로세스 생성, 파일 변경, 네트워크 연결 행위를 실시간 모니터링하여 침해를 탐지·격리하는 솔루션."
+        "단말기(엔드포인트)의 프로세스 생성, 파일 변경, 네트워크 연결 행위를 실시간 모니터링하여 침해를 탐지·격리하는 솔루션.",
+        "<strong>출제 형태:</strong> 실기 단답: 단말 위협 탐지·대응 솔루션의 기능 3가지.",
+        "<strong>암기 팁:</strong> 행위 모니터링·탐지·격리·롤백. 백신(시그니처)과 달리 행위 기반이라는 점이 핵심이다."
       ]
     },
     {
@@ -6678,7 +8063,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] SPAN (Port Mirroring)",
       "badge": "단답형 족보",
       "points": [
-        "스위치 포트나 VLAN의 패킷을 네트워크 분석 장비(IDS, Wireshark)가 연결된 특정 모니터링 포트로 복제하는 기능."
+        "스위치 포트나 VLAN의 패킷을 네트워크 분석 장비(IDS, Wireshark)가 연결된 특정 모니터링 포트로 복제하는 기능.",
+        "<strong>출제 형태:</strong> 실기 단답: 스위치 환경에서 IDS가 패킷을 보는 방법.",
+        "<strong>암기 팁:</strong> 미러링 포트·TAP. 허브 환경이 아니면 스니핑이 불가능하므로 SPAN이 필요하다."
       ]
     },
     {
@@ -6688,7 +8075,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] MITRE ATT&CK",
       "badge": "단답형 족보",
       "points": [
-        "실제 사이버 공격자의 공격 전술(Tactics), 기술(Techniques), 절차(Procedures)를 매트릭스로 집대성한 지식 프레임워크."
+        "실제 사이버 공격자의 공격 전술(Tactics), 기술(Techniques), 절차(Procedures)를 매트릭스로 집대성한 지식 프레임워크.",
+        "<strong>출제 형태:</strong> 실기 서술: 침해사고 분석 시 공격 단계를 매핑하는 프레임워크.",
+        "<strong>암기 팁:</strong> 전술(Tactic, 왜) → 기술(Technique, 어떻게) → 절차(Procedure, 실제 사례) 계층 구조다."
       ]
     },
     {
@@ -6698,7 +8087,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Perfect Forward Secrecy (PFS)",
       "badge": "단답형 족보",
       "points": [
-        "서버의 장기 개인키가 유출되더라도 일회성 임시 세션키 폐기를 통해 과거 암호화 통신의 복호화를 방지하는 암호학적 특성."
+        "서버의 장기 개인키가 유출되더라도 일회성 임시 세션키 폐기를 통해 과거 암호화 통신의 복호화를 방지하는 암호학적 특성.",
+        "<strong>출제 형태:</strong> 실기 단답: ECDHE 사용 이유, 서버 키 유출 시 과거 트래픽 보호.",
+        "<strong>암기 팁:</strong> 세션키를 일회성으로 생성·폐기하는 특성. RSA 키 교환은 PFS를 제공하지 않는다."
       ]
     },
     {
@@ -6708,7 +8099,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] auditctl",
       "badge": "단답형 족보",
       "points": [
-        "리눅스 커널 감사 서브시스템(auditd)에 특정 시스템 콜이나 중요 파일(/etc/passwd) 감시 규칙을 실시간 등록하는 도구."
+        "리눅스 커널 감사 서브시스템(auditd)에 특정 시스템 콜이나 중요 파일(/etc/passwd) 감시 규칙을 실시간 등록하는 도구.",
+        "<strong>출제 형태:</strong> 실기 단답: 파일 감시 규칙 등록 명령(-w -p -k).",
+        "<strong>암기 팁:</strong> -p wa(쓰기·속성변경), -k 키. 규칙은 /etc/audit/rules.d/에 영구 저장해야 한다."
       ]
     },
     {
@@ -6718,7 +8111,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] fail2ban",
       "badge": "단답형 족보",
       "points": [
-        "SSH 등에서 일정 횟수 이상 인증 실패 로그가 기록되면 방화벽(iptables)에 차단 룰을 동적으로 생성하여 무차별 대입을 막는 도구."
+        "SSH 등에서 일정 횟수 이상 인증 실패 로그가 기록되면 방화벽(iptables)에 차단 룰을 동적으로 생성하여 무차별 대입을 막는 도구.",
+        "<strong>출제 형태:</strong> 실기 단답: SSH 무차별 대입 자동 차단 도구와 연동 방화벽.",
+        "<strong>암기 팁:</strong> /etc/fail2ban/jail.local의 maxretry·bantime·findtime 3개 값이 설정 핵심이다."
       ]
     },
     {
@@ -6728,7 +8123,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] SecureRandom",
       "badge": "단답형 족보",
       "points": [
-        "선형 합동(LCG) 대신 암호학적으로 안전한 난수를 생성하여 예측 불가능한 세션 ID 및 솔트(Salt)를 발급하는 자바 클래스."
+        "선형 합동(LCG) 대신 암호학적으로 안전한 난수를 생성하여 예측 불가능한 세션 ID 및 솔트(Salt)를 발급하는 자바 클래스.",
+        "<strong>출제 형태:</strong> 실기 단답: 예측 가능한 난수 사용의 위험과 안전한 난수 클래스.",
+        "<strong>암기 팁:</strong> java.util.Random은 LCG로 시드 예측이 가능하다. 세션 ID·salt에는 SecureRandom을 쓴다."
       ]
     },
     {
@@ -6738,7 +8135,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Chain of Custody (연계보관성)",
       "badge": "단답형 족보",
       "points": [
-        "디지털 증거가 압수된 순간부터 법정 제출 시까지 취급자, 보관 장소, 일시를 연속적으로 기록 증명하는 포렌식 기본 원칙."
+        "디지털 증거가 압수된 순간부터 법정 제출 시까지 취급자, 보관 장소, 일시를 연속적으로 기록 증명하는 포렌식 기본 원칙.",
+        "<strong>출제 형태:</strong> 실기 단답: 포렌식 5원칙 중 증거 능력과 직결되는 원칙.",
+        "<strong>암기 팁:</strong> 취급자·일시·장소·이동 경로를 기록. 해시(무결성)와 함께 증거 능력의 두 축이다."
       ]
     },
     {
@@ -6748,7 +8147,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Open Redirect",
       "badge": "단답형 족보",
       "points": [
-        "사용자 입력 URL을 검증 없이 HTTP 302 리다이렉트 대상으로 사용하여 악성 피싱 사이트로 연결시키는 웹 취약점."
+        "사용자 입력 URL을 검증 없이 HTTP 302 리다이렉트 대상으로 사용하여 악성 피싱 사이트로 연결시키는 웹 취약점.",
+        "<strong>출제 형태:</strong> 실기 단답: 피싱에 악용되는 리다이렉트 취약점과 대응.",
+        "<strong>암기 팁:</strong> returnUrl·redirect 파라미터를 화이트리스트로 검증. 302 응답의 Location 조작이 핵심이다."
       ]
     },
     {
@@ -6758,7 +8159,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Tripwire",
       "badge": "단답형 족보",
       "points": [
-        "시스템 바이너리 및 설정 파일의 기준 해시값(SHA-256)을 저장해 두고 변경 여부를 감시하여 악성 변조를 탐지하는 HIDS 도구."
+        "시스템 바이너리 및 설정 파일의 기준 해시값(SHA-256)을 저장해 두고 변경 여부를 감시하여 악성 변조를 탐지하는 HIDS 도구.",
+        "<strong>출제 형태:</strong> 실기 단답: 파일 무결성 검사 도구와 기준선(Baseline) 개념.",
+        "<strong>암기 팁:</strong> SHA-256 기준선 저장 → 주기적 재수집 → 대조·경보. AIDE는 오픈소스 대안이다."
       ]
     },
     {
@@ -6768,7 +8171,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Order of Volatility",
       "badge": "단답형 족보",
       "points": [
-        "디지털 증거 수집 시 휘발성이 높은 순서(레지스터/캐시 -> RAM -> 네트워크 연결 -> 디스크)대로 수집해야 한다는 원칙."
+        "디지털 증거 수집 시 휘발성이 높은 순서(레지스터/캐시 -> RAM -> 네트워크 연결 -> 디스크)대로 수집해야 한다는 원칙.",
+        "<strong>출제 형태:</strong> 실기 단답: 휘발성 높은 순서대로 수집하는 원칙(RFC 3227).",
+        "<strong>암기 팁:</strong> 레지스터·캐시 → RAM → 네트워크 연결 → 디스크 → 원격 로그 → 백업 순."
       ]
     },
     {
@@ -6778,7 +8183,9 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] CISO 겸직금지",
       "badge": "단답형 족보",
       "points": [
-        "자산 5조 원 이상 또는 자산 5천억 이상 ISMS 의무 대상 기업의 CISO는 정보기술(CIO) 등 타 임원 직무를 겸직할 수 없도록 한 규정."
+        "자산 5조 원 이상 또는 자산 5천억 이상 ISMS 의무 대상 기업의 CISO는 정보기술(CIO) 등 타 임원 직무를 겸직할 수 없도록 한 규정.",
+        "<strong>출제 형태:</strong> 실기 단답: CISO 겸직 제한의 규모 요건과 근거 법령(정보통신망법).",
+        "<strong>암기 팁:</strong> 자산 5조원 이상 또는 5천억원 이상 + ISMS 의무 대상. CIO·개인정보보호책임자 겸직 제한을 함께 본다."
       ]
     },
     {
@@ -6788,15 +8195,377 @@ window.INFOSEC_PRACTICAL_DATA = {
       "title": "[실기 단답] Zero Trust (Never Trust, Always Verify)",
       "badge": "단답형 족보",
       "points": [
-        "내부망이라 할지라도 결코 신뢰하지 않고 모든 사용자, 기기, 세션에 대해 지속적인 인증과 최소 권한을 부여하는 보안 철학."
+        "내부망이라 할지라도 결코 신뢰하지 않고 모든 사용자, 기기, 세션에 대해 지속적인 인증과 최소 권한을 부여하는 보안 철학.",
+        "<strong>출제 형태:</strong> 실기 서술: 경계 보안의 한계와 제로트러스트 3원칙.",
+        "<strong>암기 팁:</strong> 지속 검증·최소 권한·침해 가정. 내부망도 신뢰하지 않는 것이 핵심이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] SetUID 취약 파일 검색",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> find / -perm -4000 -type f 2>/dev/null",
+        "<strong>출제 형태:</strong> 실기 단답: 'SetUID가 설정된 파일을 검색하는 명령어를 쓰시오' — 옵션 -perm -4000(또는 -04000)과 -type f를 함께 써야 정답.",
+        "<strong>암기 팁:</strong> 4000=SetUID, 2000=SetGID, 1000=Sticky. -perm 앞의 '-'는 '해당 비트를 포함'이라는 의미다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] umask 022 결과",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 파일 644, 디렉터리 755",
+        "<strong>출제 형태:</strong> 실기 계산 문제: umask 022일 때 생성되는 파일과 디렉터리 권한. 파일 666-022=644, 디렉터리 777-022=755.",
+        "<strong>암기 팁:</strong> 파일은 실행 비트가 없으므로 666 기준, 디렉터리는 777 기준으로 계산한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] /etc/passwd 7개 필드",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 계정명:암호(x):UID:GID:설명:홈:셸",
+        "<strong>출제 형태:</strong> 실기 단답: 필드 순서와 의미, UID 0이면 root 권한이라는 점.",
+        "<strong>암기 팁:</strong> 구분자는 콜론(:). 두 번째 필드가 x면 shadow 사용, 빈 값이면 암호 없는 계정이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] PAM 제어 플래그 4종",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> required, requisite, sufficient, optional",
+        "<strong>출제 형태:</strong> 실기 단답: 4개 플래그 이름과 동작 차이(특히 required와 requisite).",
+        "<strong>암기 팁:</strong> required=실패해도 계속(원인 은닉), requisite=즉시 중단, sufficient=성공 시 조기 종료, optional=결과에 영향 없음."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] Tripwire / AIDE",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 파일 무결성 검사(FIM) 도구",
+        "<strong>출제 형태:</strong> 실기 단답: 기준선(baseline) 대비 해시·권한 변경을 탐지하는 도구 이름과 목적.",
+        "<strong>암기 팁:</strong> Tripwire는 상용 표준, AIDE는 오픈소스. '기준선'과 '해시 대조'가 정답 키워드다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] chattr +i",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 파일 불변(Immutable) 속성",
+        "<strong>출제 형태:</strong> 실기 단답: root도 삭제·수정·이름변경이 불가하도록 설정하는 명령과 확인 명령(lsattr).",
+        "<strong>암기 팁:</strong> +i는 불변, +a는 추가만 허용. chmod와 다른 계층(속성)이라는 점을 기억한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] find -mtime -1",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 최근 24시간 내 수정된 파일 검색",
+        "<strong>출제 형태:</strong> 실기 단답: 침해 시점 이후 변경된 파일을 찾는 명령. -mtime -1(1일 이내), +1(1일 초과).",
+        "<strong>암기 팁:</strong> -mtime은 mtime(내용 변경) 기준이다. ctime은 -ctime, 접근은 -atime."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] ps -ef / netstat -antp",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 프로세스·포트 점검",
+        "<strong>출제 형태:</strong> 실기 단답: 현재 실행 중인 프로세스와 리스닝 포트를 PID·프로그램과 함께 확인하는 명령.",
+        "<strong>암기 팁:</strong> -antp: a=전체, n=숫자, t=TCP, p=PID/프로그램. 최근 배포판은 ss -antp를 권장한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] TCP 플래그 조합",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> SYN=2, ACK=16, FIN=1, RST=4, PSH=8, URG=32",
+        "<strong>출제 형태:</strong> 실기 단답: 플래그별 의미와 정상 3-way(SYN → SYN+ACK → ACK) 순서.",
+        "<strong>암기 팁:</strong> SYN+ACK는 18(2+16). 스텔스 스캔은 이 플래그 조합을 비정상으로 보내는 기법이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] NULL / FIN / XMAS 스캔",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 플래그를 비정상으로 보내는 스텔스 스캔",
+        "<strong>출제 형태:</strong> 실기 단답: 각 스캔이 보내는 플래그 조합(NULL=없음, FIN=FIN, XMAS=FIN+PSH+URG)과 윈도우에서 통하지 않는 이유.",
+        "<strong>암기 팁:</strong> 닫힌 포트는 RST, 열린 포트는 무응답(RFC 793). 윈도우는 항상 RST를 보내 판별 불가."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] Snort 룰 액션 5종",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> alert, log, pass, drop, reject",
+        "<strong>출제 형태:</strong> 실기 단답: 룰 헤더의 액션 목록과 drop이 동작하는 모드(inline/IPS).",
+        "<strong>암기 팁:</strong> drop·reject는 IPS 모드에서만 유효하다. IDS 모드에서는 alert로 동작한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] iptables 타겟",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> ACCEPT, DROP, REJECT, LOG, RETURN",
+        "<strong>출제 형태:</strong> 실기 단답: DROP과 REJECT의 차이(응답 없음 vs 거부 응답), 기본 정책 설정 방법.",
+        "<strong>암기 팁:</strong> DROP=무응답(스캔 지연), REJECT=즉시 거부 응답. 서비스 거부감을 줄이려면 REJECT가 낫다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] tcpdump 캡처 옵션",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> -i, -nn, -s 0, -w, -r, -A, -X",
+        "<strong>출제 형태:</strong> 실기 단답: 특정 호스트·포트만 저장하는 명령 작성(예: tcpdump -i eth0 -nn 'tcp port 80 and host 10.0.0.5' -w a.pcap).",
+        "<strong>암기 팁:</strong> -s 0은 전체 길이 캡처(과거 기본 68바이트 절단 방지). -w는 저장, -r은 읽기다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] nmap 옵션",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> -sS, -sT, -sU, -sV, -O, -p-, -Pn, -T4",
+        "<strong>출제 형태:</strong> 실기 단답: SYN 스텔스와 TCP connect 스캔의 차이, 전체 포트 검사 옵션.",
+        "<strong>암기 팁:</strong> -sS는 root 필요(로그 적음), -sT는 일반 사용자. -p-는 1~65535 전 범위."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] SQL Injection 방어",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> PreparedStatement(바인딩 변수)",
+        "<strong>출제 형태:</strong> 실기 단답: SQLi 근본 대책 1가지를 쓰라는 문제의 정답 키워드.",
+        "<strong>암기 팁:</strong> '입력값 검증'은 보조 수단이다. 코드와 데이터를 분리하는 바인딩이 정답이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] XSS 방어",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 출력 인코딩(HTML·URL·JS 컨텍스트별) + CSP",
+        "<strong>출제 형태:</strong> 실기 단답: 저장형 XSS 대응 2가지(출력 인코딩, HttpOnly, CSP, 화이트리스트 검증).",
+        "<strong>암기 팁:</strong> 입력 시 필터링보다 '출력 시 인코딩'이 핵심이다. 컨텍스트별로 인코딩 방식이 다르다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] CSRF 방어",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> CSRF 토큰 + SameSite 쿠키 + Referer 검증",
+        "<strong>출제 형태:</strong> 실기 단답: CSRF와 XSS의 차이, 방어 기법 3가지.",
+        "<strong>암기 팁:</strong> CSRF는 사용자의 '인증된 브라우저'를 이용한다. 토큰이 세션에 묶여야 유효하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 파일 업로드 방어",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 확장자 화이트리스트 + MIME 검증 + 실행 권한 제거",
+        "<strong>출제 형태:</strong> 실기 단답: 웹셸 업로드를 막는 방법 3가지를 쓰라는 문제.",
+        "<strong>암기 팁:</strong> 확장자만 막으면 우회된다. 업로드 디렉터리의 실행 권한 제거가 가장 강력하다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] DDoS 대응",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> Rate Limit, 임계치 기반 차단, CDN·스크러빙, SYN Cookie",
+        "<strong>출제 형태:</strong> 실기 단답: 대역폭 소진형과 서비스 마비형(L7) 대응의 차이.",
+        "<strong>암기 팁:</strong> L4는 네트워크 장비·ISP 협조, L7은 WAF·캐시·커넥션 타임아웃이 중심이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] WPA2 4-way handshake",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> PMK → PTK 유도, GTK 전달, MIC 검증",
+        "<strong>출제 형태:</strong> 실기 단답: WPA2-PSK 핸드셰이크 4단계와 KRACK 취약점의 의미.",
+        "<strong>암기 팁:</strong> PMK는 PSK+SSID+salt에서, PTK는 ANonce·SNonce·MAC으로 만든다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] IPSec ESP vs AH",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> ESP=암호화+무결성(50), AH=무결성만(51)",
+        "<strong>출제 형태:</strong> 실기 단답: 두 프로토콜의 제공 기능과 프로토콜 번호, NAT 통과 가능 여부.",
+        "<strong>암기 팁:</strong> AH는 IP 헤더 전체를 무결성 보호하므로 NAT를 통과하지 못한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] SSL/TLS 핸드셰이크",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> ClientHello → ServerHello → 인증서 → 키교환 → Finished",
+        "<strong>출제 형태:</strong> 실기 단답: 핸드셰이크 순서와 세션키 합성(ECDHE) 개념, TLS 1.3의 1-RTT.",
+        "<strong>암기 팁:</strong> 인증서 검증 → 키 합의 → Finished(암호화 시작) 순서. TLS 1.3은 축약되었다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 전자서명 절차",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 송신자: 해시 → 개인키 서명 / 수신자: 공개키 검증",
+        "<strong>출제 형태:</strong> 실기 단답: 서명 생성·검증 순서, 보장 3요소(무결성·인증·부인방지).",
+        "<strong>암기 팁:</strong> 기밀성은 보장하지 않는다. 암호화는 수신자 공개키로 별도 수행한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 해시 vs 암호화 vs 인코딩",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 해시=복호화 불가, 암호화=키로 복호화, 인코딩=형식 변환",
+        "<strong>출제 형태:</strong> 실기 단답: 세 개념의 차이와 용도(무결성·기밀성·전송).",
+        "<strong>암기 팁:</strong> Base64는 암호화가 아니다. 누구나 디코딩할 수 있다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 대칭키 vs 공개키",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> n(n-1)/2 vs 2n 키 개수",
+        "<strong>출제 형태:</strong> 실기 계산 문제: 참여자 n명일 때 필요한 키 개수. 대칭키 n(n-1)/2, 공개키 2n.",
+        "<strong>암기 팁:</strong> 10명이면 45개 vs 20개. 대칭키가 빠르고, 공개키는 키 배분 문제를 해결한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] RTO / RPO",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> RTO=복구 시간, RPO=데이터 유실 시점",
+        "<strong>출제 형태:</strong> 실기 단답: 두 지표의 정의와 값이 작을수록 비용이 증가한다는 점.",
+        "<strong>암기 팁:</strong> RTO=Time(시간), RPO=Point(시점). MTD는 최대 허용 중단 시간이다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] SLE / ALE 계산",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> SLE=자산가치×노출계수, ALE=SLE×ARO",
+        "<strong>출제 형태:</strong> 실기 계산 문제: 자산 1억·노출계수 40%·연 2회 발생 → SLE 4천만, ALE 8천만.",
+        "<strong>암기 팁:</strong> ALE는 '연간' 손실이다. 대책 비용과 비교해 타당성(ROI)을 판단한다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 개인정보 유출 신고",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 72시간 통지, 1천 명 이상 신고",
+        "<strong>출제 형태:</strong> 실기 단답: 유출 인지 후 통지 시한과 신고 대상 기관·기준.",
+        "<strong>암기 팁:</strong> 기산점은 '인지 시점'이다. 5만 명 이상 민감정보 유출은 조사·신고 요건이 강화된다."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 정보보호 관리체계 PDCA",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> Plan-Do-Check-Act (수립-운영-점검-개선)",
+        "<strong>출제 형태:</strong> 실기 단답: ISMS·ISMS-P 인증의 4단계 사이클과 영역별 기준 수(16·64·22).",
+        "<strong>암기 팁:</strong> P(정책·위험평가) D(대책 구현) C(내부감사·법적 검토) A(개선)."
+      ]
+    },
+    {
+      "type": "term",
+      "category": "law",
+      "category_name": "실기 단답형 용어 (핵심 족보)",
+      "title": "[실기 단답] 디지털 포렌식 5원칙",
+      "badge": "단답형 족보",
+      "points": [
+        "<strong>정답 키워드:</strong> 정당성·재현성·신속성·연계보관성·무결성",
+        "<strong>출제 형태:</strong> 실기 단답: 5원칙 나열과 휘발성 순서(레지스터→RAM→디스크).",
+        "<strong>암기 팁:</strong> 연계보관성(Chain of Custody)은 취급자·일시·장소 기록, 무결성은 해시로 증명한다."
       ]
     }
   ]
 };
 
 window.ISMSP_AUDITOR_DATA = {
-  "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 102개 기준 결함사례",
-  "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 102개 전 기준 결함사례 총람",
+  "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 인증기준 심층 요약 25선",
+  "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 인증기준별 요구사항·결함 판정 포인트 25선",
   "questions": [
     {
       "id": "ismsp_r1_q1",
@@ -7311,67 +9080,269 @@ window.ISMSP_AUDITOR_DATA = {
   ],
   "summaries": [
     {
-      "title": "1영역. 관리체계 수립 및 운영 (16개 기준 핵심)",
+      "title": "1영역. 관리체계 수립 및 운영 (16개 기준)",
       "topics": [
         {
-          "name": "1.1 기반 마련 및 1.2 위험 관리",
+          "name": "1.1.1 경영진의 참여 · 1.1.2 최고책임자의 지정",
           "points": [
-            "1.1.1 경영진의 참여: 최고경영진의 보안위원회 주재 실적, 보안 예산 및 인력 배정 결재 증적 필수.",
-            "1.1.2 최고책임자의 지정: CISO/CPO 정식 임명. 망법상 CISO 겸직 제한(대기업 CISO의 CIO/개발본부장 겸직 금지) 준수.",
-            "1.1.4 범위 설정: 인증 대상 서비스 관련 시스템, 인프라, 네트워크, 개발망, 개인정보 흐름도 전수 식별.",
-            "1.2.2 위험 평가: 최고경영진 승인 하에 DOA(수용 가능한 위험 수준) 설정 및 초과 위험 대책 수립 필수."
+            "<strong>요구사항(1.1.1):</strong> 최고경영진이 정보보호·개인정보보호 활동에 적극 참여하고, 정책 승인·자원 배정·주요 회의 주재 등 참여 활동의 증적이 남아야 한다.",
+            "<strong>요구사항(1.1.2):</strong> 정보보호 및 개인정보보호를 총괄하는 최고책임자(CISO/CPO)를 공식 임명하고 권한·책임을 문서화한다. 망법상 CISO 겸직 제한 대상이면 준수 여부를 확인한다.",
+            "<strong>증적:</strong> 경영진 회의록(정보보호 안건 상정), 정책·예산 승인 결재 문서, 임명장·직무기술서, 조직도.",
+            "<strong>결함 판정 포인트:</strong> 최고책임자가 형식적으로만 지정되어 실제 의사결정 권한이 없거나, 회의록이 1회성으로만 존재하는 경우 결함.",
+            "<strong>결함 사례:</strong> CISO를 실무 담당자로 지정했거나, 인증 범위의 보안 예산이 최고경영진 승인 없이 팀 단위로 편성된 경우."
           ]
         },
         {
-          "name": "1.3 운영·점검 및 1.4 개선",
+          "name": "1.1.3 조직 구성 · 1.1.4 범위 설정",
           "points": [
-            "1.4.1 법적 요구사항: 개정 법령(개인정보보호법, 망법 등) 준수 여부 연 1회 이상 정기 검토.",
-            "1.4.2 관리체계 점검: 연 1회 이상 독립된 내부감사를 수행하고 발견 결함을 경영진에 공식 보고."
+            "<strong>요구사항(1.1.3):</strong> 정보보호 업무를 수행하는 조직·인력의 역할과 책임을 문서로 정하고, 부서 간 협조 체계를 구성한다. 실무 협의체·보안담당자 지정이 증적이다.",
+            "<strong>요구사항(1.1.4):</strong> 인증 범위에 포함되는 서비스·시스템·네트워크·인프라·개발 환경과 개인정보 처리 흐름을 식별해 문서화한다. 물리적 위치와 클라우드 자원도 포함한다.",
+            "<strong>증적:</strong> 조직도·직무기술서, 인증범위도(경계 정의), 자산목록, 개인정보 흐름도(수집-이용-제공-파기).",
+            "<strong>결함 판정 포인트:</strong> 인증범위가 실제 운영 서비스와 불일치하거나, 위탁·클라우드로 이관된 시스템이 범위에서 누락된 경우 중대 결함.",
+            "<strong>결함 사례:</strong> 관리대장에만 있는 서버는 범위에서 빠져 있고 실제로 서비스 중이거나, 개인정보 처리 흐름도에 DB·로그·백업이 표시되지 않은 경우."
+          ]
+        },
+        {
+          "name": "1.1.5 정책 수립 · 1.1.6 자원 할당",
+          "points": [
+            "<strong>요구사항(1.1.5):</strong> 정보보호·개인정보보호 정책과 세부 지침(접근통제·암호화·개발보안 등)을 수립하고 최고경영진 승인을 받아야 한다. 정책은 주기적(연 1회 이상)으로 검토·개정한다.",
+            "<strong>요구사항(1.1.6):</strong> 정책 이행에 필요한 인력·예산·시설·도구 등 자원을 식별해 배정하고, 배정 내역과 집행 결과를 관리한다.",
+            "<strong>증적:</strong> 정책·지침 문서(버전·승인 이력), 개정 이력, 예산 편성·집행 내역, 보안 솔루션 도입 계약.",
+            "<strong>결함 판정 포인트:</strong> 정책이 승인 없이 배포되었거나 최근 1년간 검토 흔적이 없는 경우, 지침이 실제 운영(로그·설정)과 어긋나는 경우 결함.",
+            "<strong>결함 사례:</strong> 정책에는 비밀번호 90일 변경이 명시되어 있으나 시스템 설정은 무기한이거나, 개정된 법령이 정책에 반영되지 않은 경우."
+          ]
+        },
+        {
+          "name": "1.2.1 위험 식별",
+          "points": [
+            "<strong>요구사항:</strong> 자산·위협·취약점을 식별해 위험 목록을 작성한다. 자산은 정보자산(데이터·SW·HW)과 개인정보 흐름을 포함하고, 위협은 외부·내부·환경 요인을 함께 고려한다.",
+            "<strong>방법:</strong> 자산 기반 접근(자산-위협-취약점 매핑), 시나리오 기반 접근, 과거 사고·침해사고 통계 활용. 클라우드·위탁 자산도 식별 대상이다.",
+            "<strong>증적:</strong> 자산목록·중요도 평가표, 위험 식별 결과표, 취약점 점검 결과, 위협 정보(ISAC·CVE) 수집 기록.",
+            "<strong>결함 판정 포인트:</strong> 위험 식별이 최초 인증 시점에만 이루어지고 이후 변경(신규 서비스·시스템)이 반영되지 않은 경우 결함.",
+            "<strong>결함 사례:</strong> 신규 오픈한 모바일 앱과 API 서버가 자산목록·위험 식별표에 없거나, 개인정보 처리 단계별 위험이 별도로 식별되지 않은 경우."
+          ]
+        },
+        {
+          "name": "1.2.2 위험 평가 · 1.2.3 위험 대책 수립",
+          "points": [
+            "<strong>요구사항(1.2.2):</strong> 위험의 발생 가능성과 영향도를 기준으로 위험 수준을 산정하고, 최고경영진이 승인한 수용 가능한 위험 수준(DoA)과 비교한다.",
+            "<strong>요구사항(1.2.3):</strong> DoA를 초과하는 위험에 대해 감소·회피·전가·수용 중 처리 방법을 결정하고, 이행 계획(담당자·기한)·잔여 위험을 문서화한다.",
+            "<strong>증적:</strong> 위험평가표(점수·등급), DoA 승인 문서, 위험 처리 계획·이행 결과, 잔여 위험 승인 기록.",
+            "<strong>결함 판정 포인트:</strong> 위험 등급만 산정하고 대책·기한·담당자가 없거나, 고위험 항목이 이행되지 않은 채 방치된 경우 결함.",
+            "<strong>결함 사례:</strong> 고위험으로 평가된 서버 3대의 패치 계획이 2년째 '예정'으로만 남아 있거나, 잔여 위험에 대한 경영진 승인이 없는 경우."
+          ]
+        },
+        {
+          "name": "1.3.1 대책 구현 및 운영",
+          "points": [
+            "<strong>요구사항:</strong> 수립한 위험 대책을 실제로 구현하고 운영해야 한다. 기술적 통제는 설정값으로, 관리적 통제는 절차·산출물로 증명한다.",
+            "<strong>핵심 확인:</strong> 대책이 문서에만 존재하는지, 실제 시스템 설정·로그·산출물로 확인되는지가 심사의 핵심이다(문서-현장 일치성).",
+            "<strong>증적:</strong> 대책 이행 결과보고, 시스템 설정 캡처, 점검 결과, 교육·훈련 기록, 계약서·협약서.",
+            "<strong>결함 판정 포인트:</strong> 계획 대비 이행률이 낮거나, 이행되었더라도 증적이 없어 확인이 불가능한 경우 결함으로 판정된다.",
+            "<strong>결함 사례:</strong> 접근통제 대책을 '적용 완료'로 보고했으나 실제 서버 설정에 반영되지 않았거나, 이행 증적이 개인 PC에만 있는 경우."
+          ]
+        },
+        {
+          "name": "1.3.2 내부 공유 · 1.3.3 교육 및 훈련",
+          "points": [
+            "<strong>요구사항(1.3.2):</strong> 정보보호 정책·지침·위험 관리 결과를 임직원과 이해관계자에게 공유하고, 최신본이 실제 업무에 활용되도록 관리한다.",
+            "<strong>요구사항(1.3.3):</strong> 임직원 대상 정보보호 교육을 연 1회 이상 실시하고, 직무별(개발자·운영자·개인정보 취급자) 특화 교육과 신규 입사자 교육을 포함한다.",
+            "<strong>증적:</strong> 공지·게시 이력, 사내 포털 게시물, 교육 계획·교재·출석부·수료율, 모의훈련 결과.",
+            "<strong>결함 판정 포인트:</strong> 교육을 형식적으로 실시(출석부만 존재)했거나, 개인정보 취급자 교육이 누락된 경우 결함.",
+            "<strong>결함 사례:</strong> 전 직원 교육은 있으나 개발자 대상 시큐어코딩 교육이 없거나, 교육 자료가 3년 전 버전인 경우."
+          ]
+        },
+        {
+          "name": "1.4.1 법적 요구사항 검토 · 1.4.2 점검 · 1.4.3 개선",
+          "points": [
+            "<strong>요구사항(1.4.1):</strong> 개인정보보호법·정보통신망법 등 관련 법령과 규제의 변경 사항을 등록·검토하고, 정책·통제에 반영한다(연 1회 이상).",
+            "<strong>요구사항(1.4.2):</strong> 관리체계 운영 실태를 연 1회 이상 독립적·객관적으로 점검(내부감사)하고 결과를 최고경영진에게 보고한다.",
+            "<strong>요구사항(1.4.3):</strong> 점검에서 발견된 결함을 시정하고, 원인을 분석해 재발방지 대책을 수립·이행한다.",
+            "<strong>증적:</strong> 법령 검토 기록, 내부감사 계획·보고서·지적사항 목록, 시정 조치 결과, 경영진 보고 문서.",
+            "<strong>결함 판정 포인트:</strong> 내부감사를 보안팀이 자기 업무에 대해 자체 점검하는 형태로 수행했거나, 지적사항이 시정되지 않은 채 방치된 경우 결함.",
+            "<strong>결함 사례:</strong> 2023년 개인정보보호법 개정(국외이전·고지 의무) 이후에도 관련 절차가 갱신되지 않았거나, 전년도 지적사항이 3년 연속 미조치된 경우."
           ]
         }
       ]
     },
     {
-      "title": "2영역. 보호대책 요구사항 (64개 기준 핵심)",
+      "title": "2영역. 보호대책 요구사항 (64개 기준)",
       "topics": [
         {
-          "name": "인적·물리보안 및 접근통제 (2.1 ~ 2.6)",
+          "name": "2.1 정책·조직 관리 (2.1.1~2.1.2)",
           "points": [
-            "2.2.3 퇴직 및 직무변경: 퇴직자 계정 및 모든 접근 권한은 당일 즉시 회수 및 비활성화 조치.",
-            "2.4.1 출입통제: 전산실/통제구역 출입기록은 최소 1년(또는 3년) 이상 보관 및 주기적 점검.",
-            "2.5.4 비밀번호 관리: 3종 8자리 또는 2종 10자리, 초기 패스워드 변경 강제 및 분기 1회 변경 유도.",
-            "2.6.2 개발망/운영망 분리: 개발망과 운영망 물리적/논리적 분리, 운영 DB 직접 접근 통제."
+            "<strong>요구사항(2.1.1):</strong> 정보보호 정책·지침을 최신 상태로 유지하고, 개정 시 이력(버전·승인·배포일)을 관리하며 폐기본의 사용을 막는다.",
+            "<strong>요구사항(2.1.2):</strong> 정보보호 조직의 구성원·역할·책임을 정하고, 담당자 변경 시 인수인계와 권한 회수를 수행한다.",
+            "<strong>증적:</strong> 정책 관리대장, 개정 이력, 조직·담당자 목록, 인수인계서.",
+            "<strong>결함 판정 포인트:</strong> 최신 정책이 실제 업무 문서·시스템 설정에 반영되지 않은 경우(정책-현장 불일치) 결함.",
+            "<strong>결함 사례:</strong> 퇴사한 담당자가 여전히 보안 담당자로 등재되어 있거나, 정책 개정 후 사내 포털에 구버전이 게시된 경우."
           ]
         },
         {
-          "name": "접속기록, 암호화 및 운영보안 (2.6 ~ 2.11)",
+          "name": "2.2 인적 보안 (2.2.1~2.2.3)",
           "points": [
-            "2.6.7 접속기록 보관: 최소 1년(5만명 이상 고유식별정보 처리 시 2년) 보관, 월 1회 이상 이상징후 점검.",
-            "2.7.1 암호정책: 고유식별정보, 비밀번호(일방향), 바이오정보 저장 시 암호화 적용.",
-            "2.8.5 시험 데이터 보안: 개발/테스트 시 실제 운영 개인정보 사용 금지(가명·익명 처리 데이터 사용).",
-            "2.9.3 백업 및 복구: 주기적 백업 수행 및 연 1회 이상 실제 복구 모의훈련 실시 증적 확보."
+            "<strong>요구사항(2.2.1):</strong> 주요 직무자(권한 보유자·개인정보 취급자)를 지정하고 신원·자격을 확인한다. 채용 시 범죄·자격 조회는 법령 범위 내에서 수행한다.",
+            "<strong>요구사항(2.2.2):</strong> 임직원·외부자에게 정보보호 서약을 받고, 퇴직 시 비밀유지 의무를 재확인한다.",
+            "<strong>요구사항(2.2.3):</strong> 퇴직·직무변경 시 <strong>당일</strong> 계정·권한·출입카드·자산을 회수하고, 반납 결과를 기록한다.",
+            "<strong>결함 판정 포인트:</strong> 퇴직자 계정이 잔존하거나, 직무 변경 후 이전 권한이 그대로 유지된 경우 중대 결함(실제 침해 사고의 단골 원인).",
+            "<strong>결함 사례:</strong> 퇴사 3개월 후에도 VPN 계정이 활성 상태이거나, 부서 이동자의 이전 부서 문서 서버 접근 권한이 회수되지 않은 경우."
+          ]
+        },
+        {
+          "name": "2.3 외부자 보안 (2.3.1~2.3.3)",
+          "points": [
+            "<strong>요구사항(2.3.1):</strong> 협력업체·파견·유지보수 인력 등 외부자 현황을 관리하고, 업무 목적·기간·접근 범위를 명시한다.",
+            "<strong>요구사항(2.3.2):</strong> 외부자와 계약 시 보안 요구사항(비밀유지·접근 제한·위반 시 조치)을 문서에 포함한다.",
+            "<strong>요구사항(2.3.3):</strong> 외부자의 보안 요구사항 이행 여부를 주기적으로 확인하고, 위반 시 시정·계약 조치를 취한다.",
+            "<strong>결함 판정 포인트:</strong> 외부자에게 상시 계정을 부여하면서 사용 기간·접근 범위 제한이 없거나, 계약서에 보안 조항이 없는 경우 결함.",
+            "<strong>결함 사례:</strong> 유지보수 업체가 DB 전체 조회 권한을 상시 보유하거나, 외부자 출입기록·작업 이력 대장이 없는 경우."
+          ]
+        },
+        {
+          "name": "2.4 물리 보안 (2.4.1~2.4.4)",
+          "points": [
+            "<strong>요구사항(2.4.1·2.4.2):</strong> 전산실·통신실 등 보호구역을 지정하고, 출입자 인가·출입기록 보관·동행(에스코트) 규정을 운영한다. 출입기록은 최소 1년 이상 보관한다.",
+            "<strong>요구사항(2.4.3):</strong> 보호구역 내 정보시스템(서버·네트워크 장비·저장매체)을 물리적으로 보호하고, 반출입 통제·잠금·CCTV를 적용한다.",
+            "<strong>요구사항(2.4.4):</strong> 항온항습·소방·UPS 등 보호설비를 운영하고 점검 기록을 남긴다.",
+            "<strong>결함 판정 포인트:</strong> 출입기록이 없거나 보관 기간 미달, 보호구역 내 무인·개방 상태, 폐기 매체의 물리적 파기 미확인 시 결함.",
+            "<strong>결함 사례:</strong> 서버실 출입문이 상시 개방되어 있거나, 출입기록이 6개월만 보관되거나, 반출 승인 없는 노트북 반출이 확인된 경우."
+          ]
+        },
+        {
+          "name": "2.5 인증 및 권한 관리 (2.5.1~2.5.6)",
+          "points": [
+            "<strong>요구사항(2.5.1·2.5.3):</strong> 사용자 계정을 식별 가능하게 발급하고, 비밀번호·OTP·인증서 등 안전한 인증 수단을 적용한다. 서비스별 계정은 최소한으로 발급한다.",
+            "<strong>요구사항(2.5.4):</strong> 비밀번호 규칙(3종 8자리 또는 2종 10자리), 초기 비밀번호 변경 강제, 주기적 변경·재사용 제한, 평문 저장 금지.",
+            "<strong>요구사항(2.5.5):</strong> 관리자·특수 권한 계정(root·administrator·DB admin)을 별도 관리하고, 원격 접근 제한·작업 이력 기록을 적용한다.",
+            "<strong>요구사항(2.5.6):</strong> 접근 권한을 정기적으로(연 1회 이상) 검토해 불필요 권한을 회수하고 검토 결과를 기록한다.",
+            "<strong>결함 판정 포인트:</strong> 공용 계정 사용, 관리자 계정 공유, 권한 검토 결과 미기록, 퇴직자·장기 미사용 계정 잔존 시 결함.",
+            "<strong>결함 사례:</strong> 운영팀 3명이 동일한 admin 계정을 공유하거나, 6개월 이상 로그인 없는 계정이 활성 상태로 남아 있는 경우."
+          ]
+        },
+        {
+          "name": "2.6 접근통제 (2.6.1~2.6.7)",
+          "points": [
+            "<strong>요구사항(2.6.1·2.6.2):</strong> 네트워크·정보시스템 접근을 업무 필요에 따라 최소 허용하고, 서버·DB·네트워크 장비의 접근 경로를 통제한다(화이트리스트·방화벽 정책).",
+            "<strong>요구사항(2.6.6):</strong> 원격 접근은 승인된 인원·단말·경로로 제한하고, VPN·전용선·2차 인증을 적용하며 작업 이력을 남긴다.",
+            "<strong>요구사항(2.6.7):</strong> 접속기록을 최소 1년(5만 명 이상 고유식별정보·민감정보 처리 시 2년) 보관하고 월 1회 이상 이상징후를 점검한다.",
+            "<strong>증적:</strong> 방화벽 정책표, 계정·권한 목록, 접속기록 원본, 월별 점검 보고서·결재.",
+            "<strong>결함 판정 포인트:</strong> Any-Any 허용 정책, 접속기록 보관 기간 미달, 점검 기록이 형식적(사본만 존재)인 경우 결함.",
+            "<strong>결함 사례:</strong> DB 서버에 개발자 전체 IP 대역이 3306 포트로 허용되어 있거나, 접속기록 점검 결과가 '이상 없음' 한 줄로만 12개월치 존재하는 경우."
+          ]
+        },
+        {
+          "name": "2.7 암호화 적용 (2.7.1~2.7.2)",
+          "points": [
+            "<strong>요구사항(2.7.1):</strong> 개인정보·고유식별정보·비밀번호·바이오정보를 저장·전송 시 암호화하고, 암호 알고리즘·키 길이를 안전한 수준(AES-128 이상, SHA-256 이상)으로 정한다.",
+            "<strong>요구사항(2.7.2):</strong> 암호키의 생성·이용·보관·배포·파기를 절차로 정하고, 키를 코드·설정파일에 하드코딩하지 않으며 접근을 최소화한다.",
+            "<strong>핵심 기준:</strong> 비밀번호는 <strong>일방향 해시(bcrypt·PBKDF2 등 salt 포함)</strong>, 주민등록번호 등 고유식별정보는 저장 시 암호화, 전송 구간은 TLS 적용.",
+            "<strong>결함 판정 포인트:</strong> 개인정보 컬럼이 평문이거나, 비밀번호를 SHA-256 단독·평문 저장, 전송 구간 HTTP 허용, 키 관리 절차·담당자 부재 시 결함.",
+            "<strong>결함 사례:</strong> 회원 테이블의 휴대전화번호가 평문으로 저장되어 있거나, 소스코드에 DB 암호화 키가 커밋된 경우(즉시 중대 결함)."
+          ]
+        },
+        {
+          "name": "2.8 개발 보안 (2.8.1~2.8.6)",
+          "points": [
+            "<strong>요구사항(2.8.1·2.8.2):</strong> 개발 착수 시 보안 요구사항을 정의하고, 설계·구현 단계에서 보안 검토(위협 모델링·아키텍처 검토)를 수행한다.",
+            "<strong>요구사항(2.8.3·2.8.5):</strong> 소스코드 보안약점 점검(정적 분석)을 수행하고, <strong>운영 데이터를 시험·개발 환경에서 사용하지 않는다</strong>(불가피하면 가명·마스킹 처리).",
+            "<strong>요구사항(2.8.4·2.8.6):</strong> 개발·시험·운영 환경을 분리하고, 소스코드 및 배포 파일의 무단 변경·유출을 통제한다(형상관리·접근통제).",
+            "<strong>결함 판정 포인트:</strong> 개발 서버에 운영 DB가 그대로 연결되어 있거나, 소스 저장소에 개인정보·키가 포함된 경우 중대 결함.",
+            "<strong>결함 사례:</strong> 테스트 환경이 운영 개인정보 100만 건을 그대로 복제해 사용하거나, 형상관리 없이 개발자 PC에서 직접 운영 서버에 배포하는 경우."
+          ]
+        },
+        {
+          "name": "2.9 운영 보안 (2.9.1~2.9.4)",
+          "points": [
+            "<strong>요구사항(2.9.1·2.9.2):</strong> 변경 관리 절차(요청-검토-승인-이력)와 성능·용량 모니터링을 운영하고, 변경 시 영향 평가를 수행한다.",
+            "<strong>요구사항(2.9.3):</strong> 중요 정보를 주기적으로 백업하고, 백업 데이터를 안전한 장소(분리·암호화)에 보관하며 <strong>연 1회 이상 복구 모의훈련</strong>을 실시한다.",
+            "<strong>요구사항(2.9.4):</strong> 로그를 안전하게 보관(위변조 방지·최소 보관 기간)하고 정기적으로 검토한다.",
+            "<strong>결함 판정 포인트:</strong> 변경 이력·승인 기록 부재, 백업은 있으나 복구 훈련 기록이 없는 경우, 로그가 시스템 계정으로 조작 가능한 경우 결함.",
+            "<strong>결함 사례:</strong> 운영 서버 설정을 승인 없이 직접 변경했거나, 백업 파일이 운영 서버와 동일한 저장소에 있고 암호화되지 않은 경우."
+          ]
+        },
+        {
+          "name": "2.10~2.12 침해사고 예방·대응 및 재해복구",
+          "points": [
+            "<strong>요구사항(2.10.1·2.10.2):</strong> 패치·백신·취약점 점검 등 침해사고 예방 활동을 수행하고, 침해사고 대응 절차·조직·연락망을 수립한다.",
+            "<strong>요구사항(2.11.1~2.11.3):</strong> 침해사고 탐지·대응·복구 절차를 운영하고, 사고 발생 시 원인 분석과 재발방지 대책을 수립하며 필요 시 외부기관(KISA)에 신고한다.",
+            "<strong>요구사항(2.12.1):</strong> 재해·재난 대비 복구 계획(BCP/DRP)을 수립하고, RTO·RPO를 정해 주기적으로 모의훈련으로 검증한다.",
+            "<strong>결함 판정 포인트:</strong> 대응 절차가 문서로만 존재하고 모의훈련·연락망 갱신이 없거나, RTO 목표 대비 실제 복구 시간이 검증되지 않은 경우 결함.",
+            "<strong>결함 사례:</strong> 침해사고 대응 훈련이 3년간 없었거나, 재해복구센터는 계약만 있고 실제 전환 훈련 기록이 없는 경우."
           ]
         }
       ]
     },
     {
-      "title": "3영역. 개인정보 처리단계별 요구사항 (22개 기준 핵심)",
+      "title": "3영역. 개인정보 처리단계별 요구사항 (22개 기준)",
       "topics": [
         {
-          "name": "수집·이용 및 제공·위탁 (3.1 ~ 3.3)",
+          "name": "3.1.1 개인정보 수집·이용 동의",
           "points": [
-            "3.1.2 수집 제한: 필수항목과 선택항목을 엄격히 구분, 선택항목 미동의를 이유로 기본 서비스 제공 거부 금지.",
-            "3.2.1 현황 관리: 개인정보 처리방침과 실제 시스템 수집·이용 항목 간 100% 일치성 유지.",
-            "3.3.1 제3자 제공: 정보주체의 별도 동의 필수 (목적, 받는 자, 항목, 보유기간).",
-            "3.3.2 업무 위탁: 계약서에 법정 필수사항 명시 및 연 1회 이상 수탁사 처리 실태 관리·감독 점검 실시."
+            "<strong>요구사항:</strong> 수집·이용 시 목적, 항목, 보유기간, 동의 거부권 및 불이익을 명확히 고지하고 동의를 받는다. 필수·선택 항목을 구분한다.",
+            "<strong>법적 근거:</strong> 개인정보보호법 제15조(수집·이용), 제22조(동의 방법 — 중요한 내용은 별도 구분·명확한 표시).",
+            "<strong>증적:</strong> 동의 화면 캡처, 동의서 양식, 처리방침, 동의 이력 저장 데이터, 광고성 정보 수신 동의 분리 화면.",
+            "<strong>결함 판정 포인트:</strong> 선택 항목 미동의 시 서비스 제공을 거부하거나, 동의 항목이 기본 체크되어 있거나, 동의 이력(일시·버전)을 저장하지 않은 경우 결함.",
+            "<strong>결함 사례:</strong> '전체 동의'만 제공하고 개별 선택이 불가능하거나, 2022년 이후 개정 기준(만 14세 미만 법정대리인 동의 등)이 화면에 반영되지 않은 경우."
           ]
         },
         {
-          "name": "파기 및 정보주체 권리보장 (3.4 ~ 3.5)",
+          "name": "3.1.2~3.1.4 수집 제한·주민번호·민감정보",
           "points": [
-            "3.4.1 개인정보 파기: 보유기간 경과 또는 처리 목적 달성 시 지체 없이(5일 이내) 복구 불가능하게 영구 파기.",
-            "3.4.1 분리보관: 타 법령에 따라 보존해야 하는 경우 운영 DB에서 물리적/논리적으로 분리된 별도 저장소에 보관.",
-            "3.5.1 권리 보장: 정보주체의 열람, 정정, 삭제, 처리정지 요구에 대해 10일 이내에 조치 결과 통지."
+            "<strong>요구사항(3.1.2):</strong> 처리 목적에 필요한 최소 항목만 수집하고, 목적과 무관한 정보를 요구하지 않는다. 선택 항목 미동의를 이유로 한 불이익을 금지한다.",
+            "<strong>요구사항(3.1.3):</strong> 주민등록번호는 법령에 구체적 근거가 있는 경우에만 처리하고, 근거 미비 시 처리하지 않는다. 수집 시 암호화·마스킹을 적용한다.",
+            "<strong>요구사항(3.1.4):</strong> 사상·신념·건강·성생활 등 민감정보와 여권번호·운전면허번호 등 고유식별정보는 별도 동의 또는 법령 근거가 필요하다.",
+            "<strong>결함 판정 포인트:</strong> 회원가입에 주민등록번호를 필수로 받거나, 목적과 무관한 직장·소득 정보를 수집하는 경우 결함.",
+            "<strong>결함 사례:</strong> 법령 근거 없이 주민등록번호를 수집·보관하거나, 민감정보(병력)를 별도 동의 없이 상담 게시판 입력 항목으로 받는 경우."
+          ]
+        },
+        {
+          "name": "3.2.1~3.2.2 개인정보 이용 및 목적 외 이용 제한",
+          "points": [
+            "<strong>요구사항(3.2.1):</strong> 수집 목적 범위 내에서만 개인정보를 이용하고, 처리방침과 실제 이용 항목·목적을 일치시켜 관리한다.",
+            "<strong>요구사항(3.2.2):</strong> 목적 외 이용·제공 시 별도 동의 또는 법령 근거가 필요하며, 가명정보 활용 시 적정성 검토·재식별 금지 조치를 갖춘다.",
+            "<strong>증적:</strong> 처리방침, 개인정보 이용 현황표, 목적 외 이용 심의 기록, 가명처리 적정성 검토서.",
+            "<strong>결함 판정 포인트:</strong> 마케팅 활용 동의 없이 수집 정보를 프로모션에 사용하거나, 처리방침에 없는 항목을 실제로 이용하는 경우 결함.",
+            "<strong>결함 사례:</strong> 배송 목적으로 받은 연락처로 광고 문자를 발송하거나, 가명정보를 결합·분석하면서 적정성 검토 기록을 남기지 않은 경우."
+          ]
+        },
+        {
+          "name": "3.3.1 제3자 제공",
+          "points": [
+            "<strong>요구사항:</strong> 제3자 제공 시 정보주체의 별도 동의를 받고, 제공받는 자·목적·항목·보유기간을 고지·명시한다. 제공 내역을 관리대장으로 기록한다.",
+            "<strong>법적 근거:</strong> 개인정보보호법 제17조(제3자 제공), 제18조(목적 외 이용·제공 제한).",
+            "<strong>증적:</strong> 제공 동의 화면, 제공 계약서·협약서, 제공 대장(일시·항목·수신자), 수탁·제공 현황 공개(처리방침).",
+            "<strong>결함 판정 포인트:</strong> 처리방침과 실제 제공처가 불일치하거나, 동의 없이 계열사·마케팅사에 제공한 경우 중대 결함.",
+            "<strong>결함 사례:</strong> 제휴사 제공 동의를 받았으나 실제로는 5개사에 제공하면서 1개사만 공개했거나, 제공 대장이 존재하지 않는 경우."
+          ]
+        },
+        {
+          "name": "3.3.2 업무 위탁",
+          "points": [
+            "<strong>요구사항:</strong> 위탁 시 위탁 업무·범위를 계약서에 명시하고, 수탁자의 개인정보 보호 조치를 관리·감독한다(연 1회 이상 점검·교육).",
+            "<strong>필수 기재:</strong> 위탁 목적, 처리 항목, 재위탁 제한, 안전성 확보조치, 손해배상·계약 해지 사유, 감독 권한.",
+            "<strong>공개 의무:</strong> 위탁 현황(수탁자·업무 내용)을 처리방침에 공개한다.",
+            "<strong>결함 판정 포인트:</strong> 재위탁이 계약 없이 이루어지거나, 수탁사 점검 기록이 없거나, 처리방침에 위탁 사실이 공개되지 않은 경우 결함.",
+            "<strong>결함 사례:</strong> 콜센터 위탁업체가 재위탁한 상태를 위탁사가 인지하지 못하거나, 위탁 계약서에 안전성 확보조치 조항이 없는 경우."
+          ]
+        },
+        {
+          "name": "3.4.1~3.4.2 파기 및 분리보관",
+          "points": [
+            "<strong>요구사항(3.4.1):</strong> 보유기간 경과·목적 달성 시 <strong>지체 없이(5일 이내)</strong> 파기하고, 파기 방법(파쇄·소각·완전 삭제)과 결과를 기록한다. 전자적 파일은 복구 불가능하게 삭제한다.",
+            "<strong>요구사항(3.4.2):</strong> 다른 법령에 따라 보존해야 하는 개인정보는 최소 항목만 <strong>분리보관</strong>하고, 목적 달성 시 파기한다.",
+            "<strong>증적:</strong> 파기 계획·결과 보고서, 파기 대장, 분리보관 DB·테이블 목록, 보존 근거 법령.",
+            "<strong>결함 판정 포인트:</strong> 휴면·탈퇴 회원 정보가 파기되지 않고 방치, 백업·로그에 개인정보가 무기한 잔존, 분리보관 없이 전체를 보존하는 경우 결함.",
+            "<strong>결함 사례:</strong> 탈퇴 후 1년이 지난 회원의 이름·연락처가 운영 DB에 그대로 있거나, 파기했다고 보고했으나 백업 테이블에 남아 있는 경우."
+          ]
+        },
+        {
+          "name": "3.5.1~3.5.2 정보주체 권리 보장",
+          "points": [
+            "<strong>요구사항:</strong> 정보주체의 열람·정정·삭제·처리정지 요구를 접수·처리할 절차와 창구를 마련하고, <strong>10일 이내</strong> 조치 결과를 통지한다.",
+            "<strong>확인 방법:</strong> 본인 확인 절차, 요구 접수·처리 대장, 처리 결과 통지 기록, 거부 시 사유·이의제기 안내.",
+            "<strong>처리방침 연계:</strong> 권리 행사 방법·담당 부서·연락처를 처리방침과 서비스 화면에 안내한다.",
+            "<strong>결함 판정 포인트:</strong> 권리 행사 창구가 없거나, 접수 후 10일을 초과해 처리하면서 지연 사유를 통지하지 않은 경우 결함.",
+            "<strong>결함 사례:</strong> 회원 탈퇴만 가능하고 열람·정정 요구 절차가 없거나, 요구 접수 이력이 개인 메일로만 관리되어 대장이 없는 경우."
           ]
         }
       ]

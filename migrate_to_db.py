@@ -320,7 +320,7 @@ def migrate_study_summaries():
     total_s_count = 0
     cur.execute("DELETE FROM study_summaries;") # 요약은 재구축
     
-    # 1. 정보보안기사 필기 요약 80선 (summary_notes.py -> items / 내용별 35선 + 용어사전 45선)
+    # 1. 정보보안기사 필기 요약 158선 (summary_notes.py -> items / 내용별 50선 + 용어사전 108선)
     sys.path.append(os.path.join(os.path.dirname(__file__), "exam_builder"))
     try:
         import summary_notes
@@ -341,12 +341,12 @@ def migrate_study_summaries():
         written_content = sum(1 for i in items if i.get("type") == "content")
         written_term = sum(1 for i in items if i.get("type") == "term")
         print(f"-> 정보보안기사 필기 요약 마이그레이션 완료: {len(items)}선 (내용별 {written_content}선 + 용어사전 {written_term}선)")
-        if written_content != 35 or written_term != 45:
-            raise SystemExit(f"[실패] 필기 요약 구성 불일치: 내용별 {written_content}선(35 기대) + 용어사전 {written_term}선(45 기대)")
+        if written_content != 50 or written_term != 108:
+            raise SystemExit(f"[실패] 필기 요약 구성 불일치: 내용별 {written_content}선(50 기대) + 용어사전 {written_term}선(108 기대)")
     except Exception as e:
         print(f"[경고] 정보보안기사 필기 요약 마이그레이션 오류: {e}")
         
-    # 2. 정보보안기사 실기 요약 50선 (practical_summary.py -> items)
+    # 2. 정보보안기사 실기 요약 95선 (practical_summary.py -> items / 내용별 35선 + 단답형 족보 60선)
     try:
         import practical_summary
         prac_summary = practical_summary.get_practical_summary()
@@ -363,7 +363,11 @@ def migrate_study_summaries():
                 json.dumps(item.get("points", []), ensure_ascii=False), now_kst
             ))
             total_s_count += 1
-        print(f"-> 정보보안기사 실기 요약 마이그레이션 완료: {len(items)}선")
+        prac_content = sum(1 for i in items if i.get("type") == "content")
+        prac_term = sum(1 for i in items if i.get("type") == "term")
+        print(f"-> 정보보안기사 실기 요약 마이그레이션 완료: {len(items)}선 (내용별 {prac_content}선 + 단답형 {prac_term}선)")
+        if prac_content != 35 or prac_term != 60:
+            raise SystemExit(f"[실패] 실기 요약 구성 불일치: 내용별 {prac_content}선(35 기대) + 단답형 {prac_term}선(60 기대)")
     except Exception as e:
         print(f"[경고] 정보보안기사 실기 요약 마이그레이션 오류: {e}")
 
@@ -383,7 +387,10 @@ def migrate_study_summaries():
                     json.dumps(top.get("points", []), ensure_ascii=False), now_kst
                 ))
                 total_s_count += 1
-        print(f"-> ISMS-P 요약 마이그레이션 완료")
+        ismsp_topic_count = sum(len(sec.get("topics", [])) for sec in ismsp_summary_data)
+        print(f"-> ISMS-P 요약 마이그레이션 완료: {ismsp_topic_count}선")
+        if ismsp_topic_count < 25:
+            raise SystemExit(f"[실패] ISMS-P 요약 부족: {ismsp_topic_count}선(25선 이상 기대)")
     except Exception as e:
         print(f"[경고] ISMS-P 요약 마이그레이션 오류: {e}")
 

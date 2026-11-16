@@ -2,9 +2,9 @@
 """
 summary_notes.py
 2026 이기적 정보보안기사 필기+실기 올인원 편제 기준
-- 내용별(주제별) 핵심 심층 정리 35선
-- 필수 핵심 용어 사전 45선
-총 80개의 고밀도 세부 요약 모듈
+- 내용별(주제별) 핵심 심층 정리 50선 (기본 35선 + 확장 15선: summary_notes_ext.py)
+- 필수 핵심 용어 사전 108선 (기본 45선 + 확장 63선: summary_terms_ext.py)
+총 158개의 고밀도 세부 요약 모듈
 """
 
 def get_written_summary():
@@ -742,7 +742,30 @@ def get_written_summary():
             ]
         })
 
+    # =========================================================================
+    # 2026-11-17 확장분: 내용별 15선 + 필수 용어 63선 (총 158선)
+    # =========================================================================
+    try:
+        from summary_notes_ext import get_extra_written_content
+        from summary_terms_ext import get_extra_written_terms, ENRICH_TERMS
+    except ImportError:
+        from .summary_notes_ext import get_extra_written_content
+        from .summary_terms_ext import get_extra_written_terms, ENRICH_TERMS
+
+    # 기존 45선(단문 정의)도 [출제 포인트]·[함정·암기]를 붙여 카드당 밀도를 200자 이상으로 보강
+    for item in items:
+        if item.get("type") != "term":
+            continue
+        key = item["title"].split("] ", 1)[-1].split(" (")[0]
+        extra = ENRICH_TERMS.get(key)
+        if extra:
+            item["points"].append(f"<strong>출제 포인트:</strong> {extra[0]}")
+            item["points"].append(f"<strong>함정·암기:</strong> {extra[1]}")
+
+    items.extend(get_extra_written_content())
+    items.extend(get_extra_written_terms())
+
     return {
-        "title": "2026 이기적 정보보안기사 필기 내용별 심층 요약 & 필수 용어 사전 (총 80선)",
+        "title": "2026 이기적 정보보안기사 필기 내용별 심층 요약 50선 & 필수 용어 사전 108선 (총 158선)",
         "items": items
     }

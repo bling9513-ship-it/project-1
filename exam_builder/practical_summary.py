@@ -2,9 +2,9 @@
 """
 practical_summary.py
 2026 이기적 정보보안기사 필기+실기 올인원 실기 편제 기준
-- 실기 내용별 심층 요약 20선
-- 실기 필수 단답형 핵심 용어사전 30선
-총 50개 실기 전용 모듈
+- 실기 내용별 심층 요약 35선 (기본 20선 + 확장 15선: practical_summary_ext.py)
+- 실기 필수 단답형 핵심 용어사전 60선 (기본 30선 + 확장 30선)
+총 95개 실기 전용 모듈
 """
 
 def get_practical_summary():
@@ -259,6 +259,16 @@ def get_practical_summary():
     })
 
     # ==========================================
+    # =========================================================================
+    # [확장] 실기 내용별 실무 요약 추가 15선 (총 35선)
+    # =========================================================================
+    try:
+        from practical_summary_ext import get_extra_practical_content, get_extra_practical_terms
+    except ImportError:
+        from .practical_summary_ext import get_extra_practical_content, get_extra_practical_terms
+
+    items.extend(get_extra_practical_content())
+
     # [필수 단답형 핵심 용어사전 30선]
     # ==========================================
     practical_terms = [
@@ -306,7 +316,22 @@ def get_practical_summary():
             "points": [desc]
         })
 
+    # [확장] 실기 단답형 족보 추가 30선 (총 60선) + 기존 30선 보강
+    try:
+        from practical_summary_ext import PRACTICAL_ENRICH
+    except ImportError:
+        from .practical_summary_ext import PRACTICAL_ENRICH
+    for item in items:
+        if item.get("type") != "term":
+            continue
+        extra = PRACTICAL_ENRICH.get(item.get("term", ""))
+        if extra:
+            item["points"].append(f"<strong>출제 형태:</strong> {extra[0]}")
+            item["points"].append(f"<strong>암기 팁:</strong> {extra[1]}")
+
+    items.extend(get_extra_practical_terms())
+
     return {
-        "title": "2026 이기적 정보보안기사 실기 핵심 실무 가이드 & 단답형 족보 (총 50선)",
+        "title": "2026 이기적 정보보안기사 실기 핵심 실무 가이드 35선 & 단답형 족보 60선 (총 95선)",
         "items": items
     }

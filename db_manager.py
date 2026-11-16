@@ -831,22 +831,22 @@ def export_study_data_from_db(db_path=DB_PATH):
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.json"), "w", encoding="utf-8") as f:
         json.dump(cppg_list, f, ensure_ascii=False, indent=2)
 
-    # 2. 정보보안기사 필기 200제 (1~4회 각 50제) + 내용별 35선 · 용어사전 45선 = 80선
+    # 2. 정보보안기사 필기 200제 (1~4회 각 50제) + 내용별 50선 · 용어사전 108선 = 158선
     written_qs = load_questions("infosec_written", "written")
     written_summaries = load_summaries("infosec_written")
     written_data = {
-        "title": "2026 이기적 정보보안기사 (필기) 200제 & 내용별 심층요약·용어사전 80선",
-        "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 35선 + 필수 핵심 용어사전 45선",
+        "title": "2026 이기적 정보보안기사 (필기) 200제 & 내용별 심층요약·용어사전 158선",
+        "description": "2026 이기적 정보보안기사 필기+실기 올인원 편제 기준 1~4회 모의고사(각 50제) 총 200문항 및 내용별 심층 요약 50선 + 필수 핵심 용어사전 108선",
         "questions": written_qs,
         "summaries": written_summaries
     }
 
-    # 3. 정보보안기사 실기 100제 (1~4회 각 25제) + 내용별 20선 + 단답형 족보 30선
+    # 3. 정보보안기사 실기 100제 (1~4회 각 25제) + 내용별 35선 + 단답형 족보 60선 = 95선
     practical_qs = load_questions("infosec_practical", "prac", with_type=True)
     practical_summaries = load_summaries("infosec_practical")
     practical_data = {
-        "title": "2026 이기적 정보보안기사 (실기) 100제 & 단답형 족보·실무 가이드 50선",
-        "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 20선 + 단답형 족보 30선",
+        "title": "2026 이기적 정보보안기사 (실기) 100제 & 단답형 족보·실무 가이드 95선",
+        "description": "2026 이기적 정보보안기사 올인원 실기 편제 기준 1~4회(단답 50제 + 서술실무 50제) 총 100문항 및 실기 내용별 심층 요약 35선 + 단답형 족보 60선",
         "questions": practical_qs,
         "summaries": practical_summaries
     }
@@ -856,8 +856,8 @@ def export_study_data_from_db(db_path=DB_PATH):
 
     from build_infosec_all import ismsp_summary_data
     ismsp_data = {
-        "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 102개 기준 결함사례",
-        "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 102개 전 기준 결함사례 총람",
+        "title": "ISMS-P 인증심사원 실전 결함판정 퀴즈 (30제) & 인증기준 심층 요약 25선",
+        "description": "1영역 관리체계(16개) · 2영역 보호대책(64개) · 3영역 개인정보(22개) 실전 결함판정 시나리오 퀴즈 1·2회(총 30문항) 및 인증기준별 요구사항·결함 판정 포인트 25선",
         "questions": ismsp_qs,
         "summaries": ismsp_summary_data
     }
@@ -884,7 +884,7 @@ window.ISMSP_AUDITOR_DATA = {json.dumps(ismsp_data, ensure_ascii=False, indent=2
     print(f"[DB -> Web] 시험 공부 데이터셋 동기화 빌드 완료! "
           f"(필기 {len(written_qs)}문항·요약 {len(written_summaries)}선 / "
           f"실기 {len(practical_qs)}문항·요약 {len(practical_summaries)}선 / "
-          f"ISMS-P {len(ismsp_qs)}문항·요약 {len(ismsp_data['summaries'])}선)")
+          f"ISMS-P {len(ismsp_qs)}문항·요약 {sum(len(x.get('topics', [])) for x in ismsp_data['summaries'])}선)")
 
     conn.close()
     return {
