@@ -52,7 +52,10 @@ SECURITY_PATTERNS = [
 EXCLUDE_PATTERNS = [
     r"경비", r"보안요원", r"물류센터\s*보안", r"시설\s*보안", r"주차\s*보안",
     r"출입\s*보안", r"보안\s*안내", r"특수경비", r"청원경찰",
-    r"마케팅", r"디자이너", r"영업", r"\bmd\b", r"hvac", r"캐스팅"
+    r"마케팅", r"디자이너", r"영업", r"\bmd\b", r"hvac", r"캐스팅",
+    # 임원·수행 비서 등 보안 키워드가 회사명에만 걸린 비보안 직무
+    # (예: "[강서] 정보보안 솔루션 기업 'W'사 임원비서")
+    r"비서", r"수행\s*기사"
 ]
 
 def get_today_kst():
@@ -2203,7 +2206,7 @@ def main():
         key = normalize_key(job["company"], job["title"])
         seen_keys.add(key)
         raw_deadline = job.get("deadline", "상시채용")
-        dl_status, status = parse_deadline_status(raw_deadline, today_date)
+        dl_status, status = parse_deadline_status(raw_deadline, today_date, now_kst)
         
         cur.execute("""
         INSERT INTO jobs (
