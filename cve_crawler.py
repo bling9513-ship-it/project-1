@@ -630,7 +630,9 @@ def action_ko(action):
 def fallback_korean(rec, reason=""):
     """EXAONE 실패 시 제품·CVSS·CISA 권고·취약점 유형으로 한국어 문구를 구성한다."""
     vtype = guess_vuln_type(rec)
-    label = clean(product_label(rec), 60)
+    label = clean(product_label(rec), 70)
+    if label and label[0].islower() and len(label.split()[0]) <= 14:
+        label = label[0].upper() + label[1:]
     sev = rec.get("severity") or "UNKNOWN"
     cvss = rec.get("cvss_score")
     epss = rec.get("epss_score")
@@ -638,7 +640,7 @@ def fallback_korean(rec, reason=""):
         title = f"{label} 보안 취약점".strip()
     else:
         title = f"{label} {TYPE_HINT.get(vtype, '취약점')} 취약점".strip()
-    title = re.sub(r"\s+", " ", title)[:80]
+    title = re.sub(r"\s+", " ", title)[:110]
 
     bits = []
     if rec.get("is_kev"):
