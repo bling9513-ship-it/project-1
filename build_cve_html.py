@@ -1245,7 +1245,6 @@ def build_briefing(items):
     rows = []
     # 기한 경과 → 임박 순으로 최대 4건 노출
     for it in (overdue[-2:] + imminent)[:4]:
-        prod = it.get("product") or it.get("vendor") or "영향 제품"
         d = due_date(it)
         if d < today:
             tag = f"기한 경과 {(today - d).days}일"
@@ -1259,17 +1258,16 @@ def build_briefing(items):
         rows.append(
             '<div class="priority-row">'
             f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
-            f'<span>{esc(prod)} · {esc(it.get("title_ko", ""))}</span>'
+            f'<span>{esc(it.get("title_ko", ""))}</span>'
             f'<span class="{cls}">{tag} ({esc(it["kev_due_date"])})</span>'
             "</div>"
         )
     if not rows:
         for it in kev_items[:3]:
-            prod = it.get("product") or it.get("vendor") or "영향 제품"
             rows.append(
                 '<div class="priority-row">'
                 f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
-                f'<span>{esc(prod)} · {esc(it.get("title_ko", ""))}</span>'
+                f'<span>{esc(it.get("title_ko", ""))}</span>'
                 "</div>"
             )
     if not rows:
