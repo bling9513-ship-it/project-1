@@ -1646,9 +1646,10 @@ def generate_html(jobs, update_time_str):
           <span class="brand-name">Infosec Archive</span>
         </a>
         <div class="nav-tabs">
-          <a href="index.html" class="nav-tab-item active">보안 채용공고</a>
+          <a href="index.html" class="nav-tab-item active">채용공고</a>
           <a href="study.html" class="nav-tab-item">시험 공부</a>
-          <a href="ai.html" class="nav-tab-item">AI 기술·트렌드</a>
+          <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
+          <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
         </div>
       </div>
 
@@ -2126,6 +2127,7 @@ def generate_readme(jobs, update_time_str):
         f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
         "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",
+        "> **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)",
         "> **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)",
         "",
         "원티드, 점핏, 사람인, 리멤버, 잡코리아, 인크루트의 정보보안 포지션을 정밀 직무 필터링을 거쳐 선별하고 공유하는 정보 아카이브 레포지토리입니다.",

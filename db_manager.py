@@ -107,7 +107,43 @@ def init_db(db_path=DB_PATH):
     cur.execute("CREATE INDEX IF NOT EXISTS idx_ai_category ON ai_insights(category);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_ai_published ON ai_insights(published_at);")
 
-    # 5. DB 메타 정보 테이블
+    # 5. CVE 취약점 리포트 테이블 (CISA KEV · CIRCL · NVD · EPSS · GitHub PoC)
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS cve_reports (
+        cve_id TEXT PRIMARY KEY,
+        title_ko TEXT NOT NULL,
+        summary_ko TEXT NOT NULL,
+        impact_ko TEXT,
+        remediation_ko TEXT,
+        cvss_score REAL,
+        severity TEXT,              -- CRITICAL, HIGH, MEDIUM, LOW, UNKNOWN
+        epss_score REAL,            -- 0~1 악용 확률
+        epss_percentile REAL,
+        is_kev INTEGER NOT NULL DEFAULT 0,
+        kev_date_added TEXT,
+        kev_due_date TEXT,
+        kev_required_action TEXT,
+        kev_ransomware TEXT,
+        vendor TEXT,
+        product TEXT,
+        affected_products TEXT,     -- JSON Array
+        poc_count INTEGER DEFAULT 0,
+        poc_links_json TEXT,        -- JSON Array
+        references_json TEXT,       -- JSON Array
+        cwe TEXT,                   -- JSON Array
+        description_orig TEXT,      -- 원문 설명 (영문)
+        published_at TEXT,
+        updated_at TEXT,
+        analyzed_by TEXT,           -- exaone, fallback, cache
+        created_at TEXT
+    );
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_severity ON cve_reports(severity);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_kev ON cve_reports(is_kev);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_epss ON cve_reports(epss_score);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_published ON cve_reports(published_at);")
+
+    # 6. DB 메타 정보 테이블
     cur.execute("""
     CREATE TABLE IF NOT EXISTS db_meta (
         key TEXT PRIMARY KEY,
@@ -386,6 +422,9 @@ def get_db_stats(db_path=DB_PATH):
 
     cur.execute("SELECT COUNT(*) FROM ai_insights;")
     total_ai = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM cve_reports;")
+    total_cve = cur.fetchone()[0]
     
     conn.close()
     return {
@@ -394,7 +433,8 @@ def get_db_stats(db_path=DB_PATH):
         "total_jobs": active_jobs + expired_jobs,
         "total_questions": total_questions,
         "total_summaries": total_summaries,
-        "total_ai_insights": total_ai
+        "total_ai_insights": total_ai,
+        "total_cve": total_cve
     }
 
 # ---------------------------------------------------------------------------
@@ -498,6 +538,162 @@ def get_ai_insights(limit=None, db_path=DB_PATH):
         })
     conn.close()
     return items
+
+# ---------------------------------------------------------------------------
+# CVE 취약점 리포트 (cve_reports)
+# ---------------------------------------------------------------------------
+
+def upsert_cve_reports(items, db_path=DB_PATH):
+    """CVE 분석 결과를 cve_id 기준 UPSERT (수집·분석 재실행 대비)"""
+    if not items:
+        return 0
+
+    kst = timezone(timedelta(hours=9))
+    now_str = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
+
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    count = 0
+    for it in items:
+        cur.execute("""
+        INSERT INTO cve_reports (
+            cve_id, title_ko, summary_ko, impact_ko, remediation_ko,
+            cvss_score, severity, epss_score, epss_percentile, is_kev,
+            kev_date_added, kev_due_date, kev_required_action, kev_ransomware,
+            vendor, product, affected_products, poc_count, poc_links_json,
+            references_json, cwe, description_orig, published_at, updated_at,
+            analyzed_by, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(cve_id) DO UPDATE SET
+            title_ko = excluded.title_ko,
+            summary_ko = excluded.summary_ko,
+            impact_ko = excluded.impact_ko,
+            remediation_ko = excluded.remediation_ko,
+            cvss_score = excluded.cvss_score,
+            severity = excluded.severity,
+            epss_score = excluded.epss_score,
+            epss_percentile = excluded.epss_percentile,
+            is_kev = excluded.is_kev,
+            kev_date_added = excluded.kev_date_added,
+            kev_due_date = excluded.kev_due_date,
+            kev_required_action = excluded.kev_required_action,
+            kev_ransomware = excluded.kev_ransomware,
+            vendor = excluded.vendor,
+            product = excluded.product,
+            affected_products = excluded.affected_products,
+            poc_count = excluded.poc_count,
+            poc_links_json = excluded.poc_links_json,
+            references_json = excluded.references_json,
+            cwe = excluded.cwe,
+            description_orig = excluded.description_orig,
+            published_at = excluded.published_at,
+            updated_at = excluded.updated_at,
+            analyzed_by = excluded.analyzed_by;
+        """, (
+            it["cve_id"],
+            it["title_ko"],
+            it["summary_ko"],
+            it.get("impact_ko", ""),
+            it.get("remediation_ko", ""),
+            it.get("cvss_score"),
+            it.get("severity", "UNKNOWN"),
+            it.get("epss_score"),
+            it.get("epss_percentile"),
+            1 if it.get("is_kev") else 0,
+            it.get("kev_date_added", ""),
+            it.get("kev_due_date", ""),
+            it.get("kev_required_action", ""),
+            it.get("kev_ransomware", ""),
+            it.get("vendor", ""),
+            it.get("product", ""),
+            json.dumps(it.get("affected_products", []), ensure_ascii=False),
+            len(it.get("poc_links", [])),
+            json.dumps(it.get("poc_links", []), ensure_ascii=False),
+            json.dumps(it.get("references", []), ensure_ascii=False),
+            json.dumps(it.get("cwe", []), ensure_ascii=False),
+            it.get("description_orig", ""),
+            it.get("published_at", ""),
+            it.get("updated_at", "") or now_str,
+            it.get("analyzed_by", "fallback"),
+            now_str,
+        ))
+        count += 1
+    conn.commit()
+    conn.close()
+    return count
+
+
+def get_cve_reports(limit=None, db_path=DB_PATH):
+    """CVE 리포트 조회 (KEV 실제 악용 → CVSS → EPSS → 최신순)"""
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    sql = """
+    SELECT cve_id, title_ko, summary_ko, impact_ko, remediation_ko,
+           cvss_score, severity, epss_score, epss_percentile, is_kev,
+           kev_date_added, kev_due_date, kev_required_action, kev_ransomware,
+           vendor, product, affected_products, poc_count, poc_links_json,
+           references_json, cwe, description_orig, published_at, updated_at,
+           analyzed_by
+    FROM cve_reports
+    ORDER BY is_kev DESC, COALESCE(cvss_score, 0) DESC, COALESCE(epss_score, 0) DESC,
+             published_at DESC, cve_id DESC
+    """
+    params = ()
+    if limit:
+        sql += " LIMIT ?"
+        params = (int(limit),)
+    cur.execute(sql, params)
+    rows = cur.fetchall()
+    items = []
+    for r in rows:
+        items.append({
+            "cve_id": r["cve_id"],
+            "title_ko": r["title_ko"],
+            "summary_ko": r["summary_ko"],
+            "impact_ko": r["impact_ko"] or "",
+            "remediation_ko": r["remediation_ko"] or "",
+            "cvss_score": r["cvss_score"],
+            "severity": r["severity"] or "UNKNOWN",
+            "epss_score": r["epss_score"],
+            "epss_percentile": r["epss_percentile"],
+            "is_kev": bool(r["is_kev"]),
+            "kev_date_added": r["kev_date_added"] or "",
+            "kev_due_date": r["kev_due_date"] or "",
+            "kev_required_action": r["kev_required_action"] or "",
+            "kev_ransomware": r["kev_ransomware"] or "",
+            "vendor": r["vendor"] or "",
+            "product": r["product"] or "",
+            "affected_products": json.loads(r["affected_products"]) if r["affected_products"] else [],
+            "poc_count": r["poc_count"] or 0,
+            "poc_links": json.loads(r["poc_links_json"]) if r["poc_links_json"] else [],
+            "references": json.loads(r["references_json"]) if r["references_json"] else [],
+            "cwe": json.loads(r["cwe"]) if r["cwe"] else [],
+            "description_orig": r["description_orig"] or "",
+            "published_at": r["published_at"] or "",
+            "updated_at": r["updated_at"] or "",
+            "analyzed_by": r["analyzed_by"] or "",
+        })
+    conn.close()
+    return items
+
+
+def get_cve_stats(db_path=DB_PATH):
+    """CVE 리포트 요약 지표"""
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM cve_reports;")
+    total = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM cve_reports WHERE severity = 'CRITICAL';")
+    critical = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM cve_reports WHERE severity = 'HIGH';")
+    high = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM cve_reports WHERE is_kev = 1;")
+    kev = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM cve_reports WHERE poc_count > 0;")
+    poc = cur.fetchone()[0]
+    conn.close()
+    return {"total": total, "critical": critical, "high": high, "kev": kev, "poc": poc}
+
 
 def export_jobs_to_json(out_path="jobs.json", db_path=DB_PATH):
     """DB의 활성 공고를 jobs.json으로 내보내기 (웹 프론트엔드 연동)"""
