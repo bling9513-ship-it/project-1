@@ -1044,9 +1044,10 @@ html_content = """<!DOCTYPE html>
           <span class="brand-name">Infosec Archive</span>
         </a>
         <div class="nav-tabs">
-          <a href="index.html" class="nav-tab-item">보안 채용공고</a>
+          <a href="index.html" class="nav-tab-item">채용공고</a>
           <a href="study.html" class="nav-tab-item active">시험 공부</a>
-          <a href="ai.html" class="nav-tab-item">AI 기술·트렌드</a>
+          <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
+          <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
         </div>
       </div>
 
