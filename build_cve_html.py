@@ -1309,9 +1309,17 @@ def build():
     with open(CVE_DATA_JSON, "w", encoding="utf-8") as f:
         json.dump({"meta": meta, "items": items}, f, ensure_ascii=False, indent=2)
 
+    # 화면에는 한국어 정리본만 싣는다 (영문 원문·CISA 원문 권고는 데이터 파일에만 보관)
+    ui_items = []
+    for it in items:
+        ui = dict(it)
+        ui.pop("description_orig", None)
+        ui.pop("kev_required_action", None)
+        ui_items.append(ui)
+
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
-    html = html.replace("__ITEMS_JSON__", json.dumps(items, ensure_ascii=False))
+    html = html.replace("__ITEMS_JSON__", json.dumps(ui_items, ensure_ascii=False))
     html = html.replace("__META_JSON__", json.dumps(meta, ensure_ascii=False))
     html = html.replace("__UPDATED_AT__", esc(updated_at))
     html = html.replace("__COLLECTED_AT__", esc(collected or updated_at))
