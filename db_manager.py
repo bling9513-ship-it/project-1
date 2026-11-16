@@ -214,7 +214,8 @@ def parse_seen_date(last_seen_at):
 def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
     """마감일 문자열을 분석하여 상태값과 마감 여부(ACTIVE/EXPIRED) 판별
 
-    last_seen_at: 수집 시각(선택). 시각만 적힌 당일 마감 표기는 오늘 수집된 경우에만 D-Day로 본다.
+    last_seen_at: 수집 시각(선택). 날짜 없는 상대 라벨(D-Day/오늘/내일/D-N)을 수집일 기준으로 환산하며,
+                  시각만 적힌 당일 마감 표기는 오늘 수집된 경우에만 D-Day로 본다.
     """
     if not today_date:
         kst = timezone(timedelta(hours=9))
@@ -251,18 +252,36 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         return "D_DAY", "ACTIVE"
 
     # 3. D-Day / 오늘 마감 (날짜 표기 없음)
+    #    상대 라벨은 수집한 날에만 유효하다. 마지막 수집일이 오늘 이전이면 그 사이 마감된 것으로 정리한다.
+    #    (예: 11/13 수집 "D-Day (오늘 마감)" 이 11/17에도 오늘 마감처럼 노출되던 문제)
     if "D-Day" in dl or "오늘" in dl:
+        seen = parse_seen_date(last_seen_at)
+        if seen is not None and seen < today_date:
+            return "EXPIRED", "EXPIRED"
         return "D_DAY", "ACTIVE"
-        
+
     # 4. 내일 마감 ("D-1" 부분 문자열 매칭은 D-10~D-19까지 잡히므로 사용하지 않음)
+    #    어제 수집된 "D-1 (내일 마감)"은 오늘이 마감일(D-Day), 그보다 오래된 수집분은 마감 처리.
     if "내일" in dl:
+        seen = parse_seen_date(last_seen_at)
+        if seen is not None:
+            if seen == today_date - timedelta(days=1):
+                return "D_DAY", "ACTIVE"
+            if seen < today_date - timedelta(days=1):
+                return "EXPIRED", "EXPIRED"
         return "URGENT", "ACTIVE"
-        
+
     # 5. D-N 계산 (날짜 표기 없음)
+    #    라벨은 수집일에 계산된 값이므로, 마지막 수집일과 오늘의 차이만큼 보정해 실제 남은 일수로 환산한다.
     m = re.search(r"D-(\d+)", dl)
     if m:
         days = int(m.group(1))
-        if days == 0:
+        seen = parse_seen_date(last_seen_at)
+        if seen is not None:
+            days -= (today_date - seen).days
+        if days < 0:
+            return "EXPIRED", "EXPIRED"
+        elif days == 0:
             return "D_DAY", "ACTIVE"
         elif 1 <= days <= 7:
             return "URGENT", "ACTIVE"
