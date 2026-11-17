@@ -4,9 +4,9 @@
     "critical": 61,
     "high": 17,
     "kev": 26,
-    "poc": 1,
+    "poc": 21,
     "collected_at": "2026-11-18 06:40:47 KST",
-    "built_at": "2026-11-18 06:48 KST",
+    "built_at": "2026-11-18 07:22 KST",
     "sources": [
       "CISA KEV",
       "CIRCL CVE",
@@ -36,8 +36,30 @@
       "affected_products": [
         "GitLab (< 19.2.8, < 19.3.5, < 19.4.2)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "jburgess-r7/CVE-2026-97229-PoC",
+          "url": "https://github.com/jburgess-r7/CVE-2026-97229-PoC",
+          "stars": 65,
+          "description": "GitLab CI lint integer-overflow RCE PoC for CVE-2026-97229, validated against the official 19.4.1 CE amd64 image",
+          "updated": "2026-11-12"
+        },
+        {
+          "name": "murat-levi/gitlab-rce-toolkit",
+          "url": "https://github.com/murat-levi/gitlab-rce-toolkit",
+          "stars": 4,
+          "description": "CVE-2026-97229 + CVE-2026-110264 — GitLab Onigmo RCE Exploit Toolkit (CVSS 10.0)",
+          "updated": "2026-11-03"
+        },
+        {
+          "name": "gandli/cve-2026-97229-lab",
+          "url": "https://github.com/gandli/cve-2026-97229-lab",
+          "stars": 2,
+          "description": "CVE-2026-97229 GitLab CI lint regex integer overflow RCE — InstaBox version matrix reproduction & libruby gadget reverse engineering",
+          "updated": "2026-10-31"
+        }
+      ],
       "references": [
         {
           "url": "https://gitlab.com/gitlab-org/gitlab/-/work_items/630686",
@@ -84,8 +106,30 @@
       "affected_products": [
         "Signalwire freeswitch (< 1.11.3)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "DeathShotXD/SIP2Shell",
+          "url": "https://github.com/DeathShotXD/SIP2Shell",
+          "stars": 47,
+          "description": "One SIP text message to FreeSWITCH, and you are running commands. Exploit, scanner and a real vulnerable/patched Docker lab for CVE-2026-116779.",
+          "updated": "2026-11-17"
+        },
+        {
+          "name": "hackzuoji/freeswitch-cve-2026-116779-POC",
+          "url": "https://github.com/hackzuoji/freeswitch-cve-2026-116779-POC",
+          "stars": 2,
+          "description": "",
+          "updated": "2026-11-07"
+        },
+        {
+          "name": "ashrafzaryouh/CVE-2026-116779",
+          "url": "https://github.com/ashrafzaryouh/CVE-2026-116779",
+          "stars": 1,
+          "description": "CVE-2026-116779",
+          "updated": "2026-11-16"
+        }
+      ],
       "references": [
         {
           "url": "https://github.com/signalwire/freeswitch/security/advisories/GHSA-mg63-h38w-8p9p",
@@ -134,8 +178,16 @@
       "affected_products": [
         "IBM Aspera Faspex (5.0.0)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "foxcornlab/faspex-scanner",
+          "url": "https://github.com/foxcornlab/faspex-scanner",
+          "stars": 0,
+          "description": "Detection-only triage for IBM Aspera Faspex CVE-2026-123218 (CVSS 9.8, CISA KEV): grades Faspex 5 installs against the 5.0.19 PL1 fix, catches the bare-5.0.19 t…",
+          "updated": "2026-11-10"
+        }
+      ],
       "references": [
         {
           "url": "https://www.ibm.com/support/pages/node/7295921",
@@ -170,8 +222,16 @@
       "affected_products": [
         "gpustack (< 2.2.0)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "fixedbyreboot/CVE-2026-102895-POC",
+          "url": "https://github.com/fixedbyreboot/CVE-2026-102895-POC",
+          "stars": 0,
+          "description": "POC for CVE-2026-102895 + CVE-2026-102894 - authentication bypass pair in GPUStack: default loopback-source trust promotes unauthenticated requests to admin, pl…",
+          "updated": "2026-11-14"
+        }
+      ],
       "references": [
         {
           "url": "https://github.com/gpustack/gpustack/security/advisories/GHSA-gj9m-f8ph-pmhr",
@@ -260,8 +320,30 @@
         "Adobe Magento Open Source (2.4.9-2026-jul, 2.4.8-2026-jul, 2.4.7-2026-jul, 2.4.6-2026-jul)",
         "Adobe Commerce Events (1.21.0)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "abraxas/CVE-2026-48356",
+          "url": "https://github.com/abraxas/CVE-2026-48356",
+          "stars": 0,
+          "description": "CVE-2026-48356 - Magento Open Source - Critical 9.3 - Unauthenticated POST /rest/default/V1/guest-carts/{cartId}/items - Unauthenticated Unrestricted File Uploa…",
+          "updated": "2026-10-28"
+        },
+        {
+          "name": "Ghost-Bx1/cve-2026-48356-magento-file-upload-rce",
+          "url": "https://github.com/Ghost-Bx1/cve-2026-48356-magento-file-upload-rce",
+          "stars": 0,
+          "description": "CVE-2026-48356 - Adobe Commerce/Magento Unrestricted File Upload RCE | CVSS 9.3 | By Gh0st-Bx1",
+          "updated": "2026-11-11"
+        },
+        {
+          "name": "Cyber-BansalAI/polyshell-2026",
+          "url": "https://github.com/Cyber-BansalAI/polyshell-2026",
+          "stars": 0,
+          "description": "Indicators and notes for PolyShell (CVE-2026-48356), the Magento and Adobe Commerce file-upload flaw, with credit to the researchers. Not tested, no warranty.",
+          "updated": "2026-11-06"
+        }
+      ],
       "references": [
         {
           "url": "https://helpx.adobe.com/security/products/magento/apsb26-73.html",
@@ -296,8 +378,16 @@
       "affected_products": [
         "Barracuda Networks Barracuda Email Security Gateway (ESG) (< 9.4.0.030)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "watchtowrlabs/watchTowr-vs-Barracuda-RCE-CVE-2026-116606-CVE-2026-111560",
+          "url": "https://github.com/watchtowrlabs/watchTowr-vs-Barracuda-RCE-CVE-2026-116606-CVE-2026-111560",
+          "stars": 4,
+          "description": "",
+          "updated": "2026-11-11"
+        }
+      ],
       "references": [
         {
           "url": "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/2026/MNDT-2026-0042.md",
@@ -336,8 +426,30 @@
       "affected_products": [
         "PHP Group PHP (< 8.2.35, < 8.3.36, < 8.4.27 외)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "ikow/php2shell-poc",
+          "url": "https://github.com/ikow/php2shell-poc",
+          "stars": 1979,
+          "description": "CVE-2026-109618/109619 — 5 RCE chains + detection rules (Suricata, Sigma, ModSecurity). PHP session.upload_progress pre-auth exploit research.",
+          "updated": "2026-11-17"
+        },
+        {
+          "name": "eness/php2shell-CVE-2026-109618-CVE-2026-109619-PoC",
+          "url": "https://github.com/eness/php2shell-CVE-2026-109618-CVE-2026-109619-PoC",
+          "stars": 1085,
+          "description": "Proof-of-Concept (PoC) exploit for php2shell (CVE-2026-109618 / CVE-2026-109619), demonstrating remote code execution in vulnerable PHP environments. For securi…",
+          "updated": "2026-11-16"
+        },
+        {
+          "name": "assetnote/php2shell-scanner",
+          "url": "https://github.com/assetnote/php2shell-scanner",
+          "stars": 1011,
+          "description": "High fidelity scanner for php2shell (CVE-2026-109618 and CVE-2026-109619)",
+          "updated": "2026-11-17"
+        }
+      ],
       "references": [
         {
           "url": "https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp",
@@ -436,8 +548,30 @@
       "affected_products": [
         "Google Brotli (< 1.0.10, < 1.1.1, < 1.2.1)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "assetnote/node2shell-scanner",
+          "url": "https://github.com/assetnote/node2shell-scanner",
+          "stars": 86,
+          "description": "High fidelity detection mechanism for node2shell (CVE-2026-111497)",
+          "updated": "2026-11-06"
+        },
+        {
+          "name": "dimasma0305/CVE-2026-111497-POC",
+          "url": "https://github.com/dimasma0305/CVE-2026-111497-POC",
+          "stars": 81,
+          "description": "Reproducible local Brotli decoder proof for CVE-2026-111497 with a self-checking tuned RCE harness",
+          "updated": "2026-11-11"
+        },
+        {
+          "name": "trailofbits/brotli-checker",
+          "url": "https://github.com/trailofbits/brotli-checker",
+          "stars": 70,
+          "description": "Claude Code and Codex skill for finding potentially vulnerable Brotli copies and guiding updates for CVE-2026-111497.",
+          "updated": "2026-11-10"
+        }
+      ],
       "references": [
         {
           "url": "https://nodejs.org/en/blog/vulnerability/october-2026-security-releases#nodejs-brotli-decoder-out-of-bounds-write-permits-remote-code-execution-cve-2026-111497---high",
@@ -482,8 +616,16 @@
         "Barracuda Networks Barracuda Message Archiver (BMA)",
         "Barracuda Networks Barracuda WAF Control Center (WCC)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "watchtowrlabs/watchTowr-vs-Barracuda-RCE-CVE-2026-116606-CVE-2026-111560",
+          "url": "https://github.com/watchtowrlabs/watchTowr-vs-Barracuda-RCE-CVE-2026-116606-CVE-2026-111560",
+          "stars": 4,
+          "description": "",
+          "updated": "2026-11-11"
+        }
+      ],
       "references": [
         {
           "url": "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/2026/MNDT-2026-0041.md",
@@ -559,8 +701,30 @@
       "affected_products": [
         "UnrealIRCd (< 6.2.7.1)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "Sable-Research/CVE-2026-114713",
+          "url": "https://github.com/Sable-Research/CVE-2026-114713",
+          "stars": 2,
+          "description": "Research on CVE-2026-114713 — UnrealIRCd labeled-response module: unescaped IRCv3 label tag allows any user to inject server-to-server commands with full server…",
+          "updated": "2026-11-15"
+        },
+        {
+          "name": "fixedbyreboot/CVE-2026-114713-POC",
+          "url": "https://github.com/fixedbyreboot/CVE-2026-114713-POC",
+          "stars": 0,
+          "description": "POC for CVE-2026-114713 - IRCv3 label-tag injection in UnrealIRCd escalating an unprivileged client message to server-to-server command authority on linked-serv…",
+          "updated": "2026-11-14"
+        },
+        {
+          "name": "foxcornlab/unrealircd-scanner",
+          "url": "https://github.com/foxcornlab/unrealircd-scanner",
+          "stars": 0,
+          "description": "Detection-only triage for UnrealIRCd CVE-2026-114713 (CVSS 8.6, CISA KEV 2026-11-13, actively exploited): IRCv3 label newline injection, fixed in 6.2.7.1 / hot-…",
+          "updated": "2026-11-14"
+        }
+      ],
       "references": [
         {
           "url": "https://www.unrealircd.org/",
@@ -603,8 +767,30 @@
       "affected_products": [
         "OpenBSD OpenSSH (< 10.6p2)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "gabrielunknown/CVE-2026-123158_SSHole",
+          "url": "https://github.com/gabrielunknown/CVE-2026-123158_SSHole",
+          "stars": 9,
+          "description": "CVE-2026-123158 SSHole — OpenSSH authentication bypass via musl crypt() overflow on Alpine Linux (Exploit PoC)",
+          "updated": "2026-11-11"
+        },
+        {
+          "name": "Maalfer/CVE-2026-123158",
+          "url": "https://github.com/Maalfer/CVE-2026-123158",
+          "stars": 4,
+          "description": "Exploit para explotar la vulnerabilidad CVE-2026-123158 (conocida como sshole).",
+          "updated": "2026-11-07"
+        },
+        {
+          "name": "ersinkoc/sshole-check",
+          "url": "https://github.com/ersinkoc/sshole-check",
+          "stars": 3,
+          "description": "Audit & interim mitigation for CVE-2026-123158 (*SSHole) — OpenSSH password bypass on musl/Alpine — across Docker containers, images and host",
+          "updated": "2026-11-16"
+        }
+      ],
       "references": [
         {
           "url": "https://www.openssh.org/releasenotes.html#10.6p2",
@@ -667,8 +853,30 @@
       "affected_products": [
         "WordPress Foundation WordPress (4.7.0, 4.8.0, 4.9.0 외)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "tc4dy/CVE-2026-119977-Toolkit",
+          "url": "https://github.com/tc4dy/CVE-2026-119977-Toolkit",
+          "stars": 7,
+          "description": "CVE-2026-119977 – WordPress Core Upgrade-Window RCE (CVSS 8.1) | Red/Blue Team Toolkit. Predictable staging dir takeover, wp-config.php promotion, Bait MySQL pr…",
+          "updated": "2026-11-14"
+        },
+        {
+          "name": "Worthes/CVE-2026-119977-WordPress-Upgrade-RCE-Bypasses-7.1.4",
+          "url": "https://github.com/Worthes/CVE-2026-119977-WordPress-Upgrade-RCE-Bypasses-7.1.4",
+          "stars": 6,
+          "description": "",
+          "updated": "2026-11-06"
+        },
+        {
+          "name": "lysophavin18/CVE-2026-119977",
+          "url": "https://github.com/lysophavin18/CVE-2026-119977",
+          "stars": 5,
+          "description": "",
+          "updated": "2026-11-12"
+        }
+      ],
       "references": [
         {
           "url": "https://www.wordfence.com/threat-intel/vulnerabilities/id/4b4da0cf-d9f4-47c4-a0e8-6c4dc5a6f250?source=cve",
@@ -732,8 +940,30 @@
         "Linux (< 3599e6b3cc1ada96883d496a50a210d3afbb6987, < 2f2b16022a2e10ca7bccfb98db5ed2ec0f72641c, < 9d3e5fd19fe1063bf607219e8562fbd567b8e8d5 외)",
         "Linux (3.9, < 3.9, 5.10.257 외)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "ashrafzaryouh/CVE-2026-46300",
+          "url": "https://github.com/ashrafzaryouh/CVE-2026-46300",
+          "stars": 16,
+          "description": "CVE-2026-46300",
+          "updated": "2026-10-28"
+        },
+        {
+          "name": "MadExploits/CVE-2026-46300",
+          "url": "https://github.com/MadExploits/CVE-2026-46300",
+          "stars": 3,
+          "description": "CVE-2026-43284 - CVE-2026-43500 - CVE-2026-46300 Variant of dirtyfrag exploit",
+          "updated": "2026-09-02"
+        },
+        {
+          "name": "HORKimhab/CVE-2026-46300",
+          "url": "https://github.com/HORKimhab/CVE-2026-46300",
+          "stars": 2,
+          "description": "CVE-2026-46300",
+          "updated": "2026-07-23"
+        }
+      ],
       "references": [
         {
           "url": "https://git.kernel.org/stable/c/3599e6b3cc1ada96883d496a50a210d3afbb6987",
@@ -795,8 +1025,23 @@
         "Checkpoint Quantum Security Gateway (R82.10 with Jumbo Hotfix Take 50 or below, R82.20 with Jumbo Hotfix Take 10 or below, R82 with Jumbo Hotfix Take 130 or below 외)",
         "Checkpoint Quantum Security Management (R82.10 with Jumbo Hotfix Take 50 or below, R82.20 with Jumbo Hotfix Take 10 or below, R82 with Jumbo Hotfix Take 130 or below 외)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 2,
+      "poc_links": [
+        {
+          "name": "googlesky/CVE-2026-123039",
+          "url": "https://github.com/googlesky/CVE-2026-123039",
+          "stars": 3,
+          "description": "Containerised PoC for CVE-2026-123039: the Check Point Gaia OS Dynamic CLI daemon publishes /tmp/dynamic_socket world-writable and authenticates no caller, so a…",
+          "updated": "2026-11-13"
+        },
+        {
+          "name": "foxcornlab/checkpoint-gaia-scanner",
+          "url": "https://github.com/foxcornlab/checkpoint-gaia-scanner",
+          "stars": 0,
+          "description": "Detection-only triage for Check Point Gaia CVE-2026-123039 (DynamicCLI root privesc, CISA KEV 2026-11-13, due 2026-11-16). Grades Gaia releases against the Nove…",
+          "updated": "2026-11-16"
+        }
+      ],
       "references": [
         {
           "url": "https://support.checkpoint.com/results/sk/sk1000362",
@@ -910,8 +1155,30 @@
         "Microsoft Office LTSC 2021 (< 16.0.14334.21048)",
         "Microsoft Office LTSC 2024 (< 16.0.17932.21140)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "AmesianX/CVE-2026-124194-poc",
+          "url": "https://github.com/AmesianX/CVE-2026-124194-poc",
+          "stars": 17,
+          "description": "CVE-2026-124194 PoC - Outlook spoofing/forced-authentication NTLM leak (patched 2026-11). Concept proof only, untested against vulnerable Outlook.",
+          "updated": "2026-11-17"
+        },
+        {
+          "name": "Ghost-Bx1/cve-2026-124194-outlook-ntlm-hash-leak",
+          "url": "https://github.com/Ghost-Bx1/cve-2026-124194-outlook-ntlm-hash-leak",
+          "stars": 2,
+          "description": "CVE-2026-124194 - Outlook NTLM Hash Leak (CVSS 6.5)",
+          "updated": "2026-11-13"
+        },
+        {
+          "name": "aminaljabre77-collab/outlook-ntlm-leak-investigation",
+          "url": "https://github.com/aminaljabre77-collab/outlook-ntlm-leak-investigation",
+          "stars": 0,
+          "description": "SOC investigation of the Outlook zero-day CVE-2026-124194 (NTLM hash leak) using simulated logs and Splunk searches.",
+          "updated": "2026-11-14"
+        }
+      ],
       "references": [
         {
           "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-124194",
@@ -1119,8 +1386,30 @@
       "affected_products": [
         "Google Chrome (< 157.0.8103.50)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "Frostmoon39206/CVE-2026-125350-PoC",
+          "url": "https://github.com/Frostmoon39206/CVE-2026-125350-PoC",
+          "stars": 5,
+          "description": "Technical analysis and skeleton PoC for CVE-2026-125350 (Chrome XML UAF)",
+          "updated": "2026-11-15"
+        },
+        {
+          "name": "ashrafzaryouh/CVE-2026-125350",
+          "url": "https://github.com/ashrafzaryouh/CVE-2026-125350",
+          "stars": 0,
+          "description": "CVE-2026-125350",
+          "updated": "2026-11-13"
+        },
+        {
+          "name": "al4n4n/CVE-2026-125350",
+          "url": "https://github.com/al4n4n/CVE-2026-125350",
+          "stars": 0,
+          "description": "Moved to al4n4n/achilles-heel: https://github.com/al4n4n/achilles-heel/tree/main/CVE-2026-125350",
+          "updated": "2026-11-14"
+        }
+      ],
       "references": [
         {
           "url": "https://chromereleases.googleblog.com/2026/11/stable-channel-update-for-desktop_018223192.html",
@@ -1159,8 +1448,23 @@
       "affected_products": [
         "SonicWall SonicOS (7.3.3-7015 and older versions, 8.2.2-8015 and older versions)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 2,
+      "poc_links": [
+        {
+          "name": "EXEcution-py/CVE-2026-19868",
+          "url": "https://github.com/EXEcution-py/CVE-2026-19868",
+          "stars": 0,
+          "description": "SonicWall SonicOS SSLVPN SAML / MFA bypass (Gen7 / Gen8)",
+          "updated": "2026-11-07"
+        },
+        {
+          "name": "foxcornlab/sonicwall-sonicos-scanner",
+          "url": "https://github.com/foxcornlab/sonicwall-sonicos-scanner",
+          "stars": 0,
+          "description": "Detection-only triage for CVE-2026-19868 (SonicWall SonicOS SSL-VPN SAML MFA bypass, CISA KEV 2026-11-06): grade Gen7/Gen8 firmware against the 7.3.4-7013 / 8.2…",
+          "updated": "2026-11-08"
+        }
+      ],
       "references": [
         {
           "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2026-0014",
@@ -1195,8 +1499,16 @@
       "affected_products": [
         "D-Link DIR-600L (2.17, 2.17b02)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "googlesky/CVE-2026-129353",
+          "url": "https://github.com/googlesky/CVE-2026-129353",
+          "stars": 0,
+          "description": "D-Link DIR-600L 2.17b02 htdocs/cgibin authenticationcgi_main: pre-auth stack overflow via unbounded strcpy of URL-query id/password, re-hosted from the MD5-veri…",
+          "updated": "2026-11-15"
+        }
+      ],
       "references": [
         {
           "url": "https://vuldb.com/vuln/437416",
@@ -1252,8 +1564,16 @@
       "affected_products": [
         "TRENDnet TEW-657BRM (1.00.1)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "googlesky/CVE-2026-129351",
+          "url": "https://github.com/googlesky/CVE-2026-129351",
+          "stars": 0,
+          "description": "TRENDnet TEW-657BRM 1.00.1 mini_httpd: pre-auth OOB write - the .htm redirect sprintf smashes the GOT (buffer->GOT = 3908 bytes). Hash-verified daemon re-hosted…",
+          "updated": "2026-11-15"
+        }
+      ],
       "references": [
         {
           "url": "https://vuldb.com/vuln/437397",
@@ -1305,8 +1625,16 @@
       "affected_products": [
         "D-Link DIR-600L (2.17b02)"
       ],
-      "poc_count": 0,
-      "poc_links": [],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "googlesky/CVE-2026-129354",
+          "url": "https://github.com/googlesky/CVE-2026-129354",
+          "stars": 0,
+          "description": "D-Link DIR-600L 2.17b02 cgibin hnap_main: pre-auth stack overflow via SOAPAction (whitelist = substring test; action = tail after last '/'). MD5-verified firmwa…",
+          "updated": "2026-11-15"
+        }
+      ],
       "references": [
         {
           "url": "https://vuldb.com/vuln/437417",

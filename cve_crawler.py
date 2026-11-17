@@ -84,6 +84,24 @@ def now_str():
     return now_kst().strftime("%Y-%m-%d %H:%M:%S KST")
 
 
+def parse_cache_time(value):
+    """캐시 시각 파싱 — now_str()의 ' KST' 접미사가 붙은 값도 받아들인다.
+
+    (strptime "%Y-%m-%d %H:%M:%S" 는 ' KST' 때문에 매번 ValueError 가 났고,
+     그래서 12시간 PoC 캐시가 한 번도 재사용되지 못했다.)
+    반환값은 KST 기준 naive datetime.
+    """
+    if not value:
+        return None
+    s = str(value).replace("KST", "").strip()
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(s, fmt)
+        except ValueError:
+            continue
+    return None
+
+
 def clean(text, limit=None):
     s = "" if text is None else str(text)
     s = re.sub(r"<[^>]+>", " ", s)
@@ -471,31 +489,44 @@ def fetch_poc(cve_id, use_gh=True):
 
 
 def collect_pocs(records, cache):
-    """KEV 전체 + 고위험 비-KEV 순으로 PoC 조회 (12시간 캐시 재사용)"""
+    """KEV 전체 + 고위험 비-KEV 순으로 PoC 조회 (12시간 캐시 재사용)
+
+    원칙: 이번 실행에서 실제로 새로 조회해 링크를 얻지 못한 CVE 는
+    기존 캐시(cve_cache.json)의 PoC 를 그대로 유지한다. 빈 배열로 덮어써서
+    이미 확보한 공개 PoC 를 잃지 않게 하기 위함이다.
+    """
     use_gh = gh_available()
     delay = 2.4 if use_gh else 7.0
+
+    # 0) 조회 대상에서 빠지는 항목(POC_QUERY_LIMIT 밖)도 캐시 PoC 를 먼저 복원
+    for rec in records:
+        if rec.get("poc_links"):
+            continue
+        seeded = (cache["poc"].get(rec["cve_id"]) or {}).get("links") or []
+        if seeded:
+            rec["poc_links"] = list(seeded)
+
     ordered = sorted(records, key=lambda r: (not r.get("is_kev"), -(r.get("cvss_score") or 0), -(r.get("epss_score") or 0)))
     targets = ordered[:POC_QUERY_LIMIT]
     fetched = 0
     rate_limited = False
+    now_naive = now_kst().replace(tzinfo=None)
     for rec in targets:
         cve_id = rec["cve_id"]
         cached = cache["poc"].get(cve_id)
+        cached_links = (cached or {}).get("links") or []
         if cached and cached.get("fetched_at"):
-            try:
-                age = now_kst() - datetime.strptime(cached["fetched_at"], "%Y-%m-%d %H:%M:%S")
-                if age < timedelta(hours=12):
-                    rec["poc_links"] = cached.get("links") or []
-                    continue
-            except ValueError:
-                pass
+            ts = parse_cache_time(cached["fetched_at"])
+            if ts is not None and (now_naive - ts) < timedelta(hours=12):
+                rec["poc_links"] = cached_links
+                continue
         if rate_limited:
-            rec["poc_links"] = rec.get("poc_links") or []
+            rec["poc_links"] = rec.get("poc_links") or cached_links
             continue
         res = fetch_poc(cve_id, use_gh=use_gh)
         if res == "RATE_LIMIT" or res is None:
             # gh 실패 → 다음 항목부터는 딜레이를 늘려 재시도
-            rec["poc_links"] = rec.get("poc_links") or []
+            rec["poc_links"] = rec.get("poc_links") or cached_links
             time.sleep(10)
             res2 = fetch_poc(cve_id, use_gh=use_gh)
             if res2 in (None, "RATE_LIMIT"):
@@ -503,12 +534,17 @@ def collect_pocs(records, cache):
                 print(f"  [GitHub] {cve_id} 조회 실패 — 이후 조회는 캐시값으로 유지")
                 continue
             res = res2
-        rec["poc_links"] = res or []
-        cache["poc"][cve_id] = {"fetched_at": now_str(), "links": rec["poc_links"]}
-        save_cache(cache)
-        fetched += 1
+        if res:
+            rec["poc_links"] = res
+            cache["poc"][cve_id] = {"fetched_at": now_str(), "links": rec["poc_links"]}
+            save_cache(cache)
+            fetched += 1
+        else:
+            # 조회는 됐지만 0건 → 기존에 확보한 링크가 있으면 유지(캐시도 덮지 않는다)
+            rec["poc_links"] = rec.get("poc_links") or cached_links
         time.sleep(delay)
     print(f"  [GitHub] PoC 조회 {fetched}건 완료 (대상 {len(targets)}건, {'gh 인증' if use_gh else '무인증'})")
+    print(f"  [GitHub] PoC 보유 {sum(1 for r in records if r.get('poc_links'))}건 / 링크 {sum(len(r.get('poc_links') or []) for r in records)}개")
 
 
 # ---------------------------------------------------------------------------

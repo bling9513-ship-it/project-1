@@ -697,8 +697,36 @@ def upsert_cve_reports(items, db_path=DB_PATH):
 
     conn = get_connection(db_path)
     cur = conn.cursor()
+    # 기존에 확보된 PoC 는 이번 수집 결과가 비어 있어도 잃지 않는다.
+    # (POC_QUERY_LIMIT 밖이거나 GitHub 호출이 실패한 CVE 가 poc_count=0 으로 덮여
+    #  공개 PoC 21건이 1건으로 줄었던 회귀를 막는 방어선)
+    existing_poc = {}
+    for row in cur.execute("SELECT cve_id, poc_links_json FROM cve_reports"):
+        raw = row["poc_links_json"]
+        if not raw:
+            continue
+        try:
+            links = json.loads(raw)
+        except (TypeError, ValueError):
+            continue
+        if isinstance(links, list) and links:
+            existing_poc[row["cve_id"]] = links
+
+    def merge_poc_links(cve_id, new_links):
+        merged = list(new_links or [])
+        seen = set()
+        for link in merged:
+            seen.add((link or {}).get("url") if isinstance(link, dict) else link)
+        for old in existing_poc.get(cve_id, []):
+            key = (old or {}).get("url") if isinstance(old, dict) else old
+            if key and key not in seen:
+                merged.append(old)
+                seen.add(key)
+        return merged
+
     count = 0
     for it in items:
+        poc_links = merge_poc_links(it["cve_id"], it.get("poc_links"))
         cur.execute("""
         INSERT INTO cve_reports (
             cve_id, title_ko, summary_ko, impact_ko, remediation_ko,
@@ -751,8 +779,8 @@ def upsert_cve_reports(items, db_path=DB_PATH):
             it.get("vendor", ""),
             it.get("product", ""),
             json.dumps(it.get("affected_products", []), ensure_ascii=False),
-            len(it.get("poc_links", [])),
-            json.dumps(it.get("poc_links", []), ensure_ascii=False),
+            len(poc_links),
+            json.dumps(poc_links, ensure_ascii=False),
             json.dumps(it.get("references", []), ensure_ascii=False),
             json.dumps(it.get("cwe", []), ensure_ascii=False),
             it.get("description_orig", ""),

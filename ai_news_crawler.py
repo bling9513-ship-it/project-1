@@ -1360,7 +1360,7 @@ def _unwrap_briefing(raw):
     return clean_text(t)
 
 
-def build_briefing_exaone(items, api_key, top_keywords, cat_counts):
+def build_briefing_exaone(items, api_key, top_keywords, cat_counts, timeout=120):
     # 보안·도구 항목이 목록 앞쪽에 오도록 정렬해 브리핑 반영률을 높임
     priority = [i for i in items if i.get("category") in (AI_SEC_TOOL_CAT, "AI 보안·안전", "AI 툴·서비스")]
     others = [i for i in items if i not in priority]
@@ -1376,7 +1376,7 @@ def build_briefing_exaone(items, api_key, top_keywords, cat_counts):
         "군더더기·인사말·머리말 없이 요약 본문만, JSON이나 따옴표 없이 평문으로 출력하세요.\n\n"
         + "\n".join(sample)
     )
-    content = call_exaone(prompt, api_key, max_tokens=800, timeout=120)
+    content = call_exaone(prompt, api_key, max_tokens=800, timeout=timeout)
     text = re.sub(r"^(요약|브리핑)\s*[:：]\s*", "", (content or "").strip())
     text = _unwrap_briefing(text)
     if len(text) < 40:
@@ -1672,8 +1672,13 @@ def _neg_date(d):
     return "".join(chr(255 - ord(c)) for c in (d or "0000-00-00"))
 
 
-def finalize_run(items):
-    """분석이 끝난 items 로 브리핑·ai_data.json·DB 적재까지 마무리"""
+def finalize_run(items, briefing_budget=None):
+    """분석이 끝난 items 로 브리핑·ai_data.json·DB 적재까지 마무리
+
+    briefing_budget: 브리핑(EXAONE) 재시도에 쓸 시간(초). None/0 이면 기존과 동일
+    (시도 3회·호출 타임아웃 120초). 셸 시간 상한이 짧은 --finish 경로에서는
+    짧은 예산을 줘서 예산 소진 시 바로 템플릿 브리핑으로 적재를 끝낸다.
+    """
     from db_manager import init_db, upsert_ai_insights, get_ai_insight_count
 
     t0 = time.time()
@@ -1688,14 +1693,26 @@ def finalize_run(items):
         print(f"⚠ AI 툴·서비스 카테고리가 {cat_counts.get('AI 툴·서비스', 0)}건으로 목표(8건) 미만입니다.")
     briefing = build_briefing_fallback(items, top_keywords, cat_counts)
     _key = get_api_key()
+    _bdeadline = (time.monotonic() + briefing_budget) if briefing_budget and briefing_budget > 0 else None
     if _key:
         for _attempt in range(3):
+            _remaining = None
+            if _bdeadline is not None:
+                _remaining = _bdeadline - time.monotonic()
+                if _remaining <= 3:
+                    print("  [브리핑] 시간 예산 소진 → 템플릿 브리핑으로 적재")
+                    break
             try:
-                briefing = build_briefing_exaone(items, _key, top_keywords, cat_counts)
+                _timeout = 120 if _remaining is None else max(5, min(120, int(_remaining)))
+                briefing = build_briefing_exaone(items, _key, top_keywords, cat_counts, timeout=_timeout)
                 break
             except Exception as _e:  # noqa: BLE001
                 print(f"  [브리핑] 시도 {_attempt + 1}/3 실패 ({type(_e).__name__}) → 템플릿 유지")
-                time.sleep(4 * (_attempt + 1))
+                _wait = 4 * (_attempt + 1)
+                if _bdeadline is not None and time.monotonic() + _wait > _bdeadline:
+                    print("  [브리핑] 재시도 시간 없음 → 템플릿 브리핑으로 적재")
+                    break
+                time.sleep(_wait)
 
     payload = save_ai_data(items, cat_counts, top_keywords, source_counts, briefing)
 
@@ -1913,8 +1930,20 @@ def analyze_partial(batch_budget=6, seconds=240, batch_size=1):
 
 def finish_from_file():
     items = load_run_items()
-    items, _cache = analyze_items(items, max_calls=8, deadline=time.monotonic() + 120, finalize=True)
-    payload = finalize_run(items)
+    # AI_FINISH_TIME_BUDGET > AI_RUN_TIME_BUDGET > 기본 75초.
+    # (--finish 한 번이 셸 상한 180초를 넘겨 중단되면 적재 자체가 안 되므로,
+    #  분석은 짧게 끊고 남은 건 폴백으로 마감해 DB 적재를 반드시 끝낸다.)
+    try:
+        budget = int(os.environ.get("AI_FINISH_TIME_BUDGET")
+                     or os.environ.get("AI_RUN_TIME_BUDGET") or 75)
+    except ValueError:
+        budget = 75
+    deadline = (time.monotonic() + budget) if budget > 0 else None
+    items, _cache = analyze_items(items, max_calls=8, deadline=deadline, finalize=True)
+    save_run_items(items)
+    exa = sum(1 for it in items if it.get("analyzed_by") == "exaone")
+    print(f"-> 분석 예산 {budget}초 사용: EXAONE {exa}건 / 전체 {len(items)}건 → 적재 진행")
+    payload = finalize_run(items, briefing_budget=25)
     # 마무리 단계에서도 수집 트랙과 무관하게 AI 보안 저장소가 보안·도구 카테고리로 되돌아가지 않도록 재분류
     try:
         retag_existing_sec_tools()
