@@ -1,27 +1,5 @@
 [
   {
-    "company": "카카오브이엑스",
-    "title": "정보보안팀 서비스 보안 담당자 채용",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611050002130",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-Day (~11/17 화) 23시 마감",
-    "summary": "서비스 전반의 보안 체계를 구축·운영하며 보안 취약점 대응과 안전한 서비스 제공을 담당",
-    "tags": [
-      "#서비스보안",
-      "#정보보안",
-      "#취약점대응",
-      "#보안운영"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
     "company": "티시스아이티",
     "title": "보안진단(취약점진단/보안성검토)",
     "url": "https://www.jumpit.co.kr/position/55342793",
@@ -34,7 +12,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-1 (~11/18 수)",
+    "deadline": "D-Day (~11/18 수)",
     "summary": "시스템·서비스 취약점 진단과 보안성 검토를 수행해 보안 약점을 식별·개선",
     "tags": [
       "#취약점진단",
@@ -42,27 +20,8 @@
       "#보안진단",
       "#정보보호"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)써니즈",
-    "title": "[써니즈] [IT정보보안] 취약점진단 서비스 운영지원",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "경기 성남시 수정구",
-    "deadline": "D-3 (~ 11/20(금))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -75,7 +34,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (~11/18 수)",
     "summary": "의약제조업 정보보호팀장으로 보안 조직 관리와 정보보호 업무 총괄",
     "tags": [
       "#정보보호팀장",
@@ -83,8 +42,8 @@
       "#의약제조업보안",
       "#정보보호"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "신한라이프생명보험(주)",
@@ -97,7 +56,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (~11/18 수)",
     "summary": "금융권 디지털보안 담당자로 보안 정책·시스템 운영 및 규제 대응 수행",
     "tags": [
       "#디지털보안",
@@ -105,8 +64,8 @@
       "#보안운영",
       "#개인정보보호"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "대진정보통신㈜",
@@ -127,7 +86,7 @@
       "#개인정보",
       "#보안컨설팅"
     ],
-    "deadline_status": "URGENT",
+    "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-17 11:33:22 KST"
   },
   {
@@ -149,7 +108,7 @@
       "#개인정보영향평가",
       "#보안컨설팅"
     ],
-    "deadline_status": "URGENT",
+    "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-17 11:33:22 KST"
   },
   {
@@ -163,7 +122,7 @@
       "취약점 진단"
     ],
     "location": "서울 중구",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (오늘 마감)",
     "summary": "증권사 인프라를 대상으로 취약점 진단 및 운영 업무 수행",
     "tags": [
       "#취약점진단",
@@ -171,8 +130,8 @@
       "#증권사",
       "#보안운영"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)위드브레인",
@@ -186,7 +145,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (~11/18 수) 23시 마감",
     "summary": "기업의 정보보호 정책과 정보보안 운영 전반을 담당할 인력을 채용하는 공고",
     "tags": [
       "#정보보호",
@@ -194,8 +153,8 @@
       "#보안운영",
       "#보안관리"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)위드브레인",
@@ -208,7 +167,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (~11/18 수) 23시 마감",
     "summary": "기업의 기술적·관리적·물리적 보안 업무를 전반적으로 수행·관리할 보안 담당자 채용 공고",
     "tags": [
       "#기술보안",
@@ -216,8 +175,8 @@
       "#물리보안",
       "#정보보호"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "시큐코리아 주식회사",
@@ -238,7 +197,7 @@
       "#상주보안",
       "#공공기관"
     ],
-    "deadline_status": "URGENT",
+    "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-17 18:47:44 KST"
   },
   {
@@ -252,7 +211,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (~11/18 수) 23시 마감",
     "summary": "기업의 보안 시스템을 구축하고 운영하며 점검할 보안 엔지니어 경력 채용 공고",
     "tags": [
       "#보안엔지니어",
@@ -260,8 +219,8 @@
       "#보안구축",
       "#보안운영"
     ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)이테크시스템",
@@ -274,7 +233,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-Day (~11/18 수) 23시 마감",
     "summary": "엔드포인트 보안 솔루션 EDR 환경에서 보안 이벤트 분석 및 대응을 담당할 경력자를 채용합니다.",
     "tags": [
       "#엔드포인트보안",
@@ -282,8 +241,112 @@
       "#보안분석",
       "#경력채용"
     ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "KB국민은행",
+    "title": "2026년 하반기 퇴직직원 재채용 [개인정보보호 실태 점검]",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611160000340",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-Day (~11/18 수) 23시 마감",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "한화오션(주)",
+    "title": "[경영지원] 정보보호 경력사원 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "경남 거제시",
+    "deadline": "D-7",
+    "summary": "한화오션 경영지원 부문 정보보호 경력으로 보안 정책 수립과 정보보호 체계 운영을 수행",
+    "tags": [
+      "#정보보호",
+      "#경영지원",
+      "#보안정책",
+      "#정보보안"
+    ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)써니즈",
+    "title": "[써니즈] [IT정보보안] 취약점진단 서비스 운영지원",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "경기 성남시 수정구",
+    "deadline": "D-2 (~ 11/20(금))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "교보디티에스(주)",
+    "title": "교보DTS 경력 채용공고 (보안운영, 보안관제, 모의해킹)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502807&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "보안관제와 보안운영, 모의해킹을 수행하며 기업 보안 위협 탐지·대응 체계를 운영",
+    "tags": [
+      "#보안관제",
+      "#보안운영",
+      "#모의해킹",
+      "#정보보안"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "교보DTS",
+    "title": "교보DTS 경력 채용공고 (모의해킹)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50319019",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "서울 종로구 외",
+    "deadline": "D-7",
+    "summary": "모의해킹 경력자를 채용해 보안 취약점을 진단하고 모의해킹을 수행하는 직무",
+    "tags": [
+      "#모의해킹",
+      "#취약점분석",
+      "#정보보안",
+      "#경력채용"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "이스트시큐리티",
@@ -296,7 +359,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (~11/19 목)",
     "summary": "보안 소프트웨어 제품의 기술지원을 담당할 신입 인재를 채용하며 고객 대응과 기술 지원 업무를 수행합니다.",
     "tags": [
       "#보안SW",
@@ -305,7 +368,7 @@
       "#고객지원"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에이스아메리칸화재해상보험",
@@ -318,7 +381,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (~11/19 목)",
     "summary": "정보보호 거버넌스·리스크·컴플라이언스 관리 업무를 수행할 과장·차장급 GRC 매니저를 채용합니다.",
     "tags": [
       "#정보보호GRC",
@@ -327,7 +390,7 @@
       "#컴플라이언스"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "이스트시큐리티",
@@ -340,7 +403,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (~11/19 목)",
     "summary": "악성코드 분석 역량을 바탕으로 위협 분석 및 보안 대응을 지원할 신입 분석가를 채용합니다.",
     "tags": [
       "#악성코드분석",
@@ -349,7 +412,7 @@
       "#신입채용"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "이스트시큐리티",
@@ -362,7 +425,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (~11/19 목)",
     "summary": "다양한 악성코드 분석 및 위협 인텔리전스 업무를 수행할 경력 보안 분석가를 채용합니다.",
     "tags": [
       "#악성코드분석",
@@ -371,7 +434,7 @@
       "#보안분석"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)트랜스코스모스코리아",
@@ -384,7 +447,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "판교에서 평일 근무하며 카카오뱅크 정보보안 기술지원 및 MDB 관련 업무를 수행하는 직무",
     "tags": [
       "#정보보안",
@@ -393,7 +456,7 @@
       "#보안운영"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에이스아메리칸화재해상보험(주)",
@@ -406,7 +469,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "보험사 IT Security Specialist로 정보보안 담당자 업무 수행",
     "tags": [
       "#IT보안",
@@ -415,7 +478,7 @@
       "#보안담당자"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)미디어윌네트웍스",
@@ -428,7 +491,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "알바천국 본사의 정보보안 기술 엔지니어로서 보안 인프라 운영과 기술 지원을 담당",
     "tags": [
       "#정보보안",
@@ -437,7 +500,7 @@
       "#기술지원"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)미디어윌네트웍스",
@@ -450,7 +513,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "알바천국 본사에서 정보보호 담당자로 정규직 근무하며 기업 보안 관리 전반을 수행하는 직무",
     "tags": [
       "#정보보호",
@@ -459,7 +522,7 @@
       "#내부통제"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "코리아써치",
@@ -473,7 +536,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "금융·IT 환경의 보안 취약점을 진단하고 위협 대응 전략을 수립·수행하는 정보보안 전문 직무",
     "tags": [
       "#취약점진단",
@@ -482,7 +545,7 @@
       "#IT보안"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)웨일시큐리티",
@@ -496,7 +559,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "정보보안 컨설팅 분야에서 모의해킹으로 보안 취약점을 진단·분석·보고하는 신입 직무",
     "tags": [
       "#모의해킹",
@@ -505,7 +568,7 @@
       "#신입"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)웨일시큐리티",
@@ -519,7 +582,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~ 11/19(목))",
+    "deadline": "D-1 (내일 마감)",
     "summary": "정보보안 컨설팅 분야에서 모의해킹으로 보안 취약점을 진단·분석·보고하는 경력 직무",
     "tags": [
       "#모의해킹",
@@ -528,7 +591,7 @@
       "#경력"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)안랩",
@@ -541,7 +604,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (내일 마감)",
     "summary": "안랩에서 기업 고객 대상 보안 컨설팅과 보안 체계 진단 및 개선 자문을 수행한다",
     "tags": [
       "#보안컨설팅",
@@ -550,7 +613,7 @@
       "#정보보호"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)씨젠",
@@ -563,7 +626,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (내일 마감)",
     "summary": "씨젠에서 개인정보보호 담당자로 개인정보 처리와 보호 체계 운영·관리를 수행한다",
     "tags": [
       "#개인정보보호",
@@ -572,7 +635,7 @@
       "#정보보호"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)차바이오텍",
@@ -585,7 +648,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (내일 마감)",
     "summary": "차바이오텍 IT사업본부에서 정보보안 시스템 구축·운영과 보안 인프라 관리를 담당한다",
     "tags": [
       "#정보보안",
@@ -594,7 +657,7 @@
       "#IT보안"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "코어시큐리티",
@@ -607,7 +670,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~11/20 금)",
+    "deadline": "D-2 (~11/20 금)",
     "summary": "코어시큐리티에서 사이버보안 분야 시니어 풀스택 개발자로 보안 솔루션 개발을 수행한다",
     "tags": [
       "#사이버보안",
@@ -616,7 +679,7 @@
       "#보안솔루션"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "코어시큐리티",
@@ -629,7 +692,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~11/20 금)",
+    "deadline": "D-2 (~11/20 금)",
     "summary": "코어시큐리티에서 보안기술연구 담당자로서 취약점 분석, 보안 솔루션 연구 및 기술 개발을 수행",
     "tags": [
       "#보안기술연구",
@@ -638,7 +701,7 @@
       "#정보보안"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "코어시큐리티",
@@ -651,7 +714,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~11/20 금)",
+    "deadline": "D-2 (~11/20 금)",
     "summary": "코어시큐리티에서 OT 보안 기술 연구 개발 인력으로서 산업제어시스템 보안 기술 연구·개발 수행",
     "tags": [
       "#OT보안",
@@ -660,7 +723,7 @@
       "#보안R&D"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "서비스탑(주)",
@@ -673,7 +736,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~ 11/20(금))",
+    "deadline": "D-2 (~ 11/20(금))",
     "summary": "서비스탑 AI Tech팀에서 IT 인프라 운영과 정보보안 체계 구축·관리 업무를 수행",
     "tags": [
       "#IT인프라",
@@ -682,7 +745,7 @@
       "#보안운영"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "새마을금고중앙회",
@@ -695,11 +758,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~ 11/20(금))",
+    "deadline": "D-2 (~ 11/20(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)써니즈",
@@ -714,11 +777,16 @@
       "정보보안"
     ],
     "location": "서울 영등포구",
-    "deadline": "D-3 (~ 11/20(금))",
-    "summary": "",
-    "tags": [],
+    "deadline": "D-2 (~ 11/20(금))",
+    "summary": "소스코드 취약점 진단(SAST) 경력 2년 이상을 대상으로 애플리케이션 보안 취약점 분석·진단 수행",
+    "tags": [
+      "#SAST",
+      "#소스코드보안",
+      "#취약점진단",
+      "#애플리케이션보안"
+    ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)베이스라인시큐어",
@@ -732,11 +800,16 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~ 11/20(금))",
-    "summary": "",
-    "tags": [],
+    "deadline": "D-2 (~ 11/20(금))",
+    "summary": "모의해킹 중심 정보보안 컨설팅 정규직 채용으로 신입·경력 모두 지원 가능한 보안 진단 업무",
+    "tags": [
+      "#모의해킹",
+      "#정보보안컨설팅",
+      "#보안진단",
+      "#신입경력"
+    ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)채널코퍼레이션",
@@ -749,7 +822,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-3 (~11/20 금)",
+    "deadline": "D-2 (~11/20 금)",
     "summary": "채널코퍼레이션 채널톡의 CISO로서 정보보안 전략 수립, 보안 거버넌스 구축 및 리스크 관리 총괄",
     "tags": [
       "#CISO",
@@ -758,7 +831,29 @@
       "#리스크관리"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주) 유호스트",
+    "title": "정보보안 보안관제 담당 채용(교대근무/정규직)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000196",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-2 (~11/20 금)",
+    "summary": "교대 근무 기반 정보보안 보안관제 업무 수행 및 보안 이벤트 모니터링·대응",
+    "tags": [
+      "#보안관제",
+      "#정보보안",
+      "#교대근무",
+      "#보안이벤트대응"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "HR컨설팅(주)",
@@ -771,7 +866,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-4 (~11/21 토)",
+    "deadline": "D-3 (~11/21 토)",
     "summary": "그룹사 인프라 보안 체계 구축·운영 및 보안 취약점 관리 업무",
     "tags": [
       "#인프라보안",
@@ -780,7 +875,7 @@
       "#보안체계구축"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)연합인포맥스",
@@ -793,7 +888,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~ 11/22(일))",
+    "deadline": "D-4 (~ 11/22(일))",
     "summary": "정보보안 전반 운영과 개인정보보호·보안성 검토를 담당하는 경력직",
     "tags": [
       "#정보보안",
@@ -802,7 +897,7 @@
       "#보안성검토"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템(주)",
@@ -816,7 +911,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~ 11/22(일))",
+    "deadline": "D-4 (~ 11/22(일))",
     "summary": "정보보호 및 미국 CMMC 대응 등 해외수출 보안 업무 수행",
     "tags": [
       "#정보보호",
@@ -825,7 +920,7 @@
       "#수출보안"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)숲",
@@ -839,11 +934,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~ 11/22(일))",
+    "deadline": "D-4 (~ 11/22(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)LG유플러스",
@@ -856,7 +951,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "LG유플러스 정보보안센터에서 클라우드 보안 아키텍처 구축과 운영을 담당하는 직무",
     "tags": [
       "#클라우드보안",
@@ -865,7 +960,7 @@
       "#클라우드아키텍처"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -878,7 +973,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "외국계 사이버보안 플랫폼 기업에서 글로벌 IT 세일즈 전략을 수립하고 고객을 개발하는 직무",
     "tags": [
       "#사이버보안",
@@ -887,7 +982,7 @@
       "#비즈니스개발"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)LG유플러스",
@@ -900,7 +995,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "LG유플러스 정보보안센터 보안사업지원TF 리더로서 사업 지원 및 조직 운영을 총괄하는 직무",
     "tags": [
       "#보안사업",
@@ -909,7 +1004,7 @@
       "#사업지원"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)크몽",
@@ -922,7 +1017,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "크몽에서 개인정보 보호 정책 수립, 처리방침 관리, 컴플라이언스 대응을 담당하는 8년 이상 경력 직무",
     "tags": [
       "#개인정보보호",
@@ -931,7 +1026,7 @@
       "#보안정책"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)케이뱅크",
@@ -945,7 +1040,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "케이뱅크에서 엔드포인트 보안 솔루션 운영과 단말 위협 대응 및 보안 정책 관리를 수행하는 직무",
     "tags": [
       "#엔드포인트보안",
@@ -954,7 +1049,7 @@
       "#단말보안"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "DB손해보험(주)",
@@ -968,7 +1063,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "DB손해보험 정보보호파트에서 AI 보안 전문가로서 위협 탐지와 보안 체계 구축·운영을 담당",
     "tags": [
       "#AI보안",
@@ -977,7 +1072,7 @@
       "#위협탐지"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "모트렉스(주)",
@@ -990,7 +1085,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "모트렉스에서 정보보안과 IT 운영을 담당하며 내부 시스템 보안과 안정적 운영 관리 수행",
     "tags": [
       "#정보보안",
@@ -999,7 +1094,7 @@
       "#보안관리"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스㈜",
@@ -1013,7 +1108,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-5",
+    "deadline": "D-4",
     "summary": "웹·애플리케이션 보안 경력직으로 취약점 분석·점검과 보안 아키텍처 진단 및 대응 업무 수행",
     "tags": [
       "#웹보안",
@@ -1022,7 +1117,7 @@
       "#보안진단"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "써치스퀘어",
@@ -1035,7 +1130,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "써치스퀘어에서 초일류 대기업 대상 정보보안 컨설팅과 취약점 진단·개선 자문 수행",
     "tags": [
       "#정보보안컨설팅",
@@ -1044,7 +1139,7 @@
       "#대기업보안"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)연합인포맥스",
@@ -1057,7 +1152,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "연합인포맥스에서 정보보안 담당 경력사원으로 금융정보 서비스 보안 운영·정책·대응 수행",
     "tags": [
       "#정보보안",
@@ -1066,7 +1161,7 @@
       "#개인정보보호"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)씨아이솔루션",
@@ -1079,7 +1174,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "IT 보안관제 보안팀장으로서 CERT 운영과 보안관제 전반을 총괄하는 경력직",
     "tags": [
       "#보안관제",
@@ -1088,7 +1183,7 @@
       "#침해대응"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "바로팜",
@@ -1102,7 +1197,7 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-6 (~11/23 월)",
+    "deadline": "D-5 (~11/23 월)",
     "summary": "정보보안 전반을 담당하며 보안 정책 수립과 점검·운영을 수행하는 담당자",
     "tags": [
       "#정보보안",
@@ -1111,7 +1206,7 @@
       "#개인정보보호"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "라이나생명보험(주)",
@@ -1141,7 +1236,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-6 (~11/23 월)",
+    "deadline": "D-5 (~11/23 월)",
     "summary": "백화점 IS팀에서 보안 운영 경력을 바탕으로 시스템 보안 관리 업무를 수행",
     "tags": [
       "#보안운영",
@@ -1150,7 +1245,7 @@
       "#ISMS"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템",
@@ -1163,7 +1258,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-6 (~11/23 월)",
+    "deadline": "D-5 (~11/23 월)",
     "summary": "한화시스템 방산부문에서 정보보호 체계 구축·운영과 보안성 관리 업무를 전담하는 직무",
     "tags": [
       "#정보보호",
@@ -1172,7 +1267,7 @@
       "#정보보호관리"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "CJ올리브네트웍스(주)",
@@ -1186,7 +1281,7 @@
       "정보보호"
     ],
     "location": "서울 용산구",
-    "deadline": "D-6",
+    "deadline": "D-5",
     "summary": "CJ올리브네트웍스에서 개인정보보호 정책 운영과 개인정보 처리방침 점검·관리를 담당",
     "tags": [
       "#개인정보보호",
@@ -1195,7 +1290,7 @@
       "#정보보호"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "이스트시큐리티",
@@ -1208,7 +1303,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-7 (~11/24 화)",
+    "deadline": "D-6 (~11/24 화)",
     "summary": "이스트시큐리티에서 악성코드 탐지 엔진을 개발·분석하고 보안 솔루션 고도화를 수행",
     "tags": [
       "#악성코드",
@@ -1217,7 +1312,7 @@
       "#악성코드분석"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유호스트",
@@ -1231,7 +1326,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-7 (~ 11/24(화))",
+    "deadline": "D-6 (~ 11/24(화))",
     "summary": "유호스트에서 정보보안 관제 업무를 수행하며 보안 이벤트 모니터링과 대응을 담당",
     "tags": [
       "#보안관제",
@@ -1240,7 +1335,7 @@
       "#보안이벤트"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "넷마블(주)",
@@ -1253,7 +1348,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-7 (~11/24 화)",
+    "deadline": "D-6 (~11/24 화)",
     "summary": "넷마블의 정보보호 정책 수립·운영과 규정 준수, 내부 통제 체계 전반을 관리하는 직무",
     "tags": [
       "#보안정책",
@@ -1262,7 +1357,269 @@
       "#내부통제"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "넷마블",
+    "title": "취약점 진단 및 모의해킹 담당자",
+    "url": "https://www.wanted.co.kr/wd/361467",
+    "platforms": [
+      "원티드",
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단"
+    ],
+    "location": "서울",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "웹·시스템 취약점 진단과 모의해킹을 수행해 보안 약점을 분석·보고하는 직무",
+    "tags": [
+      "#모의해킹",
+      "#취약점진단",
+      "#취약점분석",
+      "#보안진단"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)한진",
+    "title": "(주)한진 정보보안팀 경력 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393373&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "한진 정보보안팀에서 기업 정보자산 보호와 운영 보안 전반을 담당하는 경력직",
+    "tags": [
+      "#정보보안",
+      "#보안운영",
+      "#정보자산보호",
+      "#보안관리"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)리드엔지니어링",
+    "title": "총무(총무,산업안전,정보보안) 경력직 모집",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55388492&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "총무·산업안전·정보보안 업무를 겸임하며 사내 운영과 보안 관리를 지원하는 직무",
+    "tags": [
+      "#총무",
+      "#산업안전",
+      "#정보보안",
+      "#사내보안관리"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)현대그린푸드",
+    "title": "현대그린푸드 정보보호 경력사원 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361802&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "현대그린푸드 정보보호 정책·시스템 운영 등 기업 정보보호 전반을 담당하는 경력직",
+    "tags": [
+      "#정보보호",
+      "#보안운영",
+      "#보안정책",
+      "#정보보안"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "넷마블(주)",
+    "title": "개인정보보호 관리체계 운영",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403681&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "넷마블의 개인정보보호 관리체계를 운영하며 보호 정책 수립과 관리 업무를 담당한다.",
+    "tags": [
+      "#개인정보보호",
+      "#ISMS-P",
+      "#보안정책"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)고른",
+    "title": "[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단"
+    ],
+    "location": "경기 화성시 동탄구 외",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "고른에서 웹 서비스 취약점을 진단하고 모의해킹을 수행할 경력직 보안 담당자를 채용한다.",
+    "tags": [
+      "#모의해킹",
+      "#취약점진단",
+      "#웹보안"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "에스케이쉴더스(주)",
+    "title": "모의해킹 경력직 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹"
+    ],
+    "location": "경기 성남시 분당구",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)알스퀘어",
+    "title": "[라이프매니지먼트] 개인정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/342101",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/25 수)",
+    "summary": "알스퀘어 라이프매니지먼트 서비스의 개인정보보호 담당자로서 보호 정책과 관리 업무를 수행한다.",
+    "tags": [
+      "#개인정보보호",
+      "#컴플라이언스",
+      "#정보보호"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "HR컨설팅(주)",
+    "title": "국내 최대 대기업 AI서비스 확산/ERP개발운영/정보보안 각 담당자 1명씩 3명 신규충원",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000535",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/25 수)",
+    "summary": "국내 대기업 대상 AI서비스 확산, ERP 개발운영, 정보보안 담당자를 각 1명씩 신규 충원한다.",
+    "tags": [
+      "#정보보안",
+      "#AI서비스",
+      "#ERP",
+      "#IT컨설팅"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)인싸이트에이치알지",
+    "title": "우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/25 수)",
+    "summary": "우량 B2B IT 보안 솔루션 기업에서 대리~과장급 기술엔지니어로 제품 기술지원을 담당한다.",
+    "tags": [
+      "#보안솔루션",
+      "#기술엔지니어",
+      "#IT보안",
+      "#기술지원"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "커리어서포트",
+    "title": "[정보보안 코스닥] 취약점 진단 PL-경력직",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
+    "platforms": [
+      "사람인",
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-1 (내일 마감)",
+    "summary": "코스닥 기업을 대상으로 정보보안 취약점 진단 프로젝트를 총괄하는 경력직 PL",
+    "tags": [
+      "#취약점진단",
+      "#정보보안",
+      "#프로젝트관리",
+      "#코스닥"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "티시스아이티",
+    "title": "정보보호(보안기획/진단)",
+    "url": "https://www.wanted.co.kr/wd/393832",
+    "platforms": [
+      "원티드",
+      "점핏"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "D-1 (~11/19 목)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "탑커리어인사이트",
@@ -1276,7 +1633,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (내일 마감)",
     "summary": "정보보호 취약점 분석 및 대응 업무로 보안 약점 진단과 조치를 수행",
     "tags": [
       "#취약점분석",
@@ -1285,7 +1642,7 @@
       "#취약점진단"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "탑커리어인사이트",
@@ -1298,7 +1655,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (내일 마감)",
     "summary": "기술적·관리적·물리적 보안 전반을 아우르는 보안 관리 업무를 수행",
     "tags": [
       "#기술보안",
@@ -1307,7 +1664,7 @@
       "#보안관리"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "탑커리어인사이트",
@@ -1320,7 +1677,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-2 (~11/19 목)",
+    "deadline": "D-1 (내일 마감)",
     "summary": "보안 엔지니어로서 보안 시스템 구축·운영 및 기술 지원을 담당",
     "tags": [
       "#보안엔지니어",
@@ -1329,7 +1686,7 @@
       "#기술지원"
     ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)맨파워써치",
@@ -1342,11 +1699,16 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-4 (~11/21 토)",
-    "summary": "",
-    "tags": [],
+    "deadline": "D-3 (~11/21 토)",
+    "summary": "SK계열 에너지 기업에서 정보·물리보안 및 총무 업무를 담당할 사원~대리급 채용",
+    "tags": [
+      "#정보보안",
+      "#물리보안",
+      "#보안운영",
+      "#총무"
+    ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘지유플러스",
@@ -1359,11 +1721,65 @@
       "정보보안"
     ],
     "location": "서울 강서구",
-    "deadline": "D-5",
+    "deadline": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)시큐아이",
+    "title": "[삼성SDS자회사] (주)시큐아이 경력사원 채용(보안컨설팅)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55567156&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 종로구 외",
+    "deadline": "D-9 (~ 11/25(수))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-17 11:33:22 KST"
+  },
+  {
+    "company": "(주)우리카드",
+    "title": "[우리카드] 정보보안 경력직 채용",
+    "url": "https://career.rememberapp.co.kr/job/posting/354554",
+    "platforms": [
+      "리멤버",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/25 수)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "AXA손해보험(주)",
+    "title": "보안&위기대응팀 정보보호 관리자 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611140000260",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-7 (~11/25 수)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "디딤(주)",
@@ -1394,28 +1810,28 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-5",
+    "deadline": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
-    "company": "KB국민은행",
-    "title": "2026년 하반기 퇴직직원 재채용 [개인정보보호 실태 점검]",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611160000340",
+    "company": "(주)씨드젠",
+    "title": "[신입/경력]정보보호 및 개인정보보호 컨설턴트 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55387528&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "인크루트"
+      "사람인"
     ],
     "keywords": [
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-1 (내일 마감)",
+    "deadline": "D-9 (~ 11/25(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-17 11:33:22 KST"
   },
   {
     "company": "솔브레인(주)",
@@ -1428,11 +1844,16 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-5 (~ 11/22(일))",
-    "summary": "",
-    "tags": [],
+    "deadline": "D-4 (~ 11/22(일))",
+    "summary": "솔브레인 정보전략팀의 AI 정보보안 담당자 채용으로 보안 전략 수립 및 운영 업무 수행",
+    "tags": [
+      "#AI보안",
+      "#정보보안",
+      "#정보전략",
+      "#보안담당"
+    ],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "롯데백화점(주)",
@@ -1445,11 +1866,11 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-5 (~11/22 일)",
+    "deadline": "D-4 (~11/22 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)셀트리온제약",
@@ -1462,11 +1883,47 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-6 (~11/23 월)",
+    "deadline": "D-5 (~11/23 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)글로벌에잇",
+    "title": "글로벌에잇 보안 컨설팅(모의해킹) 채용 - 신입",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55580388&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "서울 구로구",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "전남대학교병원",
+    "title": "11월 직원(지원직) 공개채용 공고(정보보호 최고책임자)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55594357&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-7 (~ 11/25(수))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)힐링페이퍼",
@@ -1488,7 +1945,7 @@
       "#개인정보처리"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)대신저축은행",
@@ -1510,29 +1967,7 @@
       "#보안운영"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "주식회사 엔투원시스템",
-    "title": "네트워크 및 정보보안 시스템 엔지니어 모집(서울, 본사)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55298801&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "채용시 마감",
-    "summary": "서울 본사에서 네트워크 및 정보보안 시스템 구축·운영과 보안 엔지니어링 담당",
-    "tags": [
-      "#네트워크보안",
-      "#정보보안",
-      "#시스템엔지니어",
-      "#보안시스템운영"
-    ],
-    "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에이바이트",
@@ -1554,7 +1989,7 @@
       "#신입경력"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)시선인터내셔널",
@@ -1577,7 +2012,7 @@
       "#인증심사"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "퍼솔코리아(유)",
@@ -1594,7 +2029,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)한국갤럽조사연구소",
@@ -1617,7 +2052,7 @@
       "#보안운영"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)일신비츠온",
@@ -1639,7 +2074,7 @@
       "#보안정책"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)맨토스파워",
@@ -1661,7 +2096,7 @@
       "#리스크관리"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)아도스",
@@ -1680,7 +2115,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)골프존",
@@ -1703,7 +2138,7 @@
       "#정보보안"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엔에이치엔클라우드(주)",
@@ -1727,7 +2162,7 @@
       "#보안검증"
     ],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에프원시큐리티",
@@ -1745,7 +2180,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)케인앤클루컨설팅",
@@ -1764,7 +2199,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘림써치",
@@ -1781,7 +2216,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)스마일게이트홀딩스",
@@ -1798,7 +2233,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사 히든스카우트",
@@ -1815,7 +2250,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "오씨아이홀딩스",
@@ -1832,7 +2267,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)케인앤클루컨설팅",
@@ -1849,7 +2284,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템",
@@ -1867,7 +2302,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파워에이치알",
@@ -1885,7 +2320,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)신세계아이앤씨",
@@ -1902,7 +2337,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)케인앤클루컨설팅",
@@ -1919,7 +2354,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)잡뉴스솔로몬서치",
@@ -1936,7 +2371,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "삼일회계법인",
@@ -1953,7 +2388,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "미래에셋증권 (주)",
@@ -1970,7 +2405,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사 라피플코리아리미티드",
@@ -1987,7 +2422,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)JYP엔터테인먼트",
@@ -2004,7 +2439,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스노우(주)",
@@ -2021,7 +2456,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스",
@@ -2038,7 +2473,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스",
@@ -2055,7 +2490,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)신한디에스",
@@ -2072,7 +2507,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "LS전선(주)",
@@ -2089,7 +2524,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)JYP엔터테인먼트",
@@ -2106,7 +2541,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스",
@@ -2123,7 +2558,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스노우(주)",
@@ -2140,7 +2575,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)CJ ENM",
@@ -2157,7 +2592,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템",
@@ -2174,7 +2609,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)신세계아이앤씨",
@@ -2191,7 +2626,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)잡뉴스솔로몬서치",
@@ -2208,7 +2643,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)CJ ENM",
@@ -2225,7 +2660,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아마존 코리아",
@@ -2242,7 +2677,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "컴투스",
@@ -2259,7 +2694,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)동원홈푸드",
@@ -2276,7 +2711,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "NHN",
@@ -2293,7 +2728,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "미래에셋증권 (주)",
@@ -2310,7 +2745,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한국로슈진단",
@@ -2327,7 +2762,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘아이지넥스원(주)",
@@ -2344,7 +2779,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘아이지넥스원(주)",
@@ -2361,7 +2796,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(사)한국건강관리협회",
@@ -2378,7 +2813,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)싸이버원",
@@ -2396,7 +2831,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)현대퓨처넷",
@@ -2413,7 +2848,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스",
@@ -2430,7 +2865,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)퍼포먼스플러스",
@@ -2447,7 +2882,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "솔브레인에스엘디주식회사",
@@ -2464,7 +2899,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한패스(주)",
@@ -2481,7 +2916,24 @@
     "summary": "",
     "tags": [],
     "deadline_status": "WHEN_FILLED",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "CJ제일제당 (주)",
+    "title": "[CJ제일제당] 클라우드 보안 기획 및 아키텍처 전문가 경력 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611170003872",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "채용시 마감",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "WHEN_FILLED",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)비바리퍼블리카",
@@ -2505,7 +2957,7 @@
       "#웹보안"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)핀다",
@@ -2527,7 +2979,7 @@
       "#보안운영"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)핀다",
@@ -2549,7 +3001,7 @@
       "#취약점분석"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)핀다",
@@ -2571,7 +3023,7 @@
       "#정보보호정책"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)우아한형제들",
@@ -2588,7 +3040,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "패스트레인",
@@ -2605,7 +3057,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)하이브",
@@ -2628,7 +3080,24 @@
       "#클라우드인프라"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "주식회사 무신사",
+    "title": "Security Engineer (무신사페이먼츠)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609170000001",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "ALWAYS",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "카카오페이증권(주)",
@@ -2646,7 +3115,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "뮤직카우(MUSICOW)",
@@ -2663,7 +3132,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아주큐엠에스",
@@ -2685,7 +3154,7 @@
       "#보안운영"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스더블유엠",
@@ -2702,7 +3171,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이그룹 (SK)",
@@ -2719,7 +3188,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버",
@@ -2736,7 +3205,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "콘텐츠웨이브(wavve)",
@@ -2754,7 +3223,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "프라이빗에이아이",
@@ -2771,7 +3240,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "웰로",
@@ -2789,7 +3258,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이그룹 (SK)",
@@ -2806,7 +3275,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "소만사",
@@ -2823,7 +3292,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한국신용데이터(KCD)",
@@ -2840,7 +3309,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "바텍이우홀딩스",
@@ -2857,7 +3326,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "딜로이트(Deloitte)",
@@ -2875,7 +3344,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "딜로이트(Deloitte)",
@@ -2892,7 +3361,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "케이엠파크",
@@ -2909,7 +3378,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "버킷플레이스(오늘의집)",
@@ -2927,7 +3396,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "베이글랩스",
@@ -2945,7 +3414,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "롯데카드",
@@ -2962,25 +3431,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "휴넷",
-    "title": "정보보안 담당자",
-    "url": "https://www.wanted.co.kr/wd/377258",
-    "platforms": [
-      "원티드",
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "111퍼센트",
@@ -2997,7 +3448,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한국결제네트웍스유한회사",
@@ -3014,7 +3465,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "미디어로그",
@@ -3031,7 +3482,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "마이리얼트립",
@@ -3049,7 +3500,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "마이리얼트립",
@@ -3068,7 +3519,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "하이컨시",
@@ -3086,7 +3537,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "와탭랩스(WhaTapLabs)",
@@ -3103,7 +3554,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘리스",
@@ -3122,7 +3573,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "티맵모빌리티",
@@ -3140,7 +3591,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "위대한상상(요기요)",
@@ -3157,7 +3608,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "빗썸",
@@ -3175,7 +3626,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크래프톤(Krafton)",
@@ -3192,7 +3643,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "펜타시큐리티",
@@ -3210,7 +3661,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "윤회",
@@ -3228,7 +3679,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크래프톤(Krafton)",
@@ -3245,7 +3696,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "마인드로직 (Mindlogic Inc.)",
@@ -3262,7 +3713,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "서울옥션",
@@ -3279,7 +3730,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이그룹 (SK)",
@@ -3296,7 +3747,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "리벨리온",
@@ -3313,7 +3764,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "필상",
@@ -3330,7 +3781,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아우토크립트",
@@ -3347,7 +3798,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아우토크립트",
@@ -3364,7 +3815,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아우토크립트",
@@ -3381,7 +3832,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "구다이글로벌(조선미녀)",
@@ -3398,7 +3849,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "보맵",
@@ -3416,7 +3867,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파인더갭",
@@ -3434,7 +3885,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파인더갭",
@@ -3452,7 +3903,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "카카오헬스케어",
@@ -3469,7 +3920,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화그룹 (Hanwha)",
@@ -3486,7 +3937,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버",
@@ -3496,6 +3947,8 @@
       "원티드"
     ],
     "keywords": [
+      "모의해킹",
+      "취약점 진단",
       "정보보안"
     ],
     "location": "서울",
@@ -3503,41 +3956,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "소프트웨어원코리아",
-    "title": "Microsoft 보안 프리세일즈",
-    "url": "https://www.wanted.co.kr/wd/395331",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "크립토랩",
-    "title": "인증 담당자(제품, 보안인증)",
-    "url": "https://www.wanted.co.kr/wd/395151",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "씨제이이엔엠(CJ ENM)",
@@ -3554,7 +3973,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화그룹 (Hanwha)",
@@ -3571,7 +3990,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "두꺼비세상",
@@ -3589,7 +4008,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "토스씨엑스",
@@ -3606,7 +4025,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "인피니티익스체인지코리아",
@@ -3623,26 +4042,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "티시스아이티",
-    "title": "정보보호(보안기획/진단)",
-    "url": "https://www.wanted.co.kr/wd/393832",
-    "platforms": [
-      "원티드"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "서울",
-    "deadline": "상시채용",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "나인투원",
@@ -3660,7 +4060,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "그렙(프로그래머스)",
@@ -3678,7 +4078,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "원티드랩",
@@ -3696,7 +4096,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "어니스트에이아이",
@@ -3715,7 +4115,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "마켓보로",
@@ -3734,7 +4134,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "페이타랩(패스오더)",
@@ -3751,7 +4151,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘리스",
@@ -3769,7 +4169,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "데이원컴퍼니",
@@ -3786,7 +4186,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "블루개러지(Blue Garage)",
@@ -3803,7 +4203,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엔에이치엔커머스(nhn커머스)",
@@ -3820,7 +4220,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아이알큐더스",
@@ -3837,7 +4237,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "슈프리마",
@@ -3854,7 +4254,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "위대한상상(요기요)",
@@ -3877,7 +4277,7 @@
       "#정보보호"
     ],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "비마이프렌즈",
@@ -3894,7 +4294,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "타다(VCNC)",
@@ -3911,7 +4311,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "해빗팩토리",
@@ -3928,7 +4328,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "페이타랩(패스오더)",
@@ -3945,7 +4345,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "다음",
@@ -3962,7 +4362,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "컬리",
@@ -3979,7 +4379,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "컬리",
@@ -3996,7 +4396,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크림(KREAM)",
@@ -4013,7 +4413,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "휴런",
@@ -4031,7 +4431,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "인피니티익스체인지코리아",
@@ -4048,7 +4448,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스냅컴퍼니",
@@ -4065,7 +4465,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크래프톤(Krafton)",
@@ -4082,7 +4482,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아우토크립트",
@@ -4100,7 +4500,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "유모스원",
@@ -4119,7 +4519,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스패로우",
@@ -4137,7 +4537,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "롯데카드",
@@ -4154,7 +4554,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "토스뱅크",
@@ -4173,7 +4573,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스틸리언",
@@ -4190,7 +4590,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "아우토크립트",
@@ -4208,7 +4608,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "인라이플",
@@ -4227,7 +4627,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스패로우",
@@ -4245,7 +4645,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버",
@@ -4264,7 +4664,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)서북",
@@ -4281,7 +4681,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에스피씨지",
@@ -4299,7 +4699,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크론",
@@ -4318,7 +4718,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에스피씨지",
@@ -4335,7 +4735,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)엘리스",
@@ -4354,7 +4754,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)엘리스",
@@ -4371,7 +4771,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)맨파워써치",
@@ -4390,7 +4790,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)뮤직카우인베스트",
@@ -4407,7 +4807,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)마크애니",
@@ -4424,7 +4824,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4441,7 +4841,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)여기어때컴퍼니",
@@ -4459,7 +4859,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -4476,7 +4876,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -4494,7 +4894,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4511,7 +4911,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4528,7 +4928,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)코인원",
@@ -4545,7 +4945,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)레몬베이스",
@@ -4562,7 +4962,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)제노코",
@@ -4579,7 +4979,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템(주)_ICT",
@@ -4597,7 +4997,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)프로써치코리아",
@@ -4614,7 +5014,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에코마케팅",
@@ -4631,7 +5031,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)시큐아이",
@@ -4648,7 +5048,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에스아이에이",
@@ -4665,7 +5065,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4682,7 +5082,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4699,7 +5099,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)텔레칩스",
@@ -4716,7 +5116,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)지란지교에스앤씨",
@@ -4733,7 +5133,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)포티투닷",
@@ -4750,7 +5150,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엔에이치엔(주)",
@@ -4767,7 +5167,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4784,7 +5184,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)여기어때컴퍼니",
@@ -4802,7 +5202,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에임인텔리전스",
@@ -4819,7 +5219,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)하이브",
@@ -4836,7 +5236,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)하이브",
@@ -4854,7 +5254,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)맨파워써치",
@@ -4872,7 +5272,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -4889,7 +5289,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -4908,7 +5308,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)비바리퍼블리카",
@@ -4925,7 +5325,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -4942,7 +5342,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)모니터랩",
@@ -4959,7 +5359,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "콘텐츠웨이브(주)",
@@ -4977,7 +5377,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화오션(주)",
@@ -4994,7 +5394,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에이피알",
@@ -5011,7 +5411,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -5028,7 +5428,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "우리에프아이에스(주)",
@@ -5045,7 +5445,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)바텍이우홀딩스",
@@ -5062,7 +5462,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)왓섭",
@@ -5079,7 +5479,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)무신사",
@@ -5098,7 +5498,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)써니즈",
@@ -5116,7 +5516,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -5133,7 +5533,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)써니즈",
@@ -5151,7 +5551,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "클럼엘",
@@ -5169,7 +5569,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엔에이치엔(주)",
@@ -5186,7 +5586,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)지란지교에스앤씨",
@@ -5203,7 +5603,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜파라타항공",
@@ -5220,7 +5620,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜에이플러스에셋어드바이저",
@@ -5237,7 +5637,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엔에이치엔커머스㈜",
@@ -5254,7 +5654,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크림(주)",
@@ -5271,7 +5671,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜에프원시큐리티",
@@ -5288,7 +5688,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜이글루코퍼레이션",
@@ -5305,7 +5705,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜에스피씨지",
@@ -5322,7 +5722,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "우리에프아이에스㈜",
@@ -5339,7 +5739,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)대한항공",
@@ -5356,7 +5756,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에어프레미아",
@@ -5373,7 +5773,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스",
@@ -5390,25 +5790,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "엔아이티서비스",
-    "title": "[네이버계열사][NIT Service] NAVER 서비스 보안진단",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040003267",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "상시채용",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)크래프톤",
@@ -5425,7 +5807,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "소만사",
@@ -5442,7 +5824,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화그룹 (Hanwha)",
@@ -5459,7 +5841,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "라닉스",
@@ -5476,7 +5858,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "티사이언티픽",
@@ -5493,7 +5875,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템(주)_ICT",
@@ -5510,7 +5892,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파르나스호텔(주)",
@@ -5527,7 +5909,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)레브잇",
@@ -5544,7 +5926,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "크림(주)",
@@ -5561,7 +5943,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화시스템",
@@ -5578,7 +5960,24 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "씨엠티정보통신(주)",
+    "title": "씨엠티정보통신 2026년 정보보호컨설팅 각 분야별 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55322932&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "상시채용",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "ALWAYS",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)왓섭",
@@ -5595,7 +5994,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버",
@@ -5612,7 +6011,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "티맵모빌리티",
@@ -5629,7 +6028,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화그룹 (Hanwha)",
@@ -5646,7 +6045,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "메리츠증권",
@@ -5664,7 +6063,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "글로벌머니익스프레스",
@@ -5682,7 +6081,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한국아이티진흥(주)",
@@ -5699,7 +6098,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)한국온체인인프라",
@@ -5716,7 +6115,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜이글루코퍼레이션",
@@ -5733,7 +6132,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "엘지유플러스(LG유플러스)",
@@ -5750,7 +6149,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "시선에이아이",
@@ -5767,7 +6166,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대그린푸드",
@@ -5784,7 +6183,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에버브레인써치",
@@ -5802,7 +6201,7 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에버브레인써치",
@@ -5819,24 +6218,75 @@
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
-    "company": "코나아이㈜",
-    "title": "[코나아이] 개인정보보호 담당자 채용",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50359029",
+    "company": "현대자동차그룹 (HYUNDAI)",
+    "title": "[통합보안] Information Security Inspection - 그룹 사이버 보안",
+    "url": "https://www.wanted.co.kr/wd/398821",
     "platforms": [
-      "잡코리아"
+      "원티드"
     ],
     "keywords": [
-      "정보보호"
+      "정보보안"
     ],
-    "location": "서울 영등포구",
+    "location": "서울",
     "deadline": "상시채용",
     "summary": "",
     "tags": [],
     "deadline_status": "ALWAYS",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "현대자동차그룹 (HYUNDAI)",
+    "title": "[통합보안] Infra Security Engineer - Public Cloud Security",
+    "url": "https://www.wanted.co.kr/wd/398820",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "상시채용",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "ALWAYS",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "현대자동차그룹 (HYUNDAI)",
+    "title": "[통합보안] Mobility Security Engineer - AD보안",
+    "url": "https://www.wanted.co.kr/wd/398819",
+    "platforms": [
+      "원티드"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "상시채용",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "ALWAYS",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)카카오엔터프라이즈",
+    "title": "[정보보안실] 보안정책/인증 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/355126",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "상시채용",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "ALWAYS",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "알라딘커뮤니케이션",
@@ -5853,7 +6303,7 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-26 (~12/13 일)",
+    "deadline": "D-25 (~12/13 일)",
     "summary": "정보보호팀에서 기술보안 전반을 담당하며 보안 시스템 운영과 취약점 분석 수행",
     "tags": [
       "#정보보호",
@@ -5862,7 +6312,7 @@
       "#취약점분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파이오링크",
@@ -5875,7 +6325,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-26 (~12/13 일)",
+    "deadline": "D-25 (~12/13 일)",
     "summary": "파이오링크의 웹 방화벽 WEBFRONT-K 웹보안 기능과 시그니처 개발 담당",
     "tags": [
       "#웹방화벽",
@@ -5884,7 +6334,7 @@
       "#보안제품개발"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "웍스피어(유)",
@@ -5897,7 +6347,7 @@
       "정보보안"
     ],
     "location": "서울 서초구",
-    "deadline": "D-14",
+    "deadline": "D-13",
     "summary": "3년 이상 경력 기반 보안 시스템 구축·운영과 취약점 대응을 수행하는 보안 엔지니어",
     "tags": [
       "#보안엔지니어",
@@ -5906,7 +6356,7 @@
       "#보안운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "스콥정보통신",
@@ -5919,7 +6369,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-28 (~12/15 화)",
+    "deadline": "D-27 (~12/15 화)",
     "summary": "네트워크 보안 기술 연구개발과 보안 제품 기능 개발을 담당하는 R&D 인력",
     "tags": [
       "#네트워크보안",
@@ -5928,20 +6378,21 @@
       "#제품보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)세스코",
     "title": "(주)세스코 정보보안기획 담당자 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55453211&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "서울 강동구",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "세스코의 정보보안 기획 업무를 담당하며 보안 정책·체계 수립과 운영 지원을 수행합니다.",
     "tags": [
       "#정보보안기획",
@@ -5950,7 +6401,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)진영정기",
@@ -5963,7 +6414,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-15 (~ 12/02(수))",
+    "deadline": "D-14 (~ 12/02(수))",
     "summary": "진영정기 구매팀에서 정보보호와 전산 운영을 담당하며 관련 업무를 지원합니다.",
     "tags": [
       "#정보보호",
@@ -5972,30 +6423,7 @@
       "#IT운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "한화오션(주)",
-    "title": "[경영지원] 정보보호 경력사원 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "잡코리아",
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "경남 거제시",
-    "deadline": "D-8",
-    "summary": "한화오션 경영지원 부문 정보보호 경력으로 보안 정책 수립과 정보보호 체계 운영을 수행",
-    "tags": [
-      "#정보보호",
-      "#경영지원",
-      "#보안정책",
-      "#정보보안"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)비바리퍼블리카",
@@ -6008,7 +6436,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "비바리퍼블리카에서 정보보안 정책 수립과 관리 체계 운영을 담당하는 매니저",
     "tags": [
       "#보안정책",
@@ -6017,7 +6445,7 @@
       "#보안거버넌스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "디어유",
@@ -6031,7 +6459,7 @@
       "정보보호"
     ],
     "location": "서울",
-    "deadline": "D-29 (~12/16 수)",
+    "deadline": "D-28 (~12/16 수)",
     "summary": "서비스 정보보호와 개인정보보호 체계 운영 및 점검 업무를 담당하는 정보보호 분야",
     "tags": [
       "#정보보호",
@@ -6040,20 +6468,21 @@
       "#컴플라이언스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)윈스테크넷",
     "title": "윈스테크넷 채용(경력) - [부울경] 정보보호서비스",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55460592&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "사람인"
+      "사람인",
+      "잡코리아"
     ],
     "keywords": [
       "정보보호"
     ],
-    "location": "",
-    "deadline": "D-13 (~ 11/30(월))",
+    "location": "부산 해운대구",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "부울경 지역 정보보호서비스 경력 채용으로 보안 운영 및 지원 업무 수행",
     "tags": [
       "#정보보호",
@@ -6062,7 +6491,7 @@
       "#경력채용"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)윈스테크넷",
@@ -6076,7 +6505,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "윈스테크넷 클라우드 보안관제·분석 정보보호 서비스 경력 채용",
     "tags": [
       "#클라우드보안",
@@ -6085,7 +6514,7 @@
       "#경력채용"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사 윈스테크넷",
@@ -6100,7 +6529,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "부울경 지역 정보보호서비스 경력자로 관제·진단·개인정보 보호 업무를 담당하는 채용",
     "tags": [
       "#정보보호",
@@ -6109,7 +6538,7 @@
       "#개인정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사 윈스테크넷",
@@ -6123,7 +6552,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "윈스테크넷에서 클라우드 관제와 분석 중심 정보보호서비스 경력자를 집중 채용하는 공고입니다",
     "tags": [
       "#클라우드보안",
@@ -6132,293 +6561,7 @@
       "#경력채용"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "교보디티에스(주)",
-    "title": "교보DTS 경력 채용공고 (보안운영, 보안관제, 모의해킹)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502807&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "모의해킹",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "보안관제와 보안운영, 모의해킹을 수행하며 기업 보안 위협 탐지·대응 체계를 운영",
-    "tags": [
-      "#보안관제",
-      "#보안운영",
-      "#모의해킹",
-      "#정보보안"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "교보DTS",
-    "title": "교보DTS 경력 채용공고 (모의해킹)",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50319019",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹"
-    ],
-    "location": "서울 종로구 외",
-    "deadline": "D-8",
-    "summary": "모의해킹 경력자를 채용해 보안 취약점을 진단하고 모의해킹을 수행하는 직무",
-    "tags": [
-      "#모의해킹",
-      "#취약점분석",
-      "#정보보안",
-      "#경력채용"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주) 유호스트",
-    "title": "정보보안 보안관제 담당 채용(교대근무/정규직)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000196",
-    "platforms": [
-      "사람인",
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-16 (~ 12/03(목))",
-    "summary": "교대 근무 기반 정보보안 보안관제 업무 수행 및 보안 이벤트 모니터링·대응",
-    "tags": [
-      "#보안관제",
-      "#정보보안",
-      "#교대근무",
-      "#보안이벤트대응"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "넷마블",
-    "title": "취약점 진단 및 모의해킹 담당자",
-    "url": "https://www.wanted.co.kr/wd/361467",
-    "platforms": [
-      "원티드",
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단"
-    ],
-    "location": "서울",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "웹·시스템 취약점 진단과 모의해킹을 수행해 보안 약점을 분석·보고하는 직무",
-    "tags": [
-      "#모의해킹",
-      "#취약점진단",
-      "#취약점분석",
-      "#보안진단"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)한진",
-    "title": "(주)한진 정보보안팀 경력 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393373&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "한진 정보보안팀에서 기업 정보자산 보호와 운영 보안 전반을 담당하는 경력직",
-    "tags": [
-      "#정보보안",
-      "#보안운영",
-      "#정보자산보호",
-      "#보안관리"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)리드엔지니어링",
-    "title": "총무(총무,산업안전,정보보안) 경력직 모집",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55388492&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "총무·산업안전·정보보안 업무를 겸임하며 사내 운영과 보안 관리를 지원하는 직무",
-    "tags": [
-      "#총무",
-      "#산업안전",
-      "#정보보안",
-      "#사내보안관리"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)현대그린푸드",
-    "title": "현대그린푸드 정보보호 경력사원 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361802&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "현대그린푸드 정보보호 정책·시스템 운영 등 기업 정보보호 전반을 담당하는 경력직",
-    "tags": [
-      "#정보보호",
-      "#보안운영",
-      "#보안정책",
-      "#정보보안"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "넷마블(주)",
-    "title": "개인정보보호 관리체계 운영",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403681&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "넷마블의 개인정보보호 관리체계를 운영하며 보호 정책 수립과 관리 업무를 담당한다.",
-    "tags": [
-      "#개인정보보호",
-      "#ISMS-P",
-      "#보안정책"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)고른",
-    "title": "[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단"
-    ],
-    "location": "경기 화성시 동탄구 외",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "고른에서 웹 서비스 취약점을 진단하고 모의해킹을 수행할 경력직 보안 담당자를 채용한다.",
-    "tags": [
-      "#모의해킹",
-      "#취약점진단",
-      "#웹보안"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "에스케이쉴더스(주)",
-    "title": "모의해킹 경력직 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹"
-    ],
-    "location": "경기 성남시 분당구",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)알스퀘어",
-    "title": "[라이프매니지먼트] 개인정보보호 담당자",
-    "url": "https://career.rememberapp.co.kr/job/posting/342101",
-    "platforms": [
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "",
-    "deadline": "D-8 (~11/25 수)",
-    "summary": "알스퀘어 라이프매니지먼트 서비스의 개인정보보호 담당자로서 보호 정책과 관리 업무를 수행한다.",
-    "tags": [
-      "#개인정보보호",
-      "#컴플라이언스",
-      "#정보보호"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "HR컨설팅(주)",
-    "title": "국내 최대 대기업 AI서비스 확산/ERP개발운영/정보보안 각 담당자 1명씩 3명 신규충원",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000535",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~11/25 수)",
-    "summary": "국내 대기업 대상 AI서비스 확산, ERP 개발운영, 정보보안 담당자를 각 1명씩 신규 충원한다.",
-    "tags": [
-      "#정보보안",
-      "#AI서비스",
-      "#ERP",
-      "#IT컨설팅"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)인싸이트에이치알지",
-    "title": "우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~11/25 수)",
-    "summary": "우량 B2B IT 보안 솔루션 기업에서 대리~과장급 기술엔지니어로 제품 기술지원을 담당한다.",
-    "tags": [
-      "#보안솔루션",
-      "#기술엔지니어",
-      "#IT보안",
-      "#기술지원"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "위드네트웍스",
@@ -6431,7 +6574,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "위드네트웍스 보안 연구소에서 신규 보안 솔루션을 개발하고 구현할 신입 개발자를 채용합니다",
     "tags": [
       "#보안솔루션개발",
@@ -6440,7 +6583,7 @@
       "#솔루션엔지니어링"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "이너버스",
@@ -6453,7 +6596,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "이너버스에서 통합보안관리 시스템을 구축하고 운영하며 관제할 신입 보안 엔지니어를 채용합니다",
     "tags": [
       "#통합보안관리",
@@ -6462,7 +6605,7 @@
       "#신입채용"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "대진정보통신",
@@ -6475,7 +6618,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "대진정보통신에서 PIA 자격을 바탕으로 개인정보보호 컨설팅을 수행할 1~3년 경력자를 채용합니다",
     "tags": [
       "#PIA",
@@ -6484,7 +6627,7 @@
       "#정보보호컨설팅"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에이치알비즈코리아",
@@ -6498,11 +6641,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~ 11/26(목))",
+    "deadline": "D-8 (~ 11/26(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화에어로스페이스(주)",
@@ -6515,7 +6658,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "한화에어로스페이스에서 해외사업 관련 정보보호 정책을 수립하고 대응을 담당할 정보보호 담당자를 채용합니다",
     "tags": [
       "#정보보호",
@@ -6524,7 +6667,7 @@
       "#정보보호거버넌스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버(주)",
@@ -6538,7 +6681,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "현대오토에버에서 클라우드 보안성 검토와 보안 관리 업무를 수행할 클라우드 보안 담당자를 채용합니다",
     "tags": [
       "#클라우드보안",
@@ -6547,7 +6690,7 @@
       "#CSPM"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버(주)",
@@ -6560,7 +6703,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "북미 현지 법인에서 Endpoint 보안 기술 지원과 보안 체계 운영을 담당",
     "tags": [
       "#엔드포인트보안",
@@ -6569,7 +6712,7 @@
       "#보안운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버(주)",
@@ -6585,7 +6728,7 @@
       "정보보안"
     ],
     "location": "서울 강남구",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "모의해킹과 취약점 진단으로 시스템 보안 약점을 분석하고 개선",
     "tags": [
       "#모의해킹",
@@ -6594,7 +6737,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버(주)",
@@ -6607,7 +6750,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "금융권 정보보안 솔루션 구축과 운영 전반을 담당",
     "tags": [
       "#정보보안",
@@ -6616,7 +6759,7 @@
       "#금융보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜선익시스템",
@@ -6629,7 +6772,7 @@
       "정보보안"
     ],
     "location": "경기 수원시 권선구",
-    "deadline": "D-9",
+    "deadline": "D-8",
     "summary": "IT팀 정보보안 전반 운영과 보안 관리 업무를 수행",
     "tags": [
       "#정보보안",
@@ -6638,7 +6781,7 @@
       "#보안관리"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화에어로스페이스㈜",
@@ -6670,7 +6813,7 @@
       "취약점 진단"
     ],
     "location": "서울 강남구",
-    "deadline": "D-9",
+    "deadline": "D-8",
     "summary": "DAST 솔루션과 피싱 모의해킹 플랫폼을 운영·관리",
     "tags": [
       "#DAST",
@@ -6679,7 +6822,7 @@
       "#플랫폼운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "시니어앤파트너즈",
@@ -6692,11 +6835,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "중고나라",
@@ -6712,7 +6855,7 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-10",
+    "deadline": "D-9",
     "summary": "ISMS 인증 대응과 보안 운영·컴플라이언스 전반을 담당하는 정보보안 담당자",
     "tags": [
       "#ISMS",
@@ -6721,7 +6864,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "SK(주)",
@@ -6735,7 +6878,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-10 (~ 11/27(금))",
+    "deadline": "D-9 (~ 11/27(금))",
     "summary": "SK(주)에서 정보보안 운영 전반을 관리하고 보안 체계를 유지할 전문가를 영입",
     "tags": [
       "#정보보안운영",
@@ -6744,7 +6887,7 @@
       "#SK"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주) 케인앤클루컨설팅",
@@ -6759,11 +6902,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-10 (~ 11/27(금))",
+    "deadline": "D-9 (~ 11/27(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "갓루트(GOTROOT)",
@@ -6777,7 +6920,7 @@
       "정보보안"
     ],
     "location": "서울 금천구",
-    "deadline": "D-10",
+    "deadline": "D-9",
     "summary": "갓루트에서 경력 무관으로 모의해킹·취약점 진단을 수행할 Offensive Security 컨설턴트 모집",
     "tags": [
       "#모의해킹",
@@ -6786,7 +6929,7 @@
       "#보안컨설팅"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이",
@@ -6799,7 +6942,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-10 (~11/27 금)",
+    "deadline": "D-9 (~11/27 금)",
     "summary": "에스케이에서 정보보안 운영 전문가를 영입해 기업 보안 체계 운영과 대응을 담당",
     "tags": [
       "#정보보안운영",
@@ -6808,7 +6951,7 @@
       "#기업보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "그레이스앤파트너스",
@@ -6823,7 +6966,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-10 (~11/27 금)",
+    "deadline": "D-9 (~11/27 금)",
     "summary": "금융그룹 ICT 환경에서 정보보호 보안기획·진단을 수행할 4~12년 경력자 모집",
     "tags": [
       "#정보보호",
@@ -6832,7 +6975,7 @@
       "#금융보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜위대한상상",
@@ -6845,7 +6988,7 @@
       "정보보안"
     ],
     "location": "서울 강남구",
-    "deadline": "D-11",
+    "deadline": "D-10",
     "summary": "웹·애플리케이션 보안 취약점 점검과 보안 아키텍처 강화를 수행하는 경력자",
     "tags": [
       "#웹보안",
@@ -6854,7 +6997,7 @@
       "#보안아키텍처"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜웹젠",
@@ -6867,7 +7010,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-11",
+    "deadline": "D-10",
     "summary": "서버·네트워크·시스템 등 인프라 환경의 보안 체계를 구축·운영하는 경력직",
     "tags": [
       "#인프라보안",
@@ -6876,7 +7019,7 @@
       "#보안운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)코인원",
@@ -6889,7 +7032,7 @@
       "정보보안"
     ],
     "location": "서울 영등포구",
-    "deadline": "D-11",
+    "deadline": "D-10",
     "summary": "서비스 전반의 보안 요구사항을 설계·검증하고 보안 엔지니어링을 리드하는 팀장급",
     "tags": [
       "#서비스보안",
@@ -6898,7 +7041,7 @@
       "#보안리더십"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)씨아이솔루션",
@@ -6911,7 +7054,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-11 (~11/28 토)",
+    "deadline": "D-10 (~11/28 토)",
     "summary": "보안 이벤트 모니터링과 침해 대응을 수행하는 보안관제 인력",
     "tags": [
       "#보안관제",
@@ -6920,7 +7063,7 @@
       "#보안이벤트분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "라온시큐어(주)",
@@ -6933,7 +7076,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-12 (~ 11/29(일))",
+    "deadline": "D-11 (~ 11/29(일))",
     "summary": "정보보호 컨설팅 수행을 지원하며 보안 요구사항 분석과 문서화를 담당하는 경력자",
     "tags": [
       "#정보보호컨설팅",
@@ -6942,7 +7085,7 @@
       "#정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)보령",
@@ -6957,11 +7100,11 @@
       "정보보호"
     ],
     "location": "서울 종로구",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -6974,7 +7117,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "외국계 기업 블루팀 Cyber Security Lead로 보안 전략 수립과 운영 총괄",
     "tags": [
       "#사이버보안",
@@ -6983,7 +7126,7 @@
       "#보안전략"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜티빙",
@@ -6997,7 +7140,7 @@
       "정보보호"
     ],
     "location": "서울 강남구",
-    "deadline": "D-12",
+    "deadline": "D-11",
     "summary": "티빙의 개인정보보호 리드로 정책·프로세스 총괄 및 개인정보 리스크 관리 수행",
     "tags": [
       "#개인정보보호",
@@ -7006,7 +7149,7 @@
       "#컴플라이언스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜위대한상상",
@@ -7020,11 +7163,11 @@
       "정보보안"
     ],
     "location": "서울 강남구",
-    "deadline": "D-12",
+    "deadline": "D-11",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜숲(SOOP CO., LTD.)",
@@ -7038,11 +7181,11 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-12",
+    "deadline": "D-11",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜시큐러스",
@@ -7055,7 +7198,7 @@
       "정보보안"
     ],
     "location": "서울 강남구",
-    "deadline": "D-12",
+    "deadline": "D-11",
     "summary": "기업 대상 정보보안 컨설팅 컨설턴트로 프리랜서 수행하며 보안 진단·자문 및 개선 지원",
     "tags": [
       "#정보보안컨설팅",
@@ -7064,7 +7207,7 @@
       "#보안자문"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "그레이스앤파트너스",
@@ -7077,7 +7220,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "금융그룹 ICT 환경 EDR 기반 보안관제 경력자로 탐지·대응 및 관제 운영 수행",
     "tags": [
       "#EDR",
@@ -7086,7 +7229,7 @@
       "#ICT보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "부드러운돌멩이",
@@ -7100,7 +7243,7 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "전자금융 서비스의 정보보안 정책 수립과 기술 운영을 담당하는 3~10년 경력 전문가",
     "tags": [
       "#전자금융보안",
@@ -7109,7 +7252,7 @@
       "#금융보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)소만사",
@@ -7124,11 +7267,11 @@
       "정보보호"
     ],
     "location": "경기",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에이피알",
@@ -7141,7 +7284,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "경영지원 조직 내 정보보호 리더로서 보안 전략과 거버넌스 수립·운영을 총괄하는 경력직",
     "tags": [
       "#정보보호리더",
@@ -7150,7 +7293,7 @@
       "#정보보안전략"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)대웅제약",
@@ -7163,7 +7306,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "준법경영본부 정보보호팀에서 3개월 계약직으로 정보보호 업무와 컴플라이언스 대응 수행",
     "tags": [
       "#정보보호",
@@ -7172,7 +7315,7 @@
       "#보안운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜이글루코퍼레이션",
@@ -7186,35 +7329,11 @@
       "취약점 진단"
     ],
     "location": "서울 송파구",
-    "deadline": "D-17 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 11:33:22 KST"
-  },
-  {
-    "company": "커리어서포트",
-    "title": "[정보보안 코스닥] 취약점 진단 PL-경력직",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
-    "platforms": [
-      "사람인",
-      "인크루트"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-13 (~ 11/30(월))",
-    "summary": "코스닥 기업을 대상으로 정보보안 취약점 진단 프로젝트를 총괄하는 경력직 PL",
-    "tags": [
-      "#취약점진단",
-      "#정보보안",
-      "#프로젝트관리",
-      "#코스닥"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에버스핀",
@@ -7230,7 +7349,7 @@
       "정보보안"
     ],
     "location": "서울 동작구 외",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "기업의 취약점 분석과 정보보안 모의해킹 컨설팅을 수행하는 전문 인력",
     "tags": [
       "#취약점분석",
@@ -7239,7 +7358,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)가비아",
@@ -7253,7 +7372,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "정보보호 및 개인정보보호 체계를 구축·운영하는 보안 담당 업무",
     "tags": [
       "#정보보호",
@@ -7262,7 +7381,7 @@
       "#컴플라이언스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)가비아",
@@ -7276,7 +7395,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "보안 시스템을 설계·운영하며 보안 엔지니어링 업무를 수행하는 Security Engineer",
     "tags": [
       "#보안엔지니어",
@@ -7285,7 +7404,7 @@
       "#보안운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)네비웍스",
@@ -7298,7 +7417,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "SW 품질경영과 전사 정보보안 거버넌스를 총괄하며 품질 조직을 이끄는 리더 역할",
     "tags": [
       "#SW품질경영",
@@ -7307,7 +7426,7 @@
       "#품질리더"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "브리스캔영어쏘시에이츠(주)",
@@ -7321,7 +7440,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "정보보안 관리체계와 보안정책을 수립·운영하며 시니어로 관리하는 담당자",
     "tags": [
       "#정보보안정책",
@@ -7330,7 +7449,7 @@
       "#정보보호거버넌스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)씨앤씨인터내셔널",
@@ -7343,7 +7462,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "화장품 ODM 상장사의 IT 인프라와 정보보안 운영 전반을 담당하는 직무",
     "tags": [
       "#IT보안",
@@ -7352,7 +7471,7 @@
       "#화장품ODM"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)프로써치코리아",
@@ -7365,7 +7484,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "정보보안 전반의 보안 운영과 관리 업무를 수행할 인재를 채용하는 공고",
     "tags": [
       "#정보보안",
@@ -7374,7 +7493,7 @@
       "#정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한국조선해양(주)",
@@ -7388,7 +7507,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "선박 보안 시스템 대상 모의해킹과 보안 테스트를 수행하여 취약점 점검 및 개선을 지원합니다.",
     "tags": [
       "#모의해킹",
@@ -7397,7 +7516,7 @@
       "#취약점분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사스마일게이트",
@@ -7410,7 +7529,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "정보보안 분석 업무를 총괄하며 보안 위협 분석·대응 체계 운영을 담당합니다.",
     "tags": [
       "#정보보안",
@@ -7419,7 +7538,7 @@
       "#보안분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에프알엘코리아㈜",
@@ -7432,11 +7551,11 @@
       "정보보안"
     ],
     "location": "서울 송파구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에프알엘코리아㈜",
@@ -7449,11 +7568,11 @@
       "정보보안"
     ],
     "location": "서울 송파구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사스마일게이트",
@@ -7466,7 +7585,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "게임 보안 강화를 위한 보안 SDK 설계 및 개발을 담당합니다.",
     "tags": [
       "#게임보안",
@@ -7475,7 +7594,7 @@
       "#암호화"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜넥솔위즈빌",
@@ -7488,7 +7607,7 @@
       "정보보안"
     ],
     "location": "서울 강서구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "정보보안 관리체계 운영과 보안 정책·점검·교육 등 관리 업무를 수행합니다.",
     "tags": [
       "#정보보안",
@@ -7497,7 +7616,7 @@
       "#보안점검"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "신한DS",
@@ -7511,7 +7630,7 @@
       "정보보안"
     ],
     "location": "서울 중구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "레드팀 경력자로 모의해킹과 공격 시나리오 기반 보안 취약점 진단 및 대응 전략 수립",
     "tags": [
       "#레드팀",
@@ -7520,7 +7639,7 @@
       "#보안평가"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜가비아",
@@ -7533,7 +7652,7 @@
       "정보보호"
     ],
     "location": "경기 과천시",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "정보보호 체계 운영과 개인정보보호 관리·기술 대응을 총괄하는 경력직",
     "tags": [
       "#정보보호",
@@ -7542,7 +7661,7 @@
       "#ISMS-P"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "웍스피어(유)",
@@ -7555,7 +7674,7 @@
       "정보보안"
     ],
     "location": "서울 서초구",
-    "deadline": "D-13",
+    "deadline": "D-12",
     "summary": "애플리케이션 보안 취약점 진단과 시큐어코딩 기반 보안 아키텍처 개선 수행",
     "tags": [
       "#AppSecurity",
@@ -7564,7 +7683,7 @@
       "#시큐어코딩"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)신한디에스",
@@ -7578,7 +7697,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "레드팀 경력자로 모의해킹과 공격 시나리오 기반 보안 취약점 진단 및 대응 전략 수립",
     "tags": [
       "#레드팀",
@@ -7587,7 +7706,7 @@
       "#보안평가"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "시큐어트리(주)",
@@ -7617,7 +7736,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "대기업 지주사 AI 보안 전반을 담당하며 보안 체계와 기술 대응을 수행",
     "tags": [
       "#AI보안",
@@ -7626,7 +7745,7 @@
       "#기술보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)비트러스트",
@@ -7639,11 +7758,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-17 (~11/30 월)",
+    "deadline": "D-12 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 11:33:22 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "리브스메드",
@@ -7656,7 +7775,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-14 (~12/01 화)",
+    "deadline": "D-13 (~12/01 화)",
     "summary": "기업 전반의 정보보안 정책 수립과 운영 및 보안 관리 체계 담당",
     "tags": [
       "#기업보안",
@@ -7665,7 +7784,7 @@
       "#보안정책"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "리브스메드",
@@ -7678,7 +7797,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-14 (~12/01 화)",
+    "deadline": "D-13 (~12/01 화)",
     "summary": "제품 개발 전 과정의 보안 점검과 취약점 대응 및 보안성 강화 담당",
     "tags": [
       "#제품보안",
@@ -7687,7 +7806,7 @@
       "#보안개발"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에스지시큐리티컨설팅",
@@ -7701,7 +7820,7 @@
       "정보보호"
     ],
     "location": "서울 강남구",
-    "deadline": "D-15 (~ 12/02(수))",
+    "deadline": "D-14 (~ 12/02(수))",
     "summary": "문화체육관광부 정보보호와 개인정보보호 정책 및 운영 업무 담당",
     "tags": [
       "#정보보호",
@@ -7710,7 +7829,7 @@
       "#보안정책"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "송암시스콤(주)",
@@ -7748,7 +7867,7 @@
       "정보보안"
     ],
     "location": "서울 강남구",
-    "deadline": "D-16 (~ 12/03(목))",
+    "deadline": "D-15 (~ 12/03(목))",
     "summary": "정보보안 운영과 개인정보보호 업무를 담당할 경력자를 채용합니다.",
     "tags": [
       "#정보보안운영",
@@ -7756,7 +7875,7 @@
       "#보안컴플라이언스"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜에스앤케이인스티튜트",
@@ -7769,7 +7888,7 @@
       "정보보안"
     ],
     "location": "서울 서초구",
-    "deadline": "D-16",
+    "deadline": "D-15",
     "summary": "정보보안 솔루션 개발 경력자를 채용하여 보안 제품 개발 업무를 수행합니다.",
     "tags": [
       "#정보보안솔루션",
@@ -7778,7 +7897,7 @@
       "#소프트웨어개발"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "그레이스앤파트너스",
@@ -7791,7 +7910,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-16 (~12/03 목)",
+    "deadline": "D-15 (~12/03 목)",
     "summary": "금융그룹 ICT 환경에서 보안관제 경력자를 채용해 모니터링과 대응을 담당합니다.",
     "tags": [
       "#보안관제",
@@ -7800,7 +7919,7 @@
       "#보안모니터링"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "그레이스앤파트너스",
@@ -7814,7 +7933,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-16 (~12/03 목)",
+    "deadline": "D-15 (~12/03 목)",
     "summary": "금융그룹 ICT 대상 취약점 진단과 보안성 검토 경력자를 채용합니다.",
     "tags": [
       "#취약점진단",
@@ -7823,7 +7942,7 @@
       "#금융보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "핀다",
@@ -7837,7 +7956,7 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-17 (~12/04 금)",
+    "deadline": "D-16 (~12/04 금)",
     "summary": "핀테크 서비스 애플리케이션 보안 취약점 점검과 보안 강화 업무를 수행합니다.",
     "tags": [
       "#애플리케이션보안",
@@ -7846,7 +7965,7 @@
       "#취약점분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "십일번가(주)",
@@ -7859,11 +7978,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-17 (~ 12/04(금))",
+    "deadline": "D-16 (~ 12/04(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "팀스파르타(주)",
@@ -7876,7 +7995,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-17 (~ 12/04(금))",
+    "deadline": "D-16 (~ 12/04(금))",
     "summary": "재택근무 기반으로 풀스택·정보보안·PE 분야 대규모 튜터 모집 및 교육 운영 직무",
     "tags": [
       "#풀스택",
@@ -7885,7 +8004,7 @@
       "#재택근무"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜메타넷엑스",
@@ -7898,7 +8017,7 @@
       "정보보안"
     ],
     "location": "서울 종로구",
-    "deadline": "D-17",
+    "deadline": "D-16",
     "summary": "기업 대상 정보보안 컨설팅과 보안 체계 수립을 수행할 경력 컨설턴트 채용",
     "tags": [
       "#정보보안컨설팅",
@@ -7907,7 +8026,7 @@
       "#경력채용"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스투더블유",
@@ -7920,7 +8039,7 @@
       "모의해킹"
     ],
     "location": "",
-    "deadline": "D-18 (~12/05 토)",
+    "deadline": "D-17 (~12/05 토)",
     "summary": "AI 시스템 대상 모의해킹과 취약점 분석을 수행하는 AI 펜테스터 채용",
     "tags": [
       "#AI보안",
@@ -7929,7 +8048,7 @@
       "#취약점분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "센트비",
@@ -7942,7 +8061,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~12/05 토)",
+    "deadline": "D-17 (~12/05 토)",
     "summary": "보안 엔지니어링 팀을 리드하며 보안 시스템 구축·운영과 취약점 관리 체계를 총괄하는 매니저",
     "tags": [
       "#보안엔지니어링",
@@ -7951,7 +8070,7 @@
       "#보안아키텍처"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스투더블유",
@@ -7964,7 +8083,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~12/05 토)",
+    "deadline": "D-17 (~12/05 토)",
     "summary": "사이버 위협 정보를 수집·분석하고 공격 동향과 위협 인텔리전스를 제공하는 위협 분석가 역할",
     "tags": [
       "#위협분석",
@@ -7972,7 +8091,7 @@
       "#사이버보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)비즈테크온",
@@ -7986,7 +8105,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~ 12/05(토))",
+    "deadline": "D-17 (~ 12/05(토))",
     "summary": "사내 정보보안과 개인정보보호 업무를 담당하며 보안 정책·점검·컴플라이언스 운영을 수행",
     "tags": [
       "#정보보안",
@@ -7995,7 +8114,7 @@
       "#내부통제"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)지엔",
@@ -8009,7 +8128,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~ 12/05(토))",
+    "deadline": "D-17 (~ 12/05(토))",
     "summary": "모의해킹과 보안 컨설팅을 수행하며 취약점 진단 및 보안 개선안을 제시하는 경력직",
     "tags": [
       "#모의해킹",
@@ -8018,7 +8137,7 @@
       "#보안개선"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "고려아연(주)",
@@ -8032,7 +8151,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~12/05 토)",
+    "deadline": "D-17 (~12/05 토)",
     "summary": "고려아연 개인정보 보안기획 직무로 보호정책 수립과 컴플라이언스 대응을 담당",
     "tags": [
       "#개인정보보호",
@@ -8041,7 +8160,7 @@
       "#개인정보"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "고려아연(주)",
@@ -8055,7 +8174,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~12/05 토)",
+    "deadline": "D-17 (~12/05 토)",
     "summary": "고려아연 보안기획팀의 보안진단 직무로 시스템 취약점 점검과 보안성 검토를 수행",
     "tags": [
       "#보안진단",
@@ -8064,7 +8183,7 @@
       "#보안기획"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜아도스",
@@ -8079,7 +8198,7 @@
       "정보보안"
     ],
     "location": "경기 용인시 기흥구",
-    "deadline": "D-18",
+    "deadline": "D-17",
     "summary": "아도스에서 모의해킹과 취약점 진단, 보안용 AI 에이전트 개발을 수행하는 경력직",
     "tags": [
       "#모의해킹",
@@ -8088,7 +8207,7 @@
       "#보안자동화"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "그레이스앤파트너스",
@@ -8101,7 +8220,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-18 (~12/05 토)",
+    "deadline": "D-17 (~12/05 토)",
     "summary": "그레이스앤파트너스 반도체 분야 주니어 사이버보안 담당으로 보안 운영과 대응을 수행",
     "tags": [
       "#사이버보안",
@@ -8110,7 +8229,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에스에프에이",
@@ -8123,7 +8242,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-19 (~ 12/06(일))",
+    "deadline": "D-18 (~ 12/06(일))",
     "summary": "에스에프에이 2026년 수시채용 정보보안 직무로 보안 정책과 운영 관리 전반을 담당",
     "tags": [
       "#정보보안",
@@ -8132,7 +8251,7 @@
       "#정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)제테마",
@@ -8145,7 +8264,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-19 (~ 12/06(일))",
+    "deadline": "D-18 (~ 12/06(일))",
     "summary": "판교에서 IT 인프라와 정보보안 시스템을 안정적으로 운영·관리하는 담당자",
     "tags": [
       "#IT인프라",
@@ -8154,7 +8273,7 @@
       "#인프라보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "삼성물산 (주)",
@@ -8167,7 +8286,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-19 (~ 12/06(일))",
+    "deadline": "D-18 (~ 12/06(일))",
     "summary": "건설부문 플랫폼 환경의 정보보안 체계를 구축·운영하는 정보보안 직무",
     "tags": [
       "#플랫폼보안",
@@ -8176,7 +8295,7 @@
       "#보안구축"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)유니코써치",
@@ -8190,11 +8309,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-19 (~12/06 일)",
+    "deadline": "D-18 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파워에이치알",
@@ -8207,7 +8326,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-20 (~12/07 월)",
+    "deadline": "D-19 (~12/07 월)",
     "summary": "SI 프로젝트 기반 정보보안 컨설팅과 보안 아키텍처 자문을 수행하는 경력직",
     "tags": [
       "#정보보안컨설팅",
@@ -8216,7 +8335,7 @@
       "#경력"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에이피알",
@@ -8229,7 +8348,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-21 (~ 12/08(화))",
+    "deadline": "D-20 (~ 12/08(화))",
     "summary": "개인정보보호 정책 수립과 컴플라이언스 대응을 담당하는 경력사원",
     "tags": [
       "#개인정보보호",
@@ -8238,7 +8357,7 @@
       "#보안정책"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)코윈디에스티",
@@ -8273,7 +8392,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-22 (~ 12/09(수))",
+    "deadline": "D-21 (~ 12/09(수))",
     "summary": "핀다뱅크 및 대원저축 관련 개인정보보호 정책 수립과 개인정보 처리 전 과정 관리를 수행",
     "tags": [
       "#개인정보보호",
@@ -8282,7 +8401,7 @@
       "#정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "토니서치",
@@ -8296,7 +8415,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-22 (~ 12/09(수))",
+    "deadline": "D-21 (~ 12/09(수))",
     "summary": "국내 보안기업의 취약점 진단 담당자로 시스템 취약점 분석과 진단 보고서 작성을 수행",
     "tags": [
       "#취약점진단",
@@ -8305,7 +8424,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스(주)",
@@ -8343,7 +8462,7 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-23 (~12/10 목)",
+    "deadline": "D-22 (~12/10 목)",
     "summary": "AI 기반 보안 자동화를 설계·개발해 보안 엔지니어링 효율을 높이는 엔지니어",
     "tags": [
       "#보안자동화",
@@ -8352,7 +8471,7 @@
       "#SOAR"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "SK시그넷",
@@ -8365,7 +8484,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-23 (~12/10 목)",
+    "deadline": "D-22 (~12/10 목)",
     "summary": "전기차 충전기 소프트웨어 개발과 보안 요구사항 구현을 담당하는 융합형 보안 엔지니어",
     "tags": [
       "#SW보안",
@@ -8374,7 +8493,7 @@
       "#보안개발"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)78리서치랩",
@@ -8388,7 +8507,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-23 (~ 12/10(목))",
+    "deadline": "D-22 (~ 12/10(목))",
     "summary": "기업의 보안 수준을 진단하고 모의해킹을 통해 취약점을 분석하는 정보보안 컨설턴트 직무",
     "tags": [
       "#정보보안컨설팅",
@@ -8397,7 +8516,7 @@
       "#보안진단"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)메타엠",
@@ -8427,11 +8546,11 @@
       "정보보호"
     ],
     "location": "서울 강남구",
-    "deadline": "D-23",
+    "deadline": "D-22",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "피에프씨테크놀로지스(주)",
@@ -8445,11 +8564,11 @@
       "정보보안"
     ],
     "location": "서울",
-    "deadline": "D-24 (~12/11 금)",
+    "deadline": "D-23 (~12/11 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "피에프씨테크놀로지스(주)",
@@ -8462,11 +8581,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-24 (~12/11 금)",
+    "deadline": "D-23 (~12/11 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "써치스퀘어",
@@ -8480,11 +8599,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-25 (~12/12 토)",
+    "deadline": "D-24 (~12/12 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "베스트네트워크(주)",
@@ -8497,11 +8616,11 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-30 (~12/17 목)",
+    "deadline": "D-29 (~12/17 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "피플워크(주)",
@@ -8514,11 +8633,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-29 (~12/16 수)",
+    "deadline": "D-28 (~12/16 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)더네이쳐홀딩스",
@@ -8531,11 +8650,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-26 (~ 12/13(일))",
+    "deadline": "D-25 (~ 12/13(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사제로시큐어(ZEROSECUREInc.)",
@@ -8550,7 +8669,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-26 (~ 12/13(일))",
+    "deadline": "D-25 (~ 12/13(일))",
     "summary": "기업의 보안 취약점 진단과 모의해킹을 수행하는 정보보안 컨설팅 직무로 신입·경력·프리랜서를 채용",
     "tags": [
       "#정보보안컨설팅",
@@ -8559,7 +8678,7 @@
       "#프리랜서채용"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한국정보보안원",
@@ -8573,7 +8692,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-27 (~ 12/14(월))",
+    "deadline": "D-26 (~ 12/14(월))",
     "summary": "개인정보 보호와 정보보호 체계를 운영하며 시스템 취약점 진단 및 보안 점검을 수행",
     "tags": [
       "#개인정보보호",
@@ -8582,7 +8701,7 @@
       "#보안점검"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(재) 한국의학연구소",
@@ -8595,7 +8714,7 @@
       "정보보호"
     ],
     "location": "서울 중구",
-    "deadline": "D-28",
+    "deadline": "D-27",
     "summary": "한국의학연구소 재단본부의 정보보호 담당자로 보안 정책 수립과 관리 업무를 수행",
     "tags": [
       "#정보보호",
@@ -8604,7 +8723,7 @@
       "#재단정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜아큐닉스",
@@ -8618,7 +8737,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-28",
+    "deadline": "D-27",
     "summary": "정보보안 취약점 진단과 보안 컨설팅을 수행하며 개선 방안을 제시하는 역할",
     "tags": [
       "#취약점진단",
@@ -8627,7 +8746,7 @@
       "#취약점분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "안진회계법인",
@@ -8641,7 +8760,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-30 (~12/17 목)",
+    "deadline": "D-29 (~12/17 목)",
     "summary": "안진회계법인 T&T부문에서 정보보안 및 개인정보보호 컨설팅을 담당하는 경력직",
     "tags": [
       "#정보보안컨설팅",
@@ -8650,20 +8769,21 @@
       "#T&T부문"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "안진회계법인",
     "title": "T&T부문 정보보안 컨설팅 인턴",
     "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610010000030",
     "platforms": [
+      "사람인",
       "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-30 (~12/17 목)",
+    "deadline": "D-17 (~ 12/05(토))",
     "summary": "T&T부문에서 정보보안 컨설팅 실무를 보조하며 인증 및 보안 체계 자문 지원",
     "tags": [
       "#정보보안컨설팅",
@@ -8672,7 +8792,7 @@
       "#보안자문"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "안진회계법인",
@@ -8685,7 +8805,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-30 (~12/17 목)",
+    "deadline": "D-29 (~12/17 목)",
     "summary": "정보보안 관련 인증 서비스 부문 컨설턴트 경력직으로 인증 심사와 보안 자문 수행",
     "tags": [
       "#정보보안인증",
@@ -8694,7 +8814,7 @@
       "#보안자문"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "안진회계법인",
@@ -8707,7 +8827,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-30 (~12/17 목)",
+    "deadline": "D-29 (~12/17 목)",
     "summary": "T&T부문 인증보안 컨설턴트로 기업 보안 인증 체계 구축과 자문 담당",
     "tags": [
       "#인증보안",
@@ -8716,7 +8836,7 @@
       "#보안체계"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)포유씨큐리티",
@@ -8731,7 +8851,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-31 (~ 12/18(금))",
+    "deadline": "D-30 (~ 12/18(금))",
     "summary": "경력 3년 이상 모의해킹·보안 취약점 진단 컨설턴트로 취약점 분석과 보고서 작성",
     "tags": [
       "#모의해킹",
@@ -8740,7 +8860,7 @@
       "#경력직"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)코드벡터",
@@ -8753,7 +8873,7 @@
       "모의해킹"
     ],
     "location": "",
-    "deadline": "D-31 (~ 12/18(금))",
+    "deadline": "D-30 (~ 12/18(금))",
     "summary": "2026년 코드벡터 모의해킹 신입사원으로 취약점 진단과 보안 평가 업무 수행",
     "tags": [
       "#모의해킹",
@@ -8762,7 +8882,7 @@
       "#보안평가"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)타이거씨엔에스",
@@ -8775,7 +8895,7 @@
       "모의해킹"
     ],
     "location": "",
-    "deadline": "D-31 (~ 12/18(금))",
+    "deadline": "D-30 (~ 12/18(금))",
     "summary": "모의해킹 경력자를 채용해 웹·시스템 등 대상의 보안 취약점을 진단하고 침투 테스트를 수행",
     "tags": [
       "#모의해킹",
@@ -8784,7 +8904,7 @@
       "#정보보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)코드벡터",
@@ -8797,7 +8917,7 @@
       "취약점 진단"
     ],
     "location": "",
-    "deadline": "D-33 (~ 12/20(일))",
+    "deadline": "D-32 (~ 12/20(일))",
     "summary": "인프라 취약점 진단 신입사원을 채용해 네트워크·서버·시스템 보안 점검을 수행",
     "tags": [
       "#취약점진단",
@@ -8806,7 +8926,7 @@
       "#보안점검"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜천재교과서",
@@ -8819,7 +8939,7 @@
       "정보보안"
     ],
     "location": "서울 금천구",
-    "deadline": "D-33",
+    "deadline": "D-32",
     "summary": "정보보안 팀장을 채용해 조직 보안 정책·체계 수립과 운영 전반을 총괄",
     "tags": [
       "#정보보안",
@@ -8828,7 +8948,7 @@
       "#보안운영"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)케이알시큐리티",
@@ -8841,7 +8961,7 @@
       "모의해킹"
     ],
     "location": "",
-    "deadline": "D-34 (~ 12/21(월))",
+    "deadline": "D-33 (~ 12/21(월))",
     "summary": "신입·경력자를 대상으로 오펜시브 모의해킹을 수행해 공격 관점 보안 취약점을 진단",
     "tags": [
       "#오펜시브보안",
@@ -8850,7 +8970,7 @@
       "#신입경력"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)디오",
@@ -8863,11 +8983,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-38 (~ 12/25(금))",
+    "deadline": "D-37 (~ 12/25(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜한빛소프트",
@@ -8902,7 +9022,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-42 (~ 12/29(화))",
+    "deadline": "D-41 (~ 12/29(화))",
     "summary": "레저사업본부 IT기획과 정보보호 업무를 함께 수행하는 융합형 보안 담당 직무",
     "tags": [
       "#IT기획",
@@ -8911,7 +9031,7 @@
       "#정보보호관리"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "알엑스",
@@ -8925,7 +9045,7 @@
       "정보보안"
     ],
     "location": "대전",
-    "deadline": "D-44 (~12/31 목)",
+    "deadline": "D-43 (~12/31 목)",
     "summary": "정보보안 전반 운영과 보안 정책·기술 대응을 수행하는 정보보안 담당자",
     "tags": [
       "#정보보안",
@@ -8934,7 +9054,7 @@
       "#보안정책"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "파인더갭(주)",
@@ -8948,7 +9068,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-44 (~12/31 목)",
+    "deadline": "D-43 (~12/31 목)",
     "summary": "경력 보안 엔지니어로 시스템 취약점 분석·평가 및 보안 강화를 수행하는 직무",
     "tags": [
       "#취약점분석",
@@ -8957,7 +9077,7 @@
       "#보안평가"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "신세계I&C",
@@ -8970,7 +9090,7 @@
       "정보보안"
     ],
     "location": "서울 강남구 외",
-    "deadline": "D-44",
+    "deadline": "D-43",
     "summary": "신세계I&C 보안기획 인재로 정보보호 전략·정책 수립 및 보안 체계 기획 담당",
     "tags": [
       "#보안기획",
@@ -8979,7 +9099,7 @@
       "#정보보호관리"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "두산에너빌리티㈜",
@@ -8992,7 +9112,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-44",
+    "deadline": "D-43",
     "summary": "두산에너빌리티 정보보안 경력직으로 기업 정보자산 보호를 위한 보안 정책 수립과 운영 전반 담당",
     "tags": [
       "#정보보안",
@@ -9001,7 +9121,7 @@
       "#보안정책"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜이글루코퍼레이션",
@@ -9015,7 +9135,7 @@
       "정보보호"
     ],
     "location": "서울 송파구",
-    "deadline": "D-44",
+    "deadline": "D-43",
     "summary": "이글루코퍼레이션 정보보호 컨설팅으로 관리체계 점검과 인프라 취약점 진단 및 모의해킹 수행",
     "tags": [
       "#정보보호컨설팅",
@@ -9024,7 +9144,7 @@
       "#모의해킹"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "Kim & Chang (김앤장 법률사무소)",
@@ -9037,7 +9157,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-44 (~12/31 목)",
+    "deadline": "D-43 (~12/31 목)",
     "summary": "김앤장 법률사무소 IT 부문 상시 채용으로 정보보안을 포함한 개발·운영·지원 업무 담당",
     "tags": [
       "#IT채용",
@@ -9046,7 +9166,7 @@
       "#IT지원"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "NHN",
@@ -9059,7 +9179,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-44 (~12/31 화)",
+    "deadline": "D-43 (~12/31 화)",
     "summary": "NHN Japan 보안 엔지니어로 서비스 보안 환경 구축과 운영, 보안 이슈 대응 수행",
     "tags": [
       "#보안엔지니어",
@@ -9068,7 +9188,7 @@
       "#시스템보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)인더포레스트",
@@ -9084,7 +9204,7 @@
       "정보보안"
     ],
     "location": "서울 서초구",
-    "deadline": "D-47 (~ 01/03(일))",
+    "deadline": "D-46 (~ 01/03(일))",
     "summary": "인더포레스트 보안 컨설팅에서 고수준 취약점 진단과 모의해킹 수행",
     "tags": [
       "#보안컨설팅",
@@ -9093,7 +9213,7 @@
       "#보안진단"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "동원그룹",
@@ -9106,7 +9226,7 @@
       "정보보호"
     ],
     "location": "서울 서초구",
-    "deadline": "D-47",
+    "deadline": "D-46",
     "summary": "동원홈푸드 정보보호실에서 정보보호 정책 수립과 시스템 운영 등 정보보호 전반을 담당",
     "tags": [
       "#정보보호",
@@ -9115,7 +9235,7 @@
       "#정보보호정책"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜케이엠파크",
@@ -9128,7 +9248,7 @@
       "정보보안"
     ],
     "location": "경기 성남시 분당구",
-    "deadline": "D-51",
+    "deadline": "D-50",
     "summary": "케이엠파크 정보보안팀에서 보안 운영과 점검 등 정보보안 실무 전반을 담당",
     "tags": [
       "#정보보안",
@@ -9137,7 +9257,7 @@
       "#보안점검"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "컬리",
@@ -9151,7 +9271,7 @@
       "정보보호"
     ],
     "location": "서울",
-    "deadline": "D-52",
+    "deadline": "D-51",
     "summary": "컬리에서 정보보호 정책 수립과 개선 및 보안 컴플라이언스 관련 업무를 담당",
     "tags": [
       "#정보보호정책",
@@ -9160,7 +9280,7 @@
       "#정보보호"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "쿠팡(주)",
@@ -9173,7 +9293,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-52 (~ 01/08(금))",
+    "deadline": "D-51 (~ 01/08(금))",
     "summary": "쿠팡 글로벌 개인정보보호와 리스크 관리 Principal 역할로 프라이버시 업무를 총괄",
     "tags": [
       "#개인정보보호",
@@ -9182,7 +9302,7 @@
       "#프라이버시"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에쓰오씨소프트(주)",
@@ -9196,7 +9316,7 @@
       "모의해킹"
     ],
     "location": "서울 구로구",
-    "deadline": "D-52 (~ 01/08(금))",
+    "deadline": "D-51 (~ 01/08(금))",
     "summary": "웹 애플리케이션 모의해킹을 수행하며 취약점 진단과 보안성 평가를 담당",
     "tags": [
       "#모의해킹",
@@ -9205,7 +9325,7 @@
       "#애플리케이션보안"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)핀시큐리티",
@@ -9220,7 +9340,7 @@
       "정보보안"
     ],
     "location": "서울 구로구",
-    "deadline": "D-53 (~ 01/09(토))",
+    "deadline": "D-52 (~ 01/09(토))",
     "summary": "정보보안 컨설팅 분야에서 모의해킹과 취약점 점검을 수행할 신입 및 경력 인력을 채용합니다.",
     "tags": [
       "#정보보안",
@@ -9229,7 +9349,7 @@
       "#취약점분석"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)비이아이",
@@ -9242,7 +9362,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-53 (~ 01/09(토))",
+    "deadline": "D-52 (~ 01/09(토))",
     "summary": "IT 인프라 운영과 정보보안 체계 관리 전반을 담당할 정규직 정보보안 인력을 채용합니다.",
     "tags": [
       "#IT인프라",
@@ -9251,7 +9371,7 @@
       "#시스템관리"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜휴먼센스",
@@ -9265,11 +9385,11 @@
       "정보보호"
     ],
     "location": "서울 중구",
-    "deadline": "D-53",
+    "deadline": "D-52",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에이치케이시큐리티",
@@ -9284,7 +9404,7 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-54 (~ 01/10(일))",
+    "deadline": "D-53 (~ 01/10(일))",
     "summary": "보안컨설팅 관리 업무와 취약점 진단 및 모의해킹을 수행할 경력 보안 전문 인력을 채용합니다.",
     "tags": [
       "#보안컨설팅",
@@ -9293,7 +9413,7 @@
       "#보안관리"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)싸이버원",
@@ -9306,7 +9426,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-29 (~ 12/16(수))",
+    "deadline": "D-28 (~ 12/16(수))",
     "summary": "관리체계와 인프라 정보보호 컨설팅을 수행하며 보안 정책·기술 자문을 제공합니다",
     "tags": [
       "#정보보호컨설팅",
@@ -9315,7 +9435,26 @@
       "#ISMS-P"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "휴넷",
+    "title": "정보보안 담당자",
+    "url": "https://www.wanted.co.kr/wd/377258",
+    "platforms": [
+      "원티드",
+      "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "deadline": "D-59",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜메타엠",
@@ -9335,42 +9474,6 @@
     "last_seen_at": "2026-11-17 18:47:44 KST"
   },
   {
-    "company": "(주)시큐아이",
-    "title": "[삼성SDS자회사] (주)시큐아이 경력사원 채용(보안컨설팅)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55567156&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울 종로구 외",
-    "deadline": "D-9 (~ 11/25(수))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 11:33:22 KST"
-  },
-  {
-    "company": "(주)우리카드",
-    "title": "[우리카드] 정보보안 경력직 채용",
-    "url": "https://career.rememberapp.co.kr/job/posting/354554",
-    "platforms": [
-      "리멤버",
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~11/25 수)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
     "company": "한화에어로스페이스(주)",
     "title": "지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용",
     "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55562999&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
@@ -9382,11 +9485,11 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-9 (~ 11/26(목))",
+    "deadline": "D-8 (~ 11/26(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)코리아인",
@@ -9399,11 +9502,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-10 (~ 11/27(금))",
+    "deadline": "D-9 (~ 11/27(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)이글루코퍼레이션",
@@ -9458,11 +9561,11 @@
       "정보보호"
     ],
     "location": "서울 마포구",
-    "deadline": "D-26",
+    "deadline": "D-25",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜핀시큐리티",
@@ -9476,11 +9579,11 @@
       "정보보호"
     ],
     "location": "서울 구로구",
-    "deadline": "D-53",
+    "deadline": "D-52",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)현대퓨처넷",
@@ -9494,29 +9597,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-13 (~ 11/30(월))",
+    "deadline": "D-12 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "AXA손해보험(주)",
-    "title": "보안&위기대응팀 정보보호 관리자 채용",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611140000260",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~11/25 수)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "에스케이쉴더스㈜",
@@ -9530,11 +9615,11 @@
       "정보보안"
     ],
     "location": "경기 의왕시",
-    "deadline": "D-12",
+    "deadline": "D-11",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)소프트아이텍",
@@ -9547,11 +9632,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-25 (~ 12/12(토))",
+    "deadline": "D-24 (~ 12/12(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 11:33:22 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)지오다노",
@@ -9564,11 +9649,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-26 (~ 12/13(일))",
+    "deadline": "D-25 (~ 12/13(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)한국디지털거래소",
@@ -9581,11 +9666,11 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-26 (~ 12/13(일))",
+    "deadline": "D-25 (~ 12/13(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜큐브네트웍스",
@@ -9599,28 +9684,11 @@
       "정보보호"
     ],
     "location": "서울 금천구",
-    "deadline": "D-44",
+    "deadline": "D-43",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)씨드젠",
-    "title": "[신입/경력]정보보호 및 개인정보보호 컨설턴트 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55387528&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "",
-    "deadline": "D-9 (~ 11/25(수))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 11:33:22 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)퀸텟시스템즈",
@@ -9634,11 +9702,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~ 11/26(목))",
+    "deadline": "D-8 (~ 11/26(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "한화에어로스페이스(주)",
@@ -9651,11 +9719,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에스더블유엠",
@@ -9737,11 +9805,11 @@
       "정보보안"
     ],
     "location": "서울 강남구",
-    "deadline": "D-16",
+    "deadline": "D-15",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)시큐리티인사이드",
@@ -9754,7 +9822,7 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-23 (~12/10 목)",
+    "deadline": "D-22 (~12/10 목)",
     "summary": "국내외 정보보호 컨설팅 프로젝트에서 PM/PA로 일정과 산출물을 관리하며 고객 대응을 수행하는 직무",
     "tags": [
       "#정보보호컨설팅",
@@ -9763,7 +9831,7 @@
       "#프로젝트관리"
     ],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "링크정보통신(주)",
@@ -9776,11 +9844,11 @@
       "정보보호"
     ],
     "location": "",
-    "deadline": "D-24 (~ 12/11(금))",
+    "deadline": "D-23 (~ 12/11(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)하이라이트브랜즈",
@@ -9793,11 +9861,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-31 (~ 12/18(금))",
+    "deadline": "D-30 (~ 12/18(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 11:33:22 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)한빛소프트",
@@ -9811,11 +9879,11 @@
       "정보보호"
     ],
     "location": "서울 금천구",
-    "deadline": "D-40 (~ 12/27(일))",
+    "deadline": "D-39 (~ 12/27(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜카카오",
@@ -9846,29 +9914,11 @@
       "정보보호"
     ],
     "location": "서울 종로구",
-    "deadline": "D-52",
+    "deadline": "D-51",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
-    "company": "(주)글로벌에잇",
-    "title": "글로벌에잇 보안 컨설팅(모의해킹) 채용 - 신입",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55580388&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "모의해킹",
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "현대오토에버(주)",
@@ -9881,11 +9931,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-9 (~11/26 목)",
+    "deadline": "D-8 (~11/26 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "㈜시큐아이",
@@ -9898,11 +9948,11 @@
       "정보보안"
     ],
     "location": "서울 종로구 외",
-    "deadline": "D-10",
+    "deadline": "D-9",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "KB국민은행",
@@ -9915,11 +9965,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)현대퓨처넷",
@@ -9967,11 +10017,11 @@
       "정보보호"
     ],
     "location": "서울 송파구",
-    "deadline": "D-23",
+    "deadline": "D-22",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)트랜스코스모스코리아",
@@ -9984,11 +10034,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-29 (~ 12/16(수))",
+    "deadline": "D-28 (~ 12/16(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "NICE인프라(주)",
@@ -10001,11 +10051,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-29 (~ 12/16(수))",
+    "deadline": "D-28 (~ 12/16(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)스트리미",
@@ -10096,23 +10146,6 @@
     "last_seen_at": "2026-11-17 11:33:22 KST"
   },
   {
-    "company": "전남대학교병원",
-    "title": "11월 직원(지원직) 공개채용 공고(정보보호 최고책임자)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55594357&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "",
-    "deadline": "D-8 (~ 11/25(수))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
     "company": "(주)LG유플러스",
     "title": "[정보보안센터] 침해사고 예방 및 대응",
     "url": "https://career.rememberapp.co.kr/job/posting/311172",
@@ -10123,11 +10156,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "KB국민은행",
@@ -10140,11 +10173,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-12 (~11/29 일)",
+    "deadline": "D-11 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "(주)에버브레인써치",
@@ -10157,11 +10190,11 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-15 (~12/02 수)",
+    "deadline": "D-14 (~12/02 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "주식회사 지오시스템",
@@ -10192,11 +10225,11 @@
       "취약점 진단"
     ],
     "location": "",
-    "deadline": "D-30 (~ 12/17(목))",
+    "deadline": "D-29 (~ 12/17(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   },
   {
     "company": "베스트네트워크(주)",
@@ -10209,10 +10242,201 @@
       "정보보안"
     ],
     "location": "",
-    "deadline": "D-30 (~12/17 목)",
+    "deadline": "D-29 (~12/17 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-17 18:47:44 KST"
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "엘지유플러스",
+    "title": "[정보보안센터] 정보보안정책 및 보안설계 검토 경력채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50385208",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강서구",
+    "deadline": "D-11",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "엔큐리티(주)",
+    "title": "[엔큐리티] 글로벌 보안 솔루션 B2B 마케터 / 사세확장",
+    "url": "https://career.rememberapp.co.kr/job/posting/354923",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-13 (~12/01 화)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "㈜현대퓨처넷",
+    "title": "2027년 상반기 신입사원 채용(정보보안)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50381384",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 서초구",
+    "deadline": "D-13",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "㈜현대퓨처넷",
+    "title": "2027년 상반기 경력사원 채용(정보보안) - 모의해킹",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50380819",
+    "platforms": [
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "모의해킹",
+      "정보보안"
+    ],
+    "location": "서울 서초구",
+    "deadline": "D-13",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "에이치알제이(HRJ)",
+    "title": "[국내 반도체 팹리스 제조기업] IT 인프라 및 정보보안 담당자",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55594050&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-14 (~ 12/02(수))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)카카오게임즈",
+    "title": "[경력]개인정보보호 담당자 영입",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55599450&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-27 (~ 12/15(화))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "㈜나인시큐리티",
+    "title": "정보보호 컨설턴트(관리부문) 신입 및 경력",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50371691",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-28",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "(주)SPC GFS",
+    "title": "[SPC GFS] 개인정보보호 담당자 모집(경력)",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55599129&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "",
+    "deadline": "D-29 (~ 12/17(목))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "에이엠에스(주)",
+    "title": "전산/보안담당자 모집",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55591461&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-29 (~ 12/17(목))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "에스케이쉴더스(주)",
+    "title": "[채용연계형]클라우드 기반 스마트 융합보안 양성과정 37기",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55598928&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "platforms": [
+      "사람인"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "",
+    "deadline": "D-32 (~ 12/20(일))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
+  },
+  {
+    "company": "㈜스트리미",
+    "title": "[GOPAX]정보보호팀 정보보호 담당자 (인증, 개인정보)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50219250",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 강남구",
+    "deadline": "D-33",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "UPCOMING",
+    "last_seen_at": "2026-11-18 06:31:43 KST"
   }
 ]
