@@ -2151,6 +2151,14 @@ html_content = """<!DOCTYPE html>
 """
 
 with open(out_path, 'w', encoding='utf-8') as f:
+    # 데이터 스크립트 캐시 무력화: 배포 직후에도 항상 새 문제·요약이 보이도록 빌드 시각을 쿼리로 붙인다
+    import time as _t
+    _ver = _t.strftime('%Y%m%d%H%M')
+    for _name in ('cppg_questions.js', 'infosec_exam_data.js', 'custom_study.js'):
+        html_content = html_content.replace(
+            f'<script src="{_name}"></script>',
+            f'<script src="{_name}?v={_ver}"></script>',
+        )
     f.write(html_content)
 
 print("Successfully regenerated study.html with normalized questions and robust rendering!")
