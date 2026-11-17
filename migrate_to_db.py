@@ -319,7 +319,33 @@ def migrate_study_summaries():
     
     total_s_count = 0
     cur.execute("DELETE FROM study_summaries;") # 요약은 재구축
-    
+
+    # 0. CPPG 전 과목 핵심 요약집 95선 (cppg_summary_ext.py -> 내용별 35선 + 용어·조문 60선)
+    sys.path.append(os.path.join(os.path.dirname(__file__), "exam_builder"))
+    try:
+        import cppg_summary_ext
+        cppg_summary = cppg_summary_ext.get_cppg_summary()
+        cppg_items = cppg_summary.get("items", [])
+        for item in cppg_items:
+            sub_type = item.get("type", "content")  # content or term
+            cur.execute("""
+            INSERT INTO study_summaries (
+                category, sub_type, subject, title, content, data_json, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                "cppg", sub_type, item.get("category_name", "CPPG 공통"),
+                item.get("title", ""), item.get("badge", ""),
+                json.dumps(item.get("points", []), ensure_ascii=False), now_kst
+            ))
+            total_s_count += 1
+        cppg_content = sum(1 for i in cppg_items if i.get("type") == "content")
+        cppg_term = sum(1 for i in cppg_items if i.get("type") == "term")
+        print(f"-> CPPG 요약 마이그레이션 완료: {len(cppg_items)}선 (내용별 {cppg_content}선 + 용어·조문 {cppg_term}선)")
+        if cppg_content < 35 or cppg_term < 60:
+            raise SystemExit(f"[실패] CPPG 요약 구성 불일치: 내용별 {cppg_content}선(35 기대) + 용어·조문 {cppg_term}선(60 기대)")
+    except Exception as e:
+        print(f"[경고] CPPG 요약 마이그레이션 오류: {e}")
+
     # 1. 정보보안기사 필기 요약 158선 (summary_notes.py -> items / 내용별 50선 + 용어사전 108선)
     sys.path.append(os.path.join(os.path.dirname(__file__), "exam_builder"))
     try:
@@ -444,7 +470,7 @@ def run_all_migrations():
     print(f"\n[성공] 모든 데이터의 SQLite DB화가 완벽히 완료되었습니다!")
     print(f"- 활성 공고: {a_jobs}건 / 마감 정리 공고: {exp_jobs}건")
     print(f"- 시험 문제: {q_count}문항 (CPPG 300제, 기사필기 200제, 기사실기 100제, ISMS-P 30제, 맞춤 9제)")
-    cur.execute("SELECT category, sub_type, COUNT(*) FROM study_summaries GROUP BY category, sub_type")
+    cur.execute("SELECT category, sub_type, COUNT(*) FROM study_summaries GROUP BY category, sub_type ORDER BY category, sub_type")
     breakdown = {}
     for cat, sub, cnt in cur.fetchall():
         breakdown.setdefault(cat, {})[sub] = cnt

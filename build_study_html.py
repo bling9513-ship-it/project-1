@@ -827,6 +827,13 @@ html_content = """<!DOCTYPE html>
     .summary-search-box:focus {
       border-color: var(--accent-primary);
     }
+    .summary-section-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: -0.01em;
+      margin: -6px 0 14px;
+      line-height: 1.5;
+    }
     .summary-chips-scroll {
       display: flex;
       gap: 6px;
@@ -1089,8 +1096,8 @@ html_content = """<!DOCTYPE html>
     <!-- Hero -->
     <div class="hero">
       <div class="hero-pill">자격증 시험 대비 · 핵심 문제 풀이</div>
-      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 노트</h1>
-      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL 맞춤 분석</p>
+      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 요약집 95선</h1>
+      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 용어·조문 사전 60선 검색 및 파일/URL 맞춤 분석</p>
     </div>
 
     <!-- Exam Category Selector -->
@@ -1334,8 +1341,8 @@ html_content = """<!DOCTYPE html>
     const CATEGORIES = {
       cppg: {
         title: "개인정보관리사 (CPPG)",
-        mainTitle: "CPPG 실전 300제 & 전 과목 핵심 노트",
-        mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 187p 전 과목 핵심 요약 및 파일/URL AI 맞춤 분석",
+        mainTitle: "CPPG 실전 300제 & 전 과목 핵심 요약집 95선",
+        mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 용어·조문 사전 60선 검색 및 파일/URL AI 맞춤 분석",
         quizLabel: "실전 모의고사 (300제)",
         quizLabelShort: "실전 300제",
         exams: [
@@ -1750,7 +1757,8 @@ html_content = """<!DOCTYPE html>
     // 요약 카드 개수는 하드코딩하지 않고 실제 데이터에서 계산한다(칩 카운트 = 데이터 100% 일치)
     function summaryCounts(catKey) {
       let d = null;
-      if (catKey === 'infosec_written') d = window.INFOSEC_WRITTEN_DATA || {};
+      if (catKey === 'cppg') d = window.CPPG_SUMMARY_DATA || {};
+      else if (catKey === 'infosec_written') d = window.INFOSEC_WRITTEN_DATA || {};
       else if (catKey === 'infosec_practical') d = window.INFOSEC_PRACTICAL_DATA || {};
       const items = (d && d.summaries) || [];
       return {
@@ -1765,7 +1773,15 @@ html_content = """<!DOCTYPE html>
       if (!bar) return;
       const c = summaryCounts(catKey);
       const chips = [{ key: 'all', label: `전체 (${c.total})` }];
-      if (catKey === 'infosec_written') {
+      if (catKey === 'cppg') {
+        chips.push({ key: 'content', label: `내용별 핵심정리 (${c.content})` });
+        chips.push({ key: 'term', label: `용어·조문 사전 (${c.term})` });
+        chips.push({ key: 's1', label: '1과목: 이해' });
+        chips.push({ key: 's2', label: '2과목: 제도' });
+        chips.push({ key: 's3', label: '3과목: 라이프사이클' });
+        chips.push({ key: 's4', label: '4과목: 보호조치' });
+        chips.push({ key: 's5', label: '5과목: 관리체계' });
+      } else if (catKey === 'infosec_written') {
         chips.push({ key: 'content', label: `내용별 핵심정리 (${c.content})` });
         chips.push({ key: 'term', label: `필수 용어사전 (${c.term})` });
         chips.push({ key: 'system', label: '시스템 보안' });
@@ -1867,7 +1883,10 @@ html_content = """<!DOCTYPE html>
       if (!container) return;
 
       let rawItems = [];
-      if (currentCategory === 'infosec_written') {
+      if (currentCategory === 'cppg') {
+        const d = window.CPPG_SUMMARY_DATA || {};
+        rawItems = d.summaries || [];
+      } else if (currentCategory === 'infosec_written') {
         const d = window.INFOSEC_WRITTEN_DATA || {};
         rawItems = d.summaries || [];
       } else if (currentCategory === 'infosec_practical') {
@@ -1884,6 +1903,9 @@ html_content = """<!DOCTYPE html>
           if (summaryActiveFilter === 'content' && item.type !== 'content') return false;
           if (summaryActiveFilter === 'term' && item.type !== 'term') return false;
           if (['system', 'network', 'app', 'crypto', 'law'].includes(summaryActiveFilter)) {
+            if (item.category !== summaryActiveFilter) return false;
+          }
+          if (/^s[1-5]$/.test(summaryActiveFilter)) {
             if (item.category !== summaryActiveFilter) return false;
           }
         }
@@ -1939,78 +1961,19 @@ html_content = """<!DOCTYPE html>
       summarySearchQuery = '';
 
       if (currentCategory === 'cppg') {
+        const cppgCounts = summaryCounts('cppg');
         summarySection.innerHTML = `
-          <div class="summary-card">
-            <div class="summary-header">
-              <div class="summary-title">1과목. 개인정보보호의 이해 (배점: 10점)</div>
-              <div class="summary-badge">핵심 요약</div>
-            </div>
-            <div class="summary-topic">
-              <div class="summary-topic-title">• 개인정보의 정의 및 판단 기준</div>
-              <ul>
-                <li><strong>개인정보:</strong> 살아있는 개인에 관한 정보로서 성명, 주민번호, 영상 등을 통해 특정 개인을 알아볼 수 있는 정보.</li>
-                <li><strong>결합 식별 가능 정보:</strong> 해당 정보만으로는 알 수 없으나 다른 정보와 쉽게 결합하여 알아볼 수 있는 정보. 결합 시 '시간·비용·노력' 등 합리적 가능성을 종합 판단.</li>
-                <li><strong>가명정보:</strong> 추가 정보 없이는 특정 개인을 알아볼 수 없도록 처리(가명처리)한 정보 (통계작성, 과학적 연구, 공익적 기록보존 목적 활용 가능).</li>
-                <li><strong>익명정보:</strong> 다른 정보를 사용하여도 더 이상 개인을 알아볼 수 없는 정보로, 법 적용 대상에서 제외.</li>
-              </ul>
-            </div>
-            <div class="summary-topic">
-              <div class="summary-topic-title">• 개인정보 보호 원칙 및 헌법상 권리</div>
-              <ul>
-                <li><strong>자기결정권:</strong> 헌법상 기본권으로서 자신에 관한 정보를 통제하고 결정할 권리.</li>
-                <li><strong>최소 처리의 원칙:</strong> 처리 목적에 필요한 최소한의 범위에서 적법하고 정당하게 처리.</li>
-                <li><strong>목적 외 이용 금지:</strong> 수집 목적의 범위를 초과하여 처리하거나 제3자에게 제공 금지.</li>
-              </ul>
-            </div>
+          <div class="summary-toolbar">
+            <input type="text" id="summarySearchBox" class="summary-search-box"
+                   placeholder="개념·조문·수치 검색 (예: 접속기록, 과징금, 가명정보, 72시간)..."
+                   oninput="handleSummarySearch(this.value)">
+            <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
-
-          <div class="summary-card">
-            <div class="summary-header">
-              <div class="summary-title">2과목. 개인정보보호 제도 (배점: 20점)</div>
-              <div class="summary-badge">핵심 요약</div>
-            </div>
-            <div class="summary-topic">
-              <div class="summary-topic-title">• 법체계 및 거버넌스</div>
-              <ul>
-                <li><strong>개인정보 보호위원회:</strong> 국무총리 소속 중앙행정기관으로 독립성 보장, 위원장 1인, 부위원장 1인 포함 총 9인으로 구성.</li>
-                <li><strong>CPO(개인정보보호책임자) 지정:</strong> 개인정보 처리를 총괄하는 책임자 지정 의무. 정당한 이유 없이 불이익 처우 금지.</li>
-                <li><strong>유출 통지 및 신고:</strong> 유출 인지 시 지체 없이 72시간 이내 정보주체에게 통지. 1천명 이상 유출 시 보호위/KISA에 즉시 신고.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <div class="summary-header">
-              <div class="summary-title">3과목. 개인정보 라이프사이클 (배점: 25점)</div>
-              <div class="summary-badge">핵심 요약</div>
-            </div>
-            <div class="summary-topic">
-              <div class="summary-topic-title">• 수집·이용·제공·파기 단계별 의무</div>
-              <ul>
-                <li><strong>동의 시 고지 필수 4대 사항:</strong> ① 수집·이용 목적, ② 수집 항목, ③ 보유 및 이용 기간, ④ 동의 거부권 및 불이익 내용.</li>
-                <li><strong>민감정보 및 고유식별정보:</strong> 사상, 신념, 건강, 유전정보, 성생활 / 주민번호, 여권번호, 운전면허번호, 외국인등록번호는 원칙적 처리 금지(별도 동의 또는 법령 구체적 근거 시만 허용).</li>
-                <li><strong>제3자 제공 vs 업무 위탁:</strong> 제3자 제공은 받는 자의 이익(별도 동의 필수), 위탁은 위탁자의 이익(계약서 문서화, 관리·감독, 수탁사 교육).</li>
-                <li><strong>파기 기준:</strong> 목적 달성 시 복구 불가능한 영구 삭제(5일 이내). 법령상 보존 시 다른 개인정보와 분리 보관.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <div class="summary-header">
-              <div class="summary-title">4과목 &amp; 5과목. 보호조치 및 관리체계 (배점: 45점)</div>
-              <div class="summary-badge">핵심 요약</div>
-            </div>
-            <div class="summary-topic">
-              <div class="summary-topic-title">• 안전성 확보조치 기준 (고시)</div>
-              <ul>
-                <li><strong>접속기록 보관 및 점검:</strong> 최소 1년 이상 보관(5만명 이상 민감/고유식별정보 처리 시 2년). 월 1회 이상 점검.</li>
-                <li><strong>암호화 의무:</strong> 고유식별정보, 비밀번호(일방향), 바이오정보. 저장 시 및 네트워크 전송 시 필수 암호화.</li>
-                <li><strong>접근통제 및 비밀번호:</strong> 3종 8자리 또는 2종 10자리, 초기 비밀번호 변경 강제.</li>
-                <li><strong>ISMS-P 인증기준:</strong> 관리체계 수립(16개), 보호대책 요구사항(64개), 개인정보 처리단계(22개) 총 102개 기준.</li>
-              </ul>
-            </div>
-          </div>
+          <div class="summary-section-note">5과목 전 범위 핵심정리 ${cppgCounts.content}선 + 필수 용어·조문 사전 ${cppgCounts.term}선 · 총 ${cppgCounts.total}선</div>
+          <div id="summaryCardsContainer" class="summary-section"></div>
         `;
+        buildSummaryChips('cppg');
+        renderSummaryCardsOnly();
       } else if (currentCategory === 'infosec_written') {
         summarySection.innerHTML = `
           <div class="summary-toolbar">

@@ -740,10 +740,13 @@ _SUMMARY_CATEGORY_CODES = {
 
 
 def _summary_category_code(subject):
-    """요약 카드의 과목 필터 코드(system/network/app/crypto/law)를 subject 표시명에서 복원."""
+    """요약 카드의 과목 필터 코드(system/network/app/crypto/law, CPPG는 s1~s5)를 subject 표시명에서 복원."""
     subject = (subject or "").strip()
     if subject in _SUMMARY_CATEGORY_CODES:
         return _SUMMARY_CATEGORY_CODES[subject]
+    m = re.match(r"^(\d)과목", subject)
+    if m:
+        return f"s{m.group(1)}"
     if "시스템" in subject or "보안관제" in subject:
         return "system"
     if "네트워크" in subject:
@@ -831,7 +834,15 @@ def export_study_data_from_db(db_path=DB_PATH):
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.json"), "w", encoding="utf-8") as f:
         json.dump(cppg_list, f, ensure_ascii=False, indent=2)
 
-    # 2. 정보보안기사 필기 200제 (1~4회 각 50제) + 내용별 50선 · 용어사전 108선 = 158선
+    # 2. CPPG 전 과목 핵심 요약집 95선 (내용별 35선 + 용어·조문 60선)
+    cppg_summaries = load_summaries("cppg")
+    cppg_summary_data = {
+        "title": "CPPG 전 과목 핵심 요약집 95선 (내용별 심층 35선 + 용어·조문 사전 60선)",
+        "description": "개인정보 보호의 이해 / 보호제도 / 라이프사이클 관리 / 보호조치 / 관리체계 5과목 전 범위 핵심정리 35선과 필수 용어·조문 사전 60선",
+        "summaries": cppg_summaries
+    }
+
+    # 2-1. 정보보안기사 필기 200제 (1~4회 각 50제) + 내용별 50선 · 용어사전 108선 = 158선
     written_qs = load_questions("infosec_written", "written")
     written_summaries = load_summaries("infosec_written")
     written_data = {
@@ -864,7 +875,9 @@ def export_study_data_from_db(db_path=DB_PATH):
 
     js_content = f"""// infosec_exam_data.js
 // SQLite DB(archive.db)에서 자동 생성된 최신 데이터셋
-// 필기 200문항 | 실기 100문항 | ISMS-P 30문항
+// CPPG 요약 95선 | 필기 200문항·요약 158선 | 실기 100문항·요약 95선 | ISMS-P 30문항
+
+window.CPPG_SUMMARY_DATA = {json.dumps(cppg_summary_data, ensure_ascii=False, indent=2)};
 
 window.INFOSEC_WRITTEN_DATA = {json.dumps(written_data, ensure_ascii=False, indent=2)};
 
@@ -882,12 +895,14 @@ window.ISMSP_AUDITOR_DATA = {json.dumps(ismsp_data, ensure_ascii=False, indent=2
     if empty_prompt or empty_choices:
         raise SystemExit(f"[실패] 내보내기 검증 실패: 빈 본문 {empty_prompt}건 / 빈 선지 {empty_choices}건")
     print(f"[DB -> Web] 시험 공부 데이터셋 동기화 빌드 완료! "
-          f"(필기 {len(written_qs)}문항·요약 {len(written_summaries)}선 / "
+          f"(CPPG {len(cppg_list)}문항·요약 {len(cppg_summaries)}선 | "
+          f"필기 {len(written_qs)}문항·요약 {len(written_summaries)}선 / "
           f"실기 {len(practical_qs)}문항·요약 {len(practical_summaries)}선 / "
           f"ISMS-P {len(ismsp_qs)}문항·요약 {sum(len(x.get('topics', [])) for x in ismsp_data['summaries'])}선)")
 
     conn.close()
     return {
+        "cppg_summaries": len(cppg_summaries),
         "written_questions": len(written_qs),
         "written_summaries": len(written_summaries),
         "practical_questions": len(practical_qs),
