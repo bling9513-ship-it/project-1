@@ -10,6 +10,10 @@ cve_crawler.py — CVE 취약점 수집·분석 파이프라인
   3) NVD       : https://services.nvd.nist.gov/rest/json/cves/2.0 (최근 공개 CVE, CVSS·CPE·CWE·참고 링크)
   4) FIRST EPSS: https://api.first.org/data/v1/epss (배치 100건 단위 악용 확률)
   5) GitHub    : https://api.github.com/search/repositories (공개 PoC 저장소, gh CLI 인증 사용)
+  6) CISA 경보  : https://www.cisa.gov/cybersecurity-advisories/all.xml (최근 경보·권고에 언급된 CVE)
+  7) 보안 뉴스  : The Hacker News · BleepingComputer · Dark Reading RSS 에 언급된 CVE
+     → 6·7 에서만 확인된 CVE 는 NVD 단건 → CIRCL 상세 → 경보 메타데이터 순으로 보강해 수집 후보로 편입
+     → 단서는 cve_alerts 테이블에 보관되어 cve.html 카드에 '긴급 권고'로 표시된다
 
 분석
   EXAONE(k-exaone_v2.5)이 CVE별 한국어 제목·요약·영향·조치 방안을 생성한다.
@@ -44,11 +48,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(BASE_DIR, ".env")
 CACHE_FILE = os.path.join(BASE_DIR, "cve_cache.json")
 RUN_ITEMS_FILE = os.path.join(BASE_DIR, "cve_run_items.json")
+CURATED_FILE = os.path.join(BASE_DIR, "cve_curated.json")
 
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-from db_manager import init_db, upsert_cve_reports, get_cve_reports  # noqa: E402
+from db_manager import (init_db, upsert_cve_reports, get_cve_reports,  # noqa: E402
+                          upsert_cve_alerts)
 
 KST = timezone(timedelta(hours=9))
 UA = "InfosecArchive-CVE/1.0 (+https://github.com/bling9513-ship-it/project-1)"
@@ -60,6 +66,19 @@ NVD_URL = ("https://services.nvd.nist.gov/rest/json/cves/2.0"
 EPSS_URL = "https://api.first.org/data/v1/epss?cve={ids}"
 GH_SEARCH_URL = ("https://api.github.com/search/repositories"
                  "?q={q}+in:name,description&sort=stars&per_page=3")
+NVD_CVE_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId={cve_id}"
+
+# 경보·보안 뉴스에서 CVE 를 캐내는 소스 (NVD/CIRCL/KEV 반영보다 빠른 경우가 있다)
+CISA_ADVISORY_FEED = "https://www.cisa.gov/cybersecurity-advisories/all.xml"
+NEWS_CVE_FEEDS = [
+    {"name": "The Hacker News", "url": "https://feeds.feedburner.com/TheHackersNews", "days": 7},
+    {"name": "BleepingComputer", "url": "https://www.bleepingcomputer.com/feed/", "days": 7},
+    {"name": "Dark Reading", "url": "https://www.darkreading.com/rss.xml", "days": 7},
+]
+CVE_ID_RE = re.compile(r"CVE-\d{4}-\d{4,7}")
+ALERT_FEED_DAYS = 14        # CISA 피드에서 볼 최근 발행 범위(일)
+NEWS_CVE_DAYS = 7           # 뉴스 RSS 에서 볼 최근 발행 범위(일)
+ALERT_CANDIDATE_LIMIT = 10  # 경보·뉴스에서만 확인된 CVE 를 새로 수집할 최대 건수
 
 KEV_LIMIT = 25          # KEV 최근 추가분
 NVD_DAYS = 3            # NVD 최근 공개 범위(일)
@@ -325,6 +344,98 @@ def _clean_product_name(name, ver):
     return name, (ver or "").strip(" .,'\"")
 
 
+def parse_nvd_cve(cve):
+    """NVD 응답의 cve 객체 하나를 파이프라인 레코드로 바꾼다 (fetch_nvd·단건 조회 공용)."""
+    cve_id = cve.get("id")
+    if not cve_id:
+        return None
+    desc = ""
+    for d in cve.get("descriptions") or []:
+        if d.get("lang") == "en":
+            desc = clean(d.get("value"))
+            break
+    metrics = cve.get("metrics") or {}
+    score, severity = None, "UNKNOWN"
+    for key in ("cvssMetricV31", "cvssMetricV40", "cvssMetricV30", "cvssMetricV2"):
+        for m in metrics.get(key) or []:
+            cd = m.get("cvssData") or {}
+            if cd.get("baseScore") is not None:
+                score = float(cd["baseScore"])
+                severity = (cd.get("baseSeverity") or m.get("baseSeverity") or "").upper() or classify_severity(score)
+                break
+        if score is not None:
+            break
+    cwe = []
+    for w in cve.get("weaknesses") or []:
+        for d in w.get("description") or []:
+            v = d.get("value") or ""
+            if v.startswith("CWE-") and v not in cwe:
+                cwe.append(v)
+    vendors, products = {}, []
+    for conf in cve.get("configurations") or []:
+        for node in conf.get("nodes") or []:
+            for cm in node.get("cpeMatch") or []:
+                if not cm.get("vulnerable", True):
+                    continue
+                parsed = parse_cpe(cm.get("criteria"))
+                if not parsed:
+                    continue
+                vendor, product, version = parsed
+                key = (vendor, product)
+                vendors.setdefault(key, set())
+                if version not in ("*", "-"):
+                    vendors[key].add(version)
+    for (vendor, product), versions in vendors.items():
+        vs = sorted(versions)
+        label = f"{vendor.title()} {product}"
+        if vs:
+            shown = ", ".join(vs[:3]) + (" 외" if len(vs) > 3 else "")
+            label = f"{label} ({shown})"
+        products.append(label)
+    if not products:
+        # NVD 신규 CVE는 CPE 분석 전(configurations=null)이므로 설명에서 제품·버전을 도출
+        name, ver = extract_product_from_desc(desc)
+        if name:
+            products.append(f"{name} ({ver})" if ver else name)
+    refs = []
+    for r in (cve.get("references") or [])[:8]:
+        url_r = r.get("url")
+        if not url_r:
+            continue
+        tags = r.get("tags") or []
+        title = ", ".join(tags[:2]) if tags else ""
+        refs.append({"url": url_r, "title": title})
+    first = products[0] if products else ""
+    vendor = first.split(" ")[0] if first else ""
+    return {
+        "cve_id": cve_id,
+        "source": "NVD",
+        "vendor": vendor,
+        "product": first,
+        "published_at": (cve.get("published") or "")[:10],
+        "cvss_score": score,
+        "severity": severity,
+        "is_kev": False,
+        "description_orig": desc,
+        "affected_products": products[:8],
+        "references": refs,
+        "cwe": cwe[:4],
+    }
+
+
+def fetch_nvd_cve(cve_id):
+    """NVD 단건 조회 — 경보·기사에서만 확인된 CVE 의 상세를 채울 때 쓴다. 없으면 None."""
+    try:
+        data = http_json(NVD_CVE_URL.format(cve_id=urllib.parse.quote(cve_id)), timeout=45, retries=1)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [NVD] {cve_id} 단건 조회 실패: {type(e).__name__}")
+        return None
+    vulns = data.get("vulnerabilities") or []
+    if not vulns:
+        return None
+    return parse_nvd_cve((vulns[0] or {}).get("cve") or {})
+
+
 def fetch_nvd(days=NVD_DAYS, limit=NVD_LIMIT):
     end = datetime.now(timezone.utc)
     start = end - timedelta(days=days)
@@ -337,90 +448,237 @@ def fetch_nvd(days=NVD_DAYS, limit=NVD_LIMIT):
     except Exception as e:  # noqa: BLE001
         print(f"  [NVD] 수집 실패: {e}")
         return []
-    raw = data.get("vulnerabilities", [])
     records = []
-    for wrap in raw:
-        cve = wrap.get("cve") or {}
-        cve_id = cve.get("id")
-        if not cve_id:
-            continue
-        desc = ""
-        for d in cve.get("descriptions") or []:
-            if d.get("lang") == "en":
-                desc = clean(d.get("value"))
-                break
-        metrics = cve.get("metrics") or {}
-        score, severity = None, "UNKNOWN"
-        for key in ("cvssMetricV31", "cvssMetricV40", "cvssMetricV30", "cvssMetricV2"):
-            for m in metrics.get(key) or []:
-                cd = m.get("cvssData") or {}
-                if cd.get("baseScore") is not None:
-                    score = float(cd["baseScore"])
-                    severity = (cd.get("baseSeverity") or m.get("baseSeverity") or "").upper() or classify_severity(score)
-                    break
-            if score is not None:
-                break
-        cwe = []
-        for w in cve.get("weaknesses") or []:
-            for d in w.get("description") or []:
-                v = d.get("value") or ""
-                if v.startswith("CWE-") and v not in cwe:
-                    cwe.append(v)
-        vendors, products = {}, []
-        for conf in cve.get("configurations") or []:
-            for node in conf.get("nodes") or []:
-                for cm in node.get("cpeMatch") or []:
-                    if not cm.get("vulnerable", True):
-                        continue
-                    parsed = parse_cpe(cm.get("criteria"))
-                    if not parsed:
-                        continue
-                    vendor, product, version = parsed
-                    key = (vendor, product)
-                    vendors.setdefault(key, set())
-                    if version not in ("*", "-"):
-                        vendors[key].add(version)
-        for (vendor, product), versions in vendors.items():
-            vs = sorted(versions)
-            label = f"{vendor.title()} {product}"
-            if vs:
-                shown = ", ".join(vs[:3]) + (" 외" if len(vs) > 3 else "")
-                label = f"{label} ({shown})"
-            products.append(label)
-        if not products:
-            # NVD 신규 CVE는 CPE 분석 전(configurations=null)이므로 설명에서 제품·버전을 도출
-            name, ver = extract_product_from_desc(desc)
-            if name:
-                products.append(f"{name} ({ver})" if ver else name)
-        refs = []
-        for r in (cve.get("references") or [])[:8]:
-            url_r = r.get("url")
-            if not url_r:
-                continue
-            tags = r.get("tags") or []
-            title = ", ".join(tags[:2]) if tags else ""
-            refs.append({"url": url_r, "title": title})
-        first = products[0] if products else ""
-        vendor = first.split(" ")[0] if first else ""
-        records.append({
-            "cve_id": cve_id,
-            "source": "NVD",
-            "vendor": vendor,
-            "product": first,
-            "published_at": (cve.get("published") or "")[:10],
-            "cvss_score": score,
-            "severity": severity,
-            "is_kev": False,
-            "description_orig": desc,
-            "affected_products": products[:8],
-            "references": refs,
-            "cwe": cwe[:4],
-        })
+    for wrap in data.get("vulnerabilities") or []:
+        rec = parse_nvd_cve(wrap.get("cve") or {})
+        if rec:
+            records.append(rec)
     # 최신 공개 우선 + 고위험 우선 정렬 후 상한
     records.sort(key=lambda r: (r.get("severity") == "CRITICAL", r.get("cvss_score") or 0, r.get("published_at") or ""), reverse=True)
     picked = records[:limit]
     print(f"  [NVD] 최근 {days}일 공개 CVE {len(records)}건 중 {len(picked)}건 선별")
     return picked
+
+
+# ---------------------------------------------------------------------------
+# 1-b) 경보·보안 뉴스에서 CVE 캐내기
+#   NVD·CIRCL 반영이 늦거나 CISA KEV 등재 전인 긴급 취약점은 피드만으로는 놓친다.
+#   (2026-11-18 Java4Shell 사례: CISA 경보·보안 매체는 06:00 공개 직후 보도했지만
+#    NVD 반영은 그 뒤였고 KEV 에는 아직 없어 수집 목록에 들어오지 못했다.)
+# ---------------------------------------------------------------------------
+
+def feed_date(value):
+    """RSS pubDate(RFC822)·Atom(ISO8601) 문자열을 'YYYY-MM-DD' 로 바꾼다. 실패하면 ''."""
+    from email.utils import parsedate_to_datetime
+    raw = (value or "").strip()
+    if not raw:
+        return ""
+    try:
+        return parsedate_to_datetime(raw).astimezone(timezone.utc).strftime("%Y-%m-%d")
+    except Exception:  # noqa: BLE001
+        pass
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", raw)
+    return m.group(0) if m else ""
+
+
+def parse_feed_items(raw):
+    """RSS 2.0·Atom 피드를 [{title, link, summary, published_at}] 로 파싱한다."""
+    import xml.etree.ElementTree as ET
+    try:
+        root = ET.fromstring(raw)
+    except ET.ParseError:
+        return []
+    out = []
+    for node in root.iter():
+        tag = node.tag.split("}")[-1]
+        if tag not in ("item", "entry"):
+            continue
+        title = link = summary = published = ""
+        for child in list(node):
+            ctag = child.tag.split("}")[-1]
+            if ctag == "title" and not title:
+                title = clean(child.text or "")
+            elif ctag == "link":
+                href = child.get("href")
+                if href and child.get("rel") in (None, "alternate") and not link:
+                    link = href.strip()
+                elif not href and (child.text or "").strip() and not link:
+                    link = child.text.strip()
+            elif ctag in ("description", "summary", "content", "encoded") and not summary:
+                summary = clean(child.text or "")
+            elif ctag in ("pubDate", "published", "updated", "date") and not published:
+                published = (child.text or "").strip()
+        if title and link:
+            out.append({"title": title, "link": link, "summary": summary, "published_at": feed_date(published)})
+    return out
+
+
+def _recent(date_str, days):
+    if not date_str:
+        return True
+    try:
+        d = datetime.strptime(date_str[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return True
+    return (now_kst().date() - d).days <= days
+
+
+def cisa_source(url):
+    """CISA 피드 항목 URL → (표시 이름, 우선순위). 낮을수록 먼저 수집한다."""
+    u = url or ""
+    if "/news-events/alerts/" in u:
+        return "CISA Alert", 0
+    if "/news-events/ics-advisories/" in u:
+        return "CISA ICS Advisory", 2
+    return "CISA Advisory", 1
+
+
+def fetch_cisa_items(days=ALERT_FEED_DAYS):
+    """CISA Cybersecurity Alerts/Advisories 피드의 최근 항목."""
+    try:
+        req = urllib.request.Request(CISA_ADVISORY_FEED, headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml"})
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"  [CISA] 경보 피드 수집 실패: {type(e).__name__}")
+        return []
+    items = []
+    for it in parse_feed_items(raw):
+        if not _recent(it["published_at"], days):
+            continue
+        source, rank = cisa_source(it["link"])
+        it["source"] = source
+        it["rank"] = rank
+        items.append(it)
+    if items:
+        alerts = sum(1 for i in items if i["rank"] == 0)
+        print(f"  [CISA] 최근 {days}일 피드 {len(items)}건 (경보 {alerts}건)")
+    return items
+
+
+def fetch_news_items(feed):
+    """주요 보안 매체 RSS 의 최근 항목."""
+    try:
+        req = urllib.request.Request(feed["url"], headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml"})
+        with urllib.request.urlopen(req, timeout=35) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"  [{feed['name']}] 피드 수집 실패: {type(e).__name__}")
+        return []
+    items = [it for it in parse_feed_items(raw) if _recent(it["published_at"], feed.get("days", NEWS_CVE_DAYS))]
+    for it in items:
+        it["source"] = feed["name"]
+        it["rank"] = 3
+    return items
+
+
+def collect_cve_clues():
+    """경보·보안 뉴스에서 '이 CVE 가 어디서 언급됐는가'를 모아 cve_id 별로 묶는다."""
+    items = fetch_cisa_items()
+    for feed in NEWS_CVE_FEEDS:
+        items.extend(fetch_news_items(feed))
+    clues = {}
+    for it in items:
+        blob = " ".join([it.get("title", ""), it.get("summary", "")])
+        ids = list(dict.fromkeys(CVE_ID_RE.findall(blob)))
+        for cve_id in ids:
+            clues.setdefault(cve_id, []).append({
+                "cve_id": cve_id,
+                "source": it["source"],
+                "title": it.get("title", ""),
+                "url": it.get("link", ""),
+                "published_at": it.get("published_at", ""),
+                "summary": clean(it.get("summary", ""), 1200),
+                "rank": it.get("rank", 3),
+            })
+    for cve_id, rows in clues.items():
+        rows.sort(key=lambda r: (r["rank"], r["published_at"]), reverse=False)
+        # rank 우선, 같은 rank 안에서는 최신 발행 우선
+        rows.sort(key=lambda r: r["published_at"], reverse=True)
+        rows.sort(key=lambda r: r["rank"])
+    with_alert = sum(1 for rows in clues.values() if any(r["rank"] == 0 for r in rows))
+    print(f"  [경보] CISA·보안 뉴스에서 CVE {len(clues)}건 확인 (CISA 경보 언급 {with_alert}건)")
+    return clues
+
+
+def clue_rows(clues):
+    """cve_alerts 테이블에 적재할 평평한 단서 목록."""
+    rows = []
+    for cve_id, items in clues.items():
+        for it in items:
+            rows.append({
+                "cve_id": cve_id,
+                "source": it["source"],
+                "title": it["title"],
+                "url": it["url"],
+                "published_at": it["published_at"],
+                "summary": it["summary"],
+            })
+    return rows
+
+
+def build_alert_records(clues, known_ids, limit=ALERT_CANDIDATE_LIMIT):
+    """경보·기사에서만 확인된 CVE 를 수집 후보로 만든다.
+
+    ① NVD 단건 조회 → ② CIRCL 상세 → ③ 경보·기사 메타데이터만으로 기본 레코드.
+    (NVD·CIRCL 에 아직 없더라도 그날 바로 리포트에 세우기 위한 마지막 단계)
+    """
+    candidates = [(cid, rows) for cid, rows in clues.items() if cid not in known_ids]
+    candidates.sort(key=lambda kv: (kv[1][0]["rank"], kv[1][0]["published_at"]), reverse=False)
+    candidates = candidates[:limit]
+    if not candidates:
+        return []
+    print(f"  [경보] NVD·KEV·CIRCL 에 없는 후보 CVE {len(candidates)}건 상세 보강 시도")
+    out = []
+    for cve_id, rows in candidates:
+        rec = fetch_nvd_cve(cve_id)
+        if not rec:
+            detail = fetch_circl_detail(cve_id)
+            if detail:
+                rec = {
+                    "cve_id": cve_id,
+                    "source": "CIRCL CVE",
+                    "vendor": detail.get("vendor", ""),
+                    "product": detail.get("product", ""),
+                    "published_at": rows[0]["published_at"],
+                    "cvss_score": detail.get("cvss_score"),
+                    "severity": detail.get("severity") or "UNKNOWN",
+                    "is_kev": False,
+                    "description_orig": detail.get("description_orig", ""),
+                    "affected_products": detail.get("affected_products", []),
+                    "references": detail.get("references", []),
+                    "cwe": detail.get("cwe", []),
+                }
+        if not rec:
+            top = rows[0]
+            print(f"  [경보] {cve_id} — NVD·CIRCL 미등록, 기사·경보 메타데이터로 기본 레코드 생성 ({top['source']})")
+            rec = {
+                "cve_id": cve_id,
+                "source": top["source"],
+                "vendor": "",
+                "product": "",
+                "published_at": top["published_at"],
+                "cvss_score": None,
+                "severity": "UNKNOWN",
+                "is_kev": False,
+                "description_orig": top["summary"] or top["title"],
+                "affected_products": [],
+                "references": [],
+                "cwe": [],
+            }
+        # 경보·기사 링크를 참고 자료에 남긴다 (중복 URL 은 한 번만)
+        refs = list(rec.get("references") or [])
+        seen = {r.get("url") for r in refs if isinstance(r, dict)}
+        for it in rows[:3]:
+            if it["url"] and it["url"] not in seen:
+                refs.append({"url": it["url"], "title": it["title"]})
+                seen.add(it["url"])
+        rec["references"] = refs[:10]
+        if not rec.get("published_at"):
+            rec["published_at"] = rows[0]["published_at"]
+        out.append(rec)
+        time.sleep(0.4)
+    return out
 
 
 def fetch_epss(cve_ids):
@@ -933,13 +1191,81 @@ def analyze_records(records, cache, ai_limit=None, budget=AI_TIME_BUDGET, patien
 
 
 # ---------------------------------------------------------------------------
+# 3-b) 사람이 검증한 한국어 분석 (cve_curated.json)
+#   AI 분석·폴백보다 우선한다. 다음 날 자동 수집이 같은 CVE 를 다시 가져와도
+#   (설명문·CVSS 가 바뀌어 캐시 해시가 달라져도) 검증된 문장이 되돌아가지 않게 한다.
+# ---------------------------------------------------------------------------
+
+def load_curated():
+    if not os.path.exists(CURATED_FILE):
+        return {}
+    try:
+        with open(CURATED_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception as e:  # noqa: BLE001
+        print(f"  [수동] cve_curated.json 읽기 실패: {type(e).__name__}")
+        return {}
+
+
+def apply_curated(records):
+    """원문 대조로 직접 작성한 분석을 최종값으로 적용한다."""
+    curated = load_curated()
+    if not curated:
+        return 0
+    applied = 0
+    for r in records:
+        c = curated.get(r.get("cve_id"))
+        if not isinstance(c, dict):
+            continue
+        for k in ("title_ko", "summary_ko", "impact_ko", "remediation_ko"):
+            if c.get(k):
+                r[k] = c[k]
+        if c.get("cvss_score") is not None:
+            r["cvss_score"] = c["cvss_score"]
+        if c.get("severity"):
+            r["severity"] = c["severity"]
+        for k in ("vendor", "product", "cwe", "affected_products"):
+            if c.get(k):
+                r[k] = c[k]
+        if c.get("poc_links"):
+            # 공개 PoC 목록은 GitHub 검색이 놓칠 때를 대비해 검증된 항목을 앞에 붙인다
+            seen = set()
+            pocs = []
+            for poc in list(c["poc_links"]) + list(r.get("poc_links") or []):
+                url = (poc or {}).get("url") if isinstance(poc, dict) else poc
+                if not url or url in seen:
+                    continue
+                seen.add(url)
+                pocs.append(poc if isinstance(poc, dict) else {"name": url, "url": url, "stars": 0})
+            r["poc_links"] = pocs
+            r["poc_count"] = len(pocs)
+        if c.get("references"):
+            seen = set()
+            refs = []
+            for ref in list(c["references"]) + list(r.get("references") or []):
+                url = ref.get("url") if isinstance(ref, dict) else ref
+                if not url or url in seen:
+                    continue
+                seen.add(url)
+                refs.append(ref if isinstance(ref, dict) else {"url": ref, "title": ""})
+            r["references"] = refs[:10]
+        r["analyzed_by"] = "curated"
+        applied += 1
+    if applied:
+        print(f"  [수동] 원문 대조로 검증한 한국어 분석 {applied}건 우선 적용")
+    return applied
+
+
+# ---------------------------------------------------------------------------
 # 4) 메인
 # ---------------------------------------------------------------------------
 
-def merge_records(kev, circl, nvd):
+def merge_records(*groups):
+    """수집 소스 그룹들을 CVE 기준으로 합친다. 앞 그룹(KEV)의 값이 우선하고 뒤 그룹은 빈 칸만 보강한다."""
     merged = {}
     order = []
-    for group in (kev, nvd, circl):
+    for group in groups:
         for r in group:
             cid = r["cve_id"]
             if cid in merged:
@@ -1087,6 +1413,16 @@ def collect_all():
     nvd = fetch_nvd()
     circl = fetch_circl()
     records = merge_records(kev, nvd, circl)
+    print(f"  [통합] 피드 기준 CVE {len(records)}건")
+
+    # 경보·보안 뉴스에서만 확인된 CVE 를 후보로 편입 (NVD·CIRCL·KEV 반영 지연 대비)
+    clues = collect_cve_clues()
+    if clues:
+        upsert_cve_alerts(clue_rows(clues))
+    extra = build_alert_records(clues, {r["cve_id"] for r in records})
+    if extra:
+        records = merge_records(records, extra)
+        print(f"  [통합] 경보·뉴스에서 추가된 CVE {len(extra)}건 반영")
     print(f"  [통합] 중복 제거 후 CVE {len(records)}건")
 
     epss = fetch_epss([r["cve_id"] for r in records])
@@ -1121,6 +1457,7 @@ def finish(records=None):
             r.update(fallback_korean(r, "pending"))
         r.pop("_hash", None)
         r["updated_at"] = now_str()
+    apply_curated(records)
     init_db()
     count = upsert_cve_reports(records)
     exa = sum(1 for r in records if r.get("analyzed_by") == "exaone")
@@ -1164,6 +1501,7 @@ def run_ai_only(ai_limit=None):
     for r in records:
         r.pop("_hash", None)
         r["updated_at"] = now_str()
+    apply_curated(records)
     count = upsert_cve_reports(records)
     exa = sum(1 for r in records if r.get("analyzed_by") == "exaone")
     print(f"=== [CVE] 재분석 완료 — EXAONE {exa}건 / 전체 {count}건 ===")
@@ -1187,6 +1525,15 @@ def main():
 
     if "--ai-only" in args:
         run_ai_only(limit_ai)
+        return
+    if "--alerts" in args:
+        # 경보·보안 뉴스에서 어떤 CVE 가 잡히는지 확인만 하고 DB 레코드는 건드리지 않는다
+        init_db()
+        clues = collect_cve_clues()
+        if clues:
+            print(f"  [경보] 단서 {upsert_cve_alerts(clue_rows(clues))}행 적재")
+        for cid, rows in sorted(clues.items(), key=lambda kv: (kv[1][0]["rank"], kv[1][0]["published_at"])):
+            print(f"  - {cid} [{rows[0]['source']}] {rows[0]['title'][:70]}")
         return
     if "--collect-only" in args:
         collect_all()

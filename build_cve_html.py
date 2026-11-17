@@ -9,7 +9,7 @@ import os
 import json
 from datetime import datetime, timezone, timedelta
 
-from db_manager import init_db, get_cve_reports, get_cve_stats
+from db_manager import init_db, get_cve_reports, get_cve_stats, get_cve_alerts
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CVE_DATA_JSON = os.path.join(BASE_DIR, "cve_data.json")
@@ -549,6 +549,56 @@ CSS = """
       white-space: nowrap;
     }
 
+    /* CISA 경보·보안 매체가 먼저 보도한 취약점 표시 */
+    .badge-alert {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--sev-critical-bg);
+      color: var(--sev-critical-text);
+      border: 1px solid var(--sev-critical-border);
+      white-space: nowrap;
+    }
+
+    .badge-news {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+      white-space: nowrap;
+    }
+
+    .alert-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .alert-row a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: 1px;
+    }
+
+    .alert-row a:hover { color: var(--text-primary); border-bottom-color: var(--text-primary); }
+
+    .priority-row .due-alert {
+      color: var(--sev-critical-text);
+      border: 1px solid var(--sev-critical-border);
+      background: var(--sev-critical-bg);
+      border-radius: 5px;
+      padding: 1px 6px;
+    }
+
     .card-date {
       margin-left: auto;
       font-size: 11.5px;
@@ -914,7 +964,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="CVE ID, 제품명, 키워드로 검색 (예: CVE-2026, PAN-OS, 원격 코드 실행)">
+        <input type="text" id="searchInput" class="search-input" placeholder="CVE ID, 별칭, 제품명, 키워드로 검색 (예: Java4Shell, CVE-2026-114938, PAN-OS)">
         <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
       </div>
 
@@ -939,7 +989,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <footer class="footer">
       Infosec Archive · CVE 취약점 리포트<br>
-      수집 소스: CISA KEV · CIRCL CVE · NVD · FIRST EPSS · GitHub 공개 PoC<br>
+      수집 소스: CISA KEV · CISA 경보·권고 · CIRCL CVE · NVD · FIRST EPSS · GitHub 공개 PoC · 보안 뉴스<br>
       요약·원인·조치 방안은 수집 원문을 바탕으로 AI가 한국어로 정리한 것이며, 실제 적용 전 벤더 공지와 원문을 함께 확인하세요.
     </footer>
   </main>
@@ -1031,7 +1081,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       if (searchTerm) {
         const hay = [it.cve_id, it.title_ko, it.summary_ko, it.impact_ko, it.remediation_ko,
                      it.vendor, it.product, (it.affected_products || []).join(' '),
-                     (it.cwe || []).join(' '), (it.poc_links || []).map(p => p.name).join(' ')]
+                     (it.cwe || []).join(' '), (it.poc_links || []).map(p => p.name).join(' '),
+                     (it.alerts || []).map(a => (a.title || '') + ' ' + (a.source || '')).join(' ')]
                     .join(' ').toLowerCase();
         if (!hay.includes(searchTerm)) return false;
       }
@@ -1043,6 +1094,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const top = [];
       top.push('<span class="cve-id">' + escapeHtml(it.cve_id) + '</span>');
       top.push('<span class="sev-badge sev-' + sev + '">' + escapeHtml(cvssText(it)) + '</span>');
+      if (it.alerts && it.alerts.length) {
+        const isCisaAlert = (it.alerts || []).some(a => (a.source || '').indexOf('CISA Alert') === 0);
+        top.push(isCisaAlert
+          ? '<span class="badge-alert">긴급 권고</span>'
+          : '<span class="badge-news">경보·보도</span>');
+      }
       if (it.is_kev) top.push('<span class="badge-kev">KEV 실제 악용</span>');
       if (it.poc_links && it.poc_links.length) top.push('<span class="badge-poc">PoC ' + it.poc_links.length + '건</span>');
       if (it.published_at) top.push('<span class="card-date">' + escapeHtml(formatDate(it.published_at)) + ' 공개</span>');
@@ -1052,6 +1109,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       if (ep) metrics.push('<span><b>' + escapeHtml(ep) + '</b></span>');
       if (it.kev_due_date) metrics.push('<span>조치 기한 <b>' + escapeHtml(formatDate(it.kev_due_date)) + '</b></span>');
       if (it.cwe && it.cwe.length) metrics.push('<span>' + escapeHtml(it.cwe.join(' · ')) + '</span>');
+
+      const alertRow = (it.alerts && it.alerts.length)
+        ? '<div class="alert-row"><span>경보·보도</span>' + (it.alerts || []).slice(0, 3).map(a =>
+            '<a href="' + escapeHtml(a.url) + '" target="_blank" rel="noopener noreferrer">' +
+            escapeHtml(a.source || '원문') + (a.published_at ? ' ' + escapeHtml(formatDate(a.published_at)) : '') + '</a>'
+          ).join('') + '</div>'
+        : '';
 
       const chips = (it.affected_products || []).slice(0, 4)
         .map(p => '<span class="chip">' + escapeHtml(p) + '</span>').join('');
@@ -1075,6 +1139,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         + '<div class="cve-top">' + top.join('') + '</div>'
         + '<h2 class="cve-title">' + escapeHtml(it.title_ko) + '</h2>'
         + (metrics.length ? '<div class="cve-metrics">' + metrics.join('') + '</div>' : '')
+        + alertRow
         + (chips ? '<div class="chip-row">' + chips + '</div>' : '')
         + '<p class="cve-summary">' + escapeHtml(it.summary_ko) + '</p>'
         + (it.impact_ko ? '<div class="detail-box impact-box"><span class="box-label">원인 및 영향 범위</span><p>' + escapeHtml(it.impact_ko) + '</p></div>' : '')
@@ -1238,7 +1303,17 @@ def build_briefing(items):
     if not items:
         return ("아직 수집된 CVE가 없습니다. cve_crawler.py 실행 후 다시 빌드하세요.", [])
 
+    alert_items = [i for i in items
+                   if any((a.get("source") or "").startswith("CISA Alert") for a in (i.get("alerts") or []))]
+
     parts = [f"최근 수집된 CVE {len(items)}건 중 {len(kev_items)}건이 CISA KEV에 등재된 실제 악용 취약점입니다."]
+    if alert_items:
+        first = alert_items[0]
+        parts.append(
+            f"CISA가 긴급 경보로 다룬 취약점이 {len(alert_items)}건 있습니다"
+            f"({first['cve_id']} {first.get('title_ko', '')})."
+            " KEV 등재·NVD 반영보다 경보가 앞서는 항목이므로 패치 발표 여부를 먼저 확인하세요."
+        )
     if crit or high:
         parts.append(f"CVSS 기준 Critical {crit}건, High {high}건이며, 공개 PoC가 확인된 항목은 {len(poc_items)}건입니다.")
     if overdue:
@@ -1250,6 +1325,19 @@ def build_briefing(items):
     briefing = " ".join(parts)
 
     rows = []
+    # 경보·보도로 먼저 포착된 항목을 맨 위에 세운다 (최대 2건)
+    for it in alert_items[:2]:
+        alerts = it.get("alerts") or []
+        src = alerts[0].get("source", "") if alerts else ""
+        when = (alerts[0].get("published_at") or "") if alerts else ""
+        label = "CISA 경보" if src.startswith("CISA Alert") else (src or "보도")
+        rows.append(
+            '<div class="priority-row">'
+            f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
+            f'<span>{esc(it.get("title_ko", ""))}</span>'
+            f'<span class="due due-alert">{esc(label)}{" " + esc(when) if when else ""}</span>'
+            "</div>"
+        )
     # 기한 경과 → 임박 순으로 최대 4건 노출
     for it in (overdue[-2:] + imminent)[:4]:
         d = due_date(it)
@@ -1282,9 +1370,38 @@ def build_briefing(items):
     return briefing, rows
 
 
+def attach_alerts(items, days=30):
+    """CISA 경보·보안 매체 단서를 항목에 붙이고, 경보가 있는 항목을 목록 앞으로 올린다.
+
+    NVD·KEV 반영 전에 공개된 긴급 취약점이 목록 아래쪽에 묻히지 않게 하기 위한 정렬이다.
+    경보가 오래된 항목은 days 밖으로 밀려나면 다시 일반 순서로 돌아간다.
+    """
+    alerts_map = get_cve_alerts(days=days)
+    for it in items:
+        rows = alerts_map.get(it.get("cve_id")) or []
+        if rows:
+            it["alerts"] = rows
+    alert_ids = {cid for cid, rows in alerts_map.items() if rows}
+
+    def rank(pair):
+        idx, it = pair
+        if it.get("cve_id") not in alert_ids or not it.get("alerts"):
+            return (2, 0, idx)
+        # CISA 'Alert' 는 권고(Advisory)보다 무겁게 본다 → 그 아래에 최신 발행순
+        is_alert = any((a.get("source") or "").startswith("CISA Alert") for a in it["alerts"])
+        latest = max((a.get("published_at") or "") for a in it["alerts"])
+        try:
+            stamp = -int(latest.replace("-", ""))
+        except ValueError:
+            stamp = 0
+        return (0 if is_alert else 1, stamp, idx)
+
+    return [it for _, it in sorted(enumerate(items), key=rank)]
+
+
 def build():
     init_db()
-    items = get_cve_reports()
+    items = attach_alerts(get_cve_reports())
     stats = get_cve_stats()
     kst = timezone(timedelta(hours=9))
     now = datetime.now(kst)
@@ -1303,7 +1420,7 @@ def build():
         "poc": stats["poc"],
         "collected_at": collected,
         "built_at": updated_at,
-        "sources": ["CISA KEV", "CIRCL CVE", "NVD", "FIRST EPSS", "GitHub"],
+        "sources": ["CISA KEV", "CISA 경보", "CIRCL CVE", "NVD", "FIRST EPSS", "GitHub", "보안 뉴스"],
     }
 
     with open(CVE_DATA_JSON, "w", encoding="utf-8") as f:

@@ -143,6 +143,24 @@ def init_db(db_path=DB_PATH):
     cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_epss ON cve_reports(epss_score);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_published ON cve_reports(published_at);")
 
+    # 5-a. CISA 경보·보안 뉴스에서 추출한 CVE 단서 테이블
+    #   NVD/CIRCL 반영이 늦거나 KEV 등재 전인 긴급 취약점(예: Java4Shell)을 놓치지 않기 위해
+    #   수집 소스가 아니라 '이 CVE 가 어떤 경보·기사에서 언급됐는가'를 따로 보관한다.
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS cve_alerts (
+        cve_id TEXT NOT NULL,
+        source TEXT NOT NULL,       -- CISA Alert, CISA Advisory, The Hacker News ...
+        title TEXT,
+        url TEXT NOT NULL,
+        published_at TEXT,
+        summary TEXT,
+        fetched_at TEXT NOT NULL,
+        PRIMARY KEY (cve_id, url)
+    );
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_alerts_cve ON cve_alerts(cve_id);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_alerts_pub ON cve_alerts(published_at);")
+
     # 6. DB 메타 정보 테이블
     cur.execute("""
     CREATE TABLE IF NOT EXISTS db_meta (
@@ -793,6 +811,85 @@ def upsert_cve_reports(items, db_path=DB_PATH):
     conn.commit()
     conn.close()
     return count
+
+
+def upsert_cve_alerts(rows, db_path=DB_PATH):
+    """CISA 경보·보안 뉴스에서 추출한 CVE 단서를 적재한다.
+
+    같은 (cve_id, url) 조합은 제목·요약·발행일만 갱신하고 fetched_at 을 새로 찍는다.
+    (하루 여러 번 실행해도 중복 행이 쌓이지 않는다)
+    """
+    if not rows:
+        return 0
+    kst = timezone(timedelta(hours=9))
+    fetched_at = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    count = 0
+    for r in rows:
+        cve_id = (r or {}).get("cve_id")
+        url = (r or {}).get("url")
+        if not cve_id or not url:
+            continue
+        cur.execute("""
+        INSERT INTO cve_alerts (cve_id, source, title, url, published_at, summary, fetched_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(cve_id, url) DO UPDATE SET
+            source = excluded.source,
+            title = excluded.title,
+            published_at = excluded.published_at,
+            summary = excluded.summary,
+            fetched_at = excluded.fetched_at;
+        """, (
+            cve_id,
+            r.get("source", ""),
+            r.get("title", ""),
+            url,
+            r.get("published_at", ""),
+            (r.get("summary") or "")[:1200],
+            fetched_at,
+        ))
+        count += 1
+    conn.commit()
+    conn.close()
+    return count
+
+
+def get_cve_alerts(days=None, limit_per_cve=4, db_path=DB_PATH):
+    """cve_id → [{source, title, url, published_at}] (최신 발행순, CVE당 최대 limit_per_cve건)
+
+    days 를 주면 그 기간 안에 발행된 경보·기사만 돌려준다. 발행일이 비어 있는 항목은
+    수집 시각(fetched_at)으로 대신 판정한다.
+    """
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    sql = """
+    SELECT cve_id, source, title, url, published_at
+    FROM cve_alerts
+    """
+    params = ()
+    if days:
+        kst = timezone(timedelta(hours=9))
+        cutoff = (datetime.now(kst) - timedelta(days=int(days))).strftime("%Y-%m-%d")
+        sql += """
+        WHERE COALESCE(NULLIF(published_at, ''), substr(fetched_at, 1, 10)) >= ?
+        """
+        params = (cutoff,)
+    sql += " ORDER BY COALESCE(NULLIF(published_at, ''), substr(fetched_at, 1, 10)) DESC, source ASC"
+    cur.execute(sql, params)
+    out = {}
+    for r in cur.fetchall():
+        bucket = out.setdefault(r["cve_id"], [])
+        if len(bucket) >= limit_per_cve:
+            continue
+        bucket.append({
+            "source": r["source"] or "",
+            "title": r["title"] or "",
+            "url": r["url"],
+            "published_at": r["published_at"] or "",
+        })
+    conn.close()
+    return out
 
 
 def get_cve_reports(limit=None, db_path=DB_PATH):
