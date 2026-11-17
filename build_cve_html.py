@@ -1097,7 +1097,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       if (it.alerts && it.alerts.length) {
         const isCisaAlert = (it.alerts || []).some(a => (a.source || '').indexOf('CISA Alert') === 0);
         top.push(isCisaAlert
-          ? '<span class="badge-alert">긴급 권고</span>'
+          ? '<span class="badge-alert">CISA 경보</span>'
           : '<span class="badge-news">경보·보도</span>');
       }
       if (it.is_kev) top.push('<span class="badge-kev">KEV 실제 악용</span>');
@@ -1310,9 +1310,9 @@ def build_briefing(items):
     if alert_items:
         first = alert_items[0]
         parts.append(
-            f"CISA가 긴급 경보로 다룬 취약점이 {len(alert_items)}건 있습니다"
+            f"CISA 경보 피드에 이름이 오른 취약점이 {len(alert_items)}건 있습니다"
             f"({first['cve_id']} {first.get('title_ko', '')})."
-            " KEV 등재·NVD 반영보다 경보가 앞서는 항목이므로 패치 발표 여부를 먼저 확인하세요."
+            " KEV 등재·NVD 반영보다 경보가 앞서는 항목이 있으므로 패치 발표 여부를 먼저 확인하세요."
         )
     if crit or high:
         parts.append(f"CVSS 기준 Critical {crit}건, High {high}건이며, 공개 PoC가 확인된 항목은 {len(poc_items)}건입니다.")
