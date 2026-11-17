@@ -836,12 +836,14 @@ def analyze_records(records, cache, ai_limit=None, budget=AI_TIME_BUDGET, patien
             break
         batch = todo[i:i + AI_BATCH]
         prompt = build_ai_prompt(batch)
+        # 배치가 클수록 출력이 길어져 2600 토큰에서 JSON이 잘리던 문제 → 건당 여유를 두고 상한을 올린다
+        max_tokens = min(8192, 1400 * len(batch) + 600)
         content = None
         for attempt, wait in enumerate((0, 8, 20, 40)):
             if wait:
                 time.sleep(wait)
             try:
-                content = call_exaone(prompt, key)
+                content = call_exaone(prompt, key, max_tokens=max_tokens)
                 break
             except urllib.error.HTTPError as e:
                 if e.code in (429, 500, 502, 503, 504):
