@@ -1096,8 +1096,8 @@ html_content = """<!DOCTYPE html>
     <!-- Hero -->
     <div class="hero">
       <div class="hero-pill">자격증 시험 대비 · 핵심 문제 풀이</div>
-      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 요약집 95선</h1>
-      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 용어·조문 사전 60선 검색 및 파일/URL 맞춤 분석</p>
+      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 요약집 110선</h1>
+      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + 용어·조문 사전 60선 검색 및 파일/URL 맞춤 분석</p>
     </div>
 
     <!-- Exam Category Selector -->
@@ -1341,8 +1341,8 @@ html_content = """<!DOCTYPE html>
     const CATEGORIES = {
       cppg: {
         title: "개인정보관리사 (CPPG)",
-        mainTitle: "CPPG 실전 300제 & 전 과목 핵심 요약집 95선",
-        mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 용어·조문 사전 60선 검색 및 파일/URL AI 맞춤 분석",
+        mainTitle: "CPPG 실전 300제 & 전 과목 핵심 요약집 110선",
+        mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + 용어·조문 사전 60선 검색 및 파일/URL AI 맞춤 분석",
         quizLabel: "실전 모의고사 (300제)",
         quizLabelShort: "실전 300제",
         exams: [

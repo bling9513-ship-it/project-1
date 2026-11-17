@@ -320,7 +320,7 @@ def migrate_study_summaries():
     total_s_count = 0
     cur.execute("DELETE FROM study_summaries;") # 요약은 재구축
 
-    # 0. CPPG 전 과목 핵심 요약집 95선 (cppg_summary_ext.py -> 내용별 35선 + 용어·조문 60선)
+    # 0. CPPG 전 과목 핵심 요약집 110선 (cppg_summary_ext.py -> 내용별 35선 + 공식 가이드라인 15선 + 용어·조문 60선)
     sys.path.append(os.path.join(os.path.dirname(__file__), "exam_builder"))
     try:
         import cppg_summary_ext
@@ -341,8 +341,8 @@ def migrate_study_summaries():
         cppg_content = sum(1 for i in cppg_items if i.get("type") == "content")
         cppg_term = sum(1 for i in cppg_items if i.get("type") == "term")
         print(f"-> CPPG 요약 마이그레이션 완료: {len(cppg_items)}선 (내용별 {cppg_content}선 + 용어·조문 {cppg_term}선)")
-        if cppg_content < 35 or cppg_term < 60:
-            raise SystemExit(f"[실패] CPPG 요약 구성 불일치: 내용별 {cppg_content}선(35 기대) + 용어·조문 {cppg_term}선(60 기대)")
+        if cppg_content < 50 or cppg_term < 60:
+            raise SystemExit(f"[실패] CPPG 요약 구성 불일치: 내용별 {cppg_content}선(내용별 35 + 가이드라인 15 = 50 기대) + 용어·조문 {cppg_term}선(60 기대)")
     except Exception as e:
         print(f"[경고] CPPG 요약 마이그레이션 오류: {e}")
 
