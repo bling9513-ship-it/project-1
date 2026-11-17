@@ -1982,7 +1982,6 @@ def generate_html(jobs, update_time_str):
         if (countEl) countEl.textContent = kw === 'all' ? live.length : (kwCounts[kw] || 0);
       }});
     }}
-    }}
 
     function escapeHtml(str) {{
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
