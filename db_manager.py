@@ -190,6 +190,58 @@ def parse_explicit_deadline_date(deadline_str, today_date=None):
 # 날짜 없이 시각만 적힌 당일 마감 표기: "16시 마감", "16시마감", "18:30 마감", "24시 마감"
 TIME_ONLY_DEADLINE_RE = re.compile(r"^\d\d?(?::\d\d)?\s*시?\s*마감$")
 
+KST = timezone(timedelta(hours=9))
+
+
+def get_kst_now(now_dt=None):
+    """KST 현재 시각(datetime). now_dt가 naive면 KST로 간주한다."""
+    if now_dt is None:
+        return datetime.now(KST)
+    if now_dt.tzinfo is None:
+        return now_dt.replace(tzinfo=KST)
+    return now_dt.astimezone(KST)
+
+
+def parse_deadline_clock(deadline_str):
+    """마감 표기에 함께 적힌 마감 시각(hour, minute)을 추출. 없으면 None.
+
+    예: '14시마감'→(14, 0), '18시 마감'→(18, 0), '18:30 마감'→(18, 30),
+        '~11/17 화 23시 마감'→(23, 0), '~11/17 17:00'→(17, 0)
+    MM/DD·YYYY.MM.DD 날짜 표기는 먼저 지워 날짜 숫자를 시각으로 오인하지 않게 한다.
+    """
+    if not deadline_str:
+        return None
+    s = re.sub(r"\d{1,2}\s*/\s*\d{1,2}", " ", deadline_str)
+    s = re.sub(r"\d{4}\s*[.\-년]\s*\d{1,2}\s*[.\-월]\s*\d{1,2}\s*일?", " ", s)
+
+    hour = minute = None
+    m = re.search(r"(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?", s)
+    if m:
+        hour, minute = int(m.group(1)), int(m.group(2) or 0)
+    else:
+        m = re.search(r"(\d{1,2})\s*:\s*(\d{2})", s)
+        if not m:
+            return None
+        hour, minute = int(m.group(1)), int(m.group(2))
+
+    if not (0 <= minute <= 59):
+        return None
+    if hour == 24 and minute == 0:
+        return (24, 0)  # 24시 마감 = 당일 자정까지 유효
+    if not (0 <= hour <= 23):
+        return None
+    return (hour, minute)
+
+
+def is_clock_passed(clock, now_dt):
+    """마감 시각이 현재 KST 시각 기준으로 이미 지났는지. 24시 마감은 당일 내내 유효."""
+    if not clock:
+        return False
+    hour, minute = clock
+    if hour >= 24:
+        return False
+    return (now_dt.hour, now_dt.minute) >= (hour, minute)
+
 
 def is_time_only_deadline(deadline_str):
     """시각만 적힌 당일 마감 표기인지 판별 (인크루트 목록은 마감 당일이면 시각만 노출한다)"""
@@ -211,17 +263,20 @@ def parse_seen_date(last_seen_at):
         return None
 
 
-def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
+def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None, now_dt=None):
     """마감일 문자열을 분석하여 상태값과 마감 여부(ACTIVE/EXPIRED) 판별
 
     last_seen_at: 수집 시각(선택). 날짜 없는 상대 라벨(D-Day/오늘/내일/D-N)을 수집일 기준으로 환산하며,
                   시각만 적힌 당일 마감 표기는 오늘 수집된 경우에만 D-Day로 본다.
+    now_dt: 판정 기준이 되는 현재 시각(KST). 없으면 지금 시각.
+                  '14시마감' 처럼 당일 마감 시각이 지난 공고를 당일 오후에도 마감 처리하기 위해 쓴다.
     """
+    now = get_kst_now(now_dt)
     if not today_date:
-        kst = timezone(timedelta(hours=9))
-        today_date = datetime.now(kst).date()
+        today_date = now.date()
         
     dl = deadline_str.strip() if deadline_str else "상시채용"
+    clock = parse_deadline_clock(dl)
     
     # 1. 이미 마감 표시가 명시된 경우 (예: "마감 (~11/12)")
     if "마감 (" in dl or "마감(" in dl or dl.startswith("마감"):
@@ -236,6 +291,9 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         if diff < 0:
             return "EXPIRED", "EXPIRED"
         elif diff == 0:
+            # 당일 마감이어도 '~11/17 17:00'처럼 시각이 적혀 있고 그 시각이 지났으면 마감
+            if is_clock_passed(clock, now):
+                return "EXPIRED", "EXPIRED"
             return "D_DAY", "ACTIVE"
         elif 1 <= diff <= 7:
             return "URGENT", "ACTIVE"
@@ -249,6 +307,9 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         seen = parse_seen_date(last_seen_at)
         if seen is not None and seen != today_date:
             return "EXPIRED", "EXPIRED"
+        # 오늘 수집된 당일 마감이어도 마감 시각(예: 14시)이 지나면 마감으로 정리
+        if is_clock_passed(clock, now):
+            return "EXPIRED", "EXPIRED"
         return "D_DAY", "ACTIVE"
 
     # 3. D-Day / 오늘 마감 (날짜 표기 없음)
@@ -258,6 +319,8 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         seen = parse_seen_date(last_seen_at)
         if seen is not None and seen < today_date:
             return "EXPIRED", "EXPIRED"
+        if is_clock_passed(clock, now):
+            return "EXPIRED", "EXPIRED"
         return "D_DAY", "ACTIVE"
 
     # 4. 내일 마감 ("D-1" 부분 문자열 매칭은 D-10~D-19까지 잡히므로 사용하지 않음)
@@ -266,6 +329,9 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         seen = parse_seen_date(last_seen_at)
         if seen is not None:
             if seen == today_date - timedelta(days=1):
+                # 어제 기준 '내일 마감' = 오늘이 마감일. 시각이 적혀 있으면 그 시각 기준으로 판정
+                if is_clock_passed(clock, now):
+                    return "EXPIRED", "EXPIRED"
                 return "D_DAY", "ACTIVE"
             if seen < today_date - timedelta(days=1):
                 return "EXPIRED", "EXPIRED"
@@ -282,6 +348,8 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         if days < 0:
             return "EXPIRED", "EXPIRED"
         elif days == 0:
+            if is_clock_passed(clock, now):
+                return "EXPIRED", "EXPIRED"
             return "D_DAY", "ACTIVE"
         elif 1 <= days <= 7:
             return "URGENT", "ACTIVE"
@@ -296,6 +364,63 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None):
         
     return "UPCOMING", "ACTIVE"
 
+def _dedup_company_key(company):
+    """회사명 앞뒤의 법인 표기(주㈜·(주)·주식회사)를 지우고 공백·기호를 없앤 비교용 키"""
+    c = re.sub(r"[㈜㈕㈎-㈫]", "", company or "")
+    c = re.sub(r"\(주\)|\(유\)|주식회사|유한회사", "", c)
+    return re.sub(r"[\s\-_/|·.,]", "", c).lower()
+
+
+def _dedup_title_key(title):
+    t = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", title or "")
+    return re.sub(r"[\s\-_/|·.,]", "", t).lower()
+
+
+def expire_platform_conflict_duplicates(today_date=None, db_path=DB_PATH, now_dt=None):
+    """같은 공고를 플랫폼마다 다른 마감 형식으로 보여줘 생긴 복제 행을 정리한다.
+
+    한 플랫폼은 '14시마감'처럼 마감 시각을 적었고 그 시각이 이미 지나 마감됐는데,
+    다른 플랫폼은 같은 공고를 시각 없는 'D-Day (오늘 마감)'으로 계속 보여주는 경우가 있다.
+    (예: 2026-11-17 신한은행 정보보호 수시채용 — 사람인·인크루트 14시마감 / 잡코리아 D-Day)
+    같은 회사·제목의 마감된 행에 오늘 이미 지난 마감 시각이 적혀 있으면 복제 행도 EXPIRED로 정리한다.
+    """
+    now = get_kst_now(now_dt)
+    if not today_date:
+        today_date = now.date()
+
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("SELECT company, title, deadline FROM jobs WHERE status = 'EXPIRED';")
+    closed_clock_keys = set()
+    for row in cur.fetchall():
+        clock = parse_deadline_clock(row["deadline"])
+        if not clock or not is_clock_passed(clock, now):
+            continue
+        closed_clock_keys.add((_dedup_company_key(row["company"]), _dedup_title_key(row["title"])))
+
+    if not closed_clock_keys:
+        conn.close()
+        return 0
+
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S KST")
+    cur.execute("SELECT id, company, title, deadline FROM jobs WHERE status = 'ACTIVE';")
+    targets = []
+    for row in cur.fetchall():
+        dl = row["deadline"] or ""
+        # 시각·날짜가 적힌 표기는 parse_deadline_status가 이미 판정한다. 여기서는 상대 라벨만 본다.
+        if parse_deadline_clock(dl) or parse_explicit_deadline_date(dl, today_date) is not None:
+            continue
+        key = (_dedup_company_key(row["company"]), _dedup_title_key(row["title"]))
+        if key in closed_clock_keys:
+            targets.append((now_str, row["id"]))
+
+    if targets:
+        cur.executemany("UPDATE jobs SET status = 'EXPIRED', deadline_status = 'EXPIRED', updated_at = ? WHERE id = ?;", targets)
+        conn.commit()
+    conn.close()
+    return len(targets)
+
+
 def normalize_key(company, title):
     c = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", company)
     c = re.sub(r"[\s\-_/|·]", "", c).lower()
@@ -303,11 +428,11 @@ def normalize_key(company, title):
     t = re.sub(r"[\s\-_/|·]", "", t).lower()
     return f"{c}_{t[:12]}"
 
-def mark_expired_jobs(today_date=None, db_path=DB_PATH):
-    """현재 날짜를 기준으로 마감일이 지난 공고를 일괄 EXPIRED 상태로 전환"""
+def mark_expired_jobs(today_date=None, db_path=DB_PATH, now_dt=None):
+    """현재 날짜·시각(KST)을 기준으로 마감일이 지난 공고를 일괄 EXPIRED 상태로 전환"""
+    now = get_kst_now(now_dt)
     if not today_date:
-        kst = timezone(timedelta(hours=9))
-        today_date = datetime.now(kst).date()
+        today_date = now.date()
         
     conn = get_connection(db_path)
     cur = conn.cursor()
@@ -316,7 +441,7 @@ def mark_expired_jobs(today_date=None, db_path=DB_PATH):
     
     expired_ids = []
     for row in rows:
-        dl_status, status = parse_deadline_status(row["deadline"], today_date, row["last_seen_at"])
+        dl_status, status = parse_deadline_status(row["deadline"], today_date, row["last_seen_at"], now_dt=now)
         if status == "EXPIRED":
             expired_ids.append(row["id"])
             
@@ -326,14 +451,13 @@ def mark_expired_jobs(today_date=None, db_path=DB_PATH):
     conn.close()
     return len(expired_ids)
 
-def refresh_deadline_statuses(today_date=None, db_path=DB_PATH):
+def refresh_deadline_statuses(today_date=None, db_path=DB_PATH, now_dt=None):
     """ACTIVE 공고의 deadline_status를 현재 기준으로 재계산 (마감 판정 로직 변경 시 DB 재정규화)"""
+    now = get_kst_now(now_dt)
     if not today_date:
-        kst = timezone(timedelta(hours=9))
-        today_date = datetime.now(kst).date()
+        today_date = now.date()
 
-    kst = timezone(timedelta(hours=9))
-    now_str = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S KST")
 
     conn = get_connection(db_path)
     cur = conn.cursor()
@@ -343,7 +467,7 @@ def refresh_deadline_statuses(today_date=None, db_path=DB_PATH):
     updates = []
     unchanged = 0
     for row in rows:
-        dl_status, status = parse_deadline_status(row["deadline"], today_date, row["last_seen_at"])
+        dl_status, status = parse_deadline_status(row["deadline"], today_date, row["last_seen_at"], now_dt=now)
         if status != "ACTIVE":
             # 마감 전환은 mark_expired_jobs 담당
             continue
@@ -363,7 +487,7 @@ def get_active_jobs(db_path=DB_PATH):
     conn = get_connection(db_path)
     cur = conn.cursor()
     cur.execute("""
-    SELECT company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status
+    SELECT company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status, last_seen_at
     FROM jobs
     WHERE status = 'ACTIVE'
     ORDER BY
@@ -390,7 +514,8 @@ def get_active_jobs(db_path=DB_PATH):
             "deadline": r["deadline"],
             "summary": r["summary"] or "",
             "tags": json.loads(r["tags"]) if r["tags"] else [],
-            "deadline_status": r["deadline_status"]
+            "deadline_status": r["deadline_status"],
+            "last_seen_at": r["last_seen_at"]
         })
     conn.close()
     return jobs

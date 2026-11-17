@@ -1697,8 +1697,8 @@ def generate_html(jobs, update_time_str):
       <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
       <p class="hero-desc">원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
       <div class="hero-stats">
-        <span class="stat-chip">활성 보안 공고 <strong>{len(jobs)}건</strong></span>
-        <span class="stat-chip">D-Day 마감 임박 <strong>{urgent_count}건</strong></span>
+        <span class="stat-chip">활성 보안 공고 <strong id="statActiveCount">{len(jobs)}건</strong></span>
+        <span class="stat-chip">D-Day 마감 임박 <strong id="statUrgentCount">{urgent_count}건</strong></span>
         <span class="stat-chip">SQLite DB 기반 마감 자동 정리</span>
         <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
       </div>
@@ -1852,44 +1852,136 @@ def generate_html(jobs, update_time_str):
       return dl.replace(/^[🚨⚡⏳\\s]+/, '').trim();
     }}
 
-    function getDeadlineMeta(rawDl) {{
+    // ---- 실시간 마감 판정 ----
+    // 매일 06:30 정적 빌드 이후에도, 페이지를 연 '현재 KST 날짜·시각' 기준으로
+    // 마감 시각이 지난 공고(예: 14시마감, ~11/17 18:00, 지난 날짜)를 목록에서 자동 제외한다.
+    function getKstNow() {{
+      const d = new Date();
+      return new Date(d.getTime() + (d.getTimezoneOffset() * 60000) + (9 * 60 * 60 * 1000));
+    }}
+
+    function startOfDay(d) {{
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }}
+
+    function dayDiff(from, to) {{
+      return Math.round((startOfDay(to) - startOfDay(from)) / 86400000);
+    }}
+
+    function parseSeenDateC(seen) {{
+      if (!seen) return null;
+      const m = String(seen).match(/(\\d{{4}})-(\\d{{2}})-(\\d{{2}})/);
+      if (!m) return null;
+      return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+    }}
+
+    // 표기에 함께 적힌 날짜(MM/DD)를 Date로. 없거나 달력에 없으면 null.
+    function parseExplicitDateC(dl, now) {{
+      const m = dl.match(/(\\d{{1,2}})\\s*\\/\\s*(\\d{{1,2}})/);
+      if (!m) return null;
+      const month = parseInt(m[1], 10), day = parseInt(m[2], 10);
+      if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+      let target = new Date(now.getFullYear(), month - 1, day);
+      if (target.getMonth() !== month - 1 || target.getDate() !== day) return null;
+      const gap = dayDiff(now, target);
+      if (gap > 180) target = new Date(now.getFullYear() - 1, month - 1, day);
+      else if (gap < -180) target = new Date(now.getFullYear() + 1, month - 1, day);
+      return target;
+    }}
+
+    // 표기에 적힌 마감 시각(시, 분). 없으면 null.
+    function parseDeadlineClockC(dl) {{
+      let s = dl.replace(/\\d{{1,2}}\\s*\\/\\s*\\d{{1,2}}/g, ' ');
+      s = s.replace(/\\d{{4}}\\s*[.\\-년]\\s*\\d{{1,2}}\\s*[.\\-월]\\s*\\d{{1,2}}\\s*일?/g, ' ');
+      let m = s.match(/(\\d{{1,2}})\\s*시(?:\\s*(\\d{{1,2}})\\s*분)?/);
+      if (m) return [parseInt(m[1], 10), m[2] ? parseInt(m[2], 10) : 0];
+      m = s.match(/(\\d{{1,2}})\\s*:\\s*(\\d{{2}})/);
+      if (m) return [parseInt(m[1], 10), parseInt(m[2], 10)];
+      return null;
+    }}
+
+    function getDeadlineMeta(rawDl, lastSeen) {{
       const dl = cleanDeadline(rawDl);
+      const now = getKstNow();
+      const clock = parseDeadlineClockC(dl);
+      const isTimeOnly = /^\\d\\d?(:\\d\\d)?\\s*시?\\s*마감$/.test(dl);
+      const clockPassed = clock ? ((now.getHours() * 60 + now.getMinutes()) >= (clock[0] >= 24 ? 24 * 60 : clock[0] * 60 + clock[1])) : false;
+      const seen = parseSeenDateC(lastSeen);
+      const explicit = parseExplicitDateC(dl, now);
+
       let badgeClass = 'badge-dl-normal';
       let isUrgent = false;
       let isAlways = false;
       let daysLeft = 999;
+      let expired = false;
+      let hasDeadline = true;
 
-      // 부분 문자열 매칭('D-1' in 'D-16')으로 두 자리 D-Day까지 마감 임박으로 잡히던 문제를 막기 위해
-      // 먼저 D-(숫자)를 정규식으로 파싱해 남은 일수를 확정하고, D-Day/오늘/내일만 보조로 처리한다.
+      // 부분 문자열 매칭('D-1' in 'D-16')을 피해 D-(숫자)를 정규식으로 파싱한다.
       const dm = dl.match(/D-(\\d+)/);
-      let parsedDays = null;
-      if (dm) {{
-        parsedDays = parseInt(dm[1], 10);
-      }} else if (dl.includes('D-Day') || dl.includes('오늘')) {{
-        parsedDays = 0;
-      }} else if (dl.includes('내일')) {{
-        parsedDays = 1;
-      }} else if (/^\\d\\d?(:\\d\\d)?\\s*시?\\s*마감$/.test(dl)) {{
-        // 날짜 없이 시각만 적힌 당일 마감 표기("16시 마감", "18:30 마감")도 오늘 마감으로 본다
-        parsedDays = 0;
-      }}
 
-      if (parsedDays !== null) {{
-        daysLeft = parsedDays;
-        if (daysLeft <= 3) {{
-          badgeClass = 'badge-dl-urgent';
-          isUrgent = true;
-        }} else if (daysLeft <= 7) {{
-          badgeClass = 'badge-dl-warning';
-          isUrgent = true;
-        }}
+      if (explicit) {{
+        daysLeft = dayDiff(now, explicit);
+        if (daysLeft < 0) expired = true;
+        else if (daysLeft === 0 && clockPassed) expired = true;
+      }} else if (dm) {{
+        daysLeft = parseInt(dm[1], 10) - (seen ? dayDiff(seen, now) : 0);
+        if (daysLeft < 0) expired = true;
+        else if (daysLeft === 0 && clockPassed) expired = true;
+      }} else if (dl.includes('D-Day') || dl.includes('오늘')) {{
+        daysLeft = 0;
+        if (seen && dayDiff(seen, now) > 0) expired = true;
+        else if (clockPassed) expired = true;
+      }} else if (dl.includes('내일')) {{
+        daysLeft = seen ? (1 - dayDiff(seen, now)) : 1;
+        if (daysLeft < 0) expired = true;
+        else if (daysLeft === 0 && clockPassed) expired = true;
+      }} else if (isTimeOnly) {{
+        daysLeft = 0;
+        if (seen && dayDiff(seen, now) > 0) expired = true;
+        else if (clockPassed) expired = true;
       }} else if (dl.includes('상시') || dl.includes('채용시')) {{
         badgeClass = 'badge-dl-always';
         isAlways = true;
         daysLeft = 500;
+        hasDeadline = false;
+      }} else {{
+        hasDeadline = false;
       }}
 
-      return {{ label: dl, badgeClass, isUrgent, isAlways, daysLeft }};
+      if (hasDeadline && daysLeft <= 3 && daysLeft >= 0) {{
+        badgeClass = 'badge-dl-urgent';
+        isUrgent = true;
+      }} else if (hasDeadline && daysLeft <= 7 && daysLeft >= 0) {{
+        badgeClass = 'badge-dl-warning';
+        isUrgent = true;
+      }}
+
+      return {{ label: dl, badgeClass, isUrgent: isUrgent && !expired, isAlways, daysLeft, expired }};
+    }}
+
+    // 현재 시각 기준 살아 있는 공고 (마감된 공고 제외)
+    function getLiveJobs() {{
+      return JOBS.filter(job => !getDeadlineMeta(job.deadline, job.last_seen_at).expired);
+    }}
+
+    // 상단 통계·키워드 탭 카운트를 실시간 마감 반영값으로 갱신
+    function updateLiveCounts(liveJobs) {{
+      const live = liveJobs || getLiveJobs();
+      const activeEl = document.getElementById('statActiveCount');
+      if (activeEl) activeEl.textContent = live.length + '건';
+      const urgentEl = document.getElementById('statUrgentCount');
+      if (urgentEl) {{
+        const urgent = live.filter(job => getDeadlineMeta(job.deadline, job.last_seen_at).isUrgent).length;
+        urgentEl.textContent = urgent + '건';
+      }}
+      const kwCounts = {{}};
+      live.forEach(job => (job.keywords || []).forEach(k => {{ kwCounts[k] = (kwCounts[k] || 0) + 1; }}));
+      document.querySelectorAll('#keywordNav .segment-btn').forEach(btn => {{
+        const kw = btn.getAttribute('data-kw');
+        const countEl = btn.querySelector('.count');
+        if (countEl) countEl.textContent = kw === 'all' ? live.length : (kwCounts[kw] || 0);
+      }});
+    }}
     }}
 
     function escapeHtml(str) {{
@@ -1897,6 +1989,9 @@ def generate_html(jobs, update_time_str):
     }}
 
     function renderFeed() {{
+      // 0. 상단 통계·탭 카운트를 현재 시각 기준 실시간 마감 반영값으로 먼저 갱신
+      updateLiveCounts();
+
       // 1. Filter
       let filtered = JOBS.filter(job => {{
         if (selectedKeyword !== 'all' && (!job.keywords || !job.keywords.includes(selectedKeyword))) {{
@@ -1905,7 +2000,8 @@ def generate_html(jobs, update_time_str):
         if (selectedPlatform !== 'all' && (!job.platforms || !job.platforms.includes(selectedPlatform))) {{
           return false;
         }}
-        const dlMeta = getDeadlineMeta(job.deadline);
+        const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at);
+        if (dlMeta.expired) return false;   // 현재 KST 시각 기준 이미 마감된 공고는 숨김
         if (selectedDeadline === 'urgent' && !dlMeta.isUrgent) return false;
         if (selectedDeadline === 'always' && !dlMeta.isAlways) return false;
 
@@ -1922,8 +2018,8 @@ def generate_html(jobs, update_time_str):
       // 2. Sort
       if (sortBy === 'deadline') {{
         filtered.sort((a, b) => {{
-          const da = getDeadlineMeta(a.deadline).daysLeft;
-          const db = getDeadlineMeta(b.deadline).daysLeft;
+          const da = getDeadlineMeta(a.deadline, a.last_seen_at).daysLeft;
+          const db = getDeadlineMeta(b.deadline, b.last_seen_at).daysLeft;
           return da - db;
         }});
       }} else if (sortBy === 'company') {{
@@ -1947,7 +2043,7 @@ def generate_html(jobs, update_time_str):
       if (currentView === 'grid') {{
         let html = '<div class="jobs-grid">';
         filtered.forEach(job => {{
-          const dlMeta = getDeadlineMeta(job.deadline);
+          const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at);
           const dlBadge = `<span class="badge-dl ${{dlMeta.badgeClass}}">${{escapeHtml(dlMeta.label)}}</span>`;
           const platformBadges = (job.platforms || []).map(p => 
             `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
@@ -1990,7 +2086,7 @@ def generate_html(jobs, update_time_str):
       }} else {{
         let html = '<div class="jobs-list-compact">';
         filtered.forEach(job => {{
-          const dlMeta = getDeadlineMeta(job.deadline);
+          const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at);
           const dlBadge = `<span class="badge-dl ${{dlMeta.badgeClass}}">${{escapeHtml(dlMeta.label)}}</span>`;
           const platformBadges = (job.platforms || []).map(p => 
             `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
@@ -2109,6 +2205,17 @@ def generate_html(jobs, update_time_str):
     // Initialize
     initTheme();
     renderFeed();
+
+    // 페이지를 오래 열어둔 경우에도 마감 시각이 지나면 목록에서 자동으로 ㅐ진다.
+    let liveSignature = '';
+    setInterval(() => {{
+      const live = getLiveJobs();
+      const signature = live.length + '|' + JOBS.length;
+      if (signature !== liveSignature) {{
+        liveSignature = signature;
+        renderFeed();
+      }}
+    }}, 60000);
   </script>
 </body>
 </html>
@@ -2191,11 +2298,12 @@ def main():
         print(f"[AI 배치 경고] 엑사원 연동 중 오류 발생 (기본 크롤링 데이터로 계속 진행): {e}")
     
     kst = timezone(timedelta(hours=9))
-    now_kst = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S KST")
-    today_date = datetime.now(kst).date()
+    now_dt = datetime.now(kst)
+    now_kst = now_dt.strftime("%Y-%m-%d %H:%M:%S KST")
+    today_date = now_dt.date()
     
     # SQLite DB (archive.db) 저장 및 마감 정리 연동
-    from db_manager import get_connection, init_db, parse_deadline_status, normalize_key, mark_expired_jobs, get_active_jobs, get_db_stats
+    from db_manager import get_connection, init_db, parse_deadline_status, normalize_key, mark_expired_jobs, get_active_jobs, get_db_stats, expire_platform_conflict_duplicates
     init_db()
     conn = get_connection()
     cur = conn.cursor()
@@ -2206,7 +2314,7 @@ def main():
         key = normalize_key(job["company"], job["title"])
         seen_keys.add(key)
         raw_deadline = job.get("deadline", "상시채용")
-        dl_status, status = parse_deadline_status(raw_deadline, today_date, now_kst)
+        dl_status, status = parse_deadline_status(raw_deadline, today_date, now_kst, now_dt=now_dt)
         
         cur.execute("""
         INSERT INTO jobs (
@@ -2237,15 +2345,21 @@ def main():
         
     # 2. 마감일 지난 공고 및 플랫폼에서 삭제된 공고 EXPIRED 처리
     conn.commit()
-    mark_expired_jobs(today_date)
+    mark_expired_jobs(today_date, now_dt=now_dt)
     cur.execute("SELECT id, job_key, deadline FROM jobs WHERE status = 'ACTIVE';")
     active_rows = cur.fetchall()
     for r in active_rows:
         if r["job_key"] not in seen_keys:
-            dl_st, st = parse_deadline_status(r["deadline"], today_date)
+            dl_st, st = parse_deadline_status(r["deadline"], today_date, now_dt=now_dt)
             if st == "EXPIRED" or "D-" not in r["deadline"]:
                 cur.execute("UPDATE jobs SET status = 'EXPIRED', deadline_status = 'EXPIRED', updated_at = ? WHERE id = ?;", (now_kst, r["id"]))
                 
+    conn.commit()
+
+    # 2-b. 플랫폼별 마감 표기 불일치로 생긴 복제 행 정리 (예: 사람인 14시마감 ↔ 잡코리아 D-Day 오늘 마감)
+    conflict_expired = expire_platform_conflict_duplicates(today_date, now_dt=now_dt)
+    if conflict_expired:
+        print(f"-> 플랫폼 마감 표기 불일치 복제 행 {conflict_expired}건 정리")
     conn.commit()
     conn.close()
     

@@ -14,7 +14,7 @@ import json
 from datetime import datetime, timezone, timedelta
 
 sys.path.append(os.path.dirname(__file__))
-from db_manager import get_connection, init_db, mark_expired_jobs, refresh_deadline_statuses, get_active_jobs, get_db_stats, export_study_data_from_db
+from db_manager import get_connection, init_db, mark_expired_jobs, refresh_deadline_statuses, get_active_jobs, get_db_stats, export_study_data_from_db, expire_platform_conflict_duplicates
 from crawler import generate_html, generate_readme
 
 def build_all():
@@ -27,8 +27,10 @@ def build_all():
     
     # 1. 마감일 지난 공고 정리 (EXPIRED 전환)
     expired_count = mark_expired_jobs(today_date)
+    # 1-a. 플랫폼별 마감 표기 불일치 복제 행 정리 (예: 14시마감 ↔ D-Day 오늘 마감)
+    conflict_count = expire_platform_conflict_duplicates(today_date)
     stats = get_db_stats()
-    print(f"-> 마감 공고 정리 완료: 오늘 기준 {expired_count}건 추가 정리 (누적 마감 보관: {stats['expired_jobs']}건)")
+    print(f"-> 마감 공고 정리 완료: 오늘 기준 {expired_count}건 추가 정리, 플랫폼 표기 불일치 복제 {conflict_count}건 정리 (누적 마감 보관: {stats['expired_jobs']}건)")
 
     # 1-b. 활성 공고 deadline_status 재정규화 (D-10~D-19 부분 문자열 매칭 오분류 교정)
     refreshed, unchanged = refresh_deadline_statuses(today_date)
