@@ -154,6 +154,9 @@ def migrate_study_questions():
     empty_choices = 0
     cur.execute("DELETE FROM study_questions;")  # 문제 데이터 멱등성 보장
 
+    # 빌더 모듈 경로는 CPPG AI 특강(r4) 적재 전에 필요하다.
+    sys.path.append(os.path.join(os.path.dirname(__file__), "exam_builder"))
+
     seen_keys = set()
 
     def insert_question(category, category_name, round_id, round_name, subject,
@@ -188,6 +191,8 @@ def migrate_study_questions():
         total_q_count += 1
 
     # 1. CPPG 300문항 (cppg_questions.json)
+    ai_q_count = 0
+    cppg_base_count = 0
     cppg_json_path = os.path.join(os.path.dirname(__file__), "cppg_questions.json")
     if os.path.exists(cppg_json_path):
         with open(cppg_json_path, "r", encoding="utf-8") as f:
@@ -203,12 +208,33 @@ def migrate_study_questions():
                 exam_num = 1 if idx <= 100 else (2 if idx <= 200 else 3)
                 q_num = (idx - 1) % 100 + 1
 
+            # r4(AI 개인정보보호 특강)는 cppg_ai_privacy_questions.py 가 원천이다.
+            # export_study_data_from_db()가 cppg_questions.json에 e4_*를 다시 써 두므로,
+            # 재마이그레이션 때 여기서 한 번 더 적재하면 키 중복이 된다.
+            if exam_num >= 4:
+                continue
+
             norm = normalize_question(q, "개인정보보호 제도", exam_num,
                                       f"{exam_num}회 실전 모의고사 (100제)")
             insert_question("cppg", "개인정보관리사 (CPPG)", f"r{exam_num}",
                             f"{exam_num}회 실전 모의고사 (100제)",
                             norm["subject"], q_num, "choice", norm, shuffle=False)
-        print(f"-> CPPG 문제 마이그레이션 완료: {len(cppg_data)}문항")
+            cppg_base_count += 1
+        print(f"-> CPPG 문제 마이그레이션 완료: 1~3회 {cppg_base_count}문항 (r4 AI 특강은 별도 모듈)")
+
+    # 1-b. CPPG 4회 AI 개인정보보호 특강 30문항 (exam_builder/cppg_ai_privacy_questions.py)
+    try:
+        import cppg_ai_privacy_questions
+        ai_questions = cppg_ai_privacy_questions.get_ai_privacy_questions()
+        for q_num, q in enumerate(ai_questions, 1):
+            norm = normalize_question(q, "AI 개인정보보호", 4, cppg_ai_privacy_questions.EXAM_NAME)
+            insert_question("cppg", "개인정보관리사 (CPPG)", "r4",
+                            cppg_ai_privacy_questions.EXAM_NAME,
+                            norm["subject"], q_num, "choice", norm, shuffle=False)
+        print(f"-> CPPG 4회 AI 개인정보보호 특강 마이그레이션 완료: {len(ai_questions)}문항")
+        ai_q_count = len(ai_questions)
+    except Exception as e:
+        raise SystemExit(f"[실패] CPPG AI 특강 마이그레이션 중 오류(문항 유실 방지로 중단): {e}")
 
     # 2. 정보보안기사 필기 200문항 (exam_builder/written_questions.py)
     sys.path.append(os.path.join(os.path.dirname(__file__), "exam_builder"))
@@ -279,7 +305,7 @@ def migrate_study_questions():
             print(f"[경고] 맞춤 분석 퀴즈 마이그레이션 중 오류: {e}")
 
     # 5-b. 카테고리별 원본 대비 적재 수 대조 (조용한 덮어쓰기 방지)
-    expected = {"cppg": len(cppg_data) if os.path.exists(cppg_json_path) else 0,
+    expected = {"cppg": 300 + ai_q_count,
                 "infosec_written": 200, "infosec_practical": 100, "ismsp_auditor": 30}
     for cat, exp in expected.items():
         cur.execute("SELECT COUNT(*) FROM study_questions WHERE category = ?;", (cat,))
@@ -341,8 +367,8 @@ def migrate_study_summaries():
         cppg_content = sum(1 for i in cppg_items if i.get("type") == "content")
         cppg_term = sum(1 for i in cppg_items if i.get("type") == "term")
         print(f"-> CPPG 요약 마이그레이션 완료: {len(cppg_items)}선 (내용별 {cppg_content}선 + 용어·조문 {cppg_term}선)")
-        if cppg_content < 50 or cppg_term < 60:
-            raise SystemExit(f"[실패] CPPG 요약 구성 불일치: 내용별 {cppg_content}선(내용별 35 + 가이드라인 15 = 50 기대) + 용어·조문 {cppg_term}선(60 기대)")
+        if cppg_content < 62 or cppg_term < 63:
+            raise SystemExit(f"[실패] CPPG 요약 구성 불일치: 내용별 {cppg_content}선(내용별 35 + 가이드라인 15 + AI 특강 12 = 62 기대) + 용어·조문 {cppg_term}선(용어 60 + AI 용어 3 = 63 기대)")
     except Exception as e:
         print(f"[경고] CPPG 요약 마이그레이션 오류: {e}")
 

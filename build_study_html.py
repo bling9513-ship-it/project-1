@@ -29,7 +29,7 @@ html_content = """<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>시험 공부 &amp; 맞춤 AI 스터디 허브 | Infosec Archive</title>
-  <meta name="description" content="CPPG 실전 300제, 정보보안기사(필기·실기), ISMS-P 인증심사원 기출 퀴즈와 전 과목 핵심 요약노트 및 파일/URL 맞춤 분석 학습 허브입니다.">
+  <meta name="description" content="CPPG 실전 300제와 AI 개인정보보호 특강 30제, 정보보안기사(필기·실기), ISMS-P 인증심사원 기출 퀴즈와 전 과목 핵심 요약노트 및 파일/URL 맞춤 분석 학습 허브입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
@@ -1096,8 +1096,8 @@ html_content = """<!DOCTYPE html>
     <!-- Hero -->
     <div class="hero">
       <div class="hero-pill">자격증 시험 대비 · 핵심 문제 풀이</div>
-      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; 전 과목 핵심 요약집 110선</h1>
-      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + 용어·조문 사전 60선 검색 및 파일/URL 맞춤 분석</p>
+      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; AI 특강 30제 · 핵심 요약집 125선</h1>
+      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 + AI 개인정보보호 특강 30문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + AI 특강 12선 + 용어·조문 사전 63선 검색 및 파일/URL 맞춤 분석</p>
     </div>
 
     <!-- Exam Category Selector -->
@@ -1191,8 +1191,8 @@ html_content = """<!DOCTYPE html>
     <!-- Mode Selector -->
     <div class="mode-nav-grid" id="modeNavGrid">
       <button class="mode-btn active" data-mode="quiz" id="modeQuizBtn">
-        <span class="btn-text-full" id="modeQuizLabel">실전 모의고사 (300제)</span>
-        <span class="btn-text-mobile" id="modeQuizLabelMobile">실전 300제</span>
+        <span class="btn-text-full" id="modeQuizLabel">실전 모의고사 + AI 특강 (330제)</span>
+        <span class="btn-text-mobile" id="modeQuizLabelMobile">실전 330제</span>
       </button>
       <button class="mode-btn" data-mode="summary" id="modeSummaryBtn">
         <span class="btn-text-full" id="modeSummaryLabel">전 과목 핵심 요약노트</span>
@@ -1341,15 +1341,16 @@ html_content = """<!DOCTYPE html>
     const CATEGORIES = {
       cppg: {
         title: "개인정보관리사 (CPPG)",
-        mainTitle: "CPPG 실전 300제 & 전 과목 핵심 요약집 110선",
-        mainDesc: "실전 모의고사 1·2·3회 300문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + 용어·조문 사전 60선 검색 및 파일/URL AI 맞춤 분석",
-        quizLabel: "실전 모의고사 (300제)",
-        quizLabelShort: "실전 300제",
+        mainTitle: "CPPG 실전 300제 & AI 특강 30제 · 핵심 요약집 125선",
+        mainDesc: "실전 모의고사 1·2·3회 300문항 + AI 개인정보보호 특강 30문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + AI 특강 12선 + 용어·조문 사전 63선 검색 및 파일/URL AI 맞춤 분석",
+        quizLabel: "실전 모의고사 + AI 특강 (330제)",
+        quizLabelShort: "실전 330제",
         exams: [
           { id: 1, full: "1회 실전 모의고사 (100문항)", short: "1회 (100제)" },
           { id: 2, full: "2회 실전 모의고사 (100문항)", short: "2회 (100제)" },
           { id: 3, full: "3회 실전 모의고사 (100문항)", short: "3회 (100제)" },
-          { id: 0, full: "전체 300제 집중 풀이", short: "전체 300제" }
+          { id: 4, full: "4회 AI 개인정보보호 특강 (30문항)", short: "AI 특강 (30제)" },
+          { id: 0, full: "전체 330제 집중 풀이", short: "전체 330제" }
         ],
         subjects: [
           { id: 0, name: "전체" },
@@ -1764,7 +1765,8 @@ html_content = """<!DOCTYPE html>
       return {
         total: items.length,
         content: items.filter(s => s.type === 'content').length,
-        term: items.filter(s => s.type === 'term').length
+        term: items.filter(s => s.type === 'term').length,
+        ai: items.filter(s => s.category === 'ai').length
       };
     }
 
@@ -1781,6 +1783,7 @@ html_content = """<!DOCTYPE html>
         chips.push({ key: 's3', label: '3과목: 라이프사이클' });
         chips.push({ key: 's4', label: '4과목: 보호조치' });
         chips.push({ key: 's5', label: '5과목: 관리체계' });
+        chips.push({ key: 'ai', label: `AI 특강 (${c.ai})` });
       } else if (catKey === 'infosec_written') {
         chips.push({ key: 'content', label: `내용별 핵심정리 (${c.content})` });
         chips.push({ key: 'term', label: `필수 용어사전 (${c.term})` });
@@ -1902,7 +1905,7 @@ html_content = """<!DOCTYPE html>
         if (summaryActiveFilter !== 'all') {
           if (summaryActiveFilter === 'content' && item.type !== 'content') return false;
           if (summaryActiveFilter === 'term' && item.type !== 'term') return false;
-          if (['system', 'network', 'app', 'crypto', 'law'].includes(summaryActiveFilter)) {
+          if (['system', 'network', 'app', 'crypto', 'law', 'ai'].includes(summaryActiveFilter)) {
             if (item.category !== summaryActiveFilter) return false;
           }
           if (/^s[1-5]$/.test(summaryActiveFilter)) {
@@ -1969,7 +1972,7 @@ html_content = """<!DOCTYPE html>
                    oninput="handleSummarySearch(this.value)">
             <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
-          <div class="summary-section-note">5과목 전 범위 핵심정리 ${cppgCounts.content}선 + 필수 용어·조문 사전 ${cppgCounts.term}선 · 총 ${cppgCounts.total}선</div>
+          <div class="summary-section-note">5과목 전 범위 핵심정리 ${cppgCounts.content}선 + 용어·조문 사전 ${cppgCounts.term}선 · AI 특강 ${cppgCounts.ai}선 포함 · 총 ${cppgCounts.total}선</div>
           <div id="summaryCardsContainer" class="summary-section"></div>
         `;
         buildSummaryChips('cppg');

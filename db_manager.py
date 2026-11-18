@@ -990,8 +990,10 @@ _SUMMARY_CATEGORY_CODES = {
 
 
 def _summary_category_code(subject):
-    """요약 카드의 과목 필터 코드(system/network/app/crypto/law, CPPG는 s1~s5)를 subject 표시명에서 복원."""
+    """요약 카드의 과목 필터 코드(system/network/app/crypto/law, CPPG는 s1~s5, AI 특강은 ai)를 subject 표시명에서 복원."""
     subject = (subject or "").strip()
+    if "AI" in subject:
+        return "ai"
     if subject in _SUMMARY_CATEGORY_CODES:
         return _SUMMARY_CATEGORY_CODES[subject]
     m = re.match(r"^(\d)과목", subject)
@@ -1084,11 +1086,11 @@ def export_study_data_from_db(db_path=DB_PATH):
     with open(os.path.join(os.path.dirname(__file__), "cppg_questions.json"), "w", encoding="utf-8") as f:
         json.dump(cppg_list, f, ensure_ascii=False, indent=2)
 
-    # 2. CPPG 전 과목 핵심 요약집 110선 (내용별 35선 + 공식 가이드라인 15선 + 용어·조문 60선)
+    # 2. CPPG 전 과목 핵심 요약집 125선 (내용별 35선 + 가이드라인 15선 + AI 특강 12선 + 용어·조문 60선 + AI 용어 3선)
     cppg_summaries = load_summaries("cppg")
     cppg_summary_data = {
-        "title": "CPPG 전 과목 핵심 요약집 110선 (내용별 심층 35선 + 공식 가이드라인 15선 + 용어·조문 사전 60선)",
-        "description": "개인정보 보호의 이해 / 보호제도 / 라이프사이클 관리 / 보호조치 / 관리체계 5과목 전 범위 핵심정리 35선, 2026년 최신 고시·안내서 기반 공식 가이드라인 15선, 필수 용어·조문 사전 60선",
+        "title": "CPPG 전 과목 핵심 요약집 125선 (내용별 심층 35선 + 공식 가이드라인 15선 + AI 특강 12선 + 용어·조문 사전 60선 + AI 용어 3선)",
+        "description": "개인정보 보호의 이해 / 보호제도 / 라이프사이클 관리 / 보호조치 / 관리체계 5과목 전 범위 핵심정리 35선, 2026년 최신 고시·안내서 기반 공식 가이드라인 15선, 생성형 AI 안내서·AI 기본법·합성데이터·모델 보안을 다루는 AI 개인정보보호 특강 12선, 필수 용어·조문 사전 60선, AI 용어 3선",
         "summaries": cppg_summaries
     }
 
@@ -1125,7 +1127,7 @@ def export_study_data_from_db(db_path=DB_PATH):
 
     js_content = f"""// infosec_exam_data.js
 // SQLite DB(archive.db)에서 자동 생성된 최신 데이터셋
-// CPPG 요약 110선 | 필기 200문항·요약 158선 | 실기 100문항·요약 95선 | ISMS-P 30문항
+// CPPG 요약 125선 | 필기 200문항·요약 158선 | 실기 100문항·요약 95선 | ISMS-P 30문항
 
 window.CPPG_SUMMARY_DATA = {json.dumps(cppg_summary_data, ensure_ascii=False, indent=2)};
 
