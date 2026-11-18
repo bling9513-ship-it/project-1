@@ -630,6 +630,7 @@ html_content = """<!DOCTYPE html>
     .q-meta {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 10px;
     }
