@@ -1,7 +1,7 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-18 08:47:16 KST` (매일 06:30 KST 자동 수집)
+> **마지막 업데이트**: `2026-11-18 20:34:36 KST` (매일 06:30 KST 자동 수집)
 > **아카이빙된 보안 공고**: 총 **539**개 (직무 검증 및 중복 제거 완료)
 > **마감 임박 공고**: 총 **88**개 (D-Day 및 마감 기한 순 정렬)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
@@ -28,11 +28,11 @@
 | **신한라이프생명보험(주)** | [디지털보안 담당자(경력)(~11/18 연장)](https://career.rememberapp.co.kr/job/posting/352344) | 리멤버 | **D-Day (~11/18 수)** | `정보보안` |
 | **(주)위드브레인** | [정보보호 . 정보보안](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611070000147) | 인크루트 | **D-Day (~11/18 수) 23시 마감** | `정보보호`, `정보보안` |
 | **(주)위드브레인** | [보안 업무(기술적 / 관리적 / 물리적)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611080000074) | 인크루트 | **D-Day (~11/18 수) 23시 마감** | `정보보안` |
-| **시큐코리아 주식회사** | [공공기관 상주 보안장비 등 인프라운영 인력 모집(경력, 서울 종로구)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610190000507) | 인크루트 | **D-1 (내일 마감)** | `정보보안` |
 | **(주)위드브레인** | [보안 엔지니어](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060003987) | 인크루트 | **D-Day (~11/18 수) 23시 마감** | `정보보안` |
 | **(주)이테크시스템** | [[이테크시스템] 엔드포인트 보안 분석가 (EDR) (경력)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2609230003495) | 인크루트 | **D-Day (~11/18 수) 23시 마감** | `정보보안` |
 | **(주)써니즈** | [[써니즈] [IT정보보안] 취약점진단 서비스 운영지원](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-2 (~ 11/20(금))** | `취약점 진단`, `정보보안` |
 | **교보디티에스(주)** | [교보DTS 경력 채용공고 (보안운영, 보안관제, 모의해킹)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502807&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-7 (~ 11/25(수))** | `모의해킹`, `정보보안` |
+| **시큐코리아 주식회사** | [공공기관 상주 보안장비 등 인프라운영 인력 모집(경력, 서울 종로구)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610190000507) | 인크루트 | **D-1 (내일 마감)** | `정보보안` |
 | **이스트시큐리티** | [보안S/W 기술지원 신입 채용](https://www.jumpit.co.kr/position/55353978) | 점핏 | **D-1 (~11/19 목)** | `정보보안` |
 | **이스트시큐리티** | [악성코드 분석가 신입 채용](https://www.jumpit.co.kr/position/55354022) | 점핏 | **D-1 (~11/19 목)** | `정보보안` |
 | **이스트시큐리티** | [악성코드 분석가 경력 채용](https://www.jumpit.co.kr/position/55354044) | 점핏 | **D-1 (~11/19 목)** | `정보보안` |
@@ -421,11 +421,11 @@
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
 | **(주)유니코써치** | [[의약제조업]정보보호팀장](https://career.rememberapp.co.kr/job/posting/353942) | 리멤버 | **D-Day (~11/18 수)** | `정보보호` |
-| **대진정보통신㈜** | [개인정보보호 컨설팅](https://www.jobkorea.co.kr/Recruit/GI_Read/50200667) | 잡코리아 | **D-1 (내일 마감)** | `정보보호` |
-| **대진정보통신㈜** | [PIA 자격증 필수/개인정보보호 컨설팅(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50200675) | 잡코리아 | **D-1 (내일 마감)** | `정보보호` |
 | **(주)위드브레인** | [정보보호 . 정보보안](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611070000147) | 인크루트 | **D-Day (~11/18 수) 23시 마감** | `정보보호`, `정보보안` |
 | **KB국민은행** | [2026년 하반기 퇴직직원 재채용 [개인정보보호 실태 점검]](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611160000340) | 인크루트 | **D-Day (~11/18 수) 23시 마감** | `정보보호` |
 | **한화오션(주)** | [[경영지원] 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 잡코리아, 인크루트 | **D-7** | `정보보호` |
+| **대진정보통신㈜** | [개인정보보호 컨설팅](https://www.jobkorea.co.kr/Recruit/GI_Read/50200667) | 잡코리아 | **D-1 (내일 마감)** | `정보보호` |
+| **대진정보통신㈜** | [PIA 자격증 필수/개인정보보호 컨설팅(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50200675) | 잡코리아 | **D-1 (내일 마감)** | `정보보호` |
 | **에이스아메리칸화재해상보험** | [정보보호 GRC 매니저 (과장-차장)](https://www.jumpit.co.kr/position/55356774) | 점핏 | **D-1 (~11/19 목)** | `정보보호` |
 | **(주)미디어윌네트웍스** | [[알바천국본사] 정보보호 담당자 정규직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55423760&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-1 (내일 마감)** | `정보보호` |
 | **(주)씨젠** | [[씨젠] 개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/351081) | 리멤버 | **D-1 (내일 마감)** | `정보보호` |
