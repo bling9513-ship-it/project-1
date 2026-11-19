@@ -478,18 +478,12 @@ def _weather_cli(date_str=None):
 
 
 def _fallback_weather():
-    """CLI를 쓸 수 없는 환경에서 쓰는 기본값(서울, 11월 하순 기준)."""
+    """CLI를 쓸 수 없을 때: 날짜만 채우고 값은 비워 둔다(브라우저의 실시간 조회가 채운다)."""
+    today = datetime.now(timezone(timedelta(hours=9))).date()
+    blank_day = {"low_c": None, "high_c": None, "precipitation_chance": None, "daytime": {}}
     return {
-        "now": {"time": "2026-11-19T08:00", "condition": "Mostly Clear",
-                "temperature_c": 0, "feels_like_c": -2, "wind_kmh": 10, "humidity": 60},
-        "days": [
-            {"date": "2026-11-19", "weekday": "Thu", "condition": "Mostly Clear",
-             "high_c": 4, "low_c": -1, "precipitation_chance": 0,
-             "daytime": {"wind_kmh": 12, "precipitation_chance": 0}},
-            {"date": "2026-11-20", "weekday": "Fri", "condition": "Clear",
-             "high_c": 2, "low_c": -4, "precipitation_chance": 0,
-             "daytime": {"wind_kmh": 16, "precipitation_chance": 0}},
-        ],
+        "now": {"time": "", "condition": "", "temperature_c": None, "feels_like_c": None, "wind_kmh": None},
+        "days": [dict(blank_day, date=str(today)), dict(blank_day, date=str(today + timedelta(days=1)))],
     }
 
 
@@ -1846,7 +1840,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
       })
       .catch(() => {
-        document.getElementById('wxUpdated').textContent = WX_BUILD.updated + ' 기준';
+        document.getElementById('wxUpdated').textContent = (WX_BUILD.source === 'fallback')
+          ? '실시간 날씨를 불러오지 못했습니다'
+          : '빌드 시점 ' + (WX_BUILD.updated || '') + ' 기준';
       });
   </script>
 </body>
@@ -1879,12 +1875,23 @@ def build():
         for key, label in [("all", "전체")] + STYLES
     )
 
-    sections_html = "\n      ".join(band_section(b, today_band["key"]) for b in BANDS)
-    total_cards = len(BANDS) * len(STYLES)
+    # 브리핑 초기값 (빌드 시점 날씨를 못 읽었으면 값 대신 안내 문구, 브라우저가 채운다)
+    is_fallback = wx.get("source") == "fallback"
+    if is_fallback:
+        tips = ["실시간 날씨를 불러오면 오늘 코디를 갱신합니다."]
+        rec_tone = ""
+        rec_badge = "기온 확인 중"
+        rec_text = "실시간 날씨를 불러오면 오늘 코디를 추천합니다."
+        today_flag_key = None
+    else:
+        tips = compose_tips(wx)
+        rec_tone = "rec-cold" if BANDS.index(today_band) <= 2 else ("rec-warm" if BANDS.index(today_band) >= 6 else "")
+        rec_badge = today_band["range"] + " · " + today_band["name"]
+        rec_text = today_band["line"]
+        today_flag_key = today_band["key"]
 
-    # 브리핑 초기값
-    tips = compose_tips(wx)
-    rec_tone = "rec-cold" if BANDS.index(today_band) <= 2 else ("rec-warm" if BANDS.index(today_band) >= 6 else "")
+    sections_html = "\n      ".join(band_section(b, today_flag_key) for b in BANDS)
+    total_cards = len(BANDS) * len(STYLES)
 
     def tt(v):
         return "—" if v is None else ("%d°" % v)
@@ -1911,7 +1918,7 @@ def build():
     html = html.replace("__STYLE_CHIPS__", style_chips)
     html = html.replace("__TOTAL_CARDS__", str(total_cards))
     html = html.replace("__BUILT_AT__", esc(built_at))
-    html = html.replace("__WX_UPDATED__", esc("%s 기준 · 실시간 확인" % wx.get("updated", "")))
+    html = html.replace("__WX_UPDATED__", esc("실시간 확인 중" if is_fallback else ("%s 기준 · 실시간 확인" % wx.get("updated", ""))))
     html = html.replace("__NOW_ICON__", icon(weather_icon_name(wx.get("now_cond"), wx.get("today_pop")), 18))
     html = html.replace("__NOW_TEMP__", tt(wx.get("now_temp")))
     html = html.replace("__NOW_COND__", esc(wx.get("now_cond") or "—"))
@@ -1923,11 +1930,11 @@ def build():
     html = html.replace("__TOMORROW_ICON__", icon(weather_icon_name(wx.get("tomorrow_cond"), wx.get("tomorrow_pop")), 14))
     html = html.replace("__TOMORROW_TEXT__", esc(tomorrow_text))
     html = html.replace("__REC_TONE__", rec_tone)
-    html = html.replace("__REC_BADGE__", esc(today_band["range"] + " · " + today_band["name"]))
-    html = html.replace("__REC_TEXT__", esc(today_band["line"]))
+    html = html.replace("__REC_BADGE__", esc(rec_badge))
+    html = html.replace("__REC_TEXT__", esc(rec_text))
     html = html.replace("__REC_TIPS__", "".join("<li>%s</li>" % esc(t) for t in tips))
-    html = html.replace("__SLIDER_VALUE__", str(slider_val))
-    html = html.replace("__TODAY_BAND_NAME__", esc(today_band["name"]))
+    html = html.replace("__SLIDER_VALUE__", str(15 if is_fallback else slider_val))
+    html = html.replace("__TODAY_BAND_NAME__", esc("기온 확인 중" if is_fallback else today_band["name"]))
     html = html.replace("__BANDS_JSON__", json.dumps(
         [{"key": b["key"], "min": b["min"], "max": b["max"], "range": b["range"], "name": b["name"], "line": b["line"]} for b in BANDS],
         ensure_ascii=False))
