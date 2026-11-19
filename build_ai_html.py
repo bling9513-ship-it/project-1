@@ -813,11 +813,11 @@ CSS = """
 
     /* Mobile Responsive */
     @media (max-width: 640px) {
-      .nav-container { padding: 0 12px; height: 54px; }
+      .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
       .brand-name { font-size: 15px; }
       .brand-logo-img { width: 24px; height: 24px; }
       .nav-tabs { margin-left: 6px; gap: 4px; }
-      .nav-tab-item { padding: 4px 9px; font-size: 11.5px; border-radius: 14px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; border-radius: 14px; }
       .update-meta { display: none !important; }
       .nav-actions a.icon-btn { display: none; }
       .container { padding: 16px 12px 60px; }
@@ -842,8 +842,16 @@ CSS = """
       .kw-chip { font-size: 12px; padding: 4px 8px; }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 560px) {
       .brand-name { display: none; }
+    }
+
+    @media (max-width: 430px) {
+      .nav-container { padding: 0 10px; height: 52px; gap: 6px; }
+      .brand-logo-img { width: 22px; height: 22px; }
+      .nav-tabs { margin-left: 2px; gap: 2px; }
+      .nav-tab-item { padding: 4px 6px; font-size: 10.5px; border-radius: 12px; letter-spacing: -0.03em; }
+      .nav-actions .icon-btn { width: 30px; height: 30px; }
     }
 """
 
@@ -885,6 +893,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="study.html" class="nav-tab-item">시험 공부</a>
           <a href="ai.html" class="nav-tab-item active">AI 트렌드</a>
           <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
+          <a href="outfit.html" class="nav-tab-item">옷차림</a>
         </div>
       </div>
 

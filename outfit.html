@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 계절별 옷차림</title>
+  <meta name="description" content="서울의 오늘·내일 날씨와 기온 구간별로 아우터·상의·하의·신발·소품 조합을 정리한 옷차림 가이드. 기온 슬라이더와 계절·스타일 필터로 지금 입을 옷을 바로 고릅니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --cold-bg: #eff6ff;  --cold-text: #1d4ed8;  --cold-border: #bfdbfe;
+      --warm-bg: #fff7ed;  --warm-text: #c2410c;  --warm-border: #fed7aa;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+      --card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --cold-bg: rgba(59, 130, 246, 0.14);  --cold-text: #93c5fd;  --cold-border: rgba(59, 130, 246, 0.3);
+      --warm-bg: rgba(234, 88, 12, 0.14);   --warm-text: #fb923c;  --warm-border: rgba(234, 88, 12, 0.3);
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+      --card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    /* Global Header (index.html / study.html / ai.html / cve.html 과 동일) */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .nav-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-tabs { display: flex; gap: 6px; margin-left: 10px; }
+
+    .nav-tab-item {
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab-item:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+    .nav-tab-item.active { background: var(--accent-primary); color: #ffffff !important; }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .update-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    /* Layout */
+    .container { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    .hero { margin-bottom: 20px; }
+
+    .hero-pill {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 3px 9px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 14px;
+      max-width: 720px;
+    }
+
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .stat-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* 오늘의 코디 브리핑 */
+    .wx-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .wx-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 15px 18px 0;
+    }
+
+    .wx-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .wx-title .bar {
+      width: 3px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--accent-primary);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .wx-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .wx-body {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: 14px;
+      padding: 14px 18px 16px;
+    }
+
+    .wx-now {
+      border: 1px solid var(--border-default);
+      border-radius: 11px;
+      background: var(--bg-page);
+      padding: 13px 14px;
+      min-width: 0;
+    }
+
+    .wx-now-main { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+    .wx-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .wx-temp {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .wx-cond { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+
+    .wx-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .wx-facts strong { color: var(--text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .wx-rec { min-width: 0; }
+
+    .rec-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+
+    .rec-badge {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: var(--cold-bg);
+      color: var(--cold-text);
+      border: 1px solid var(--cold-border);
+      white-space: nowrap;
+    }
+
+    .rec-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.04em; }
+
+    .rec-text {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .wx-tips { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+
+    .wx-tips li {
+      position: relative;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      padding-left: 10px;
+    }
+
+    .wx-tips li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .wx-tomorrow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      padding: 10px 18px;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-page);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .tm-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .wx-tomorrow .wx-icon { width: 24px; height: 24px; border-radius: 7px; }
+
+    .wx-attr { margin-left: auto; font-size: 10.5px; color: var(--text-muted); }
+    .wx-attr a { color: var(--text-muted); text-decoration: none; border-bottom: 1px dotted var(--border-strong); }
+    .wx-attr a:hover { color: var(--text-secondary); }
+
+    /* 컨트롤 */
+    .controls {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .control-row { padding: 12px 0; border-top: 1px solid var(--border-subtle); }
+    .control-row:first-child { padding-top: 0; border-top: none; }
+    .control-row:last-child { padding-bottom: 0; }
+
+    .control-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .control-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .slider-value {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+    .slider-bound {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      height: 22px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #93c5fd 0%, #bfdbfe 34%, #fed7aa 66%, #fb923c 100%);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      margin-top: -6px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 2px solid var(--accent-primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #93c5fd 0%, #bfdbfe 34%, #fed7aa 66%, #fb923c 100%);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 2px solid var(--accent-primary);
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .chip, .seg-tab {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.13s ease;
+      white-space: nowrap;
+    }
+
+    .chip:hover, .seg-tab:hover { border-color: var(--border-strong); color: var(--text-primary); }
+
+    .chip.active, .seg-tab.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .seg-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .seg-tab { padding: 6px 14px; font-weight: 600; }
+
+    .result-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0 2px 12px;
+    }
+
+    .result-meta strong { color: var(--text-primary); font-weight: 600; }
+
+    .reset-btn {
+      font-family: inherit;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .reset-btn:hover { color: var(--text-primary); }
+
+    /* 기온 구간 섹션 */
+    .outfit-list { display: flex; flex-direction: column; gap: 22px; }
+
+    .band-section { scroll-margin-top: 76px; }
+
+    .band-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+      padding: 0 2px 10px;
+      border-bottom: 1px solid var(--border-default);
+      margin-bottom: 12px;
+    }
+
+    .band-temp { display: flex; align-items: baseline; gap: 8px; order: 1; min-width: 0; }
+
+    .temp-num {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .temp-name { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); }
+
+    .today-flag {
+      order: 2;
+      display: none;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid var(--border-default);
+      white-space: nowrap;
+    }
+
+    .band-section.is-today .today-flag { display: inline-block; }
+
+    .band-note {
+      order: 3;
+      flex: 1 1 100%;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .band-section.is-selected .band-head { border-bottom-color: var(--accent-primary); }
+    .band-section.is-selected .temp-num { color: var(--accent-primary); }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+      gap: 12px;
+    }
+
+    .outfit-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 13px;
+      padding: 16px 16px 14px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .outfit-card:hover { box-shadow: var(--card-shadow-hover); }
+
+    .band-section.is-selected .outfit-card { border-color: var(--border-strong); }
+
+    .card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+
+    .style-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      background: var(--bg-page);
+      white-space: nowrap;
+    }
+
+    .style-office { color: var(--cold-text); background: var(--cold-bg); border-color: var(--cold-border); }
+    .style-casual { color: var(--text-secondary); background: var(--bg-subtle); border-color: var(--border-default); }
+    .style-outdoor { color: var(--warm-text); background: var(--warm-bg); border-color: var(--warm-border); }
+
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.4;
+      margin-bottom: 11px;
+      color: var(--text-primary);
+      word-break: keep-all;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 12px;
+      margin-bottom: 11px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .item-row {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    .item-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 1px;
+      white-space: nowrap;
+    }
+
+    .item-label .ico { flex-shrink: 0; }
+
+    .item-value { color: var(--text-secondary); word-break: keep-all; overflow-wrap: anywhere; min-width: 0; }
+
+    .tip-box {
+      background: var(--bg-page);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      padding: 9px 11px;
+      margin-top: auto;
+    }
+
+    .tip-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .tip-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+
+    .tip-list li {
+      position: relative;
+      padding-left: 9px;
+      font-size: 11.5px;
+      line-height: 1.58;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    .tip-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 40px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+    }
+
+    .empty-state.show { display: block; }
+
+    .footer {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-default);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
+      .brand-logo-img { width: 24px; height: 24px; }
+      .brand-name { font-size: 15px; }
+      .nav-tabs { margin-left: 6px; gap: 4px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; border-radius: 14px; }
+      .update-meta { display: none !important; }
+      .nav-actions a.icon-btn { display: none; }
+      .container { padding: 18px 12px 60px; }
+      .hero-title { font-size: 21px; }
+      .hero-desc { font-size: 13px; line-height: 1.6; }
+      .hero-stats { gap: 6px; }
+      .stat-chip { font-size: 11px; padding: 3px 8px; }
+      .wx-head { padding: 13px 14px 0; }
+      .wx-title { font-size: 13.5px; }
+      .wx-body { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 12px 14px 14px; }
+      .wx-temp { font-size: 24px; }
+      .rec-text { font-size: 13px; }
+      .wx-tomorrow { padding: 9px 14px; font-size: 11.5px; }
+      .wx-attr { margin-left: 0; flex: 1 1 100%; }
+      .controls { padding: 14px; border-radius: 12px; }
+      .chip { font-size: 11.5px; padding: 5px 9px; }
+      .seg-tab { font-size: 12px; padding: 6px 12px; }
+      .band-temp { gap: 6px; }
+      .temp-num { font-size: 18px; }
+      .card-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .outfit-card { padding: 15px 14px 13px; }
+      .item-row { grid-template-columns: 54px minmax(0, 1fr); font-size: 12px; }
+    }
+
+    @media (max-width: 560px) {
+      .brand-name { display: none; }
+    }
+
+    @media (max-width: 430px) {
+      .nav-container { padding: 0 10px; height: 52px; }
+      .brand-logo-img { width: 22px; height: 22px; }
+      .nav-tabs { margin-left: 2px; gap: 2px; }
+      .nav-tab-item { padding: 4px 6px; font-size: 10.5px; border-radius: 12px; letter-spacing: -0.03em; }
+    }
+
+    [hidden] { display: none !important; }
+  </style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="w-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></symbol>
+    <symbol id="w-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.5A3.5 3.5 0 0 0 7 18z"/></symbol>
+    <symbol id="w-cloudsun" viewBox="0 0 24 24"><circle cx="8" cy="8" r="2.6"/><path d="M8 3v1.4M8 11.6V13M3 8h1.4M11.6 8H13M4.4 4.4l1 1M10.6 10.6l1 1M11.6 4.4l-1 1"/><path d="M9 19h9a3.6 3.6 0 0 0 .4-7.2A5.4 5.4 0 0 0 8.6 13 3.2 3.2 0 0 0 9 19z"/></symbol>
+    <symbol id="w-rain" viewBox="0 0 24 24"><path d="M7 15.5h10a3.8 3.8 0 0 0 .4-7.6A5.6 5.6 0 0 0 6.6 9.4 3.3 3.3 0 0 0 7 15.5z"/><path d="M8.5 18.5l-1 2M12 18.5l-1 2M15.5 18.5l-1 2"/></symbol>
+    <symbol id="w-snow" viewBox="0 0 24 24"><path d="M7 15h10a3.8 3.8 0 0 0 .4-7.6A5.6 5.6 0 0 0 6.6 9 3.3 3.3 0 0 0 7 15z"/><path d="M8 19h.01M12 19h.01M16 19h.01M10 21.5h.01M14 21.5h.01"/></symbol>
+    <symbol id="w-wind" viewBox="0 0 24 24"><path d="M3 8h10a3 3 0 1 0-3-3"/><path d="M3 12h14a3 3 0 1 1-3 3"/><path d="M3 16h7"/></symbol>
+  </svg>
+
+  <!-- Global Nav -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;">
+          <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+          <span class="brand-name">Infosec Archive</span>
+        </a>
+        <div class="nav-tabs">
+          <a href="index.html" class="nav-tab-item">채용공고</a>
+          <a href="study.html" class="nav-tab-item">시험 공부</a>
+          <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
+          <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
+          <a href="outfit.html" class="nav-tab-item active">옷차림</a>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="update-meta">
+          <span class="live-dot"></span>
+          <span>서울 기준</span>
+        </div>
+        <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
+          <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sunIcon" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <a href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" class="icon-btn" title="GitHub 저장소 바로가기">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <span class="hero-pill">OUTFIT GUIDE</span>
+      <h1 class="hero-title">계절별 옷차림</h1>
+      <p class="hero-desc">서울의 오늘·내일 날씨를 기준으로, 기온 구간마다 아우터부터 신발·소품까지 실제로 입을 수 있는 조합을 정리했습니다. 기온 슬라이더를 움직이거나 계절·스타일을 고르면 그 조건의 코디만 남습니다.</p>
+      <div class="hero-stats">
+        <span class="stat-chip">기온 구간 <strong>8단계</strong></span>
+        <span class="stat-chip">코디 <strong>24개</strong></span>
+        <span class="stat-chip">스타일 <strong>3종</strong></span>
+        <span class="stat-chip">기준 <strong>서울</strong></span>
+      </div>
+    </section>
+
+    <!-- 오늘의 코디 브리핑 -->
+    <section class="wx-card" id="wxCard">
+      <div class="wx-head">
+        <div class="wx-title"><span class="bar"></span>오늘 · 내일 서울 날씨와 추천 코디</div>
+        <span class="wx-time"><span class="live-dot"></span><span id="wxUpdated">23:41 기준 · 실시간 확인</span></span>
+      </div>
+      <div class="wx-body">
+        <div class="wx-now">
+          <div class="wx-now-main">
+            <span class="wx-icon" id="wxNowIcon"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg></span>
+            <div>
+              <div class="wx-temp" id="wxNowTemp">-1°</div>
+              <div class="wx-cond" id="wxCond">대체로 맑음</div>
+            </div>
+          </div>
+          <div class="wx-facts">
+            <span>체감 <strong id="wxFeels">-3°</strong></span>
+            <span>최저 <strong id="wxLow">-1°</strong></span>
+            <span>최고 <strong id="wxHigh">4°</strong></span>
+            <span>강수 <strong id="wxPop">0%</strong></span>
+            <span>바람 <strong id="wxWind">12km/h</strong></span>
+          </div>
+        </div>
+        <div class="wx-rec">
+          <div class="rec-head">
+            <span class="rec-badge rec-cold" id="recBand">4°C 이하 · 한파</span>
+            <span class="rec-label">오늘 추천</span>
+          </div>
+          <p class="rec-text" id="recText">롱패딩·헤비 다운 + 메리노 니트 + 기모 슬랙스, 목도리와 장갑까지.</p>
+          <ul class="wx-tips" id="wxTips"><li>기온 변동이 크지 않은 날 — 기본 코디로 충분합니다.</li></ul>
+        </div>
+      </div>
+      <div class="wx-tomorrow">
+        <span class="tm-label">내일</span>
+        <span class="wx-icon" id="wxTomorrowIcon"><svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg></span>
+        <span id="wxTomorrowText">11/20 · -4° / 2° · 대체로 맑음 · 강수 0%</span>
+        <span class="wx-attr"><a href="https://developer.apple.com/weatherkit/data-source-attribution/" target="_blank" rel="noopener noreferrer">&#xF8FF; Weather</a> · 실시간 Open-Meteo</span>
+      </div>
+    </section>
+
+    <!-- 필터 -->
+    <section class="controls">
+      <div class="control-row">
+        <div class="control-head">
+          <span class="control-label">기온으로 찾기</span>
+          <span class="slider-value" id="sliderValue">지금 -1° · 한파</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-bound">-10°</span>
+          <input type="range" id="tempSlider" min="-10" max="35" step="1" value="-1" aria-label="기온 선택">
+          <span class="slider-bound">35°</span>
+        </div>
+        <div class="chips" id="tempChips"><button class="chip" data-band="b1" data-temp="-3" type="button">4°C 이하 (한파)</button><button class="chip" data-band="b2" data-temp="6" type="button">5~8°C (초겨울)</button><button class="chip" data-band="b3" data-temp="10" type="button">9~11°C (늦가을·초봄)</button><button class="chip" data-band="b4" data-temp="14" type="button">12~16°C (쌀쌀)</button><button class="chip" data-band="b5" data-temp="18" type="button">17~19°C (선선)</button><button class="chip" data-band="b6" data-temp="21" type="button">20~22°C (포근)</button><button class="chip" data-band="b7" data-temp="25" type="button">23~27°C (초여름)</button><button class="chip" data-band="b8" data-temp="31" type="button">28°C 이상 (한여름)</button></div>
+      </div>
+      <div class="control-row">
+        <div class="control-head"><span class="control-label">계절</span></div>
+        <div class="seg-tabs" id="seasonTabs"><button class="seg-tab active" data-season="all" type="button">전체</button><button class="seg-tab" data-season="spring" type="button">봄</button><button class="seg-tab" data-season="summer" type="button">여름</button><button class="seg-tab" data-season="autumn" type="button">가을</button><button class="seg-tab" data-season="winter" type="button">겨울</button></div>
+      </div>
+      <div class="control-row">
+        <div class="control-head"><span class="control-label">스타일</span></div>
+        <div class="chips" id="styleChips"><button class="chip active" data-style="all" type="button">전체</button><button class="chip" data-style="office" type="button">출근·오피스</button><button class="chip" data-style="casual" type="button">캐주얼·데일리</button><button class="chip" data-style="outdoor" type="button">운동·야외</button></div>
+      </div>
+    </section>
+
+    <div class="result-meta">
+      <span><strong id="visibleCount">24</strong>개 코디 · 전체 24개</span>
+      <button class="reset-btn" id="resetFilters">필터 초기화</button>
+    </div>
+
+    <section class="outfit-list" id="outfitList">
+      <section class="band-section is-today" id="band-b1" data-band="b1" data-seasons="winter"><header class="band-head"><div class="band-temp"><span class="temp-num">4°C 이하</span><span class="temp-name">한파</span></div><p class="band-note">노출을 줄이고 보온 3중 레이어. 아침 영하, 실내외 온도차가 15°C 이상 벌어집니다.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b1" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">보온 3중 레이어, 단정한 겨울 오피스</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">헤비 다운 또는 캐시미어 혼방 울 코트 (안감 탈착형)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">메리노 울 니트 + 히트텍 이너</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">기모 슬랙스 (핏이 잡힌 것)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">방수 가죽 앵클부츠 + 두꺼운 양말</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">캐시미어 목도리 · 가죽 장갑 · 귀마개</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>실내 난방이 강하면 니트 위에 카디건을 한 겹 더해 벗을 수 있게 하세요.</li><li>목도리로 목을 막으면 체감이 2~3°C 올라갑니다.</li><li>가방은 손에 들기보다 크로스로 — 장갑 낀 손이 덜 시립니다.</li></ul></div></article><article class="outfit-card" data-band="b1" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">숏패딩 + 후드, 가볍게 따뜻하게</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">숏패딩(구스·신슐레이트) 또는 항공점퍼</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">기모 맨투맨 · 두꺼운 후드티</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">기모 조거팬츠 · 기모 데님</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">패딩 스니커즈 · 방한 부츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">비니 · 넥워머 · 터치 장갑</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>레깅스 위에 양말을 겹쳐 신으면 다리 체감이 크게 달라집니다.</li><li>핫팩은 허리·배 쪽 주머니에 — 손난로는 손가락만 녹입니다.</li><li>실내에서는 패딩을 벗고 후드만. 땀나면 나올 때 더 춥습니다.</li></ul></div></article><article class="outfit-card" data-band="b1" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">방풍 아우터 + 기능성 이너</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">방풍 다운 자켓 · 하드쉘</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">플리스 + 메리노 베이스레이어</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">기모 기능성 타이즈 + 등산 팬츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">발목을 잡는 방수 등산화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">넥워머 · 방한 장갑 · 핫팩</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>운동 중 땀이 식으면 체온을 빼앗습니다 — 흡습속건 이너가 필수입니다.</li><li>바람 8km/h 이상이면 체감이 1~2°C 더 낮습니다. 방풍 안감을 확인하세요.</li><li>장갑은 벗어 주머니에 넣지 말고 손목까지 덮는 긴 타입으로.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b2" data-band="b2" data-seasons="winter,autumn"><header class="band-head"><div class="band-temp"><span class="temp-num">5~8°C</span><span class="temp-name">초겨울</span></div><p class="band-note">낮보다 아침·밤이 기준. 코트 한 장과 얇은 니트로 온도를 조절합니다.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b2" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">울 코트 한 장이면 되는 초겨울</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">울 코트 · 재킷 위 다운 베스트</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">셔츠 + 얇은 니트, 또는 니트 단독</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">슬랙스 (울 혼방이면 더 따뜻)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">앵클부츠 · 더비 슈즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">머플러 · 얇은 가죽 장갑</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>아침 5°C, 낮 8°C — 코트 안쪽 니트 두께로 조절하세요.</li><li>두꺼운 니트 하나보다 얇은 니트+셔츠가 실내에서 편합니다.</li><li>다운 베스트는 부피가 적어 출퇴근 가방에 넣기 좋습니다.</li></ul></div></article><article class="outfit-card" data-band="b2" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">경량 패딩 + 맨투맨, 매일 입기 좋은 조합</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">경량 패딩 · 보아 플리스 자켓</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">맨투맨 · 두꺼운 셔츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">생지 데님 · 면 슬랙스</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">스니커즈 (양말 두께로 조절)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">볼캡 · 목도리 · 크로스백</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>낮에 걸어 다니면 더워집니다 — 벗어 들기 쉬운 경량 아우터로.</li><li>얇은 목도리는 가방에 넣어 두고 해 질 무렵 꺼내 쓰세요.</li><li>발목이 시리면 양말만 두꺼운 것으로 바꿔도 충분합니다.</li></ul></div></article><article class="outfit-card" data-band="b2" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">플리스 + 바람막이, 가벼운 러닝</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">윈드브레이커 (플리스 위)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">플리스 · 기능성 긴팔</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">트레이닝 팬츠 (기모 선택)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">쿠션 좋은 러닝화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">러닝 장갑 · 이어밴드 · 반사 조끼</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>뛰기 시작하면 5분 안에 더워집니다 — 한 겹 적게 입고 출발하세요.</li><li>장갑은 초반 10분만 쓰고 벗어 주머니에 넣습니다.</li><li>해 진 뒤 3°C까지 떨어지니 마무리 후 바로 아우터를 걸치세요.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b3" data-band="b3" data-seasons="autumn,spring"><header class="band-head"><div class="band-temp"><span class="temp-num">9~11°C</span><span class="temp-name">늦가을·초봄</span></div><p class="band-note">일교차가 가장 크게 벌어지는 구간. 벗고 입기 쉬운 한 겹이 핵심입니다.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b3" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">트렌치코트로 정리하는 간절기</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">트렌치코트 · 더플코트 · 울 재킷</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">셔츠 + 얇은 니트, 또는 니트 단독</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">슬랙스 · 치노</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">로퍼 · 더비</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">스카프 · 가죽 크로스백</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>일교차가 8°C 이상 벌어지는 시기 — 아침엔 코트, 낮엔 벗어 팔에.</li><li>트렌치는 안감이 있으면 11°C까지 충분합니다.</li><li>얇은 스카프 하나로 목을 막으면 난방 없이도 버팁니다.</li></ul></div></article><article class="outfit-card" data-band="b3" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">야상·가디건 한 겹으로 버티는 날</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">야상 · MA-1 · 두꺼운 가디건</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">후드티 · 맨투맨 · 얇은 목폴라</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">데님 · 코듀로이 팬츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">캔버스 · 스니커즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">비니 · 숄더백</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>낮 11°C, 밤 5°C — 가디건은 가방에 넣을 수 있는 두께로.</li><li>코듀로이 팬츠는 바람을 막아줘 같은 두께보다 따뜻합니다.</li><li>얇은 목폴라를 안에 입으면 아우터 없이도 버틸 수 있습니다.</li></ul></div></article><article class="outfit-card" data-band="b3" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">바람막이 + 맨투맨, 걷기 좋은 날</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 바람막이 · 경량 집업</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">맨투맨 · 기능성 긴팔</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">조거 · 기능성 팬츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">가벼운 러닝화 · 트레킹화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">볼캡 · 손목 밴드</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>걷기 위주라면 반팔+바람막이가 땀을 덜 냅니다.</li><li>바람 부는 강변은 2°C 더 춥게 느껴집니다 — 목까지 잠그세요.</li><li>해 질 무렵 급격히 떨어지니 얇은 장갑 하나 챙기세요.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b4" data-band="b4" data-seasons="spring,autumn"><header class="band-head"><div class="band-temp"><span class="temp-num">12~16°C</span><span class="temp-name">쌀쌀</span></div><p class="band-note">블레이저·가디건 한 겹이면 충분한 온도. 낮에는 반팔도 가능합니다.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b4" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">블레이저 한 겹, 출근복의 기본</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">울 블레이저 · 두꺼운 가디건</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">옥스퍼드 셔츠 · 얇은 니트</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">슬랙스 · 치노 · 울 혼방</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">로퍼 · 더비 · 스니커즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">손목시계 · 가죽 벨트 · 얇은 스카프</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>재킷 안에 니트 베스트를 넣으면 14°C 이하에서도 충분합니다.</li><li>냉난방이 애매한 시기 — 벗을 수 있는 아우터가 답입니다.</li><li>발목이 시리면 양말을 울 혼방으로 바꿔 보세요.</li></ul></div></article><article class="outfit-card" data-band="b4" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">데님 재킷 + 맨투맨, 가장 무난한 날</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">데님 재킷 · 바시티 · 후드 집업</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">맨투맨 · 긴팔 티 · 스트라이프 셔츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">데님 · 와이드 팬츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">스니커즈 · 캔버스</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">볼캡 · 크로스백 · 선글라스</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>낮 16°C면 반팔 한 장도 가능 — 아우터로 조절하세요.</li><li>얇은 셔츠를 겉에 걸치면 낮엔 시원, 아침엔 따뜻합니다.</li><li>데님 재킷은 안에 후드가 들어갈 사이즈로 고르세요.</li></ul></div></article><article class="outfit-card" data-band="b4" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">반팔 + 바람막이, 뛰기 좋은 온도</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">경량 바람막이 (뛸 땐 허리에)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔 기능성 티</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">반바지 · 7부 타이즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">러닝화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">모자 · 손목 밴드 · 물병</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>12~16°C는 러닝에 가장 좋은 구간 — 얇게 입고 출발하세요.</li><li>땀이 마르면 추워집니다 — 마무리 5분 전에 아우터를 걸치세요.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b5" data-band="b5" data-seasons="spring,autumn"><header class="band-head"><div class="band-temp"><span class="temp-num">17~19°C</span><span class="temp-name">선선</span></div><p class="band-note">얇은 셔츠와 재킷으로 정리하는 구간. 그늘과 바람을 조심하세요.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b5" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">셔츠와 얇은 재킷, 가벼운 오피스룩</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 블레이저 · 니트 베스트 · 가디건</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">셔츠 · 긴팔 블라우스</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">슬랙스 · 린넨 혼방</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">로퍼 · 스니커즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">시계 · 얇은 벨트</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>재킷은 어깨선만 잡아 주면 충분 — 두꺼운 소재는 과합니다.</li><li>냉방이 센 사무실은 얇은 가디건 하나가 답입니다.</li><li>17°C 이하에서 반팔 단독은 아침에 춥습니다.</li></ul></div></article><article class="outfit-card" data-band="b5" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">셔츠 한 장으로 정리되는 날</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 가디건 · 셔츠(겉옷처럼)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">긴팔 티 · 옥스퍼드 셔츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">데님 · 와이드 슬랙스</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">스니커즈 · 로퍼</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">선글라스 · 숄더백</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>겉옷 대신 셔츠를 오픈해 입으면 아침과 낮을 모두 커버합니다.</li><li>얇은 니트 베스트는 가방에 넣어도 부담이 없습니다.</li></ul></div></article><article class="outfit-card" data-band="b5" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">반팔 + 얇은 아우터, 야외 활동</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 바람막이 · 집업 후디</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔 기능성 티</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">반바지 · 조거</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">러닝화 · 트레킹화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">모자 · 선글라스 · 물</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>해 아래에서는 20°C까지 오릅니다 — 반팔 기준으로 입으세요.</li><li>그늘과 바람이 있는 곳은 쌀쌀합니다 — 얇은 겉옷 하나.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b6" data-band="b6" data-seasons="spring,summer,autumn"><header class="band-head"><div class="band-temp"><span class="temp-num">20~22°C</span><span class="temp-name">포근</span></div><p class="band-note">가장 편한 구간. 단 실내 냉방은 22°C — 얇은 겉옷을 챙기세요.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b6" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">셔츠 단독, 가장 편한 오피스</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 가디건 (냉방 대비)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔·긴팔 셔츠 · 얇은 니트</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">슬랙스 · 린넨 팬츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">로퍼 · 스니커즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">시계 · 손수건</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>사무실 냉방은 22~24°C — 얇은 가디건은 사실상 필수입니다.</li><li>린넨 혼방 셔츠는 구김이 적은 제품으로 고르세요.</li></ul></div></article><article class="outfit-card" data-band="b6" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">반팔 + 얇은 셔츠, 가벼운 데일리</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">린넨 셔츠 · 얇은 후드</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔 티</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">데님 · 린넨 반바지</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">스니커즈 · 샌들</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">선글라스 · 볼캡 · 토트백</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>얇은 셔츠를 겉에 걸치면 햇빛과 냉방에 모두 대응됩니다.</li><li>땀에 붙는 합성 소재보다 면·린넨 위주로 고르세요.</li></ul></div></article><article class="outfit-card" data-band="b6" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">반팔·반바지, 야외 활동 기본</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 바람막이 (햇빛·바람)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔 기능성 티</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">반바지 · 기능성 타이즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">러닝화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">모자 · 선글라스 · 선크림 · 물</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>땀을 많이 흘리는 날은 기능성 소재가 면보다 낫습니다.</li><li>햇빛이 강한 낮에는 얇은 긴팔이 오히려 시원합니다.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b7" data-band="b7" data-seasons="summer"><header class="band-head"><div class="band-temp"><span class="temp-num">23~27°C</span><span class="temp-name">초여름</span></div><p class="band-note">통기성 소재와 냉감 이너. 자외선이 강해지는 시기입니다.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b7" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">냉감 셔츠로 단정하게</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 가디건 · 린넨 재킷 (실내용)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔 셔츠 · 냉감 이너</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">슬랙스 · 린넨 팬츠</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">로퍼 · 스니커즈 (발목 양말)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">손수건 · 시계</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>지하철 냉방은 강합니다 — 얇은 겉옷을 반드시 챙기세요.</li><li>냉감 이너는 겉으로 드러나지 않는 제품으로.</li><li>슬랙스는 통기성 좋은 원단이 땀이 덜 찹니다.</li></ul></div></article><article class="outfit-card" data-band="b7" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">반팔 + 반바지, 가벼운 여름</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 셔츠 (겉옷 대신)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">반팔 티 · 민소매</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">반바지 · 얇은 데님</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">스니커즈 · 샌들</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">선글라스 · 모자 · 손선풍기</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>모자와 선글라스는 체감 온도를 2°C쯤 낮춰 줍니다.</li><li>얇은 데님은 낮에 덥습니다 — 반바지가 편합니다.</li></ul></div></article><article class="outfit-card" data-band="b7" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">메시 소재로 땀 배출</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 바람막이 (저녁 대비)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">메시 기능성 반팔</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">기능성 반바지</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">통기성 러닝화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">모자 · 선글라스 · 물 · 전해질</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>한낮 27°C는 야외 운동을 피하고 아침·저녁으로 옮기세요.</li><li>물은 15분마다 한 모금, 전해질을 함께 챙기세요.</li></ul></div></article></div></section>
+      <section class="band-section" id="band-b8" data-band="b8" data-seasons="summer"><header class="band-head"><div class="band-temp"><span class="temp-num">28°C 이상</span><span class="temp-name">한여름</span></div><p class="band-note">최소한의 옷과 수분. 한낮 야외 활동은 피하는 편이 좋습니다.</p><span class="today-flag">오늘 추천</span></header><div class="card-grid"><article class="outfit-card" data-band="b8" data-style="office"><div class="card-top"><span class="style-badge style-office">출근·오피스</span></div><h3 class="card-title">아이스 셔츠 + 린넨, 더위 속 오피스</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">얇은 가디건 (냉방 대비)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">아이스 셔츠 · 냉감 반팔</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">린넨 팬츠 · 얇은 슬랙스</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">로퍼 · 메쉬 스니커즈</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">손수건 · 시계 · 선글라스</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>실내 22°C, 실외 32°C — 겉옷은 항상 들고 다니세요.</li><li>린넨의 구김이 신경 쓰이면 혼방 소재로.</li><li>등에 땀이 차면 갈아입을 얇은 이너를 하나 더 챙기세요.</li></ul></div></article><article class="outfit-card" data-band="b8" data-style="casual"><div class="card-top"><span class="style-badge style-casual">캐주얼·데일리</span></div><h3 class="card-title">민소매·반팔로 최소한만</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">없음 (얇은 셔츠로 대체)</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">민소매 · 메시 반팔</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">린넨 반바지 · 얇은 면 반바지</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">샌들 · 슬리퍼</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">선글라스 · 모자 · 손선풍기 · 쿨링 타월</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>검은색은 햇빛을 흡수합니다 — 밝은 색 위주로.</li><li>샌들은 30분 이상 걷기엔 무리 — 스니커즈가 안전합니다.</li></ul></div></article><article class="outfit-card" data-band="b8" data-style="outdoor"><div class="card-top"><span class="style-badge style-outdoor">운동·야외</span></div><h3 class="card-title">한낮 야외는 피하고 이른 아침에</h3><div class="item-list"><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.2 2.2 0 0 1 2.2 2.2c0 1-.6 1.6-1.4 2.1L19 12v9H5v-9l6.2-4.2c-.8-.5-1.4-1.1-1.4-2.1A2.2 2.2 0 0 1 12 3.5z"/><path d="M12 8v13"/></svg>아우터</span><span class="item-value">없음</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4.2 12 6l3.5-1.8 3.2 2.2-2 3.2-1.4-.8V20H8.7V8.8l-1.4.8-2-3.2z"/></svg>상의</span><span class="item-value">냉감 민소매 · 메시 반팔</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10l-1.2 16h-3.1L12 11.6 11.3 20H8.2z"/><path d="M7 7h10"/></svg>하의</span><span class="item-value">기능성 반바지</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17v-3.6h4.6L11 16h6.6A3.4 3.4 0 0 1 21 19.4V20H3z"/><path d="M3 20h18"/><path d="M8 13.4V16"/></svg>신발</span><span class="item-value">통기성 러닝화</span></div><div class="item-row"><span class="item-label"><svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.5h10.4"/><path d="M9 3.5v9.7a3 3 0 0 0 6 0V3.5"/><path d="M9 8.6h6"/></svg>소품</span><span class="item-value">쿨링 타월 · 모자 · 전해질 · 선크림</span></div></div><div class="tip-box"><div class="tip-label">레이어드 · 체감 팁</div><ul class="tip-list"><li>체감 33°C 이상은 열사병 위험 — 실내 운동으로 대체하세요.</li><li>운동 전 500ml, 운동 중 15분마다 150ml를 나눠 마시세요.</li></ul></div></article></div></section>
+    </section>
+
+    <div class="empty-state" id="emptyState">선택한 조건에 맞는 코디가 없습니다. 기온이나 스타일을 바꿔 보세요.</div>
+
+    <footer class="footer">
+      Infosec Archive · 계절별 옷차림 가이드<br>
+      오늘·내일 기본값은 빌드 시점 Apple Weather, 방문 시 Open-Meteo 실시간 예보로 갱신됩니다.<br>
+      체감 온도와 개인차가 있으니 야외 활동 시간과 실내 냉난방에 맞춰 한 겹씩 조절하세요. 최종 갱신 2026-11-19 23:41 KST
+    </footer>
+  </main>
+
+  <script>
+    const BANDS = [{"key": "b1", "min": -30, "max": 4, "range": "4°C 이하", "name": "한파", "line": "롱패딩·헤비 다운 + 메리노 니트 + 기모 슬랙스, 목도리와 장갑까지."}, {"key": "b2", "min": 5, "max": 8, "range": "5~8°C", "name": "초겨울", "line": "울 코트 + 얇은 니트 + 슬랙스, 머플러 하나면 충분합니다."}, {"key": "b3", "min": 9, "max": 11, "range": "9~11°C", "name": "늦가을·초봄", "line": "트렌치코트 + 셔츠·니트 + 슬랙스, 낮에는 벗어 드세요."}, {"key": "b4", "min": 12, "max": 16, "range": "12~16°C", "name": "쌀쌀", "line": "블레이저 + 셔츠 + 슬랙스, 얇은 니트 베스트가 있으면 더 좋습니다."}, {"key": "b5", "min": 17, "max": 19, "range": "17~19°C", "name": "선선", "line": "셔츠 + 얇은 블레이저 또는 가디건, 반팔 단독은 아직 이릅니다."}, {"key": "b6", "min": 20, "max": 22, "range": "20~22°C", "name": "포근", "line": "셔츠 단독 + 얇은 가디건, 실내 냉방에 대비하세요."}, {"key": "b7", "min": 23, "max": 27, "range": "23~27°C", "name": "초여름", "line": "냉감 반팔 셔츠 + 린넨 팬츠, 얇은 겉옷을 하나 챙기세요."}, {"key": "b8", "min": 28, "max": 60, "range": "28°C 이상", "name": "한여름", "line": "아이스 셔츠·민소매 + 린넨 팬츠, 모자와 수분이 필수입니다."}];
+    const WX_BUILD = {"source": "apple", "updated": "23:41", "now_temp": -1, "now_feels": -3, "now_cond": "대체로 맑음", "now_wind": 8, "today_date": "2026-11-19", "today_low": -1, "today_high": 4, "today_pop": 0, "today_cond": "대체로 맑음", "today_wind": 12, "tomorrow_date": "2026-11-20", "tomorrow_low": -4, "tomorrow_high": 2, "tomorrow_pop": 0, "tomorrow_cond": "대체로 맑음"};
+
+    // ---- Theme (index.html / study.html / ai.html / cve.html 과 동일한 secjobs-theme 동기화) ----
+    const themeToggle = document.getElementById('themeToggle');
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (moonIcon) moonIcon.style.display = 'none';
+        if (sunIcon) sunIcon.style.display = 'block';
+        localStorage.setItem('secjobs-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (moonIcon) moonIcon.style.display = 'block';
+        if (sunIcon) sunIcon.style.display = 'none';
+        localStorage.setItem('secjobs-theme', 'light');
+      }
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('secjobs-theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) setTheme('dark');
+      else setTheme('light');
+    })();
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setTheme(isDark ? 'light' : 'dark');
+      });
+    }
+
+    // ---- 상태 ----
+    const state = { season: 'all', band: null, style: 'all' };
+
+    const sections = Array.from(document.querySelectorAll('.band-section'));
+    const tempChips = Array.from(document.querySelectorAll('#tempChips .chip'));
+    const seasonTabs = Array.from(document.querySelectorAll('#seasonTabs .seg-tab'));
+    const styleChips = Array.from(document.querySelectorAll('#styleChips .chip'));
+    const slider = document.getElementById('tempSlider');
+    const sliderValue = document.getElementById('sliderValue');
+    const visibleCount = document.getElementById('visibleCount');
+    const emptyState = document.getElementById('emptyState');
+
+    function bandForTemp(t) {
+      for (let i = 0; i < BANDS.length; i++) {
+        if (t >= BANDS[i].min && t <= BANDS[i].max) return BANDS[i];
+      }
+      return t > 60 ? BANDS[BANDS.length - 1] : BANDS[0];
+    }
+
+    function bandByKey(k) { return BANDS.filter(b => b.key === k)[0] || null; }
+
+    function toneClass(key) {
+      if (!key) return '';
+      const idx = BANDS.findIndex(b => b.key === key);
+      if (idx <= 2) return 'rec-cold';
+      if (idx >= 6) return 'rec-warm';
+      return '';
+    }
+
+    function apply() {
+      let shown = 0;
+      sections.forEach(sec => {
+        const seasons = (sec.dataset.seasons || '').split(',');
+        const bandOk = state.band
+          ? sec.dataset.band === state.band
+          : (state.season === 'all' || seasons.indexOf(state.season) !== -1);
+        let secShown = false;
+        Array.from(sec.querySelectorAll('.outfit-card')).forEach(card => {
+          const styleOk = state.style === 'all' || card.dataset.style === state.style;
+          const show = bandOk && styleOk;
+          card.hidden = !show;
+          if (show) { secShown = true; shown++; }
+        });
+        sec.hidden = !secShown;
+        sec.classList.toggle('is-selected', !!state.band && sec.dataset.band === state.band);
+      });
+      tempChips.forEach(c => c.classList.toggle('active', c.dataset.band === state.band));
+      seasonTabs.forEach(t => t.classList.toggle('active', t.dataset.season === state.season));
+      styleChips.forEach(c => c.classList.toggle('active', c.dataset.style === state.style));
+      visibleCount.textContent = shown;
+      emptyState.classList.toggle('show', shown === 0);
+    }
+
+    function selectBand(key, temp) {
+      state.band = key;
+      state.season = 'all';
+      const b = bandByKey(key);
+      if (temp !== undefined && temp !== null) slider.value = temp;
+      else if (b) slider.value = Math.min(35, Math.max(-10, Math.round((Math.max(b.min, -10) + Math.min(b.max, 35)) / 2)));
+      sliderValue.textContent = b ? (slider.value + '°C · ' + b.name) : '전체 기온';
+      apply();
+    }
+
+    tempChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (state.band === chip.dataset.band) {
+          state.band = null;
+          sliderValue.textContent = '전체 기온';
+          apply();
+        } else {
+          selectBand(chip.dataset.band, Number(chip.dataset.temp));
+        }
+      });
+    });
+
+    seasonTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        state.season = tab.dataset.season;
+        state.band = null;
+        sliderValue.textContent = '전체 기온';
+        apply();
+      });
+    });
+
+    styleChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        state.style = chip.dataset.style;
+        apply();
+      });
+    });
+
+    slider.addEventListener('input', () => {
+      const v = Number(slider.value);
+      const b = bandForTemp(v);
+      state.band = b.key;
+      state.season = 'all';
+      sliderValue.textContent = v + '°C · ' + b.name;
+      apply();
+    });
+
+    document.getElementById('resetFilters').addEventListener('click', () => {
+      state.season = 'all'; state.band = null; state.style = 'all';
+      const t = WX_BUILD.now_temp;
+      if (typeof t === 'number') slider.value = Math.min(35, Math.max(-10, Math.round(t)));
+      sliderValue.textContent = '전체 기온';
+      apply();
+    });
+
+    // ---- 날씨 (Open-Meteo 실시간, 실패 시 빌드 기본값) ----
+    const COND_BY_CODE = function (code) {
+      if (code === 0) return '맑음';
+      if (code === 1) return '대체로 맑음';
+      if (code === 2) return '구름 조금';
+      if (code === 3) return '흐림';
+      if (code === 45 || code === 48) return '안개';
+      if (code >= 51 && code <= 57) return '이슬비';
+      if (code >= 61 && code <= 67) return '비';
+      if (code >= 71 && code <= 77) return '눈';
+      if (code >= 80 && code <= 82) return '소나기';
+      if (code >= 85 && code <= 86) return '눈';
+      if (code >= 95) return '천둥번개';
+      return '흐림';
+    };
+
+    function iconNameFor(cond, pop) {
+      cond = cond || '';
+      if (cond.indexOf('눈') !== -1) return 'snow';
+      if (cond.indexOf('비') !== -1 || cond.indexOf('소나기') !== -1) return 'rain';
+      if ((pop || 0) >= 50) return 'rain';
+      if (cond.indexOf('맑') !== -1 && cond.indexOf('구름') === -1) return 'sun';
+      if (cond.indexOf('구름 조금') !== -1) return 'cloudsun';
+      return 'cloud';
+    }
+
+    function setIcon(el, name) {
+      if (!el) return;
+      const size = el.classList.contains('wx-icon') ? (el.parentNode && el.parentNode.classList.contains('wx-tomorrow') ? 14 : 18) : 18;
+      el.innerHTML = '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#w-' + name + '"/></svg>';
+    }
+
+    function fmtTemp(v) { return (typeof v === 'number') ? (v + '°') : '—'; }
+    function fmtDate(d) {
+      if (!d) return '';
+      const p = String(d).split('-');
+      return p.length === 3 ? (Number(p[1]) + '/' + Number(p[2])) : d;
+    }
+
+    function composeTips(wx) {
+      const tips = [];
+      if (typeof wx.low === 'number' && typeof wx.high === 'number' && (wx.high - wx.low) >= 10) {
+        tips.push('일교차 ' + (wx.high - wx.low) + '°C — 아침엔 겉옷, 낮엔 벗을 수 있는 레이어드로.');
+      }
+      if ((wx.pop || 0) >= 40) tips.push('강수확률 ' + wx.pop + '% — 우산과 방수 신발을 챙기세요.');
+      if ((wx.cond || '').indexOf('눈') !== -1) tips.push('눈 예보 — 미끄럼에 강한 신발과 방수 장갑이 필요합니다.');
+      if ((wx.wind || 0) >= 20) tips.push('바람 ' + wx.wind + 'km/h — 방풍 아우터를 한 겹 더하세요.');
+      if (typeof wx.temp === 'number' && typeof wx.feels === 'number' && (wx.feels - wx.temp) <= -3) {
+        tips.push('체감 ' + wx.feels + '°C — 보온 이너를 한 겹 더 입으세요.');
+      }
+      if (!tips.length) tips.push('기온 변동이 크지 않은 날 — 기본 코디로 충분합니다.');
+      return tips;
+    }
+
+    function renderToday(wx) {
+      const b = bandForTemp(typeof wx.temp === 'number' ? wx.temp : 15);
+      sections.forEach(sec => sec.classList.toggle('is-today', sec.dataset.band === b.key));
+      const badge = document.getElementById('recBand');
+      badge.textContent = b.range + ' · ' + b.name;
+      badge.className = 'rec-badge ' + toneClass(b.key);
+      document.getElementById('recText').textContent = b.line;
+      const tipsEl = document.getElementById('wxTips');
+      tipsEl.innerHTML = composeTips(wx).map(t => '<li>' + t.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</li>').join('');
+      return b;
+    }
+
+    function renderWx(wx) {
+      document.getElementById('wxNowTemp').textContent = fmtTemp(wx.temp);
+      document.getElementById('wxCond').textContent = wx.cond || '—';
+      document.getElementById('wxFeels').textContent = fmtTemp(wx.feels);
+      document.getElementById('wxLow').textContent = fmtTemp(wx.low);
+      document.getElementById('wxHigh').textContent = fmtTemp(wx.high);
+      document.getElementById('wxPop').textContent = (typeof wx.pop === 'number') ? (wx.pop + '%') : '—';
+      document.getElementById('wxWind').textContent = (typeof wx.wind === 'number') ? (wx.wind + 'km/h') : '—';
+      document.getElementById('wxTomorrowText').textContent =
+        fmtDate(wx.tomorrow_date) + ' · ' + fmtTemp(wx.tomorrow_low) + ' / ' + fmtTemp(wx.tomorrow_high) +
+        ' · ' + (wx.tomorrow_cond || '—') + ' · 강수 ' + ((typeof wx.tomorrow_pop === 'number') ? wx.tomorrow_pop + '%' : '—');
+      setIcon(document.getElementById('wxNowIcon'), iconNameFor(wx.cond, wx.pop));
+      setIcon(document.getElementById('wxTomorrowIcon'), iconNameFor(wx.tomorrow_cond, wx.tomorrow_pop));
+      document.getElementById('wxUpdated').textContent = wx.updated_text || (WX_BUILD.updated + ' 기준');
+      return renderToday(wx);
+    }
+
+    // 빌드 기본값 먼저 반영 (API 실패 시 그대로 유지)
+    (function initialRender() {
+      const b = renderWx({
+        temp: WX_BUILD.now_temp, feels: WX_BUILD.now_feels, cond: WX_BUILD.now_cond,
+        low: WX_BUILD.today_low, high: WX_BUILD.today_high, pop: WX_BUILD.today_pop, wind: WX_BUILD.today_wind,
+        tomorrow_date: WX_BUILD.tomorrow_date, tomorrow_low: WX_BUILD.tomorrow_low,
+        tomorrow_high: WX_BUILD.tomorrow_high, tomorrow_cond: WX_BUILD.tomorrow_cond,
+        tomorrow_pop: WX_BUILD.tomorrow_pop, updated_text: WX_BUILD.updated + ' 기준'
+      });
+      if (typeof WX_BUILD.now_temp === 'number') {
+        slider.value = Math.min(35, Math.max(-10, Math.round(WX_BUILD.now_temp)));
+      }
+      sliderValue.textContent = '지금 ' + fmtTemp(WX_BUILD.now_temp) + ' · ' + b.name;
+      apply();
+    })();
+
+    // Open-Meteo: 현재 기온·체감·최저/최고·강수확률·바람
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&timezone=Asia%2FSeoul&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code&forecast_days=2&wind_speed_unit=kmh')
+      .then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(d => {
+        if (!d || !d.current || !d.daily) throw new Error('empty');
+        const wx = {
+          temp: Math.round(d.current.temperature_2m),
+          feels: Math.round(d.current.apparent_temperature),
+          cond: COND_BY_CODE(d.current.weather_code),
+          wind: Math.round(d.current.wind_speed_10m),
+          low: Math.round(d.daily.temperature_2m_min[0]),
+          high: Math.round(d.daily.temperature_2m_max[0]),
+          pop: Math.round(d.daily.precipitation_probability_max[0] || 0),
+          tomorrow_date: d.daily.time[1],
+          tomorrow_low: Math.round(d.daily.temperature_2m_min[1]),
+          tomorrow_high: Math.round(d.daily.temperature_2m_max[1]),
+          tomorrow_cond: COND_BY_CODE(d.daily.weather_code[1]),
+          tomorrow_pop: Math.round(d.daily.precipitation_probability_max[1] || 0),
+          updated_text: '실시간 ' + (d.current.time || '').slice(11, 16) + ' 기준'
+        };
+        const b = renderWx(wx);
+        if (state.band === null && state.season === 'all') {
+          sliderValue.textContent = '지금 ' + fmtTemp(wx.temp) + ' · ' + b.name;
+        }
+      })
+      .catch(() => {
+        document.getElementById('wxUpdated').textContent = WX_BUILD.updated + ' 기준';
+      });
+  </script>
+</body>
+</html>

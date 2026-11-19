@@ -1566,6 +1566,7 @@ def generate_html(jobs, update_time_str):
       .nav-container {{
         padding: 0 12px;
         height: 54px;
+        gap: 6px;
       }}
       .brand-name {{
         font-size: 15px;
@@ -1579,7 +1580,7 @@ def generate_html(jobs, update_time_str):
         gap: 4px;
       }}
       .nav-tab-item {{
-        padding: 4px 9px;
+        padding: 4px 8px;
         font-size: 11.5px;
         border-radius: 14px;
       }}
@@ -1655,10 +1656,36 @@ def generate_html(jobs, update_time_str):
       }}
     }}
 
-    /* 내비게이션 3탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
-    @media (max-width: 480px) {{
+    /* 내비게이션 5탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    @media (max-width: 560px) {{
       .brand-name {{
         display: none;
+      }}
+    }}
+
+    @media (max-width: 430px) {{
+      .nav-container {{
+        padding: 0 10px;
+        height: 52px;
+        gap: 6px;
+      }}
+      .brand-logo-img {{
+        width: 22px;
+        height: 22px;
+      }}
+      .nav-tabs {{
+        margin-left: 2px;
+        gap: 2px;
+      }}
+      .nav-tab-item {{
+        padding: 4px 6px;
+        font-size: 10.5px;
+        border-radius: 12px;
+        letter-spacing: -0.03em;
+      }}
+      .nav-actions .icon-btn {{
+        width: 30px;
+        height: 30px;
       }}
     }}
   </style>
@@ -1678,6 +1705,7 @@ def generate_html(jobs, update_time_str):
           <a href="study.html" class="nav-tab-item">시험 공부</a>
           <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
           <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
+          <a href="outfit.html" class="nav-tab-item">옷차림</a>
         </div>
       </div>
 

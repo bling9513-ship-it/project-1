@@ -1,9 +1,9 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-19 13:20:21 KST` (매일 06:30 KST 자동 수집)
-> **아카이빙된 보안 공고**: 총 **564**개 (직무 검증 및 중복 제거 완료)
-> **마감 임박 공고**: 총 **100**개 (D-Day 및 마감 기한 순 정렬)
+> **마지막 업데이트**: `2026-11-19 23:40:58 KST` (매일 06:30 KST 자동 수집)
+> **아카이빙된 보안 공고**: 총 **559**개 (직무 검증 및 중복 제거 완료)
+> **마감 임박 공고**: 총 **95**개 (D-Day 및 마감 기한 순 정렬)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
 > **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)
 > **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)
@@ -13,14 +13,14 @@
 ### 분야별 바로가기
 | 분야 | 등록 공고 | 바로가기 |
 | :--- | :---: | :--- |
-| **정보보안** | **404개** | [목록 바로가기](#정보보안-404건) |
-| **정보보호** | **179개** | [목록 바로가기](#정보보호-179건) |
-| **취약점 진단** | **70개** | [목록 바로가기](#취약점-진단-70건) |
+| **정보보안** | **400개** | [목록 바로가기](#정보보안-400건) |
+| **정보보호** | **178개** | [목록 바로가기](#정보보호-178건) |
+| **취약점 진단** | **69개** | [목록 바로가기](#취약점-진단-69건) |
 | **모의해킹** | **56개** | [목록 바로가기](#모의해킹-56건) |
 
 ---
 
-## 정보보안 (404건)
+## 정보보안 (400건)
 
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -34,12 +34,8 @@
 | **(주)웨일시큐리티** | [모의해킹(정보보안 컨설팅) 신입 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55343440&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-Day (오늘 마감)** | `모의해킹`, `정보보안` |
 | **(주)웨일시큐리티** | [모의해킹(정보보안 컨설팅) 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55344029&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-Day (오늘 마감)** | `모의해킹`, `정보보안` |
 | **(주)안랩** | [보안 컨설팅](https://career.rememberapp.co.kr/job/posting/352497) | 리멤버 | **D-Day (~11/19 목)** | `정보보안` |
-| **(주)차바이오텍** | [[차바이오텍] IT사업본부 정보보안 시스템엔지니어 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610200001118) | 인크루트 | **D-Day (~11/19 목) 23시 마감** | `정보보안` |
 | **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보안` |
-| **컴투스** | [(플랫폼) 기술보안(CERT) 담당자 (2~5년)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2609220000031) | 인크루트 | **D-Day (~11/19 목) 23시 마감** | `정보보안` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 원티드, 점핏 | **D-Day (~11/19 목)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **탑커리어인사이트** | [기술적, 관리적, 물리적 보안 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000190) | 인크루트 | **D-Day (~11/19 목) 23시 마감** | `정보보안` |
-| **탑커리어인사이트** | [보안엔지니어 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000188) | 인크루트 | **D-Day (~11/19 목) 23시 마감** | `정보보안` |
 | **(주)유니코써치** | [[대기업계열사] Security Engineer](https://career.rememberapp.co.kr/job/posting/352922) | 리멤버 | **D-Day (~11/19 목)** | `정보보안` |
 | **(주)써니즈** | [[써니즈] [IT정보보안] 취약점진단 서비스 운영지원](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-1 (내일 마감)** | `취약점 진단`, `정보보안` |
 | **교보디티에스(주)** | [교보DTS 경력 채용공고 (보안운영, 보안관제, 모의해킹)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502807&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-6 (~ 11/25(수))** | `모의해킹`, `정보보안` |
@@ -433,7 +429,7 @@
 
 ---
 
-## 정보보호 (179건)
+## 정보보호 (178건)
 
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -441,7 +437,6 @@
 | **(주)미디어윌네트웍스** | [[알바천국본사] 정보보호 담당자 정규직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55423760&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-Day (오늘 마감)** | `정보보호` |
 | **(주)씨젠** | [[씨젠] 개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/351081) | 리멤버 | **D-Day (~11/19 목)** | `정보보호` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 원티드, 점핏 | **D-Day (~11/19 목)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **탑커리어인사이트** | [정보보호 취약점분석, 대응 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000194) | 인크루트 | **D-Day (~11/19 목) 23시 마감** | `취약점 진단`, `정보보호` |
 | **한화오션(주)** | [[경영지원] 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 잡코리아, 인크루트 | **D-6** | `정보보호` |
 | **한화시스템(주)** | [정보보호/해외수출보안 경력사원 채용 (CMMC업무담당)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55434890&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-3 (~ 11/22(일))** | `정보보호`, `정보보안` |
 | **(주)크몽** | [개인정보 보호 담당자 (8년 이상)](https://career.rememberapp.co.kr/job/posting/353199) | 리멤버 | **D-3 (~11/22 일)** | `정보보호` |
@@ -621,14 +616,13 @@
 
 ---
 
-## 취약점 진단 (70건)
+## 취약점 진단 (69건)
 
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
 | **코리아써치** | [//금융·IT 환경의 보안 취약점 진단 및 위협 대응](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55494458&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보안` |
 | **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 인크루트 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보안` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 원티드, 점핏 | **D-Day (~11/19 목)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **탑커리어인사이트** | [정보보호 취약점분석, 대응 / MAX1억](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611130000194) | 인크루트 | **D-Day (~11/19 목) 23시 마감** | `취약점 진단`, `정보보호` |
 | **(주)써니즈** | [[써니즈] [IT정보보안] 취약점진단 서비스 운영지원](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-1 (내일 마감)** | `취약점 진단`, `정보보안` |
 | **(주)써니즈** | [[써니즈][IT정보보안] 소스코드 취약점 진단(SAST) 경력 2년](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55559131&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-1 (내일 마감)** | `취약점 진단`, `정보보안` |
 | **(주)숲** | [[SOOP] 보안솔루션 운영 및 취약점 진단](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55557821&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인 | **D-3 (~ 11/22(일))** | `취약점 진단`, `정보보안` |

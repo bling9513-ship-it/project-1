@@ -72,6 +72,10 @@ def build_all():
     from build_cve_html import build as build_cve
     cve_total = build_cve()
 
+    # 9. outfit.html 재생성 (서울 날씨 기본값 + 기온 구간별 옷차림 가이드)
+    from build_outfit_html import build as build_outfit
+    outfit_total = build_outfit()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -79,6 +83,7 @@ def build_all():
     print(f"  - 핵심 요약 총합: {stats['total_summaries']}선")
     print(f"  - AI 기술·트렌드 인사이트: {ai_total}건")
     print(f"  - CVE 취약점 리포트: {cve_total}건")
+    print(f"  - 옷차림 코디: {outfit_total}개 (기온 구간 8단계)")
 
 if __name__ == "__main__":
     build_all()
