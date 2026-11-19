@@ -69,6 +69,28 @@ def clean_text(text):
     text = re.sub(r"<[^>]+>", "", text)
     return re.sub(r"\s+", " ", text).strip()
 
+def count_urgent_jobs(jobs):
+    """마감 임박 공고 수 — DB가 판정한 deadline_status(D_DAY/URGENT)를 우선한다.
+
+    수집 당시의 상대 라벨('D-9 (~11/25(수))')만 보고 세면 오늘 기준 실제 남은 일수와
+    어긋나 화면 칩(D-Day 마감 임박)과 DB 집계가 달라진다. deadline_status가 없는
+    입력(외부 호출)만 라벨 기반 is_urgent_deadline으로 되돌린다.
+    """
+    count = 0
+    for j in jobs:
+        st = j.get("deadline_status")
+        if st in ("D_DAY", "URGENT"):
+            count += 1
+        elif not st and is_urgent_deadline(j.get("deadline", "")):
+            count += 1
+    return count
+
+
+def job_deadline_label(job):
+    """표시용 마감 라벨 — 오늘 기준으로 보정된 deadline_label이 있으면 그것을 쓴다."""
+    return job.get("deadline_label") or job.get("deadline", "상시채용")
+
+
 def is_urgent_deadline(dl):
     """마감 임박 여부 판별 (D-Day, 오늘, 내일, D-1 ~ D-7, 날짜 없이 시각만 적힌 당일 마감)"""
     if not dl:
@@ -578,7 +600,7 @@ def generate_html(jobs, update_time_str):
     for kw in KEYWORDS:
         kw_counts[kw] = sum(1 for j in jobs if kw in j.get("keywords", []))
         
-    urgent_count = sum(1 for j in jobs if is_urgent_deadline(j.get("deadline", "")))
+    urgent_count = count_urgent_jobs(jobs)
         
     html_content = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -1900,7 +1922,7 @@ def generate_html(jobs, update_time_str):
       return null;
     }}
 
-    function getDeadlineMeta(rawDl, lastSeen) {{
+    function getDeadlineMeta(rawDl, lastSeen, labelText) {{
       const dl = cleanDeadline(rawDl);
       const now = getKstNow();
       const clock = parseDeadlineClockC(dl);
@@ -1956,12 +1978,13 @@ def generate_html(jobs, update_time_str):
         isUrgent = true;
       }}
 
-      return {{ label: dl, badgeClass, isUrgent: isUrgent && !expired, isAlways, daysLeft, expired }};
+      // 표시 라벨은 빌드 시점에 오늘 기준으로 보정한 deadline_label을 우선한다.
+      return {{ label: labelText || dl, badgeClass, isUrgent: isUrgent && !expired, isAlways, daysLeft, expired }};
     }}
 
     // 현재 시각 기준 살아 있는 공고 (마감된 공고 제외)
     function getLiveJobs() {{
-      return JOBS.filter(job => !getDeadlineMeta(job.deadline, job.last_seen_at).expired);
+      return JOBS.filter(job => !getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label).expired);
     }}
 
     // 상단 통계·키워드 탭 카운트를 실시간 마감 반영값으로 갱신
@@ -1971,7 +1994,7 @@ def generate_html(jobs, update_time_str):
       if (activeEl) activeEl.textContent = live.length + '건';
       const urgentEl = document.getElementById('statUrgentCount');
       if (urgentEl) {{
-        const urgent = live.filter(job => getDeadlineMeta(job.deadline, job.last_seen_at).isUrgent).length;
+        const urgent = live.filter(job => getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label).isUrgent).length;
         urgentEl.textContent = urgent + '건';
       }}
       const kwCounts = {{}};
@@ -1999,7 +2022,7 @@ def generate_html(jobs, update_time_str):
         if (selectedPlatform !== 'all' && (!job.platforms || !job.platforms.includes(selectedPlatform))) {{
           return false;
         }}
-        const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at);
+        const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
         if (dlMeta.expired) return false;   // 현재 KST 시각 기준 이미 마감된 공고는 숨김
         if (selectedDeadline === 'urgent' && !dlMeta.isUrgent) return false;
         if (selectedDeadline === 'always' && !dlMeta.isAlways) return false;
@@ -2017,8 +2040,8 @@ def generate_html(jobs, update_time_str):
       // 2. Sort
       if (sortBy === 'deadline') {{
         filtered.sort((a, b) => {{
-          const da = getDeadlineMeta(a.deadline, a.last_seen_at).daysLeft;
-          const db = getDeadlineMeta(b.deadline, b.last_seen_at).daysLeft;
+          const da = getDeadlineMeta(a.deadline, a.last_seen_at, a.deadline_label).daysLeft;
+          const db = getDeadlineMeta(b.deadline, b.last_seen_at, b.deadline_label).daysLeft;
           return da - db;
         }});
       }} else if (sortBy === 'company') {{
@@ -2042,7 +2065,7 @@ def generate_html(jobs, update_time_str):
       if (currentView === 'grid') {{
         let html = '<div class="jobs-grid">';
         filtered.forEach(job => {{
-          const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at);
+          const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
           const dlBadge = `<span class="badge-dl ${{dlMeta.badgeClass}}">${{escapeHtml(dlMeta.label)}}</span>`;
           const platformBadges = (job.platforms || []).map(p => 
             `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
@@ -2085,7 +2108,7 @@ def generate_html(jobs, update_time_str):
       }} else {{
         let html = '<div class="jobs-list-compact">';
         filtered.forEach(job => {{
-          const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at);
+          const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
           const dlBadge = `<span class="badge-dl ${{dlMeta.badgeClass}}">${{escapeHtml(dlMeta.label)}}</span>`;
           const platformBadges = (job.platforms || []).map(p => 
             `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
@@ -2229,7 +2252,7 @@ def generate_readme(jobs, update_time_str):
             if kw in keyword_jobs:
                 keyword_jobs[kw].append(job)
 
-    urgent_count = sum(1 for j in jobs if is_urgent_deadline(j.get("deadline", "")))
+    urgent_count = count_urgent_jobs(jobs)
 
     lines = [
         "# 🛡️ Infosec Archive · 정보보안 포지션 아카이브",
@@ -2272,7 +2295,7 @@ def generate_readme(jobs, update_time_str):
         for job in kw_list:
             platforms_str = ", ".join(job["platforms"])
             keywords_str = ", ".join([f"`{k}`" for k in job["keywords"]])
-            dl = job.get("deadline", "상시채용")
+            dl = job_deadline_label(job)
             title_escaped = job["title"].replace("|", "\\|")
             company_escaped = job["company"].replace("|", "\\|")
             lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | **{dl}** | {keywords_str} |")

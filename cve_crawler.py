@@ -12,6 +12,9 @@ cve_crawler.py — CVE 취약점 수집·분석 파이프라인
   5) GitHub    : https://api.github.com/search/repositories (공개 PoC 저장소, gh CLI 인증 사용)
   6) CISA 경보  : https://www.cisa.gov/cybersecurity-advisories/all.xml (최근 경보·권고에 언급된 CVE)
   7) 보안 뉴스  : The Hacker News · BleepingComputer · Dark Reading RSS 에 언급된 CVE
+  8) 보안기업   : Microsoft MSRC(업데이트 가이드) · Qualys · Wiz · Sophos · Palo Alto Unit 42 ·
+                 Google Cloud 위협 인텔리전스 RSS (2026-11-19 접근 확인)
+  9) 국내 기관   : KISA 보호나라·KrCERT/CC 게시판(취약점 정보·보안공지, HTML) — RSS/JSON 없음
      → 6·7 에서만 확인된 CVE 는 NVD 단건 → CIRCL 상세 → 경보 메타데이터 순으로 보강해 수집 후보로 편입
      → 단서는 cve_alerts 테이블에 보관되어 cve.html 카드에 '긴급 권고'로 표시된다
 
@@ -31,6 +34,7 @@ cve_crawler.py — CVE 취약점 수집·분석 파이프라인
   python3 cve_crawler.py --analyze --limit-ai 12  # 보관된 수집본을 제한 시간·건수만큼 분석
   python3 cve_crawler.py --finish         # 분석 결과를 DB에 적재
   python3 cve_crawler.py --ai-only        # DB에 적재된 항목 중 폴백 항목만 재분석
+  python3 cve_crawler.py --curated-sync    # cve_curated.json 에만 있는 CVE 를 DB 에 적재
 """
 import os
 import re
@@ -38,6 +42,7 @@ import sys
 import json
 import time
 import hashlib
+import html
 import urllib.parse
 import urllib.request
 import urllib.error
@@ -75,6 +80,35 @@ NEWS_CVE_FEEDS = [
     {"name": "BleepingComputer", "url": "https://www.bleepingcomputer.com/feed/", "days": 7},
     {"name": "Dark Reading", "url": "https://www.darkreading.com/rss.xml", "days": 7},
 ]
+
+# 해외 주요 보안기업 피드 (RSS, 2026-11-19 접근 확인)
+#  rank: 2 = 벤더 보안 권고/업데이트(기관 공지급), 3 = 보안 블로그·뉴스
+VENDOR_CVE_FEEDS = [
+    {"name": "Microsoft MSRC", "url": "https://api.msrc.microsoft.com/update-guide/rss", "days": 10, "rank": 2, "cap": 400},
+    {"name": "Qualys Blog", "url": "https://blog.qualys.com/feed", "days": 21, "rank": 3, "cap": 40},
+    {"name": "Wiz Blog", "url": "https://www.wiz.io/feed/rss.xml", "days": 21, "rank": 3, "cap": 60},
+    {"name": "Sophos News", "url": "https://news.sophos.com/feed/", "days": 21, "rank": 3, "cap": 40},
+    {"name": "Palo Alto Unit 42", "url": "https://unit42.paloaltonetworks.com/feed/", "days": 21, "rank": 3, "cap": 40},
+    {"name": "Google Cloud Threat Intelligence", "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/", "days": 21, "rank": 3, "cap": 40},
+]
+
+# 국내 기관: RSS/JSON 이 없어 공개 게시판 HTML 을 직접 읽는다(2026-11-19 확인).
+#  · KISA 보호나라 & KrCERT/CC (boho.or.kr = krcert.or.kr 동일 사이트) 서버렌더링 게시판
+#  · 취약점 정보(B0000302)는 제목이 'CVE-XXXX-XXXXX | 제품 취약점' 형식이라 CVE 단서로 바로 쓸 수 있다.
+KR_INSTITUTION_BOARDS = [
+    {"name": "KISA 취약점 정보", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205023&bbsId=B0000302", "days": 21, "rank": 2},
+    {"name": "KISA 보안공지", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205020&bbsId=B0000133", "days": 21, "rank": 3},
+]
+
+# 별칭으로 더 잘 검색되는 CVE (GitHub PoC 검색 보강)
+POC_ALIASES = {
+    "CVE-2026-123007": ["nginx2root"],
+    "CVE-2026-123633": ["nginx2root"],
+    "CVE-2026-123634": ["nginx2root"],
+    "CVE-2026-121810": ["nginx2root"],
+    "CVE-2026-113425": ["nginx2root"],
+    "CVE-2026-114938": ["java4shell"],
+}
 CVE_ID_RE = re.compile(r"CVE-\d{4}-\d{4,7}")
 ALERT_FEED_DAYS = 14        # CISA 피드에서 볼 최근 발행 범위(일)
 NEWS_CVE_DAYS = 7           # 뉴스 RSS 에서 볼 최근 발행 범위(일)
@@ -572,11 +606,71 @@ def fetch_news_items(feed):
     return items
 
 
+def fetch_vendor_items(feed):
+    """보안기업 피드(RSS). 항목이 수천 건인 피드(MSRC 등)는 cap 으로 앞부분만 본다."""
+    try:
+        req = urllib.request.Request(feed["url"], headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml"})
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"  [{feed['name']}] 피드 수집 실패: {type(e).__name__}")
+        return []
+    parsed = parse_feed_items(raw)
+    cap = feed.get("cap")
+    if cap:
+        parsed = parsed[: int(cap)]
+    items = [it for it in parsed if _recent(it["published_at"], feed.get("days", NEWS_CVE_DAYS))]
+    for it in items:
+        it["source"] = feed["name"]
+        it["rank"] = feed.get("rank", 3)
+    if items:
+        print(f"  [{feed['name']}] 최근 {feed.get('days', NEWS_CVE_DAYS)}일 {len(items)}건")
+    return items
+
+
+def fetch_kr_board_items(board):
+    """국내 기관 게시판(HTML 표)의 최근 글. 제목에 CVE ID 가 있으면 그대로 단서가 된다.
+
+    KISA 보호나라 게시판은 서버렌더링 표(<td class="sbj"><a href="...view.do...">)로 내려온다.
+    """
+    try:
+        req = urllib.request.Request(board["url"], headers={"User-Agent": UA, "Accept": "text/html"})
+        with urllib.request.urlopen(req, timeout=35) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"  [{board['name']}] 게시판 수집 실패: {type(e).__name__}")
+        return []
+
+    items = []
+    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", raw, re.S):
+        m = re.search(r'href="([^"]*view\.do[^"]*)"[^>]*>(.*?)</a>', row, re.S)
+        if not m:
+            continue
+        title = clean(html.unescape(re.sub(r"<[^>]+>", "", m.group(2))))
+        if not title:
+            continue
+        href = html.unescape(m.group(1))
+        link = urllib.parse.urljoin(board["url"], href)
+        dm = re.search(r'(\d{4}-\d{2}-\d{2})', row)
+        published = dm.group(1) if dm else ""
+        if not _recent(published, board.get("days", NEWS_CVE_DAYS)):
+            continue
+        items.append({"title": title, "link": link, "summary": title,
+                      "published_at": published, "source": board["name"], "rank": board.get("rank", 3)})
+    if items:
+        print(f"  [{board['name']}] 최근 {board.get('days', NEWS_CVE_DAYS)}일 {len(items)}건")
+    return items
+
+
 def collect_cve_clues():
-    """경보·보안 뉴스에서 '이 CVE 가 어디서 언급됐는가'를 모아 cve_id 별로 묶는다."""
+    """경보·보안 뉴스·기관/기업 피드에서 '이 CVE 가 어디서 언급됐는가'를 모아 cve_id 별로 묶는다."""
     items = fetch_cisa_items()
     for feed in NEWS_CVE_FEEDS:
         items.extend(fetch_news_items(feed))
+    for feed in VENDOR_CVE_FEEDS:
+        items.extend(fetch_vendor_items(feed))
+    for board in KR_INSTITUTION_BOARDS:
+        items.extend(fetch_kr_board_items(board))
     clues = {}
     for it in items:
         blob = " ".join([it.get("title", ""), it.get("summary", "")])
@@ -710,9 +804,24 @@ def gh_available():
         return False
 
 
-def fetch_poc(cve_id, use_gh=True):
-    """GitHub 공개 PoC 저장소 조회. gh CLI 인증(분당 30회) → 없으면 무인증(분당 10회)."""
-    q = urllib.parse.quote(cve_id)
+def fetch_poc(cve_id, use_gh=True, aliases=None):
+    """GitHub 공개 PoC 저장소 조회. gh CLI 인증(분당 30회) → 없으면 무인증(분당 10회).
+
+    aliases: 취약점 별칭(예: 'nginx2root'). CVE ID 로 0건이면 별칭으로 한 번 더 찾는다.
+    """
+    out = _fetch_poc_query(cve_id, use_gh)
+    if isinstance(out, list) and not out and aliases:
+        for alias in aliases:
+            alt = _fetch_poc_query(alias, use_gh)
+            if isinstance(alt, list):
+                out.extend(alt)
+            if out:
+                break
+    return out
+
+
+def _fetch_poc_query(query, use_gh=True):
+    q = urllib.parse.quote(query)
     if use_gh:
         try:
             r = subprocess.run(
@@ -781,12 +890,12 @@ def collect_pocs(records, cache):
         if rate_limited:
             rec["poc_links"] = rec.get("poc_links") or cached_links
             continue
-        res = fetch_poc(cve_id, use_gh=use_gh)
+        res = fetch_poc(cve_id, use_gh=use_gh, aliases=POC_ALIASES.get(cve_id))
         if res == "RATE_LIMIT" or res is None:
             # gh 실패 → 다음 항목부터는 딜레이를 늘려 재시도
             rec["poc_links"] = rec.get("poc_links") or cached_links
             time.sleep(10)
-            res2 = fetch_poc(cve_id, use_gh=use_gh)
+            res2 = fetch_poc(cve_id, use_gh=use_gh, aliases=POC_ALIASES.get(cve_id))
             if res2 in (None, "RATE_LIMIT"):
                 rate_limited = True
                 print(f"  [GitHub] {cve_id} 조회 실패 — 이후 조회는 캐시값으로 유지")
@@ -1208,6 +1317,54 @@ def load_curated():
         return {}
 
 
+def ensure_curated_reports():
+    """cve_curated.json 에만 있고 DB 에는 아직 없는 CVE 를 적재한다.
+
+    수동 검증 항목(예: 공개 당일 수집 전인 NGINX2Root 5종)을 자동 수집을 기다리지 않고
+    바로 사이트에 올리기 위한 경로다. 이미 있는 CVE 는 건드리지 않는다(apply_curated 담당).
+    """
+    curated = load_curated()
+    if not curated:
+        return 0
+    existing = {r.get("cve_id") for r in get_cve_reports()}
+    new_records = []
+    for cve_id, c in curated.items():
+        if not isinstance(c, dict) or cve_id in existing:
+            continue
+        if not (c.get("title_ko") and c.get("summary_ko")):
+            continue
+        new_records.append({
+            "cve_id": cve_id,
+            "title_ko": c["title_ko"],
+            "summary_ko": c["summary_ko"],
+            "impact_ko": c.get("impact_ko", ""),
+            "remediation_ko": c.get("remediation_ko", ""),
+            "cvss_score": c.get("cvss_score"),
+            "severity": c.get("severity", "UNKNOWN"),
+            "epss_score": c.get("epss_score"),
+            "epss_percentile": c.get("epss_percentile"),
+            "is_kev": bool(c.get("is_kev")),
+            "kev_date_added": c.get("kev_date_added", ""),
+            "kev_due_date": c.get("kev_due_date", ""),
+            "kev_required_action": c.get("kev_required_action", ""),
+            "kev_ransomware": c.get("kev_ransomware", ""),
+            "vendor": c.get("vendor", ""),
+            "product": c.get("product", ""),
+            "affected_products": c.get("affected_products", []),
+            "poc_links": c.get("poc_links", []),
+            "references": c.get("references", []),
+            "cwe": c.get("cwe", []),
+            "description_orig": c.get("description_orig", ""),
+            "published_at": c.get("published_at", ""),
+            "analyzed_by": "curated",
+        })
+    if not new_records:
+        return 0
+    count = upsert_cve_reports(new_records)
+    print(f"  [수동] cve_curated.json 신규 {count}건 적재: {', '.join(r['cve_id'] for r in new_records)}")
+    return count
+
+
 def apply_curated(records):
     """원문 대조로 직접 작성한 분석을 최종값으로 적용한다."""
     curated = load_curated()
@@ -1525,6 +1682,10 @@ def main():
 
     if "--ai-only" in args:
         run_ai_only(limit_ai)
+        return
+    if "--curated-sync" in args:
+        init_db()
+        ensure_curated_reports()
         return
     if "--alerts" in args:
         # 경보·보안 뉴스에서 어떤 CVE 가 잡히는지 확인만 하고 DB 레코드는 건드리지 않는다

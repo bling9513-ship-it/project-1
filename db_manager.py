@@ -281,6 +281,101 @@ def parse_seen_date(last_seen_at):
         return None
 
 
+WEEKDAY_KO = ("월", "화", "수", "목", "금", "토", "일")
+
+# 라벨 뒤에 붙은 마감 시각 표기('23시 마감', '18:30 마감') — 상대 라벨을 다시 쓸 때 보존한다.
+DEADLINE_CLOCK_TAIL_RE = re.compile(r"(\d{1,2}\s*(?::\s*\d{1,2})?\s*시?\s*마감)\s*$")
+
+
+def compute_remaining_days(deadline_str, today_date=None, last_seen_at=None, now_dt=None):
+    """공고 마감까지 남은 일수(오늘 KST 기준). 마감일을 알 수 없으면 None.
+
+    parse_deadline_status와 같은 우선순위로 판정한다:
+    라벨에 적힌 실제 날짜(MM/DD) > 당일 시각 표기 > D-Day/오늘 > 내일 > D-N.
+    상대 라벨(D-N·오늘·내일)은 수집일(last_seen_at) 기준으로 계산된 값이므로,
+    수집일과 오늘의 차이만큼 되돌려 실제 남은 일수로 환산한다.
+    """
+    now = get_kst_now(now_dt)
+    if not today_date:
+        today_date = now.date()
+    if not deadline_str:
+        return None
+
+    dl = deadline_str.strip()
+    seen = parse_seen_date(last_seen_at)
+
+    explicit_date = parse_explicit_deadline_date(dl, today_date)
+    if explicit_date is not None:
+        return (explicit_date - today_date).days
+
+    if is_time_only_deadline(dl):
+        return (seen - today_date).days if seen else 0
+
+    if "D-Day" in dl or "오늘" in dl:
+        return (seen - today_date).days if seen else 0
+
+    if "내일" in dl:
+        return (seen + timedelta(days=1) - today_date).days if seen else 1
+
+    m = re.search(r"D-(\d+)", dl)
+    if m:
+        days = int(m.group(1))
+        if seen is not None:
+            days -= (today_date - seen).days
+        return days
+
+    return None
+
+
+def normalize_deadline_label(deadline_str, today_date=None, last_seen_at=None, now_dt=None):
+    """표시용 마감 라벨을 오늘(KST) 기준으로 보정한다.
+
+    재수집되지 않은 공고는 'D-26', 'D-1 (내일 마감)', 'D-Day (오늘 마감)' 같은 상대 표기가
+    수집일 기준으로 남아 실제 남은 일수와 어긋난다(예: 어제 수집된 'D-9 (~ 11/25(수))'는 오늘 D-6).
+    저장된 원문(deadline)은 그대로 두고, 화면·JSON·README에 쓰는 라벨만 오늘 기준으로 다시 쓴다.
+    라벨에 적힌 날짜(MM/DD)가 있으면 그 날짜를 우선하고, 없으면 수집일과 오늘의 차이만큼 보정한다.
+    """
+    if not deadline_str or not deadline_str.strip():
+        return "상시채용"
+    dl = deadline_str.strip()
+
+    # 이미 '마감 (...)'으로 정리된 표기나 상시·채용시는 그대로 둔다.
+    if "마감 (" in dl or "마감(" in dl or dl.startswith("마감"):
+        return dl
+    if "상시" in dl or "채용시" in dl:
+        return dl
+    if is_time_only_deadline(dl):
+        # '14시 마감' 같은 당일 표기는 수집일에만 유효하다(오래된 수집분은 이미 마감 처리).
+        return dl
+
+    days = compute_remaining_days(dl, today_date, last_seen_at, now_dt)
+    if days is None:
+        return dl
+    if days < 0:
+        days = 0
+
+    token = "D-Day" if days == 0 else f"D-{days}"
+    explicit_date = parse_explicit_deadline_date(dl, today_date)
+
+    if explicit_date is not None:
+        # 'D-9 (~ 11/25(수))' → 'D-6 (~ 11/25(수))' : 적힌 날짜와 괄호 표기는 보존
+        new_label = re.sub(r"^(D-Day|D-\d+)", token, dl, count=1)
+        if new_label == dl and dl.startswith("~"):
+            new_label = f"{token} ({dl})"
+        return new_label
+
+    # 날짜 없이 상대 표기만 있는 경우 — 뒤에 붙은 마감 시각은 살린다.
+    tail_m = DEADLINE_CLOCK_TAIL_RE.search(dl)
+    tail = f" {tail_m.group(1).strip()}" if tail_m else ""
+    if days == 0:
+        base = "D-Day (오늘 마감)"
+    elif days == 1:
+        base = "D-1 (내일 마감)"
+    else:
+        base = token
+    return f"{base}{tail}" if tail else base
+
+
 def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None, now_dt=None):
     """마감일 문자열을 분석하여 상태값과 마감 여부(ACTIVE/EXPIRED) 판별
 
@@ -500,8 +595,14 @@ def refresh_deadline_statuses(today_date=None, db_path=DB_PATH, now_dt=None):
     conn.close()
     return len(updates), unchanged
 
-def get_active_jobs(db_path=DB_PATH):
-    """활성 공고(ACTIVE)를 마감 임박 순 및 최신 순으로 정렬하여 딕셔너리 리스트로 반환"""
+def get_active_jobs(db_path=DB_PATH, today_date=None):
+    """활성 공고(ACTIVE)를 마감 임박 순 및 최신 순으로 정렬하여 딕셔너리 리스트로 반환
+
+    deadline은 수집 당시 원문이고, deadline_label은 오늘(KST) 기준으로 보정한 표시용 라벨이다.
+    (재수집되지 않은 공고의 'D-26'·'D-1 (내일 마감)' 같은 상대 표기를 화면에서 바로잡기 위함)
+    """
+    if not today_date:
+        today_date = get_kst_now().date()
     conn = get_connection(db_path)
     cur = conn.cursor()
     cur.execute("""
@@ -530,6 +631,7 @@ def get_active_jobs(db_path=DB_PATH):
             "keywords": json.loads(r["keywords"]),
             "location": r["location"] or "",
             "deadline": r["deadline"],
+            "deadline_label": normalize_deadline_label(r["deadline"], today_date, r["last_seen_at"]),
             "summary": r["summary"] or "",
             "tags": json.loads(r["tags"]) if r["tags"] else [],
             "deadline_status": r["deadline_status"],

