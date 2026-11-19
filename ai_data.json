@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-19 09:44:53 KST",
+  "updated_at": "2026-11-19 10:00:51 KST",
   "total": 217,
   "briefing": "오늘 수집된 AI 자료 60건 중 'AI 보안·안전' 비중이 가장 큽니다. 핵심 키워드는 #에이전트, #오픈소스, #LLM이며, 주목할 기술 33건이 포함되어 있습니다. AI 보안·안전 26건 중에서는 usestrix/strix: 앱 취약점 탐지·수정용 오픈소스 AI 침투 테스트 도구 / AI 펜테스팅, 품질보다 데이터 프라이버시·프로덕션 안전이 핵심 우려 등이 눈에 띕니다. 바로 도입을 검토해 볼 AI 보안 오픈소스 툴 2건도 모았습니다(NVIDIA/SkillSpector / External sandboxes for coding agents 등). AI 툴·서비스 20건에서는 KeygraphHQ/shannon: 웹·API 취약점 증명하는 AI 펜테스터 / morluto/rea: 에이전트로 앱 동작부터 네이티브 바이너리까지 역설계 등을 바로 검토해 볼 만합니다.",
   "top_keywords": [

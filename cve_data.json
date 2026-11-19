@@ -6,7 +6,7 @@
     "kev": 28,
     "poc": 27,
     "collected_at": "2026-11-19 09:32:09 KST",
-    "built_at": "2026-11-19 09:43 KST",
+    "built_at": "2026-11-19 10:00 KST",
     "sources": [
       "CISA KEV",
       "CISA 경보",
@@ -204,6 +204,18 @@
           "title": "CISA Adds Four Known Exploited Vulnerabilities to Catalog",
           "url": "https://www.cisa.gov/news-events/alerts/2026/11/18/cisa-adds-four-known-exploited-vulnerabilities-catalog",
           "published_at": "2026-11-18"
+        },
+        {
+          "source": "Google Cloud Threat Intelligence",
+          "title": "GTIG AI Threat Tracker: Agentic Threat Activity Crosses a Significant Threshold",
+          "url": "https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold/",
+          "published_at": "2026-11-16"
+        },
+        {
+          "source": "Google Cloud Threat Intelligence",
+          "title": "The Rise of LLMJacking: How Threat Actors Monetize Compromised Cloud and Model Resources",
+          "url": "https://cloud.google.com/blog/topics/threat-intelligence/llmjacking-monetizing-compromised-cloud-models/",
+          "published_at": "2026-11-02"
         }
       ]
     },
@@ -254,6 +266,12 @@
           "title": "CISA Adds Four Known Exploited Vulnerabilities to Catalog",
           "url": "https://www.cisa.gov/news-events/alerts/2026/11/18/cisa-adds-four-known-exploited-vulnerabilities-catalog",
           "published_at": "2026-11-18"
+        },
+        {
+          "source": "Rapid7 Blog",
+          "title": "Rapid7 Detected Exploitation of CVE-2026-90436 against Atlassian Confluence Data Center, N-able N-central also Exploited",
+          "url": "https://www.rapid7.com/blog/post/etr-rapid7-detected-exploitation-of-cve-2026-90436-against-atlassian-confluence-data-center-n-able-n-central-also-exploited",
+          "published_at": "2026-11-16"
         }
       ]
     },
@@ -363,9 +381,9 @@
           "published_at": "2026-11-17"
         },
         {
-          "source": "The Hacker News",
-          "title": "Oracle to Patch 11 Java Flaws Today as Critical OpenJDK RCE (CVE-2026-114938) Report Emerges",
-          "url": "https://thehackernews.com/2026/11/oracle-to-patch-11-java-flaws-today-as.html",
+          "source": "Qualys Blog",
+          "title": "How to Find, Mitigate, and Patch the Critical Java4Shell Flaw (CVE-2026-114938) Now",
+          "url": "https://blog.qualys.com/vulnerabilities-threat-research/2026/11/17/how-to-find-mitigate-and-patch-the-critical-java4shell-flaw-cve-2026-114938-now",
           "published_at": "2026-11-17"
         }
       ]
@@ -736,6 +754,12 @@
           "source": "CISA Alert",
           "title": "CISA Adds Six Known Exploited Vulnerabilities to Catalog",
           "url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
+          "published_at": "2026-11-10"
+        },
+        {
+          "source": "Rapid7 Blog",
+          "title": "Patch Tuesday - November 2026",
+          "url": "https://www.rapid7.com/blog/post/em-patch-tuesday-november-2026",
           "published_at": "2026-11-10"
         }
       ]
@@ -1332,6 +1356,92 @@
       ]
     },
     {
+      "cve_id": "CVE-2026-123633",
+      "title_ko": "NGINX2Root — NGINX HTTP/2 사용 후 해제(use-after-free) 원격 코드 실행 (CVE-2026-123633)",
+      "summary_ko": "NGINX2Root 5종 중 하나인 CVE-2026-123633은 HTTP/2 연결을 정리(connection draining)하는 과정에서 이미 해제한 메모리를 계속 참조하는 사용 후 해제(CWE-416) 결함입니다. 클라이언트가 HTTP/2로 요청을 보내고 NGINX가 업스트림 서버로 연결하는 중에 워커의 가용 연결 슬롯이 바닥나는 상황이 겹치면 해제된 연결 메모리를 다시 사용하게 되고, 인증 없이 원격에서 nginx 워커 권한의 코드 실행으로 이어질 수 있습니다. F5는 CVSS 4.0 9.2·CVSS 3.1 8.1로 평가했고 NGINX Open Source 1.19.7부터 1.31.8까지, NGINX Plus 37.0.x·37.1~37.2 계열이 영향을 받습니다.",
+      "impact_ko": "HTTP/2를 클라이언트 쪽에서 받고 프록시로 업스트림에 요청을 넘기며 worker_connections가 부족해지는 구성이 대상입니다. 공격자는 워커 크래시로 서비스를 중단시키거나, 성공 시 워커 권한으로 코드를 실행해 프록시 뒤 신뢰 경계에 발판을 만들 수 있습니다.",
+      "remediation_ko": "① NGINX Open Source 1.30.7·1.31.9 이상, NGINX Plus 37.0.8.1·37.3.0.1 이상으로 업데이트하세요. ② 패치 전에는 노출 리스너의 HTTP/2를 끄면 이 취약점은 차단됩니다(http2 off; 또는 listen의 http2 파라미터 제거). worker_connections 값을 여유 있게 조정하는 것은 완화일 뿐 근본 조치는 아닙니다. ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
+      "cvss_score": 9.2,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "F5",
+      "product": "NGINX Open Source / NGINX Plus",
+      "affected_products": [
+        "NGINX Open Source 1.19.7 ~ 1.31.8 (HTTP/2 프록시 + 연결 슬롯 부족 시)",
+        "NGINX Plus 37.0.0 ~ 37.0.7.1 / 37.1.0 ~ 37.2.0.1"
+      ],
+      "poc_count": 2,
+      "poc_links": [
+        {
+          "name": "Censys-Research/nginx2root",
+          "url": "https://github.com/Censys-Research/nginx2root",
+          "stars": 0,
+          "description": "Censys reproductions of the five nginx2root vulnerabilities"
+        },
+        {
+          "name": "TimTheBeastNL/nginx2root",
+          "url": "https://github.com/TimTheBeastNL/nginx2root",
+          "stars": 0,
+          "description": "Detection scanners + Docker lab for NGINX2Root (CVE-2026-123007/-123633/-121810/-123634/-113425)"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.circl.lu/pub/tr-105/",
+          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
+        },
+        {
+          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
+          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
+        },
+        {
+          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
+          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
+        },
+        {
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
+        },
+        {
+          "url": "https://lwn.net/Articles/1108362/",
+          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
+        },
+        {
+          "url": "https://docs.nginx.com/nginx/releases/",
+          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
+        },
+        {
+          "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
+          "title": "Wiz: Unauthenticated Remote Code Execution in NGINX"
+        }
+      ],
+      "cwe": [
+        "CWE-416"
+      ],
+      "description_orig": "NGINX HTTP/2 use-after-free when connection draining closes an active HTTP/2 connection while NGINX connects to an upstream server and worker_connections are exhausted. Affects NGINX Open Source 1.19.7 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
+      "published_at": "2026-11-18",
+      "updated_at": "2026-11-19 09:32:09 KST",
+      "analyzed_by": "curated",
+      "alerts": [
+        {
+          "source": "Wiz Blog",
+          "title": "Unauthenticated Remote Code Execution in NGINX: CVE-2026-123633 and CVE-2026-123007",
+          "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
+          "published_at": "2026-11-18"
+        }
+      ]
+    },
+    {
       "cve_id": "CVE-2026-123007",
       "title_ko": "NGINX2Root — NGINX HTTP/2 흐름제어 정수 언더플로 힙 손상 및 원격 코드 실행 (CVE-2026-123007)",
       "summary_ko": "NGINX2Root로 묶여 공개된 NGINX 취약점 5종 가운데 핵심인 CVE-2026-123007은 HTTP/2 흐름제어 회계 오류(CWE-191 정수 언더플로)로 응답 복사 길이가 음수로 뒤집혀 힙 경계를 넘는 쓰기가 발생하는 메모리 손상 결함입니다. HTTP/2가 켜진 리스너에 인증 없이 접속할 수 있는 원격 공격자가 요청 취소로 송신 윈도(flow-control window)를 조작한 뒤 다음 응답에서 잘못된 길이를 쓰게 만들어 메모리를 유출하고 nginx 워커 프로세스 권한으로 임의 코드를 실행할 수 있습니다. F5는 CVSS 4.0 9.2(치명적)·CVSS 3.1 8.1(높음)로 평가했고, 2015년 NGINX 1.9.5부터 들어간 결함이라 전 세계 2억 2,500만 사이트가 쓰는 웹서버 전면부가 영향 범위입니다. Xint는 공개 HTTPS 포트에서 주소 유출 후 명령 실행까지 시연했고 공개 PoC 코드도 배포됐습니다. 2026-11-18 기준 실제 악용 정황은 보고되지 않았습니다.",
@@ -1422,9 +1532,27 @@
       "analyzed_by": "curated",
       "alerts": [
         {
+          "source": "Qualys Blog",
+          "title": "NGINX2Root: Five nginx Flaws, Led by CVE-2026-123007. How to Find, Mitigate, and Patch Now",
+          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
+          "published_at": "2026-11-18"
+        },
+        {
+          "source": "Rapid7 Blog",
+          "title": "CVE-2026-123007: Critical NGINX HTTP/2 Integer Underflow Leads to RCE (FIXED)",
+          "url": "https://www.rapid7.com/blog/post/ve-cve-2026-123007-critical-nginx-http-2-integer-underflow-leads-to-rce-fixed",
+          "published_at": "2026-11-18"
+        },
+        {
           "source": "The Hacker News",
           "title": "10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code on Servers",
           "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+          "published_at": "2026-11-18"
+        },
+        {
+          "source": "Wiz Blog",
+          "title": "Unauthenticated Remote Code Execution in NGINX: CVE-2026-123633 and CVE-2026-123007",
+          "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
           "published_at": "2026-11-18"
         }
       ]
@@ -1888,6 +2016,12 @@
       "analyzed_by": "fallback:budget",
       "alerts": [
         {
+          "source": "Google Cloud Threat Intelligence",
+          "title": "GTIG AI Threat Tracker: Agentic Threat Activity Crosses a Significant Threshold",
+          "url": "https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold/",
+          "published_at": "2026-11-16"
+        },
+        {
           "source": "CISA ICS Advisory",
           "title": "Siemens RUGGEDCOM APE1808",
           "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-316-05",
@@ -1898,6 +2032,12 @@
           "title": "Siemens Building Automation and Energy Products",
           "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-316-01",
           "published_at": "2026-11-12"
+        },
+        {
+          "source": "Palo Alto Unit 42",
+          "title": "Threat Brief: Critical Vulnerabilities in PHP: CVE-2026-109618, CVE-2026-109619 (Updated October 29)",
+          "url": "https://unit42.paloaltonetworks.com/cve-2026-109618-cve-2026-109619/",
+          "published_at": "2026-10-29"
         }
       ]
     },
@@ -1963,6 +2103,12 @@
       "analyzed_by": "fallback:budget",
       "alerts": [
         {
+          "source": "Google Cloud Threat Intelligence",
+          "title": "GTIG AI Threat Tracker: Agentic Threat Activity Crosses a Significant Threshold",
+          "url": "https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold/",
+          "published_at": "2026-11-16"
+        },
+        {
           "source": "CISA ICS Advisory",
           "title": "Siemens RUGGEDCOM APE1808",
           "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-316-05",
@@ -1973,6 +2119,104 @@
           "title": "Siemens Building Automation and Energy Products",
           "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-316-01",
           "published_at": "2026-11-12"
+        },
+        {
+          "source": "Palo Alto Unit 42",
+          "title": "Threat Brief: Critical Vulnerabilities in PHP: CVE-2026-109618, CVE-2026-109619 (Updated October 29)",
+          "url": "https://unit42.paloaltonetworks.com/cve-2026-109618-cve-2026-109619/",
+          "published_at": "2026-10-29"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-111357",
+      "title_ko": "Ivanti Connect Secure 인증 누락 취약점",
+      "summary_ko": "Ivanti Connect Secure에 중요 기능에 대한 인증 누락 취약점이 존재한다. 로컬 인증 공격자가 이를 악용해 권한을 확대할 수 있으며, CVE-2026-104935 및 CVE-2026-118527과 연쇄 악용될 수 있다고 명시됐다. CVSS 7.0 HIGH, KEV 실제 악용 등재(2026-10-30, 조치기한 2026-11-02)로 제시됐다.",
+      "impact_ko": "공격 성공 시 로컬 인증 공격자의 권한 탈취·확대로 이어질 수 있고, 연쇄 취약점 악용 가능성이 제시됐다.",
+      "remediation_ko": "① CISA 권고에 따라 벤더 지침에 맞는 완화 조치를 적용하고 BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② KEV 등재·조치기한(2026-11-02)을 고려해 인터넷 노출 자산을 우선 점검·조치한다. ③ 완화책이 없거나 적용 불가한 자산은 클라우드 서비스 지침을 따르거나 사용 중단을 검토한다.",
+      "cvss_score": 7.0,
+      "severity": "HIGH",
+      "epss_score": 0.00533,
+      "epss_percentile": 0.45709,
+      "is_kev": true,
+      "kev_date_added": "2026-10-30",
+      "kev_due_date": "2026-11-02",
+      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "kev_ransomware": "Unknown",
+      "vendor": "Ivanti",
+      "product": "Connect Secure",
+      "affected_products": [
+        "Ivanti Connect Secure (22.8R2.4)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+          "title": ""
+        },
+        {
+          "url": "https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Connect-Secure-CVE-2026-104935",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-829"
+      ],
+      "description_orig": "Ivanti Connect Secure contains a missing authentication for critical function vulnerability that could allow a local authenticated attacker to escalate their privileges. This vulnerability can be chained with CVE-2026-104935 and CVE-2026-118527.",
+      "published_at": "2026-10-30",
+      "updated_at": "2026-11-19 08:11:37 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "Rapid7 Blog",
+          "title": "Additional Ivanti Connect Secure zero-days exploited in the wild (CVE-2026-111357, CVE-2026-118527)",
+          "url": "https://www.rapid7.com/blog/post/etr-additional-ivanti-connect-secure-zero-days-exploited-in-the-wild-cve-2026-111357-cve-2026-118527",
+          "published_at": "2026-11-02"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-118527",
+      "title_ko": "Ivanti Connect Secure 예측 가능 식별자 취약점",
+      "summary_ko": "Ivanti Connect Secure에는 예측 가능한 숫자 또는 식별자 생성 취약점이 있다. 원격 인증 공격자가 공격자 제어 콘텐츠가 포함된 파일을 디스크의 알려진 위치에 업로드할 수 있으며, 이 취약점은 CVE-2026-104935 및 CVE-2026-111357과 연쇄될 수 있다고 설명된다. 영향 버전 25.1.1.3, 22.8R2.6, CVSS 4.3(MEDIUM), KEV 실제 악용 등재(2026-10-30), 조치기한 2026-11-13이다.",
+      "impact_ko": "인증된 원격 공격자가 제어 콘텐츠를 담은 파일을 알려진 위치에 업로드할 수 있어 시스템 무결성과 추가 공격 가능성에 영향을 줄 수 있다.",
+      "remediation_ko": "① KEV 실제 악용 등재 및 조치기한 2026-11-13을 고려해 벤더 지침에 따른 완화 조치를 적용하고 CISA BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② 인터넷 노출 자산을 평가하고 BOD 26-04 패치 지침 준수 여부를 확인한다. ③ 완화책이 없거나 클라우드 서비스인 경우 적용 지침을 따르거나 제품 사용 중단을 검토한다.",
+      "cvss_score": 4.3,
+      "severity": "MEDIUM",
+      "epss_score": 0.00822,
+      "epss_percentile": 0.58027,
+      "is_kev": true,
+      "kev_date_added": "2026-10-30",
+      "kev_due_date": "2026-11-13",
+      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "kev_ransomware": "Unknown",
+      "vendor": "Ivanti",
+      "product": "Connect Secure",
+      "affected_products": [
+        "Ivanti Connect Secure (25.1.1.3, 22.8R2.6)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Connect-Secure-CVE-2026-104935?language=en_US",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-340"
+      ],
+      "description_orig": "Ivanti Connect Secure contains a generation of predictable numbers or identifiers vulnerability that allows a remote authenticated attacker to upload files with attacker-controlled content to a known location on disk. This vulnerability can be chained with CVE-2026-104935 and CVE-2026-111357.",
+      "published_at": "2026-10-30",
+      "updated_at": "2026-11-19 08:11:37 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "Rapid7 Blog",
+          "title": "Additional Ivanti Connect Secure zero-days exploited in the wild (CVE-2026-111357, CVE-2026-118527)",
+          "url": "https://www.rapid7.com/blog/post/etr-additional-ivanti-connect-secure-zero-days-exploited-in-the-wild-cve-2026-111357-cve-2026-118527",
+          "published_at": "2026-11-02"
         }
       ]
     },
@@ -2312,82 +2556,6 @@
       "cwe": [],
       "description_orig": "Linux Kernel contains a missing initialization of a variable vulnerability that could allow for unintended modification of page-cache-backed data via failure to preserve the shared-fragment marker during socket buffer coalescing, causing ESP input processing to decrypt shared fragments in place. This vulnerability can be chained with CVE-2026-109618 and CVE-2026-109619 to implant PHP webshells and run commands as root.",
       "published_at": "2026-10-28",
-      "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "exaone"
-    },
-    {
-      "cve_id": "CVE-2026-111357",
-      "title_ko": "Ivanti Connect Secure 인증 누락 취약점",
-      "summary_ko": "Ivanti Connect Secure에 중요 기능에 대한 인증 누락 취약점이 존재한다. 로컬 인증 공격자가 이를 악용해 권한을 확대할 수 있으며, CVE-2026-104935 및 CVE-2026-118527과 연쇄 악용될 수 있다고 명시됐다. CVSS 7.0 HIGH, KEV 실제 악용 등재(2026-10-30, 조치기한 2026-11-02)로 제시됐다.",
-      "impact_ko": "공격 성공 시 로컬 인증 공격자의 권한 탈취·확대로 이어질 수 있고, 연쇄 취약점 악용 가능성이 제시됐다.",
-      "remediation_ko": "① CISA 권고에 따라 벤더 지침에 맞는 완화 조치를 적용하고 BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② KEV 등재·조치기한(2026-11-02)을 고려해 인터넷 노출 자산을 우선 점검·조치한다. ③ 완화책이 없거나 적용 불가한 자산은 클라우드 서비스 지침을 따르거나 사용 중단을 검토한다.",
-      "cvss_score": 7.0,
-      "severity": "HIGH",
-      "epss_score": 0.00533,
-      "epss_percentile": 0.45709,
-      "is_kev": true,
-      "kev_date_added": "2026-10-30",
-      "kev_due_date": "2026-11-02",
-      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-      "kev_ransomware": "Unknown",
-      "vendor": "Ivanti",
-      "product": "Connect Secure",
-      "affected_products": [
-        "Ivanti Connect Secure (22.8R2.4)"
-      ],
-      "poc_count": 0,
-      "poc_links": [],
-      "references": [
-        {
-          "url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
-          "title": ""
-        },
-        {
-          "url": "https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Connect-Secure-CVE-2026-104935",
-          "title": ""
-        }
-      ],
-      "cwe": [
-        "CWE-829"
-      ],
-      "description_orig": "Ivanti Connect Secure contains a missing authentication for critical function vulnerability that could allow a local authenticated attacker to escalate their privileges. This vulnerability can be chained with CVE-2026-104935 and CVE-2026-118527.",
-      "published_at": "2026-10-30",
-      "updated_at": "2026-11-19 08:11:37 KST",
-      "analyzed_by": "exaone"
-    },
-    {
-      "cve_id": "CVE-2026-118527",
-      "title_ko": "Ivanti Connect Secure 예측 가능 식별자 취약점",
-      "summary_ko": "Ivanti Connect Secure에는 예측 가능한 숫자 또는 식별자 생성 취약점이 있다. 원격 인증 공격자가 공격자 제어 콘텐츠가 포함된 파일을 디스크의 알려진 위치에 업로드할 수 있으며, 이 취약점은 CVE-2026-104935 및 CVE-2026-111357과 연쇄될 수 있다고 설명된다. 영향 버전 25.1.1.3, 22.8R2.6, CVSS 4.3(MEDIUM), KEV 실제 악용 등재(2026-10-30), 조치기한 2026-11-13이다.",
-      "impact_ko": "인증된 원격 공격자가 제어 콘텐츠를 담은 파일을 알려진 위치에 업로드할 수 있어 시스템 무결성과 추가 공격 가능성에 영향을 줄 수 있다.",
-      "remediation_ko": "① KEV 실제 악용 등재 및 조치기한 2026-11-13을 고려해 벤더 지침에 따른 완화 조치를 적용하고 CISA BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② 인터넷 노출 자산을 평가하고 BOD 26-04 패치 지침 준수 여부를 확인한다. ③ 완화책이 없거나 클라우드 서비스인 경우 적용 지침을 따르거나 제품 사용 중단을 검토한다.",
-      "cvss_score": 4.3,
-      "severity": "MEDIUM",
-      "epss_score": 0.00822,
-      "epss_percentile": 0.58027,
-      "is_kev": true,
-      "kev_date_added": "2026-10-30",
-      "kev_due_date": "2026-11-13",
-      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-      "kev_ransomware": "Unknown",
-      "vendor": "Ivanti",
-      "product": "Connect Secure",
-      "affected_products": [
-        "Ivanti Connect Secure (25.1.1.3, 22.8R2.6)"
-      ],
-      "poc_count": 0,
-      "poc_links": [],
-      "references": [
-        {
-          "url": "https://hub.ivanti.com/s/article/Security-Advisory-Ivanti-Connect-Secure-CVE-2026-104935?language=en_US",
-          "title": ""
-        }
-      ],
-      "cwe": [
-        "CWE-340"
-      ],
-      "description_orig": "Ivanti Connect Secure contains a generation of predictable numbers or identifiers vulnerability that allows a remote authenticated attacker to upload files with attacker-controlled content to a known location on disk. This vulnerability can be chained with CVE-2026-104935 and CVE-2026-111357.",
-      "published_at": "2026-10-30",
       "updated_at": "2026-11-19 08:11:37 KST",
       "analyzed_by": "exaone"
     },
@@ -3159,10 +3327,10 @@
     },
     {
       "cve_id": "CVE-2026-129433",
-      "title_ko": "Dokploy 명령어 주입 취약점",
-      "summary_ko": "CVE-2026-129433는 Dokploy에서 확인된 명령어 주입 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 2.4%(악용 위험 상위 16% 수준)입니다.",
-      "impact_ko": "조작된 입력으로 서버 명령을 실행할 수 있어 시스템 장악과 데이터 유출로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 0.31.1 미만 버전이며, 자산 목록과 대조해 0.31.1 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "dokploy OS 명령어 주입 취약점",
+      "summary_ko": "dokploy 0.31.1 이전 버전에 getComposeContainerCommand()에서 발생하는 OS 명령어 주입 취약점(CWE-78)이 있다. 인증된 조직 구성원이 serviceName 파라미터에 셸 메타문자를 저장해 명령어를 실행할 수 있으며, backup.create 또는 backup.update tRPC 절차를 통해 악용될 수 있다. 예약 백업 실행 시 root 권한으로 명령이 실행되고, 마운트된 Docker 소켓을 통해 호스트 장악으로 이어질 수 있다.",
+      "impact_ko": "인증된 조직 구성원이 root 권한으로 임의 명령을 실행해 호스트를 장악할 수 있고, 서비스·데이터에 대한 통제를 우회할 수 있다.",
+      "remediation_ko": "① dokploy 0.31.1 이전 버전 사용 여부를 확인하고 업데이트 등 조치를 검토한다. ② serviceName 입력값과 백업 관련 tRPC 절차에 셸 메타문자 검증·필터링을 적용한다. ③ 예약 백업 실행 권한과 Docker 소켓 마운트를 최소화하고 조직 구성원 권한을 점검한다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.02399,
@@ -3215,7 +3383,7 @@
       "description_orig": "Dokploy before 0.31.1 contains an OS command injection vulnerability in getComposeContainerCommand() that allows authenticated organization members to execute shell commands via the serviceName parameter. Attackers can store serviceName values with shell metacharacters through backup.create or backup.update tRPC procedures, executing commands as root when scheduled backups run and taking over the host via the mounted Docker socket.",
       "published_at": "2026-11-14",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129449",
@@ -3850,10 +4018,10 @@
     },
     {
       "cve_id": "CVE-2026-125851",
-      "title_ko": "Themagnifico52 Hotel Booking Lite 파일 업로드 취약점",
-      "summary_ko": "CVE-2026-125851는 Themagnifico52 Hotel Booking Lite에서 확인된 파일 업로드 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 71% 수준)입니다.",
-      "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "themagnifico52 Hotel Booking Lite 파일 업로드 취약점",
+      "summary_ko": "themagnifico52 Hotel Booking Lite에 위험한 유형의 파일 무제한 업로드 취약점이 있습니다. 공격자는 이를 악용해 웹 서버에 웹셸을 업로드할 수 있습니다. 해당 제품은 2.5.1까지 영향을 받습니다.",
+      "impact_ko": "웹셸 업로드가 성공하면 서버에서 임의 코드 실행, 데이터 유출, 서비스 중단으로 이어질 수 있습니다.",
+      "remediation_ko": "① 업로드 파일의 확장자·콘텐츠 검증과 웹루트 실행 권한 제한을 적용합니다. ② 2.5.1 이하 인터넷 노출 자산을 우선 점검합니다. ③ 업로드 디렉터리 외부 저장 및 접근 차단을 검토합니다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00347,
@@ -3882,14 +4050,14 @@
       "description_orig": "Unrestricted Upload of File with Dangerous Type vulnerability in themagnifico52 Hotel Booking Lite hotel-booking-lite allows Upload a Web Shell to a Web Server.This issue affects Hotel Booking Lite: from n/a through 2.5.1.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-123965",
-      "title_ko": "Jet Admin Cloud Platform 정보 노출 취약점",
-      "summary_ko": "CVE-2026-123965는 Jet Admin Cloud Platform에서 확인된 정보 노출 취약점입니다. CVSS 9.9점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 72% 수준)입니다.",
-      "impact_ko": "민감 정보가 외부에 노출되어 추가 공격의 단서가 되거나 개인정보 침해로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Jet Admin Cloud Platform 프롬프트 주입 취약점",
+      "summary_ko": "Jet Admin Cloud Platform의 모든 버전에 프롬프트 주입 취약점이 존재합니다. 무료 계정을 가진 원격 공격자가 이를 악용해 민감한 .env 설정 파일을 노출하고 중요 자격 증명을 유출할 수 있습니다. 2026년 10월 29일경 샌드박스 구성요소를 통해 완화된 것으로 제공됩니다.",
+      "impact_ko": "민감한 설정 파일과 자격 증명이 유출되면 추가 시스템 침해나 권한 오용으로 이어질 수 있습니다.",
+      "remediation_ko": "① 인터넷 노출 자산을 우선 점검하고 무료 계정의 입력·권한을 점검합니다. ② 프롬프트 주입 방어와 .env 파일 접근 제한을 적용합니다. ③ 2026년 10월 29일경 샌드박스 완화 적용 가능 여부를 공급자 권고로 확인합니다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.00342,
@@ -3930,7 +4098,7 @@
       "description_orig": "A prompt injection vulnerability in all versions of Jet Admin Cloud Platform allows a remote attacker with a free account to expose sensitive .env configuration files and exfiltrate critical credentials. Mitigated via sandbox component around October 29, 2026.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-131852",
@@ -3987,9 +4155,9 @@
     {
       "cve_id": "CVE-2026-82504",
       "title_ko": "VITEC EZ TV Platform Server 파일 업로드 취약점",
-      "summary_ko": "CVE-2026-82504는 VITEC EZ TV Platform Server에서 확인된 파일 업로드 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
-      "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
-      "remediation_ko": "① 영향 범위는 8.5.0 미만 버전이며, 자산 목록과 대조해 8.5.0 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "summary_ko": "VITEC EZ TV Platform Server의 영향 버전에서 업로드 핸들러에 인증되지 않은 무제한 파일 업로드 취약점이 있습니다. 공격자는 X-FILENAME 요청 헤더에 대상 파일명을 지정해 파일 유형 검증 없이 임의 파일을 업로드할 수 있습니다. 악성 ASPX 파일이 웹 접근 가능한 uploads 디렉터리에 직접 업로드되면 웹 서버에서 즉시 실행되어 웹 서버 프로세스 권한의 원격 코드 실행으로 이어질 수 있습니다.",
+      "impact_ko": "인증되지 않은 원격 공격자가 임의 파일을 업로드하고 실행해 웹 서버 프로세스 권한으로 원격 코드 실행을 달성할 수 있습니다.",
+      "remediation_ko": "① 인터넷 노출 자산을 우선 점검하고 제조사가 제공하는 패치를 적용하십시오. ② 8.3.0 미만 릴리스는 8.5.0 이상으로 업데이트하십시오. ③ 업로드 디렉터리의 실행 권한과 파일 형식 검증을 적용하십시오.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00808,
@@ -4023,14 +4191,14 @@
       "description_orig": "VITEC EZ TV Platform Server before 8.5.0 contains an unrestricted file upload vulnerability in the upload handler that allows unauthenticated remote attackers to upload arbitrary files by supplying a target filename in the X-FILENAME request header with no authentication or file type validation required. Attackers can upload a malicious ASPX file directly to the web-accessible uploads directory, where it is immediately executable by the web server, achieving remote code execution in the context of the web server process. Patches are available for versions 8.3.0, 8.3.1, 8.4.0, and 8.4.1. Users running releases prior to 8.3.0 should upgrade to 8.5.0+.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129110",
-      "title_ko": "Nuxsmin sysPass 인증 우회 취약점",
-      "summary_ko": "CVE-2026-129110는 Nuxsmin sysPass에서 확인된 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "nuxsmin sysPass 인증 우회 취약점",
+      "summary_ko": "nuxsmin sysPass 3.0.1부터 3.2.11까지 인증 우회 취약점이 있습니다. 인증되지 않은 공격자가 install/install 핸들러에 POST해 기설치 인스턴스를 재설치할 수 있으며, 이 핸들러는 isInstalled()를 검사하지 않습니다. 공격자는 config.xml 덮어쓰기, 공격자 제어 데이터베이스 연결, 관리자 계정 생성, account/viewLink를 통한 직렬화 PublicLink gadget chain 명령 실행을 할 수 있습니다.",
+      "impact_ko": "인증 없이 관리자 계정 생성과 명령 실행이 가능해 시스템 장악 및 데이터 유출로 이어질 수 있습니다.",
+      "remediation_ko": "① 3.0.1~3.2.11 인터넷 노출 인스턴스를 우선 점검하고 install/install 엔드포인트 접근을 제한합니다. ② 공급자 패치·업그레이드 정보를 확인해 적용합니다. ③ config.xml 무결성, 데이터베이스 연결, 신규 관리자 계정 및 의심 명령 실행을 모니터링합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00795,
@@ -4075,14 +4243,14 @@
       "description_orig": "sysPass 3.0.1 through 3.2.11 contains an authentication bypass vulnerability that allows unauthenticated attackers to reinstall an already-installed instance by POSTing to the install/install handler, which never checks isInstalled(). Attackers can overwrite config.xml, point the application at an attacker-controlled database, create an administrator account, and plant serialized PublicLink gadget chains triggered via account/viewLink to execute commands.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-120522",
-      "title_ko": "Fluentwiz Cloud Storage Manager for Fluent Forms – Google Drive, Dropb… 경로 순회 취약점",
-      "summary_ko": "CVE-2026-120522는 Fluentwiz Cloud Storage Manager for Fluent Forms – Google Drive, Dropb…에서 확인된 경로 순회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.8%(악용 위험 상위 43% 수준)입니다.",
-      "impact_ko": "서버 파일 시스템의 중요 파일을 읽거나 조작해 설정·자격 증명이 노출될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Fluentwiz Cloud Storage Manager 임의 파일 쓰기 취약점",
+      "summary_ko": "WordPress용 Fluentwiz Cloud Storage Manager 플러그인이 1.2.0까지 모든 버전에서 Arbitrary File Write에 취약합니다. connection/{driver}/save 및 /download/single-file REST 엔드포인트의 인증 부재와 Google Drive downloadFile()의 경로 검증 부족이 결합되어, 비인증 공격자가 공격자 제어 Google Drive 자격증명 저장 및 provider-returned filename의 경로 순회를 이용한 파일 쓰기를 수행할 수 있다고 설명됩니다. CWE-22, CVSS 9.8 Critical, EPSS 0.8%로 상위 57%, KEV 미등재입니다.",
+      "impact_ko": "의도된 downloads 디렉터리 밖에 공격자 제어 파일이 기록될 수 있습니다. 작성된 파일의 확장자에 따른 추가 영향은 제공된 설명이 잘려 확인되지 않습니다.",
+      "remediation_ko": "① 해당 플러그인을 사용하는 경우 최신 버전 및 보안 공지를 확인하고 업데이트합니다. ② REST 엔드포인트 인증·권한 검사와 파일 경로 검증을 점검합니다. ③ 인터넷 노출 WordPress 자산과 플러그인 설치 여부를 우선 확인합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00788,
@@ -4115,14 +4283,14 @@
       "description_orig": "The Cloud Storage Manager for Fluent Forms – Google Drive, Dropbox, OneDrive, S3 Uploads plugin for WordPress is vulnerable to Arbitrary File Write in all versions up to, and including, 1.2.0. This is due to missing authorization checks on the `connection/{driver}/save` and `/download/single-file` REST endpoints, combined with insufficient path validation in the Google Drive `downloadFile()` function, where the Google Drive metadata `name` value is concatenated into a local path without `basename()`, `sanitize_file_name()`, or canonical path validation. This makes it possible for unauthenticated attackers to store attacker-controlled Google Drive credentials, trigger a download of an attacker-owned file whose provider-returned filename contains path traversal, and write attacker-controlled content outside the intended `downloads` directory. When the written file has a PHP extension and lands in a web-accessible location, this can lead to remote code execution.",
       "published_at": "2026-11-14",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-63079",
-      "title_ko": "Its deprecated .NET Remoting service 역직렬화 취약점",
-      "summary_ko": "CVE-2026-63079는 Its deprecated .NET Remoting service에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.7%(악용 위험 상위 47% 수준)입니다.",
-      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Integra32 .NET Remoting 역직렬화 취약점",
+      "summary_ko": "RBH Access Technologies Integra32 Security Management System 5.1.11 R5.0의 폐기 예정 .NET Remoting 서비스에는 인증되지 않은 역직렬화 취약점이 있습니다. TCP 2001 포트에서 AxcvcLt.dll 라이브러리의 BinaryServerFormatterSinkProvider가 TypeFilterLevel.Full로 동작해 별도 인증 없이 악용될 수 있습니다. 원격 공격자는 ysoserial.net TypeConfuseDelegate 체인 등 악성 직렬화 페이로드를 IntegraURI 객체 엔드포인트에 전송하거나 MarshalByRefObject/MarshalByValue 언마샬링을 악용해 임의 파일 읽기/쓰기, SMB/NTLMv2 자격 증명 강제 수집, 원격 코드 실행을 달성할 수 있습니다.",
+      "impact_ko": "성공 시 NT AUTHORITY\\SYSTEM 권한으로 호스트가 완전히 장악될 수 있고, 파일 읽기/쓰기와 SMB/NTLMv2 자격 증명 강제 수집으로 이어질 수 있습니다.",
+      "remediation_ko": "① TCP 2001 포트의 .NET Remoting 서비스 노출을 차단하고 서비스 비활성화 또는 접근 제어를 적용하십시오. ② 인터넷 및 신뢰 경계에서 해당 자산의 원격 접근 가능성을 점검하십시오. ③ 제조사 보안 지침에 따라 업데이트 또는 완화 조치를 적용하십시오.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00685,
@@ -4159,14 +4327,14 @@
       "description_orig": "RBH Access Technologies Integra32 Security Management System 5.1.11 R5.0 contains an unauthenticated deserialization vulnerability in its deprecated .NET Remoting service, exposed on TCP port 2001 via the AxcvcLt.dll library using BinaryServerFormatterSinkProvider at TypeFilterLevel.Full without requiring authentication. A remote unauthenticated attacker can send a malicious serialized gadget payload (such as a ysoserial.net TypeConfuseDelegate chain) to the IntegraURI object endpoint, or exploit MarshalByRefObject/MarshalByValue unmarshalling for arbitrary file read/write and SMB/NTLMv2 credential coercion, to achieve remote code execution as NT AUTHORITY\\SYSTEM and fully compromise the host.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-126173",
-      "title_ko": "AutomatorWP Webhooks 접근 제어 미흡 취약점",
-      "summary_ko": "CVE-2026-126173는 AutomatorWP Webhooks에서 확인된 접근 제어 미흡 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 54% 수준)입니다.",
-      "impact_ko": "권한 없는 사용자가 다른 사용자의 데이터나 관리 기능에 접근할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "AutomatorWP Webhooks 권한 검증 누락 취약점",
+      "summary_ko": "AutomatorWP Pro 웹훅 애드온 1.4.4 이하에서 권한 검증이 제대로 이뤄지지 않아 미인증 공격자가 WordPress 계정 비밀번호를 재설정할 수 있습니다. 관리자가 Receive Webhook 트리거와 'Is the user ID' 필드를 Update-User 액션에 연결하고 User ID를 비운 채 Password를 webhook password 태그에 매핑한 문서화된 구성에서만 악용됩니다.",
+      "impact_ko": "공격 성공 시 관리자를 포함한 임의 계정 탈취로 이어질 수 있으며, 관리자 계정이 탈취되면 사이트 제어권이 상실될 수 있습니다.",
+      "remediation_ko": "① 해당 웹훅 자동화 구성 사용 여부를 점검하고 불필요하면 비활성화합니다. ② 플러그인 제조사 패치를 확인해 적용하고, ③ 인터넷 노출 WordPress 자산과 관리자 계정·비밀번호 재설정 이력을 우선 점검합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00537,
@@ -4199,14 +4367,14 @@
       "description_orig": "The AutomatorWP Pro plugin for WordPress' webhook addon is vulnerable to authorization bypass in all versions up to, and including, 1.4.4. This is due to the plugin not properly verifying that a user is authorized to perform an action. This makes it possible for unauthenticated attackers to reset the password of any WordPress account, including administrators, resulting in full account takeover. This is only exploitable when an administrator has configured an automation pairing a Receive Webhook trigger — with an 'Is the user ID' field — to an Update-User action whose User ID field is left blank and whose Password field is mapped to the webhook password tag, which is a documented, supported plugin configuration.",
       "published_at": "2026-11-14",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-19907",
       "title_ko": "Shipo 인증 우회 취약점",
-      "summary_ko": "CVE-2026-19907는 Shipo에서 확인된 인증 우회 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 59% 수준)입니다.",
-      "impact_ko": "인증 없이 보호된 기능·관리 화면에 접근해 설정 변경과 데이터 조회가 가능합니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "summary_ko": "WordPress용 Shipo 플러그인 1.6~1.8.0에서 authenticate_rest_user()가 LOGGED_IN_COOKIE 값의 암호학적 서명을 검증하지 않고 사용자를 인증합니다. 또한 /wp-json/shipo/ 경로 제한이 무관한 REST 엔드포인트 쿼리 문자열에 해당 부분을 포함해 우회될 수 있어, 기존 사용자명을 아는 미인증 공격자가 관리자를 포함한 사용자를 사칭할 수 있습니다.",
+      "impact_ko": "공격자는 REST API를 통해 권한 있는 작업을 수행할 수 있고, 관리자 사칭 시 다른 관리자 계정 생성까지 가능해 사이트 전체가 장악될 수 있습니다.",
+      "remediation_ko": "① Shipo 1.6~1.8.0 사용 여부를 확인하고 제조사 패치를 적용합니다. ② REST API 접근을 제한·모니터링하고, ③ 관리자 계정 및 신규 관리자 생성 이력을 점검하며 인터넷 노출 자산을 우선 확인합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00467,
@@ -4239,7 +4407,7 @@
       "description_orig": "The Shipo plugin for WordPress is vulnerable to Authentication Bypass in versions 1.6 through 1.8.0. This is due to the `authenticate_rest_user()` function parsing the `LOGGED_IN_COOKIE` value and authenticating the named user without verifying the cookie's cryptographic signature. The function's intended `/wp-json/shipo/` route restriction can also be bypassed by placing that substring in the query string of an unrelated REST endpoint. This makes it possible for unauthenticated attackers who know an existing username to impersonate that user, including an administrator, and perform authorized actions through the REST API, including creating another administrator account.",
       "published_at": "2026-11-14",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-79614",
@@ -4280,10 +4448,10 @@
     },
     {
       "cve_id": "CVE-2026-125795",
-      "title_ko": "Estatik 보안 취약점",
-      "summary_ko": "CVE-2026-125795는 Estatik에서 확인된 보안 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 61% 수준)입니다.",
-      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Estatik PHP 파일 포함 취약점",
+      "summary_ko": "Estatik에서 PHP 프로그램의 Include/Require 문 파일명 제어가 부적절하게 처리되는 취약점이 보고되었습니다. 설명에서는 PHP Remote File Inclusion로 표기하면서 Estatik estatik이 PHP Local File Inclusion을 허용한다고 기술합니다. 영향 버전은 n/a부터 4.3.6까지이며, CVSS 9.8 Critical, CWE-98, EPSS 0.4%로 상위 39%, KEV 미등재입니다.",
+      "impact_ko": "공격자가 로컬 파일을 포함하도록 유도해 민감한 로컬 파일의 내용이 노출될 수 있습니다. 제공된 설명 범위에서는 서버 측 코드 실행까지 단정하지 않습니다.",
+      "remediation_ko": "① Estatik을 최신 버전으로 업데이트하고 4.3.6 포함 이하 영향 여부를 확인합니다. ② include/require 경로에 사용자 입력이 사용되지 않도록 점검합니다. ③ 인터넷 노출 인스턴스를 우선 점검합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.0044,
@@ -4312,14 +4480,14 @@
       "description_orig": "Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion') vulnerability in Estatik Estatik estatik allows PHP Local File Inclusion.This issue affects Estatik: from n/a through 4.3.6.",
       "published_at": "2026-11-15",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-109445",
-      "title_ko": "PLANET Technology Corp. PLANET GS-5220-8P2T2S 서비스 거부(DoS) 취약점",
-      "summary_ko": "CVE-2026-109445는 PLANET Technology Corp. PLANET GS-5220-8P2T2S에서 확인된 서비스 거부(DoS) 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 62% 수준)입니다.",
-      "impact_ko": "반복 요청으로 서비스 응답이 멈추거나 지연되어 정상 사용자가 서비스를 이용하지 못합니다.",
-      "remediation_ko": "① 영향 범위는 3.2412b261008 미만 버전이며, 자산 목록과 대조해 3.2412b261008 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "PLANET GS-5220-8P2T2S 스택 버퍼 오버플로 취약점",
+      "summary_ko": "PLANET GS-5220-8P2T2S(하드웨어 3.0)의 3.2412b261008 미만 펌웨어에는 webstax_auth HTTP Cookie 값을 고정 크기 스택 버퍼에 복사하면서 길이 검증을 하지 않는 스택 기반 버퍼 오버플로 취약점이 있습니다. 미인증 공격자가 과도한 크기의 Cookie를 담은 HTTP 요청을 보내 저장된 반환 주소를 덮어쓰고 스택 메모리를 손상시킬 수 있습니다.",
+      "impact_ko": "스택 메모리 손상으로 서비스 거부가 발생할 수 있으며, 장치 안정성에 영향을 줄 수 있습니다.",
+      "remediation_ko": "① 3.2412b261008 미만 펌웨어 사용 장비를 식별하고 제조사 업데이트를 확인합니다. ② 인터넷 노출 장비를 우선 점검해 불필요 접근을 차단하고, ③ 비정상적으로 큰 webstax_auth Cookie 요청을 모니터링합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00431,
@@ -4352,14 +4520,14 @@
       "description_orig": "PLANET GS-5220-8P2T2S (hardware version 3.0) firmware versions before 3.2412b261008 contains a stack-based buffer overflow vulnerability that allows unauthenticated attackers to corrupt stack memory by submitting an oversized webstax_auth HTTP Cookie value that is copied into a fixed-size stack buffer without length validation. Attackers can send a crafted unauthenticated HTTP request with an oversized cookie to overwrite the saved return address and corrupt stack memory, leading to memory corruption and potential denial of service on the device.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-129171",
       "title_ko": "Likaia NginxPulse SQL 주입 취약점",
-      "summary_ko": "CVE-2026-129171는 Likaia NginxPulse에서 확인된 SQL 주입 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 64% 수준)입니다.",
-      "impact_ko": "데이터베이스 조회·변조·삭제가 가능해 계정 정보와 주요 데이터가 유출될 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 1.6.26 미만 버전이며, 자산 목록과 대조해 1.6.26 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "summary_ko": "Likaia NginxPulse 1.5.0 이상 1.6.26 미만 버전에서 /api/stats/:type의 id 및 locationType 파라미터를 처리할 때 인증되지 않은 SQL 주입 취약점이 존재합니다. 원격 공격자는 인용된 테이블 식별자를 닫는 방식으로 SQL 구문을 조작하고 오류 기반 출력을 이용해 데이터베이스 내용을 읽을 수 있습니다. 또한 PostgreSQL 슈퍼유저 기능을 통해 서버 파일을 읽거나 쓸 수 있습니다.",
+      "impact_ko": "원격 공격자가 인증 없이 데이터베이스 내용을 유출하고 서버 파일을 읽거나 쓸 수 있어 기밀성과 무결성에 중대한 영향을 줄 수 있습니다.",
+      "remediation_ko": "① 인터넷에 노출된 NginxPulse 자산을 우선 점검하고 1.6.26 이상으로 업데이트하십시오. ② 해당 API 파라미터 입력 검증과 오류 메시지 노출 제한을 적용하십시오. ③ 불필요한 원격 접근을 제한하고 데이터베이스 계정 권한을 최소화하십시오.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00414,
@@ -4408,14 +4576,14 @@
       "description_orig": "NginxPulse 1.5.0 before 1.6.26 contains an unauthenticated sql injection vulnerability that allows remote attackers to append SQL via the id and locationType parameters of /api/stats/:type. Attackers can close the quoted table-name identifier and use error-based output to read database contents, and read or write server files via PostgreSQL superuser functions.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-125855",
-      "title_ko": "Elextensions ELEX WordPress HelpDesk & Customer Ticketing System 역직렬화 취약점",
-      "summary_ko": "CVE-2026-125855는 Elextensions ELEX WordPress HelpDesk & Customer Ticketing System에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.4%(악용 위험 상위 64% 수준)입니다.",
-      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "ELEX WordPress 헬프데스크 객체 주입 취약점",
+      "summary_ko": "Elextensions ELEX WordPress HelpDesk & Customer Ticketing System에 신뢰할 수 없는 데이터 역직렬화 취약점이 있습니다. 이 취약점은 객체 주입을 허용합니다. 해당 제품은 3.3.9까지 영향을 받습니다.",
+      "impact_ko": "객체 주입 성공 시 애플리케이션 객체가 조작되어 추가 공격의 발판이 될 수 있습니다.",
+      "remediation_ko": "① 3.3.9 이하 인터넷 노출 자산을 우선 점검하고 역직렬화 입력을 제한합니다. ② 공급자 보안 업데이트를 확인해 적용합니다. ③ 객체 주입 탐지·모니터링과 불필요한 플러그인 비활성화를 검토합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00408,
@@ -4444,14 +4612,14 @@
       "description_orig": "Deserialization of Untrusted Data vulnerability in Elextensions ELEX WordPress HelpDesk & Customer Ticketing System elex-helpdesk-customer-support-ticket-system allows Object Injection.This issue affects ELEX WordPress HelpDesk & Customer Ticketing System: from n/a through 3.3.9.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-125769",
-      "title_ko": "Nasir Ahmed Advanced Form Integration 권한 상승 취약점",
-      "summary_ko": "CVE-2026-125769는 Nasir Ahmed Advanced Form Integration에서 확인된 권한 상승 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.3%(악용 위험 상위 71% 수준)입니다.",
-      "impact_ko": "낮은 권한의 사용자가 관리자 수준 권한을 얻어 시스템 전반을 통제할 수 있습니다.",
-      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Nasir Ahmed Advanced Form Integration 권한 할당 취약점",
+      "summary_ko": "Nasir Ahmed Advanced Form Integration의 advanced-form-integration에서 Incorrect Privilege Assignment 취약점이 보고되었습니다. CWE-266에 해당하며, 영향 버전은 n/a부터 2.11.3까지로 명시되어 있습니다. 잘못된 권한 할당으로 권한 상승(Privilege Escalation)이 가능하다고 설명되며, CVSS 9.8 Critical, EPSS 0.3%로 상위 29%, KEV 미등재입니다.",
+      "impact_ko": "공격 성공 시 권한 상승으로 민감한 기능이나 데이터에 접근할 수 있습니다. 환경에 따라 추가 권한 탈취로 이어질 수 있습니다.",
+      "remediation_ko": "① 해당 제품의 최신 보안 업데이트를 확인하고 적용합니다. ② 권한 할당과 사용자 권한을 점검하고 최소 권한 원칙을 적용합니다. ③ 인터넷 노출 자산 여부를 우선 확인하여 불필요하면 차단합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00349,
@@ -4480,7 +4648,7 @@
       "description_orig": "Incorrect Privilege Assignment vulnerability in Nasir Ahmed Advanced Form Integration advanced-form-integration allows Privilege Escalation.This issue affects Advanced Form Integration: from n/a through 2.11.3.",
       "published_at": "2026-11-15",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-122662",
@@ -4704,10 +4872,10 @@
     },
     {
       "cve_id": "CVE-2026-127048",
-      "title_ko": "Custom Block Builder 원격 코드 실행(RCE) 취약점",
-      "summary_ko": "CVE-2026-127048는 Custom Block Builder에서 확인된 원격 코드 실행(RCE) 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.2%(악용 위험 상위 93% 수준)입니다.",
-      "impact_ko": "공격자가 원격에서 임의 코드를 실행해 서버를 완전히 장악하고, 내부 데이터 유출·추가 침해의 발판으로 삼을 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 3.0.0 미만 버전이며, 자산 목록과 대조해 3.0.0 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Custom Block Builder 임의 PHP 실행 취약점",
+      "summary_ko": "Custom Block Builder WordPress 플러그인 3.0.0 미만에서 REST 라우트에 대한 비인가 요청 차단이 적절히 이루어지지 않습니다. 권한 검사가 오류가 아닌 응답을 반환해 WordPress가 권한이 있는 것으로 처리하며, 비인증 사용자가 서버에서 임의 PHP 코드를 실행할 수 있다고 설명됩니다. CVSS 9.8 Critical, CWE-94, EPSS 0.2%로 상위 7%, KEV 미등재입니다.",
+      "impact_ko": "비인증 공격자가 서버에서 임의 PHP 코드를 실행할 수 있어 웹사이트 장악, 데이터 유출, 서비스 중단으로 이어질 수 있습니다.",
+      "remediation_ko": "① 3.0.0 미만 버전은 영향 버전이므로 최신 버전 업데이트 필요성을 확인합니다. ② REST 라우트 권한 검사와 비인가 요청 차단을 점검합니다. ③ 인터넷 노출 WordPress 사이트와 플러그인 설치 여부를 우선 확인합니다.",
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.00173,
@@ -4736,7 +4904,7 @@
       "description_orig": "The Custom Block Builder WordPress plugin before 3.0.0 does not properly deny unauthorised requests to its REST routes, as its permission checks return a non-error response that WordPress treats as granted, allowing unauthenticated users to execute arbitrary PHP code on the server.",
       "published_at": "2026-11-15",
       "updated_at": "2026-11-17 13:30:47 KST",
-      "analyzed_by": "fallback:budget"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130849",
@@ -5236,10 +5404,10 @@
     },
     {
       "cve_id": "CVE-2026-95377",
-      "title_ko": "Zenitel VSFF6 명령어 주입 취약점",
-      "summary_ko": "CVE-2026-95377는 Zenitel VSFF6에서 확인된 명령어 주입 취약점입니다. CVSS 9.4점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 1.2%(악용 위험 상위 31% 수준)입니다.",
-      "impact_ko": "조작된 입력으로 서버 명령을 실행할 수 있어 시스템 장악과 데이터 유출로 이어질 수 있습니다.",
-      "remediation_ko": "① 영향 범위는 9.6.3.0·10.1.3.0 미만 버전이며, 자산 목록과 대조해 9.6.3.0·10.1.3.0 이상 버전으로 업데이트하면 해결됩니다. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "title_ko": "Zenitel EdgeAudioClient TFTP 명령 주입 취약점",
+      "summary_ko": "Zenitel EdgeAudioClient 9.6.3.0 미만 및 10.x 10.1.3.0 미만 버전에서 TFTP 프로비저닝 모듈에 OS 명령 주입 취약점이 있습니다. 같은 네트워크 세그먼트의 악의적 DHCP 서버가 DHCP option 66(TFTP Server Name) 값에 셸 정제 없이 명령을 전달해 인증되지 않은 인접 공격자가 root 권한으로 임의 명령을 실행할 수 있습니다. 이 주입은 config_update_tftp_server 및 sw_update_tftp_server 설정 필드로도 도달 가능하며, DHCP 사용 장치는 기본 구성에서 부팅 및 임대 갱신 시 영향을 받습니다.",
+      "impact_ko": "성공 시 root 권한으로 임의 명령이 실행되어 장치 설정과 소프트웨어 무결성이 훼손될 수 있고, 네트워크 측면 이동의 발판이 될 수 있습니다.",
+      "remediation_ko": "① DHCP 사용 장치와 기본 구성 자산을 우선 점검하고 신뢰할 수 있는 DHCP만 허용하십시오. ② 해당 버전은 9.6.3.0 및 10.1.3.0 이상으로 업데이트하십시오. ③ TFTP 프로비저닝을 제한하고 설정 필드 변경 권한을 통제하십시오.",
       "cvss_score": 9.4,
       "severity": "CRITICAL",
       "epss_score": 0.01207,
@@ -5272,7 +5440,7 @@
       "description_orig": "OS command injection in the TFTP provisioning module of Zenitel EdgeAudioClient before 9.6.3.0, and 10.x before 10.1.3.0, on VSFF6, VSFF8, VSFF8MP, VSFF8MN, and VSFT devices allows unauthenticated adjacent attackers to execute arbitrary commands as root via a crafted DHCP option 66 (TFTP Server Name) value supplied by a rogue DHCP server on the same network segment. The DHCP-supplied value is passed to a shell without sanitization. Devices using DHCP, the default configuration, are affected on every boot and lease renewal. The same injection is also reachable via the config_update_tftp_server and sw_update_tftp_server configuration fields by an attacker able to modify the device configuration.",
       "published_at": "2026-11-13",
       "updated_at": "2026-11-16 20:37:33 KST",
-      "analyzed_by": "fallback"
+      "analyzed_by": "exaone"
     },
     {
       "cve_id": "CVE-2026-130327",
@@ -5418,84 +5586,6 @@
         "CWE-416"
       ],
       "description_orig": "NGINX use-after-free in DNS resolver waiting-list processing when proxy_pass destination is built from request data and a mirror or SSI subrequest resolves the same name. Affects NGINX Open Source 0.6.18 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
-      "published_at": "2026-11-18",
-      "updated_at": "2026-11-19 09:32:09 KST",
-      "analyzed_by": "curated"
-    },
-    {
-      "cve_id": "CVE-2026-123633",
-      "title_ko": "NGINX2Root — NGINX HTTP/2 사용 후 해제(use-after-free) 원격 코드 실행 (CVE-2026-123633)",
-      "summary_ko": "NGINX2Root 5종 중 하나인 CVE-2026-123633은 HTTP/2 연결을 정리(connection draining)하는 과정에서 이미 해제한 메모리를 계속 참조하는 사용 후 해제(CWE-416) 결함입니다. 클라이언트가 HTTP/2로 요청을 보내고 NGINX가 업스트림 서버로 연결하는 중에 워커의 가용 연결 슬롯이 바닥나는 상황이 겹치면 해제된 연결 메모리를 다시 사용하게 되고, 인증 없이 원격에서 nginx 워커 권한의 코드 실행으로 이어질 수 있습니다. F5는 CVSS 4.0 9.2·CVSS 3.1 8.1로 평가했고 NGINX Open Source 1.19.7부터 1.31.8까지, NGINX Plus 37.0.x·37.1~37.2 계열이 영향을 받습니다.",
-      "impact_ko": "HTTP/2를 클라이언트 쪽에서 받고 프록시로 업스트림에 요청을 넘기며 worker_connections가 부족해지는 구성이 대상입니다. 공격자는 워커 크래시로 서비스를 중단시키거나, 성공 시 워커 권한으로 코드를 실행해 프록시 뒤 신뢰 경계에 발판을 만들 수 있습니다.",
-      "remediation_ko": "① NGINX Open Source 1.30.7·1.31.9 이상, NGINX Plus 37.0.8.1·37.3.0.1 이상으로 업데이트하세요. ② 패치 전에는 노출 리스너의 HTTP/2를 끄면 이 취약점은 차단됩니다(http2 off; 또는 listen의 http2 파라미터 제거). worker_connections 값을 여유 있게 조정하는 것은 완화일 뿐 근본 조치는 아닙니다. ③ SCTP가 필요 없는 호스트는 커널 모듈 자동 로드를 차단(install sctp /bin/false)하고, 컨테이너는 호스트 커널 기준으로 점검하세요. ④ 컨테이너 이미지·Helm 차트·Kubernetes 인그레스 컨트롤러·어플라이언스에 번들된 NGINX까지 자산 목록에 넣고 배포판 백포트 여부를 벤더 공지로 확인하세요. ⑤ 워커 크래시('worker process ... exited on signal')와 비정상 프로세스 생성을 모니터링하세요.",
-      "cvss_score": 9.2,
-      "severity": "CRITICAL",
-      "epss_score": null,
-      "epss_percentile": null,
-      "is_kev": false,
-      "kev_date_added": "",
-      "kev_due_date": "",
-      "kev_required_action": "",
-      "kev_ransomware": "",
-      "vendor": "F5",
-      "product": "NGINX Open Source / NGINX Plus",
-      "affected_products": [
-        "NGINX Open Source 1.19.7 ~ 1.31.8 (HTTP/2 프록시 + 연결 슬롯 부족 시)",
-        "NGINX Plus 37.0.0 ~ 37.0.7.1 / 37.1.0 ~ 37.2.0.1"
-      ],
-      "poc_count": 2,
-      "poc_links": [
-        {
-          "name": "Censys-Research/nginx2root",
-          "url": "https://github.com/Censys-Research/nginx2root",
-          "stars": 0,
-          "description": "Censys reproductions of the five nginx2root vulnerabilities"
-        },
-        {
-          "name": "TimTheBeastNL/nginx2root",
-          "url": "https://github.com/TimTheBeastNL/nginx2root",
-          "stars": 0,
-          "description": "Detection scanners + Docker lab for NGINX2Root (CVE-2026-123007/-123633/-121810/-123634/-113425)"
-        }
-      ],
-      "references": [
-        {
-          "url": "https://www.circl.lu/pub/tr-105/",
-          "title": "CIRCL TR-105 NGINX2ROOT - Remote Code Execution in NGINX and Potential Host Compromise"
-        },
-        {
-          "url": "https://cert.europa.eu/publications/security-advisories/2026-022/",
-          "title": "CERT-EU Security Advisory 2026-022 - Critical vulnerabilities in Nginx"
-        },
-        {
-          "url": "https://www.sophos.com/en-us/security-advisories/sophos-sa-20261118-nginx2root",
-          "title": "Sophos Advisory: NGINX Vulnerabilities - nginx2root"
-        },
-        {
-          "url": "https://blog.qualys.com/product-tech/patch-management/2026/11/18/nginx2root-five-nginx-flaws-led-by-cve-2026-123007-how-to-find-mitigate-and-patch-now",
-          "title": "Qualys: NGINX2Root - Five nginx Flaws, Led by CVE-2026-123007"
-        },
-        {
-          "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
-          "title": "The Hacker News: 10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code"
-        },
-        {
-          "url": "https://lwn.net/Articles/1108362/",
-          "title": "LWN: NGINX2Root - Remote Code Execution vulnerabilities in nginx"
-        },
-        {
-          "url": "https://docs.nginx.com/nginx/releases/",
-          "title": "NGINX Releases (1.30.7 / 1.31.9 보안 릴리스)"
-        },
-        {
-          "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
-          "title": "Wiz: Unauthenticated Remote Code Execution in NGINX"
-        }
-      ],
-      "cwe": [
-        "CWE-416"
-      ],
-      "description_orig": "NGINX HTTP/2 use-after-free when connection draining closes an active HTTP/2 connection while NGINX connects to an upstream server and worker_connections are exhausted. Affects NGINX Open Source 1.19.7 through 1.31.8; fixed in 1.30.7 / 1.31.9. Part of NGINX2Root.",
       "published_at": "2026-11-18",
       "updated_at": "2026-11-19 09:32:09 KST",
       "analyzed_by": "curated"

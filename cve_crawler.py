@@ -90,14 +90,15 @@ VENDOR_CVE_FEEDS = [
     {"name": "Sophos News", "url": "https://news.sophos.com/feed/", "days": 21, "rank": 3, "cap": 40},
     {"name": "Palo Alto Unit 42", "url": "https://unit42.paloaltonetworks.com/feed/", "days": 21, "rank": 3, "cap": 40},
     {"name": "Google Cloud Threat Intelligence", "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/", "days": 21, "rank": 3, "cap": 40},
+    {"name": "Rapid7 Blog", "url": "https://www.rapid7.com/blog/rss/", "days": 21, "rank": 3, "cap": 40},
 ]
 
 # 국내 기관: RSS/JSON 이 없어 공개 게시판 HTML 을 직접 읽는다(2026-11-19 확인).
 #  · KISA 보호나라 & KrCERT/CC (boho.or.kr = krcert.or.kr 동일 사이트) 서버렌더링 게시판
 #  · 취약점 정보(B0000302)는 제목이 'CVE-XXXX-XXXXX | 제품 취약점' 형식이라 CVE 단서로 바로 쓸 수 있다.
 KR_INSTITUTION_BOARDS = [
-    {"name": "KISA 취약점 정보", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205023&bbsId=B0000302", "days": 21, "rank": 2},
-    {"name": "KISA 보안공지", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205020&bbsId=B0000133", "days": 21, "rank": 3},
+    {"name": "KISA 취약점 정보", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205023&bbsId=B0000302", "days": 120, "rank": 2},
+    {"name": "KISA 보안공지", "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205020&bbsId=B0000133", "days": 30, "rank": 3},
 ]
 
 # 별칭으로 더 잘 검색되는 CVE (GitHub PoC 검색 보강)
