@@ -1218,6 +1218,7 @@ def generate_html(jobs, update_time_str):
       border: 1px solid var(--border-default);
       border-radius: 12px;
       padding: 18px 20px;
+      min-width: 0;
       text-decoration: none;
       color: inherit;
       display: flex;

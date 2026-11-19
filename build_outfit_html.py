@@ -1531,7 +1531,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <span class="tm-label">내일</span>
         <span class="wx-icon" id="wxTomorrowIcon">__TOMORROW_ICON__</span>
         <span id="wxTomorrowText">__TOMORROW_TEXT__</span>
-        <span class="wx-attr"><a href="https://developer.apple.com/weatherkit/data-source-attribution/" target="_blank" rel="noopener noreferrer">&#xF8FF; Weather</a> · 실시간 Open-Meteo</span>
+        <span class="wx-attr"><a href="https://developer.apple.com/weatherkit/data-source-attribution/" target="_blank" rel="noopener noreferrer">Apple Weather</a> 기본값 · 실시간 Open-Meteo</span>
       </div>
     </section>
 
