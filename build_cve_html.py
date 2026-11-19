@@ -6,6 +6,7 @@ CVE 취약점 리포트 페이지(cve.html)와 데이터 파일(cve_data.json)�
 (index.html / study.html / ai.html 과 동일한 secjobs-theme 디자인 시스템)
 """
 import os
+import re
 import json
 from datetime import datetime, timezone, timedelta
 
@@ -599,6 +600,14 @@ CSS = """
       padding: 1px 6px;
     }
 
+    .priority-row .due-fresh {
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      border-radius: 5px;
+      padding: 1px 6px;
+    }
+
     .card-date {
       margin-left: auto;
       font-size: 11.5px;
@@ -989,7 +998,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <footer class="footer">
       Infosec Archive · CVE 취약점 리포트<br>
-      수집 소스: CISA KEV · CISA 경보·권고 · CIRCL CVE · NVD · FIRST EPSS · GitHub 공개 PoC · 보안 뉴스<br>
+      수집 소스: CISA KEV · CISA 경보·권고 · KISA 보호나라 · MSRC · Google Cloud TI · Unit 42 · Qualys · Rapid7 · Sophos · Wiz · CIRCL CVE · NVD · FIRST EPSS · GitHub 공개 PoC · 보안 뉴스<br>
       요약·원인·조치 방안은 수집 원문을 바탕으로 AI가 한국어로 정리한 것이며, 실제 적용 전 벤더 공지와 원문을 함께 확인하세요.
     </footer>
   </main>
@@ -1282,12 +1291,50 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 """
 
 
+# 경보·보도 소스 라벨 — '이번 주 우선 조치' 배지에 그대로 쓰인다
+ALERT_SOURCE_LABELS = {
+    "CISA Alert": "CISA 경보",
+    "CISA ICS Advisory": "CISA ICS 권고",
+    "KISA 취약점 정보": "KISA 경보",
+}
+# 보안기업·연구조직 피드 (KISA·CISA 경보와 함께 '신규 고위험' 판정 근거로 쓴다)
+VENDOR_ALERT_SOURCES = {
+    "Microsoft MSRC",
+    "Google Cloud Threat Intelligence",
+    "Palo Alto Unit 42",
+    "Qualys Blog",
+    "Rapid7 Blog",
+    "Sophos News",
+    "Wiz Blog",
+}
+ALERT_WEIGHTS = {"CISA Alert": 15, "KISA 취약점 정보": 12, "CISA ICS Advisory": 6}
+VENDOR_SOURCE_LABELS = {
+    "Microsoft MSRC": "MSRC",
+    "Google Cloud Threat Intelligence": "Google Cloud TI",
+    "Palo Alto Unit 42": "Unit 42",
+    "Qualys Blog": "Qualys",
+    "Rapid7 Blog": "Rapid7",
+    "Sophos News": "Sophos",
+    "Wiz Blog": "Wiz",
+}
+
+
 def build_briefing(items):
-    kev_items = [i for i in items if i.get("is_kev")]
-    poc_items = [i for i in items if i.get("poc_links")]
-    crit = sum(1 for i in items if i.get("severity") == "CRITICAL")
-    high = sum(1 for i in items if i.get("severity") == "HIGH")
+    """'이번 주 우선 조치' 요약 문장과 행(최대 7건)을 만든다.
+
+    행 선정 순서
+      ① 오늘~7일 내 마감 KEV — 마감일 → CVSS 순 (이번 주 마감이 먼저)
+      ② CISA 경보·KISA·주요 보안기업이 포착한 KEV 미등재 고위험 취약점
+         (CVSS ≥ 9.0 또는 공개 PoC ≥ 2, 최근 보도 가중)
+      ③ 최근 기한 경과 KEV — 가장 최근 것 1건
+    같은 CVE가 두 번 나오지 않도록 seen 집합으로 막는다.
+    """
+    if not items:
+        return ("아직 수집된 CVE가 없습니다. cve_crawler.py 실행 후 다시 빌드하세요.", [])
+
+    MAX_ROWS = 7
     today = datetime.now(KST).date()
+    week_end = today + timedelta(days=6 - today.weekday())  # 이번 주 일요일
 
     def due_date(i):
         try:
@@ -1295,79 +1342,189 @@ def build_briefing(items):
         except ValueError:
             return None
 
+    def cvss(i):
+        try:
+            return float(i.get("cvss_score") or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    def poc_n(i):
+        try:
+            n = int(i.get("poc_count") or 0)
+        except (TypeError, ValueError):
+            n = 0
+        return max(n, len(i.get("poc_links") or []))
+
+    def alert_sources(i):
+        return [(a.get("source") or "").strip() for a in (i.get("alerts") or [])]
+
+    def md(d):
+        return f"{d.month}/{d.day}"
+
+    kev_items = [i for i in items if i.get("is_kev")]
+    poc_items = [i for i in items if i.get("poc_links")]
+    crit = sum(1 for i in items if i.get("severity") == "CRITICAL")
+    high = sum(1 for i in items if i.get("severity") == "HIGH")
+
     dated = [i for i in kev_items if due_date(i)]
-    dated.sort(key=due_date)
-    overdue = [i for i in dated if due_date(i) < today]
-    imminent = [i for i in dated if due_date(i) >= today]
+    overdue = sorted([i for i in dated if due_date(i) < today],
+                     key=lambda i: (due_date(i), -cvss(i)), reverse=True)
+    this_week = sorted([i for i in dated if today <= due_date(i) <= week_end],
+                       key=lambda i: (due_date(i), -cvss(i), i["cve_id"]))
+    within7 = sorted([i for i in dated if today <= due_date(i) <= today + timedelta(days=7)],
+                     key=lambda i: (due_date(i), -cvss(i), i["cve_id"]))
 
-    if not items:
-        return ("아직 수집된 CVE가 없습니다. cve_crawler.py 실행 후 다시 빌드하세요.", [])
+    def is_fresh_high_risk(i):
+        """KEV 등재 전이지만 경보·보안기업 피드가 먼저 잡은 고위험 취약점."""
+        if i.get("is_kev"):
+            return False
+        srcs = set(alert_sources(i))
+        if not (srcs & (set(ALERT_SOURCE_LABELS) | VENDOR_ALERT_SOURCES)):
+            return False
+        return cvss(i) >= 9.0 or poc_n(i) >= 2
 
-    alert_items = [i for i in items
-                   if any((a.get("source") or "").startswith("CISA Alert") for a in (i.get("alerts") or []))]
+    def fresh_score(i):
+        """독립 보도처 수 · PoC 수 · CVSS · 발표 최신성 · 경보 등급을 합산한 우선순위."""
+        srcs = set(alert_sources(i))
+        score = 7.0 * len(srcs)                       # 여러 곳이 독립적으로 다룰수록 파급이 크다
+        score += 3 * poc_n(i) + 2 * cvss(i)
+        score += sum(ALERT_WEIGHTS.get(s, 0) for s in srcs)
+        latest = max([(a.get("published_at") or "") for a in (i.get("alerts") or [])] or [""])
+        try:
+            age = (today - datetime.strptime(latest[:10], "%Y-%m-%d").date()).days
+        except ValueError:
+            age = 30
+        score += 8 if age <= 2 else (4 if age <= 7 else 0)
+        return score
 
-    parts = [f"최근 수집된 CVE {len(items)}건 중 {len(kev_items)}건이 CISA KEV에 등재된 실제 악용 취약점입니다."]
-    if alert_items:
-        first = alert_items[0]
-        parts.append(
-            f"CISA 경보 피드에 이름이 오른 취약점이 {len(alert_items)}건 있습니다"
-            f"({first['cve_id']} {first.get('title_ko', '')})."
-            " KEV 등재·NVD 반영보다 경보가 앞서는 항목이 있으므로 패치 발표 여부를 먼저 확인하세요."
-        )
-    if crit or high:
-        parts.append(f"CVSS 기준 Critical {crit}건, High {high}건이며, 공개 PoC가 확인된 항목은 {len(poc_items)}건입니다.")
-    if overdue:
-        parts.append(f"CISA 조치 기한이 이미 지난 KEV 항목이 {len(overdue)}건 있습니다. 해당 제품을 운영 중이라면 패치 적용 여부를 먼저 확인하세요.")
-    if imminent:
-        parts.append(f"기한이 남은 항목 중 가장 임박한 것은 {imminent[0]['kev_due_date']}까지입니다.")
-    elif not overdue and kev_items:
-        parts.append("KEV 등재 항목은 패치 적용 여부를 우선 확인하세요.")
-    briefing = " ".join(parts)
+    fresh = sorted([i for i in items if is_fresh_high_risk(i)],
+                   key=lambda i: (-fresh_score(i), i["cve_id"]))
+
+    def deadline_badge(i):
+        d = due_date(i)
+        if not d:
+            return esc("KEV 등재"), "due"
+        delta = (d - today).days
+        if delta < 0:
+            return esc(f"기한 경과 {-delta}일 ({d.isoformat()})"), "due due-over"
+        if delta == 0:
+            return esc(f"오늘 마감 ({d.isoformat()})"), "due due-today"
+        return esc(f"D-{delta} ({d.isoformat()})"), "due"
+
+    def fresh_badge(i):
+        srcs = alert_sources(i)
+        tag = next((ALERT_SOURCE_LABELS[s] for s in srcs if s in ALERT_SOURCE_LABELS), "")
+        stats = []
+        if cvss(i) >= 9.0:
+            stats.append(f"CVSS {cvss(i):.1f}")
+        if poc_n(i):
+            stats.append(f"PoC {poc_n(i)}건")
+        parts = ([tag] if tag else []) + stats
+        if len(parts) > 2:  # 배지가 길어지면 CVSS 를 덜어낸다 (경보 · PoC 우선)
+            parts = [tag] + [p for p in stats if p.startswith("PoC")]
+        if not parts:
+            vendors = [VENDOR_SOURCE_LABELS[s] for s in srcs if s in VENDOR_SOURCE_LABELS]
+            parts = [vendors[0] if vendors else "보도"]
+        return esc(" · ".join(parts)), ("due due-alert" if tag else "due due-fresh")
 
     rows = []
-    # 경보·보도로 먼저 포착된 항목을 맨 위에 세운다 (최대 2건)
-    for it in alert_items[:2]:
-        alerts = it.get("alerts") or []
-        src = alerts[0].get("source", "") if alerts else ""
-        when = (alerts[0].get("published_at") or "") if alerts else ""
-        label = "CISA 경보" if src.startswith("CISA Alert") else (src or "보도")
+    seen = set()
+
+    def add_row(it, badge, cls):
+        cid = it["cve_id"]
+        if cid in seen:  # 같은 CVE 중복 행 차단
+            return False
+        seen.add(cid)
+        title = re.sub(r"\s*\(?\s*" + re.escape(cid) + r"\s*\)?\s*$", "", it.get("title_ko", "")).strip()
         rows.append(
             '<div class="priority-row">'
-            f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
-            f'<span>{esc(it.get("title_ko", ""))}</span>'
-            f'<span class="due due-alert">{esc(label)}{" " + esc(when) if when else ""}</span>'
+            f'<span class="cve-mini">{esc(cid)}</span>'
+            f'<span>{esc(title)}</span>'
+            f'<span class="{cls}">{badge}</span>'
             "</div>"
         )
-    # 기한 경과 → 임박 순으로 최대 4건 노출
-    for it in (overdue[-2:] + imminent)[:4]:
-        d = due_date(it)
-        if d < today:
-            tag = f"기한 경과 {(today - d).days}일"
-            cls = "due due-over"
-        elif d == today:
-            tag = "오늘 마감"
-            cls = "due due-today"
+        return True
+
+    # ① 이번 주 마감 KEV → ② 신규 고위험 → ③ 최근 기한 경과 KEV 순으로 채운다
+    picks = ([("kev", i) for i in within7[:4]]
+             + [("fresh", i) for i in fresh[:3]]
+             + [("over", i) for i in overdue[:1]])
+    while len(picks) > MAX_ROWS:  # 예산 초과 시 신규 고위험 꼬리부터 줄인다
+        idx = max((n for n, (kind, _) in enumerate(picks) if kind == "fresh"), default=len(picks) - 1)
+        picks.pop(idx)
+    for kind, it in picks:
+        if kind == "fresh":
+            badge, cls = fresh_badge(it)
         else:
-            tag = f"D-{(d - today).days}"
-            cls = "due"
-        rows.append(
-            '<div class="priority-row">'
-            f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
-            f'<span>{esc(it.get("title_ko", ""))}</span>'
-            f'<span class="{cls}">{tag} ({esc(it["kev_due_date"])})</span>'
-            "</div>"
-        )
+            badge, cls = deadline_badge(it)
+        add_row(it, badge, cls)
+    # 자리가 남으면 다음 순번으로 채운다 (이번 주 마감 → 신규 고위험 → 경과)
+    for it in within7[4:] + fresh[3:] + overdue[1:]:
+        if len(rows) >= MAX_ROWS:
+            break
+        badge, cls = deadline_badge(it) if it.get("is_kev") else fresh_badge(it)
+        add_row(it, badge, cls)
     if not rows:
         for it in kev_items[:3]:
-            rows.append(
-                '<div class="priority-row">'
-                f'<span class="cve-mini">{esc(it["cve_id"])}</span>'
-                f'<span>{esc(it.get("title_ko", ""))}</span>'
-                "</div>"
-            )
+            add_row(it, deadline_badge(it)[0], deadline_badge(it)[1])
     if not rows:
         rows.append('<div class="priority-row"><span>현재 KEV 등재 항목이 없습니다. 아래 목록에서 위험도가 높은 항목부터 확인하세요.</span></div>')
-    return briefing, rows
+
+    parts = []
+    if kev_items:
+        parts.append(f"최근 수집된 CVE {len(items)}건 중 {len(kev_items)}건이 CISA KEV에 등재된 실제 악용 취약점입니다.")
+    else:
+        parts.append(f"최근 수집된 CVE {len(items)}건 가운데 CISA KEV 등재 항목은 아직 없습니다.")
+
+    if within7:
+        nearest_day = due_date(within7[0])
+        nearest = [i for i in within7 if due_date(i) == nearest_day]
+        ids = ", ".join(i["cve_id"] for i in nearest)
+        parts.append(
+            f"이번 주({md(week_end)}까지) 마감 KEV는 {len(this_week)}건,"
+            f" 7일 내({md(today + timedelta(days=7))}까지)로는 {len(within7)}건이며,"
+            f" 가장 급한 {md(nearest_day)} 마감 {len(nearest)}건({ids})은 오늘 안에 패치 적용 여부를 확인해야 합니다."
+        )
+    elif kev_items:
+        parts.append("이번 주 마감으로 잡힌 KEV는 없습니다. 아래 목록에서 위험도가 높은 항목부터 확인하세요.")
+
+    if overdue:
+        latest = overdue[0]
+        parts.append(
+            f"기한이 지난 KEV도 {len(overdue)}건(가장 최근 {latest['kev_due_date']} 마감 {latest['cve_id']}) 있습니다."
+        )
+
+    if fresh:
+        top_fresh = fresh[:2]
+        top_srcs = [s for i in top_fresh for s in alert_sources(i)]
+        vendors = []
+        for s in top_srcs:
+            lbl = VENDOR_SOURCE_LABELS.get(s)
+            if lbl and lbl not in vendors:
+                vendors.append(lbl)
+        who = []
+        if "CISA Alert" in top_srcs:
+            who.append("CISA 경보")
+        if any(s.startswith("KISA") for s in top_srcs):
+            who.append("KISA 취약점 정보")
+        if vendors:
+            who.append("보안기업(" + "·".join(vendors[:3]) + (" 등" if len(vendors) > 3 else "") + ")")
+        desc = []
+        for i in top_fresh:
+            alias = (i.get("title_ko") or "").split(" — ")[0].strip()
+            stats = [x for x in (f"CVSS {cvss(i):.1f}" if cvss(i) else "",
+                                 f"PoC {poc_n(i)}건" if poc_n(i) else "") if x]
+            desc.append(f"{alias}({i['cve_id']}{', ' + ' · '.join(stats) if stats else ''})")
+        parts.append(
+            f"KEV 등재 전 고위험 취약점도 {'·'.join(who) or '보안 매체'}에서 집중 보도됐습니다 — "
+            + ", ".join(desc)
+            + ". 해당 제품을 운영 중이라면 노출 여부와 벤더 패치를 먼저 확인하세요."
+        )
+
+    if crit or high or poc_items:
+        parts.append(f"CVSS 기준 Critical {crit}건, High {high}건이며, 공개 PoC가 확인된 항목은 {len(poc_items)}건입니다.")
+
+    return " ".join(parts), rows
 
 
 def attach_alerts(items, days=30):
@@ -1420,7 +1577,11 @@ def build():
         "poc": stats["poc"],
         "collected_at": collected,
         "built_at": updated_at,
-        "sources": ["CISA KEV", "CISA 경보", "CIRCL CVE", "NVD", "FIRST EPSS", "GitHub", "보안 뉴스"],
+        "sources": [
+            "CISA KEV", "CISA 경보", "CISA ICS 권고", "CIRCL CVE", "NVD", "FIRST EPSS",
+            "GitHub 공개 PoC", "KISA 보호나라", "MSRC", "Google Cloud TI", "Sophos",
+            "Qualys", "Wiz", "Unit 42", "Rapid7", "보안 뉴스",
+        ],
     }
 
     with open(CVE_DATA_JSON, "w", encoding="utf-8") as f:
