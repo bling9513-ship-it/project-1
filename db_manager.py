@@ -767,14 +767,15 @@ def get_ai_insight_count(db_path=DB_PATH):
     return n
 
 def get_ai_insights(limit=None, db_path=DB_PATH):
-    """AI 인사이트 조회 (주목할 기술 우선 → 최신순)"""
+    """AI 인사이트 조회 (최신순 우선 — 상한에 걸려도 오늘 발행분이 밀리지 않도록)"""
     conn = get_connection(db_path)
     cur = conn.cursor()
     sql = """
     SELECT item_key, source, title_ko, title_orig, url, category, summary, tech_insight,
            tags, is_featured, published_at, score, analyzed_by, collected_at
     FROM ai_insights
-    ORDER BY is_featured DESC, published_at DESC, score DESC, id DESC
+    ORDER BY COALESCE(NULLIF(published_at, ''), '0000-00-00') DESC,
+             is_featured DESC, score DESC, id DESC
     """
     params = ()
     if limit:
@@ -857,10 +858,25 @@ def upsert_cve_reports(items, db_path=DB_PATH):
             analyzed_by, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(cve_id) DO UPDATE SET
-            title_ko = excluded.title_ko,
-            summary_ko = excluded.summary_ko,
-            impact_ko = excluded.impact_ko,
-            remediation_ko = excluded.remediation_ko,
+            -- 한국어 폴백(구조화 템플릿)이 이미 확보된 EXAONE/큐레이션 분석을 덮어쓰지 않도록 방어한다.
+            -- (수집만 하고 --analyze 없이 --finish 로 들어온 날, 분석 60건이 fallback:pending 으로
+            --  되돌아간 회귀를 막는 방어선. 분석기가 실제로 성공한 경우에만 교체한다.)
+            title_ko = CASE WHEN excluded.analyzed_by LIKE 'fallback%'
+                             AND cve_reports.analyzed_by IN ('exaone', 'curated')
+                             AND COALESCE(cve_reports.title_ko, '') <> ''
+                        THEN cve_reports.title_ko ELSE excluded.title_ko END,
+            summary_ko = CASE WHEN excluded.analyzed_by LIKE 'fallback%'
+                               AND cve_reports.analyzed_by IN ('exaone', 'curated')
+                               AND COALESCE(cve_reports.title_ko, '') <> ''
+                          THEN cve_reports.summary_ko ELSE excluded.summary_ko END,
+            impact_ko = CASE WHEN excluded.analyzed_by LIKE 'fallback%'
+                              AND cve_reports.analyzed_by IN ('exaone', 'curated')
+                              AND COALESCE(cve_reports.title_ko, '') <> ''
+                         THEN cve_reports.impact_ko ELSE excluded.impact_ko END,
+            remediation_ko = CASE WHEN excluded.analyzed_by LIKE 'fallback%'
+                                   AND cve_reports.analyzed_by IN ('exaone', 'curated')
+                                   AND COALESCE(cve_reports.title_ko, '') <> ''
+                              THEN cve_reports.remediation_ko ELSE excluded.remediation_ko END,
             cvss_score = excluded.cvss_score,
             severity = excluded.severity,
             epss_score = excluded.epss_score,
@@ -880,7 +896,10 @@ def upsert_cve_reports(items, db_path=DB_PATH):
             description_orig = excluded.description_orig,
             published_at = excluded.published_at,
             updated_at = excluded.updated_at,
-            analyzed_by = excluded.analyzed_by;
+            analyzed_by = CASE WHEN excluded.analyzed_by LIKE 'fallback%'
+                                AND cve_reports.analyzed_by IN ('exaone', 'curated')
+                                AND COALESCE(cve_reports.title_ko, '') <> ''
+                           THEN cve_reports.analyzed_by ELSE excluded.analyzed_by END;
         """, (
             it["cve_id"],
             it["title_ko"],
@@ -904,7 +923,7 @@ def upsert_cve_reports(items, db_path=DB_PATH):
             json.dumps(it.get("references", []), ensure_ascii=False),
             json.dumps(it.get("cwe", []), ensure_ascii=False),
             it.get("description_orig", ""),
-            it.get("published_at", ""),
+            normalize_date_str(it.get("published_at", "")),
             it.get("updated_at", "") or now_str,
             it.get("analyzed_by", "fallback"),
             now_str,
@@ -994,8 +1013,68 @@ def get_cve_alerts(days=None, limit_per_cve=4, db_path=DB_PATH):
     return out
 
 
+def normalize_date_str(value):
+    """공개일 문자열을 ISO(YYYY-MM-DD) 로 통일한다. 해석할 수 없으면 원문을 그대로 돌려준다."""
+    if value is None:
+        return ""
+    s = str(value).strip()
+    if not s:
+        return ""
+    m = re.search(r"(\d{4})[-./](\d{1,2})[-./](\d{1,2})", s)
+    if not m:
+        m = re.fullmatch(r"(\d{4})(\d{2})(\d{2})", s) if re.fullmatch(r"\d{8}", s) else None
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).strftime("%Y-%m-%d")
+        except ValueError:
+            return s
+    for fmt in ("%b %d, %Y", "%B %d, %Y", "%d %b %Y", "%d %B %Y", "%Y년 %m월 %d일"):
+        try:
+            return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+    return s
+
+
+def normalize_cve_published_dates(db_path=DB_PATH):
+    """cve_reports.published_at 을 ISO 날짜로 정규화하고, 비어 있는 행은 경보·출처 날짜로 메운다.
+
+    정렬 기준이 '최근 공개순'이 된 만큼, 표기가 제각각이거나 비어 있는 행이 있으면
+    그 행만 목록 맨 아래로 밀리므로 여기서 한 번 정리한다.
+    반환: (정규화한 행 수, 끝까지 비어 있는 cve_id 목록)
+    """
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    alert_dates = {}
+    try:
+        for row in cur.execute("SELECT cve_id, published_at FROM cve_alerts"):
+            d = normalize_date_str(row["published_at"])
+            if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d or ""):
+                prev = alert_dates.get(row["cve_id"], "")
+                alert_dates[row["cve_id"]] = max(prev, d)
+    except sqlite3.Error:
+        alert_dates = {}
+
+    fixed = 0
+    still_empty = []
+    for row in list(cur.execute("SELECT cve_id, published_at FROM cve_reports")):
+        cve_id, raw = row["cve_id"], row["published_at"]
+        norm = normalize_date_str(raw)
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", norm or ""):
+            norm = alert_dates.get(cve_id, "")
+        if not norm:
+            still_empty.append(cve_id)
+            continue
+        if norm != (raw or ""):
+            cur.execute("UPDATE cve_reports SET published_at = ? WHERE cve_id = ?", (norm, cve_id))
+            fixed += 1
+    conn.commit()
+    conn.close()
+    return fixed, still_empty
+
+
 def get_cve_reports(limit=None, db_path=DB_PATH):
-    """CVE 리포트 조회 (KEV 실제 악용 → CVSS → EPSS → 최신순)"""
+    """CVE 리포트 조회 (최근 공개일 우선 → KEV → CVSS → EPSS)"""
     conn = get_connection(db_path)
     cur = conn.cursor()
     sql = """
@@ -1006,8 +1085,9 @@ def get_cve_reports(limit=None, db_path=DB_PATH):
            references_json, cwe, description_orig, published_at, updated_at,
            analyzed_by
     FROM cve_reports
-    ORDER BY is_kev DESC, COALESCE(cvss_score, 0) DESC, COALESCE(epss_score, 0) DESC,
-             published_at DESC, cve_id DESC
+    ORDER BY COALESCE(NULLIF(published_at, ''), '0000-00-00') DESC,
+             is_kev DESC, COALESCE(cvss_score, 0) DESC, COALESCE(epss_score, 0) DESC,
+             cve_id DESC
     """
     params = ()
     if limit:

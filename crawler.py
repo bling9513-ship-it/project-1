@@ -1751,7 +1751,7 @@ def generate_html(jobs, update_time_str):
         <span class="stat-chip">활성 보안 공고 <strong id="statActiveCount">{len(jobs)}건</strong></span>
         <span class="stat-chip">D-Day 마감 임박 <strong id="statUrgentCount">{urgent_count}건</strong></span>
         <span class="stat-chip">SQLite DB 기반 마감 자동 정리</span>
-        <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
+        <span class="stat-chip">매일 <strong>08:00</strong> 자동 갱신</span>
       </div>
     </section>
 
@@ -1845,7 +1845,7 @@ def generate_html(jobs, update_time_str):
     <!-- Footer -->
     <footer>
       <p>Infosec Archive · 정보보안 포지션 & 커리어 정보공유 아카이브</p>
-      <p>데이터는 매일 아침 06:30 KST 기준 자동 갱신됩니다.</p>
+      <p>데이터는 매일 아침 08:00 KST 기준 자동 갱신됩니다.</p>
     </footer>
   </main>
 
@@ -1904,7 +1904,7 @@ def generate_html(jobs, update_time_str):
     }}
 
     // ---- 실시간 마감 판정 ----
-    // 매일 06:30 정적 빌드 이후에도, 페이지를 연 '현재 KST 날짜·시각' 기준으로
+    // 매일 08:00 정적 빌드 이후에도, 페이지를 연 '현재 KST 날짜·시각' 기준으로
     // 마감 시각이 지난 공고(예: 14시마감, ~11/17 18:00, 지난 날짜)를 목록에서 자동 제외한다.
     function getKstNow() {{
       const d = new Date();
@@ -2287,7 +2287,7 @@ def generate_readme(jobs, update_time_str):
         "# 🛡️ Infosec Archive · 정보보안 포지션 아카이브",
         "",
         f"> **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
-        f"> **마지막 업데이트**: `{update_time_str}` (매일 06:30 KST 자동 수집)",
+        f"> **마지막 업데이트**: `{update_time_str}` (매일 08:00 KST 자동 수집)",
         f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
         "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",

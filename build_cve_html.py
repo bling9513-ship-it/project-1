@@ -10,7 +10,8 @@ import re
 import json
 from datetime import datetime, timezone, timedelta
 
-from db_manager import init_db, get_cve_reports, get_cve_stats, get_cve_alerts
+from db_manager import (init_db, get_cve_reports, get_cve_stats, get_cve_alerts,
+                        normalize_cve_published_dates)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CVE_DATA_JSON = os.path.join(BASE_DIR, "cve_data.json")
@@ -467,6 +468,21 @@ CSS = """
 
     .result-meta strong { color: var(--text-primary); font-weight: 600; }
 
+    .meta-tools { display: flex; align-items: center; gap: 8px; }
+
+    .sort-select {
+      font-family: inherit;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 5px 8px;
+      cursor: pointer;
+    }
+
+    .sort-select:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
     .reset-btn {
       border: none;
       background: transparent;
@@ -855,6 +871,9 @@ CSS = """
       .card-date { margin-left: 0; }
       .cve-foot { align-items: flex-start; }
       .copy-btn { width: 100%; text-align: center; padding: 8px 11px; }
+      .result-meta { flex-wrap: wrap; gap: 6px; }
+      .meta-tools { gap: 6px; }
+      .sort-select { font-size: 12px; padding: 4px 6px; }
     }
 
     @media (max-width: 560px) {
@@ -991,8 +1010,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </section>
 
     <div class="result-meta">
-      <span><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
-      <button class="reset-btn" id="resetFilters">필터 초기화</button>
+      <span class="result-count"><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
+      <div class="meta-tools">
+        <select class="sort-select" id="sortSelect" aria-label="정렬 기준">
+          <option value="published" selected>최신 공개순</option>
+          <option value="cvss">위험도 높은순</option>
+          <option value="kev">KEV 실제 악용순</option>
+        </select>
+        <button class="reset-btn" id="resetFilters">필터 초기화</button>
+      </div>
     </div>
 
     <section class="cve-list" id="cveList"></section>
@@ -1082,6 +1108,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     const emptyState = document.getElementById('emptyState');
     const visibleCount = document.getElementById('visibleCount');
     const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
     const clearSearchBtn = document.getElementById('clearSearch');
     const toast = document.getElementById('toast');
     let toastTimer = null;
@@ -1165,8 +1192,34 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         + '</article>';
     }
 
+    // ---- 정렬 (기본: 최신 공개순) ----
+    let currentSort = 'published';
+
+    function pubStamp(it) {
+      const s = (it.published_at || '').replace(/[^0-9]/g, '');
+      return s ? parseInt(s, 10) : 0;
+    }
+
+    function sortItems(arr) {
+      const copy = arr.slice();
+      if (currentSort === 'cvss') {
+        copy.sort((a, b) => ((b.cvss_score || 0) - (a.cvss_score || 0))
+          || (pubStamp(b) - pubStamp(a))
+          || ((b.is_kev ? 1 : 0) - (a.is_kev ? 1 : 0)));
+      } else if (currentSort === 'kev') {
+        copy.sort((a, b) => ((b.is_kev ? 1 : 0) - (a.is_kev ? 1 : 0))
+          || (pubStamp(b) - pubStamp(a))
+          || ((b.cvss_score || 0) - (a.cvss_score || 0)));
+      } else {
+        // 기본값은 서버가 정한 순서(최근 공개일 → 경보·KEV → 위험도)를 그대로 살린다.
+        // 배열 정렬은 안정 정렬이므로 공개일만 비교해도 같은 날짜 안의 보조 순서가 유지된다.
+        copy.sort((a, b) => (pubStamp(b) - pubStamp(a)));
+      }
+      return copy;
+    }
+
     function render() {
-      const visible = CVE_ITEMS.filter(matches);
+      const visible = sortItems(CVE_ITEMS.filter(matches));
       list.innerHTML = visible.map(renderCard).join('');
       visibleCount.textContent = visible.length;
       emptyState.classList.toggle('visible', visible.length === 0);
@@ -1284,7 +1337,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       searchTerm = '';
       clearSearchBtn.classList.remove('visible');
       activeFilter = 'all';
+      currentSort = 'published';
+      sortSelect.value = 'published';
       document.querySelectorAll('.segment-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-filter') === 'all'));
+      render();
+    });
+
+    sortSelect.addEventListener('change', () => {
+      currentSort = sortSelect.value;
       render();
     });
 
@@ -1532,10 +1592,10 @@ def build_briefing(items):
 
 
 def attach_alerts(items, days=30):
-    """CISA 경보·보안 매체 단서를 항목에 붙이고, 경보가 있는 항목을 목록 앞으로 올린다.
+    """CISA 경보·보안 매체 단서를 항목에 붙이고, 목록은 **최근 공개일 순**으로 정렬한다.
 
-    NVD·KEV 반영 전에 공개된 긴급 취약점이 목록 아래쪽에 묻히지 않게 하기 위한 정렬이다.
-    경보가 오래된 항목은 days 밖으로 밀려나면 다시 일반 순서로 돌아간다.
+    (요청: '최근 공개 날짜가 가장 상단'. 같은 날짜 안에서만 CISA Alert > Advisory > 일반 순을
+     보조 기준으로 쓰고, 그 다음 위험도(CVSS) → 원래 순서를 따른다.)
     """
     alerts_map = get_cve_alerts(days=days)
     for it in items:
@@ -1544,24 +1604,34 @@ def attach_alerts(items, days=30):
             it["alerts"] = rows
     alert_ids = {cid for cid, rows in alerts_map.items() if rows}
 
+    def pub_key(it):
+        """최신 공개일을 내림차순으로 만들기 위한 음수 스탬프(값이 클수록 앞)."""
+        raw = (it.get("published_at") or "").replace("-", "")
+        try:
+            return int(raw)
+        except ValueError:
+            return 0
+
+    def alert_key(it):
+        if it.get("cve_id") not in alert_ids or not it.get("alerts"):
+            return 2
+        is_alert = any((a.get("source") or "").startswith("CISA Alert") for a in it["alerts"])
+        return 0 if is_alert else 1
+
     def rank(pair):
         idx, it = pair
-        if it.get("cve_id") not in alert_ids or not it.get("alerts"):
-            return (2, 0, idx)
-        # CISA 'Alert' 는 권고(Advisory)보다 무겁게 본다 → 그 아래에 최신 발행순
-        is_alert = any((a.get("source") or "").startswith("CISA Alert") for a in it["alerts"])
-        latest = max((a.get("published_at") or "") for a in it["alerts"])
-        try:
-            stamp = -int(latest.replace("-", ""))
-        except ValueError:
-            stamp = 0
-        return (0 if is_alert else 1, stamp, idx)
+        return (-pub_key(it), alert_key(it), -(it.get("cvss_score") or 0), idx)
 
     return [it for _, it in sorted(enumerate(items), key=rank)]
 
 
 def build():
     init_db()
+    fixed, still_empty = normalize_cve_published_dates()
+    if fixed:
+        print(f"  [CVE] 공개일 {fixed}건 ISO(YYYY-MM-DD) 정규화")
+    if still_empty:
+        print(f"  [CVE] 공개일 미확인 {len(still_empty)}건 (목록 맨 아래로 정렬): {', '.join(still_empty[:6])}")
     items = attach_alerts(get_cve_reports())
     stats = get_cve_stats()
     kst = timezone(timedelta(hours=9))
