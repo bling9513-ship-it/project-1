@@ -161,6 +161,45 @@ def init_db(db_path=DB_PATH):
     cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_alerts_cve ON cve_alerts(cve_id);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_cve_alerts_pub ON cve_alerts(published_at);")
 
+    # 5-b. 출퇴근길 보안 워게임 문제 테이블 (정적 20문제 + 매일 자동 출제분)
+    #   id 는 기존 localStorage 풀이 기록(secjobs-wargame-v1)의 키라서 절대 바뀌면 안 된다.
+    #   정적 문제는 web-01...net-04, 데일리 문제는 daily-YYYYMMDD-NN 형식을 쓴다.
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS wargame_questions (
+        id TEXT PRIMARY KEY,
+        created_date TEXT NOT NULL,          -- YYYY-MM-DD (KST)
+        category TEXT NOT NULL,              -- web, log, sys, net
+        difficulty TEXT NOT NULL,            -- basic, mid, adv
+        kind TEXT NOT NULL DEFAULT 'choice', -- choice(4지선다), input(실습형)
+        title TEXT NOT NULL,
+        context TEXT NOT NULL,               -- 문제 상황 설명
+        code_lang TEXT,                      -- python, sql, log, http, bash ...
+        code_label TEXT,                     -- 코드 블록 제목 (예: Python · app.py)
+        code_body TEXT,                      -- 대표 코드/로그/패킷 본문
+        prompt TEXT NOT NULL,
+        choices_json TEXT,                   -- JSON Array (4지선다)
+        answer_idx INTEGER,                  -- 0~3
+        hints_json TEXT NOT NULL,            -- JSON Array (2단계 힌트)
+        principle TEXT NOT NULL,             -- 공격 원리
+        impact TEXT NOT NULL,                -- 실무 영향
+        vuln_code TEXT NOT NULL,             -- Vulnerable Code
+        secure_code TEXT NOT NULL,           -- Secure Code
+        source_ref TEXT,                     -- 근거 CVE ID / AI 인사이트 키
+        is_daily INTEGER NOT NULL DEFAULT 0, -- 1 = 자동 출제분
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        blocks_json TEXT,                    -- 전체 코드 블록 (JSON Array)
+        patterns_json TEXT,                  -- 실습형 정답 정규식 (JSON Array)
+        placeholder TEXT,
+        sample TEXT,
+        chips_json TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    );
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_wargame_date ON wargame_questions(created_date);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_wargame_daily ON wargame_questions(is_daily);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_wargame_category ON wargame_questions(category);")
+
     # 6. DB 메타 정보 테이블
     cur.execute("""
     CREATE TABLE IF NOT EXISTS db_meta (
@@ -689,7 +728,16 @@ def get_db_stats(db_path=DB_PATH):
 
     cur.execute("SELECT COUNT(*) FROM cve_reports;")
     total_cve = cur.fetchone()[0]
-    
+
+    try:
+        cur.execute("SELECT COUNT(*) FROM wargame_questions;")
+        total_wargame = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM wargame_questions WHERE is_daily = 1;")
+        total_wargame_daily = cur.fetchone()[0]
+    except sqlite3.OperationalError:
+        total_wargame = 0
+        total_wargame_daily = 0
+
     conn.close()
     return {
         "active_jobs": active_jobs,
@@ -698,7 +746,9 @@ def get_db_stats(db_path=DB_PATH):
         "total_questions": total_questions,
         "total_summaries": total_summaries,
         "total_ai_insights": total_ai,
-        "total_cve": total_cve
+        "total_cve": total_cve,
+        "total_wargame": total_wargame,
+        "total_wargame_daily": total_wargame_daily
     }
 
 # ---------------------------------------------------------------------------
@@ -1144,6 +1194,220 @@ def get_cve_stats(db_path=DB_PATH):
     poc = cur.fetchone()[0]
     conn.close()
     return {"total": total, "critical": critical, "high": high, "kev": kev, "poc": poc}
+
+
+# ---------------------------------------------------------------------------
+# 7) 워게임 문제 (wargame_questions)
+# ---------------------------------------------------------------------------
+WARGAME_CATEGORIES = ("web", "log", "sys", "net")
+WARGAME_LEVELS = ("basic", "mid", "adv")
+
+
+def _now_iso(now_dt=None):
+    kst = timezone(timedelta(hours=9))
+    return (now_dt or datetime.now(kst)).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _json_dump(value, default=None):
+    if value is None:
+        value = default if default is not None else []
+    return json.dumps(value, ensure_ascii=False)
+
+
+def wargame_row_from_question(q, created_date, is_daily=0, sort_order=0, now_dt=None):
+    """빌더/생성기의 문제 dict를 wargame_questions 행 dict로 변환한다.
+
+    q 키: id, cat(category), level(difficulty), type(kind), title, brief(context),
+          blocks[{label, code}], prompt, choices, answer, hints,
+          explain{principle, impact, vuln, secure}, patterns, placeholder, sample, chips,
+          code_lang, code_label, code_body, source_ref, created_date, is_daily, sort_order
+    """
+    blocks = q.get("blocks") or []
+    if not blocks and (q.get("code_body") or q.get("code_label")):
+        blocks = [{"label": q.get("code_label") or "Code", "code": q.get("code_body") or ""}]
+    first = blocks[0] if blocks else {"label": "", "code": ""}
+    explain = q.get("explain") or {}
+    now = _now_iso(now_dt)
+    kind = q.get("kind") or q.get("type") or "choice"
+    answer = q.get("answer_idx") if q.get("answer_idx") is not None else q.get("answer")
+    return {
+        "id": q["id"],
+        "created_date": q.get("created_date") or created_date,
+        "category": q.get("category") or q.get("cat"),
+        "difficulty": q.get("difficulty") or q.get("level"),
+        "kind": kind,
+        "title": q["title"],
+        "context": q.get("context") or q.get("brief") or "",
+        "code_lang": q.get("code_lang") or "",
+        "code_label": q.get("code_label") or first.get("label", ""),
+        "code_body": q.get("code_body") or first.get("code", ""),
+        "prompt": q.get("prompt") or "",
+        "choices_json": _json_dump(q.get("choices")),
+        "answer_idx": answer,
+        "hints_json": _json_dump(q.get("hints")),
+        "principle": q.get("principle") or explain.get("principle", ""),
+        "impact": q.get("impact") or explain.get("impact", ""),
+        "vuln_code": q.get("vuln_code") or explain.get("vuln", ""),
+        "secure_code": q.get("secure_code") or explain.get("secure", ""),
+        "source_ref": q.get("source_ref") or "",
+        "is_daily": 1 if (q.get("is_daily") or is_daily) else 0,
+        "sort_order": int(q.get("sort_order", sort_order) or 0),
+        "blocks_json": _json_dump(blocks),
+        "patterns_json": _json_dump(q.get("patterns")),
+        "placeholder": q.get("placeholder") or "",
+        "sample": q.get("sample") or "",
+        "chips_json": _json_dump(q.get("chips")),
+        "created_at": now,
+        "updated_at": now,
+    }
+
+
+_WARGAME_COLUMNS = (
+    "id", "created_date", "category", "difficulty", "kind", "title", "context",
+    "code_lang", "code_label", "code_body", "prompt", "choices_json", "answer_idx",
+    "hints_json", "principle", "impact", "vuln_code", "secure_code", "source_ref",
+    "is_daily", "sort_order", "blocks_json", "patterns_json", "placeholder", "sample",
+    "chips_json", "created_at", "updated_at",
+)
+
+
+def seed_wargame_questions(questions, created_date="2026-11-20", db_path=DB_PATH):
+    """기존 정적 워게임 문제를 DB로 이관한다 (id 보존, 이미 있으면 건드리지 않음)."""
+    init_db(db_path)
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    inserted = 0
+    try:
+        for idx, q in enumerate(questions):
+            row = wargame_row_from_question(q, created_date, is_daily=q.get("is_daily", 0), sort_order=idx)
+            cur.execute(
+                "INSERT OR IGNORE INTO wargame_questions (%s) VALUES (%s)"
+                % (", ".join(_WARGAME_COLUMNS), ", ".join("?" * len(_WARGAME_COLUMNS))),
+                [row[c] for c in _WARGAME_COLUMNS],
+            )
+            inserted += cur.rowcount if cur.rowcount > 0 else 0
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+    return inserted
+
+
+def insert_wargame_questions(rows, db_path=DB_PATH):
+    """검증을 통과한 문제 행들을 한 트랜잭션으로 적재한다. 실패 시 전부 롤백."""
+    if not rows:
+        return 0
+    init_db(db_path)
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    try:
+        for row in rows:
+            cur.execute(
+                "INSERT INTO wargame_questions (%s) VALUES (%s)"
+                % (", ".join(_WARGAME_COLUMNS), ", ".join("?" * len(_WARGAME_COLUMNS))),
+                [row[c] for c in _WARGAME_COLUMNS],
+            )
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+    return len(rows)
+
+
+def get_wargame_questions(db_path=DB_PATH):
+    """빌더가 바로 쓸 수 있는 형태로 워게임 문제를 반환한다 (데일리 최신순 → 정적 순)."""
+    init_db(db_path)
+    conn = get_connection(db_path)
+    rows = conn.execute(
+        """SELECT * FROM wargame_questions
+           ORDER BY is_daily DESC, created_date DESC, sort_order ASC, id ASC"""
+    ).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        try:
+            blocks = json.loads(r["blocks_json"] or "[]")
+        except (json.JSONDecodeError, TypeError):
+            blocks = []
+        if not blocks and r["code_body"]:
+            blocks = [{"label": r["code_label"] or "Code", "code": r["code_body"]}]
+        try:
+            choices = json.loads(r["choices_json"] or "[]")
+        except (json.JSONDecodeError, TypeError):
+            choices = []
+        try:
+            hints = json.loads(r["hints_json"] or "[]")
+        except (json.JSONDecodeError, TypeError):
+            hints = []
+        try:
+            patterns = json.loads(r["patterns_json"] or "[]")
+        except (json.JSONDecodeError, TypeError):
+            patterns = []
+        try:
+            chips = json.loads(r["chips_json"] or "[]")
+        except (json.JSONDecodeError, TypeError):
+            chips = []
+        q = {
+            "id": r["id"],
+            "cat": r["category"],
+            "level": r["difficulty"],
+            "type": r["kind"],
+            "title": r["title"],
+            "brief": r["context"],
+            "blocks": blocks,
+            "prompt": r["prompt"],
+            "hints": hints,
+            "choices": choices,
+            "answer": r["answer_idx"],
+            "explain": {
+                "principle": r["principle"],
+                "impact": r["impact"],
+                "vuln": r["vuln_code"],
+                "secure": r["secure_code"],
+            },
+            "patterns": patterns,
+            "placeholder": r["placeholder"] or "",
+            "sample": r["sample"] or "",
+            "chips": chips,
+            "code_lang": r["code_lang"] or "",
+            "source_ref": r["source_ref"] or "",
+            "created_date": r["created_date"],
+            "is_daily": int(r["is_daily"] or 0),
+            "sort_order": int(r["sort_order"] or 0),
+        }
+        out.append(q)
+    return out
+
+
+def count_wargame_questions(db_path=DB_PATH, is_daily=None, created_date=None):
+    init_db(db_path)
+    conn = get_connection(db_path)
+    sql = "SELECT COUNT(*) FROM wargame_questions WHERE 1=1"
+    args = []
+    if is_daily is not None:
+        sql += " AND is_daily = ?"
+        args.append(1 if is_daily else 0)
+    if created_date:
+        sql += " AND created_date = ?"
+        args.append(created_date)
+    n = conn.execute(sql, args).fetchone()[0]
+    conn.close()
+    return n
+
+
+def get_wargame_titles(db_path=DB_PATH, limit=300):
+    init_db(db_path)
+    conn = get_connection(db_path)
+    rows = conn.execute(
+        "SELECT title FROM wargame_questions ORDER BY created_date DESC, sort_order ASC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    conn.close()
+    return [r[0] for r in rows if r[0]]
 
 
 def export_jobs_to_json(out_path="jobs.json", db_path=DB_PATH):
