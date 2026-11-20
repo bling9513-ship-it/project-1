@@ -2,7 +2,8 @@
 """
 SQLite DB(archive.db)를 Single Source of Truth로 하여
 채용 공고 대시보드(index.html, jobs.json), 시험 공부 허브(study.html, infosec_exam_data.js),
-AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(cve.html, cve_data.json)을
+AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(cve.html, cve_data.json),
+옷차림 가이드(outfit.html), 출퇴근길 보안 워게임(wargame.html)을
 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
@@ -76,6 +77,10 @@ def build_all():
     from build_outfit_html import build as build_outfit
     outfit_total = build_outfit()
 
+    # 10. wargame.html 재생성 (출퇴근길 보안 워게임: 정적 카드 + 브라우저 채점·기록)
+    from build_wargame_html import build as build_wargame
+    wargame_total = build_wargame()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -84,6 +89,7 @@ def build_all():
     print(f"  - AI 기술·트렌드 인사이트: {ai_total}건")
     print(f"  - CVE 취약점 리포트: {cve_total}건")
     print(f"  - 옷차림 코디: {outfit_total}개 (기온 구간 8단계)")
+    print(f"  - 보안 워게임 문제: {wargame_total}개 (카테고리 4종 · 6탭 내비게이션)")
 
 if __name__ == "__main__":
     build_all()

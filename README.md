@@ -1,9 +1,9 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-20 08:59:17 KST` (매일 08:00 KST 자동 수집)
-> **아카이빙된 보안 공고**: 총 **562**개 (직무 검증 및 중복 제거 완료)
-> **마감 임박 공고**: 총 **90**개 (D-Day 및 마감 기한 순 정렬)
+> **마지막 업데이트**: `2026-11-20 19:04:06 KST` (매일 08:00 KST 자동 수집)
+> **아카이빙된 보안 공고**: 총 **561**개 (직무 검증 및 중복 제거 완료)
+> **마감 임박 공고**: 총 **89**개 (D-Day 및 마감 기한 순 정렬)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
 > **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)
 > **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)
@@ -13,14 +13,14 @@
 ### 분야별 바로가기
 | 분야 | 등록 공고 | 바로가기 |
 | :--- | :---: | :--- |
-| **정보보안** | **397개** | [목록 바로가기](#정보보안-397건) |
+| **정보보안** | **396개** | [목록 바로가기](#정보보안-396건) |
 | **정보보호** | **180개** | [목록 바로가기](#정보보호-180건) |
 | **취약점 진단** | **73개** | [목록 바로가기](#취약점-진단-73건) |
 | **모의해킹** | **56개** | [목록 바로가기](#모의해킹-56건) |
 
 ---
 
-## 정보보안 (397건)
+## 정보보안 (396건)
 
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -28,7 +28,6 @@
 | **코어시큐리티** | [보안기술연구 담당자 채용](https://www.jumpit.co.kr/position/55357215) | 점핏 | **D-Day (~11/20 금)** | `정보보안` |
 | **코어시큐리티** | [OT 보안 기술 연구 개발 인력](https://www.jumpit.co.kr/position/55357251) | 점핏 | **D-Day (~11/20 금)** | `정보보안` |
 | **서비스탑(주)** | [서비스탑 AI Tech팀 IT 인프라 및 정보보안 전문가 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55489854&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **D-Day (오늘 마감)** | `정보보안` |
-| **새마을금고중앙회** | [새마을금고중앙회 정보보안 부문 정규직 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55506116&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 사람인 | **16시마감** | `정보보안` |
 | **(주)베이스라인시큐어** | [정보보안 컨설팅(모의해킹) 정규직 채용 - 신입/경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55491375&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-Day (오늘 마감)** | `모의해킹`, `정보보안` |
 | **(주) 유호스트** | [정보보안 보안관제 담당 채용(교대근무/정규직)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610300000196) | 인크루트 | **D-Day (~11/20 금) 23시 마감** | `정보보안` |
 | **(주)써니즈** | [[써니즈] [IT정보보안] 취약점진단 서비스 운영지원](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-7 (~ 11/27(금))** | `취약점 진단`, `정보보안` |

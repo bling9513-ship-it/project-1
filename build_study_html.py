@@ -1087,6 +1087,22 @@ html_content = """<!DOCTYPE html>
         height: 30px;
       }
     }
+
+    /* 내비게이션 6탭(워게임 추가) 대응: 넘침 없이 한 줄 유지 */
+    @media (max-width: 640px) {
+      .nav-brand { min-width: 0; }
+      .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .nav-tab-item { padding: 4px 7px; font-size: 11px; }
+    }
+
+    @media (max-width: 430px) {
+      .nav-container { padding: 0 8px; gap: 4px; }
+      .nav-tabs { margin-left: 2px; gap: 1px; }
+      .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
+      .nav-actions { gap: 4px; }
+      .nav-actions .icon-btn { width: 28px; height: 28px; }
+    }
   </style>
 </head>
 <body>
@@ -1105,6 +1121,7 @@ html_content = """<!DOCTYPE html>
           <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
           <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
           <a href="outfit.html" class="nav-tab-item">옷차림</a>
+          <a href="wargame.html" class="nav-tab-item">워게임</a>
         </div>
       </div>
 
