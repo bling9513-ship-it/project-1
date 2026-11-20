@@ -1650,6 +1650,8 @@ CSS = """
       .q-card { padding: 15px 14px; border-radius: 12px; }
       .q-title { font-size: 15.5px; }
       .q-brief { font-size: 12.5px; }
+      .q-top { gap: 5px; }
+      .q-badge { font-size: 9.8px; padding: 2px 6px; }
       .code-body pre { font-size: 11.2px; padding: 10px; }
       .q-prompt { font-size: 13px; }
       .opt { font-size: 12.5px; padding: 9px 11px; }
