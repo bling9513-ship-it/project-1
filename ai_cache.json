@@ -2881,5 +2881,85 @@
       "#컴플라이언스"
     ],
     "updated_at": "2026-11-19 08:01:14"
+  },
+  "https://career.rememberapp.co.kr/job/posting/354009": {
+    "summary": "SK계열 에너지 기업에서 정보·물리보안 및 총무 업무를 사원~대리급으로 수행합니다.",
+    "tags": [
+      "#정보보안",
+      "#물리보안",
+      "#총무",
+      "#보안관리"
+    ],
+    "updated_at": "2026-11-21 08:01:23"
+  },
+  "https://job.incruit.com/jobdb_info/jobpost.asp?job=2609220004175": {
+    "summary": "힐링페이퍼에서 개인정보보호 담당자로 개인정보 처리와 보호 조치를 수행합니다.",
+    "tags": [
+      "#개인정보보호",
+      "#개인정보처리",
+      "#정보보안",
+      "#컴플라이언스"
+    ],
+    "updated_at": "2026-11-21 08:01:23"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55557821&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8": {
+    "summary": "숲의 SOOP 서비스에서 보안솔루션을 운영하며 시스템 취약점을 진단·조치합니다.",
+    "tags": [
+      "#보안솔루션",
+      "#취약점진단",
+      "#취약점분석",
+      "#보안운영"
+    ],
+    "updated_at": "2026-11-21 08:01:23"
+  },
+  "https://career.rememberapp.co.kr/job/posting/354897": {
+    "summary": "롯데백화점에서 개인정보보호 담당자로 고객 정보 보호와 관리 업무를 수행합니다.",
+    "tags": [
+      "#개인정보보호",
+      "#고객정보보호",
+      "#정보보안",
+      "#컴플라이언스"
+    ],
+    "updated_at": "2026-11-21 08:01:23"
+  },
+  "https://www.jobkorea.co.kr/Recruit/GI_Read/50354665": {
+    "summary": "LG유플러스 정보보안센터에서 AI 보안 기술과 서비스 보안을 담당할 경력자를 채용한다.",
+    "tags": [
+      "#AI보안",
+      "#정보보안",
+      "#보안담당자",
+      "#경력채용"
+    ],
+    "updated_at": "2026-11-21 08:01:40"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55540695&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9": {
+    "summary": "라이나생명보험에서 IT 보안 엔지니어로 정보자산과 시스템 보안을 담당할 인재를 채용한다.",
+    "tags": [
+      "#IT보안",
+      "#정보보안",
+      "#보안엔지니어",
+      "#금융보안"
+    ],
+    "updated_at": "2026-11-21 08:01:40"
+  },
+  "https://www.jobkorea.co.kr/Recruit/GI_Read/50396419": {
+    "summary": "비씨카드에서 정보보호 내부통제 정책을 운영하고 점검·개선하는 업무를 수행할 인재를 채용한다.",
+    "tags": [
+      "#정보보호",
+      "#내부통제",
+      "#보안정책",
+      "#컴플라이언스"
+    ],
+    "updated_at": "2026-11-21 08:01:40"
+  },
+  "https://www.jobkorea.co.kr/Recruit/GI_Read/50283867": {
+    "summary": "CJ올리브네트웍스에서 개인정보보호 정책과 대응 체계를 관리할 경력 담당자를 채용한다.",
+    "tags": [
+      "#개인정보보호",
+      "#개인정보",
+      "#보안컴플라이언스",
+      "#경력채용"
+    ],
+    "updated_at": "2026-11-21 08:01:40"
   }
 }
