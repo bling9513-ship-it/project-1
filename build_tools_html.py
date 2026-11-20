@@ -1287,7 +1287,7 @@ CSS = """
       .cheat-card { padding: 12px 13px; }
       .cheat-title { font-size: 13.2px; }
       .cheat-desc { font-size: 12px; }
-      .cmd pre { font-size: 11.2px; }
+      .cmd pre { font-size: 11.2px; white-space: pre-wrap; overflow-wrap: anywhere; }
       .perm-row { grid-template-columns: 64px repeat(3, minmax(0, 1fr)) 40px; }
       .perm-row > span { padding: 6px 5px; font-size: 11px; }
       .controls { padding: 12px 13px; border-radius: 12px; }
@@ -1404,6 +1404,25 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </div>
     </div>
   </header>
+
+  <script>
+    // 좁은 화면에서 현재 페이지 탭이 가려지지 않도록 탭 영역만 살짝 스크롤한다.
+    (function () {
+      function keepActiveTabVisible() {
+        var box = document.querySelector('.nav-tabs');
+        if (!box) return;
+        var act = box.querySelector('.nav-tab-item.active');
+        if (!act || box.scrollWidth <= box.clientWidth) return;
+        var br = box.getBoundingClientRect();
+        var ar = act.getBoundingClientRect();
+        if (ar.right > br.right) box.scrollLeft += (ar.right - br.right) + 8;
+        else if (ar.left < br.left) box.scrollLeft -= (br.left - ar.left) + 8;
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', keepActiveTabVisible);
+      else keepActiveTabVisible();
+      window.addEventListener('resize', keepActiveTabVisible);
+    })();
+  </script>
 
   <main class="container">
 
@@ -2696,7 +2715,8 @@ def build():
         cat_label = cat_labels.get(cat, cat)
         search_blob = " ".join([
             item["title"], item["desc"], item["cmd"], item.get("keys", ""), cat_label, cat,
-        ]).replace("`", "").lower()
+        ]).replace("`", "")
+        search_blob = " ".join(search_blob.split()).lower()
         cmd_id = "cmd-%02d" % i
         cards.append(
             '<article class="cheat-card" data-cat="%s" data-search="%s">\n'
