@@ -938,7 +938,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <span class="stat-chip">수집·분석 <strong>__TOTAL__건</strong></span>
         <span class="stat-chip">주목할 기술 <strong>__FEATURED__건</strong></span>
         <span class="stat-chip">출처 <strong>__ACTIVE_SOURCES__곳</strong></span>
-        <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
+        <span class="stat-chip">매일 <strong>08:00</strong> 자동 갱신</span>
       </div>
     </section>
 

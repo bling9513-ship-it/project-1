@@ -1109,7 +1109,7 @@
       <div class="nav-actions">
         <div class="update-meta">
           <span class="live-dot"></span>
-          <span>2026-11-20 08:15:25 KST 기준</span>
+          <span>2026-11-20 08:59:17 KST 기준</span>
         </div>
         <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
           <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1147,7 +1147,7 @@
         <span class="stat-chip">활성 보안 공고 <strong id="statActiveCount">562건</strong></span>
         <span class="stat-chip">D-Day 마감 임박 <strong id="statUrgentCount">90건</strong></span>
         <span class="stat-chip">SQLite DB 기반 마감 자동 정리</span>
-        <span class="stat-chip">매일 <strong>06:30</strong> 자동 갱신</span>
+        <span class="stat-chip">매일 <strong>08:00</strong> 자동 갱신</span>
       </div>
     </section>
 
@@ -1241,7 +1241,7 @@
     <!-- Footer -->
     <footer>
       <p>Infosec Archive · 정보보안 포지션 & 커리어 정보공유 아카이브</p>
-      <p>데이터는 매일 아침 06:30 KST 기준 자동 갱신됩니다.</p>
+      <p>데이터는 매일 아침 08:00 KST 기준 자동 갱신됩니다.</p>
     </footer>
   </main>
 
@@ -1300,7 +1300,7 @@
     }
 
     // ---- 실시간 마감 판정 ----
-    // 매일 06:30 정적 빌드 이후에도, 페이지를 연 '현재 KST 날짜·시각' 기준으로
+    // 매일 08:00 정적 빌드 이후에도, 페이지를 연 '현재 KST 날짜·시각' 기준으로
     // 마감 시각이 지난 공고(예: 14시마감, ~11/17 18:00, 지난 날짜)를 목록에서 자동 제외한다.
     function getKstNow() {
       const d = new Date();
