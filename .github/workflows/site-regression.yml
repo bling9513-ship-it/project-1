@@ -1,0 +1,27 @@
+name: Site regression
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  site-regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check CSP, SRI, and static links
+        run: python3 tests/check_site_security.py
+      - name: Install pinned Playwright and Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.62.1
+          npx --no-install playwright install --with-deps chromium
+      - name: Test all pages in Chromium
+        run: node tests/site_smoke.cjs
