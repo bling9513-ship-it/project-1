@@ -48,6 +48,7 @@ import urllib.request
 import urllib.error
 import subprocess
 from datetime import datetime, timezone, timedelta
+from net_guard import MAX_HTML_BYTES, read_limited
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(BASE_DIR, ".env")
@@ -174,7 +175,7 @@ def http_json(url, timeout=40, retries=2, headers=None):
         try:
             req = urllib.request.Request(url, headers=hdrs)
             with urllib.request.urlopen(req, timeout=timeout) as resp:
-                return json.loads(resp.read().decode("utf-8"))
+                return json.loads(read_limited(resp).decode("utf-8"))
         except urllib.error.HTTPError as e:
             last_err = e
             if e.code in (429, 500, 502, 503, 504) and attempt < retries:
@@ -573,7 +574,7 @@ def fetch_cisa_items(days=ALERT_FEED_DAYS):
     try:
         req = urllib.request.Request(CISA_ADVISORY_FEED, headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml"})
         with urllib.request.urlopen(req, timeout=45) as resp:
-            raw = resp.read().decode("utf-8", errors="ignore")
+            raw = read_limited(resp, MAX_HTML_BYTES).decode("utf-8", errors="ignore")
     except Exception as e:  # noqa: BLE001
         print(f"  [CISA] 경보 피드 수집 실패: {type(e).__name__}")
         return []
@@ -596,7 +597,7 @@ def fetch_news_items(feed):
     try:
         req = urllib.request.Request(feed["url"], headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml"})
         with urllib.request.urlopen(req, timeout=35) as resp:
-            raw = resp.read().decode("utf-8", errors="ignore")
+            raw = read_limited(resp, MAX_HTML_BYTES).decode("utf-8", errors="ignore")
     except Exception as e:  # noqa: BLE001
         print(f"  [{feed['name']}] 피드 수집 실패: {type(e).__name__}")
         return []
@@ -612,7 +613,7 @@ def fetch_vendor_items(feed):
     try:
         req = urllib.request.Request(feed["url"], headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml"})
         with urllib.request.urlopen(req, timeout=45) as resp:
-            raw = resp.read().decode("utf-8", errors="ignore")
+            raw = read_limited(resp, MAX_HTML_BYTES).decode("utf-8", errors="ignore")
     except Exception as e:  # noqa: BLE001
         print(f"  [{feed['name']}] 피드 수집 실패: {type(e).__name__}")
         return []
@@ -637,7 +638,7 @@ def fetch_kr_board_items(board):
     try:
         req = urllib.request.Request(board["url"], headers={"User-Agent": UA, "Accept": "text/html"})
         with urllib.request.urlopen(req, timeout=35) as resp:
-            raw = resp.read().decode("utf-8", errors="ignore")
+            raw = read_limited(resp, MAX_HTML_BYTES).decode("utf-8", errors="ignore")
     except Exception as e:  # noqa: BLE001
         print(f"  [{board['name']}] 게시판 수집 실패: {type(e).__name__}")
         return []
@@ -1172,7 +1173,7 @@ def call_exaone(prompt, api_key, max_tokens=2600, timeout=180):
         headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+        data = json.loads(read_limited(resp).decode("utf-8"))
     return data["choices"][0]["message"]["content"]
 
 

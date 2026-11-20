@@ -14,6 +14,8 @@ import subprocess
 import urllib.request
 from datetime import datetime, timezone, timedelta
 
+from html_guard import harden_html, safe_json_for_script
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PICK_HTML = os.path.join(BASE_DIR, "pick.html")
 KST = timezone(timedelta(hours=9))
@@ -1938,6 +1940,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       return MENUS.filter(m => m.id === id)[0] || null;
     }
 
+    // localStorage 값이 조작돼도 마크업이 깨지지 않도록 목록 렌더링은 항상 이스케이프한다.
+    function escHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
     function toggleFav(id) {
       const i = store.fav.indexOf(id);
       if (i === -1) store.fav.push(id);
@@ -1968,9 +1977,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         return;
       }
       favList.innerHTML = items.map(m =>
-        '<div class="list-item"><div class="li-main"><div class="li-name">' + m.name + '</div>'
-        + '<div class="li-meta">' + m.cat + ' · ' + m.price + '</div></div>'
-        + '<button class="star-btn" type="button" data-unfav="' + m.id + '" aria-pressed="true" aria-label="' + m.name + ' 즐겨찾기 해제" title="즐겨찾기 해제">'
+        '<div class="list-item"><div class="li-main"><div class="li-name">' + escHtml(m.name) + '</div>'
+        + '<div class="li-meta">' + escHtml(m.cat) + ' · ' + escHtml(m.price) + '</div></div>'
+        + '<button class="star-btn" type="button" data-unfav="' + escHtml(m.id) + '" aria-pressed="true" aria-label="' + escHtml(m.name) + ' 즐겨찾기 해제" title="즐겨찾기 해제">'
         + '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + __STAR_PATH__ + '</svg>'
         + '</button></div>'
       ).join('');
@@ -1984,8 +1993,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         return;
       }
       recentList.innerHTML = items.map(x =>
-        '<div class="list-item"><div class="li-main"><div class="li-name">' + x.m.name + '</div>'
-        + '<div class="li-meta">' + x.r.at + ' · ' + ((MODES[x.r.mode] || MODES.mild).label) + ' 모드</div></div></div>'
+        '<div class="list-item"><div class="li-main"><div class="li-name">' + escHtml(x.m.name) + '</div>'
+        + '<div class="li-meta">' + escHtml(x.r.at) + ' · ' + escHtml((MODES[x.r.mode] || MODES.mild).label) + ' 모드</div></div></div>'
       ).join('');
     }
 
@@ -2199,10 +2208,10 @@ def build():
     html = html.replace("__DRAW_ICON__", icon("shuffle", 14))
     html = html.replace("__STAR_PATH__", "'" + ICONS["star"].replace("'", "\\'") + "'")
     html = html.replace("__BUILT_AT__", esc(built_at))
-    html = html.replace("__MENUS_JSON__", json.dumps(MENUS, ensure_ascii=False))
-    html = html.replace("__COURSES_JSON__", json.dumps(COURSES, ensure_ascii=False))
-    html = html.replace("__MODES_JSON__", json.dumps(MODES, ensure_ascii=False))
-    html = html.replace("__WX_JSON__", json.dumps(wx, ensure_ascii=False))
+    html = html.replace("__MENUS_JSON__", safe_json_for_script(json.dumps(MENUS, ensure_ascii=False)))
+    html = html.replace("__COURSES_JSON__", safe_json_for_script(json.dumps(COURSES, ensure_ascii=False)))
+    html = html.replace("__MODES_JSON__", safe_json_for_script(json.dumps(MODES, ensure_ascii=False)))
+    html = html.replace("__WX_JSON__", safe_json_for_script(json.dumps(wx, ensure_ascii=False)))
     initial_pool = [m for m in MENUS if mode == "mild" or mode in m["wx"]]
     html = html.replace("__CAND_COUNT__", str(len(initial_pool)))
 
@@ -2211,7 +2220,7 @@ def build():
         html = html.replace("__SYM_%s__" % name.upper(), ICONS[name])
 
     with open(PICK_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(harden_html(html))
 
     print("-> 'pick.html' 생성 완료 (메뉴 %d종 · 나들이 %d곳, 서울 %s %s, %s~%s, 모드 %s)"
           % (len(MENUS), len(COURSES), tt(wx.get("now_temp")), wx.get("now_cond"),

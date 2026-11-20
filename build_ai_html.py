@@ -10,6 +10,7 @@ import json
 from datetime import datetime, timezone, timedelta
 
 from db_manager import init_db, get_ai_insights, get_ai_insight_count
+from html_guard import harden_html, safe_json_for_script, safe_url
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 AI_DATA_JSON = os.path.join(BASE_DIR, "ai_data.json")
@@ -1117,7 +1118,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function formatDate(d) {
       if (!d) return '';
       const parts = String(d).slice(0, 10).split('-');
-      return parts.length === 3 ? parts.join('.') : String(d);
+      return parts.length === 3 ? parts.join('.') : escapeHtml(String(d));
+    }
+
+    // 수집된 링크는 http/https/mailto 만 허용한다.
+    function safeUrl(u) {
+      const s = String(u == null ? '' : u).trim();
+      if (!s || /[<>"'`]/.test(s) || s.indexOf(String.fromCharCode(92)) !== -1) return '#';
+      return /^(https?:|mailto:)/i.test(s) ? s : '#';
     }
 
     function matches(item) {
@@ -1165,7 +1173,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             ${featured}
             <span class="card-date">${formatDate(item.published_at)}</span>
           </div>
-          <h3 class="ai-title"><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title_ko)}</a></h3>
+          <h3 class="ai-title"><a href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title_ko)}</a></h3>
           ${orig}
           <p class="ai-summary">${escapeHtml(item.summary)}</p>
           <div class="insight-box">
@@ -1174,7 +1182,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           </div>
           <div class="card-bottom">
             <div class="tag-list">${tags}</div>
-            <a class="source-link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">원문 보기 →</a>
+            <a class="source-link" href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer">원문 보기 →</a>
           </div>
         </article>`;
     }
@@ -1376,12 +1384,12 @@ def build():
                 .replace("__DIST_ROWS__", dist_html)
                 .replace("__CATEGORY_BUTTONS__", cat_btns)
                 .replace("__SOURCE_PILLS__", src_pills)
-                .replace("__ITEMS_JSON__", json.dumps(payload_items, ensure_ascii=False).replace("</", "<\\/"))
-                .replace("__META_JSON__", json.dumps(meta_payload, ensure_ascii=False).replace("</", "<\\/"))
+                .replace("__ITEMS_JSON__", safe_json_for_script(json.dumps(payload_items, ensure_ascii=False)))
+                .replace("__META_JSON__", safe_json_for_script(json.dumps(meta_payload, ensure_ascii=False)))
                 .replace("__CAT_CLASS_JSON__", json.dumps(CAT_CLASS, ensure_ascii=False)))
 
     with open(AI_HTML, "w", encoding="utf-8") as f:
-        f.write(html_out)
+        f.write(harden_html(html_out))
     print(f"-> 'ai.html' 생성 완료 ({total}건, 주목할 기술 {featured}건)")
     return total
 

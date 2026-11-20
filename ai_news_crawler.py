@@ -42,6 +42,7 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
+from net_guard import MAX_HTML_BYTES, read_limited
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_FILE = os.path.join(BASE_DIR, "ai_tech_cache.json")
@@ -100,7 +101,7 @@ def fetch_bytes(url, timeout=25, tries=3, headers=None):
         try:
             req = urllib.request.Request(url, headers=hdrs)
             with urllib.request.urlopen(req, timeout=timeout) as resp:
-                return resp.read()
+                return read_limited(resp, MAX_HTML_BYTES)
         except Exception as e:  # noqa: BLE001
             last_err = e
             if attempt < tries - 1:
@@ -1234,7 +1235,7 @@ def call_exaone(prompt, api_key, max_tokens=3200, timeout=200):
         headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+        data = json.loads(read_limited(resp).decode("utf-8"))
     return data["choices"][0]["message"]["content"]
 
 
