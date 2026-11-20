@@ -18,6 +18,8 @@ import html
 import hashlib
 from datetime import datetime, timezone, timedelta
 
+from html_guard import harden_html, safe_json_for_script
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------- 카테고리
@@ -2575,12 +2577,12 @@ def build():
     page = page.replace("__TRENDS__", trends)
     page = page.replace("__CHECKLIST__", checklist)
     page = page.replace("__QUIZ_JSON__", quiz_js)
-    page = page.replace("__CATS_JSON__", json.dumps(CATS, ensure_ascii=False))
-    page = page.replace("__BRANDS_JSON__", json.dumps(BRANDS, ensure_ascii=False).replace("</", "<\\/"))
-    page = page.replace("__SHORT_JSON__", json.dumps(SHORTENERS, ensure_ascii=False))
-    page = page.replace("__TLD_JSON__", json.dumps(RISK_TLDS, ensure_ascii=False))
-    page = page.replace("__EXT_JSON__", json.dumps(RISK_EXTS, ensure_ascii=False))
-    page = page.replace("__PATH_JSON__", json.dumps(PATH_WORDS, ensure_ascii=False))
+    page = page.replace("__CATS_JSON__", safe_json_for_script(json.dumps(CATS, ensure_ascii=False)))
+    page = page.replace("__BRANDS_JSON__", safe_json_for_script(json.dumps(BRANDS, ensure_ascii=False)))
+    page = page.replace("__SHORT_JSON__", safe_json_for_script(json.dumps(SHORTENERS, ensure_ascii=False)))
+    page = page.replace("__TLD_JSON__", safe_json_for_script(json.dumps(RISK_TLDS, ensure_ascii=False)))
+    page = page.replace("__EXT_JSON__", safe_json_for_script(json.dumps(RISK_EXTS, ensure_ascii=False)))
+    page = page.replace("__PATH_JSON__", safe_json_for_script(json.dumps(PATH_WORDS, ensure_ascii=False)))
     page = page.replace("__TOTAL__", str(len(quiz)))
     page = page.replace("__NORM__", str(sum(1 for q in quiz if q["answer"] == "legit")))
     page = page.replace("__TREND__", str(len(TRENDS)))
@@ -2589,7 +2591,7 @@ def build():
 
     out = os.path.join(BASE, "radar.html")
     with open(out, "w", encoding="utf-8") as f:
-        f.write(page)
+        f.write(harden_html(page))
     print(f"-> 'radar.html' 생성 완료 (판별 {len(quiz)}문항 · 정상 안내 "
           f"{sum(1 for q in quiz if q['answer'] == 'legit')}문항 · 트렌드 {len(TRENDS)}종 · 대응 {len(CHECKLIST)}단계)")
     return len(quiz)

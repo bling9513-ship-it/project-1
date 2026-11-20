@@ -13,6 +13,8 @@ import os
 from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
+from html_guard import harden_html
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TOOLS_HTML = os.path.join(BASE_DIR, "tools.html")
 
@@ -2756,7 +2758,7 @@ def build():
     html = html.replace("__BUILT_AT__", built_at)
 
     with open(TOOLS_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(harden_html(html))
 
     print("-> 'tools.html' 생성 완료 (유틸리티 5종, 명령어 %d개)" % len(CHEATS))
     return 5, len(CHEATS)

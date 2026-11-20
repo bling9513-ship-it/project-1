@@ -22,6 +22,7 @@ import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
+from net_guard import read_limited
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(BASE_DIR, ".env")
@@ -104,7 +105,7 @@ def call_exaone(system_prompt, user_prompt, api_key, max_tokens=4200, timeout=18
     )
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
+            data = json.loads(read_limited(resp).decode("utf-8"))
     except urllib.error.HTTPError as e:
         raise ApiError(e.code, str(e.reason or "")) from e
     return data["choices"][0]["message"]["content"]

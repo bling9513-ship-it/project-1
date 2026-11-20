@@ -16,6 +16,8 @@ import os
 from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
+from html_guard import harden_html, safe_json_for_script
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WARGAME_HTML = os.path.join(BASE_DIR, "wargame.html")
 
@@ -2344,9 +2346,9 @@ def build():
             item["sample"] = q.get("sample", q.get("placeholder", ""))
         payload.append(item)
 
-    data_json = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-    cats_json = json.dumps(CATS, ensure_ascii=False, separators=(",", ":"))
-    levels_json = json.dumps(LEVELS, ensure_ascii=False, separators=(",", ":"))
+    data_json = safe_json_for_script(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+    cats_json = safe_json_for_script(json.dumps(CATS, ensure_ascii=False, separators=(",", ":")))
+    levels_json = safe_json_for_script(json.dumps(LEVELS, ensure_ascii=False, separators=(",", ":")))
 
     cards = "\n".join(
         "      " + _render_static(q, no=i + 1, today_str=today_str).replace("\n", "\n      ")
@@ -2370,7 +2372,7 @@ def build():
     html = html.replace("__BUILT_AT__", esc(built_at))
 
     with open(WARGAME_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(harden_html(html))
 
     cats_count = {}
     for q in questions:

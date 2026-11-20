@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 출퇴근길 보안 워게임</title>
   <meta name="description" content="웹 해킹, 로그·침해 분석, 시스템·권한 상승, 네트워크·패킷 4개 카테고리 20문제를 3분 안에 푸는 실전 보안 워게임. 즉시 채점과 취약 코드·시큐어 코드 비교 해설, 브라우저에 저장되는 진행 기록.">
@@ -1055,7 +1056,7 @@
         <span class="stat-chip">문제 <strong>22</strong></span>
         <span class="stat-chip">카테고리 <strong>4</strong></span>
         <span class="stat-chip">실습형 <strong>6</strong></span>
-        <span class="stat-chip">오늘 추가 <strong>2</strong></span>
+        
         <span class="stat-chip">기록 <strong>localStorage</strong></span>
       </div>
     </section>
@@ -1099,7 +1100,7 @@
     </section>
 
     <div class="q-list" id="qList">
-      <article class="q-card" id="q-daily-20261120-02" data-id="daily-20261120-02" data-cat="web" data-level="adv" data-type="choice"><div class="q-top"><span class="q-no">01</span><span class="q-cat cat-web">웹 해킹</span><span class="lv lv-adv">심화</span><span class="q-type">4지선다</span><span class="q-badge q-badge-today">오늘의 문제</span><span class="q-badge q-badge-date">2026-11-20 추가</span><span class="q-state" hidden>해결</span></div><h2 class="q-title">GPUStack 무인증 YAML 백엔드 등록 위험</h2><p class="q-brief">GPUStack 2.2.0 미만에서 /v2/inference-backends/from-yaml이 인증 없이 호출될 수 있다는 실제 악용 등재 취약점이 있습니다. 공격자는 YAML을 제출해 관리자 API 키 생성, worker·cloud-provider secrets 노출, 코드 실행으로 이어질 수 있습니다. 로그에는 요청 경로와 인증 헤더 유무가 남습니다.</p><div class="q-blocks"><div class="code-block"><div class="code-head"><span class="code-label">Python · Flask 스타일 라우트 예시</span><span class="code-scroll-hint">옆으로 넘겨 보기</span></div><div class="code-body"><pre>@app.post(&#x27;/v2/inference-backends/from-yaml&#x27;)
+      <article class="q-card" id="q-daily-20261120-02" data-id="daily-20261120-02" data-cat="web" data-level="adv" data-type="choice"><div class="q-top"><span class="q-no">01</span><span class="q-cat cat-web">웹 해킹</span><span class="lv lv-adv">심화</span><span class="q-type">4지선다</span><span class="q-badge q-badge-date">2026-11-20 추가</span><span class="q-state" hidden>해결</span></div><h2 class="q-title">GPUStack 무인증 YAML 백엔드 등록 위험</h2><p class="q-brief">GPUStack 2.2.0 미만에서 /v2/inference-backends/from-yaml이 인증 없이 호출될 수 있다는 실제 악용 등재 취약점이 있습니다. 공격자는 YAML을 제출해 관리자 API 키 생성, worker·cloud-provider secrets 노출, 코드 실행으로 이어질 수 있습니다. 로그에는 요청 경로와 인증 헤더 유무가 남습니다.</p><div class="q-blocks"><div class="code-block"><div class="code-head"><span class="code-label">Python · Flask 스타일 라우트 예시</span><span class="code-scroll-hint">옆으로 넘겨 보기</span></div><div class="code-body"><pre>@app.post(&#x27;/v2/inference-backends/from-yaml&#x27;)
       def from_yaml():
           cfg = yaml.safe_load(request.get_data())
           return {&#x27;id&#x27;: create_backend(cfg).id}</pre></div></div></div><p class="q-prompt">제시된 라우트에서 가장 먼저 보완해야 할 보안 결함은 무엇인가?</p><div class="q-body"><div class="options"><button class="opt" type="button" data-idx="0"><span class="opt-key">A</span><span class="opt-text">YAML 파서가 안전하지 않은 로드 방식을 사용해 생긴 역직렬화 결함</span></button><button class="opt" type="button" data-idx="1"><span class="opt-key">B</span><span class="opt-text">인증·인가 검사 없이 YAML을 파싱해 백엔드를 생성하는 흐름</span></button><button class="opt" type="button" data-idx="2"><span class="opt-key">C</span><span class="opt-text">HTTPS가 적용되지 않아 전송 구간에서 YAML이 노출되는 문제</span></button><button class="opt" type="button" data-idx="3"><span class="opt-key">D</span><span class="opt-text">인퍼런스 백엔드 버전 불일치로 모델 로딩이 실패하는 호환성 문제</span></button></div></div><div class="q-foot"><button class="btn-ghost" type="button" data-act="hint">힌트 보기</button><button class="btn-ghost btn-reveal" type="button" data-act="reveal" hidden>정답 보기</button><span class="q-tries" hidden></span></div><div class="hint-box" hidden><div class="hint-label">힌트</div><ol class="hint-list"></ol></div><div class="q-feedback" hidden></div><div class="q-explain" hidden><div class="explain-head">해설 · 공격 원리와 대응</div><div class="explain-grid"><div class="explain-col"><h4>공격 원리</h4><p>해당 엔드포인트가 인증·인가 없이 호출되면 공격자는 관리자 권한에 준하는 작업을 요청할 수 있습니다. YAML 입력은 단순 설정이 아니라 백엔드 생성·모델/워크로드 구성·비밀 참조와 연결될 수 있습니다. 따라서 입력 검증과 권한 검사가 선행되지 않으면 비인증 관리자 접근, 민감 정보 노출, 코드 실행으로 확대될 수 있습니다.</p></div><div class="explain-col"><h4>실무 영향</h4><p>인터넷에 노출된 GPUStack에서는 관리자 API 키 생성, worker·cloud-provider secrets 노출, 모델/사용자 변경, 나아가 코드 실행으로 이어질 수 있습니다. 자산 노출 평가와 신속한 패치·완화, 감사 로그 확인이 필요합니다.</p></div></div><div class="code-compare"><div class="cmp cmp-vuln"><div class="cmp-head">Vulnerable Code</div><div class="code-body"><pre>@app.post(&#x27;/v2/inference-backends/from-yaml&#x27;)
@@ -1112,7 +1113,7 @@
           cfg = yaml.safe_load(request.get_data())
           actor = g.user
           return {&#x27;id&#x27;: create_backend(cfg, actor=actor).id}</pre></div></div></div></div></article>
-      <article class="q-card" id="q-daily-20261120-01" data-id="daily-20261120-01" data-cat="web" data-level="mid" data-type="choice"><div class="q-top"><span class="q-no">02</span><span class="q-cat cat-web">웹 해킹</span><span class="lv lv-mid">중급</span><span class="q-type">4지선다</span><span class="q-badge q-badge-today">오늘의 문제</span><span class="q-badge q-badge-date">2026-11-20 추가</span><span class="q-state" hidden>해결</span></div><h2 class="q-title">REDCap 가져오기 경로의 코드 주입 점검</h2><p class="q-brief">Vanderbilt University REDCap에서 공개 설문 맥락의 데이터 가져오기 처리에 의도하지 않은 컨트롤러 경로와 조작된 파일 경로·스트림 매개변수가 전달될 수 있는 취약점(CVE-2026-90817)입니다. 유효한 공개 설문 해시를 아는 비인증 공격자가 서버 측 임의 코드 실행으로 이어질 수 있는 흐름을 어떻게 판단해야 할까요?</p><div class="q-blocks"><div class="code-block"><div class="code-head"><span class="code-label">Python · REDCap 데이터 가져오기 처리 각색</span><span class="code-scroll-hint">옆으로 넘겨 보기</span></div><div class="code-body"><pre># 학습용 각색: 공개 설문 해시 통과 후
+      <article class="q-card" id="q-daily-20261120-01" data-id="daily-20261120-01" data-cat="web" data-level="mid" data-type="choice"><div class="q-top"><span class="q-no">02</span><span class="q-cat cat-web">웹 해킹</span><span class="lv lv-mid">중급</span><span class="q-type">4지선다</span><span class="q-badge q-badge-date">2026-11-20 추가</span><span class="q-state" hidden>해결</span></div><h2 class="q-title">REDCap 가져오기 경로의 코드 주입 점검</h2><p class="q-brief">Vanderbilt University REDCap에서 공개 설문 맥락의 데이터 가져오기 처리에 의도하지 않은 컨트롤러 경로와 조작된 파일 경로·스트림 매개변수가 전달될 수 있는 취약점(CVE-2026-90817)입니다. 유효한 공개 설문 해시를 아는 비인증 공격자가 서버 측 임의 코드 실행으로 이어질 수 있는 흐름을 어떻게 판단해야 할까요?</p><div class="q-blocks"><div class="code-block"><div class="code-head"><span class="code-label">Python · REDCap 데이터 가져오기 처리 각색</span><span class="code-scroll-hint">옆으로 넘겨 보기</span></div><div class="code-body"><pre># 학습용 각색: 공개 설문 해시 통과 후
       # controller=user_supplied, file_path=../../tmp/evil, stream=조작값
       # 검증 없이 dispatch(controller, file_path, stream)로 전달
       def handle_import(request):
@@ -1295,7 +1296,7 @@
     <footer class="footer">
       Infosec Archive · 출퇴근길 보안 워게임<br>
       시나리오는 실제 취약점 유형을 학습용으로 각색한 것입니다. 진행 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-20 22:03 KST 기준
+      2026-11-21 03:14 KST 기준
     </footer>
   </main>
 

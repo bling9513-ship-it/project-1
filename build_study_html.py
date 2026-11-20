@@ -10,6 +10,8 @@ build_study_html.py:
 import json
 import os
 
+from html_guard import harden_html
+
 base_dir = os.path.dirname(os.path.abspath(__file__))
 json_path = os.path.join(base_dir, 'cppg_questions.json')
 js_path = os.path.join(base_dir, 'cppg_questions.js')
@@ -2230,6 +2232,6 @@ with open(out_path, 'w', encoding='utf-8') as f:
             f'<script src="{_name}"></script>',
             f'<script src="{_name}?v={_ver}"></script>',
         )
-    f.write(html_content)
+    f.write(harden_html(html_content))
 
 print("Successfully regenerated study.html with normalized questions and robust rendering!")

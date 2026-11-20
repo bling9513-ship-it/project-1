@@ -12,6 +12,7 @@ from datetime import datetime, timezone, timedelta
 
 from db_manager import (init_db, get_cve_reports, get_cve_stats, get_cve_alerts,
                         normalize_cve_published_dates)
+from html_guard import harden_html, safe_json_for_script
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CVE_DATA_JSON = os.path.join(BASE_DIR, "cve_data.json")
@@ -1117,6 +1118,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
+    // 참고 링크는 http/https/mailto 만 허용한다(javascript:, data: 차단).
+    function safeUrl(u) {
+      const s = String(u == null ? '' : u).trim();
+      if (!s || /[<>"'`]/.test(s) || s.indexOf(String.fromCharCode(92)) !== -1) return '#';
+      return /^(https?:|mailto:)/i.test(s) ? s : '#';
+    }
+
     function formatDate(d) {
       if (!d) return '';
       const parts = String(d).slice(0, 10).split('-');
@@ -1191,7 +1199,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
       const alertRow = (it.alerts && it.alerts.length)
         ? '<div class="alert-row"><span>경보·보도</span>' + (it.alerts || []).slice(0, 3).map(a =>
-            '<a href="' + escapeHtml(a.url) + '" target="_blank" rel="noopener noreferrer">' +
+            '<a href="' + safeUrl(a.url) + '" target="_blank" rel="noopener noreferrer">' +
             escapeHtml(a.source || '원문') + (a.published_at ? ' ' + escapeHtml(formatDate(a.published_at)) : '') + '</a>'
           ).join('') + '</div>'
         : '';
@@ -1201,7 +1209,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
       const pocs = (it.poc_links || []).map(p => {
         const label = escapeHtml(p.name || p.url);
-        return '<div class="poc-item"><a href="' + escapeHtml(p.url) + '" target="_blank" rel="noopener noreferrer">' + label + '</a>'
+        return '<div class="poc-item"><a href="' + safeUrl(p.url) + '" target="_blank" rel="noopener noreferrer">' + label + '</a>'
           + '<span class="poc-stars">★ ' + (p.stars || 0) + '</span></div>'
           + (p.description ? '<span class="poc-desc">' + escapeHtml(p.description) + '</span>' : '');
       }).join('');
@@ -1211,7 +1219,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         if (!url) return '';
         let host = url;
         try { host = new URL(url).hostname.replace(/^www\\./, ''); } catch (e) {}
-        return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(host) + '</a>';
+        return '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(host) + '</a>';
       }).join('');
 
       return '<article class="cve-card">'
@@ -1710,8 +1718,8 @@ def build():
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
-    html = html.replace("__ITEMS_JSON__", json.dumps(ui_items, ensure_ascii=False))
-    html = html.replace("__META_JSON__", json.dumps(meta, ensure_ascii=False))
+    html = html.replace("__ITEMS_JSON__", safe_json_for_script(json.dumps(ui_items, ensure_ascii=False)))
+    html = html.replace("__META_JSON__", safe_json_for_script(json.dumps(meta, ensure_ascii=False)))
     html = html.replace("__UPDATED_AT__", esc(updated_at))
     html = html.replace("__COLLECTED_AT__", esc(collected or updated_at))
     html = html.replace("__BRIEFING__", esc(briefing))
@@ -1723,7 +1731,7 @@ def build():
     html = html.replace("__POC__", str(stats["poc"]))
 
     with open(CVE_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(harden_html(html))
 
     print(f"-> 'cve.html' · 'cve_data.json' 생성 완료 (CVE {len(items)}건, KEV {stats['kev']}건, PoC {stats['poc']}건)")
     return len(items)

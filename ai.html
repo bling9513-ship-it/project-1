@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · AI 기술·트렌드 브리핑</title>
   <meta name="description" content="AI 보안 소식과 AI 툴·오픈소스까지 한 번에 — arXiv·Hugging Face 논문, 보안 전문 매체(The Hacker News·Dark Reading·Embrace the Red), GitHub 트렌딩 저장소, Hacker News·Show HN·GeekNews를 매일 수집해 한국어로 분석·요약한 AI 기술 브리핑입니다.">
@@ -1050,7 +1051,14 @@
     function formatDate(d) {
       if (!d) return '';
       const parts = String(d).slice(0, 10).split('-');
-      return parts.length === 3 ? parts.join('.') : String(d);
+      return parts.length === 3 ? parts.join('.') : escapeHtml(String(d));
+    }
+
+    // 수집된 링크는 http/https/mailto 만 허용한다.
+    function safeUrl(u) {
+      const s = String(u == null ? '' : u).trim();
+      if (!s || /[<>"'`]/.test(s) || s.indexOf(String.fromCharCode(92)) !== -1) return '#';
+      return /^(https?:|mailto:)/i.test(s) ? s : '#';
     }
 
     function matches(item) {
@@ -1098,7 +1106,7 @@
             ${featured}
             <span class="card-date">${formatDate(item.published_at)}</span>
           </div>
-          <h3 class="ai-title"><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title_ko)}</a></h3>
+          <h3 class="ai-title"><a href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title_ko)}</a></h3>
           ${orig}
           <p class="ai-summary">${escapeHtml(item.summary)}</p>
           <div class="insight-box">
@@ -1107,7 +1115,7 @@
           </div>
           <div class="card-bottom">
             <div class="tag-list">${tags}</div>
-            <a class="source-link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">원문 보기 →</a>
+            <a class="source-link" href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer">원문 보기 →</a>
           </div>
         </article>`;
     }

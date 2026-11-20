@@ -16,6 +16,9 @@ import html
 from datetime import datetime, timezone, timedelta, date
 from concurrent.futures import ThreadPoolExecutor
 
+from html_guard import harden_html, safe_json_for_script, safe_url
+from net_guard import read_limited
+
 KEYWORDS = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
 
 HEADERS_BASE = {
@@ -213,7 +216,7 @@ def fetch_jumpit(today_date):
             try:
                 req = urllib.request.Request(url, headers=JUMPIT_HEADERS)
                 with urllib.request.urlopen(req, timeout=10) as res:
-                    data = json.loads(res.read().decode("utf-8"))
+                    data = json.loads(read_limited(res).decode("utf-8"))
                     positions = data.get("result", {}).get("positions", [])
                     for p in positions:
                         jid = str(p.get("id"))
@@ -251,7 +254,7 @@ def fetch_wanted():
         try:
             req = urllib.request.Request(url, headers=WANTED_HEADERS)
             with urllib.request.urlopen(req, timeout=10) as res:
-                data = json.loads(res.read().decode("utf-8"))
+                data = json.loads(read_limited(res).decode("utf-8"))
                 for item in data.get("data", []):
                     jid = str(item.get("id"))
                     if jid in seen_ids:
@@ -287,7 +290,7 @@ def fetch_saramin(today_date):
         try:
             req = urllib.request.Request(url, headers=SARAMIN_HEADERS)
             with urllib.request.urlopen(req, timeout=15) as res:
-                page = res.read().decode("utf-8", errors="ignore")
+                page = read_limited(res).decode("utf-8", errors="ignore")
                 # 각 공고 단위(item_recruit)로 분할하여 회사명-공고명-마감일의 1:1 매칭 보장
                 items = page.split('class="item_recruit"')[1:]
                 for it in items:
@@ -335,7 +338,7 @@ def fetch_remember(today_date):
             try:
                 req = urllib.request.Request(url, data=payload, headers=REMEMBER_HEADERS, method="POST")
                 with urllib.request.urlopen(req, timeout=10) as res:
-                    data = json.loads(res.read().decode("utf-8"))
+                    data = json.loads(read_limited(res).decode("utf-8"))
                     for it in data.get("data", []):
                         jid = str(it.get("id"))
                         if jid in seen_ids:
@@ -385,7 +388,7 @@ def fetch_jobkorea(today_date):
             try:
                 req = urllib.request.Request(url, headers=JOBKOREA_HEADERS)
                 with urllib.request.urlopen(req, timeout=10) as res:
-                    html_text = res.read().decode("utf-8", errors="ignore")
+                    html_text = read_limited(res).decode("utf-8", errors="ignore")
                     items = html_text.split('class="section-item bg-white')[1:]
                     for it in items:
                         link_m = re.search(r'href="(/Recruit/GI_Read/\d+)[^"]*"', it)
@@ -438,7 +441,7 @@ def fetch_incruit(today_date):
             try:
                 req = urllib.request.Request(url, headers=INCRUIT_HEADERS)
                 with urllib.request.urlopen(req, timeout=10) as res:
-                    html_text = res.read().decode("euc-kr", errors="ignore")
+                    html_text = read_limited(res).decode("euc-kr", errors="ignore")
                     items = html_text.split('class="cell_first"')[1:]
                     for it in items:
                         cp_m = re.search(r'class="cpname"[^>]*>(.*?)</a>', it)
@@ -594,7 +597,14 @@ def collect_all_jobs():
 
 def generate_html(jobs, update_time_str):
     """GitHub Pages 배포용 정적 웹 대시보드 (프로덕트급 미니멀 UI/UX)"""
-    jobs_json_str = json.dumps(jobs, ensure_ascii=False)
+    # <script> 블록 안의 JSON 은 "</" 로 조기 종료되지 않게 중화하고, 외부 수집 URL 은 스킴을 검증해 심는다.
+    _jobs_for_embed = []
+    for _j in jobs:
+        if isinstance(_j, dict):
+            _c = dict(_j)
+            _c["url"] = safe_url(_c.get("url"))
+            _jobs_for_embed.append(_c)
+    jobs_json_str = safe_json_for_script(json.dumps(_jobs_for_embed, ensure_ascii=False))
     
     kw_counts = {}
     for kw in KEYWORDS:
@@ -2078,6 +2088,13 @@ def generate_html(jobs, update_time_str):
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }}
 
+    // 크롤링된 링크는 http/https/mailto 만 허용한다(javascript:, data: 차단).
+    function safeUrl(u) {{
+      const s = String(u == null ? '' : u).trim();
+      if (!s || /[\\s<>"'`\\\\]/.test(s)) return '#';
+      return /^(https?:|mailto:)/i.test(s) ? s : '#';
+    }}
+
     function renderFeed() {{
       // 0. 상단 통계·탭 카운트를 현재 시각 기준 실시간 마감 반영값으로 먼저 갱신
       updateLiveCounts();
@@ -2136,10 +2153,10 @@ def generate_html(jobs, update_time_str):
           const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
           const dlBadge = `<span class="badge-dl ${{dlMeta.badgeClass}}">${{escapeHtml(dlMeta.label)}}</span>`;
           const platformBadges = (job.platforms || []).map(p => 
-            `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
+            `<span class="badge-platform badge-platform-${{escapeHtml(p)}}">${{escapeHtml(p)}}</span>`
           ).join('');
           const tags = (job.keywords || []).map(k => 
-            `<span class="keyword-tag">#${{k}}</span>`
+            `<span class="keyword-tag">#${{escapeHtml(k)}}</span>`
           ).join('');
           const aiTags = (job.tags || []).filter(t => !(job.keywords || []).includes(t.replace('#', ''))).map(t =>
             `<span class="keyword-tag ai-tag">${{escapeHtml(t)}}</span>`
@@ -2147,7 +2164,7 @@ def generate_html(jobs, update_time_str):
           const summaryHtml = job.summary ? `<div class="job-summary">${{escapeHtml(job.summary)}}</div>` : '';
 
           html += `
-            <a class="job-card" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
+            <a class="job-card" href="${{safeUrl(job.url)}}" target="_blank" rel="noopener noreferrer">
               <div>
                 <div class="card-top">
                   <span class="company-name" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</span>
@@ -2179,13 +2196,13 @@ def generate_html(jobs, update_time_str):
           const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
           const dlBadge = `<span class="badge-dl ${{dlMeta.badgeClass}}">${{escapeHtml(dlMeta.label)}}</span>`;
           const platformBadges = (job.platforms || []).map(p => 
-            `<span class="badge-platform badge-platform-${{p}}">${{p}}</span>`
+            `<span class="badge-platform badge-platform-${{escapeHtml(p)}}">${{escapeHtml(p)}}</span>`
           ).join('');
 
           const listSummaryHtml = job.summary ? `<div class="list-summary" title="${{escapeHtml(job.summary)}}">${{escapeHtml(job.summary)}}</div>` : '';
 
           html += `
-            <a class="list-row" href="${{job.url}}" target="_blank" rel="noopener noreferrer">
+            <a class="list-row" href="${{safeUrl(job.url)}}" target="_blank" rel="noopener noreferrer">
               <div class="list-company" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</div>
               <div class="list-title">
                 <div>${{escapeHtml(job.title)}}</div>
@@ -2310,7 +2327,7 @@ def generate_html(jobs, update_time_str):
 </body>
 </html>
 """
-    return html_content
+    return harden_html(html_content)
 
 def generate_readme(jobs, update_time_str):
     """GitHub 저장소 메인에 노출될 마크다운"""
