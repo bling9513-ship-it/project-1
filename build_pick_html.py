@@ -1388,10 +1388,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <div class="mode-title" id="modeTitle">__MODE_HEAD__</div>
           <p class="rec-text" id="modeLine">__MODE_LINE__</p>
           <div class="mode-chips" id="modeChips">
-            <button class="chip active" type="button" data-mode="auto">오늘 날씨</button>
-            <button class="chip" type="button" data-mode="cold">추운 날</button>
-            <button class="chip" type="button" data-mode="rain">비 오는 날</button>
-            <button class="chip" type="button" data-mode="warm">맑은·더운 날</button>
+            <button class="chip active" type="button" data-mode="auto" aria-pressed="true">오늘 날씨</button>
+            <button class="chip" type="button" data-mode="cold" aria-pressed="false">추운 날</button>
+            <button class="chip" type="button" data-mode="rain" aria-pressed="false">비 오는 날</button>
+            <button class="chip" type="button" data-mode="warm" aria-pressed="false">맑은·더운 날</button>
           </div>
           <div class="mode-note" id="modeNote">__MODE_NOTE__</div>
         </div>
@@ -1685,6 +1685,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const m = MODES[key] || MODES.mild;
       document.querySelectorAll('#modeChips .chip').forEach(chip => {
         chip.classList.toggle('active', chip.dataset.mode === state.mode);
+        chip.setAttribute('aria-pressed', chip.dataset.mode === state.mode ? 'true' : 'false');
       });
       if (wxEls.badge) {
         wxEls.badge.className = 'badge tone-' + m.tone;
@@ -1881,7 +1882,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         const btn = e.target.closest('button[data-' + attr + ']');
         if (!btn) return;
         state[key] = btn.dataset[attr];
-        box.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+        box.querySelectorAll('button').forEach(b => { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
         if (onChange) onChange();
       });
     }
@@ -1946,9 +1947,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       syncStars();
     }
 
-    function starIconSvg() {
-      return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + __STAR_PATH__ + '</svg>';
-    }
 
     function syncStars() {
       if (menuGrid) {
@@ -2075,7 +2073,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         const btn = e.target.closest('button[data-cat]');
         if (!btn) return;
         state.courseCat = btn.dataset.cat;
-        courseChips.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+        courseChips.querySelectorAll('button').forEach(b => { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
         applyCourseFilter();
       });
     }
@@ -2139,23 +2137,23 @@ def build():
     mode = mode_for_wx(wx)
 
     sit_chips = "".join(
-        '<button class="chip%s" type="button" data-sit="%s">%s</button>'
-        % (" active" if key == "all" else "", key, esc(label))
+        '<button class="chip%s" type="button" data-sit="%s" aria-pressed="%s">%s</button>'
+        % (" active" if key == "all" else "", key, "true" if key == "all" else "false", esc(label))
         for key, label in SITUATIONS
     )
     comp_chips = "".join(
-        '<button class="chip%s" type="button" data-comp="%s">%s</button>'
-        % (" active" if key == "all" else "", key, esc(label))
+        '<button class="chip%s" type="button" data-comp="%s" aria-pressed="%s">%s</button>'
+        % (" active" if key == "all" else "", key, "true" if key == "all" else "false", esc(label))
         for key, label in COMPANIONS
     )
     style_chips = "".join(
-        '<button class="chip%s" type="button" data-style="%s">%s</button>'
-        % (" active" if key == "all" else "", key, esc(label))
+        '<button class="chip%s" type="button" data-style="%s" aria-pressed="%s">%s</button>'
+        % (" active" if key == "all" else "", key, "true" if key == "all" else "false", esc(label))
         for key, label in STYLES
     )
     course_chips = "".join(
-        '<button class="chip%s" type="button" data-cat="%s">%s</button>'
-        % (" active" if key == "all" else "", key, esc(label))
+        '<button class="chip%s" type="button" data-cat="%s" aria-pressed="%s">%s</button>'
+        % (" active" if key == "all" else "", key, "true" if key == "all" else "false", esc(label))
         for key, label in COURSE_CATS
     )
 
