@@ -3,8 +3,8 @@
 SQLite DB(archive.db)를 Single Source of Truth로 하여
 채용 공고 대시보드(index.html, jobs.json), 시험 공부 허브(study.html, infosec_exam_data.js),
 AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(cve.html, cve_data.json),
-옷차림 가이드(outfit.html), 출퇴근길 보안 워게임(wargame.html), 보안 실무 유틸·치트시트(tools.html)를
-일괄 생성하고 동기화하는 마스터 빌드 스크립트.
+옷차림 가이드(outfit.html), 출퇴근길 보안 워게임(wargame.html), 보안 실무 유틸·치트시트(tools.html),
+피싱·스미싱 판별 레이더(radar.html)를 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
    이 스크립트는 DB에 적재된 ai_insights / cve_reports 를 각 HTML로 빌드하는 역할만 한다.
@@ -85,6 +85,10 @@ def build_all():
     from build_tools_html import build as build_tools
     tool_total, cmd_total = build_tools()
 
+    # 12. radar.html 재생성 (피싱·스미싱 판별 퀴즈 + 의심 신호 검사기 + 트렌드·긴급 대응)
+    from build_radar_html import build as build_radar
+    radar_total = build_radar()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -95,6 +99,7 @@ def build_all():
     print(f"  - 옷차림 코디: {outfit_total}개 (기온 구간 8단계)")
     print(f"  - 보안 워게임 문제: {wargame_total}개 (카테고리 4종 · 7탭 내비게이션)")
     print(f"  - 보안 실무 유틸: {tool_total}종 · 치트시트 명령어 {cmd_total}개")
+    print(f"  - 피싱·스미싱 판별: {radar_total}문항 (정상 안내 4문항 · 트렌드 6종 · 긴급 대응 5단계 · 8탭 내비게이션)")
 
 if __name__ == "__main__":
     build_all()
