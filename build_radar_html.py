@@ -1647,7 +1647,7 @@ __CARDS__
         <span class="scan-local">100% 브라우저 로컬 · 외부 요청 없음</span>
       </div>
       <div class="samples" id="scanSamples">
-        <button class="sample" type="button" data-sample="http://cj-logistics-kr.apk-down.xyz/track?no=8821">택배 .apk 링크</button>
+        <button class="sample" type="button" data-sample="http://cj-logistics-kr.apk-down.xyz/track/update.apk">택배 .apk 링크</button>
         <button class="sample" type="button" data-sample="https://login.microsoftonline.com.secure-auth-check.net/verify">M365 사칭 링크</button>
         <button class="sample" type="button" data-sample="https://xn--80ak6aa92e.com/account">Punycode 도메인</button>
         <button class="sample" type="button" data-sample="http://211.43.12.88:8080/kb/login">IP 직접 링크</button>
