@@ -45,6 +45,18 @@ TOOL_HINTS = [
 ]
 
 
+def render_tip(text):
+    """백틱으로 감싼 명령·옵션 조각을 인라인 코드로 렌더링한다."""
+    parts = str(text).split("`")
+    out = []
+    for i, part in enumerate(parts):
+        if i % 2 == 1:
+            out.append('<code class="tip-code">%s</code>' % esc(part))
+        else:
+            out.append(esc(part))
+    return "".join(out)
+
+
 def cmd_tool_label(cmd):
     """첫 명령을 보고 카드 헤더에 붙일 도구 이름을 고른다."""
     text = cmd.strip()
@@ -1186,6 +1198,18 @@ CSS = """
       color: var(--text-secondary);
     }
 
+    .tip-code {
+      font-family: var(--font-mono);
+      font-size: 10.8px;
+      letter-spacing: 0;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 4px;
+      padding: 0 3px;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
     .tip .tip-tag {
       flex-shrink: 0;
       font-weight: 700;
@@ -1681,7 +1705,7 @@ __CARDS__
     </footer>
   </main>
 
-  <div class="toast" id="toast">클립보드에 복사했습니다.</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
 __JS__
@@ -2433,8 +2457,8 @@ JS = r"""
         if (o & 2) items.push(['ok', '스티키 비트가 함께 설정되어 있습니다. /tmp처럼 공유 디렉터리에서 남의 파일 삭제를 막는 올바른 조합입니다.']);
         else items.push(['ok', '스티키 비트(t)가 설정되어 있습니다. 공유 디렉터리에서 소유자 외 삭제를 막습니다.']);
       }
-      if ((u & 1) && (u & 2) && !(special & 4)) {
-        items.push(['info', '소유자에게 쓰기·실행이 함께 있습니다. 실행 중 파일을 바꿀 수 있는 구조라면 무결성 검토 대상입니다.']);
+      if (u === 0 && g === 0 && o === 0) {
+        items.push(['warn', '모든 권한이 0입니다. 실행 파일이면 실행되지 않고, 디렉터리면 안에 들어갈 수 없어 서비스가 바로 실패합니다.']);
       }
       if (!items.length) items.push(['ok', '흔한 위험 조합(777, o+w, SUID/SGID)에 해당하지 않습니다.']);
       $('chmodWarn').innerHTML = items.map(function (it) {
@@ -2672,7 +2696,7 @@ def build():
         cat_label = cat_labels.get(cat, cat)
         search_blob = " ".join([
             item["title"], item["desc"], item["cmd"], item.get("keys", ""), cat_label, cat,
-        ]).lower()
+        ]).replace("`", "").lower()
         cmd_id = "cmd-%02d" % i
         cards.append(
             '<article class="cheat-card" data-cat="%s" data-search="%s">\n'
@@ -2692,12 +2716,12 @@ def build():
                 esc_attr(search_blob),
                 esc(item["title"]),
                 esc(cat_label),
-                esc(item["desc"]),
+                render_tip(item["desc"]),
                 esc(cmd_tool_label(item["cmd"])),
                 cmd_id,
                 cmd_id,
                 esc(item["cmd"]),
-                esc(item["tip"]),
+                render_tip(item["tip"]),
             )
         )
 
