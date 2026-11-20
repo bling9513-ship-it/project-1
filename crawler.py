@@ -621,7 +621,7 @@ def generate_html(jobs, update_time_str):
   <meta name="description" content="원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>
     :root {{
       --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
@@ -1392,6 +1392,7 @@ def generate_html(jobs, update_time_str):
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
+      min-width: 0;
     }}
 
     .keyword-tag {{
@@ -1407,7 +1408,18 @@ def generate_html(jobs, update_time_str):
       color: var(--text-muted);
       display: flex;
       align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
       transition: transform 0.15s ease, color 0.15s ease;
+    }}
+
+    .outlink-host {{
+      font-size: 11px;
+      line-height: 1.2;
+      max-width: 132px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }}
 
     .job-card:hover .outlink-indicator {{
@@ -1428,7 +1440,7 @@ def generate_html(jobs, update_time_str):
 
     .list-row {{
       display: grid;
-      grid-template-columns: 140px 1fr 110px 70px 30px;
+      grid-template-columns: 140px 1fr 110px 70px auto;
       align-items: center;
       gap: 12px;
       padding: 13px 18px;
@@ -1494,6 +1506,8 @@ def generate_html(jobs, update_time_str):
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 5px;
+      min-width: 0;
     }}
 
     @media (max-width: 768px) {{
@@ -2088,11 +2102,28 @@ def generate_html(jobs, update_time_str):
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }}
 
-    // 크롤링된 링크는 http/https/mailto 만 허용한다(javascript:, data: 차단).
+    // 수집된 링크는 URL 파서로 검증해 http/https/mailto 만 통과시킨다
+    // (javascript:, data:, vbscript:, 프로토콜 상대 //, 제어문자 삽입 차단).
     function safeUrl(u) {{
-      const s = String(u == null ? '' : u).trim();
-      if (!s || /[\\s<>"'`\\\\]/.test(s)) return '#';
-      return /^(https?:|mailto:)/i.test(s) ? s : '#';
+      const raw = String(u == null ? '' : u).trim();
+      if (!raw || /[\\u0000-\\u001F\\u007F<>"'`\\\\]/.test(raw)) return '#';
+      let parsed;
+      try {{ parsed = new URL(raw); }} catch (e) {{ return '#'; }}
+      const proto = parsed.protocol.toLowerCase();
+      return (proto === 'http:' || proto === 'https:' || proto === 'mailto:') ? parsed.href : '#';
+    }}
+
+    // 외부 링크 카드 옆에 실제 이동 도메인을 표시해 피싱 링크를 눈으로 걸러낸다.
+    function linkHost(u) {{
+      let parsed;
+      try {{ parsed = new URL(String(u == null ? '' : u).trim()); }} catch (e) {{ return ''; }}
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === 'mailto:') {{
+        const parts = String(parsed.pathname || '').split('@');
+        return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+      }}
+      if (proto !== 'http:' && proto !== 'https:') return '';
+      return parsed.hostname.replace(/^www\\./, '').toLowerCase();
     }}
 
     function renderFeed() {{
@@ -2178,7 +2209,8 @@ def generate_html(jobs, update_time_str):
               </div>
               <div class="card-footer">
                 <div class="tags-list">${{tags}}${{aiTags}}</div>
-                <div class="outlink-indicator">
+                <div class="outlink-indicator" title="원문 열기: ${{escapeHtml(job.url)}}">
+                  <span class="outlink-host">${{escapeHtml(linkHost(job.url))}}</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="7" y1="17" x2="17" y2="7"></line>
                     <polyline points="7 7 17 7 17 17"></polyline>
@@ -2210,7 +2242,8 @@ def generate_html(jobs, update_time_str):
               </div>
               <div class="list-deadline">${{dlBadge}}</div>
               <div class="list-platforms">${{platformBadges}}</div>
-              <div class="list-outlink">
+              <div class="list-outlink" title="원문 열기: ${{escapeHtml(job.url)}}">
+                <span class="outlink-host">${{escapeHtml(linkHost(job.url))}}</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="7" y1="17" x2="17" y2="7"></line>
                   <polyline points="7 7 17 7 17 17"></polyline>

@@ -1479,7 +1479,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="문자·메일·메신저·QR로 오는 피싱과 스미싱을 실제 화면 모형으로 판별하는 16문항 퀴즈, Punycode·IP 링크·단축 URL·위험 확장자를 잡아내는 로컬 의심 신호 검사기, 최신 수법 6종과 긴급 대응 5단계 체크리스트.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__
     [hidden] { display: none !important; }
   </style>

@@ -777,12 +777,24 @@ CSS = """
     }
 
     .source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       font-size: 12px;
       font-weight: 600;
       color: var(--accent-primary);
       text-decoration: none;
       white-space: nowrap;
       padding: 3px 2px;
+    }
+
+    .src-host {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      max-width: 118px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .source-link:hover { color: var(--accent-hover); text-decoration: underline; }
@@ -882,7 +894,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="AI 보안 소식과 AI 툴·오픈소스까지 한 번에 — arXiv·Hugging Face 논문, 보안 전문 매체(The Hacker News·Dark Reading·Embrace the Red), GitHub 트렌딩 저장소, Hacker News·Show HN·GeekNews를 매일 수집해 한국어로 분석·요약한 AI 기술 브리핑입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__</style>
   <script>
     (function () {
@@ -1121,11 +1133,28 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       return parts.length === 3 ? parts.join('.') : escapeHtml(String(d));
     }
 
-    // 수집된 링크는 http/https/mailto 만 허용한다.
+    // 수집된 링크는 URL 파서로 검증해 http/https/mailto 만 통과시킨다
+    // (javascript:, data:, vbscript:, 프로토콜 상대 //, 제어문자 삽입 차단).
     function safeUrl(u) {
-      const s = String(u == null ? '' : u).trim();
-      if (!s || /[<>"'`]/.test(s) || s.indexOf(String.fromCharCode(92)) !== -1) return '#';
-      return /^(https?:|mailto:)/i.test(s) ? s : '#';
+      const raw = String(u == null ? '' : u).trim();
+      if (!raw || /[\\u0000-\\u001F\\u007F<>"'`\\\\]/.test(raw)) return '#';
+      let parsed;
+      try { parsed = new URL(raw); } catch (e) { return '#'; }
+      const proto = parsed.protocol.toLowerCase();
+      return (proto === 'http:' || proto === 'https:' || proto === 'mailto:') ? parsed.href : '#';
+    }
+
+    // 외부 링크 카드 옆에 실제 이동 도메인을 표시해 피싱 링크를 눈으로 걸러낸다.
+    function linkHost(u) {
+      let parsed;
+      try { parsed = new URL(String(u == null ? '' : u).trim()); } catch (e) { return ''; }
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === 'mailto:') {
+        const parts = String(parsed.pathname || '').split('@');
+        return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+      }
+      if (proto !== 'http:' && proto !== 'https:') return '';
+      return parsed.hostname.replace(/^www\\./, '').toLowerCase();
     }
 
     function matches(item) {
@@ -1164,6 +1193,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         ? `<span class="star-badge">스타 ${item.score >= 1000 ? (item.score / 1000).toFixed(1).replace(/\\.0$/, '') + 'k' : item.score}</span>` : '';
       const orig = item.title_orig && item.title_orig !== item.title_ko
         ? `<p class="ai-title-orig">${escapeHtml(item.title_orig)}</p>` : '';
+      const host = linkHost(item.url);
+      const hostTag = host ? `<span class="src-host">${escapeHtml(host)}</span>` : '';
       return `
         <article class="ai-card">
           <div class="card-top">
@@ -1182,7 +1213,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           </div>
           <div class="card-bottom">
             <div class="tag-list">${tags}</div>
-            <a class="source-link" href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer">원문 보기 →</a>
+            <a class="source-link" href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer" title="원문: ${escapeHtml(item.url)}">${hostTag}원문 보기 →</a>
           </div>
         </article>`;
     }
