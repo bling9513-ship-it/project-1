@@ -854,10 +854,10 @@ CSS = """
       .nav-actions .icon-btn { width: 30px; height: 30px; }
     }
 
-    /* 내비게이션 6탭(워게임 추가) 대응: 넘침 없이 한 줄 유지 */
+    /* 내비게이션 7탭(워게임 추가) 대응: 넘침 없이 한 줄 유지 */
     @media (max-width: 640px) {
       .nav-brand { min-width: 0; }
-      .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+      .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
       .nav-tabs::-webkit-scrollbar { display: none; }
       .nav-tab-item { padding: 4px 7px; font-size: 11px; }
     }
@@ -911,6 +911,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
           <a href="outfit.html" class="nav-tab-item">옷차림</a>
           <a href="wargame.html" class="nav-tab-item">워게임</a>
+          <a href="tools.html" class="nav-tab-item">실무 유틸</a>
         </div>
       </div>
 
