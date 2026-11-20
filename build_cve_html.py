@@ -308,6 +308,12 @@ CSS = """
       margin-bottom: 14px;
     }
 
+    .briefing-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: -6px 0 11px;
+    }
+
     .priority-list { display: flex; flex-direction: column; gap: 8px; }
 
     .priority-row {
@@ -322,6 +328,36 @@ CSS = """
       line-height: 1.6;
       color: var(--text-secondary);
       min-width: 0;
+    }
+
+    /* 우선 조치 행은 실제 링크다 — 키보드 Tab/Enter 로 열 수 있고 카드로 이동한다. */
+    a.priority-row {
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    a.priority-row:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-strong);
+    }
+
+    a.priority-row:focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 2px;
+    }
+
+    .priority-row .row-title {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .priority-row .row-go {
+      flex-shrink: 0;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--text-muted);
     }
 
     .priority-row .cve-mini {
@@ -342,6 +378,91 @@ CSS = """
 
     .priority-row .due-over { color: var(--sev-critical-text); }
     .priority-row .due-today { color: var(--sev-high-text); }
+
+    /* KEV · EPSS 지표 읽는 법 (접이식 안내) */
+    .glossary { margin-bottom: 18px; }
+
+    .glossary-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .glossary-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      border-radius: 12px;
+    }
+
+    .glossary-summary::-webkit-details-marker { display: none; }
+
+    .glossary-summary::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-right: 1.6px solid var(--text-muted);
+      border-bottom: 1.6px solid var(--text-muted);
+      transform: rotate(45deg);
+      transition: transform 0.15s ease;
+      flex-shrink: 0;
+      margin-top: -2px;
+    }
+
+    .glossary-box[open] .glossary-summary::before {
+      transform: rotate(225deg);
+      margin-top: 2px;
+    }
+
+    .glossary-summary:focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: -2px;
+    }
+
+    .glossary-summary .glossary-hint {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .glossary-body {
+      padding: 0 16px 15px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .glossary-item { padding-top: 12px; }
+
+    .glossary-term {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .glossary-term span {
+      margin-left: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--text-muted);
+    }
+
+    .glossary-body p {
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .glossary-body b { color: var(--text-primary); font-weight: 600; }
 
     /* Toolbar */
     .toolbar {
@@ -506,9 +627,19 @@ CSS = """
       box-shadow: var(--card-shadow);
       transition: box-shadow 0.18s ease, border-color 0.18s ease;
       min-width: 0;
+      /* 우선 조치 행에서 이동할 때 sticky 내비게이션에 가리지 않도록 여백 확보 */
+      scroll-margin-top: 80px;
     }
 
     .cve-card:hover { box-shadow: var(--card-shadow-hover); border-color: var(--border-strong); }
+
+    /* 프로그램매틱 포커스(tabindex="-1")는 테두리 대신 하이라이트로 알린다 */
+    .cve-card:focus { outline: none; }
+
+    .cve-card.is-focused {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-subtle), var(--card-shadow-hover);
+    }
 
     .cve-top {
       display: flex;
@@ -867,8 +998,14 @@ CSS = """
       .stat-chip { font-size: 11px; padding: 3px 8px; }
       .briefing { padding: 16px; border-radius: 12px; margin-bottom: 14px; }
       .briefing-text { font-size: 12.5px; line-height: 1.7; }
+      .briefing-hint { font-size: 10.5px; margin: -4px 0 9px; }
+      .glossary { margin-bottom: 14px; }
+      .glossary-summary { padding: 10px 13px; font-size: 12px; }
+      .glossary-body { padding: 0 13px 13px; }
+      .glossary-body p { font-size: 12px; line-height: 1.65; }
       .priority-row { font-size: 12px; flex-wrap: wrap; }
       .priority-row .due { margin-left: 0; }
+      .priority-row .row-go { display: none; }
       .toolbar { padding: 12px; border-radius: 12px; gap: 10px; }
       .search-input { padding: 9px 34px 9px 36px; font-size: 13px; }
       .segment-btn { padding: 6px 10px; font-size: 12px; }
@@ -1027,6 +1164,27 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </div>
     </section>
 
+    <!-- KEV · EPSS 지표 안내 (접이식) -->
+    <section class="glossary" aria-label="KEV·EPSS 지표 안내">
+      <details class="glossary-box">
+        <summary class="glossary-summary">KEV · EPSS 지표 읽는 법<span class="glossary-hint">점수 해석 기준</span></summary>
+        <div class="glossary-body">
+          <div class="glossary-item">
+            <div class="glossary-term">CISA KEV<span>Known Exploited Vulnerabilities</span></div>
+            <p>미국 CISA가 <b>실제 공격에 악용된 것이 확인된</b> 취약점 목록입니다. KEV 배지는 이론적인 위험이 아니라 이미 공격에 쓰이고 있다는 뜻이며, 등재 항목에는 패치 조치 기한이 함께 부여됩니다. 노출된 자산이 있다면 기한 안에 패치·완화 조치를 끝내는 것을 원칙으로 삼습니다.</p>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">EPSS<span>Exploit Prediction Scoring System · FIRST</span></div>
+            <p>공개된 취약점이 <b>향후 30일 안에 실제로 악용될 확률</b>을 0~100%로 추정한 점수입니다(매일 갱신). 10% 이상은 악용 가능성이 높은 편으로 보고 우선 확인하고, 1% 미만은 상대적으로 낮게 봅니다. 확률일 뿐이므로 KEV·CVSS·인터넷 노출 여부와 함께 판단하세요. ‘악용 위험 상위 N%’는 같은 날 전체 CVE 중 이 항목의 추정 순위를 뜻합니다.</p>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">CVSS<span>Common Vulnerability Scoring System</span></div>
+            <p>취약점 자체의 심각도를 0~10으로 나타낸 점수입니다. 9.0 이상이 Critical(치명적), 7.0~8.9가 High(높음)입니다. 악용 여부(KEV)나 악용 확률(EPSS)과는 다른 축이므로 두 지표와 함께 읽습니다.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
     <!-- 우선 조치 -->
     <section class="briefing">
       <div class="briefing-head">
@@ -1034,6 +1192,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <span class="briefing-time">__COLLECTED_AT__ 수집</span>
       </div>
       <p class="briefing-text">__BRIEFING__</p>
+      <p class="briefing-hint">항목을 누르거나 Tab으로 옮겨 Enter를 누르면 해당 CVE 카드로 이동합니다.</p>
       <div class="priority-list">
         __PRIORITY_ROWS__
       </div>
@@ -1220,13 +1379,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           ? '<span class="badge-alert">CISA 경보</span>'
           : '<span class="badge-news">경보·보도</span>');
       }
-      if (it.is_kev) top.push('<span class="badge-kev">KEV 실제 악용</span>');
+      if (it.is_kev) top.push('<span class="badge-kev" title="CISA가 실제 공격 악용을 확인한 취약점">KEV 실제 악용</span>');
       if (it.poc_links && it.poc_links.length) top.push('<span class="badge-poc">PoC ' + it.poc_links.length + '건</span>');
       if (it.published_at) top.push('<span class="card-date">' + escapeHtml(formatDate(it.published_at)) + ' 공개</span>');
 
       const metrics = [];
       const ep = epssText(it);
-      if (ep) metrics.push('<span><b>' + escapeHtml(ep) + '</b></span>');
+      if (ep) metrics.push('<span title="FIRST EPSS: 향후 30일 내 실제 악용될 확률 추정치"><b>' + escapeHtml(ep) + '</b></span>');
       if (it.kev_due_date) metrics.push('<span>조치 기한 <b>' + escapeHtml(formatDate(it.kev_due_date)) + '</b></span>');
       if (it.cwe && it.cwe.length) metrics.push('<span>' + escapeHtml(it.cwe.join(' · ')) + '</span>');
 
@@ -1254,7 +1413,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         return '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener noreferrer" title="원문: ' + escapeHtml(url) + '">' + escapeHtml(host) + '</a>';
       }).join('');
 
-      return '<article class="cve-card">'
+      return '<article class="cve-card" id="cve-' + escapeHtml(it.cve_id) + '" tabindex="-1">'
         + '<div class="cve-top">' + top.join('') + '</div>'
         + '<h2 class="cve-title">' + escapeHtml(it.title_ko) + '</h2>'
         + (metrics.length ? '<div class="cve-metrics">' + metrics.join('') + '</div>' : '')
@@ -1302,6 +1461,39 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       list.innerHTML = visible.map(renderCard).join('');
       visibleCount.textContent = visible.length;
       emptyState.classList.toggle('visible', visible.length === 0);
+    }
+
+    // ---- 우선 조치 행 → 해당 CVE 카드로 이동 ----
+    let jumpTimer = null;
+
+    function resetFiltersForJump() {
+      searchInput.value = '';
+      searchTerm = '';
+      clearSearchBtn.classList.remove('visible');
+      activeFilter = 'all';
+      document.querySelectorAll('.segment-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-filter') === 'all');
+      });
+      render();
+    }
+
+    // 검색어·필터로 카드가 숨겨져 있어도 조건을 풀고 다시 그린 뒤
+    // 정확히 그 카드로 스크롤하고 포커스를 옮긴다.
+    function jumpToCard(cid) {
+      const id = String(cid == null ? '' : cid).trim();
+      if (!id) return;
+      resetFiltersForJump();
+      const card = document.getElementById('cve-' + id);
+      if (!card) {
+        showToast('해당 CVE 카드를 찾지 못했습니다.');
+        return;
+      }
+      card.focus({ preventScroll: true });
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      card.classList.add('is-focused');
+      clearTimeout(jumpTimer);
+      jumpTimer = setTimeout(() => card.classList.remove('is-focused'), 2400);
+      try { history.replaceState(null, '', '#cve-' + encodeURIComponent(id)); } catch (e) {}
     }
 
     // ---- Markdown report ----
@@ -1387,6 +1579,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       }
     });
 
+    // ---- 우선 조치 행 링크 (이벤트 위임: 인라인 on* 금지 규칙 준수) ----
+    const priorityList = document.querySelector('.priority-list');
+    if (priorityList) {
+      priorityList.addEventListener('click', (ev) => {
+        const row = ev.target.closest('a.priority-row');
+        if (!row) return;
+        ev.preventDefault();
+        jumpToCard(row.getAttribute('data-cve'));
+      });
+    }
+
     // ---- Filters ----
     document.getElementById('filterNav').addEventListener('click', (ev) => {
       const btn = ev.target.closest('.segment-btn');
@@ -1428,6 +1631,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     });
 
     render();
+
+    // 공유된 #cve-... 링크로 들어온 경우에도 카드가 그려진 뒤 해당 카드로 이동한다.
+    (function openHashTargetOnLoad() {
+      const raw = String(location.hash || '').replace(/^#/, '');
+      if (raw.indexOf('cve-') !== 0) return;
+      let cid = raw.slice(4);
+      try { cid = decodeURIComponent(cid); } catch (e) {}
+      setTimeout(() => jumpToCard(cid), 80);
+    })();
   </script>
 </body>
 </html>
@@ -1580,11 +1792,13 @@ def build_briefing(items):
         seen.add(cid)
         title = re.sub(r"\s*\(?\s*" + re.escape(cid) + r"\s*\)?\s*$", "", it.get("title_ko", "")).strip()
         rows.append(
-            '<div class="priority-row">'
+            f'<a class="priority-row" href="#cve-{esc(cid)}" data-cve="{esc(cid)}"'
+            f' aria-label="{esc(cid)} 카드로 이동">'
             f'<span class="cve-mini">{esc(cid)}</span>'
-            f'<span>{esc(title)}</span>'
+            f'<span class="row-title">{esc(title)}</span>'
             f'<span class="{cls}">{badge}</span>'
-            "</div>"
+            '<span class="row-go" aria-hidden="true">›</span>'
+            "</a>"
         )
         return True
 
