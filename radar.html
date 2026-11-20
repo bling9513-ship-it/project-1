@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 피싱·스미싱 판별 레이더</title>
+  <meta name="description" content="문자·메일·메신저·QR로 오는 피싱과 스미싱을 실제 화면 모형으로 판별하는 16문항 퀴즈, Punycode·IP 링크·단축 URL·위험 확장자를 잡아내는 로컬 의심 신호 검사기, 최신 수법 6종과 긴급 대응 5단계 체크리스트.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
+      --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
+      --warn-bg: #fffbeb; --warn-text: #b45309; --warn-border: #fde68a;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
+      --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
+      --warn-bg: rgba(245, 158, 11, 0.12); --warn-text: #fcd34d; --warn-border: rgba(245, 158, 11, 0.35);
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    /* Global Header (index / study / ai / cve / outfit / wargame / tools 와 동일 구조) */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .nav-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-tabs { display: flex; gap: 6px; margin-left: 10px; }
+
+    .nav-tab-item {
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab-item:hover { background: var(--bg-subtle); color: var(--text-primary); }
+    .nav-tab-item.active { background: var(--accent-primary); color: #ffffff !important; }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .update-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    /* Layout */
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    .hero { margin-bottom: 20px; }
+
+    .hero-pill {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 3px 9px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title { font-size: 26px; font-weight: 700; letter-spacing: -0.035em; margin-bottom: 8px; }
+
+    .hero-desc {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 14px;
+      max-width: 720px;
+    }
+
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .stat-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* 섹션 헤더 */
+    .section-head { display: flex; align-items: flex-start; gap: 10px; margin: 30px 0 12px; }
+
+    .section-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-text { min-width: 0; }
+    .section-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; }
+    .section-sub { font-size: 12.3px; color: var(--text-muted); margin-top: 2px; }
+
+    /* 진행 현황 */
+    .summary {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .sum-main { min-width: 0; }
+    .sum-num { display: flex; align-items: baseline; gap: 4px; font-variant-numeric: tabular-nums; letter-spacing: -0.04em; }
+    .sum-num strong { font-size: 30px; font-weight: 700; line-height: 1.1; }
+    .sum-num span { font-size: 13px; color: var(--text-muted); }
+    .sum-label { font-size: 11.8px; color: var(--text-muted); margin-top: 2px; }
+
+    .sum-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--bg-muted);
+      margin-top: 10px;
+      overflow: hidden;
+      min-width: 120px;
+    }
+
+    .sum-bar i { display: block; height: 100%; width: 0%; background: var(--accent-primary); border-radius: 999px; transition: width 0.35s ease; }
+
+    .sum-side { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+    .sum-rows { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.3px; color: var(--text-secondary); }
+    .sum-rows strong { color: var(--text-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    .cat-progress { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+    .cat-bar { display: flex; align-items: center; gap: 6px; font-size: 11.6px; color: var(--text-secondary); white-space: nowrap; }
+    .cat-bar b { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .cat-bar i { display: block; width: 46px; height: 4px; border-radius: 999px; background: var(--bg-muted); overflow: hidden; }
+    .cat-bar s { display: block; height: 100%; width: 0%; background: var(--accent-primary); border-radius: 999px; transition: width 0.3s ease; }
+
+    /* 필터 */
+    .controls {
+      margin-top: 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .filter-row + .filter-row { margin-top: 8px; }
+    .filter-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); flex-shrink: 0; min-width: 46px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .chip.active { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff !important; }
+    .chip em { font-style: normal; font-size: 11px; opacity: 0.75; font-variant-numeric: tabular-nums; }
+
+    .controls-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .visible-count { font-size: 11.8px; color: var(--text-muted); }
+    .foot-btns { display: flex; gap: 6px; }
+
+    .btn-ghost {
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-size: 11.8px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-ghost:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+
+    /* 퀴즈 카드 */
+    .q-list { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+
+    .qcard {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 16px 18px;
+      transition: border-color 0.2s ease;
+    }
+
+    .qcard.is-correct { border-color: var(--ok-border); }
+    .qcard.is-wrong { border-color: var(--no-border); }
+
+    .qcard-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .qcard-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+
+    .tag {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 2px 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .tag-sms { background: var(--accent-subtle); color: var(--accent-primary); border-color: var(--border-default); }
+    .tag-email { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn-border); }
+    .tag-msg { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+
+    .qcard-scenario { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+    .qidx { font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+    /* 화면 모형 */
+    .mock {
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      background: var(--bg-subtle);
+      padding: 12px 13px;
+      overflow: hidden;
+    }
+
+    .mock-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 9px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .mock-app { font-size: 10.8px; font-weight: 700; letter-spacing: 0.03em; color: var(--text-muted); }
+    .mock-time { font-size: 10.8px; color: var(--text-muted); white-space: nowrap; }
+
+    .mock-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+    .mock-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--bg-muted);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .mock-avatar-round { border-radius: 50%; }
+    .mock-id { display: flex; flex-direction: column; min-width: 0; }
+    .mock-name { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+    .mock-sub { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0; overflow-wrap: anywhere; }
+
+    .mock-body {
+      font-size: 12.8px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+
+    .mock-link {
+      margin-top: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-left: 3px solid var(--accent-primary);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .mock-link-k { font-size: 10.2px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em; }
+
+    .mock-url {
+      font-family: var(--font-mono);
+      font-size: 11.3px;
+      letter-spacing: 0;
+      color: var(--accent-primary);
+      overflow-wrap: anywhere;
+      word-break: break-all;
+    }
+
+    /* 메일 */
+    .mail-head {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+    }
+
+    .mail-row { display: flex; gap: 10px; font-size: 11.8px; line-height: 1.7; }
+    .mail-k { flex-shrink: 0; width: 58px; color: var(--text-muted); font-weight: 600; }
+    .mail-v { min-width: 0; color: var(--text-secondary); overflow-wrap: anywhere; }
+    .mail-v b { color: var(--text-primary); }
+    .mail-warn { color: var(--warn-text); font-weight: 600; font-family: var(--font-mono); font-size: 11.2px; letter-spacing: 0; }
+    .mail-subject { color: var(--text-primary); font-weight: 700; }
+
+    /* 채팅 */
+    .chat-row { display: flex; align-items: flex-start; gap: 9px; }
+    .bubble {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px 12px 12px 12px;
+      padding: 9px 12px;
+      font-size: 12.8px;
+      line-height: 1.7;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+      max-width: 100%;
+    }
+    .bubble-name { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; }
+
+    /* QR */
+    .qr-wrap { display: flex; align-items: center; gap: 14px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 9px; padding: 12px; }
+    .qr-svg { color: var(--text-primary); flex-shrink: 0; width: 84px; height: 84px; }
+    .qr-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .qr-title { font-size: 13.2px; font-weight: 700; letter-spacing: -0.02em; }
+    .qr-desc { font-size: 11.8px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* OAuth 동의 */
+    .oauth {
+      margin-top: 10px;
+      border: 1px solid var(--border-default);
+      border-radius: 9px;
+      background: var(--bg-surface);
+      padding: 11px 12px;
+    }
+
+    .oauth-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .oauth-k { font-size: 10.4px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em; }
+    .oauth-app { font-size: 12.5px; font-weight: 700; }
+    .oauth-sub { font-size: 11.4px; color: var(--text-secondary); margin-top: 6px; }
+
+    .scopes { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+    .scope { display: flex; align-items: center; gap: 6px; font-size: 11.6px; color: var(--text-secondary); }
+    .scope svg { color: var(--ok-text); flex-shrink: 0; }
+
+    .oauth-btns { display: flex; gap: 6px; justify-content: flex-end; margin-top: 10px; }
+    .oauth-btn { font-size: 11.4px; font-weight: 700; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border-default); }
+    .oauth-btn.ghost { color: var(--text-secondary); }
+    .oauth-btn.solid { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+
+    /* 판정 버튼 */
+    .ans-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+
+    .ans-btn {
+      font-family: inherit;
+      font-size: 12.8px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      padding: 10px 8px;
+      border-radius: 9px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ans-btn:hover { border-color: var(--border-strong); color: var(--text-primary); background: var(--bg-subtle); }
+
+    .ans-btn.picked { color: var(--text-primary); border-color: var(--text-secondary); }
+    .ans-btn.correct { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+    .ans-btn.wrong { background: var(--no-bg); color: var(--no-text); border-color: var(--no-border); }
+    .ans-btn:disabled { cursor: default; }
+    .ans-btn:disabled:hover { background: var(--bg-surface); color: var(--text-secondary); }
+    .ans-btn.correct:disabled:hover { background: var(--ok-bg); color: var(--ok-text); }
+    .ans-btn.wrong:disabled:hover { background: var(--no-bg); color: var(--no-text); }
+
+    /* 채점 결과 */
+    .verdict { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+
+    .verdict-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+
+    .verdict-mark {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+
+    .verdict-text { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+
+    .qcard.is-correct .verdict-mark { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+    .qcard.is-wrong .verdict-mark { background: var(--no-bg); color: var(--no-text); border-color: var(--no-border); }
+
+    .vp-title { font-size: 11.4px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; margin-bottom: 6px; }
+
+    .vp-list { list-style: none; counter-reset: vp; display: flex; flex-direction: column; gap: 5px; }
+    .vp-list li {
+      counter-increment: vp;
+      position: relative;
+      padding-left: 22px;
+      font-size: 12.2px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+    .vp-list li::before {
+      content: counter(vp);
+      position: absolute;
+      left: 0;
+      top: 1px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      color: var(--text-muted);
+      font-size: 9.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vnote {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      background: var(--bg-subtle);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+    .vnote-k { flex-shrink: 0; font-size: 10.8px; font-weight: 700; color: var(--text-muted); padding-top: 2px; }
+    .vnote-v { min-width: 0; }
+
+    .vanswer { margin-top: 8px; font-size: 11.2px; color: var(--text-muted); text-align: right; }
+    .vanswer b { color: var(--text-primary); font-weight: 700; }
+
+    /* 의심 신호 검사기 */
+    .scan {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 16px 18px;
+    }
+
+    .scan-label { display: block; font-size: 11.8px; font-weight: 700; color: var(--text-muted); margin-bottom: 7px; }
+
+    .scan textarea {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 12.4px;
+      letter-spacing: 0;
+      line-height: 1.65;
+      color: var(--text-primary);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 9px;
+      padding: 10px 12px;
+      resize: vertical;
+      min-height: 76px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .scan textarea:focus { border-color: var(--accent-primary); background: var(--bg-surface); }
+    .scan textarea::placeholder { color: var(--text-muted); }
+
+    .scan-actions { display: flex; align-items: center; gap: 8px; margin-top: 9px; flex-wrap: wrap; }
+
+    .btn {
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary { background: var(--accent-primary); color: #ffffff; border-color: var(--accent-primary); }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-ghost { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-default); }
+    .btn-ghost:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .scan-local { font-size: 11.2px; color: var(--text-muted); }
+
+    .samples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .sample {
+      font-family: inherit;
+      font-size: 11.3px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 4px 9px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .sample:hover { border-color: var(--border-strong); color: var(--text-primary); }
+
+    .scan-result { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-subtle); }
+
+    .risk-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+    .risk-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+
+    .risk-badge {
+      font-size: 11.6px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .risk-badge.high { background: var(--no-bg); color: var(--no-text); border-color: var(--no-border); }
+    .risk-badge.mid { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn-border); }
+    .risk-badge.low { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+
+    .risk-bar { height: 7px; border-radius: 999px; background: var(--bg-muted); overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; width: 0%; border-radius: 999px; background: var(--text-muted); transition: width 0.35s ease; }
+    .risk-bar i.high { background: #ef4444; }
+    .risk-bar i.mid { background: #f59e0b; }
+    .risk-bar i.low { background: #10b981; }
+
+    .risk-meta { font-size: 11.4px; color: var(--text-muted); margin-top: 7px; font-variant-numeric: tabular-nums; }
+
+    .sig-list { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-top: 14px; }
+
+    .sig {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      border: 1px solid var(--border-default);
+      border-radius: 9px;
+      padding: 9px 11px;
+      background: var(--bg-surface);
+    }
+
+    .sig.lv-high { border-color: var(--no-border); background: var(--no-bg); }
+    .sig.lv-mid { border-color: var(--warn-border); background: var(--warn-bg); }
+    .sig.lv-low { border-color: var(--border-default); }
+
+    .sig-badge {
+      flex-shrink: 0;
+      font-size: 10.2px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+    .sig.lv-high .sig-badge { color: var(--no-text); border-color: var(--no-border); }
+    .sig.lv-mid .sig-badge { color: var(--warn-text); border-color: var(--warn-border); }
+
+    .sig-body { min-width: 0; }
+    .sig-title { font-size: 12.4px; font-weight: 700; letter-spacing: -0.02em; }
+    .sig-desc { font-size: 11.6px; line-height: 1.65; color: var(--text-secondary); margin-top: 2px; overflow-wrap: anywhere; }
+
+    .breakdown { margin-top: 14px; border: 1px solid var(--border-default); border-radius: 9px; overflow: hidden; }
+    .bd-row { display: grid; grid-template-columns: 96px minmax(0, 1fr); font-size: 11.6px; }
+    .bd-row + .bd-row { border-top: 1px solid var(--border-subtle); }
+    .bd-k { background: var(--bg-subtle); color: var(--text-muted); font-weight: 600; padding: 6px 10px; }
+    .bd-v { padding: 6px 10px; color: var(--text-primary); font-family: var(--font-mono); letter-spacing: 0; overflow-wrap: anywhere; word-break: break-all; }
+
+    .scan-empty { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+
+    /* 트렌드 카드 */
+    .trend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 10px; }
+
+    .trend-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      padding: 14px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .trend-tag {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
+    .trend-title { font-size: 13.4px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.45; }
+    .trend-body { font-size: 12px; line-height: 1.7; color: var(--text-secondary); }
+    .trend-signal {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 11.3px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      display: flex;
+      gap: 6px;
+    }
+    .trend-signal span:first-child { color: var(--accent-primary); font-weight: 700; flex-shrink: 0; }
+
+    /* 체크리스트 */
+    .check {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 16px 18px;
+    }
+
+    .check-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .check-count { font-size: 11.8px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .check-count b { color: var(--text-primary); font-weight: 700; }
+
+    .check-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      padding: 11px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: var(--bg-surface);
+    }
+
+    .check-item:hover { border-color: var(--border-strong); background: var(--bg-subtle); }
+    .check-item.done { border-color: var(--ok-border); background: var(--ok-bg); }
+
+    .check-item input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: transparent;
+      transition: all 0.15s ease;
+    }
+
+    .check-item.done .check-box { background: var(--ok-text); border-color: var(--ok-text); color: #ffffff; }
+
+    .check-txt { min-width: 0; }
+    .check-title { font-size: 12.8px; font-weight: 700; letter-spacing: -0.02em; display: flex; gap: 7px; align-items: baseline; }
+    .check-num { font-size: 10.6px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .check-desc { font-size: 11.8px; line-height: 1.7; color: var(--text-secondary); margin-top: 3px; }
+
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 32px 16px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+    }
+    .empty-state.show { display: block; }
+
+    .footer {
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-default);
+      text-align: center;
+      font-size: 11.8px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
+      .brand-logo-img { width: 24px; height: 24px; }
+      .brand-name { font-size: 15px; }
+      .nav-tabs { margin-left: 6px; gap: 4px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; border-radius: 14px; }
+      .update-meta { display: none !important; }
+      .nav-actions a.icon-btn { display: none; }
+      .container { padding: 20px 12px 60px; }
+      .hero-title { font-size: 21px; }
+      .hero-desc { font-size: 13px; line-height: 1.65; }
+      .hero-stats { gap: 6px; }
+      .stat-chip { font-size: 11px; padding: 3px 8px; }
+      .section-head { margin: 24px 0 10px; gap: 8px; }
+      .section-icon { width: 26px; height: 26px; border-radius: 8px; }
+      .section-title { font-size: 15.5px; }
+      .section-sub { font-size: 11.2px; }
+      .summary { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 13px 14px; }
+      .sum-num strong { font-size: 26px; }
+      .qcard { padding: 13px 13px; border-radius: 12px; }
+      .qcard-scenario { font-size: 12.2px; }
+      .mock { padding: 10px 10px; }
+      .mock-body, .bubble { font-size: 12.1px; }
+      .mock-url { font-size: 10.6px; }
+      .mail-k { width: 50px; }
+      .mail-row { font-size: 11.2px; }
+      .ans-btn { font-size: 12.2px; padding: 9px 6px; }
+      .vp-list li { font-size: 11.8px; }
+      .vnote { font-size: 11.5px; padding: 8px 10px; }
+      .scan { padding: 13px 13px; }
+      .trend-grid { grid-template-columns: minmax(0, 1fr); }
+      .trend-card { padding: 13px 14px; }
+      .check { padding: 13px 13px; }
+      .bd-row { grid-template-columns: 76px minmax(0, 1fr); }
+      .qr-svg { width: 74px; height: 74px; }
+    }
+
+    /* 내비게이션 8탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    @media (max-width: 560px) {
+      .brand-name { display: none; }
+    }
+
+    /* 내비게이션 8탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
+    @media (max-width: 1024px) {
+      .nav-brand { min-width: 0; }
+      .nav-tabs {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .nav-tab-item { padding: 4px 7px; font-size: 11px; }
+    }
+
+    @media (max-width: 430px) {
+      .nav-container { padding: 0 8px; height: 52px; gap: 4px; }
+      .brand-logo-img { width: 22px; height: 22px; }
+      .nav-tabs { margin-left: 2px; gap: 3px; }
+      .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
+      .nav-actions { gap: 4px; }
+      .nav-actions .icon-btn { width: 28px; height: 28px; }
+      .ans-row { gap: 6px; }
+      .qs-head { gap: 6px; }
+      .filter-label { min-width: 100%; }
+      .samples { gap: 5px; }
+      .sample { font-size: 10.6px; padding: 3px 7px; }
+    }
+
+    [hidden] { display: none !important; }
+  </style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Global Nav -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;">
+          <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+          <span class="brand-name">Infosec Archive</span>
+        </a>
+        <div class="nav-tabs">
+          <a href="index.html" class="nav-tab-item">채용공고</a>
+          <a href="study.html" class="nav-tab-item">시험 공부</a>
+          <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
+          <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
+          <a href="outfit.html" class="nav-tab-item">옷차림</a>
+          <a href="wargame.html" class="nav-tab-item">워게임</a>
+          <a href="tools.html" class="nav-tab-item">실무 유틸</a>
+          <a href="radar.html" class="nav-tab-item active">피싱 레이더</a>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="update-meta">
+          <span class="live-dot"></span>
+          <span>판별은 이 브라우저에서</span>
+        </div>
+        <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
+          <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sunIcon" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <a href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" class="icon-btn" title="GitHub 저장소 바로가기">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    // 좁은 화면에서 현재 페이지 탭이 가려지지 않도록 탭 영역만 살짝 스크롤한다.
+    (function () {
+      function keepActiveTabVisible() {
+        var box = document.querySelector('.nav-tabs');
+        if (!box) return;
+        var act = box.querySelector('.nav-tab-item.active');
+        if (!act || box.scrollWidth <= box.clientWidth) return;
+        var br = box.getBoundingClientRect();
+        var ar = act.getBoundingClientRect();
+        if (ar.right > br.right) box.scrollLeft += (ar.right - br.right) + 8;
+        else if (ar.left < br.left) box.scrollLeft -= (br.left - ar.left) + 8;
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', keepActiveTabVisible);
+      else keepActiveTabVisible();
+      window.addEventListener('resize', keepActiveTabVisible);
+    })();
+  </script>
+
+  <main class="container">
+
+    <section class="hero">
+      <span class="hero-pill">PHISHING RADAR</span>
+      <h1 class="hero-title">피싱 · 스미싱 판별 레이더</h1>
+      <p class="hero-desc">문자·업무 메일·메신저·QR로 오는 사칭을 실제 화면 모양 그대로 모았습니다. 정상 안내와 피싱을 구분해 보세요. 판정하면 즉시 채점되고, 의심 포인트 3가지와 도메인·발신자 해설이 붙습니다. 의심스러운 링크는 아래 검사기에 붙여 넣으면 브라우저 안에서만 분석됩니다.</p>
+      <div class="hero-stats">
+        <span class="stat-chip">판별 문항 <strong>16</strong></span>
+        <span class="stat-chip">정상 안내 함정 <strong>4</strong></span>
+        <span class="stat-chip">유행 수법 <strong>6</strong></span>
+        <span class="stat-chip">외부 전송 <strong>없음</strong></span>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <span class="section-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <path d="M9.5 12.5 11 14l3.5-3.5"></path>
+        </svg>
+      </span>
+      <div class="section-text">
+        <div class="section-title">실전 피싱 · 스미싱 판별</div>
+        <div class="section-sub">16문항 · 선택 즉시 채점 · 정상 안내 4문항 포함 · 진행은 이 브라우저에 저장</div>
+      </div>
+    </div>
+
+    <section class="summary" aria-label="판별 진행 현황">
+      <div class="sum-main">
+        <div class="sum-num"><strong id="solvedNum">0</strong><span>/ 16</span></div>
+        <div class="sum-label">판정한 문항</div>
+        <div class="sum-bar"><i id="solvedBar"></i></div>
+      </div>
+      <div class="sum-side">
+        <div class="sum-rows">
+          <span>정답률 <strong id="accNum">—</strong></span>
+          <span>정답 <strong id="okNum">0</strong>문항</span>
+          <span>정상 안내 판별 <strong id="normNum">0</strong> / 4</span>
+        </div>
+        <div class="cat-progress" id="catProgress"></div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="문항 필터">
+      <div class="filter-row">
+        <div class="filter-label">카테고리</div>
+        <div class="chips" id="catFilter"></div>
+      </div>
+      <div class="controls-foot">
+        <span class="visible-count" id="visibleCount">16문항</span>
+        <div class="foot-btns">
+          <button class="btn-ghost" type="button" id="resetProgress">진행 초기화</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="q-list" id="qList">
+<article class="qcard" id="q-s1" data-qid="s1" data-cat="sms" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-sms">SMS</span><span class="qcard-scenario">택배 반송 사칭 · 앱 설치 유도</span></div><span class="qidx">01</span></div><div class="mock mock-sms"><div class="mock-top"><span class="mock-app">문자 메시지</span><span class="mock-time">오후 2:14</span></div><div class="mock-head"><span class="mock-avatar">C</span><span class="mock-id"><span class="mock-name">CJ대한통운</span><span class="mock-sub">+82 10-4832-7719</span></span></div><div class="mock-body">[CJ대한통운] 고객님의 택배가 주소 불일치로 반송 예정입니다.
+배송지 확인 후 재배송을 신청해 주세요.
+확인: http://cj-logistics-kr.apk-down.xyz/track?no=8821</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">http://cj-logistics-kr.apk-down.xyz/track?no=8821</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>발신번호가 택배사 공식 콜센터(1588-1255)가 아닌 010 개인 번호입니다.</li><li>링크 도메인이 .apk 설치 파일을 내려받는 경로이고, 실제 호스트는 apk-down.xyz입니다.</li><li>정상 배송 조회는 앱 설치를 요구하지 않습니다. 설치를 유도하면 스미싱입니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">CJ대한통운은 공식 앱과 홈페이지(cjlogistics.co.kr)에서만 운송장을 조회합니다. 문자 속 링크로 설치 파일을 받게 하는 것은 국내 스미싱 1위 유형입니다.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-s2" data-qid="s2" data-cat="sms" data-answer="legit"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-sms">SMS</span><span class="qcard-scenario">배송 완료 안내</span></div><span class="qidx">02</span></div><div class="mock mock-sms"><div class="mock-top"><span class="mock-app">문자 메시지</span><span class="mock-time">오전 10:02</span></div><div class="mock-head"><span class="mock-avatar">우</span><span class="mock-id"><span class="mock-name">우체국택배</span><span class="mock-sub">1588-1300</span></span></div><div class="mock-body">[우체국택배] 1234-5678-9012 물품이 배송 완료되었습니다.
+받으실 곳: 경비실 보관
+문의는 우체국 콜센터 1588-1300으로 연락 주세요.</div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>발신번호 1588-1300은 우체국 고객센터 대표번호입니다.</li><li>링크·앱 설치·개인정보 입력 요구가 전혀 없습니다.</li><li>문의 채널로 공식 콜센터 번호만 안내합니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">정상 안내 문자도 이렇게 옵니다. 링크가 없다는 사실만으로 안심할 수는 없지만, 발신번호와 요구하는 행동을 함께 보면 판단이 됩니다.</span></div><div class="vanswer">정답 <b>정상 안내</b></div></div></article>
+<article class="qcard" id="q-s3" data-qid="s3" data-cat="sms" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-sms">SMS</span><span class="qcard-scenario">법원 통고처분서 사칭</span></div><span class="qidx">03</span></div><div class="mock mock-sms"><div class="mock-top"><span class="mock-app">문자 메시지</span><span class="mock-time">오후 6:37</span></div><div class="mock-head"><span class="mock-avatar">서</span><span class="mock-id"><span class="mock-name">서울중앙지법</span><span class="mock-sub">070-8064-2210</span></span></div><div class="mock-body">[서울중앙지법] 귀하 앞 통고처분서가 발송되었습니다.
+미확인 시 11월 25일 강제집행이 진행됩니다.
+통고처분서 확인: https://efine-notice-kr.com/view?id=8821</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://efine-notice-kr.com/view?id=8821</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>법원은 문자로 강제집행 예고를 보내지 않습니다. 과태료·범칙금은 이파인(efine.go.kr)에서만 확인합니다.</li><li>efine-notice-kr.com은 정부 도메인(go.kr)이 아닌 일반 .com 도메인입니다.</li><li>링크를 열면 본인인증을 빙자해 주민번호·카드정보를 입력하게 만듭니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">공공기관 사칭은 도메인 끝이 go.kr인지부터 확인하세요. 주소에 &#x27;efine&#x27;이 들어가도 실제 호스트는 efine-notice-kr.com입니다.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-s4" data-qid="s4" data-cat="sms" data-answer="legit"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-sms">SMS</span><span class="qcard-scenario">본인확인 인증번호</span></div><span class="qidx">04</span></div><div class="mock mock-sms"><div class="mock-top"><span class="mock-app">문자 메시지</span><span class="mock-time">오전 8:41</span></div><div class="mock-head"><span class="mock-avatar">K</span><span class="mock-id"><span class="mock-name">KB국민은행</span><span class="mock-sub">1599-9999</span></span></div><div class="mock-body">[KB국민은행] 본인확인 인증번호 [482913]을 입력해 주세요.
+타인에게 절대 알려주지 마세요.</div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>링크 없이 인증번호 숫자만 전달합니다.</li><li>&#x27;타인에게 알려주지 마세요&#x27;라는 금융사 표준 안내 문구가 있습니다.</li><li>발신번호가 KB국민은행 대표번호(1599-9999)입니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">정상 인증 문자는 링크를 넣지 않고, 인증번호를 누구에게도 알려주지 말라고 안내합니다. 반대로 인증번호를 읽어 달라는 전화는 그 자체가 사기입니다.</span></div><div class="vanswer">정답 <b>정상 안내</b></div></div></article>
+<article class="qcard" id="q-s5" data-qid="s5" data-cat="sms" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-sms">SMS</span><span class="qcard-scenario">부고장 사칭 · 설치 파일</span></div><span class="qidx">05</span></div><div class="mock mock-sms"><div class="mock-top"><span class="mock-app">문자 메시지</span><span class="mock-time">오전 7:58</span></div><div class="mock-head"><span class="mock-avatar">장</span><span class="mock-id"><span class="mock-name">장례 안내</span><span class="mock-sub">010-2277-8841</span></span></div><div class="mock-body">[부고] 故 김영수님께서 별세하셨기에 삼가 알려드립니다.
+발인 11월 22일 오전 7시, 서울성모병원 장례식장 3호실.
+모바일 부고장: https://bugo-card.kr/invite/1892.apk</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://bugo-card.kr/invite/1892.apk</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>부고 링크가 웹 페이지가 아니라 앱 설치 파일(.apk)을 내려받게 합니다.</li><li>모바일 부고장·청첩장은 이미지 링크만 제공하며 설치 파일을 주지 않습니다.</li><li>모르는 번호에서 온 부고 + 즉시 클릭 유도 조합입니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">부고·청첩장·범칙금·택배는 국내 스미싱의 대표 4종입니다. 링크가 .apk로 끝나면 열지 말고 삭제하세요.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-s6" data-qid="s6" data-cat="sms" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-sms">SMS</span><span class="qcard-scenario">정부 지원금 사칭</span></div><span class="qidx">06</span></div><div class="mock mock-sms"><div class="mock-top"><span class="mock-app">문자 메시지</span><span class="mock-time">오후 1:20</span></div><div class="mock-head"><span class="mock-avatar">보</span><span class="mock-id"><span class="mock-name">보조금24</span><span class="mock-sub">02-6953-1187</span></span></div><div class="mock-body">[보조금24] 2026년 긴급 생계지원금 대상자로 선정되셨습니다.
+50만원 수령을 위해 11월 21일 24시까지 계좌 확인이 필요합니다.
+신청: https://gov-support-kr.top/apply?u=1</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://gov-support-kr.top/apply?u=1</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>정부 지원금은 정부24(gov.kr)에서만 신청하며, 문자 링크로 계좌를 받지 않습니다.</li><li>.top 최상위 도메인은 국내 공공기관이 사용하지 않습니다.</li><li>&#x27;24시까지&#x27;라는 마감 압박으로 판단을 흐리게 만듭니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">지원금·환급금은 국민 대다수가 기다리는 소재라 클릭률이 높습니다. 급할수록 공식 앱에서 직접 검색해 확인하세요.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-e1" data-qid="e1" data-cat="email" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-email">MAIL</span><span class="qcard-scenario">대표 사칭 송금 요청(BEC)</span></div><span class="qidx">07</span></div><div class="mock mock-mail"><div class="mock-top"><span class="mock-app">받은편지함</span><span class="mock-time">오전 9:41</span></div><div class="mail-head"><div class="mail-row"><span class="mail-k">보낸사람</span><span class="mail-v"><b>이정훈 대표</b> &lt;lee.jh@hanwoo-holdings.co.kr&gt;</span></div><div class="mail-row"><span class="mail-k">답장 주소</span><span class="mail-v mail-warn">ceo.lee.jh@gmail.com</span></div><div class="mail-row"><span class="mail-k">제목</span><span class="mail-v mail-subject">[긴급] 오늘 15시까지 결제 요청</span></div></div><div class="mock-body">수고 많습니다.
+해외 파트너사 인수 계약금 건으로 오늘 15시까지 선결제가 필요합니다.
+아래 계좌로 43,800,000원 송금 부탁드립니다.
+
+계좌: 하나은행 392-9100-XXXX (예금주: SUNLIGHT TRADING LTD)
+
+건은 대외비라 재무팀에는 아직 공유하지 말아 주세요. 확인되면 제가 직접 마무리하겠습니다.</div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>답장 주소가 회사 도메인이 아닌 개인 gmail 주소입니다.</li><li>&#x27;대외비·재무팀 공유 금지&#x27;로 내부 검증 통로를 막고 있습니다.</li><li>큰 금액 + 촉박한 마감 시각 + 해외 계좌 조합은 BEC의 전형입니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">회사 공식 도메인은 hanwooholdings.co.kr인데 보낸 주소는 하이픈이 들어간 hanwoo-holdings.co.kr입니다. 한 글자만 달라도 완전히 다른 도메인이며, 송금 전 원래 알던 번호로 전화 확인이 유일한 방어입니다.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-e2" data-qid="e2" data-cat="email" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-email">MAIL</span><span class="qcard-scenario">M365 계정 잠금 사칭</span></div><span class="qidx">08</span></div><div class="mock mock-mail"><div class="mock-top"><span class="mock-app">받은편지함</span><span class="mock-time">오전 6:12</span></div><div class="mail-head"><div class="mail-row"><span class="mail-k">보낸사람</span><span class="mail-v"><b>Microsoft 365</b> &lt;no-reply@micros0ft-security.com&gt;</span></div><div class="mail-row"><span class="mail-k">제목</span><span class="mail-v mail-subject">계정이 일시적으로 잠겼습니다</span></div></div><div class="mock-body">비정상적인 로그인 시도가 감지되어 계정이 일시적으로 잠겼습니다.
+24시간 안에 확인하지 않으면 받은 편지함의 메일이 삭제됩니다.
+
+지금 확인: https://login.microsoftonline.com.secure-auth-check.net/verify</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://login.microsoftonline.com.secure-auth-check.net/verify</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>보낸 주소의 &#x27;micros0ft&#x27;는 o 대신 숫자 0을 쓴 사칭 도메인입니다.</li><li>링크의 실제 호스트는 secure-auth-check.net이고, 앞의 login.microsoftonline.com은 하위 도메인일 뿐입니다.</li><li>24시간 내 삭제라는 위협으로 확인 절차를 건너뛰게 만듭니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">URL은 오른쪽 끝(등록 도메인)부터 읽어야 합니다. 앞에 붙은 익숙한 이름은 위장용일 수 있습니다. 실제 접속지는 마지막 두 라벨인 secure-auth-check.net입니다.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-e3" data-qid="e3" data-cat="email" data-answer="legit"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-email">MAIL</span><span class="qcard-scenario">새 로그인 보안 알림</span></div><span class="qidx">09</span></div><div class="mock mock-mail"><div class="mock-top"><span class="mock-app">받은편지함</span><span class="mock-time">오후 11:07</span></div><div class="mail-head"><div class="mail-row"><span class="mail-k">보낸사람</span><span class="mail-v"><b>GitHub</b> &lt;noreply@github.com&gt;</span></div><div class="mail-row"><span class="mail-k">제목</span><span class="mail-v mail-subject">[GitHub] new sign-in from Chrome on Windows</span></div></div><div class="mock-body">We noticed a new sign-in to your account.
+
+Device: Chrome on Windows
+Location: Seoul, KR (approximate)
+
+If this was you, you can safely ignore this email. If not, secure your account at https://github.com/settings/sessions</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://github.com/settings/sessions</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>보낸 주소가 정확히 github.com입니다.</li><li>링크의 호스트도 github.com 공식 도메인입니다.</li><li>요구 행동이 &#x27;본인이 아니면 세션 종료&#x27;이며 비밀번호·카드 정보를 요구하지 않습니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">정상 보안 알림도 제목만 보면 위협적입니다. 판단 기준은 도메인과 요구하는 행동입니다. 영어 본문이라고 모두 피싱은 아닙니다.</span></div><div class="vanswer">정답 <b>정상 안내</b></div></div></article>
+<article class="qcard" id="q-e4" data-qid="e4" data-cat="email" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-email">MAIL</span><span class="qcard-scenario">npm 토큰 탈취 메일</span></div><span class="qidx">10</span></div><div class="mock mock-mail"><div class="mock-top"><span class="mock-app">받은편지함</span><span class="mock-time">오후 4:30</span></div><div class="mail-head"><div class="mail-row"><span class="mail-k">보낸사람</span><span class="mail-v"><b>npm Support</b> &lt;security@npm-support.dev&gt;</span></div><div class="mail-row"><span class="mail-k">제목</span><span class="mail-v mail-subject">Action required: package vulnerability audit pending</span></div></div><div class="mock-body">Your npm packages have 3 critical vulnerabilities.
+To keep publishing access, re-authenticate with your access token within 48 hours.
+
+Re-authenticate: https://npmjs.com-verify.dev/audit</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://npmjs.com-verify.dev/audit</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>npm 공식 발신 도메인은 npmjs.com이며 npm-support.dev는 무관한 도메인입니다.</li><li>npmjs.com-verify.dev는 npmjs.com이 아니라 com-verify.dev에 등록된 호스트입니다.</li><li>액세스 토큰 재입력을 요구합니다. 토큰을 넣으면 패키지 배포 권한 전체가 넘어갑니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">개발자 대상 피싱은 CI 토큰·PAT·SSH 키를 노립니다. 토큰을 붙여넣게 만드는 페이지는 주소부터 확인하고, 의심되면 토큰을 폐기하고 새로 발급하세요.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-e5" data-qid="e5" data-cat="email" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-email">MAIL</span><span class="qcard-scenario">관리자 사칭 · OAuth 권한 동의 유도</span></div><span class="qidx">11</span></div><div class="mock mock-mail"><div class="mock-top"><span class="mock-app">받은편지함</span><span class="mock-time">오후 2:03</span></div><div class="mail-head"><div class="mail-row"><span class="mail-k">보낸사람</span><span class="mail-v"><b>Google Workspace 관리자</b> &lt;admin@workspace-google.com&gt;</span></div><div class="mail-row"><span class="mail-k">제목</span><span class="mail-v mail-subject">관리자 정책 변경: 메일 보관 앱 재승인</span></div></div><div class="mock-body">워크스페이스 정책 변경으로 메일 보관 앱 &#x27;MailKeeper&#x27;의 재승인이 필요합니다.
+아래 버튼을 눌러 권한을 허용해 주세요. 미승인 시 오래된 메일이 보관되지 않습니다.</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://accounts.google.com.o-auth-consent.com/authorize?client_id=mailkeeper</code></div><div class="oauth"><div class="oauth-head"><span class="oauth-k">권한 동의 화면</span><span class="oauth-app">MailKeeper</span></div><div class="oauth-sub">이 앱이 다음 권한을 요청합니다</div><ul class="scopes"><li class="scope"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Gmail 메시지 읽기</span></li><li class="scope"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Gmail 메시지 보내기</span></li><li class="scope"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>연락처 전체 접근</span></li><li class="scope"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>드라이브 파일 보기·수정</span></li></ul><div class="oauth-btns"><span class="oauth-btn ghost">취소</span><span class="oauth-btn solid">허용</span></div></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>&#x27;accounts.google.com.o-auth-consent.com&#x27;의 실제 호스트는 o-auth-consent.com입니다.</li><li>요청 권한이 업무 필요 범위를 크게 넘습니다(메일 읽기·보내기·연락처·드라이브).</li><li>&#x27;관리자 정책&#x27;이라는 이름으로 동의 버튼을 누르게 만듭니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">OAuth 피싱은 비밀번호를 훔치지 않습니다. 동의 한 번이면 공격자 앱이 계속 메일을 읽고 보낼 수 있고, 비밀번호를 바꿔도 토큰은 살아 있습니다. 계정 보안 설정의 &#x27;타사 앱 액세스&#x27;에서 즉시 해제하세요.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-e6" data-qid="e6" data-cat="email" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-email">MAIL</span><span class="qcard-scenario">네이버 로그인 사칭</span></div><span class="qidx">12</span></div><div class="mock mock-mail"><div class="mock-top"><span class="mock-app">받은편지함</span><span class="mock-time">오전 3:26</span></div><div class="mail-head"><div class="mail-row"><span class="mail-k">보낸사람</span><span class="mail-v"><b>네이버 고객센터</b> &lt;help@naver-help.co.kr&gt;</span></div><div class="mail-row"><span class="mail-k">제목</span><span class="mail-v mail-subject">[네이버] 해외 IP 로그인 감지 · 비밀번호 재설정 안내</span></div></div><div class="mock-body">해외 IP에서 로그인 시도가 확인되었습니다.
+본인 확인 후 비밀번호를 재설정해 주세요. 24시간 내 미조치 시 계정이 보호 상태로 전환됩니다.
+
+본인 확인: https://nid.naver.com.safe-auth.kr/reset</div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://nid.naver.com.safe-auth.kr/reset</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>네이버 고객센터는 naver.com 도메인만 사용합니다. naver-help.co.kr은 사칭입니다.</li><li>&#x27;nid.naver.com.safe-auth.kr&#x27;의 실제 호스트는 safe-auth.kr입니다.</li><li>로그인·비밀번호 재설정을 메일 링크로 유도하는 전형적인 계정 탈취 수법입니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">포털·은행 로그인은 즐겨찾기나 공식 앱에서 직접 들어가세요. 링크로 열린 로그인 화면은 주소창을 봐도 이미 늦을 수 있습니다.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-m1" data-qid="m1" data-cat="msg" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-msg">KAKAO</span><span class="qcard-scenario">지인 사칭 · 급전 요구</span></div><span class="qidx">13</span></div><div class="mock mock-chat"><div class="mock-top"><span class="mock-app">카카오톡</span><span class="mock-time">오후 8:02</span></div><div class="chat-row"><span class="mock-avatar mock-avatar-round">엄</span><span class="bubble"><span class="bubble-name">엄마</span>아들 나야. 폰이 고장나서 새 번호로 연락해.
+급하게 병원비 50만원만 보내줄 수 있어?
+카톡이랑 문자 다 안 돼서 이 번호로만 돼.</span></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>폰 고장을 이유로 기존 연락 채널을 피합니다.</li><li>금액과 긴급성을 한 문장에 함께 요구합니다.</li><li>카카오톡 프로필 이름·사진은 누구나 바꿀 수 있어 신원 확인이 되지 않습니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">지인 사칭은 프로필 사진과 이름을 그대로 복사해도 계정 주인은 다른 사람입니다. 원래 알고 있던 번호로 직접 전화해 확인하는 것 외에 방법이 없습니다.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-m2" data-qid="m2" data-cat="msg" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-msg">QR</span><span class="qcard-scenario">주차 정산 큐싱</span></div><span class="qidx">14</span></div><div class="mock mock-qr"><div class="mock-top"><span class="mock-app">부착형 안내물</span><span class="mock-time">부착형</span></div><div class="qr-wrap"><svg class="qr-svg" viewBox="0 0 21 21" width="96" height="96" fill="currentColor" aria-hidden="true"><rect x="8" y="0" width="1" height="1"/><rect x="9" y="0" width="1" height="1"/><rect x="10" y="0" width="1" height="1"/><rect x="11" y="0" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="10" y="1" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="9" y="2" width="1" height="1"/><rect x="11" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="9" y="3" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="7" y="5" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="11" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="13" y="6" width="1" height="1"/><rect x="0" y="7" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="5" y="7" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="9" y="7" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="13" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="19" y="7" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="11" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="15" y="8" width="1" height="1"/><rect x="0" y="9" width="1" height="1"/><rect x="2" y="9" width="1" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="4" y="9" width="1" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="7" y="9" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="12" y="9" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="20" y="9" width="1" height="1"/><rect x="3" y="10" width="1" height="1"/><rect x="6" y="10" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="20" y="10" width="1" height="1"/><rect x="1" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="8" y="11" width="1" height="1"/><rect x="9" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="14" y="11" width="1" height="1"/><rect x="18" y="11" width="1" height="1"/><rect x="20" y="11" width="1" height="1"/><rect x="0" y="12" width="1" height="1"/><rect x="1" y="12" width="1" height="1"/><rect x="2" y="12" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="6" y="12" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="15" y="12" width="1" height="1"/><rect x="18" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/><rect x="0" y="13" width="1" height="1"/><rect x="1" y="13" width="1" height="1"/><rect x="2" y="13" width="1" height="1"/><rect x="3" y="13" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="14" y="13" width="1" height="1"/><rect x="15" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/><rect x="7" y="14" width="1" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/><rect x="10" y="14" width="1" height="1"/><rect x="13" y="14" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="16" y="14" width="1" height="1"/><rect x="17" y="14" width="1" height="1"/><rect x="8" y="15" width="1" height="1"/><rect x="9" y="15" width="1" height="1"/><rect x="11" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="17" y="15" width="1" height="1"/><rect x="8" y="16" width="1" height="1"/><rect x="9" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="18" y="16" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="14" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="20" y="17" width="1" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="12" y="18" width="1" height="1"/><rect x="14" y="18" width="1" height="1"/><rect x="15" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="13" y="19" width="1" height="1"/><rect x="16" y="19" width="1" height="1"/><rect x="17" y="19" width="1" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="7" y="20" width="1" height="1"/><rect x="9" y="20" width="1" height="1"/><rect x="10" y="20" width="1" height="1"/><rect x="11" y="20" width="1" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="1" height="1"/><rect x="17" y="20" width="1" height="1"/><rect x="18" y="20" width="1" height="1"/><rect x="19" y="20" width="1" height="1"/><rect x="0" y="0" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="2" width="3" height="3"/><rect x="14" y="0" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1"/><rect x="16" y="2" width="3" height="3"/><rect x="0" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="16" width="3" height="3"/></svg><span class="qr-text"><span class="qr-title">간편 주차요금 정산</span><span class="qr-desc">QR 스캔 후 요금을 결제하세요. 영수증은 카카오톡으로 발송됩니다.</span></span></div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://kr-parking-pay.xyz/pay?lot=2210</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>결제 페이지 호스트가 주차장·카드사 공식 도메인이 아닌 .xyz 도메인입니다.</li><li>QR은 링크를 눈으로 볼 수 없어 위장이 가장 쉽습니다.</li><li>결제 화면에서 카드번호·비밀번호 전체와 휴대폰 인증을 한 번에 요구합니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">큐싱은 정상 안내판 위에 가짜 스티커를 덧붙이는 수법입니다. 결제 전 스캔 결과의 주소와, 공식 페이 앱이 자동으로 뜨는지 확인하세요.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+<article class="qcard" id="q-m3" data-qid="m3" data-cat="msg" data-answer="legit"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-msg">KAKAO</span><span class="qcard-scenario">결제 승인 알림</span></div><span class="qidx">15</span></div><div class="mock mock-chat"><div class="mock-top"><span class="mock-app">카카오톡</span><span class="mock-time">오후 8:14</span></div><div class="chat-row"><span class="mock-avatar mock-avatar-round">카</span><span class="bubble"><span class="bubble-name">카카오페이</span>[카카오페이] 11월 20일 20:14 스타벅스 광화문점 5,900원 승인.
+남은 잔액 42,100원.</span></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>카카오톡 사업자 채널로 도착한 결제 알림입니다.</li><li>결제 사실만 알리고 링크·인증·계좌 입력을 요구하지 않습니다.</li><li>금액과 가맹점이 방금 한 결제와 일치하는지 확인하면 충분합니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">정상 알림은 링크 없이 사실만 알립니다. 다만 본인이 하지 않은 결제라면 링크를 누르지 말고 카드사 앱에서 확인한 뒤 분실 신고하세요.</span></div><div class="vanswer">정답 <b>정상 안내</b></div></div></article>
+<article class="qcard" id="q-m4" data-qid="m4" data-cat="msg" data-answer="phish"><div class="qcard-head"><div class="qcard-tags"><span class="tag tag-msg">SLACK</span><span class="qcard-scenario">업무 메신저 사칭 · 워크스페이스 정지 협박</span></div><span class="qidx">16</span></div><div class="mock mock-chat"><div class="mock-top"><span class="mock-app">Slack</span><span class="mock-time">오전 11:15</span></div><div class="chat-row"><span class="mock-avatar mock-avatar-round">S</span><span class="bubble"><span class="bubble-name">Slack</span>워크스페이스 소유권 이전 요청이 접수되었습니다.
+24시간 내에 확인하지 않으면 워크스페이스가 비활성화됩니다.
+
+요청 확인: https://slack.com.workspace-verify.net/confirm</span></div><div class="mock-link"><span class="mock-link-k">링크 미리보기</span><code class="mock-url">https://slack.com.workspace-verify.net/confirm</code></div></div><div class="ans-row" role="group" aria-label="이 메시지 판정"><button class="ans-btn" type="button" data-pick="legit">정상 안내</button><button class="ans-btn" type="button" data-pick="phish">피싱 · 스미싱</button></div><div class="verdict" hidden><div class="verdict-head"><span class="verdict-mark"></span><span class="verdict-text"></span></div><div class="vp-title">의심 · 확인 포인트</div><ol class="vp-list"><li>Slack 공식 발신 도메인은 slack.com이며 slack-verify.com은 사칭입니다.</li><li>링크의 실제 호스트는 workspace-verify.net이고 앞의 slack.com은 하위 도메인 위장입니다.</li><li>24시간 내 비활성화 협박으로 관리자 권한 확인을 서두르게 만듭니다.</li></ol><div class="vnote"><span class="vnote-k">판별 해설</span><span class="vnote-v">업무 도구를 사칭하면 조직 구성원 전체가 표적이 됩니다. 관리자 계정을 노리는 메일은 워크스페이스 관리자 콘솔에서 직접 확인하세요.</span></div><div class="vanswer">정답 <b>피싱·스미싱</b></div></div></article>
+    </div>
+
+    <div class="empty-state" id="emptyState">이 카테고리에 문항이 없습니다. 필터를 전체로 바꿔 보세요.</div>
+
+    <div class="section-head">
+      <span class="section-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10.5" cy="10.5" r="7"></circle>
+          <line x1="16" y1="16" x2="21" y2="21"></line>
+        </svg>
+      </span>
+      <div class="section-text">
+        <div class="section-title">URL · 발신자 의심 신호 검사기</div>
+        <div class="section-sub">붙여 넣으면 즉시 분석 · 입력값은 서버로 전송되지 않고 이 탭을 닫으면 사라집니다</div>
+      </div>
+    </div>
+
+    <section class="scan" aria-label="의심 신호 검사기">
+      <label class="scan-label" for="scanInput">의심스러운 링크 또는 보낸 사람 주소</label>
+      <textarea id="scanInput" rows="3" spellcheck="false" placeholder="예: hxxps://login.microsoftonline.com.secure-auth-check.net/verify&#10;예: 이정훈 대표 &lt;lee.jh@hanwoo-holdings.co.kr&gt;"></textarea>
+      <div class="scan-actions">
+        <button class="btn btn-primary" type="button" id="scanBtn">검사</button>
+        <button class="btn btn-ghost" type="button" id="scanClear">지우기</button>
+        <span class="scan-local">100% 브라우저 로컬 · 외부 요청 없음</span>
+      </div>
+      <div class="samples" id="scanSamples">
+        <button class="sample" type="button" data-sample="http://cj-logistics-kr.apk-down.xyz/track?no=8821">택배 .apk 링크</button>
+        <button class="sample" type="button" data-sample="https://login.microsoftonline.com.secure-auth-check.net/verify">M365 사칭 링크</button>
+        <button class="sample" type="button" data-sample="https://xn--80ak6aa92e.com/account">Punycode 도메인</button>
+        <button class="sample" type="button" data-sample="http://211.43.12.88:8080/kb/login">IP 직접 링크</button>
+        <button class="sample" type="button" data-sample="https://bit.ly/3xKq2">단축 URL</button>
+        <button class="sample" type="button" data-sample="이정훈 대표 &lt;lee.jh@hanwoo-holdings.co.kr&gt;">사칭 메일 주소</button>
+      </div>
+      <div class="scan-result" id="scanResult" hidden></div>
+      <div class="scan-empty" id="scanEmpty">검사기는 링크 구조(호스트·경로·확장자)와 브랜드 사칭 패턴만 봅니다. 링크를 여는 것이 아니라 문자열을 분석하는 도구이므로, 실제 클릭 전 판단에 쓰세요.</div>
+    </section>
+
+    <div class="section-head">
+      <span class="section-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 17l5-5 3 3 5-6 5 5"></path>
+          <path d="M3 21h18"></path>
+        </svg>
+      </span>
+      <div class="section-text">
+        <div class="section-title">최신 피싱 · 스미싱 트렌드</div>
+        <div class="section-sub">요즘 가장 많이 오는 수법 6종과 한 줄 대응</div>
+      </div>
+    </div>
+
+    <div class="trend-grid">
+<article class="trend-card"><span class="trend-tag">SMS</span><div class="trend-title">택배 · 부고 · 범칙금 .apk 스미싱</div><p class="trend-body">택배 반송, 부고장, 과태료 통지로 위장해 앱 설치 파일을 내려받게 합니다. 설치되면 문자 읽기·연락처 접근 권한을 요구하고, 문자로 오는 인증번호를 가로채 소액결제와 계좌 이체를 실행합니다.</p><div class="trend-signal"><span>대응</span><span>링크가 .apk로 끝나면 열지 말 것 · 설치를 허용했다면 즉시 삭제 후 118 신고</span></div></article>
+<article class="trend-card"><span class="trend-tag">OAUTH</span><div class="trend-title">OAuth 앱 권한 동의 피싱</div><p class="trend-body">비밀번호를 묻지 않고 &#x27;메일 읽기·보내기&#x27; 권한을 가진 앱 설치에 동의하게 만듭니다. 동의 뒤에는 비밀번호를 바꿔도 토큰이 살아 있어 계속 메일을 읽고, 그 계정으로 사칭 메일을 보냅니다.</p><div class="trend-signal"><span>대응</span><span>계정 보안 설정의 타사 앱 액세스에서 정체 모를 앱 권한 즉시 해제</span></div></article>
+<article class="trend-card"><span class="trend-tag">DEV</span><div class="trend-title">개발자 npm · GitHub 토큰 탈취</div><p class="trend-body">패키지 취약점, 저장소 소유권 이전, CI 실패 알림으로 위장해 액세스 토큰과 PAT를 입력하게 합니다. 토큰이 넘어가면 저장소 쓰기와 배포 권한 전체를 넘겨주게 됩니다.</p><div class="trend-signal"><span>대응</span><span>토큰 입력 페이지는 주소 확인 · 의심되면 토큰 폐기 후 재발급</span></div></article>
+<article class="trend-card"><span class="trend-tag">QR</span><div class="trend-title">QR 큐싱</div><p class="trend-body">주차 정산, 식당 주문, 이벤트 응모 QR에 가짜 결제 링크를 연결합니다. 결제 화면에서 카드번호와 비밀번호를 직접 입력하게 하는 것이 최근 변형의 특징입니다.</p><div class="trend-signal"><span>대응</span><span>공식 페이 앱이 자동으로 뜨는지, 주소가 카드사·가맹점 도메인인지 확인</span></div></article>
+<article class="trend-card"><span class="trend-tag">MAIL</span><div class="trend-title">M365 · 네이버 로그인 사칭</div><p class="trend-body">&#x27;비정상 로그인&#x27;, &#x27;계정 잠금&#x27;, &#x27;24시간 내 삭제&#x27; 같은 문구로 로그인 페이지를 열게 합니다. 로그인 화면은 실제 서비스와 픽셀 단위로 같게 만들어져 눈으로는 구분되지 않습니다.</p><div class="trend-signal"><span>대응</span><span>로그인은 메일 링크가 아니라 즐겨찾기·공식 앱에서 직접 진입</span></div></article>
+<article class="trend-card"><span class="trend-tag">VOICE</span><div class="trend-title">AI 보이스 · 지인 사칭</div><p class="trend-body">짧은 음성만으로 가족 목소리를 복제하거나, 프로필 사진과 이름을 복사한 계정으로 급전을 요구합니다. 새 번호·폰 고장을 이유로 기존 연락 채널을 피하는 공통점이 있습니다.</p><div class="trend-signal"><span>대응</span><span>가족·지인 요청은 원래 번호로 직접 전화해 확인</span></div></article>
+    </div>
+
+    <div class="section-head">
+      <span class="section-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </span>
+      <div class="section-text">
+        <div class="section-title">실수로 링크를 눌렀다면</div>
+        <div class="section-sub">긴급 대응 5단계 · 체크 상태는 이 브라우저에 저장 · 순서대로 진행하세요</div>
+      </div>
+    </div>
+
+    <section class="check" aria-label="긴급 대응 체크리스트">
+      <div class="check-top">
+        <span class="check-count">완료 <b id="checkDone">0</b> / 5</span>
+        <button class="btn-ghost" type="button" id="resetChecks">체크 초기화</button>
+      </div>
+      <div class="check-list" id="checkList">
+<label class="check-item"><input type="checkbox" data-idx="0"><span class="check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="check-txt"><span class="check-title"><span class="check-num">01</span>즉시 연결 차단</span><span class="check-desc">데이터·Wi-Fi를 끄고 화면을 그대로 둡니다. 앱 설치 화면이 떴다면 설치를 취소하고, 이미 설치했다면 설정 &gt; 앱 &gt; 최근 설치에서 확인합니다.</span></span></label>
+<label class="check-item"><input type="checkbox" data-idx="1"><span class="check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="check-txt"><span class="check-title"><span class="check-num">02</span>설치된 앱과 권한 회수</span><span class="check-desc">낯선 앱을 삭제하고 접근성·알림 접근·문자·연락처 권한을 회수합니다. 접근성 권한은 화면 조작과 문자 가로채기까지 가능하게 합니다.</span></span></label>
+<label class="check-item"><input type="checkbox" data-idx="2"><span class="check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="check-txt"><span class="check-title"><span class="check-num">03</span>계정 비밀번호 변경</span><span class="check-desc">유도된 계정의 비밀번호를 PC 등 다른 기기에서 변경하고 모든 세션을 로그아웃합니다. 2단계 인증과 타사 앱 권한도 함께 확인합니다.</span></span></label>
+<label class="check-item"><input type="checkbox" data-idx="3"><span class="check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="check-txt"><span class="check-title"><span class="check-num">04</span>금융 피해 차단</span><span class="check-desc">결제·이체 내역을 확인하고 카드사·은행에 분실 신고와 지급정지 신청을 합니다. 카드사 신고는 24시간 접수되며 빠를수록 책임 범위가 줄어듭니다.</span></span></label>
+<label class="check-item"><input type="checkbox" data-idx="4"><span class="check-box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="check-txt"><span class="check-title"><span class="check-num">05</span>신고와 기록 보관</span><span class="check-desc">문자 원문을 지우지 말고 캡처해 둡니다. 118(한국인터넷진흥원 스미싱 신고)과 경찰청 사이버범죄 신고 182에 접수합니다.</span></span></label>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Infosec Archive · 피싱·스미싱 판별 레이더<br>
+      문항과 모형은 실제 수법을 학습용으로 재구성한 것이며, 표시된 주소는 모두 예시 도메인입니다. 어떤 링크도 실제로 열지 않습니다.<br>
+      점수·체크 상태는 이 브라우저(localStorage)에만 저장되고 서버로 전송되지 않습니다 · 2026-11-20 21:06 KST 기준
+    </footer>
+  </main>
+
+  <script>
+    // ---- Theme (다른 페이지와 동일한 secjobs-theme 동기화) ----
+    const themeToggle = document.getElementById('themeToggle');
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (moonIcon) moonIcon.style.display = 'none';
+        if (sunIcon) sunIcon.style.display = 'block';
+        localStorage.setItem('secjobs-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (moonIcon) moonIcon.style.display = 'block';
+        if (sunIcon) sunIcon.style.display = 'none';
+        localStorage.setItem('secjobs-theme', 'light');
+      }
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('secjobs-theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) setTheme('dark');
+      else setTheme('light');
+    })();
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setTheme(isDark ? 'light' : 'dark');
+      });
+    }
+
+    // ---- 데이터 ----
+    const QUIZ = [{"id": "s1", "cat": "sms", "answer": "phish"}, {"id": "s2", "cat": "sms", "answer": "legit"}, {"id": "s3", "cat": "sms", "answer": "phish"}, {"id": "s4", "cat": "sms", "answer": "legit"}, {"id": "s5", "cat": "sms", "answer": "phish"}, {"id": "s6", "cat": "sms", "answer": "phish"}, {"id": "e1", "cat": "email", "answer": "phish"}, {"id": "e2", "cat": "email", "answer": "phish"}, {"id": "e3", "cat": "email", "answer": "legit"}, {"id": "e4", "cat": "email", "answer": "phish"}, {"id": "e5", "cat": "email", "answer": "phish"}, {"id": "e6", "cat": "email", "answer": "phish"}, {"id": "m1", "cat": "msg", "answer": "phish"}, {"id": "m2", "cat": "msg", "answer": "phish"}, {"id": "m3", "cat": "msg", "answer": "legit"}, {"id": "m4", "cat": "msg", "answer": "phish"}];
+    const CATS = [{"key": "sms", "label": "SMS 스미싱"}, {"key": "email", "label": "이메일 피싱"}, {"key": "msg", "label": "메신저·QR"}];
+    const BRANDS = [{"name": "CJ대한통운", "tokens": ["cjlogistics", "cj-koreaexpress", "cj"], "domains": ["cjlogistics.co.kr"]}, {"name": "우체국택배", "tokens": ["epost", "koreapost"], "domains": ["epost.go.kr", "koreapost.go.kr", "koreapost.com"]}, {"name": "KB국민은행", "tokens": ["kbbank", "kbcard", "kbstar", "kb"], "domains": ["kbbank.co.kr", "kbcard.com", "kbstar.com"]}, {"name": "신한은행", "tokens": ["shinhan"], "domains": ["shinhan.com", "shinhanbank.net", "shinhancard.com"]}, {"name": "우리은행", "tokens": ["woori"], "domains": ["wooribank.com", "wooricard.com"]}, {"name": "하나은행", "tokens": ["hana"], "domains": ["hanabank.com", "hanacard.co.kr"]}, {"name": "네이버", "tokens": ["naver", "nid"], "domains": ["naver.com"]}, {"name": "카카오", "tokens": ["kakao", "kakaopay", "kakaobank"], "domains": ["kakao.com", "kakaopay.com", "kakaobank.com"]}, {"name": "구글", "tokens": ["google", "gmail", "youtube"], "domains": ["google.com", "gmail.com", "youtube.com"]}, {"name": "마이크로소프트", "tokens": ["microsoft", "microsoftonline", "office365", "outlook", "sharepoint"], "domains": ["microsoft.com", "microsoftonline.com", "office.com", "live.com", "outlook.com", "sharepoint.com"]}, {"name": "애플", "tokens": ["apple", "icloud", "appleid"], "domains": ["apple.com", "icloud.com"]}, {"name": "삼성", "tokens": ["samsung"], "domains": ["samsung.com"]}, {"name": "쿠팡", "tokens": ["coupang"], "domains": ["coupang.com"]}, {"name": "배달의민족", "tokens": ["baemin", "woowahan"], "domains": ["baemin.com", "woowahan.com"]}, {"name": "토스", "tokens": ["toss"], "domains": ["toss.im", "tossbank.co.kr", "tosspayments.com"]}, {"name": "정부24", "tokens": ["gov24", "gov"], "domains": ["gov.kr", "gov24.go.kr"]}, {"name": "이파인", "tokens": ["efine"], "domains": ["efine.go.kr"]}, {"name": "홈택스", "tokens": ["hometax"], "domains": ["hometax.go.kr"]}, {"name": "경찰청", "tokens": ["police"], "domains": ["police.go.kr"]}, {"name": "GitHub", "tokens": ["github"], "domains": ["github.com", "githubusercontent.com"]}, {"name": "npm", "tokens": ["npmjs", "npm"], "domains": ["npmjs.com"]}, {"name": "Slack", "tokens": ["slack"], "domains": ["slack.com"]}, {"name": "인스타그램", "tokens": ["instagram"], "domains": ["instagram.com"]}, {"name": "넷플릭스", "tokens": ["netflix"], "domains": ["netflix.com"]}, {"name": "다음", "tokens": ["daum"], "domains": ["daum.net"]}, {"name": "11번가", "tokens": ["11st"], "domains": ["11st.co.kr"]}, {"name": "케이뱅크", "tokens": ["kbank"], "domains": ["kbanknow.com"]}];
+    const SHORTENERS = ["bit.ly", "t.co", "goo.gl", "tinyurl.com", "me2.do", "url.kr", "han.gl", "vo.la", "buly.kr", "kko.to", "naver.me", "oiioi.io", "is.gd", "cutt.ly", "rebrand.ly", "s.id", "shorturl.at", "tiny.cc", "qrco.de", "t.ly", "link.buly.kr", "abr.ge"];
+    const RISK_TLDS = ["top", "xyz", "click", "shop", "icu", "buzz", "rest", "zip", "mov", "tk", "gq", "ml", "cf", "ga", "work", "live", "online", "site", "website", "space", "fun", "cyou", "cfd", "sbs", "lol", "monster", "quest", "buzz", "bond", "beauty"];
+    const RISK_EXTS = ["apk", "scr", "exe", "vbs", "js", "jse", "bat", "cmd", "msi", "jar", "hta", "lnk", "ps1", "pif", "wsf"];
+    const PATH_WORDS = ["login", "signin", "verify", "secure", "account", "auth", "confirm", "unlock", "billing", "invoice", "reset"];
+    const STORE_KEY = 'secjobs-radar-v1';
+    const CHECK_KEY = 'secjobs-radar-checks-v1';
+
+    const catLabel = {};
+    CATS.forEach(c => { catLabel[c.key] = c.label; });
+
+    // ---- 진행 기록 ----
+    function loadStore() {
+      const base = { answers: {} };
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) return base;
+        const saved = JSON.parse(raw);
+        if (saved && saved.answers && typeof saved.answers === 'object') {
+          Object.keys(saved.answers).forEach(id => {
+            const v = saved.answers[id];
+            if (v === 'phish' || v === 'legit') base.answers[id] = v;
+          });
+        }
+      } catch (e) {}
+      return base;
+    }
+
+    function saveStore() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(STORE)); } catch (e) {}
+    }
+
+    let STORE = loadStore();
+    let CHECKS = [];
+    try {
+      const raw = localStorage.getItem(CHECK_KEY);
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) CHECKS = arr.filter(i => typeof i === 'number');
+      }
+    } catch (e) { CHECKS = []; }
+
+    function saveChecks() {
+      try { localStorage.setItem(CHECK_KEY, JSON.stringify(CHECKS)); } catch (e) {}
+    }
+
+    const filters = { cat: 'all' };
+    const qList = document.getElementById('qList');
+    const emptyState = document.getElementById('emptyState');
+    const cards = Array.prototype.slice.call(document.querySelectorAll('.qcard'));
+
+    function byId(id) { return document.getElementById('q-' + id); }
+
+    // ---- 요약 ----
+    function renderSummary() {
+      const answered = QUIZ.filter(q => STORE.answers[q.id]);
+      const correct = answered.filter(q => STORE.answers[q.id] === q.answer);
+      const normTotal = QUIZ.filter(q => q.answer === 'legit').length;
+      const normRight = answered.filter(q => q.answer === 'legit' && STORE.answers[q.id] === 'legit').length;
+
+      document.getElementById('solvedNum').textContent = answered.length;
+      document.getElementById('solvedBar').style.width = (QUIZ.length ? (answered.length / QUIZ.length) * 100 : 0) + '%';
+      document.getElementById('accNum').textContent = answered.length ? Math.round((correct.length / answered.length) * 100) + '%' : '—';
+      document.getElementById('okNum').textContent = correct.length;
+      document.getElementById('normNum').textContent = normRight;
+
+      const box = document.getElementById('catProgress');
+      const rows = CATS.map(function (c) {
+        const total = QUIZ.filter(q => q.cat === c.key).length;
+        const done = QUIZ.filter(q => q.cat === c.key && STORE.answers[q.id]).length;
+        return '<span class="cat-bar">' + c.label + ' <b>' + done + '/' + total + '</b><i><s style="width:' + (total ? (done / total) * 100 : 0) + '%"></s></i></span>';
+      });
+      box.innerHTML = rows.join('');
+    }
+
+    // ---- 필터 ----
+    function buildChips() {
+      const total = QUIZ.length;
+      const doneAll = QUIZ.filter(q => STORE.answers[q.id]).length;
+      const items = [{ key: 'all', label: '전체', total: total, done: doneAll }];
+      CATS.forEach(function (c) {
+        items.push({
+          key: c.key,
+          label: c.label,
+          total: QUIZ.filter(q => q.cat === c.key).length,
+          done: QUIZ.filter(q => q.cat === c.key && STORE.answers[q.id]).length
+        });
+      });
+      items.push({
+        key: 'legit',
+        label: '정상 구별',
+        total: QUIZ.filter(q => q.answer === 'legit').length,
+        done: QUIZ.filter(q => q.answer === 'legit' && STORE.answers[q.id]).length
+      });
+
+      document.getElementById('catFilter').innerHTML = items.map(function (it) {
+        return '<button class="chip' + (filters.cat === it.key ? ' active' : '') + '" type="button" data-cat="' + it.key + '">'
+          + it.label + ' <em>' + it.done + '/' + it.total + '</em></button>';
+      }).join('');
+    }
+
+    function matchFilter(q) {
+      if (filters.cat === 'all') return true;
+      if (filters.cat === 'legit') return q.answer === 'legit';
+      return q.cat === filters.cat;
+    }
+
+    function applyFilters() {
+      let shown = 0;
+      QUIZ.forEach(function (q) {
+        const card = byId(q.id);
+        if (!card) return;
+        const on = matchFilter(q);
+        card.hidden = !on;
+        if (on) shown++;
+      });
+      document.getElementById('visibleCount').textContent = shown + '문항';
+      emptyState.classList.toggle('show', shown === 0);
+    }
+
+    document.getElementById('catFilter').addEventListener('click', function (ev) {
+      const btn = ev.target.closest('.chip');
+      if (!btn) return;
+      filters.cat = btn.dataset.cat;
+      buildChips();
+      applyFilters();
+    });
+
+    // ---- 채점 ----
+    function applyAnswer(card, pick, persist) {
+      const qid = card.dataset.qid;
+      const q = QUIZ.filter(function (x) { return x.id === qid; })[0];
+      if (!q) return;
+
+      const ok = pick === q.answer;
+      card.classList.toggle('is-correct', ok);
+      card.classList.toggle('is-wrong', !ok);
+
+      Array.prototype.slice.call(card.querySelectorAll('.ans-btn')).forEach(function (b) {
+        b.disabled = true;
+        b.classList.remove('picked');
+        if (b.dataset.pick === pick) b.classList.add('picked');
+        if (b.dataset.pick === q.answer) b.classList.add('correct');
+        if (b.dataset.pick === pick && !ok) b.classList.add('wrong');
+      });
+
+      const mark = card.querySelector('.verdict-mark');
+      const text = card.querySelector('.verdict-text');
+      if (mark) mark.textContent = ok ? '정답' : '오답';
+      if (text) {
+        text.textContent = ok
+          ? '정확합니다 · ' + (q.answer === 'phish' ? '피싱·스미싱입니다' : '정상 안내입니다')
+          : '실제로는 ' + (q.answer === 'phish' ? '피싱·스미싱입니다' : '정상 안내입니다');
+      }
+
+      const box = card.querySelector('.verdict');
+      if (box) box.hidden = false;
+
+      if (persist) {
+        STORE.answers[qid] = pick;
+        saveStore();
+        renderSummary();
+        buildChips();
+      }
+    }
+
+    qList.addEventListener('click', function (ev) {
+      const btn = ev.target.closest('.ans-btn');
+      if (!btn || btn.disabled) return;
+      const card = btn.closest('.qcard');
+      if (!card || STORE.answers[card.dataset.qid]) return;
+      applyAnswer(card, btn.dataset.pick, true);
+    });
+
+    // 복원
+    QUIZ.forEach(function (q) {
+      const card = byId(q.id);
+      if (card && STORE.answers[q.id]) applyAnswer(card, STORE.answers[q.id], false);
+    });
+
+    document.getElementById('resetProgress').addEventListener('click', function () {
+      if (!window.confirm('판정 기록을 모두 지우고 처음부터 다시 풀까요?')) return;
+      STORE = { answers: {} };
+      saveStore();
+      cards.forEach(function (card) {
+        card.classList.remove('is-correct', 'is-wrong');
+        const box = card.querySelector('.verdict');
+        if (box) box.hidden = true;
+        Array.prototype.slice.call(card.querySelectorAll('.ans-btn')).forEach(function (b) {
+          b.disabled = false;
+          b.classList.remove('picked', 'correct', 'wrong');
+        });
+        card.querySelector('.verdict-mark').textContent = '';
+        card.querySelector('.verdict-text').textContent = '';
+      });
+      renderSummary();
+      buildChips();
+      applyFilters();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    renderSummary();
+    buildChips();
+    applyFilters();
+
+    // ---- 체크리스트 ----
+    const checkList = document.getElementById('checkList');
+    const checkBoxes = Array.prototype.slice.call(checkList.querySelectorAll('input[type="checkbox"]'));
+
+    function renderChecks() {
+      let done = 0;
+      checkBoxes.forEach(function (box) {
+        const item = box.closest('.check-item');
+        const on = CHECKS.indexOf(Number(box.dataset.idx)) !== -1;
+        box.checked = on;
+        item.classList.toggle('done', on);
+        if (on) done++;
+      });
+      document.getElementById('checkDone').textContent = done;
+    }
+
+    checkList.addEventListener('change', function (ev) {
+      const box = ev.target.closest('input[type="checkbox"]');
+      if (!box) return;
+      const idx = Number(box.dataset.idx);
+      const at = CHECKS.indexOf(idx);
+      if (box.checked && at === -1) CHECKS.push(idx);
+      if (!box.checked && at !== -1) CHECKS.splice(at, 1);
+      saveChecks();
+      renderChecks();
+    });
+
+    document.getElementById('resetChecks').addEventListener('click', function () {
+      CHECKS = [];
+      saveChecks();
+      renderChecks();
+    });
+
+    renderChecks();
+
+    // ---- 의심 신호 검사기 (100% 로컬) ----
+    // ---- 의심 신호 검사기 (100% 로컬 · 외부 요청 없음) ----
+    const REG_2ND = ['co', 'or', 'go', 'ac', 'ne', 're', 'pe', 'com', 'net', 'org', 'gov', 'edu', 'mil'];
+
+    function registryDomain(host) {
+      const parts = String(host || '').toLowerCase().split('.').filter(Boolean);
+      if (parts.length <= 2) return parts.join('.');
+      const last = parts[parts.length - 1];
+      const second = parts[parts.length - 2];
+      if (last.length === 2 && REG_2ND.indexOf(second) !== -1) return parts.slice(-3).join('.');
+      return parts.slice(-2).join('.');
+    }
+
+    function punyDecode(label) {
+      const base = 36, tMin = 1, tMax = 26, skew = 38, damp = 700, initialBias = 72, initialN = 128;
+      if (label.indexOf('xn--') !== 0 && label.indexOf('XN--') !== 0) return '';
+      const input = label.slice(4);
+      let n = initialN, i = 0, bias = initialBias;
+      const output = [];
+      let start = input.lastIndexOf('-');
+      if (start > 0) {
+        for (let j = 0; j < start; j++) output.push(input.charCodeAt(j));
+        start += 1;
+      } else {
+        start = 0;
+      }
+      const digit = function (ch) {
+        const c = ch.charCodeAt(0);
+        if (c >= 48 && c <= 57) return c - 22;
+        if (c >= 65 && c <= 90) return c - 65;
+        if (c >= 97 && c <= 122) return c - 97;
+        return base;
+      };
+      let pos = start;
+      while (pos < input.length) {
+        const oldi = i;
+        let w = 1;
+        for (let k = base; ; k += base) {
+          if (pos >= input.length) return '';
+          const d = digit(input.charAt(pos));
+          pos += 1;
+          if (d >= base) return '';
+          i += d * w;
+          const t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+          if (d < t) break;
+          w *= base - t;
+          if (w > 1e7) return '';
+        }
+        const outLen = output.length + 1;
+        let delta = oldi === 0 ? Math.floor((i - oldi) / damp) : Math.floor((i - oldi) / 2);
+        delta += Math.floor(delta / outLen);
+        let k2 = 0;
+        while (delta > ((base - tMin) * tMax) / 2) {
+          delta = Math.floor(delta / (base - tMin));
+          k2 += base;
+        }
+        bias = Math.floor(k2 + ((base - tMin + 1) * delta) / (delta + skew));
+        n += Math.floor(i / outLen);
+        i = i % outLen;
+        output.splice(i, 0, n);
+        i += 1;
+      }
+      try {
+        return String.fromCodePoint.apply(null, output);
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function normalizeLookalike(s) {
+      return String(s || '')
+        .toLowerCase()
+        .split('rn').join('m')
+        .split('vv').join('w')
+        .split('0').join('o')
+        .split('1').join('l')
+        .split('3').join('e')
+        .split('5').join('s')
+        .split('7').join('t')
+        .split('4').join('a')
+        .split('8').join('b')
+        .split('9').join('g')
+        .replace(/[^a-z0-9-]/g, '');
+    }
+
+    function hostParts(host) {
+      return String(host || '').toLowerCase().split(/[._-]+/).filter(Boolean);
+    }
+
+    function brandHit(host) {
+      const reg = registryDomain(host);
+      const parts = hostParts(host);
+      for (let bi = 0; bi < BRANDS.length; bi++) {
+        const b = BRANDS[bi];
+        let tokenHit = '';
+        for (let ti = 0; ti < b.tokens.length && !tokenHit; ti++) {
+          const tk = b.tokens[ti];
+          for (let pi = 0; pi < parts.length; pi++) {
+            if (parts[pi].indexOf(tk) !== -1) { tokenHit = tk; break; }
+          }
+        }
+        if (!tokenHit) continue;
+        let official = false;
+        for (let di = 0; di < b.domains.length; di++) {
+          if (reg === b.domains[di] || host === b.domains[di]) { official = true; break; }
+        }
+        if (!official) return { brand: b.name, token: tokenHit, official: b.domains[0] };
+      }
+      return null;
+    }
+
+    function lookalikeHit(host) {
+      const parts = hostParts(host);
+      for (let bi = 0; bi < BRANDS.length; bi++) {
+        const b = BRANDS[bi];
+        for (let pi = 0; pi < parts.length; pi++) {
+          const raw = parts[pi];
+          const norm = normalizeLookalike(raw);
+          if (norm === raw) continue;
+          for (let ti = 0; ti < b.tokens.length; ti++) {
+            if (b.tokens[ti].length >= 3 && norm.indexOf(b.tokens[ti]) !== -1) {
+              return { brand: b.name, token: b.tokens[ti], raw: raw };
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    function isIpHost(host) {
+      return /^([0-9]{1,3}[.]){3}[0-9]{1,3}$/.test(host) || String(host).charAt(0) === '[';
+    }
+
+    function schemeOf(text) {
+      const m = String(text || '').match(/^[a-z][a-z0-9+.-]*:/i);
+      return m ? m[0].slice(0, -1).toLowerCase() : '';
+    }
+
+    function isAddressToken(s) {
+      if (!s || s.indexOf('@') < 1) return false;
+      if (s.indexOf(' ') !== -1) return false;
+      const dom = s.slice(s.lastIndexOf('@') + 1);
+      return dom.indexOf('.') > 0 && dom.indexOf('<') === -1 && dom.indexOf('>') === -1;
+    }
+
+    function angleAddress(text) {
+      const l = text.indexOf('<'), r = text.indexOf('>');
+      if (l === -1 || r === -1 || r < l) return '';
+      const inner = text.slice(l + 1, r).trim();
+      return isAddressToken(inner) ? inner : '';
+    }
+
+    function anyAddress(text) {
+      const parts = text.replace(/[<>"']/g, ' ').split(' ');
+      for (let i = 0; i < parts.length; i++) {
+        if (isAddressToken(parts[i])) return parts[i];
+      }
+      return '';
+    }
+
+    function tokenWithUrl(text) {
+      const at = text.indexOf('://');
+      if (at === -1) return '';
+      const stops = [' ', String.fromCharCode(9), String.fromCharCode(10), String.fromCharCode(13), '<', '>', '"', String.fromCharCode(39)];
+      let start = at;
+      while (start > 0 && stops.indexOf(text.charAt(start - 1)) === -1) start -= 1;
+      let end = at + 3;
+      while (end < text.length && stops.indexOf(text.charAt(end)) === -1) end += 1;
+      return text.slice(start, end);
+    }
+
+    function firstDomainToken(text) {
+      const parts = text.replace(/[<>"']/g, ' ').split(' ');
+      for (let i = 0; i < parts.length; i++) {
+        const t = parts[i];
+        if (t.indexOf('.') > 0 && t.slice(0, 1) !== '/') return t;
+      }
+      return '';
+    }
+
+    function scanUrl(raw) {
+      let text = String(raw || '').trim();
+      text = text.split('[.]').join('.');
+      const low = text.toLowerCase();
+      if (low.slice(0, 5) === 'hxxps') text = 'http' + text.slice(5);
+      else if (low.slice(0, 4) === 'hxxp') text = 'http' + text.slice(4);
+
+      const hadScheme = !!schemeOf(text);
+      const withScheme = hadScheme ? text : 'http://' + text;
+      let u;
+      try { u = new URL(withScheme); } catch (e) { return { ok: false }; }
+
+      const host = (u.hostname || '').toLowerCase();
+      const path = (u.pathname || '') + (u.search || '');
+      const ip = isIpHost(host);
+      if (!ip && host.indexOf('.') === -1) return { ok: false };
+      if (!host) return { ok: false };
+
+      const reg = ip ? host : registryDomain(host);
+      const signals = [];
+      const push = function (level, title, desc) { signals.push({ level: level, title: title, desc: desc }); };
+
+      // 1. '@' 사용자 정보로 실제 접속지 위장
+      if (u.username || u.password) {
+        push('high', "'@' 앞부분으로 실제 접속지를 숨겼습니다",
+          "브라우저는 '@' 뒤쪽 호스트(" + host + ")로 접속합니다. 앞부분은 표시용 위장이고 실제 접속지는 " + host + "입니다.");
+      }
+
+      // 2. Punycode (xn--)
+      if (host.indexOf('xn--') !== -1) {
+        const labels = host.split('.');
+        let decoded = '';
+        for (let i = 0; i < labels.length; i++) {
+          if (labels[i].indexOf('xn--') === 0) decoded = punyDecode(labels[i]);
+        }
+        push('high', 'Punycode(xn--) 국제화 도메인입니다',
+          '비슷하게 생긴 다른 문자를 ASCII로 인코딩한 도메인입니다.' + (decoded ? " 실제 표기: " + decoded : '') + ' 주소창이 원래 문자로 보여 줄 수 있어 눈으로 구분하기 어렵습니다.');
+      }
+
+      // 3. IP 직접 접속
+      if (ip) {
+        push('high', 'IP 주소로 직접 접속합니다',
+          '금융·포털·정부 서비스는 링크에 IP 주소를 쓰지 않습니다. 도메인 기준 인증서 검증도 이뤄지지 않습니다.');
+      }
+
+      // 4. 위험 확장자
+      const cleanPath = path.split('?')[0].toLowerCase();
+      const dotAt = cleanPath.lastIndexOf('.');
+      let ext = '';
+      if (dotAt !== -1) {
+        const tail = cleanPath.slice(dotAt + 1);
+        if (/^[a-z0-9]{2,4}$/.test(tail)) ext = tail;
+      }
+      if (RISK_EXTS.indexOf(ext) !== -1) {
+        push('high', '실행 파일(' + ext + ')을 내려받는 링크입니다',
+          '문서·사진으로 위장한 설치 파일은 문자·연락처·인증번호를 가로챕니다. 모바일에서 .apk는 특히 위험합니다.');
+      }
+
+      // 5. 단축 URL
+      for (let i = 0; i < SHORTENERS.length; i++) {
+        if (reg === SHORTENERS[i] || host === SHORTENERS[i]) {
+          push('mid', '단축 URL 서비스입니다',
+            '최종 목적지를 숨깁니다. 누르기 전에는 어디로 이동하는지 알 수 없으니, 공식 앱이나 검색으로 원래 주소를 찾아 들어가세요.');
+          break;
+        }
+      }
+
+      // 6. 브랜드 사칭
+      const bh = brandHit(host);
+      if (bh) {
+        push('high', bh.brand + ' 이름을 쓰지만 공식 도메인이 아닙니다',
+          "주소에 '" + bh.token + "'가 들어 있지만 등록 도메인은 " + reg + '입니다. ' + bh.brand + ' 공식 도메인은 ' + bh.official + '입니다.');
+      }
+
+      // 7. 숫자·유사 문자 치환
+      const lh = lookalikeHit(host);
+      if (lh) {
+        push('high', '숫자·유사 문자로 ' + lh.brand + '를 흉내 냈습니다',
+          "호스트의 '" + lh.raw + "'는 숫자나 비슷한 글자로 바꾼 표기입니다. 정상 표기는 '" + lh.token + "'입니다.");
+      }
+
+      // 8. 위험 TLD
+      const tld = host.split('.').pop();
+      if (!ip && RISK_TLDS.indexOf(tld) !== -1) {
+        push('mid', '.' + tld + ' 최상위 도메인을 사용합니다',
+          '국내 금융·공공기관이 쓰지 않는 저가 도메인입니다. 사칭 사이트가 대량으로 등록하는 대표 TLD입니다.');
+      }
+
+      // 9. 평문 HTTP
+      if (hadScheme && u.protocol === 'http:' && !ip) {
+        push('mid', 'HTTPS가 아닌 평문 HTTP 링크입니다',
+          '로그인·결제 정보가 암호화되지 않고 전송됩니다. 요즘 정상 서비스는 거의 모두 HTTPS를 씁니다.');
+      }
+
+      // 10. 비표준 포트
+      if (u.port && u.port !== '80' && u.port !== '443') {
+        push('low', '비표준 포트(' + u.port + ')를 사용합니다',
+          '일반 웹 서비스는 80·443만 씁니다. 사설 서버나 프록시를 거치는 링크일 수 있습니다.');
+      }
+
+      // 11. 서브도메인·하이픈 과다
+      const labels = host.split('.').filter(Boolean);
+      if (labels.length >= 5) {
+        push('low', '서브도메인이 ' + labels.length + '단계로 과도하게 깁니다',
+          '앞쪽에 익숙한 이름을 채워 실제 도메인을 가리는 수법입니다. 등록 도메인은 ' + reg + '입니다.');
+      }
+      const hyphens = host.split('-').length - 1;
+      if (hyphens >= 2) {
+        push('low', '호스트에 하이픈이 ' + hyphens + '개 있습니다',
+          '정상 서비스 도메인은 하이픈을 거의 쓰지 않습니다. 브랜드명-보안-확인 같은 조합은 사칭의 전형입니다.');
+      }
+
+      // 12. 인증 관련 경로
+      for (let i = 0; i < PATH_WORDS.length; i++) {
+        if (path.toLowerCase().indexOf(PATH_WORDS[i]) !== -1 && !bh) {
+          push('low', "'" + PATH_WORDS[i] + "' 경로로 계정 정보를 요구할 수 있습니다",
+            '로그인·인증·확인 화면을 흉내 내는 경로입니다. 어떤 정보를 입력하라고 하는지 확인하세요.');
+          break;
+        }
+      }
+
+      // 13. 인코딩 과다
+      const pct = path.split('%').length - 1;
+      if (pct >= 3) {
+        push('low', '경로에 인코딩 문자가 ' + pct + '개 있습니다',
+          '주소를 읽기 어렵게 만들어 필터와 사용자 눈을 피하려는 시도일 수 있습니다.');
+      }
+
+      // 14. 한글 등 비ASCII 도메인
+      let nonAscii = false;
+      for (let ci = 0; ci < host.length; ci++) {
+        if (host.charCodeAt(ci) > 127) { nonAscii = true; break; }
+      }
+      if (nonAscii && host.indexOf('xn--') === -1) {
+        push('low', '한글 등 비ASCII 문자가 든 도메인입니다',
+          '정상 한글 도메인도 있지만, 유명 브랜드와 비슷하게 만든 한글 도메인은 사칭에 쓰입니다. 공식 표기와 비교하세요.');
+      }
+
+      return {
+        ok: true,
+        kind: 'url',
+        host: host,
+        reg: reg,
+        scheme: String(u.protocol || 'http:').split(':')[0],
+        path: path || '/',
+        ext: ext,
+        port: u.port || '',
+        signals: signals
+      };
+    }
+
+    function scanEmail(raw) {
+      const text = String(raw || '').trim();
+      let addr = angleAddress(text);
+      if (!addr) addr = anyAddress(text);
+      if (!addr) return { ok: false };
+
+      const at = addr.lastIndexOf('@');
+      const local = addr.slice(0, at);
+      const domain = addr.slice(at + 1).toLowerCase();
+      const lt = text.indexOf('<');
+      const display = lt > 0 ? text.slice(0, lt).trim().replace(/^"|"$/g, '') : '';
+      const signals = [];
+      const push = function (level, title, desc) { signals.push({ level: level, title: title, desc: desc }); };
+
+      if (domain.indexOf('xn--') !== -1) {
+        push('high', '보낸 주소 도메인이 Punycode입니다',
+          '비슷하게 생긴 문자로 유명 도메인을 흉내 낸 주소입니다. 실제 표기를 확인해야 합니다.');
+      }
+
+      const bh = brandHit(domain);
+      if (bh) {
+        push('high', bh.brand + '를 사칭하는 도메인입니다',
+          '표시 이름이 ' + (display ? "'" + display + "'" : '브랜드') + '여도 실제 주소의 등록 도메인은 ' + registryDomain(domain) + '입니다. ' + bh.brand + ' 공식 도메인은 ' + bh.official + '입니다.');
+      }
+
+      const lh = lookalikeHit(domain);
+      if (lh) {
+        push('high', '숫자·유사 문자로 ' + lh.brand + '를 흉내 냈습니다',
+          "도메인의 '" + lh.raw + "'는 숫자나 비슷한 글자로 바꾼 표기입니다. 정상 표기는 '" + lh.token + "'입니다.");
+      }
+
+      const tld = domain.split('.').pop();
+      if (RISK_TLDS.indexOf(tld) !== -1) {
+        push('mid', '.' + tld + ' 도메인을 사용합니다',
+          '금융·공공기관이 쓰지 않는 저가 TLD입니다. 사칭 메일에 자주 등장합니다.');
+      }
+
+      const freeMail = ['gmail.com', 'naver.com', 'daum.net', 'nate.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
+      if (freeMail.indexOf(registryDomain(domain)) !== -1) {
+        push('mid', '무료 메일 주소로 발송되었습니다',
+          '회사·기관 공지는 자체 도메인으로 옵니다. 업무 요청이 무료 메일로 오면 발신자를 다른 채널로 확인하세요.');
+      }
+
+      if (display && /(대표|회장|사장|관리자|고객센터|은행|법원|검찰|경찰|국세청|지원금|보조금|본인인증)/.test(display)) {
+        push('high', '표시 이름에 권위 있는 직함·기관명이 들어 있습니다',
+          '표시 이름은 보내는 사람이 마음대로 정할 수 있습니다. 주소의 도메인만이 실제 발신자를 나타냅니다.');
+      }
+
+      const hyphens = domain.split('-').length - 1;
+      if (hyphens >= 2) {
+        push('low', '도메인에 하이픈이 ' + hyphens + '개 있습니다',
+          '브랜드명-보안-확인 같은 조합은 사칭 도메인의 전형입니다.');
+      }
+
+      if (/[0-9]{3,}/.test(local) && !bh) {
+        push('low', '로컬파트에 숫자가 많이 들어 있습니다',
+          '자동 발송 주소처럼 보이게 만든 경우가 많습니다. 내용보다 도메인을 먼저 확인하세요.');
+      }
+
+      return {
+        ok: true,
+        kind: 'email',
+        display: display,
+        local: local,
+        domain: domain,
+        reg: registryDomain(domain),
+        addr: addr,
+        signals: signals
+      };
+    }
+
+    function analyze(raw) {
+      const text = String(raw || '').trim();
+      if (!text) return { ok: false, reason: 'empty' };
+
+      const hasScheme = !!schemeOf(text);
+
+      // 1) 스킴이 있으면 링크로 먼저 분석한다 ('@' 우회 포함)
+      if (hasScheme) {
+        const su = scanUrl(tokenWithUrl(text) || text);
+        if (su.ok) return su;
+      }
+
+      // 2) 표시 이름이 붙은 메일 주소 또는 순수 메일 주소
+      if (angleAddress(text) || (!hasScheme && text.indexOf(' ') === -1 && isAddressToken(text))) {
+        const em = scanEmail(text);
+        if (em.ok) return em;
+      }
+
+      // 3) 스킴 없는 도메인·경로
+      if (!hasScheme) {
+        const su = scanUrl(firstDomainToken(text) || text);
+        if (su.ok) return su;
+      }
+
+      const em = scanEmail(text);
+      if (em.ok) return em;
+      return { ok: false, reason: 'unparsed' };
+    }
+
+    function scoreOf(signals) {
+      let score = 0;
+      signals.forEach(function (s) {
+        if (s.level === 'high') score += 32;
+        else if (s.level === 'mid') score += 13;
+        else score += 5;
+      });
+      return Math.min(100, score);
+    }
+
+    function levelOf(score, signals) {
+      if (signals.some(function (s) { return s.level === 'high'; })) return 'high';
+      if (signals.some(function (s) { return s.level === 'mid'; })) return 'mid';
+      if (score >= 26) return 'mid';
+      return 'low';
+    }
+
+    const LEVEL_TEXT = { high: '위험', mid: '주의', low: '참고' };
+    const LEVEL_NOTE = {
+      high: '이 링크·주소는 열지 마세요. 공식 앱이나 검색으로 직접 접속해 확인하세요.',
+      mid: '위험 신호가 있습니다. 출처를 확인하기 전에는 로그인·결제·설치를 하지 마세요.',
+      low: '뚜렷한 사칭 패턴은 찾지 못했습니다. 그래도 링크로 받은 로그인 요청은 공식 경로에서 다시 확인하세요.'
+    };
+
+    const scanResult = document.getElementById('scanResult');
+    const scanEmpty = document.getElementById('scanEmpty');
+    const scanInput = document.getElementById('scanInput');
+
+    function esc2(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderScan(result) {
+      if (!result || !result.ok) {
+        scanResult.hidden = false;
+        scanResult.innerHTML = '<div class="scan-empty">' + (result && result.reason === 'empty'
+          ? '검사할 링크나 주소를 입력해 주세요.'
+          : '주소 형식을 알아보지 못했습니다. http로 시작하는 링크나 a@b.com 형태로 붙여 넣어 주세요.') + '</div>';
+        scanEmpty.hidden = true;
+        return;
+      }
+
+      const score = scoreOf(result.signals);
+      const level = levelOf(score, result.signals);
+      const rows = [];
+
+      if (result.kind === 'url') {
+        rows.push(['접속 방식', result.scheme.toUpperCase() + (result.port ? ' · 포트 ' + result.port : '')]);
+        rows.push(['호스트', result.host]);
+        rows.push(['등록 도메인', result.reg]);
+        rows.push(['경로', result.path]);
+        if (result.ext) rows.push(['확장자', '.' + result.ext]);
+      } else {
+        if (result.display) rows.push(['표시 이름', result.display]);
+        rows.push(['메일 주소', result.addr]);
+        rows.push(['도메인', result.domain]);
+        rows.push(['등록 도메인', result.reg]);
+        rows.push(['로컬파트', result.local]);
+      }
+
+      const sigHtml = result.signals.length
+        ? '<ul class="sig-list">' + result.signals.map(function (s) {
+            const badge = s.level === 'high' ? '위험' : (s.level === 'mid' ? '주의' : '참고');
+            return '<li class="sig lv-' + s.level + '"><span class="sig-badge">' + badge + '</span>'
+              + '<span class="sig-body"><span class="sig-title">' + esc2(s.title) + '</span>'
+              + '<span class="sig-desc">' + esc2(s.desc) + '</span></span></li>';
+          }).join('') + '</ul>'
+        : '<div class="scan-empty" style="margin-top:12px">' + esc2(LEVEL_NOTE.low) + '</div>';
+
+      const badgeText = (level === 'low' && !result.signals.length)
+        ? '뚜렷한 신호 없음'
+        : LEVEL_TEXT[level] + ' · 위험도 ' + score;
+
+      scanResult.hidden = false;
+      scanResult.innerHTML =
+        '<div class="risk-head">'
+        + '<span class="risk-label">' + (result.kind === 'url' ? '링크 분석 결과' : '발신자 분석 결과') + '</span>'
+        + '<span class="risk-badge ' + level + '">' + badgeText + '</span>'
+        + '</div>'
+        + '<div class="risk-bar"><i class="' + level + '" style="width:' + Math.max(4, score) + '%"></i></div>'
+        + '<div class="risk-meta">' + (result.signals.length ? '신호 ' + result.signals.length + '개 발견 · ' : '') + esc2(LEVEL_NOTE[level]) + '</div>'
+        + sigHtml
+        + '<div class="breakdown">' + rows.map(function (r) {
+            return '<div class="bd-row"><span class="bd-k">' + esc2(r[0]) + '</span><span class="bd-v">' + esc2(r[1]) + '</span></div>';
+          }).join('') + '</div>';
+      scanEmpty.hidden = true;
+    }
+
+    document.getElementById('scanBtn').addEventListener('click', function () {
+      renderScan(analyze(scanInput.value));
+    });
+
+    scanInput.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) {
+        ev.preventDefault();
+        renderScan(analyze(scanInput.value));
+      }
+    });
+
+    document.getElementById('scanClear').addEventListener('click', function () {
+      scanInput.value = '';
+      scanResult.hidden = true;
+      scanResult.innerHTML = '';
+      scanEmpty.hidden = false;
+      scanInput.focus();
+    });
+
+    document.getElementById('scanSamples').addEventListener('click', function (ev) {
+      const btn = ev.target.closest('.sample');
+      if (!btn) return;
+      scanInput.value = btn.dataset.sample;
+      renderScan(analyze(btn.dataset.sample));
+    });
+  </script>
+</body>
+</html>

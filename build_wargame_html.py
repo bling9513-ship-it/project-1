@@ -1667,8 +1667,8 @@ CSS = """
       .brand-name { display: none; }
     }
 
-    /* 내비게이션 7탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
-    @media (max-width: 640px) {
+    /* 내비게이션 8탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
+    @media (max-width: 1024px) {
       .nav-brand { min-width: 0; }
       .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
       .nav-tabs::-webkit-scrollbar { display: none; }
@@ -1739,6 +1739,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="outfit.html" class="nav-tab-item">옷차림</a>
           <a href="wargame.html" class="nav-tab-item active">워게임</a>
           <a href="tools.html" class="nav-tab-item">실무 유틸</a>
+          <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
         </div>
       </div>
 
