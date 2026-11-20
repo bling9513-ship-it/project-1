@@ -816,6 +816,18 @@
       color: var(--text-secondary);
     }
 
+    .tip-code {
+      font-family: var(--font-mono);
+      font-size: 10.8px;
+      letter-spacing: 0;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 4px;
+      padding: 0 3px;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
     .tip .tip-tag {
       flex-shrink: 0;
       font-weight: 700;
@@ -1297,7 +1309,7 @@
         <div class="cmd-head"><span>Nmap</span><button class="cmd-copy" type="button" data-copy="cmd-01">복사</button></div>
         <pre id="cmd-01">nmap -sn 10.0.1.0/24 -oG - | awk &#x27;/Up$/{print $2}&#x27;</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>ICMP를 막는 망에서는 `-sn`이 아무것도 못 찾습니다. `-PS22,80,443 -PE`를 함께 주거나 ARP 기반(`-PR`)으로 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>ICMP를 막는 망에서는 <code class="tip-code">-sn</code>이 아무것도 못 찾습니다. <code class="tip-code">-PS22,80,443 -PE</code>를 함께 주거나 ARP 기반(<code class="tip-code">-PR</code>)으로 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="nmap" data-search="서비스·버전 핑거프린팅 상위 1000개 포트에서 열린 서비스의 제품·버전과 기본 스크립트 결과를 한 번에 모읍니다. nmap -sv -sc -t4 --top-ports 1000 10.0.1.10 -on sv_scan.txt service version detection nse 기본 스크립트 nmap nmap">
       <div class="cheat-head">
@@ -1309,7 +1321,7 @@
         <div class="cmd-head"><span>Nmap</span><button class="cmd-copy" type="button" data-copy="cmd-02">복사</button></div>
         <pre id="cmd-02">nmap -sV -sC -T4 --top-ports 1000 10.0.1.10 -oN sv_scan.txt</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`-sC`는 기본 NSE 스크립트를 돌리므로 로그에 흔적이 남습니다. 운영 중인 서버라면 점검 허가 범위와 시간 창을 먼저 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-sC</code>는 기본 NSE 스크립트를 돌리므로 로그에 흔적이 남습니다. 운영 중인 서버라면 점검 허가 범위와 시간 창을 먼저 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="nmap" data-search="전체 65535 포트 고속 스캔 기본 스캔이 놓치는 상위 포트 밖 서비스(관리 콘솔, 개발 포트)를 찾습니다. nmap -p- --min-rate 2000 -t4 -pn 10.0.1.10 -on allports.txt full port scan 전포트 고속 nmap nmap">
       <div class="cheat-head">
@@ -1321,7 +1333,7 @@
         <div class="cmd-head"><span>Nmap</span><button class="cmd-copy" type="button" data-copy="cmd-03">복사</button></div>
         <pre id="cmd-03">nmap -p- --min-rate 2000 -T4 -Pn 10.0.1.10 -oN allports.txt</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`--min-rate 2000`은 패킷을 초당 2000개까지 밀어냅니다. IDS·IPS가 있는 구간에서는 알람이 뜨고 회선에도 부담이 되니 내부 점검망에서만 쓰세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">--min-rate 2000</code>은 패킷을 초당 2000개까지 밀어냅니다. IDS·IPS가 있는 구간에서는 알람이 뜨고 회선에도 부담이 되니 내부 점검망에서만 쓰세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="nmap" data-search="웹 서버 정보·허용 메서드 http 응답 헤더, 타이틀, options 응답으로 서버 종류와 위험 메서드(put·delete·trace) 허용 여부를 봅니다. nmap -p 80,443,8080,8443 --script http-title,http-headers,http-methods 10.0.1.10 http methods put delete trace 헤더 nmap nmap">
       <div class="cheat-head">
@@ -1333,7 +1345,7 @@
         <div class="cmd-head"><span>Nmap</span><button class="cmd-copy" type="button" data-copy="cmd-04">복사</button></div>
         <pre id="cmd-04">nmap -p 80,443,8080,8443 --script http-title,http-headers,http-methods 10.0.1.10</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>허용 메서드에 PUT이 있으면 업로드 취약점으로 이어질 수 있습니다. 실제 요청은 `curl -X OPTIONS`로 한 번 더 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>허용 메서드에 PUT이 있으면 업로드 취약점으로 이어질 수 있습니다. 실제 요청은 <code class="tip-code">curl -X OPTIONS</code>로 한 번 더 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="nmap" data-search="smb 취약점·공유 열거 445 포트에서 os 정보, 공유 목록, 알려진 원격 실행 취약점(ms17-010 등)을 확인합니다. nmap -p 445 --script smb-os-discovery,smb-enum-shares,smb-vuln-ms17-010 10.0.1.20 smb ms17-010 eternalblue 공유 nmap nmap">
       <div class="cheat-head">
@@ -1357,7 +1369,7 @@
         <div class="cmd-head"><span>Nmap</span><button class="cmd-copy" type="button" data-copy="cmd-06">복사</button></div>
         <pre id="cmd-06">nmap -sU --top-ports 50 --max-retries 1 --host-timeout 3m 10.0.1.10</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`open|filtered`는 응답이 없어 열림/차단을 구분하지 못한 상태입니다. SNMP(161)는 community 문자열 없이는 확정할 수 없습니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">open|filtered</code>는 응답이 없어 열림/차단을 구분하지 못한 상태입니다. SNMP(161)는 community 문자열 없이는 확정할 수 없습니다.</span></p>
     </article>
     <article class="cheat-card" data-cat="linux" data-search="suid·sgid 실행 파일 전수 조사 소유자 권한으로 실행되는 파일을 찾습니다. 권한 상승 경로를 찾는 1차 단서입니다. find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -ls 2&gt;/dev/null suid sgid 권한상승 find perm linux 점검 linux">
       <div class="cheat-head">
@@ -1369,7 +1381,7 @@
         <div class="cmd-head"><span>find</span><button class="cmd-copy" type="button" data-copy="cmd-07">복사</button></div>
         <pre id="cmd-07">find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -ls 2&gt;/dev/null</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>기본 배포판에 없는 바이너리(예: /usr/bin/find, /usr/bin/vim)에 SUID가 걸려 있으면 거의 확실히 이상 징후입니다. 패키지 소유 여부를 `dpkg -S`·`rpm -qf`로 대조하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>기본 배포판에 없는 바이너리(예: /usr/bin/find, /usr/bin/vim)에 SUID가 걸려 있으면 거의 확실히 이상 징후입니다. 패키지 소유 여부를 <code class="tip-code">dpkg -S</code>·<code class="tip-code">rpm -qf</code>로 대조하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="linux" data-search="누구나 쓰기 가능한 파일 찾기 other 쓰기 권한이 열린 파일을 찾습니다. 서비스가 참조하는 설정·스크립트가 걸리면 변조 경로가 됩니다. find / -xdev -type f -perm -0002 -ls 2&gt;/dev/null | head -50 world writable 777 o+w 변조 linux 점검 linux">
       <div class="cheat-head">
@@ -1381,7 +1393,7 @@
         <div class="cmd-head"><span>find</span><button class="cmd-copy" type="button" data-copy="cmd-08">복사</button></div>
         <pre id="cmd-08">find / -xdev -type f -perm -0002 -ls 2&gt;/dev/null | head -50</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`/tmp`, `/var/tmp` 아래 임시 파일은 정상일 수 있습니다. 실제 위험은 root 소유 서비스 설정 파일에 o+w가 열린 경우입니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">/tmp</code>, <code class="tip-code">/var/tmp</code> 아래 임시 파일은 정상일 수 있습니다. 실제 위험은 root 소유 서비스 설정 파일에 o+w가 열린 경우입니다.</span></p>
     </article>
     <article class="cheat-card" data-cat="linux" data-search="capability가 부여된 바이너리 suid 대신 프로세스 단위 권한(capability)을 받은 실행 파일을 확인합니다. 최근 리눅스 권한 상승의 주요 통로입니다. getcap -r / 2&gt;/dev/null capability getcap cap_setuid setcap linux 점검 linux">
       <div class="cheat-head">
@@ -1393,7 +1405,7 @@
         <div class="cmd-head"><span>getcap</span><button class="cmd-copy" type="button" data-copy="cmd-09">복사</button></div>
         <pre id="cmd-09">getcap -r / 2&gt;/dev/null</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`cap_setuid+ep`, `cap_sys_admin+ep`, `cap_dac_read_search+ep`는 사실상 root급입니다. 배포판 기본값(예: ping의 cap_net_raw)과 비교해 추가된 항목만 보세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">cap_setuid+ep</code>, <code class="tip-code">cap_sys_admin+ep</code>, <code class="tip-code">cap_dac_read_search+ep</code>는 사실상 root급입니다. 배포판 기본값(예: ping의 cap_net_raw)과 비교해 추가된 항목만 보세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="linux" data-search="예약 작업(cron·systemd timer) 점검 주기 실행 작업은 지속성 확보와 권한 상승의 단골 경로입니다. 사용자 cron과 시스템 타이머를 함께 봅니다. crontab -l 2&gt;/dev/null; sudo ls -l /etc/cron.* /var/spool/cron/crontabs 2&gt;/dev/null; systemctl list-timers --all --no-pager | head -30 cron systemd timer 지속성 예약 작업 linux 점검 linux">
       <div class="cheat-head">
@@ -1417,7 +1429,7 @@
         <div class="cmd-head"><span>ss</span><button class="cmd-copy" type="button" data-copy="cmd-11">복사</button></div>
         <pre id="cmd-11">sudo ss -tulpn</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`0.0.0.0:*`·`[::]:*`는 모든 인터페이스에 열린 상태입니다. 방화벽으로 막혀 있어도 내부에서는 노출되므로 `127.0.0.1:` 바인딩이 필요한 서비스를 구분하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">0.0.0.0:*</code>·<code class="tip-code">[::]:*</code>는 모든 인터페이스에 열린 상태입니다. 방화벽으로 막혀 있어도 내부에서는 노출되므로 <code class="tip-code">127.0.0.1:</code> 바인딩이 필요한 서비스를 구분하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="linux" data-search="로그인 성공·실패 기록 최근 로그인 이력과 실패 기록으로 무차별 대입·비정상 접속을 확인합니다. last -ai | head -20; echo &#x27;--- 실패 ---&#x27;; sudo lastb | head -20 last lastb 로그인 이력 brute force auth.log linux 점검 linux">
       <div class="cheat-head">
@@ -1429,7 +1441,7 @@
         <div class="cmd-head"><span>last</span><button class="cmd-copy" type="button" data-copy="cmd-12">복사</button></div>
         <pre id="cmd-12">last -ai | head -20; echo &#x27;--- 실패 ---&#x27;; sudo lastb | head -20</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>성공 기록에 낯선 IP·시간대가 있으면 `lastlog`, `/var/log/auth.log`(또는 journald)에서 해당 세션의 명령 이력을 이어서 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>성공 기록에 낯선 IP·시간대가 있으면 <code class="tip-code">lastlog</code>, <code class="tip-code">/var/log/auth.log</code>(또는 journald)에서 해당 세션의 명령 이력을 이어서 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="linux" data-search="sudo 권한과 nopasswd 설정 계정이 어떤 명령을 어떤 사용자로 실행할 수 있는지 확인합니다. 과도한 sudo 규칙은 즉시 권한 상승으로 이어집니다. sudo -l -u deploy; sudo grep -re &#x27;nopasswd|all=\(all\)&#x27; /etc/sudoers /etc/sudoers.d 2&gt;/dev/null sudo sudoers nopasswd 권한 linux 점검 linux">
       <div class="cheat-head">
@@ -1441,7 +1453,7 @@
         <div class="cmd-head"><span>sudo</span><button class="cmd-copy" type="button" data-copy="cmd-13">복사</button></div>
         <pre id="cmd-13">sudo -l -U deploy; sudo grep -rE &#x27;NOPASSWD|ALL=\(ALL\)&#x27; /etc/sudoers /etc/sudoers.d 2&gt;/dev/null</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`NOPASSWD`로 vi·find·tar·less 같은 편집·실행 도구를 허용하면 셸을 띄울 수 있습니다. 허용 목록은 절대 경로와 인자까지 제한해야 안전합니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">NOPASSWD</code>로 vi·find·tar·less 같은 편집·실행 도구를 허용하면 셸을 띄울 수 있습니다. 허용 목록은 절대 경로와 인자까지 제한해야 안전합니다.</span></p>
     </article>
     <article class="cheat-card" data-cat="web" data-search="보안 응답 헤더 한눈에 보기 csp·hsts·x-frame-options·nosniff가 실제 응답에 실려 있는지 확인합니다. curl -ssi https://target.example.com | grep -ie &#x27;^(server|content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy)&#x27; 보안 헤더 csp hsts x-frame nosniff 웹·curl web">
       <div class="cheat-head">
@@ -1491,17 +1503,17 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>Allow 헤더에 TRACE가 있으면 XST(Cross-Site Tracing) 위험이 있고, PUT이 열려 있으면 업로드 경로를 우선 점검하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="경로 정규화 우회 점검 인코딩된 `../`가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다. curl -ss --path-as-is &quot;https://target.example.com/static/..%2f..%2fetc/passwd&quot; | head -5 path traversal lfi 인코딩 디렉터리 웹·curl web">
+    <article class="cheat-card" data-cat="web" data-search="경로 정규화 우회 점검 인코딩된 ../가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다. curl -ss --path-as-is &quot;https://target.example.com/static/..%2f..%2fetc/passwd&quot; | head -5 path traversal lfi 인코딩 디렉터리 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">경로 정규화 우회 점검</h3>
         <span class="cheat-cat">웹·curl</span>
       </div>
-      <p class="cheat-desc">인코딩된 `../`가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다.</p>
+      <p class="cheat-desc">인코딩된 <code class="tip-code">../</code>가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다.</p>
       <div class="cmd">
         <div class="cmd-head"><span>curl</span><button class="cmd-copy" type="button" data-copy="cmd-18">복사</button></div>
         <pre id="cmd-18">curl -sS --path-as-is &quot;https://target.example.com/static/..%2f..%2fetc/passwd&quot; | head -5</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`--path-as-is`가 없으면 curl이 경로를 미리 정규화해 버려 재현이 안 됩니다. 응답 코드와 본문 첫 줄을 함께 보세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">--path-as-is</code>가 없으면 curl이 경로를 미리 정규화해 버려 재현이 안 됩니다. 응답 코드와 본문 첫 줄을 함께 보세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="web" data-search="json api에 페이로드 파일로 요청 따옴표·중괄호가 섞인 복잡한 페이로드는 파일로 분리해 보냅니다. 셸 인용 오류를 없애고 재현성을 높입니다. curl -ss -i -h &#x27;content-type: application/json&#x27; -h &quot;authorization: bearer $token&quot; --data @payload.json https://target.example.com/api/login api json post 페이로드 인증 토큰 웹·curl web">
       <div class="cheat-head">
@@ -1513,7 +1525,7 @@
         <div class="cmd-head"><span>curl</span><button class="cmd-copy" type="button" data-copy="cmd-19">복사</button></div>
         <pre id="cmd-19">curl -sS -i -H &#x27;Content-Type: application/json&#x27; -H &quot;Authorization: Bearer $TOKEN&quot; --data @payload.json https://target.example.com/api/login</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>응답 코드만 보지 말고 `-i`로 헤더와 함께, 오류 메시지에 내부 경로·SQL이 노출되는지 확인하세요. 토큰은 셸 히스토리에 남지 않도록 환경변수로 넘깁니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>응답 코드만 보지 말고 <code class="tip-code">-i</code>로 헤더와 함께, 오류 메시지에 내부 경로·SQL이 노출되는지 확인하세요. 토큰은 셸 히스토리에 남지 않도록 환경변수로 넘깁니다.</span></p>
     </article>
     <article class="cheat-card" data-cat="web" data-search="민감 경로·정책 파일 존재 확인 robots.txt, security.txt, .git/head 같은 파일이 공개돼 있는지 상태 코드만으로 빠르게 훑습니다. for p in robots.txt sitemap.xml .well-known/security.txt .git/head .env; do printf &#x27;%-28s %s\n&#x27; &quot;$p&quot; &quot;$(curl -ss -o /dev/null -w &#x27;%{http_code}&#x27; https://target.example.com/$p)&quot;; done robots security.txt git env 노출 디렉터리 웹·curl web">
       <div class="cheat-head">
@@ -1525,7 +1537,7 @@
         <div class="cmd-head"><span>for</span><button class="cmd-copy" type="button" data-copy="cmd-20">복사</button></div>
         <pre id="cmd-20">for p in robots.txt sitemap.xml .well-known/security.txt .git/HEAD .env; do printf &#x27;%-28s %s\n&#x27; &quot;$p&quot; &quot;$(curl -sS -o /dev/null -w &#x27;%{http_code}&#x27; https://target.example.com/$p)&quot;; done</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`.git/HEAD`가 200이면 소스 저장소가 통째로 노출된 것입니다. `.env` 200은 자격증명 유출로 직결되므로 즉시 보고 대상입니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">.git/HEAD</code>가 200이면 소스 저장소가 통째로 노출된 것입니다. <code class="tip-code">.env</code> 200은 자격증명 유출로 직결되므로 즉시 보고 대상입니다.</span></p>
     </article>
     <article class="cheat-card" data-cat="web" data-search="시간 기반 블라인드 sqli 확인 응답 내용이 바뀌지 않는 블라인드 구간에서 지연 시간으로 주입 가능성을 판별합니다. curl -ss -o /dev/null -w &#x27;%{time_total}\n&#x27; &quot;https://target.example.com/item?id=1%27%20and%20sleep(3)--&quot; sqli blind time based sleep 인젝션 웹·curl web">
       <div class="cheat-head">
@@ -1549,7 +1561,7 @@
         <div class="cmd-head"><span>cmd</span><button class="cmd-copy" type="button" data-copy="cmd-22">복사</button></div>
         <pre id="cmd-22">net localgroup administrators &amp; net user &amp; whoami /priv</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`whoami /priv`에서 SeImpersonatePrivilege가 보이면 Potato 계열 권한 상승이 가능한 환경입니다. 실제 공격은 하지 말고 설정 오류로 보고하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">whoami /priv</code>에서 SeImpersonatePrivilege가 보이면 Potato 계열 권한 상승이 가능한 환경입니다. 실제 공격은 하지 말고 설정 오류로 보고하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="win" data-search="도메인 관리자 그룹 구성원 도메인·엔터프라이즈 관리자 그룹의 현재 구성원을 확인합니다. 권한이 과하게 부여된 계정을 찾는 첫 단계입니다. net group &quot;domain admins&quot; /domain &amp; net group &quot;enterprise admins&quot; /domain &amp; net group &quot;account operators&quot; /domain active directory domain admins 그룹 구성원 windows·ad win">
       <div class="cheat-head">
@@ -1585,7 +1597,7 @@
         <div class="cmd-head"><span>PowerShell</span><button class="cmd-copy" type="button" data-copy="cmd-25">복사</button></div>
         <pre id="cmd-25">Get-CimInstance Win32_Service | Where-Object {$_.StartName -like &#x27;*LocalSystem*&#x27;} | Select-Object Name,StartMode,PathName | Format-List</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>경로에 공백이 있고 따옴표가 없는 항목(`C:\Program Files\...`)은 unquoted service path 문제입니다. 각 경로의 디렉터리 ACL을 `icacls`로 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>경로에 공백이 있고 따옴표가 없는 항목(<code class="tip-code">C:\Program Files\...</code>)은 unquoted service path 문제입니다. 각 경로의 디렉터리 ACL을 <code class="tip-code">icacls</code>로 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="win" data-search="로그온 실패 4625 집계 보안 로그에서 로그온 실패(4625)를 모아 무차별 대입·자격증명 스터핑 시도를 확인합니다. get-winevent -filterhashtable @{logname=&#x27;security&#x27;;id=4625} -maxevents 50 | group-object {$_.properties[5].value} | sort-object count -descending | select-object count,name event log 4625 로그온 실패 brute force windows·ad win">
       <div class="cheat-head">
@@ -1609,7 +1621,7 @@
         <div class="cmd-head"><span>PowerShell</span><button class="cmd-copy" type="button" data-copy="cmd-27">복사</button></div>
         <pre id="cmd-27">Get-SmbShare | Select-Object Name,Path,Description | Format-Table -Auto; Get-SmbSession | Select-Object ClientComputerName,ClientUserName,NumOpens</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`IPC$` 외에 Everyone 쓰기 권한이 있는 공유는 랜섬웨어 확산 경로가 됩니다. 공유 ACL은 `Get-SmbShareAccess`로 함께 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">IPC$</code> 외에 Everyone 쓰기 권한이 있는 공유는 랜섬웨어 확산 경로가 됩니다. 공유 ACL은 <code class="tip-code">Get-SmbShareAccess</code>로 함께 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="net" data-search="특정 호스트 트래픽 저장 대상 호스트와 오가는 패킷을 파일로 남겨 나중에 wireshark로 분석합니다. sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap tcpdump pcap 캡처 패킷 저장 네트워크·tcpdump net">
       <div class="cheat-head">
@@ -1621,7 +1633,7 @@
         <div class="cmd-head"><span>tcpdump</span><button class="cmd-copy" type="button" data-copy="cmd-28">복사</button></div>
         <pre id="cmd-28">sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`-s 0`은 패킷 전체를 저장합니다(기본은 262144바이트로 충분하지만 명시가 안전). 캡처 파일에는 개인정보·자격증명이 담길 수 있어 보관 기한과 접근 권한을 정해 두세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-s 0</code>은 패킷 전체를 저장합니다(기본은 262144바이트로 충분하지만 명시가 안전). 캡처 파일에는 개인정보·자격증명이 담길 수 있어 보관 기한과 접근 권한을 정해 두세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="net" data-search="http 요청 라인 실시간 확인 암호화되지 않은 http 구간에서 어떤 경로로 요청이 오가는지 실시간으로 봅니다. sudo tcpdump -i any -nn -a &#x27;tcp port 80&#x27; | grep --line-buffered -e &#x27;^(get|post|head|host:)&#x27; http get post host 평문 패킷 네트워크·tcpdump net">
       <div class="cheat-head">
@@ -1645,7 +1657,7 @@
         <div class="cmd-head"><span>tcpdump</span><button class="cmd-copy" type="button" data-copy="cmd-30">복사</button></div>
         <pre id="cmd-30">sudo tcpdump -i any -nn -vv &#x27;udp port 53&#x27; -c 100</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`-vv`로 질의 이름까지 보입니다. 길고 무작위한 서브도메인이 반복되면 DNS 터널링을 의심하고, 같은 이름의 응답 TTL·레코드 타입(TXT)도 함께 보세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-vv</code>로 질의 이름까지 보입니다. 길고 무작위한 서브도메인이 반복되면 DNS 터널링을 의심하고, 같은 이름의 응답 TTL·레코드 타입(TXT)도 함께 보세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="net" data-search="pcap에서 syn 패킷만 추출 저장한 캡처에서 연결 시도(syn)만 걸러 스캔·접속 시도를 빠르게 추립니다. tcpdump -nn -r cap.pcap &#x27;tcp[13] &amp; 2 != 0&#x27; -c 50 pcap syn 스캔 필터 재분석 네트워크·tcpdump net">
       <div class="cheat-head">
@@ -1657,7 +1669,7 @@
         <div class="cmd-head"><span>tcpdump</span><button class="cmd-copy" type="button" data-copy="cmd-31">복사</button></div>
         <pre id="cmd-31">tcpdump -nn -r cap.pcap &#x27;tcp[13] &amp; 2 != 0&#x27; -c 50</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>같은 출발지에서 여러 포트로 SYN만 뿌리고 ACK가 없으면 스캔입니다. `-c`로 개수를 제한해 출력이 넘치지 않게 하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>같은 출발지에서 여러 포트로 SYN만 뿌리고 ACK가 없으면 스캔입니다. <code class="tip-code">-c</code>로 개수를 제한해 출력이 넘치지 않게 하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="net" data-search="arp 스푸핑 징후 찾기 같은 ip에 대해 서로 다른 mac이 응답하는지 확인합니다. 내부 중간자 공격의 대표 신호입니다. sudo tcpdump -i eth0 -nn arp -c 200 | awk &#x27;{print $2, $nf}&#x27; | sort | uniq -c | sort -rn | head arp spoofing mitm mac 중간자 네트워크·tcpdump net">
       <div class="cheat-head">
@@ -1681,7 +1693,7 @@
         <div class="cmd-head"><span>echo</span><button class="cmd-copy" type="button" data-copy="cmd-33">복사</button></div>
         <pre id="cmd-33">echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2&gt;/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`-servername`을 빼면 SNI 없이 접속해 다른 인증서를 받을 수 있습니다. 만료가 임박했거나 SAN에 실제 도메인이 빠져 있으면 브라우저 경고로 이어집니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-servername</code>을 빼면 SNI 없이 접속해 다른 인증서를 받을 수 있습니다. 만료가 임박했거나 SAN에 실제 도메인이 빠져 있으면 브라우저 경고로 이어집니다.</span></p>
     </article>
     <article class="cheat-card" data-cat="crypto" data-search="tls 버전·암호 스위트 확인 구버전 tls(1.0/1.1)나 취약 암호 스위트가 아직 허용되는지 확인합니다. openssl s_client -connect target.example.com:443 -tls1_2 &lt;/dev/null 2&gt;&amp;1 | grep -e &#x27;protocol|cipher|verify return code&#x27; tls 1.0 1.1 cipher suite 암호 스위트 openssl·ssh crypto">
       <div class="cheat-head">
@@ -1693,7 +1705,7 @@
         <div class="cmd-head"><span>OpenSSL</span><button class="cmd-copy" type="button" data-copy="cmd-34">복사</button></div>
         <pre id="cmd-34">openssl s_client -connect target.example.com:443 -tls1_2 &lt;/dev/null 2&gt;&amp;1 | grep -E &#x27;Protocol|Cipher|Verify return code&#x27;</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>TLS 1.0/1.1은 폐기 대상입니다. `Verify return code: 0`이 아니면 체인 문제이므로 중간 인증서 누락 여부를 확인하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>TLS 1.0/1.1은 폐기 대상입니다. <code class="tip-code">Verify return code: 0</code>이 아니면 체인 문제이므로 중간 인증서 누락 여부를 확인하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="crypto" data-search="파일 무결성 검증 배포 파일이 배포처가 공개한 해시와 일치하는지 확인합니다. 공급망 침해를 걸러내는 가장 빠른 방법입니다. sha256sum artifact.tar.gz; sha256sum -c sha256sums; openssl dgst -sha256 artifact.tar.gz sha256 무결성 해시 checksum 공급망 openssl·ssh crypto">
       <div class="cheat-head">
@@ -1705,7 +1717,7 @@
         <div class="cmd-head"><span>sha256sum</span><button class="cmd-copy" type="button" data-copy="cmd-35">복사</button></div>
         <pre id="cmd-35">sha256sum artifact.tar.gz; sha256sum -c SHA256SUMS; openssl dgst -sha256 artifact.tar.gz</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>해시 값은 파일을 받은 경로가 아닌 공식 공지·서명된 릴리스 노트에서 가져와야 의미가 있습니다. GPG 서명(`.asc`)이 있으면 서명 검증까지 하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span>해시 값은 파일을 받은 경로가 아닌 공식 공지·서명된 릴리스 노트에서 가져와야 의미가 있습니다. GPG 서명(<code class="tip-code">.asc</code>)이 있으면 서명 검증까지 하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="crypto" data-search="파일 암호화·복호화 전달용 파일을 비밀번호 기반(aes-256)으로 암호화하고 다시 풉니다. openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc
 openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt openssl enc aes 암호화 복호화 pbkdf2 openssl·ssh crypto">
@@ -1719,7 +1731,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt op
         <pre id="cmd-36">openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc
 openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`-pbkdf2`와 높은 `-iter`를 빼면 옛 방식(단순 MD5 키 유도)으로 떨어집니다. 암호는 파일과 다른 채널(전화·메신저)로 전달하세요.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-pbkdf2</code>와 높은 <code class="tip-code">-iter</code>를 빼면 옛 방식(단순 MD5 키 유도)으로 떨어집니다. 암호는 파일과 다른 채널(전화·메신저)로 전달하세요.</span></p>
     </article>
     <article class="cheat-card" data-cat="crypto" data-search="ssh 공개키 지문·길이 확인 키 파일의 지문과 비트 길이를 확인해 서버에 등록된 키와 같은지 대조합니다. ssh-keygen -lf ~/.ssh/id_ed25519.pub; ssh-keygen -lf ~/.ssh/id_rsa.pub ssh key fingerprint rsa ed25519 지문 openssl·ssh crypto">
       <div class="cheat-head">
@@ -1743,7 +1755,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
         <div class="cmd-head"><span>ssh</span><button class="cmd-copy" type="button" data-copy="cmd-38">복사</button></div>
         <pre id="cmd-38">ssh -vvv -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes user@10.0.1.10 2&gt;&amp;1 | grep -E &#x27;Offering|Authentications that can continue|Permission denied|Server accepts key&#x27;</pre>
       </div>
-      <p class="tip"><span class="tip-tag">주의</span><span>`Offering`에 원하는 키가 없으면 ssh-agent가 다른 키를 먼저 내미는 것입니다. 서버 권한은 `~/.ssh` 700, `authorized_keys` 600이어야 합니다.</span></p>
+      <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">Offering</code>에 원하는 키가 없으면 ssh-agent가 다른 키를 먼저 내미는 것입니다. 서버 권한은 <code class="tip-code">~/.ssh</code> 700, <code class="tip-code">authorized_keys</code> 600이어야 합니다.</span></p>
     </article>
     </div>
 
@@ -1752,11 +1764,11 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
     <footer class="footer">
       Infosec Archive · 보안 실무 유틸 · 치트시트<br>
       모든 변환·계산은 브라우저에서만 수행되며 서버로 전송되지 않습니다. 명령은 점검 권한이 있는 대상에만 사용하세요.<br>
-      2026-11-20 20:15 KST 기준
+      2026-11-20 20:18 KST 기준
     </footer>
   </main>
 
-  <div class="toast" id="toast">클립보드에 복사했습니다.</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
 
@@ -2501,8 +2513,8 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
         if (o & 2) items.push(['ok', '스티키 비트가 함께 설정되어 있습니다. /tmp처럼 공유 디렉터리에서 남의 파일 삭제를 막는 올바른 조합입니다.']);
         else items.push(['ok', '스티키 비트(t)가 설정되어 있습니다. 공유 디렉터리에서 소유자 외 삭제를 막습니다.']);
       }
-      if ((u & 1) && (u & 2) && !(special & 4)) {
-        items.push(['info', '소유자에게 쓰기·실행이 함께 있습니다. 실행 중 파일을 바꿀 수 있는 구조라면 무결성 검토 대상입니다.']);
+      if (u === 0 && g === 0 && o === 0) {
+        items.push(['warn', '모든 권한이 0입니다. 실행 파일이면 실행되지 않고, 디렉터리면 안에 들어갈 수 없어 서비스가 바로 실패합니다.']);
       }
       if (!items.length) items.push(['ok', '흔한 위험 조합(777, o+w, SUID/SGID)에 해당하지 않습니다.']);
       $('chmodWarn').innerHTML = items.map(function (it) {
