@@ -42,7 +42,7 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
-from net_guard import MAX_HTML_BYTES, read_limited
+from net_guard import MAX_HTML_BYTES, read_limited, safe_xml_fromstring
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_FILE = os.path.join(BASE_DIR, "ai_tech_cache.json")
@@ -224,7 +224,7 @@ def collect_arxiv(categories=("cs.AI", "cs.CL", "cs.CR"), per_cat=6):
                }))
         try:
             raw = fetch_bytes(url, timeout=30).decode("utf-8", errors="ignore")
-            root = ET.fromstring(raw)
+            root = safe_xml_fromstring(raw)
         except Exception as e:  # noqa: BLE001
             print(f"  [arXiv:{cat}] 수집 실패: {e}")
             continue
@@ -302,7 +302,7 @@ def collect_geeknews(limit=10):
     out = []
     try:
         raw = fetch_bytes("https://news.hada.io/rss/news", timeout=25).decode("utf-8", errors="ignore")
-        root = ET.fromstring(raw)
+        root = safe_xml_fromstring(raw)
     except Exception as e:  # noqa: BLE001
         print(f"  [GeekNews] 수집 실패: {e}")
         return out
@@ -402,7 +402,7 @@ FEED_PROMO = re.compile(r"(webinar|sponsored|register (now|today)|white ?paper|t
 def parse_feed_entries(raw):
     """RSS 2.0 / Atom 피드를 공통 형식으로 파싱"""
     from email.utils import parsedate_to_datetime
-    root = ET.fromstring(raw)
+    root = safe_xml_fromstring(raw)
     out = []
     for node in root.iter():
         if not (node.tag.endswith("item") or node.tag.endswith("entry")):
@@ -514,7 +514,7 @@ def collect_arxiv_security(per_query=4):
                }))
         try:
             raw = fetch_bytes(url, timeout=40).decode("utf-8", errors="ignore")
-            root = ET.fromstring(raw)
+            root = safe_xml_fromstring(raw)
         except Exception as e:  # noqa: BLE001
             print(f"  [arXiv:sec{i + 1}] 수집 실패: {e}")
             continue

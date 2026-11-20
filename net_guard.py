@@ -6,6 +6,7 @@
 비정상적으로 큰 응답(메모리 소진·빌드 지연)을 방어한다.
 """
 import urllib.request
+import xml.etree.ElementTree as ET
 
 # JSON/RSS 응답은 보통 수백 KB~수 MB. 8MB 를 넘는 응답은 비정상으로 본다.
 MAX_RESPONSE_BYTES = 8 * 1024 * 1024
@@ -25,6 +26,19 @@ def read_limited(resp, max_bytes=MAX_RESPONSE_BYTES):
     if len(data) > max_bytes:
         raise ValueError("response too large: over %s bytes" % max_bytes)
     return data
+
+
+def safe_xml_fromstring(raw):
+    """RSS/Atom 을 파싱할 때 DOCTYPE·ENTITY 선언을 거부한다.
+
+    표준 ElementTree 는 엔티티 확장 폭탄(billion laughs)에 노출되므로,
+    피드에 DTD 가 있으면 파싱하지 않고 건너뛴다.
+    """
+    data = raw if isinstance(raw, (bytes, bytearray)) else str(raw).encode("utf-8", "ignore")
+    lowered = bytes(data).lower()
+    if b"<!doctype" in lowered or b"<!entity" in lowered:
+        raise ValueError("xml with DTD/ENTITY declaration rejected")
+    return ET.fromstring(data)
 
 
 def open_http(url, headers=None, timeout=20):

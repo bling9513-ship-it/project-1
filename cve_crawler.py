@@ -48,7 +48,7 @@ import urllib.request
 import urllib.error
 import subprocess
 from datetime import datetime, timezone, timedelta
-from net_guard import MAX_HTML_BYTES, read_limited
+from net_guard import MAX_HTML_BYTES, read_limited, safe_xml_fromstring
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(BASE_DIR, ".env")
@@ -521,8 +521,8 @@ def parse_feed_items(raw):
     """RSS 2.0·Atom 피드를 [{title, link, summary, published_at}] 로 파싱한다."""
     import xml.etree.ElementTree as ET
     try:
-        root = ET.fromstring(raw)
-    except ET.ParseError:
+        root = safe_xml_fromstring(raw)
+    except (ET.ParseError, ValueError):
         return []
     out = []
     for node in root.iter():
