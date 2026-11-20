@@ -1625,8 +1625,8 @@ CSS = """
       .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
-      .filter-row { gap: 6px; }
-      .filter-label { flex: 0 0 36px; }
+      .filter-row { flex-direction: column; gap: 6px; margin-bottom: 12px; }
+      .filter-label { flex: none; padding-top: 0; font-size: 10.5px; }
     }
 """
 
