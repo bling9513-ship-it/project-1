@@ -9,7 +9,7 @@
 
 브라우저에서는 즉시 채점·해설·진행 기록(localStorage, 키 secjobs-wargame-v1)이 동작한다.
 채용공고(index)·시험 공부(study)·AI 트렌드(ai)·CVE 리포트(cve)·옷차림(outfit)과 같은
-secjobs-theme 라이트/다크 테마와 6탭 내비게이션을 공유한다.
+secjobs-theme 라이트/다크 테마와 7탭 내비게이션을 공유한다.
 """
 import json
 import os
@@ -1662,9 +1662,17 @@ CSS = """
       .cmp pre { font-size: 11px; }
     }
 
-    /* 내비게이션 6탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    /* 내비게이션 7탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
     @media (max-width: 560px) {
       .brand-name { display: none; }
+    }
+
+    /* 내비게이션 7탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
+    @media (max-width: 640px) {
+      .nav-brand { min-width: 0; }
+      .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .nav-tab-item { padding: 4px 7px; font-size: 11px; }
     }
 
     @media (max-width: 430px) {
@@ -1730,6 +1738,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
           <a href="outfit.html" class="nav-tab-item">옷차림</a>
           <a href="wargame.html" class="nav-tab-item active">워게임</a>
+          <a href="tools.html" class="nav-tab-item">실무 유틸</a>
         </div>
       </div>
 

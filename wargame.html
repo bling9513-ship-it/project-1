@@ -927,9 +927,17 @@
       .cmp pre { font-size: 11px; }
     }
 
-    /* 내비게이션 6탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    /* 내비게이션 7탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
     @media (max-width: 560px) {
       .brand-name { display: none; }
+    }
+
+    /* 내비게이션 7탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
+    @media (max-width: 640px) {
+      .nav-brand { min-width: 0; }
+      .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .nav-tab-item { padding: 4px 7px; font-size: 11px; }
     }
 
     @media (max-width: 430px) {
@@ -982,6 +990,7 @@
           <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
           <a href="outfit.html" class="nav-tab-item">옷차림</a>
           <a href="wargame.html" class="nav-tab-item active">워게임</a>
+          <a href="tools.html" class="nav-tab-item">실무 유틸</a>
         </div>
       </div>
 
@@ -1265,7 +1274,7 @@
     <footer class="footer">
       Infosec Archive · 출퇴근길 보안 워게임<br>
       시나리오는 실제 취약점 유형을 학습용으로 각색한 것입니다. 진행 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-20 20:07 KST 기준
+      2026-11-20 20:14 KST 기준
     </footer>
   </main>
 

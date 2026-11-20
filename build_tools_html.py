@@ -1,0 +1,2720 @@
+# -*- coding: utf-8 -*-
+"""
+보안 실무 유틸 · 치트시트 (tools.html) 빌더.
+
+- 상단 7탭 내비게이션(채용공고·시험 공부·AI 트렌드·CVE 리포트·옷차림·워게임·실무 유틸)과
+  secjobs-theme 라이트/다크 테마를 다른 페이지와 그대로 공유한다.
+- 페이지 안의 모든 계산(인코딩·JWT 파싱·해시·정규식·권한/CIDR)은 브라우저 로컬에서만 수행하며
+  입력값을 서버로 전송하지 않는다. 빌드 시점에는 정적 HTML 한 장만 만든다.
+- 명령어 치트시트는 아래 CHEATS 목록에서 정적 카드로 렌더링하고, 카테고리 필터·키워드 검색·
+  원클릭 복사는 브라우저 스크립트가 처리한다.
+"""
+import os
+from datetime import datetime, timezone, timedelta
+from html import escape as esc
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TOOLS_HTML = os.path.join(BASE_DIR, "tools.html")
+
+
+def esc_attr(value):
+    return esc(str(value), quote=True)
+
+
+TOOL_HINTS = [
+    ("sudo tcpdump", "tcpdump"),
+    ("tcpdump", "tcpdump"),
+    ("nmap", "Nmap"),
+    ("find ", "find"),
+    ("getcap", "getcap"),
+    ("crontab", "cron"),
+    ("sudo ss", "ss"),
+    ("last ", "last"),
+    ("sudo -l", "sudo"),
+    ("curl", "curl"),
+    ("net localgroup", "cmd"),
+    ("net group", "cmd"),
+    ("Get-ADUser", "PowerShell"),
+    ("Get-CimInstance", "PowerShell"),
+    ("Get-WinEvent", "PowerShell"),
+    ("Get-SmbShare", "PowerShell"),
+    ("openssl", "OpenSSL"),
+    ("sha256sum", "sha256sum"),
+    ("ssh-keygen", "ssh-keygen"),
+    ("ssh ", "ssh"),
+]
+
+
+def cmd_tool_label(cmd):
+    """첫 명령을 보고 카드 헤더에 붙일 도구 이름을 고른다."""
+    text = cmd.strip()
+    for prefix, label in TOOL_HINTS:
+        if text.startswith(prefix):
+            return label
+    return text.split()[0] if text else "shell"
+
+CATS = [
+    {"key": "all", "label": "전체"},
+    {"key": "nmap", "label": "Nmap"},
+    {"key": "linux", "label": "Linux 점검"},
+    {"key": "web", "label": "웹·curl"},
+    {"key": "win", "label": "Windows·AD"},
+    {"key": "net", "label": "네트워크·tcpdump"},
+    {"key": "crypto", "label": "OpenSSL·SSH"},
+]
+
+# 각 카드: cat(카테고리), title, desc(용도), cmd(실제 명령), tip(실무 주의)
+CHEATS = [
+    # ------------------------------------------------------------------ Nmap
+    {
+        "cat": "nmap",
+        "title": "살아 있는 호스트만 추리기",
+        "desc": "점검 대역에서 응답하는 호스트를 먼저 확정합니다. 포트 스캔 전에 자산 범위를 좁힐 때 씁니다.",
+        "cmd": "nmap -sn 10.0.1.0/24 -oG - | awk '/Up$/{print $2}'",
+        "tip": "ICMP를 막는 망에서는 `-sn`이 아무것도 못 찾습니다. `-PS22,80,443 -PE`를 함께 주거나 ARP 기반(`-PR`)으로 확인하세요.",
+        "keys": "ping sweep 호스트 발견 대역 자산",
+    },
+    {
+        "cat": "nmap",
+        "title": "서비스·버전 핑거프린팅",
+        "desc": "상위 1000개 포트에서 열린 서비스의 제품·버전과 기본 스크립트 결과를 한 번에 모읍니다.",
+        "cmd": "nmap -sV -sC -T4 --top-ports 1000 10.0.1.10 -oN sv_scan.txt",
+        "tip": "`-sC`는 기본 NSE 스크립트를 돌리므로 로그에 흔적이 남습니다. 운영 중인 서버라면 점검 허가 범위와 시간 창을 먼저 확인하세요.",
+        "keys": "service version detection nse 기본 스크립트",
+    },
+    {
+        "cat": "nmap",
+        "title": "전체 65535 포트 고속 스캔",
+        "desc": "기본 스캔이 놓치는 상위 포트 밖 서비스(관리 콘솔, 개발 포트)를 찾습니다.",
+        "cmd": "nmap -p- --min-rate 2000 -T4 -Pn 10.0.1.10 -oN allports.txt",
+        "tip": "`--min-rate 2000`은 패킷을 초당 2000개까지 밀어냅니다. IDS·IPS가 있는 구간에서는 알람이 뜨고 회선에도 부담이 되니 내부 점검망에서만 쓰세요.",
+        "keys": "full port scan 전포트 고속",
+    },
+    {
+        "cat": "nmap",
+        "title": "웹 서버 정보·허용 메서드",
+        "desc": "HTTP 응답 헤더, 타이틀, OPTIONS 응답으로 서버 종류와 위험 메서드(PUT·DELETE·TRACE) 허용 여부를 봅니다.",
+        "cmd": "nmap -p 80,443,8080,8443 --script http-title,http-headers,http-methods 10.0.1.10",
+        "tip": "허용 메서드에 PUT이 있으면 업로드 취약점으로 이어질 수 있습니다. 실제 요청은 `curl -X OPTIONS`로 한 번 더 확인하세요.",
+        "keys": "http methods put delete trace 헤더",
+    },
+    {
+        "cat": "nmap",
+        "title": "SMB 취약점·공유 열거",
+        "desc": "445 포트에서 OS 정보, 공유 목록, 알려진 원격 실행 취약점(MS17-010 등)을 확인합니다.",
+        "cmd": "nmap -p 445 --script smb-os-discovery,smb-enum-shares,smb-vuln-ms17-010 10.0.1.20",
+        "tip": "스크립트 결과가 \"VULNERABLE\"이어도 실제 익스플로잇 시도는 하지 않습니다. 취약 여부만 근거로 보고하고 패치 일정을 잡으세요.",
+        "keys": "smb ms17-010 eternalblue 공유",
+    },
+    {
+        "cat": "nmap",
+        "title": "UDP 상위 포트 점검",
+        "desc": "DNS·SNMP·NTP 같은 UDP 서비스는 TCP 스캔에 보이지 않습니다. 응답이 느리므로 상위 포트만 짧게 봅니다.",
+        "cmd": "nmap -sU --top-ports 50 --max-retries 1 --host-timeout 3m 10.0.1.10",
+        "tip": "`open|filtered`는 응답이 없어 열림/차단을 구분하지 못한 상태입니다. SNMP(161)는 community 문자열 없이는 확정할 수 없습니다.",
+        "keys": "udp snmp ntp dns 스캔",
+    },
+    # ------------------------------------------------------------------ Linux
+    {
+        "cat": "linux",
+        "title": "SUID·SGID 실행 파일 전수 조사",
+        "desc": "소유자 권한으로 실행되는 파일을 찾습니다. 권한 상승 경로를 찾는 1차 단서입니다.",
+        "cmd": "find / -xdev \\( -perm -4000 -o -perm -2000 \\) -type f -ls 2>/dev/null",
+        "tip": "기본 배포판에 없는 바이너리(예: /usr/bin/find, /usr/bin/vim)에 SUID가 걸려 있으면 거의 확실히 이상 징후입니다. 패키지 소유 여부를 `dpkg -S`·`rpm -qf`로 대조하세요.",
+        "keys": "suid sgid 권한상승 find perm",
+    },
+    {
+        "cat": "linux",
+        "title": "누구나 쓰기 가능한 파일 찾기",
+        "desc": "other 쓰기 권한이 열린 파일을 찾습니다. 서비스가 참조하는 설정·스크립트가 걸리면 변조 경로가 됩니다.",
+        "cmd": "find / -xdev -type f -perm -0002 -ls 2>/dev/null | head -50",
+        "tip": "`/tmp`, `/var/tmp` 아래 임시 파일은 정상일 수 있습니다. 실제 위험은 root 소유 서비스 설정 파일에 o+w가 열린 경우입니다.",
+        "keys": "world writable 777 o+w 변조",
+    },
+    {
+        "cat": "linux",
+        "title": "capability가 부여된 바이너리",
+        "desc": "SUID 대신 프로세스 단위 권한(capability)을 받은 실행 파일을 확인합니다. 최근 리눅스 권한 상승의 주요 통로입니다.",
+        "cmd": "getcap -r / 2>/dev/null",
+        "tip": "`cap_setuid+ep`, `cap_sys_admin+ep`, `cap_dac_read_search+ep`는 사실상 root급입니다. 배포판 기본값(예: ping의 cap_net_raw)과 비교해 추가된 항목만 보세요.",
+        "keys": "capability getcap cap_setuid setcap",
+    },
+    {
+        "cat": "linux",
+        "title": "예약 작업(cron·systemd timer) 점검",
+        "desc": "주기 실행 작업은 지속성 확보와 권한 상승의 단골 경로입니다. 사용자 cron과 시스템 타이머를 함께 봅니다.",
+        "cmd": "crontab -l 2>/dev/null; sudo ls -l /etc/cron.* /var/spool/cron/crontabs 2>/dev/null; systemctl list-timers --all --no-pager | head -30",
+        "tip": "root cron이 실행하는 스크립트가 사용자 쓰기 가능하면 그 파일 하나로 root 권한을 얻습니다. 스크립트 경로의 소유자·권한까지 같이 확인하세요.",
+        "keys": "cron systemd timer 지속성 예약 작업",
+    },
+    {
+        "cat": "linux",
+        "title": "리슨 포트와 소유 프로세스",
+        "desc": "지금 외부에서 접근 가능한 포트와 그 포트를 잡고 있는 프로세스를 매핑합니다.",
+        "cmd": "sudo ss -tulpn",
+        "tip": "`0.0.0.0:*`·`[::]:*`는 모든 인터페이스에 열린 상태입니다. 방화벽으로 막혀 있어도 내부에서는 노출되므로 `127.0.0.1:` 바인딩이 필요한 서비스를 구분하세요.",
+        "keys": "ss netstat listening port 프로세스",
+    },
+    {
+        "cat": "linux",
+        "title": "로그인 성공·실패 기록",
+        "desc": "최근 로그인 이력과 실패 기록으로 무차별 대입·비정상 접속을 확인합니다.",
+        "cmd": "last -ai | head -20; echo '--- 실패 ---'; sudo lastb | head -20",
+        "tip": "성공 기록에 낯선 IP·시간대가 있으면 `lastlog`, `/var/log/auth.log`(또는 journald)에서 해당 세션의 명령 이력을 이어서 확인하세요.",
+        "keys": "last lastb 로그인 이력 brute force auth.log",
+    },
+    {
+        "cat": "linux",
+        "title": "sudo 권한과 NOPASSWD 설정",
+        "desc": "계정이 어떤 명령을 어떤 사용자로 실행할 수 있는지 확인합니다. 과도한 sudo 규칙은 즉시 권한 상승으로 이어집니다.",
+        "cmd": "sudo -l -U deploy; sudo grep -rE 'NOPASSWD|ALL=\\(ALL\\)' /etc/sudoers /etc/sudoers.d 2>/dev/null",
+        "tip": "`NOPASSWD`로 vi·find·tar·less 같은 편집·실행 도구를 허용하면 셸을 띄울 수 있습니다. 허용 목록은 절대 경로와 인자까지 제한해야 안전합니다.",
+        "keys": "sudo sudoers nopasswd 권한",
+    },
+    # ------------------------------------------------------------------ Web
+    {
+        "cat": "web",
+        "title": "보안 응답 헤더 한눈에 보기",
+        "desc": "CSP·HSTS·X-Frame-Options·nosniff가 실제 응답에 실려 있는지 확인합니다.",
+        "cmd": "curl -sSI https://target.example.com | grep -iE '^(server|content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy)'",
+        "tip": "헤더가 없다고 곧 취약점은 아니지만, XSS·클릭재킹 대응 수준을 판단하는 근거가 됩니다. 리다이렉트되는 도메인마다 따로 확인하세요.",
+        "keys": "보안 헤더 csp hsts x-frame nosniff",
+    },
+    {
+        "cat": "web",
+        "title": "리다이렉트·TLS 체인 추적",
+        "desc": "http→https 전환 과정에서 인증서가 바뀌거나 중간 도메인으로 튀는지 확인합니다.",
+        "cmd": "curl -sSIL --max-redirs 5 http://target.example.com",
+        "tip": "첫 응답이 https가 아니라면 HSTS가 없는 한 최초 요청은 평문입니다. 민감 쿠키는 Secure 속성이 있어야 이 구간에서 새지 않습니다.",
+        "keys": "redirect 301 302 tls 인증서 체인",
+    },
+    {
+        "cat": "web",
+        "title": "세션 쿠키 속성 점검",
+        "desc": "로그인 응답의 Set-Cookie에 HttpOnly·Secure·SameSite가 붙었는지 확인합니다.",
+        "cmd": "curl -sSI https://target.example.com/login | grep -i '^set-cookie'",
+        "tip": "세션 쿠키에 HttpOnly가 없으면 XSS 한 번으로 세션이 탈취됩니다. SameSite=None이면 Secure가 반드시 함께 있어야 합니다.",
+        "keys": "cookie httponly secure samesite 세션",
+    },
+    {
+        "cat": "web",
+        "title": "허용 HTTP 메서드 확인",
+        "desc": "OPTIONS 응답으로 서버가 열어 둔 메서드를 확인합니다. PUT·DELETE·TRACE는 설정 실수를 드러냅니다.",
+        "cmd": "curl -sS -i -X OPTIONS https://target.example.com/ | head -20",
+        "tip": "Allow 헤더에 TRACE가 있으면 XST(Cross-Site Tracing) 위험이 있고, PUT이 열려 있으면 업로드 경로를 우선 점검하세요.",
+        "keys": "options allow put delete trace 메서드",
+    },
+    {
+        "cat": "web",
+        "title": "경로 정규화 우회 점검",
+        "desc": "인코딩된 `../`가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다.",
+        "cmd": "curl -sS --path-as-is \"https://target.example.com/static/..%2f..%2fetc/passwd\" | head -5",
+        "tip": "`--path-as-is`가 없으면 curl이 경로를 미리 정규화해 버려 재현이 안 됩니다. 응답 코드와 본문 첫 줄을 함께 보세요.",
+        "keys": "path traversal lfi 인코딩 디렉터리",
+    },
+    {
+        "cat": "web",
+        "title": "JSON API에 페이로드 파일로 요청",
+        "desc": "따옴표·중괄호가 섞인 복잡한 페이로드는 파일로 분리해 보냅니다. 셸 인용 오류를 없애고 재현성을 높입니다.",
+        "cmd": "curl -sS -i -H 'Content-Type: application/json' -H \"Authorization: Bearer $TOKEN\" --data @payload.json https://target.example.com/api/login",
+        "tip": "응답 코드만 보지 말고 `-i`로 헤더와 함께, 오류 메시지에 내부 경로·SQL이 노출되는지 확인하세요. 토큰은 셸 히스토리에 남지 않도록 환경변수로 넘깁니다.",
+        "keys": "api json post 페이로드 인증 토큰",
+    },
+    {
+        "cat": "web",
+        "title": "민감 경로·정책 파일 존재 확인",
+        "desc": "robots.txt, security.txt, .git/HEAD 같은 파일이 공개돼 있는지 상태 코드만으로 빠르게 훑습니다.",
+        "cmd": "for p in robots.txt sitemap.xml .well-known/security.txt .git/HEAD .env; do printf '%-28s %s\\n' \"$p\" \"$(curl -sS -o /dev/null -w '%{http_code}' https://target.example.com/$p)\"; done",
+        "tip": "`.git/HEAD`가 200이면 소스 저장소가 통째로 노출된 것입니다. `.env` 200은 자격증명 유출로 직결되므로 즉시 보고 대상입니다.",
+        "keys": "robots security.txt git env 노출 디렉터리",
+    },
+    {
+        "cat": "web",
+        "title": "시간 기반 블라인드 SQLi 확인",
+        "desc": "응답 내용이 바뀌지 않는 블라인드 구간에서 지연 시간으로 주입 가능성을 판별합니다.",
+        "cmd": "curl -sS -o /dev/null -w '%{time_total}\\n' \"https://target.example.com/item?id=1%27%20AND%20SLEEP(3)--\"",
+        "tip": "3초 지연이 일관되게 나와야 신호입니다. 네트워크 지연과 구분하려면 같은 요청을 3회 반복하고, 정상 파라미터 요청의 기준 시간과 비교하세요.",
+        "keys": "sqli blind time based sleep 인젝션",
+    },
+    # ------------------------------------------------------------------ Windows / AD
+    {
+        "cat": "win",
+        "title": "로컬 관리자·계정 확인",
+        "desc": "대상 호스트의 로컬 관리자 그룹과 전체 로컬 계정을 확인합니다.",
+        "cmd": "net localgroup administrators & net user & whoami /priv",
+        "tip": "`whoami /priv`에서 SeImpersonatePrivilege가 보이면 Potato 계열 권한 상승이 가능한 환경입니다. 실제 공격은 하지 말고 설정 오류로 보고하세요.",
+        "keys": "windows local admin 계정 권한 whoami",
+    },
+    {
+        "cat": "win",
+        "title": "도메인 관리자 그룹 구성원",
+        "desc": "도메인·엔터프라이즈 관리자 그룹의 현재 구성원을 확인합니다. 권한이 과하게 부여된 계정을 찾는 첫 단계입니다.",
+        "cmd": "net group \"Domain Admins\" /domain & net group \"Enterprise Admins\" /domain & net group \"Account Operators\" /domain",
+        "tip": "서비스 계정이 Domain Admins에 들어 있으면 그 계정이 침해되는 순간 도메인 전체가 넘어갑니다. 업무용·서비스 계정의 분리를 권고하세요.",
+        "keys": "active directory domain admins 그룹 구성원",
+    },
+    {
+        "cat": "win",
+        "title": "SPN 보유 계정(Kerberoast 대상) 조회",
+        "desc": "서비스 주체 이름이 등록된 계정을 뽑습니다. 오프라인 크래킹에 쓰이는 티켓 발급 대상입니다.",
+        "cmd": "Get-ADUser -Filter {ServicePrincipalName -ne \"$null\"} -Properties ServicePrincipalName | Select-Object SamAccountName,ServicePrincipalName",
+        "tip": "서비스 계정의 비밀번호가 길고 주기적으로 교체되는지가 핵심입니다. 25자 이상 무작위 암호를 권고하고, krbtgt 계정의 이중 재설정도 함께 점검하세요.",
+        "keys": "kerberoast spn active directory 티켓",
+    },
+    {
+        "cat": "win",
+        "title": "LocalSystem으로 도는 서비스 경로",
+        "desc": "SYSTEM 권한으로 실행되는 서비스의 실행 파일 경로를 확인합니다. 쓰기 가능한 경로에 있으면 권한 상승 지점입니다.",
+        "cmd": "Get-CimInstance Win32_Service | Where-Object {$_.StartName -like '*LocalSystem*'} | Select-Object Name,StartMode,PathName | Format-List",
+        "tip": "경로에 공백이 있고 따옴표가 없는 항목(`C:\\Program Files\\...`)은 unquoted service path 문제입니다. 각 경로의 디렉터리 ACL을 `icacls`로 확인하세요.",
+        "keys": "windows service localsystem unquoted path 권한상승",
+    },
+    {
+        "cat": "win",
+        "title": "로그온 실패 4625 집계",
+        "desc": "보안 로그에서 로그온 실패(4625)를 모아 무차별 대입·자격증명 스터핑 시도를 확인합니다.",
+        "cmd": "Get-WinEvent -FilterHashtable @{LogName='Security';Id=4625} -MaxEvents 50 | Group-Object {$_.Properties[5].Value} | Sort-Object Count -Descending | Select-Object Count,Name",
+        "tip": "4625는 기본 감사 정책에서 켜져 있어야 기록됩니다. 짧은 시간에 여러 계정으로 퍼지는 실패는 password spray 패턴입니다.",
+        "keys": "event log 4625 로그온 실패 brute force",
+    },
+    {
+        "cat": "win",
+        "title": "SMB 공유·접속 세션 확인",
+        "desc": "공유 목록과 현재 접속 중인 세션을 확인합니다. 불필요한 쓰기 공유와 원격 접속 흔적을 찾습니다.",
+        "cmd": "Get-SmbShare | Select-Object Name,Path,Description | Format-Table -Auto; Get-SmbSession | Select-Object ClientComputerName,ClientUserName,NumOpens",
+        "tip": "`IPC$` 외에 Everyone 쓰기 권한이 있는 공유는 랜섬웨어 확산 경로가 됩니다. 공유 ACL은 `Get-SmbShareAccess`로 함께 확인하세요.",
+        "keys": "smb share session windows 공유 세션",
+    },
+    # ------------------------------------------------------------------ Network
+    {
+        "cat": "net",
+        "title": "특정 호스트 트래픽 저장",
+        "desc": "대상 호스트와 오가는 패킷을 파일로 남겨 나중에 Wireshark로 분석합니다.",
+        "cmd": "sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap",
+        "tip": "`-s 0`은 패킷 전체를 저장합니다(기본은 262144바이트로 충분하지만 명시가 안전). 캡처 파일에는 개인정보·자격증명이 담길 수 있어 보관 기한과 접근 권한을 정해 두세요.",
+        "keys": "tcpdump pcap 캡처 패킷 저장",
+    },
+    {
+        "cat": "net",
+        "title": "HTTP 요청 라인 실시간 확인",
+        "desc": "암호화되지 않은 HTTP 구간에서 어떤 경로로 요청이 오가는지 실시간으로 봅니다.",
+        "cmd": "sudo tcpdump -i any -nn -A 'tcp port 80' | grep --line-buffered -E '^(GET|POST|HEAD|Host:)'",
+        "tip": "평문 HTTP에서 Authorization 헤더나 세션 쿠키가 그대로 보이면 그 자체가 유출입니다. 운영 서비스라면 즉시 TLS 적용 대상으로 보고하세요.",
+        "keys": "http get post host 평문 패킷",
+    },
+    {
+        "cat": "net",
+        "title": "DNS 질의 감시",
+        "desc": "내부 호스트가 어떤 도메인을 조회하는지 확인합니다. 악성 도메인·터널링 징후를 찾는 기본 수단입니다.",
+        "cmd": "sudo tcpdump -i any -nn -vv 'udp port 53' -c 100",
+        "tip": "`-vv`로 질의 이름까지 보입니다. 길고 무작위한 서브도메인이 반복되면 DNS 터널링을 의심하고, 같은 이름의 응답 TTL·레코드 타입(TXT)도 함께 보세요.",
+        "keys": "dns 53 질의 터널링",
+    },
+    {
+        "cat": "net",
+        "title": "pcap에서 SYN 패킷만 추출",
+        "desc": "저장한 캡처에서 연결 시도(SYN)만 걸러 스캔·접속 시도를 빠르게 추립니다.",
+        "cmd": "tcpdump -nn -r cap.pcap 'tcp[13] & 2 != 0' -c 50",
+        "tip": "같은 출발지에서 여러 포트로 SYN만 뿌리고 ACK가 없으면 스캔입니다. `-c`로 개수를 제한해 출력이 넘치지 않게 하세요.",
+        "keys": "pcap syn 스캔 필터 재분석",
+    },
+    {
+        "cat": "net",
+        "title": "ARP 스푸핑 징후 찾기",
+        "desc": "같은 IP에 대해 서로 다른 MAC이 응답하는지 확인합니다. 내부 중간자 공격의 대표 신호입니다.",
+        "cmd": "sudo tcpdump -i eth0 -nn arp -c 200 | awk '{print $2, $NF}' | sort | uniq -c | sort -rn | head",
+        "tip": "게이트웨이 IP에 두 개 이상의 MAC이 매핑되면 스푸핑을 의심합니다. 스위치 포트 보안·동적 ARP 검사(Dynamic ARP Inspection) 설정도 함께 확인하세요.",
+        "keys": "arp spoofing mitm mac 중간자",
+    },
+    # ------------------------------------------------------------------ OpenSSL / SSH
+    {
+        "cat": "crypto",
+        "title": "인증서 만료일·SAN 확인",
+        "desc": "서버가 실제로 내미는 인증서의 주체, 발급자, 유효기간, 대체 이름(SAN)을 확인합니다.",
+        "cmd": "echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2>/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName",
+        "tip": "`-servername`을 빼면 SNI 없이 접속해 다른 인증서를 받을 수 있습니다. 만료가 임박했거나 SAN에 실제 도메인이 빠져 있으면 브라우저 경고로 이어집니다.",
+        "keys": "openssl 인증서 만료 san sni tls",
+    },
+    {
+        "cat": "crypto",
+        "title": "TLS 버전·암호 스위트 확인",
+        "desc": "구버전 TLS(1.0/1.1)나 취약 암호 스위트가 아직 허용되는지 확인합니다.",
+        "cmd": "openssl s_client -connect target.example.com:443 -tls1_2 </dev/null 2>&1 | grep -E 'Protocol|Cipher|Verify return code'",
+        "tip": "TLS 1.0/1.1은 폐기 대상입니다. `Verify return code: 0`이 아니면 체인 문제이므로 중간 인증서 누락 여부를 확인하세요.",
+        "keys": "tls 1.0 1.1 cipher suite 암호 스위트",
+    },
+    {
+        "cat": "crypto",
+        "title": "파일 무결성 검증",
+        "desc": "배포 파일이 배포처가 공개한 해시와 일치하는지 확인합니다. 공급망 침해를 걸러내는 가장 빠른 방법입니다.",
+        "cmd": "sha256sum artifact.tar.gz; sha256sum -c SHA256SUMS; openssl dgst -sha256 artifact.tar.gz",
+        "tip": "해시 값은 파일을 받은 경로가 아닌 공식 공지·서명된 릴리스 노트에서 가져와야 의미가 있습니다. GPG 서명(`.asc`)이 있으면 서명 검증까지 하세요.",
+        "keys": "sha256 무결성 해시 checksum 공급망",
+    },
+    {
+        "cat": "crypto",
+        "title": "파일 암호화·복호화",
+        "desc": "전달용 파일을 비밀번호 기반(AES-256)으로 암호화하고 다시 풉니다.",
+        "cmd": "openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc\nopenssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt",
+        "tip": "`-pbkdf2`와 높은 `-iter`를 빼면 옛 방식(단순 MD5 키 유도)으로 떨어집니다. 암호는 파일과 다른 채널(전화·메신저)로 전달하세요.",
+        "keys": "openssl enc aes 암호화 복호화 pbkdf2",
+    },
+    {
+        "cat": "crypto",
+        "title": "SSH 공개키 지문·길이 확인",
+        "desc": "키 파일의 지문과 비트 길이를 확인해 서버에 등록된 키와 같은지 대조합니다.",
+        "cmd": "ssh-keygen -lf ~/.ssh/id_ed25519.pub; ssh-keygen -lf ~/.ssh/id_rsa.pub",
+        "tip": "RSA 2048비트 이하는 교체 대상입니다. 지문을 대조할 때는 앞뒤 몇 글자가 아니라 전체 지문을 비교하세요.",
+        "keys": "ssh key fingerprint rsa ed25519 지문",
+    },
+    {
+        "cat": "crypto",
+        "title": "SSH 접속 실패 원인 추적",
+        "desc": "키 인증이 거부될 때 어느 단계에서 끊기는지 상세 로그로 확인합니다.",
+        "cmd": "ssh -vvv -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes user@10.0.1.10 2>&1 | grep -E 'Offering|Authentications that can continue|Permission denied|Server accepts key'",
+        "tip": "`Offering`에 원하는 키가 없으면 ssh-agent가 다른 키를 먼저 내미는 것입니다. 서버 권한은 `~/.ssh` 700, `authorized_keys` 600이어야 합니다.",
+        "keys": "ssh key 인증 디버그 permission denied",
+    },
+]
+
+# ---------------------------------------------------------------- CSS
+CSS = """
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
+      --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
+      --warn-bg: #fffbeb; --warn-text: #b45309; --warn-border: #fde68a;
+
+      --code-bg: #101828;
+      --code-head: #1d2939;
+      --code-text: #e4e7ec;
+      --code-muted: #98a2b3;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
+      --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
+      --warn-bg: rgba(245, 158, 11, 0.12); --warn-text: #fcd34d; --warn-border: rgba(245, 158, 11, 0.35);
+
+      --code-bg: #0b0f16;
+      --code-head: #151b25;
+      --code-text: #e4e7ec;
+      --code-muted: #98a2b3;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    /* Global Header (index / study / ai / cve / outfit / wargame 과 동일 구조) */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .nav-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-tabs { display: flex; gap: 6px; margin-left: 10px; }
+
+    .nav-tab-item {
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab-item:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+    .nav-tab-item.active { background: var(--accent-primary); color: #ffffff !important; }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .update-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    /* Layout */
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    .hero { margin-bottom: 20px; }
+
+    .hero-pill {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 3px 9px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 14px;
+      max-width: 760px;
+    }
+
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .stat-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* Section */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 30px 0 12px;
+    }
+
+    .section-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-text { min-width: 0; }
+
+    .section-title { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+
+    .section-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 18px;
+    }
+
+    /* Tool tabs */
+    .tool-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 2px;
+      margin-bottom: 12px;
+    }
+
+    .tool-tabs::-webkit-scrollbar { display: none; }
+
+    .tool-tab {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tool-tab:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+    .tool-tab.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .tool-tab svg { flex-shrink: 0; }
+
+    .panel { display: none; }
+
+    .panel.active { display: block; }
+
+    /* Form controls */
+    .field + .field { margin-top: 14px; }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+      margin-bottom: 6px;
+    }
+
+    .field-label .hint { font-weight: 400; color: var(--text-muted); }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--border-default);
+      background: var(--bg-page);
+      color: var(--text-primary);
+      border-radius: 9px;
+      padding: 11px 12px;
+      font-family: var(--font-mono);
+      font-size: 12.8px;
+      line-height: 1.65;
+      letter-spacing: 0;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    textarea { resize: vertical; min-height: 92px; }
+
+    textarea:focus, input[type="text"]:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+    }
+
+    textarea[readonly] { background: var(--bg-subtle); }
+
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-surface);
+      flex-shrink: 0;
+    }
+
+    .seg button {
+      border: 0;
+      background: transparent;
+      padding: 5px 11px;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .seg button + button { border-left: 1px solid var(--border-default); }
+
+    .seg button.active { background: var(--accent-primary); color: #ffffff; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+    .btn.copied { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
+
+    .status { font-size: 12px; color: var(--text-muted); letter-spacing: -0.01em; }
+
+    .status.err { color: var(--no-text); }
+
+    .status.ok { color: var(--ok-text); }
+
+    .out {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 9px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+      letter-spacing: 0;
+      min-height: 44px;
+    }
+
+    .out .k { color: #93c5fd; }
+    .out .s { color: #86efac; }
+    .out .n { color: #fca5a5; }
+    .out .b { color: #c4b5fd; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .badge.ok { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
+    .badge.no { background: var(--no-bg); border-color: var(--no-border); color: var(--no-text); }
+    .badge.warn { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-text); }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 7px 12px;
+      font-size: 12.6px;
+      align-items: baseline;
+    }
+
+    .kv .k { color: var(--text-muted); }
+    .kv .v { font-family: var(--font-mono); font-size: 12.4px; word-break: break-all; letter-spacing: 0; }
+
+    .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+
+    .subhead {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 16px 0 8px;
+    }
+
+    .subhead::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border-default);
+    }
+
+    .notice {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      font-size: 12.2px;
+      line-height: 1.6;
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      margin-top: 12px;
+    }
+
+    .notice.warn { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-text); }
+    .notice.no { background: var(--no-bg); border-color: var(--no-border); color: var(--no-text); }
+    .notice.ok { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
+
+    .notice b { font-weight: 700; }
+
+    .notice svg { flex-shrink: 0; margin-top: 2px; }
+
+    /* JWT */
+    .jwt-json { max-height: 250px; overflow: auto; }
+
+    .jwt-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+    .jwt-claims { margin-top: 10px; }
+
+    /* Hash */
+    .hash-row {
+      display: grid;
+      grid-template-columns: 68px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .hash-row:first-child { border-top: 0; }
+
+    .hash-algo { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; color: var(--text-secondary); }
+
+    .hash-val {
+      font-family: var(--font-mono);
+      font-size: 11.6px;
+      line-height: 1.55;
+      word-break: break-all;
+      color: var(--text-primary);
+      letter-spacing: 0;
+    }
+
+    /* Regex */
+    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 11.8px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .chip:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+    .chip.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .preview {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 9px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 12.4px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-word;
+      letter-spacing: 0;
+      min-height: 60px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .preview mark {
+      background: #fde68a;
+      color: #111827;
+      border-radius: 3px;
+      padding: 0 2px;
+      box-shadow: 0 0 0 1px rgba(253, 230, 138, 0.6);
+    }
+
+    .match-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+
+    .match-item {
+      display: flex;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      letter-spacing: 0;
+    }
+
+    .match-item .idx { color: var(--text-muted); flex-shrink: 0; }
+
+    .match-item code { color: var(--text-primary); word-break: break-all; }
+
+    .flags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2px; }
+
+    .flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .flag input { accent-color: var(--accent-primary); }
+
+    /* chmod / cidr */
+    .perm-table {
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .perm-row {
+      display: grid;
+      grid-template-columns: 76px repeat(3, minmax(0, 1fr)) 46px;
+      font-size: 12px;
+    }
+
+    .perm-row > span {
+      padding: 7px 9px;
+      border-top: 1px solid var(--border-subtle);
+      border-left: 1px solid var(--border-subtle);
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+
+    .perm-row.head > span {
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 11px;
+      border-top: 0;
+    }
+
+    .perm-row > span:first-child {
+      border-left: 0;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: left;
+      background: var(--bg-subtle);
+    }
+
+    .perm-on { color: var(--ok-text); font-weight: 700; }
+    .perm-off { color: var(--text-muted); }
+    .perm-oct { color: var(--text-primary); font-weight: 700; background: var(--bg-subtle); }
+
+    .sym {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: 0.06em;
+    }
+
+    .warn-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+
+    .warn-list .notice { margin-top: 0; }
+
+    /* Cheat sheet */
+    .controls {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 14px;
+    }
+
+    .search-wrap { position: relative; }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-wrap input { padding-left: 34px; font-family: var(--font-sans); font-size: 13px; }
+
+    .filter-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+
+    .filter-label {
+      flex: 0 0 46px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .controls-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .visible-count { font-size: 12px; color: var(--text-muted); }
+    .visible-count strong { color: var(--text-primary); font-weight: 700; }
+
+    .cheat-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .cheat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      padding: 14px 16px;
+    }
+
+    .cheat-card.hide { display: none; }
+
+    .cheat-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+
+    .cheat-title { font-size: 14px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; }
+
+    .cheat-cat {
+      flex-shrink: 0;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border: 1px solid var(--border-default);
+      border-radius: 5px;
+      padding: 1px 6px;
+      white-space: nowrap;
+    }
+
+    .cheat-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-top: 5px;
+    }
+
+    .cmd {
+      margin-top: 10px;
+      background: var(--code-bg);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+
+    .cmd-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 5px 10px;
+      background: var(--code-head);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--code-muted);
+      letter-spacing: 0;
+    }
+
+    .cmd-copy {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: transparent;
+      color: var(--code-text);
+      font-family: inherit;
+      font-size: 10.5px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .cmd-copy:hover { background: rgba(255, 255, 255, 0.1); }
+    .cmd-copy.copied { color: #6ee7b7; border-color: rgba(110, 231, 183, 0.4); }
+
+    .cmd pre {
+      padding: 11px 12px;
+      font-family: var(--font-mono);
+      font-size: 12.1px;
+      line-height: 1.75;
+      color: var(--code-text);
+      overflow-x: auto;
+      white-space: pre;
+      letter-spacing: 0;
+      tab-size: 2;
+    }
+
+    .cmd pre::-webkit-scrollbar { height: 6px; }
+    .cmd pre::-webkit-scrollbar-thumb { background: var(--bg-muted); border-radius: 3px; }
+
+    .tip {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 11.8px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+
+    .tip .tip-tag {
+      flex-shrink: 0;
+      font-weight: 700;
+      color: var(--warn-text);
+    }
+
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 36px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+    }
+
+    .empty-state.show { display: block; }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-default);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--text-primary);
+      color: var(--bg-surface);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 100;
+      max-width: calc(100vw - 32px);
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
+      .brand-logo-img { width: 24px; height: 24px; }
+      .brand-name { font-size: 15px; }
+      .nav-tabs { margin-left: 6px; gap: 4px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; border-radius: 14px; }
+      .update-meta { display: none !important; }
+      .nav-actions a.icon-btn { display: none; }
+      .container { padding: 18px 12px 60px; }
+      .hero-title { font-size: 21px; }
+      .hero-desc { font-size: 13px; line-height: 1.6; }
+      .hero-stats { gap: 6px; }
+      .stat-chip { font-size: 11px; padding: 3px 8px; }
+      .section-title { font-size: 16px; }
+      .section-sub { font-size: 11.5px; }
+      .card { padding: 14px; border-radius: 12px; }
+      .tool-tab { font-size: 11.5px; padding: 6px 10px; }
+      .grid2 { grid-template-columns: minmax(0, 1fr); }
+      .kv { grid-template-columns: 96px minmax(0, 1fr); font-size: 12px; gap: 6px 10px; }
+      textarea, input[type="text"] { font-size: 12.4px; padding: 10px; }
+      .out, .preview { font-size: 11.6px; }
+      .hash-row { grid-template-columns: 58px minmax(0, 1fr) auto; gap: 8px; }
+      .hash-algo { font-size: 10.5px; }
+      .hash-val { font-size: 10.8px; }
+      .cheat-card { padding: 12px 13px; }
+      .cheat-title { font-size: 13.2px; }
+      .cheat-desc { font-size: 12px; }
+      .cmd pre { font-size: 11.2px; }
+      .perm-row { grid-template-columns: 64px repeat(3, minmax(0, 1fr)) 40px; }
+      .perm-row > span { padding: 6px 5px; font-size: 11px; }
+      .controls { padding: 12px 13px; border-radius: 12px; }
+      .filter-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .filter-label { flex: none; }
+      .btn { font-size: 12px; padding: 7px 11px; }
+      .btn-row .btn { flex: 0 1 auto; }
+    }
+
+    /* 내비게이션 7탭 수용: 좁은 화면에서는 브랜드 텍스트 숨김 */
+    @media (max-width: 560px) {
+      .brand-name { display: none; }
+    }
+
+    /* 내비게이션 7탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
+    @media (max-width: 640px) {
+      .nav-brand { min-width: 0; }
+      .nav-tabs {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .nav-tab-item { padding: 4px 7px; font-size: 11px; }
+    }
+
+    @media (max-width: 430px) {
+      .nav-container { padding: 0 8px; height: 52px; gap: 4px; }
+      .brand-logo-img { width: 22px; height: 22px; }
+      .nav-tabs { margin-left: 2px; gap: 3px; }
+      .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
+      .nav-actions { gap: 4px; }
+      .nav-actions .icon-btn { width: 28px; height: 28px; }
+      .grid2 { gap: 10px; }
+      .btn-row .btn { flex: 1 1 auto; justify-content: center; }
+      .seg button { padding: 5px 9px; font-size: 11px; }
+    }
+"""
+
+HTML_TEMPLATE = """<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 보안 실무 유틸 · 치트시트</title>
+  <meta name="description" content="Base64·URL·Hex·HTML 인코더, JWT 디코더, SHA-256/384/512 해시, 정규식 테스터, chmod 권한·CIDR 계산기와 실무 모의해킹 명령어 38선. 모든 입력은 브라우저 안에서만 처리됩니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <style>__CSS__
+    [hidden] { display: none !important; }
+  </style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Global Nav -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;">
+          <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+          <span class="brand-name">Infosec Archive</span>
+        </a>
+        <div class="nav-tabs">
+          <a href="index.html" class="nav-tab-item">채용공고</a>
+          <a href="study.html" class="nav-tab-item">시험 공부</a>
+          <a href="ai.html" class="nav-tab-item">AI 트렌드</a>
+          <a href="cve.html" class="nav-tab-item">CVE 리포트</a>
+          <a href="outfit.html" class="nav-tab-item">옷차림</a>
+          <a href="wargame.html" class="nav-tab-item">워게임</a>
+          <a href="tools.html" class="nav-tab-item active">실무 유틸</a>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="update-meta">
+          <span class="live-dot"></span>
+          <span>입력값은 브라우저에만</span>
+        </div>
+        <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
+          <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sunIcon" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <a href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" class="icon-btn" title="GitHub 저장소 바로가기">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <span class="hero-pill">SECURITY TOOLKIT</span>
+      <h1 class="hero-title">보안 실무 유틸 · 치트시트</h1>
+      <p class="hero-desc">인코딩·JWT·해시·정규식·권한 계산은 붙여넣는 즉시 브라우저에서 처리하고, 현장에서 쓰는 nmap·점검·curl·tcpdump·openssl·ssh 명령은 복사해서 바로 씁니다. 입력한 토큰과 로그는 서버로 전송되지 않으며 이 탭을 닫으면 사라집니다.</p>
+      <div class="hero-stats">
+        <span class="stat-chip">유틸리티 <strong>5종</strong></span>
+        <span class="stat-chip">실무 명령어 <strong>__CMD_COUNT__</strong></span>
+        <span class="stat-chip">계산 <strong>100% 로컬</strong></span>
+        <span class="stat-chip">외부 전송 <strong>없음</strong></span>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <span class="section-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a4.5 4.5 0 0 0 5.9 5.9l-8.5 8.5a2.1 2.1 0 0 1-3-3l8.5-8.5a4.5 4.5 0 0 0-5.9-5.9l2.9 2.9-2.1 2.1-2.9-2.9a4.5 4.5 0 0 0 5.1 0z"></path>
+        </svg>
+      </span>
+      <div class="section-text">
+        <div class="section-title">인터랙티브 유틸리티</div>
+        <div class="section-sub">입력값은 이 브라우저 안에서만 계산됩니다 · 결과는 원클릭 복사</div>
+      </div>
+    </div>
+
+    <div class="tool-tabs" role="tablist" aria-label="보안 유틸리티 선택">
+      <button class="tool-tab active" type="button" data-tool="enc" role="tab" aria-controls="panel-enc">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+        인코더·디코더
+      </button>
+      <button class="tool-tab" type="button" data-tool="jwt" role="tab" aria-controls="panel-jwt">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"></circle><path d="M10.7 12.3 21 2"></path><path d="m16 8 3 3"></path><path d="m18 6 3 3"></path></svg>
+        JWT 디코더
+      </button>
+      <button class="tool-tab" type="button" data-tool="hash" role="tab" aria-controls="panel-hash">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
+        해시 생성기
+      </button>
+      <button class="tool-tab" type="button" data-tool="rx" role="tab" aria-controls="panel-rx">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        정규식 테스터
+      </button>
+      <button class="tool-tab" type="button" data-tool="perm" role="tab" aria-controls="panel-perm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        권한·CIDR
+      </button>
+    </div>
+
+    <div class="card">
+
+      <!-- ------------------------------------------------ 인코더 / 디코더 -->
+      <section class="panel active" id="panel-enc" role="tabpanel" aria-label="인코더 디코더">
+        <div class="field">
+          <div class="field-label">
+            <span>변환 방식</span>
+            <span class="hint">한글은 UTF-8 기준으로 처리</span>
+          </div>
+          <div class="seg" id="encMode">
+            <button type="button" data-mode="b64" class="active">Base64</button>
+            <button type="button" data-mode="url">URL</button>
+            <button type="button" data-mode="hex">Hex</button>
+            <button type="button" data-mode="html">HTML 엔티티</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">
+            <span>방향</span>
+            <span class="hint" id="encKind">Base64 인코딩</span>
+          </div>
+          <div class="seg" id="encDir">
+            <button type="button" data-dir="enc" class="active">인코딩</button>
+            <button type="button" data-dir="dec">디코딩</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">
+            <span>입력</span>
+            <span class="hint" id="encInMeta">UTF-8 0 bytes</span>
+          </div>
+          <textarea id="encInput" spellcheck="false" placeholder="변환할 문자열을 입력하세요. 예) 안녕하세요, 침해사고 대응팀"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">
+            <span>출력</span>
+            <span class="hint">읽기 전용</span>
+          </div>
+          <textarea id="encOutput" readonly spellcheck="false" placeholder="변환 결과가 여기에 표시됩니다."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="encRun">변환</button>
+          <button class="btn" type="button" id="encSwap">입력·출력 맞바꾸기</button>
+          <button class="btn" type="button" id="encCopy">결과 복사</button>
+          <button class="btn" type="button" id="encClear">지우기</button>
+        </div>
+        <p class="status" id="encMsg">입력하면 자동으로 변환됩니다. 맞바꾸기는 변환 방향도 함께 뒤집습니다.</p>
+      </section>
+
+      <!-- ------------------------------------------------ JWT -->
+      <section class="panel" id="panel-jwt" role="tabpanel" aria-label="JWT 디코더">
+        <div class="field">
+          <div class="field-label">
+            <span>JWT 토큰</span>
+            <span class="hint">Bearer 접두사는 자동으로 제거</span>
+          </div>
+          <textarea id="jwtInput" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1XzQ4MzEi..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn" type="button" id="jwtSample">샘플 토큰</button>
+          <button class="btn" type="button" id="jwtExpiredSample">만료된 샘플</button>
+          <button class="btn" type="button" id="jwtCopyPayload">Payload 복사</button>
+          <button class="btn" type="button" id="jwtClear">지우기</button>
+        </div>
+        <div class="jwt-meta" id="jwtBadges"></div>
+        <div id="jwtBody" hidden>
+          <div class="subhead">Header</div>
+          <pre class="out jwt-json" id="jwtHeader"></pre>
+          <div class="subhead">Payload</div>
+          <pre class="out jwt-json" id="jwtPayload"></pre>
+          <div class="subhead">시간·주요 클레임 (KST)</div>
+          <div class="kv jwt-claims" id="jwtClaims"></div>
+          <div class="subhead">Signature</div>
+          <pre class="out" id="jwtSig"></pre>
+        </div>
+        <div class="notice no" id="jwtError" hidden></div>
+        <div class="notice" id="jwtNote">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <span>이 도구는 헤더·페이로드를 <b>디코드만</b> 합니다. 서명 검증에는 비밀키나 JWKS 공개키가 필요하므로 위·변조 여부는 판단하지 않습니다. 운영 토큰은 붙여넣은 뒤 사용 후 지워 주세요.</span>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------ 해시 -->
+      <section class="panel" id="panel-hash" role="tabpanel" aria-label="해시 생성기">
+        <div class="field">
+          <div class="field-label">
+            <span>입력 문자열</span>
+            <span class="hint" id="hashBytes">UTF-8 0 bytes</span>
+          </div>
+          <textarea id="hashInput" spellcheck="false" placeholder="해시할 문자열·비밀번호·파일 내용 일부를 입력하세요."></textarea>
+        </div>
+        <div class="subhead">SHA-256 / SHA-384 / SHA-512</div>
+        <div id="hashRows">
+          <div class="hash-row">
+            <span class="hash-algo">SHA-256</span>
+            <span class="hash-val" id="hash256">—</span>
+            <button class="btn" type="button" data-copy-hash="hash256">복사</button>
+          </div>
+          <div class="hash-row">
+            <span class="hash-algo">SHA-384</span>
+            <span class="hash-val" id="hash384">—</span>
+            <button class="btn" type="button" data-copy-hash="hash384">복사</button>
+          </div>
+          <div class="hash-row">
+            <span class="hash-algo">SHA-512</span>
+            <span class="hash-val" id="hash512">—</span>
+            <button class="btn" type="button" data-copy-hash="hash512">복사</button>
+          </div>
+        </div>
+        <p class="status" id="hashMsg">입력하는 즉시 Web Crypto API로 계산합니다.</p>
+        <div class="notice">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>비밀번호 저장용이라면 SHA-256 단독이 아니라 <b>Argon2id·bcrypt·scrypt</b>처럼 느린 해시에 salt를 붙여야 합니다. 여기 결과는 무결성 확인·지문 대조용입니다.</span>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------ 정규식 -->
+      <section class="panel" id="panel-rx" role="tabpanel" aria-label="정규식 테스터">
+        <div class="grid2">
+          <div class="field" style="margin-top:0;">
+            <div class="field-label">
+              <span>정규식 패턴</span>
+              <span class="hint">슬래시 없이 입력</span>
+            </div>
+            <input type="text" id="rxPattern" spellcheck="false" placeholder="(01[016789])[- ]?(\\d{3,4})[- ]?(\\d{4})">
+          </div>
+          <div class="field" style="margin-top:0;">
+            <div class="field-label">
+              <span>플래그</span>
+              <span class="hint" id="rxFlagsOut">g</span>
+            </div>
+            <div class="flags">
+              <label class="flag"><input type="checkbox" class="flag-cb" value="g" checked>g</label>
+              <label class="flag"><input type="checkbox" class="flag-cb" value="i">i</label>
+              <label class="flag"><input type="checkbox" class="flag-cb" value="m">m</label>
+              <label class="flag"><input type="checkbox" class="flag-cb" value="s">s</label>
+              <label class="flag"><input type="checkbox" class="flag-cb" value="u">u</label>
+            </div>
+          </div>
+        </div>
+        <div class="preset-row">
+          <button class="chip" type="button" data-preset="ipv4">IPv4</button>
+          <button class="chip" type="button" data-preset="url">URL</button>
+          <button class="chip" type="button" data-preset="jwt">JWT</button>
+          <button class="chip" type="button" data-preset="email">이메일</button>
+          <button class="chip" type="button" data-preset="phone">휴대폰 마스킹</button>
+          <button class="chip" type="button" data-preset="sqli">SQLi 탐지</button>
+          <button class="chip" type="button" data-preset="xss">XSS 탐지</button>
+        </div>
+        <div class="field">
+          <div class="field-label">
+            <span>테스트 문자열</span>
+            <span class="hint" id="rxCount">매칭 0건</span>
+          </div>
+          <textarea id="rxText" spellcheck="false" placeholder="검사할 로그·페이로드를 붙여넣으세요."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label"><span>매칭 하이라이트</span><span class="hint">앞 20건까지 목록 표시</span></div>
+          <div class="preview" id="rxPreview"></div>
+          <div class="match-list" id="rxList"></div>
+        </div>
+        <div class="field">
+          <div class="field-label">
+            <span>치환 미리보기 (선택)</span>
+            <span class="hint">$1, $2 그룹 참조</span>
+          </div>
+          <input type="text" id="rxRepl" spellcheck="false" placeholder="예) $1-****-$3">
+          <div class="out" id="rxReplOut" style="margin-top:8px;" hidden></div>
+        </div>
+        <p class="status" id="rxMsg">패턴을 입력하면 매칭 구간을 표시합니다.</p>
+      </section>
+
+      <!-- ------------------------------------------------ chmod / CIDR -->
+      <section class="panel" id="panel-perm" role="tabpanel" aria-label="권한 CIDR 계산기">
+        <div class="subhead" style="margin-top:0;">chmod 권한 계산기</div>
+        <div class="grid2">
+          <div class="field" style="margin-top:0;">
+            <div class="field-label">
+              <span>8진수 모드</span>
+              <span class="hint">3~4자리 (예: 755, 4755)</span>
+            </div>
+            <input type="text" id="chmodNum" value="755" inputmode="numeric" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="field" style="margin-top:0;">
+            <div class="field-label">
+              <span>기호 표기</span>
+              <span class="hint">예: rwxr-xr-x, rwsr-xr-x</span>
+            </div>
+            <input type="text" id="chmodSym" value="rwxr-xr-x" spellcheck="false" autocomplete="off">
+          </div>
+        </div>
+        <div class="perm-table" id="permTable" style="margin-top:12px;"></div>
+        <div class="warn-list" id="chmodWarn"></div>
+        <p class="status" id="chmodMsg">숫자를 고치면 기호가, 기호를 고치면 숫자가 함께 바뀝니다.</p>
+        <div class="notice">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span>리눅스 커널은 <b>스크립트 파일의 SUID/SGID를 무시</b>합니다. 스크립트에 4755를 줘도 권한 상승은 일어나지 않으니, 실행 파일에만 적용하세요.</span>
+        </div>
+
+        <div class="subhead">CIDR 서브넷 계산기</div>
+        <div class="field">
+          <div class="field-label">
+            <span>IPv4 CIDR</span>
+            <span class="hint">예: 10.0.1.0/24 · 192.168.0.128/26 · 172.16.5.10/32</span>
+          </div>
+          <input type="text" id="cidrInput" value="10.0.1.0/24" spellcheck="false" autocomplete="off">
+        </div>
+        <div class="kv" id="cidrOut" style="margin-top:12px;"></div>
+        <p class="status" id="cidrMsg"></p>
+      </section>
+
+    </div>
+
+    <div class="section-head">
+      <span class="section-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+      </span>
+      <div class="section-text">
+        <div class="section-title">실무 · 모의해킹 명령어 치트시트</div>
+        <div class="section-sub">카테고리 필터와 키워드 검색 · 카드의 복사 버튼으로 명령 전체를 복사</div>
+      </div>
+    </div>
+
+    <section class="controls" aria-label="치트시트 필터">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="cheatSearch" placeholder="명령·도구·용도로 검색 (예: suid, kerberoast, tcpdump)" autocomplete="off">
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">카테고리</div>
+        <div class="chips" id="catFilter">__CAT_CHIPS__</div>
+      </div>
+      <div class="controls-foot">
+        <span class="visible-count" id="visibleCount">전체 <strong>__CMD_COUNT__</strong>개 명령</span>
+        <button class="btn" type="button" id="resetCheat">필터 초기화</button>
+      </div>
+    </section>
+
+    <div class="cheat-list" id="cheatList">
+__CARDS__
+    </div>
+
+    <div class="empty-state" id="emptyState">조건에 맞는 명령이 없습니다. 검색어를 줄이거나 필터를 초기화해 보세요.</div>
+
+    <footer class="footer">
+      Infosec Archive · 보안 실무 유틸 · 치트시트<br>
+      모든 변환·계산은 브라우저에서만 수행되며 서버로 전송되지 않습니다. 명령은 점검 권한이 있는 대상에만 사용하세요.<br>
+      __BUILT_AT__ 기준
+    </footer>
+  </main>
+
+  <div class="toast" id="toast">클립보드에 복사했습니다.</div>
+
+  <script>
+__JS__
+  </script>
+</body>
+</html>
+"""
+
+# ---------------------------------------------------------------- JS
+JS = r"""
+    // ---- Theme (index / study / ai / cve / outfit / wargame 과 동일한 secjobs-theme 동기화) ----
+    const themeToggle = document.getElementById('themeToggle');
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (moonIcon) moonIcon.style.display = 'none';
+        if (sunIcon) sunIcon.style.display = 'block';
+        try { localStorage.setItem('secjobs-theme', 'dark'); } catch (e) {}
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (moonIcon) moonIcon.style.display = 'block';
+        if (sunIcon) sunIcon.style.display = 'none';
+        try { localStorage.setItem('secjobs-theme', 'light'); } catch (e) {}
+      }
+    }
+
+    (function initTheme() {
+      let saved = null;
+      try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) setTheme('dark');
+      else setTheme('light');
+    })();
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function () {
+        setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    // ---- 공통 ----
+    const $ = function (id) { return document.getElementById(id); };
+    const $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+
+    function escHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    let toastTimer = null;
+    function toast(msg) {
+      const t = $('toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1800);
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise(function (resolve, reject) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-1000px';
+          document.body.appendChild(ta);
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('copy failed'));
+        } catch (e) { reject(e); }
+      });
+    }
+
+    function bindCopy(btn, getText) {
+      if (!btn) return;
+      const label = btn.textContent;
+      btn.addEventListener('click', function () {
+        const text = getText();
+        if (!text) { toast('복사할 내용이 없습니다.'); return; }
+        copyText(text).then(function () {
+          btn.textContent = '복사 완료';
+          btn.classList.add('copied');
+          toast('클립보드에 복사했습니다.');
+          setTimeout(function () { btn.textContent = label; btn.classList.remove('copied'); }, 1600);
+        }).catch(function () { toast('복사에 실패했습니다. 직접 선택해 복사해 주세요.'); });
+      });
+    }
+
+    // ---- 유틸 탭 ----
+    const toolTabs = $$('.tool-tab');
+    const panels = $$('.panel');
+
+    function openTool(name, updateHash) {
+      toolTabs.forEach(function (t) { t.classList.toggle('active', t.dataset.tool === name); });
+      panels.forEach(function (p) { p.classList.toggle('active', p.id === 'panel-' + name); });
+      if (updateHash !== false) {
+        try { history.replaceState(null, '', '#' + name); } catch (e) {}
+      }
+      if (name === 'jwt') decodeJwt();
+      if (name === 'hash') runHash();
+      if (name === 'rx') runRegex();
+      if (name === 'perm') { runChmod(); runCidr(); }
+    }
+
+    toolTabs.forEach(function (t) {
+      t.addEventListener('click', function () { openTool(t.dataset.tool); });
+    });
+
+    // ---- 1. 인코더 / 디코더 ----
+    let encMode = 'b64';
+    let encDir = 'enc';
+    const MODE_LABEL = { b64: 'Base64', url: 'URL', hex: 'Hex', html: 'HTML 엔티티' };
+
+    const NAMED_ENTITIES = {
+      amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0',
+      copy: '\u00a9', reg: '\u00ae', trade: '\u2122', hellip: '\u2026',
+      middot: '\u00b7', times: '\u00d7', divide: '\u00f7', plusmn: '\u00b1',
+      deg: '\u00b0', ndash: '\u2013', mdash: '\u2014', lsquo: '\u2018',
+      rsquo: '\u2019', ldquo: '\u201c', rdquo: '\u201d', bull: '\u2022',
+      rarr: '\u2192', larr: '\u2190', uarr: '\u2191', darr: '\u2193',
+      euro: '\u20ac', pound: '\u00a3', yen: '\u00a5', cent: '\u00a2',
+      sect: '\u00a7', para: '\u00b6', check: '\u2713', heart: '\u2665'
+    };
+
+    function utf8Bytes(str) { return new TextEncoder().encode(str); }
+
+    function bytesToB64(bytes) {
+      let bin = '';
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+      }
+      return btoa(bin);
+    }
+
+    function b64ToText(str) {
+      let s = str.replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
+      if (!s) return '';
+      if (!/^[A-Za-z0-9+/]*={0,2}$/.test(s)) {
+        throw new Error('Base64 문자가 아닌 값이 포함되어 있습니다. (A-Z, a-z, 0-9, +, /, =)');
+      }
+      const mod = s.length % 4;
+      if (mod === 1) throw new Error('Base64 길이가 올바르지 않습니다. 4의 배수로 맞춰 주세요.');
+      if (mod) s += '='.repeat(4 - mod);
+      let bin;
+      try { bin = atob(s); } catch (e) { throw new Error('Base64 디코딩에 실패했습니다. 값을 확인해 주세요.'); }
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      try {
+        return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+      } catch (e) {
+        throw new Error('UTF-8로 해석할 수 없는 바이트가 있습니다. 이미지·압축 데이터이거나 잘린 값입니다.');
+      }
+    }
+
+    function textToHex(str) {
+      const bytes = utf8Bytes(str);
+      let out = '';
+      for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, '0');
+      return out;
+    }
+
+    function hexToText(str) {
+      let s = str.replace(/0x/gi, '').replace(/[\s:,_-]/g, '');
+      if (!s) return '';
+      if (!/^[0-9a-fA-F]+$/.test(s)) throw new Error('16진수(0-9, a-f)가 아닌 문자가 포함되어 있습니다.');
+      if (s.length % 2 !== 0) throw new Error('16진수 자릿수가 홀수입니다. 두 자리씩 맞춰 주세요.');
+      const bytes = new Uint8Array(s.length / 2);
+      for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(s.substr(i * 2, 2), 16);
+      try {
+        return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+      } catch (e) {
+        throw new Error('UTF-8로 해석할 수 없는 바이트가 있습니다. 값을 확인해 주세요.');
+      }
+    }
+
+    function htmlEncode(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function htmlDecode(str) {
+      return str.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/g, function (m, body) {
+        if (body.charAt(0) === '#') {
+          const isHex = body.charAt(1) === 'x' || body.charAt(1) === 'X';
+          const code = parseInt(isHex ? body.slice(2) : body.slice(1), isHex ? 16 : 10);
+          if (!isFinite(code) || code < 0 || code > 0x10FFFF) return m;
+          try { return String.fromCodePoint(code); } catch (e) { return m; }
+        }
+        const named = NAMED_ENTITIES[body.toLowerCase()];
+        return typeof named === 'string' ? named : m;
+      });
+    }
+
+    function runEncoder() {
+      const input = $('encInput');
+      const output = $('encOutput');
+      const msg = $('encMsg');
+      const meta = $('encInMeta');
+      const kind = $('encKind');
+      const src = input.value;
+      meta.textContent = 'UTF-8 ' + utf8Bytes(src).length + ' bytes';
+      kind.textContent = MODE_LABEL[encMode] + (encDir === 'enc' ? ' 인코딩' : ' 디코딩');
+      msg.className = 'status';
+      if (!src) {
+        output.value = '';
+        msg.textContent = '입력하면 자동으로 변환됩니다. 맞바꾸기는 변환 방향도 함께 뒤집습니다.';
+        return;
+      }
+      try {
+        let result;
+        if (encMode === 'b64') result = encDir === 'enc' ? bytesToB64(utf8Bytes(src)) : b64ToText(src);
+        else if (encMode === 'url') result = encDir === 'enc' ? encodeURIComponent(src) : decodeURIComponent(src);
+        else if (encMode === 'hex') result = encDir === 'enc' ? textToHex(src) : hexToText(src);
+        else result = encDir === 'enc' ? htmlEncode(src) : htmlDecode(src);
+        output.value = result;
+        msg.textContent = MODE_LABEL[encMode] + ' · ' + (encDir === 'enc' ? '인코딩' : '디코딩') + ' 완료 · ' + result.length + '자';
+        msg.className = 'status ok';
+      } catch (e) {
+        output.value = '';
+        msg.textContent = (e && e.message) ? e.message : '변환에 실패했습니다.';
+        msg.className = 'status err';
+      }
+    }
+
+    let encTimer = null;
+    if ($('encInput')) {
+      $('encInput').addEventListener('input', function () {
+        clearTimeout(encTimer);
+        encTimer = setTimeout(runEncoder, 120);
+      });
+    }
+    if ($('encMode')) {
+      $$('#encMode button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          encMode = b.dataset.mode;
+          $$('#encMode button').forEach(function (x) { x.classList.toggle('active', x === b); });
+          runEncoder();
+        });
+      });
+    }
+    if ($('encDir')) {
+      $$('#encDir button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          encDir = b.dataset.dir;
+          $$('#encDir button').forEach(function (x) { x.classList.toggle('active', x === b); });
+          runEncoder();
+        });
+      });
+    }
+    if ($('encRun')) $('encRun').addEventListener('click', runEncoder);
+    if ($('encSwap')) {
+      $('encSwap').addEventListener('click', function () {
+        const input = $('encInput');
+        const output = $('encOutput');
+        const prev = input.value;
+        input.value = output.value;
+        output.value = prev;
+        encDir = encDir === 'enc' ? 'dec' : 'enc';
+        $$('#encDir button').forEach(function (x) { x.classList.toggle('active', x.dataset.dir === encDir); });
+        runEncoder();
+      });
+    }
+    if ($('encClear')) {
+      $('encClear').addEventListener('click', function () {
+        $('encInput').value = '';
+        $('encOutput').value = '';
+        runEncoder();
+      });
+    }
+    bindCopy($('encCopy'), function () { return $('encOutput').value; });
+
+    // ---- 2. JWT 디코더 ----
+    function b64urlToBytes(seg) {
+      let s = seg.replace(/-/g, '+').replace(/_/g, '/').replace(/=+$/, '');
+      if (!/^[A-Za-z0-9+/]*$/.test(s)) throw new Error('Base64URL 문자가 아닙니다.');
+      const mod = s.length % 4;
+      if (mod === 1) throw new Error('Base64URL 길이가 올바르지 않습니다.');
+      if (mod) s += '='.repeat(4 - mod);
+      let bin;
+      try { bin = atob(s); } catch (e) { throw new Error('Base64URL 디코딩에 실패했습니다.'); }
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    }
+
+    function b64urlToText(seg) {
+      try {
+        return new TextDecoder('utf-8', { fatal: true }).decode(b64urlToBytes(seg));
+      } catch (e) {
+        return new TextDecoder('utf-8').decode(b64urlToBytes(seg));
+      }
+    }
+
+    function b64urlEncodeText(str) {
+      let bin = '';
+      const bytes = utf8Bytes(str);
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function fmtKst(sec) {
+      const d = new Date(sec * 1000);
+      if (isNaN(d.getTime())) return '\u2014';
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+      }).formatToParts(d);
+      const o = {};
+      parts.forEach(function (p) { o[p.type] = p.value; });
+      let hour = o.hour === '24' ? '00' : o.hour;
+      return o.year + '-' + o.month + '-' + o.day + ' ' + hour + ':' + o.minute + ':' + o.second + ' KST';
+    }
+
+    function relTime(diffSec) {
+      const a = Math.abs(diffSec);
+      if (a < 60) return Math.round(a) + '초';
+      if (a < 3600) return Math.round(a / 60) + '분';
+      if (a < 86400) return Math.floor(a / 3600) + '시간 ' + Math.round((a % 3600) / 60) + '분';
+      return Math.floor(a / 86400) + '일 ' + Math.round((a % 86400) / 3600) + '시간';
+    }
+
+    function makeJwtSample(expired) {
+      const now = Math.floor(Date.now() / 1000);
+      const header = { alg: 'HS256', typ: 'JWT' };
+      const payload = {
+        iss: 'https://auth.infosec-archive.local',
+        sub: 'u_4831',
+        aud: 'infosec-archive-api',
+        name: '김보안',
+        role: 'security-analyst',
+        scope: 'report:read vuln:write',
+        iat: now - 600,
+        exp: expired ? now - 7200 : now + 3600,
+        jti: 'b7f1c2e8'
+      };
+      const sig = new Uint8Array(32);
+      if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(sig);
+      else for (let i = 0; i < sig.length; i++) sig[i] = Math.floor(Math.random() * 256);
+      let bin = '';
+      for (let i = 0; i < sig.length; i++) bin += String.fromCharCode(sig[i]);
+      const sigPart = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      return b64urlEncodeText(JSON.stringify(header)) + '.' + b64urlEncodeText(JSON.stringify(payload)) + '.' + sigPart;
+    }
+
+    let lastJwtPayload = '';
+
+    function decodeJwt() {
+      const raw = $('jwtInput').value.trim().replace(/^Bearer\s+/i, '');
+      const badges = $('jwtBadges');
+      const body = $('jwtBody');
+      const errBox = $('jwtError');
+      badges.innerHTML = '';
+      body.hidden = true;
+      errBox.hidden = true;
+      errBox.textContent = '';
+      lastJwtPayload = '';
+      if (!raw) return;
+
+      const parts = raw.split('.');
+      if (parts.length < 2) {
+        errBox.hidden = false;
+        errBox.textContent = 'JWT 형식이 아닙니다. header.payload.signature 형태(점 2개)로 붙여넣어 주세요.';
+        return;
+      }
+      let header, payload;
+      try {
+        header = JSON.parse(b64urlToText(parts[0]));
+      } catch (e) {
+        errBox.hidden = false;
+        errBox.textContent = 'Header를 JSON으로 해석하지 못했습니다. 토큰 앞부분이 잘리지 않았는지 확인하세요.';
+        return;
+      }
+      try {
+        payload = JSON.parse(b64urlToText(parts[1]));
+      } catch (e) {
+        errBox.hidden = false;
+        errBox.textContent = 'Payload를 JSON으로 해석하지 못했습니다. 토큰 가운데 부분을 확인하세요.';
+        return;
+      }
+
+      $('jwtHeader').textContent = JSON.stringify(header, null, 2);
+      $('jwtPayload').textContent = JSON.stringify(payload, null, 2);
+      lastJwtPayload = JSON.stringify(payload, null, 2);
+
+      const now = Math.floor(Date.now() / 1000);
+      const chips = [];
+      const alg = typeof header.alg === 'string' ? header.alg : '(없음)';
+      chips.push('<span class="badge">alg ' + escHtml(alg) + '</span>');
+      if (header.typ) chips.push('<span class="badge">typ ' + escHtml(header.typ) + '</span>');
+      if (header.kid) chips.push('<span class="badge">kid ' + escHtml(header.kid) + '</span>');
+
+      let expired = false;
+      if (typeof payload.exp === 'number') {
+        const diff = payload.exp - now;
+        if (diff <= 0) {
+          expired = true;
+          chips.push('<span class="badge no">만료됨 · ' + relTime(diff) + ' 전</span>');
+        } else {
+          chips.push('<span class="badge ok">유효 · ' + relTime(diff) + ' 남음</span>');
+        }
+      } else {
+        chips.push('<span class="badge warn">exp 없음 · 만료 시각 미지정</span>');
+      }
+      if (typeof payload.nbf === 'number' && payload.nbf > now) {
+        chips.push('<span class="badge warn">nbf 이전 · ' + relTime(payload.nbf - now) + ' 후 사용 가능</span>');
+      }
+      if (parts.length < 3 || !parts[2]) chips.push('<span class="badge warn">서명부 없음</span>');
+      if (String(alg).toLowerCase() === 'none') chips.push('<span class="badge no">alg none · 서명 없음</span>');
+      badges.innerHTML = chips.join('');
+
+      if (String(alg).toLowerCase() === 'none') {
+        errBox.hidden = false;
+        errBox.innerHTML = '<b>alg: none</b> 토큰입니다. 서명이 없어 누구나 내용을 바꿔 만들 수 있습니다. 서버가 이 알고리즘을 허용하면 인증을 우회할 수 있으니 즉시 차단 대상으로 보고하세요.';
+      }
+
+      const claims = [];
+      function addRow(k, v) {
+        claims.push('<span class="k">' + escHtml(k) + '</span><span class="v">' + escHtml(v) + '</span>');
+      }
+      if (typeof payload.iat === 'number') addRow('iat 발급', fmtKst(payload.iat) + ' (' + relTime(now - payload.iat) + ' 전)');
+      if (typeof payload.nbf === 'number') addRow('nbf 시작', fmtKst(payload.nbf));
+      if (typeof payload.exp === 'number') addRow('exp 만료', fmtKst(payload.exp) + (expired ? ' (만료)' : ''));
+      if (payload.iss !== undefined) addRow('iss 발급자', String(payload.iss));
+      if (payload.sub !== undefined) addRow('sub 주체', String(payload.sub));
+      if (payload.aud !== undefined) addRow('aud 대상', Array.isArray(payload.aud) ? payload.aud.join(', ') : String(payload.aud));
+      if (payload.jti !== undefined) addRow('jti 식별자', String(payload.jti));
+      if (payload.scope !== undefined) addRow('scope', String(payload.scope));
+      if (payload.role !== undefined) addRow('role', String(payload.role));
+      if (!claims.length) addRow('클레임', '표준 시간 클레임(iat·exp)이 없습니다.');
+      $('jwtClaims').innerHTML = claims.join('');
+
+      if (parts.length >= 3 && parts[2]) {
+        const sig = parts[2];
+        $('jwtSig').textContent = sig + '\n\n길이 ' + sig.length + '자 (Base64URL) · 서명 검증은 수행하지 않습니다.';
+      } else {
+        $('jwtSig').textContent = '(서명 없음)';
+      }
+      body.hidden = false;
+    }
+
+    if ($('jwtInput')) {
+      $('jwtInput').addEventListener('input', decodeJwt);
+      $('jwtSample').addEventListener('click', function () {
+        $('jwtInput').value = makeJwtSample(false);
+        decodeJwt();
+      });
+      $('jwtExpiredSample').addEventListener('click', function () {
+        $('jwtInput').value = makeJwtSample(true);
+        decodeJwt();
+      });
+      $('jwtClear').addEventListener('click', function () {
+        $('jwtInput').value = '';
+        decodeJwt();
+      });
+      bindCopy($('jwtCopyPayload'), function () { return lastJwtPayload; });
+    }
+
+    // ---- 3. 해시 생성기 ----
+    let hashSeq = 0;
+    let hashTimer = null;
+
+    function toHexBytes(buf) {
+      const bytes = new Uint8Array(buf);
+      let out = '';
+      for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, '0');
+      return out;
+    }
+
+    function runHash() {
+      const input = $('hashInput');
+      const msg = $('hashMsg');
+      if (!input) return;
+      const bytes = utf8Bytes(input.value);
+      $('hashBytes').textContent = 'UTF-8 ' + bytes.length + ' bytes';
+      const targets = [['SHA-256', 'hash256'], ['SHA-384', 'hash384'], ['SHA-512', 'hash512']];
+      if (!(window.crypto && window.crypto.subtle && window.crypto.subtle.digest)) {
+        targets.forEach(function (t) { $(t[1]).textContent = '\u2014'; });
+        msg.className = 'status err';
+        msg.textContent = '이 환경에서는 Web Crypto API를 쓸 수 없습니다. HTTPS 또는 localhost에서 열면 계산됩니다.';
+        return;
+      }
+      const seq = ++hashSeq;
+      msg.className = 'status';
+      msg.textContent = '입력하는 즉시 SHA-256/384/512를 계산합니다. 값은 브라우저 밖으로 나가지 않습니다.';
+      targets.forEach(function (t) {
+        window.crypto.subtle.digest(t[0], bytes).then(function (buf) {
+          if (seq !== hashSeq) return;
+          $(t[1]).textContent = toHexBytes(buf);
+        }).catch(function () {
+          if (seq !== hashSeq) return;
+          $(t[1]).textContent = '\u2014';
+          msg.className = 'status err';
+          msg.textContent = '해시 계산에 실패했습니다. 입력 길이를 줄여 다시 시도해 주세요.';
+        });
+      });
+    }
+
+    if ($('hashInput')) {
+      $('hashInput').addEventListener('input', function () {
+        clearTimeout(hashTimer);
+        hashTimer = setTimeout(runHash, 120);
+      });
+    }
+    $$('[data-copy-hash]').forEach(function (btn) {
+      bindCopy(btn, function () {
+        const v = $(btn.dataset.copyHash).textContent;
+        return v === '\u2014' ? '' : v;
+      });
+    });
+
+    // ---- 4. 정규식 테스터 ----
+    const RX_PRESETS = {
+      ipv4: {
+        pattern: '\\b(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)){3}\\b',
+        flags: 'g',
+        sample: '허용 대역 10.0.1.0/24, 게이트웨이 10.0.1.1, 외부 203.0.113.77, 형식 오류 999.1.1.1',
+        repl: ''
+      },
+      url: {
+        pattern: "https?:\\/\\/[^\\s\"'<>()]+",
+        flags: 'g',
+        sample: '참고: https://developer.mozilla.org/ko/docs/Web/HTTP 와 http://10.0.1.10:8080/admin (끝의 괄호는 제외)',
+        repl: ''
+      },
+      jwt: {
+        pattern: 'eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]*',
+        flags: 'g',
+        sample: 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1XzQ4MzEiLCJyb2xlIjoiYWRtaW4ifQ.s1gn4tur3',
+        repl: ''
+      },
+      email: {
+        pattern: '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}',
+        flags: 'g',
+        sample: '문의: security@example.com, ops.team@corp.co.kr, 잘못된 주소 user@localhost',
+        repl: ''
+      },
+      phone: {
+        pattern: '(01[016789])[- ]?(\\d{3,4})[- ]?(\\d{4})',
+        flags: 'g',
+        sample: '담당자 010-1234-5678, 현장 01098765432, 사무실 02-123-4567',
+        repl: '$1-****-$3'
+      },
+      sqli: {
+        pattern: "\\bunion\\b[\\s\\S]{0,20}\\bselect\\b|'\\s*(?:or|and)\\s*'?\\d+'?\\s*=\\s*'?\\d+|--(?:\\s|$)|;\\s*drop\\s+table|\\bsleep\\s*\\(|\\bbenchmark\\s*\\(",
+        flags: 'gi',
+        sample: "정상: /item?id=42\n공격: /item?id=1' OR '1'='1\n공격: /item?id=1 UNION SELECT user, pass FROM users\n공격: /item?id=1; DROP TABLE users\n공격: /item?id=1 AND SLEEP(5)",
+        repl: ''
+      },
+      xss: {
+        pattern: '(<script[^>]*>|on\\w+\\s*=|javascript\\s*:|<img[^>]+onerror|<svg[^>]*onload)',
+        flags: 'gi',
+        sample: '정상: <p>공지</p>\n공격: <script>alert(1)<\/script>\n공격: <img src=x onerror=alert(document.cookie)>\n공격: <a href="javascript:alert(1)">링크</a>',
+        repl: ''
+      }
+    };
+
+    function currentFlags() {
+      let flags = '';
+      $$('.flag-cb').forEach(function (cb) { if (cb.checked) flags += cb.value; });
+      return flags;
+    }
+
+    function runRegex() {
+      const pat = $('rxPattern').value;
+      const text = $('rxText').value;
+      const preview = $('rxPreview');
+      const list = $('rxList');
+      const countEl = $('rxCount');
+      const msg = $('rxMsg');
+      const replOut = $('rxReplOut');
+      const flags = currentFlags();
+      $('rxFlagsOut').textContent = '/' + pat + '/' + flags;
+      msg.className = 'status';
+      replOut.hidden = true;
+
+      if (!pat) {
+        preview.textContent = text;
+        list.innerHTML = '';
+        countEl.textContent = '매칭 0건';
+        msg.textContent = '패턴을 입력하면 매칭 구간을 표시합니다.';
+        return;
+      }
+
+      let re;
+      try {
+        re = new RegExp(pat, flags.indexOf('g') >= 0 ? flags : flags + 'g');
+      } catch (e) {
+        preview.textContent = text;
+        list.innerHTML = '';
+        countEl.textContent = '오류';
+        msg.className = 'status err';
+        msg.textContent = '정규식 오류: ' + e.message;
+        return;
+      }
+
+      let html = '';
+      let last = 0;
+      let count = 0;
+      let guard = 0;
+      const rows = [];
+      re.lastIndex = 0;
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        if (++guard > 5000) break;
+        if (m[0] === '') {
+          re.lastIndex++;
+          if (re.lastIndex > text.length) break;
+          continue;
+        }
+        html += escHtml(text.slice(last, m.index)) + '<mark>' + escHtml(m[0]) + '</mark>';
+        last = m.index + m[0].length;
+        count++;
+        if (count <= 20) {
+          const groups = m.slice(1).filter(function (g) { return g !== undefined; });
+          rows.push(
+            '<div class="match-item"><span class="idx">#' + count + ' · ' + m.index + '</span><code>' +
+            escHtml(m[0].length > 120 ? m[0].slice(0, 120) + '\u2026' : m[0]) +
+            (groups.length ? '  [그룹: ' + escHtml(groups.join(' | ')) + ']' : '') +
+            '</code></div>'
+          );
+        }
+      }
+      html += escHtml(text.slice(last));
+      preview.innerHTML = html;
+      list.innerHTML = rows.join('');
+      countEl.textContent = '매칭 ' + count + '건';
+      if (count === 0) {
+        msg.textContent = '매칭되는 구간이 없습니다. 패턴과 플래그를 조정해 보세요.';
+      } else {
+        msg.className = 'status ok';
+        msg.textContent = count + '건 매칭' + (count > 20 ? ' (목록은 앞 20건)' : '') + ' · 하이라이트는 전체 구간에 적용됩니다.';
+      }
+
+      const repl = $('rxRepl').value;
+      if (repl) {
+        try {
+          const re2 = new RegExp(pat, flags.indexOf('g') >= 0 ? flags : flags + 'g');
+          replOut.hidden = false;
+          replOut.textContent = text.replace(re2, repl);
+        } catch (e) {
+          replOut.hidden = true;
+        }
+      }
+    }
+
+    if ($('rxPattern')) {
+      let rxTimer = null;
+      ['rxPattern', 'rxText', 'rxRepl'].forEach(function (id) {
+        $(id).addEventListener('input', function () {
+          clearTimeout(rxTimer);
+          rxTimer = setTimeout(runRegex, 120);
+        });
+      });
+      $$('.flag-cb').forEach(function (cb) { cb.addEventListener('change', runRegex); });
+      $$('[data-preset]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const p = RX_PRESETS[btn.dataset.preset];
+          if (!p) return;
+          $('rxPattern').value = p.pattern;
+          $$('.flag-cb').forEach(function (cb) { cb.checked = p.flags.indexOf(cb.value) >= 0; });
+          $('rxText').value = p.sample;
+          $('rxRepl').value = p.repl || '';
+          $$('[data-preset]').forEach(function (b) { b.classList.toggle('active', b === btn); });
+          runRegex();
+        });
+      });
+    }
+
+    // ---- 5. chmod 권한 계산기 ----
+    function octalTriplets(digits) {
+      return digits.slice(-3).split('').map(function (d) { return parseInt(d, 8); });
+    }
+
+    function numToSymbolic(digits) {
+      const special = digits.length === 4 ? parseInt(digits.charAt(0), 8) : 0;
+      const tris = octalTriplets(digits);
+      let out = '';
+      for (let i = 0; i < 3; i++) {
+        const v = tris[i];
+        const p = [(v & 4) ? 'r' : '-', (v & 2) ? 'w' : '-', (v & 1) ? 'x' : '-'];
+        if (i === 0 && (special & 4)) p[2] = (v & 1) ? 's' : 'S';
+        if (i === 1 && (special & 2)) p[2] = (v & 1) ? 's' : 'S';
+        if (i === 2 && (special & 1)) p[2] = (v & 1) ? 't' : 'T';
+        out += p.join('');
+      }
+      return out;
+    }
+
+    function symbolicToNum(sym) {
+      let s = String(sym).trim();
+      if (s.length === 10 && /^[-dlbcps]/.test(s)) s = s.slice(1);
+      if (!/^[rwxsStT-]{9}$/.test(s)) {
+        throw new Error('기호 표기는 9자(rwxr-xr-x) 또는 10자(-rwxr-xr-x)로 입력하세요.');
+      }
+      let special = 0;
+      let out = '';
+      for (let i = 0; i < 3; i++) {
+        const part = s.slice(i * 3, i * 3 + 3);
+        let v = 0;
+        if (part.charAt(0) === 'r') v += 4;
+        if (part.charAt(1) === 'w') v += 2;
+        if (part.charAt(2) === 'x') v += 1;
+        const e = part.charAt(2);
+        if (i === 0 && (e === 's' || e === 'S')) { special += 4; if (e === 's') v += 1; }
+        if (i === 1 && (e === 's' || e === 'S')) { special += 2; if (e === 's') v += 1; }
+        if (i === 2 && (e === 't' || e === 'T')) { special += 1; if (e === 't') v += 1; }
+        out += String(v);
+      }
+      return (special ? String(special) : '') + out;
+    }
+
+    function renderPermTable(digits) {
+      const special = digits.length === 4 ? parseInt(digits.charAt(0), 8) : 0;
+      const tris = octalTriplets(digits);
+      const names = ['소유자 (u)', '그룹 (g)', '기타 (o)'];
+      let html = '<div class="perm-row head"><span>구분</span><span>r</span><span>w</span><span>x</span><span>8진수</span></div>';
+      for (let i = 0; i < 3; i++) {
+        const v = tris[i];
+        html += '<div class="perm-row"><span>' + names[i] + '</span>' +
+          '<span class="' + ((v & 4) ? 'perm-on' : 'perm-off') + '">' + ((v & 4) ? 'r' : '-') + '</span>' +
+          '<span class="' + ((v & 2) ? 'perm-on' : 'perm-off') + '">' + ((v & 2) ? 'w' : '-') + '</span>' +
+          '<span class="' + ((v & 1) ? 'perm-on' : 'perm-off') + '">' + ((v & 1) ? 'x' : '-') + '</span>' +
+          '<span class="perm-oct">' + v + '</span></div>';
+      }
+      $('permTable').innerHTML = html;
+    }
+
+    function renderPermWarnings(digits) {
+      const special = digits.length === 4 ? parseInt(digits.charAt(0), 8) : 0;
+      const tris = octalTriplets(digits);
+      const u = tris[0], g = tris[1], o = tris[2];
+      const items = [];
+      if (o === 7) items.push(['no', '기타 사용자에게 읽기·쓰기·실행을 모두 허용합니다(777/707 계열). 웹 루트·설정 파일에는 절대 쓰지 마세요.']);
+      else if (o & 2) items.push(['warn', '기타 사용자에게 쓰기 권한(o+w)이 열려 있습니다. 누구나 내용을 바꿀 수 있습니다.']);
+      if (special & 4) items.push(['warn', 'SUID가 설정되어 있습니다. 실행하는 동안 파일 소유자(주로 root) 권한으로 동작하므로 권한 상승 경로가 됩니다.']);
+      if (special & 2) items.push(['warn', 'SGID가 설정되어 있습니다. 실행 중 파일 그룹 권한을 얻고, 디렉터리에서는 새 파일이 그룹을 상속합니다.']);
+      if (special & 1) {
+        if (o & 2) items.push(['ok', '스티키 비트가 함께 설정되어 있습니다. /tmp처럼 공유 디렉터리에서 남의 파일 삭제를 막는 올바른 조합입니다.']);
+        else items.push(['ok', '스티키 비트(t)가 설정되어 있습니다. 공유 디렉터리에서 소유자 외 삭제를 막습니다.']);
+      }
+      if ((u & 1) && (u & 2) && !(special & 4)) {
+        items.push(['info', '소유자에게 쓰기·실행이 함께 있습니다. 실행 중 파일을 바꿀 수 있는 구조라면 무결성 검토 대상입니다.']);
+      }
+      if (!items.length) items.push(['ok', '흔한 위험 조합(777, o+w, SUID/SGID)에 해당하지 않습니다.']);
+      $('chmodWarn').innerHTML = items.map(function (it) {
+        const cls = it[0] === 'info' ? '' : it[0];
+        return '<div class="notice ' + cls + '"><span>' + it[1] + '</span></div>';
+      }).join('');
+    }
+
+    let chmodBusy = false;
+
+    function runChmod(source) {
+      if (chmodBusy) return;
+      const numEl = $('chmodNum');
+      const symEl = $('chmodSym');
+      const msg = $('chmodMsg');
+      if (!numEl || !symEl) return;
+      chmodBusy = true;
+      try {
+        if (source !== 'sym') {
+          let raw = numEl.value.trim().replace(/^0+(?=\d{3,4}$)/, '');
+          if (!/^[0-7]{3,4}$/.test(raw)) {
+            msg.className = 'status err';
+            msg.textContent = '8진수 3~4자리(0~7)로 입력하세요. 예: 755, 644, 4755';
+            chmodBusy = false;
+            return;
+          }
+          symEl.value = numToSymbolic(raw);
+          numEl.value = raw;
+          renderPermTable(raw);
+          renderPermWarnings(raw);
+          const sp = raw.length === 4 ? parseInt(raw.charAt(0), 8) : 0;
+          const bits = [];
+          if (sp & 4) bits.push('SUID');
+          if (sp & 2) bits.push('SGID');
+          if (sp & 1) bits.push('sticky');
+          msg.className = 'status';
+          msg.textContent = '8진수 ' + raw + ' = ' + numToSymbolic(raw) + (bits.length ? ' · 특수 비트: ' + bits.join(', ') : ' · 특수 비트 없음');
+        } else {
+          let num;
+          try {
+            num = symbolicToNum(symEl.value);
+          } catch (e) {
+            msg.className = 'status err';
+            msg.textContent = e.message;
+            chmodBusy = false;
+            return;
+          }
+          numEl.value = num;
+          renderPermTable(num);
+          renderPermWarnings(num);
+          msg.className = 'status ok';
+          msg.textContent = symEl.value.trim() + ' = 8진수 ' + num;
+        }
+      } finally {
+        chmodBusy = false;
+      }
+    }
+
+    if ($('chmodNum')) {
+      $('chmodNum').addEventListener('input', function () { runChmod('num'); });
+      $('chmodSym').addEventListener('input', function () { runChmod('sym'); });
+    }
+
+    // ---- 5-b. CIDR 계산기 ----
+    function ipToInt(ip) {
+      const p = String(ip).trim().split('.');
+      if (p.length !== 4) return null;
+      let n = 0;
+      for (let i = 0; i < 4; i++) {
+        if (!/^\d{1,3}$/.test(p[i])) return null;
+        const v = parseInt(p[i], 10);
+        if (v > 255) return null;
+        n = n * 256 + v;
+      }
+      return n >>> 0;
+    }
+
+    function intToIp(n) {
+      return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.');
+    }
+
+    function ipScope(n) {
+      const a = (n >>> 24) & 255, b = (n >>> 16) & 255;
+      if (a === 127) return '루프백 (127.0.0.0/8)';
+      if (a === 10) return '사설 (10.0.0.0/8)';
+      if (a === 172 && b >= 16 && b <= 31) return '사설 (172.16.0.0/12)';
+      if (a === 192 && b === 168) return '사설 (192.168.0.0/16)';
+      if (a === 169 && b === 254) return '링크로컬 (169.254.0.0/16)';
+      if (a === 100 && b >= 64 && b <= 127) return '통신사 NAT (100.64.0.0/10)';
+      if (a === 0) return '이 네트워크 (0.0.0.0/8)';
+      if (a >= 240) return '예약 대역 (240.0.0.0/4)';
+      if (a >= 224) return '멀티캐스트 (224.0.0.0/4)';
+      return '공인 주소';
+    }
+
+    function runCidr() {
+      const el = $('cidrInput');
+      const out = $('cidrOut');
+      const msg = $('cidrMsg');
+      if (!el) return;
+      const raw = el.value.trim();
+      let m = raw.match(/^([0-9.]+)\s*\/\s*(\d{1,2})$/);
+      let ipStr, prefix;
+      if (m) {
+        ipStr = m[1];
+        prefix = parseInt(m[2], 10);
+      } else {
+        ipStr = raw;
+        prefix = 32;
+      }
+      const ip = ipToInt(ipStr);
+      if (ip === null || prefix < 0 || prefix > 32) {
+        out.innerHTML = '';
+        msg.className = 'status err';
+        msg.textContent = 'IPv4 형식이 아닙니다. 예: 10.0.1.0/24, 192.168.0.128/26 (프리픽스 0~32)';
+        return;
+      }
+      msg.className = 'status';
+      const mask = prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0;
+      const wildcard = (~mask) >>> 0;
+      const net = (ip & mask) >>> 0;
+      const bcast = (net | wildcard) >>> 0;
+      const total = Math.pow(2, 32 - prefix);
+      let first, last, usable, note;
+      if (prefix === 32) {
+        first = net; last = net; usable = 1;
+        note = '/32는 단일 호스트입니다. 점대점 터널 주소로 쓰기도 합니다.';
+      } else if (prefix === 31) {
+        first = net; last = bcast; usable = 2;
+        note = '/31은 RFC 3021 점대점 링크로, 네트워크·브로드캐스트 주소도 호스트로 씁니다.';
+      } else {
+        first = (net + 1) >>> 0; last = (bcast - 1) >>> 0; usable = total - 2;
+        note = '';
+      }
+      const firstOctet = (ip >>> 24) & 255;
+      const cls = firstOctet < 128 ? 'A' : firstOctet < 192 ? 'B' : firstOctet < 224 ? 'C' : firstOctet < 240 ? 'D' : 'E';
+      const rows = [
+        ['입력 주소', ipStr + '/' + prefix],
+        ['서브넷 마스크', intToIp(mask) + ' (/' + prefix + ')'],
+        ['와일드카드', intToIp(wildcard)],
+        ['네트워크 주소', intToIp(net)],
+        ['브로드캐스트', prefix >= 31 ? intToIp(bcast) + ' (점대점)' : intToIp(bcast)],
+        ['호스트 범위', intToIp(first) + ' ~ ' + intToIp(last)],
+        ['가용 호스트', usable.toLocaleString() + '개'],
+        ['전체 주소', total.toLocaleString() + '개'],
+        ['주소 구분', ipScope(ip)],
+        ['클래스', cls + ' (첫 옥텟 ' + firstOctet + ')']
+      ];
+      out.innerHTML = rows.map(function (r) {
+        return '<span class="k">' + escHtml(r[0]) + '</span><span class="v">' + escHtml(r[1]) + '</span>';
+      }).join('');
+      msg.textContent = note || '네트워크·브로드캐스트 주소를 제외한 ' + usable + '개를 호스트에 할당할 수 있습니다.';
+    }
+
+    if ($('cidrInput')) {
+      $('cidrInput').addEventListener('input', runCidr);
+    }
+
+    // ---- 치트시트 필터·검색·복사 ----
+    const cheatCards = $$('.cheat-card');
+    let activeCat = 'all';
+
+    function applyCheatFilter() {
+      const q = ($('cheatSearch').value || '').trim().toLowerCase();
+      let shown = 0;
+      cheatCards.forEach(function (card) {
+        const okCat = activeCat === 'all' || card.dataset.cat === activeCat;
+        const okQ = !q || (card.dataset.search || '').indexOf(q) >= 0;
+        const show = okCat && okQ;
+        card.classList.toggle('hide', !show);
+        if (show) shown++;
+      });
+      $('visibleCount').innerHTML = '<strong>' + shown + '</strong> / ' + cheatCards.length + '개 명령';
+      $('emptyState').classList.toggle('show', shown === 0);
+    }
+
+    if ($('catFilter')) {
+      $$('#catFilter .chip').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          activeCat = chip.dataset.cat;
+          $$('#catFilter .chip').forEach(function (c) { c.classList.toggle('active', c === chip); });
+          applyCheatFilter();
+        });
+      });
+      $('cheatSearch').addEventListener('input', applyCheatFilter);
+      $('resetCheat').addEventListener('click', function () {
+        activeCat = 'all';
+        $('cheatSearch').value = '';
+        $$('#catFilter .chip').forEach(function (c) { c.classList.toggle('active', c.dataset.cat === 'all'); });
+        applyCheatFilter();
+      });
+    }
+
+    $$('.cmd-copy').forEach(function (btn) {
+      bindCopy(btn, function () {
+        const pre = document.getElementById(btn.dataset.copy);
+        return pre ? pre.textContent : '';
+      });
+    });
+
+    // ---- 시작 ----
+    (function init() {
+      const h = (location.hash || '').replace('#', '');
+      const known = ['enc', 'jwt', 'hash', 'rx', 'perm'];
+      openTool(known.indexOf(h) >= 0 ? h : 'enc', false);
+      runEncoder();
+      runChmod();
+      runCidr();
+      applyCheatFilter();
+      if (known.indexOf(h) >= 0 && h !== 'enc') {
+        setTimeout(function () { openTool(h, false); }, 0);
+      }
+    })();
+"""
+
+
+def build():
+    """tools.html 생성 후 (유틸리티 수, 명령어 수) 반환."""
+    kst = timezone(timedelta(hours=9))
+    built_at = datetime.now(kst).strftime("%Y-%m-%d %H:%M KST")
+
+    cat_labels = {c["key"]: c["label"] for c in CATS}
+
+    cat_chips = []
+    for c in CATS:
+        active = " active" if c["key"] == "all" else ""
+        cat_chips.append(
+            '<button class="chip%s" type="button" data-cat="%s">%s</button>'
+            % (active, c["key"], c["label"])
+        )
+
+    cards = []
+    for i, item in enumerate(CHEATS, start=1):
+        cat = item["cat"]
+        cat_label = cat_labels.get(cat, cat)
+        search_blob = " ".join([
+            item["title"], item["desc"], item["cmd"], item.get("keys", ""), cat_label, cat,
+        ]).lower()
+        cmd_id = "cmd-%02d" % i
+        cards.append(
+            '<article class="cheat-card" data-cat="%s" data-search="%s">\n'
+            '      <div class="cheat-head">\n'
+            '        <h3 class="cheat-title">%s</h3>\n'
+            '        <span class="cheat-cat">%s</span>\n'
+            '      </div>\n'
+            '      <p class="cheat-desc">%s</p>\n'
+            '      <div class="cmd">\n'
+            '        <div class="cmd-head"><span>%s</span>'
+            '<button class="cmd-copy" type="button" data-copy="%s">복사</button></div>\n'
+            '        <pre id="%s">%s</pre>\n'
+            '      </div>\n'
+            '      <p class="tip"><span class="tip-tag">주의</span><span>%s</span></p>\n'
+            '    </article>' % (
+                cat,
+                esc_attr(search_blob),
+                esc(item["title"]),
+                esc(cat_label),
+                esc(item["desc"]),
+                esc(cmd_tool_label(item["cmd"])),
+                cmd_id,
+                cmd_id,
+                esc(item["cmd"]),
+                esc(item["tip"]),
+            )
+        )
+
+    html = HTML_TEMPLATE
+    html = html.replace("__CSS__", CSS)
+    html = html.replace("__JS__", JS)
+    html = html.replace("__CAT_CHIPS__", "".join(cat_chips))
+    html = html.replace("__CARDS__", "\n".join("    " + c for c in cards))
+    html = html.replace("__CMD_COUNT__", str(len(CHEATS)))
+    html = html.replace("__BUILT_AT__", built_at)
+
+    with open(TOOLS_HTML, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    print("-> 'tools.html' 생성 완료 (유틸리티 5종, 명령어 %d개)" % len(CHEATS))
+    return 5, len(CHEATS)
+
+
+if __name__ == "__main__":
+    build()
