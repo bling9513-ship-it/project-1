@@ -1266,8 +1266,8 @@ CSS = """
     .sig.lv-mid .sig-badge { color: var(--warn-text); border-color: var(--warn-border); }
 
     .sig-body { min-width: 0; }
-    .sig-title { font-size: 12.4px; font-weight: 700; letter-spacing: -0.02em; }
-    .sig-desc { font-size: 11.6px; line-height: 1.65; color: var(--text-secondary); margin-top: 2px; overflow-wrap: anywhere; }
+    .sig-title { display: block; font-size: 12.4px; font-weight: 700; letter-spacing: -0.02em; }
+    .sig-desc { display: block; font-size: 11.6px; line-height: 1.65; color: var(--text-secondary); margin-top: 2px; overflow-wrap: anywhere; }
 
     .breakdown { margin-top: 14px; border: 1px solid var(--border-default); border-radius: 9px; overflow: hidden; }
     .bd-row { display: grid; grid-template-columns: 96px minmax(0, 1fr); font-size: 11.6px; }
@@ -2484,7 +2484,7 @@ __CHECKLIST__
               + '<span class="sig-body"><span class="sig-title">' + esc2(s.title) + '</span>'
               + '<span class="sig-desc">' + esc2(s.desc) + '</span></span></li>';
           }).join('') + '</ul>'
-        : '<div class="scan-empty" style="margin-top:12px">' + esc2(LEVEL_NOTE.low) + '</div>';
+        : '';
 
       const badgeText = (level === 'low' && !result.signals.length)
         ? '뚜렷한 신호 없음'
