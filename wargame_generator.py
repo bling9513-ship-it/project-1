@@ -554,7 +554,7 @@ def generate(wanted, date_str, force=False, dry_run=False, max_attempts=0):
     # EXAONE은 추론 토큰을 많이 쓴다. 한 번에 문제 1개씩 요청하고(잘림 방지),
     # 실패한 만큼만 다시 요청한다.
     existing_titles = get_wargame_titles()
-    max_attempts = max_attempts or wanted * 3
+    max_attempts = max_attempts or wanted * 2  # 08:00 배치 시간 안에 끝나도록 여유 있게 제한
     accepted = []
     errors_seen = []
     attempt = 0
