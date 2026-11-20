@@ -8,10 +8,28 @@
 - target="_blank" 앵커에 rel="noopener noreferrer" 강제
 - 외부에서 수집한 URL 을 href 에 넣기 전 http/https/mailto 스킴 화이트리스트 검증
 - <script> 안에 JSON 을 심을 때 "</" 가 스크립트를 조기 종료시키지 않도록 이스케이프
+- 외부 CDN 리소스(<link rel="stylesheet">)에 SRI(integrity=sha384-…) + crossorigin="anonymous" 강제
 """
 import base64
 import hashlib
 import re
+
+# ---------------------------------------------------------------------------
+# 외부 CDN 서브리소스 무결성(SRI)
+#   jsDelivr 는 버전 태그가 고정된 경로(@v1.3.9)에 `cache-control: immutable` 로 응답하므로
+#   바이트가 바뀌지 않는다. 실제 응답 본문으로 계산한 sha384 값을 고정해 두고,
+#   빌드 산출물의 링크 태그를 이 값으로 정규화한다(해시 드리프트를 빌드 단계에서 차단).
+#   ※ 버전을 올릴 때는 아래 URL·해시를 함께 갱신할 것.
+# ---------------------------------------------------------------------------
+PRETENDARD_CSS_URL = (
+    "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+)
+PRETENDARD_CSS_SRI = "sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg"
+
+# 외부 스타일시트 URL → SRI 해시. 여기에 없는 외부 URL 은 integrity 없이 두고 건드리지 않는다.
+SRI_STYLESHEETS = {
+    PRETENDARD_CSS_URL: PRETENDARD_CSS_SRI,
+}
 
 # 인라인 스크립트가 하나도 없을 때의 기본값(해시 없이 'self' 만 허용).
 CSP_VALUE = (
@@ -42,6 +60,8 @@ _CSP_META_RE = re.compile(
     r'<meta\b[^>]*http-equiv\s*=\s*["\']?Content-Security-Policy["\']?[^>]*>', re.I
 )
 _CSP_CONTENT_RE = re.compile(r'content\s*=\s*("[^"]*"|\'[^\']*\')', re.I)
+_LINK_TAG_RE = re.compile(r'<link\b[^>]*>', re.I)
+
 
 # 브라우저가 실행하는 스크립트 타입만 해시를 계산한다.
 # application/json, text/template, importmap 등은 실행되지 않으므로 CSP 검사 대상이 아니다.
@@ -139,10 +159,46 @@ def build_csp(hashes):
     return CSP_VALUE.replace("script-src 'self'", "script-src " + script_src, 1)
 
 
+def _strip_attr(tag, name):
+    """태그 문자열에서 name 속성(값 유무 무관)을 제거한다."""
+    return re.sub(
+        r'\s+%s(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+))?' % re.escape(name),
+        "", tag, flags=re.I,
+    )
+
+
+def _add_attr(tag, name, value):
+    """태그 문자열에 name="value" 속성을 덧붙인다(닫는 괄호 앞)."""
+    trimmed = tag.rstrip()
+    closed = trimmed.endswith("/>")
+    head = trimmed[:-2].rstrip() if closed else trimmed[:-1].rstrip()
+    closing = " />" if closed else ">"
+    return '%s %s="%s"%s' % (head, name, value, closing)
+
+
+def _fix_external_link_sri(match):
+    """<link rel="stylesheet"> 가 등록된 외부 CDN URL 이면 integrity/crossorigin 을 정규화한다."""
+    tag = match.group(0)
+    attrs = _parse_attrs(tag[len("<link"):])
+    rel = (attrs.get("rel") or "").lower().split()
+    href = (attrs.get("href") or "").strip()
+    if "stylesheet" not in rel:
+        return tag
+    sri = SRI_STYLESHEETS.get(href)
+    if not sri:
+        return tag
+    # crossorigin 이 없거나 값이 다르면 SRI 검증이 통과하지 못하므로 항상 익명 CORS 로 고정한다.
+    fixed = _strip_attr(_strip_attr(tag, "integrity"), "crossorigin")
+    fixed = _add_attr(fixed, "integrity", sri)
+    fixed = _add_attr(fixed, "crossorigin", "anonymous")
+    return fixed
+
+
 def harden_html(html):
-    """생성된 HTML 문자열에 CSP·rel 보강을 적용해 돌려준다."""
+    """생성된 HTML 문자열에 CSP·rel·SRI 보강을 적용해 돌려준다."""
     if not html:
         return html
+    html = _LINK_TAG_RE.sub(_fix_external_link_sri, html)
     html = _ANCHOR_BLANK_RE.sub(_fix_rel, html)
 
     # 해시는 최종 HTML 의 스크립트 본문 바이트로 계산해야 한다(다른 변형을 모두 마친 뒤).

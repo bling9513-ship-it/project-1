@@ -1419,7 +1419,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="서울의 오늘·내일 날씨와 기온 구간별로 아우터·상의·하의·신발·소품 조합을 정리한 옷차림 가이드. 기온 슬라이더와 계절·스타일 필터로 지금 입을 옷을 바로 고릅니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__
     [hidden] { display: none !important; }
   </style>

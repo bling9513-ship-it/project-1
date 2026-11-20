@@ -1250,7 +1250,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="서울 오늘 날씨에 맞춰 점심·저녁 메뉴를 랜덤 룰렛으로 뽑아 주는 페이지. 추운 날 국물, 비 오는 날 전·면처럼 날씨별 추천 모드와 예상 가격대, 곁들임, 주말 나들이 코스까지 한 곳에 정리했습니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__</style>
   <script>
     (function () {

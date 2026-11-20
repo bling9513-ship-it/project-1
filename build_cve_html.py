@@ -609,6 +609,16 @@ CSS = """
 
     .alert-row a:hover { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 
+    .link-host {
+      margin-left: 5px;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0;
+    }
+
+    .link-host::before { content: "·"; margin-right: 4px; }
+
     .priority-row .due-alert {
       color: var(--sev-critical-text);
       border: 1px solid var(--sev-critical-border);
@@ -916,7 +926,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="CISA KEV(실제 악용 취약점)·CIRCL·NVD 최신 CVE를 모아 CVSS·EPSS 위험도, 영향 제품, 한국어 원인 분석, 조치 방안, 공개 PoC 경로까지 한 화면에서 확인하는 취약점 리포트입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__</style>
   <script>
     (function () {
@@ -1118,11 +1128,34 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // 참고 링크는 http/https/mailto 만 허용한다(javascript:, data: 차단).
+    // 수집된 링크는 URL 파서로 검증해 http/https/mailto 만 통과시킨다
+    // (javascript:, data:, vbscript:, 프로토콜 상대 //, 제어문자 삽입 차단).
     function safeUrl(u) {
-      const s = String(u == null ? '' : u).trim();
-      if (!s || /[<>"'`]/.test(s) || s.indexOf(String.fromCharCode(92)) !== -1) return '#';
-      return /^(https?:|mailto:)/i.test(s) ? s : '#';
+      const raw = String(u == null ? '' : u).trim();
+      if (!raw || /[\\u0000-\\u001F\\u007F<>"'`\\\\]/.test(raw)) return '#';
+      let parsed;
+      try { parsed = new URL(raw); } catch (e) { return '#'; }
+      const proto = parsed.protocol.toLowerCase();
+      return (proto === 'http:' || proto === 'https:' || proto === 'mailto:') ? parsed.href : '#';
+    }
+
+    // 외부 링크 카드 옆에 실제 이동 도메인을 표시해 피싱 링크를 눈으로 걸러낸다.
+    function linkHost(u) {
+      let parsed;
+      try { parsed = new URL(String(u == null ? '' : u).trim()); } catch (e) { return ''; }
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === 'mailto:') {
+        const parts = String(parsed.pathname || '').split('@');
+        return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+      }
+      if (proto !== 'http:' && proto !== 'https:') return '';
+      return parsed.hostname.replace(/^www\\./, '').toLowerCase();
+    }
+
+    // 링크 텍스트 옆에 실제 이동 도메인을 붙인다(피싱 도메인 육안 식별).
+    function hostLabel(u) {
+      const h = linkHost(u);
+      return h ? '<span class="link-host">' + escapeHtml(h) + '</span>' : '';
     }
 
     function formatDate(d) {
@@ -1199,8 +1232,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
       const alertRow = (it.alerts && it.alerts.length)
         ? '<div class="alert-row"><span>경보·보도</span>' + (it.alerts || []).slice(0, 3).map(a =>
-            '<a href="' + safeUrl(a.url) + '" target="_blank" rel="noopener noreferrer">' +
-            escapeHtml(a.source || '원문') + (a.published_at ? ' ' + escapeHtml(formatDate(a.published_at)) : '') + '</a>'
+            '<a href="' + safeUrl(a.url) + '" target="_blank" rel="noopener noreferrer" title="원문: ' + escapeHtml(a.url) + '">' +
+            escapeHtml(a.source || '원문') + (a.published_at ? ' ' + escapeHtml(formatDate(a.published_at)) : '') + hostLabel(a.url) + '</a>'
           ).join('') + '</div>'
         : '';
 
@@ -1209,7 +1242,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
       const pocs = (it.poc_links || []).map(p => {
         const label = escapeHtml(p.name || p.url);
-        return '<div class="poc-item"><a href="' + safeUrl(p.url) + '" target="_blank" rel="noopener noreferrer">' + label + '</a>'
+        return '<div class="poc-item"><a href="' + safeUrl(p.url) + '" target="_blank" rel="noopener noreferrer" title="원문: ' + escapeHtml(p.url) + '">' + label + hostLabel(p.url) + '</a>'
           + '<span class="poc-stars">★ ' + (p.stars || 0) + '</span></div>'
           + (p.description ? '<span class="poc-desc">' + escapeHtml(p.description) + '</span>' : '');
       }).join('');
@@ -1217,9 +1250,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const refs = (it.references || []).slice(0, 3).map(r => {
         const url = typeof r === 'string' ? r : (r && r.url);
         if (!url) return '';
-        let host = url;
-        try { host = new URL(url).hostname.replace(/^www\\./, ''); } catch (e) {}
-        return '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(host) + '</a>';
+        const host = linkHost(url) || '원문';
+        return '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener noreferrer" title="원문: ' + escapeHtml(url) + '">' + escapeHtml(host) + '</a>';
       }).join('');
 
       return '<article class="cve-card">'

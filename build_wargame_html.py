@@ -1708,7 +1708,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="웹 해킹, 로그·침해 분석, 시스템·권한 상승, 네트워크·패킷 4개 카테고리 20문제를 3분 안에 푸는 실전 보안 워게임. 즉시 채점과 취약 코드·시큐어 코드 비교 해설, 브라우저에 저장되는 진행 기록.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__
     [hidden] { display: none !important; }
   </style>

@@ -34,7 +34,7 @@ html_content = """<!DOCTYPE html>
   <meta name="description" content="CPPG 실전 300제와 AI 개인정보보호 특강 30제, 정보보안기사(필기·실기), ISMS-P 인증심사원 기출 퀴즈와 전 과목 핵심 요약노트 및 파일/URL 맞춤 분석 학습 허브입니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>
     :root {
       --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;

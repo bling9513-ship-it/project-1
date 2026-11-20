@@ -1341,7 +1341,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta name="description" content="Base64·URL·Hex·HTML 인코더, JWT 디코더, SHA-256/384/512 해시, 정규식 테스터, chmod 권한·CIDR 계산기와 실무 모의해킹 명령어 38선. 모든 입력은 브라우저 안에서만 처리됩니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
   <style>__CSS__
     [hidden] { display: none !important; }
   </style>
