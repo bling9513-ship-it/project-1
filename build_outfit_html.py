@@ -1492,6 +1492,25 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
   </header>
 
+  <script>
+    // 좁은 화면에서 현재 페이지 탭이 가려지지 않도록 탭 영역만 살짝 스크롤한다.
+    (function () {
+      function keepActiveTabVisible() {
+        var box = document.querySelector('.nav-tabs');
+        if (!box) return;
+        var act = box.querySelector('.nav-tab-item.active');
+        if (!act || box.scrollWidth <= box.clientWidth) return;
+        var br = box.getBoundingClientRect();
+        var ar = act.getBoundingClientRect();
+        if (ar.right > br.right) box.scrollLeft += (ar.right - br.right) + 8;
+        else if (ar.left < br.left) box.scrollLeft -= (br.left - ar.left) + 8;
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', keepActiveTabVisible);
+      else keepActiveTabVisible();
+      window.addEventListener('resize', keepActiveTabVisible);
+    })();
+  </script>
+
   <main class="container">
 
     <!-- Hero -->

@@ -905,7 +905,7 @@
       .cheat-card { padding: 12px 13px; }
       .cheat-title { font-size: 13.2px; }
       .cheat-desc { font-size: 12px; }
-      .cmd pre { font-size: 11.2px; }
+      .cmd pre { font-size: 11.2px; white-space: pre-wrap; overflow-wrap: anywhere; }
       .perm-row { grid-template-columns: 64px repeat(3, minmax(0, 1fr)) 40px; }
       .perm-row > span { padding: 6px 5px; font-size: 11px; }
       .controls { padding: 12px 13px; border-radius: 12px; }
@@ -1010,6 +1010,25 @@
       </div>
     </div>
   </header>
+
+  <script>
+    // 좁은 화면에서 현재 페이지 탭이 가려지지 않도록 탭 영역만 살짝 스크롤한다.
+    (function () {
+      function keepActiveTabVisible() {
+        var box = document.querySelector('.nav-tabs');
+        if (!box) return;
+        var act = box.querySelector('.nav-tab-item.active');
+        if (!act || box.scrollWidth <= box.clientWidth) return;
+        var br = box.getBoundingClientRect();
+        var ar = act.getBoundingClientRect();
+        if (ar.right > br.right) box.scrollLeft += (ar.right - br.right) + 8;
+        else if (ar.left < br.left) box.scrollLeft -= (br.left - ar.left) + 8;
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', keepActiveTabVisible);
+      else keepActiveTabVisible();
+      window.addEventListener('resize', keepActiveTabVisible);
+    })();
+  </script>
 
   <main class="container">
 
@@ -1719,8 +1738,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>해시 값은 파일을 받은 경로가 아닌 공식 공지·서명된 릴리스 노트에서 가져와야 의미가 있습니다. GPG 서명(<code class="tip-code">.asc</code>)이 있으면 서명 검증까지 하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="파일 암호화·복호화 전달용 파일을 비밀번호 기반(aes-256)으로 암호화하고 다시 풉니다. openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc
-openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt openssl enc aes 암호화 복호화 pbkdf2 openssl·ssh crypto">
+    <article class="cheat-card" data-cat="crypto" data-search="파일 암호화·복호화 전달용 파일을 비밀번호 기반(aes-256)으로 암호화하고 다시 풉니다. openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt openssl enc aes 암호화 복호화 pbkdf2 openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">파일 암호화·복호화</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -1764,7 +1782,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
     <footer class="footer">
       Infosec Archive · 보안 실무 유틸 · 치트시트<br>
       모든 변환·계산은 브라우저에서만 수행되며 서버로 전송되지 않습니다. 명령은 점검 권한이 있는 대상에만 사용하세요.<br>
-      2026-11-20 20:18 KST 기준
+      2026-11-20 20:20 KST 기준
     </footer>
   </main>
 
