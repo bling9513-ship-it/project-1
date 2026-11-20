@@ -2,10 +2,14 @@
 """
 출퇴근길 보안 워게임 (wargame.html) 빌더.
 
-20개 실전 시나리오(웹 해킹·로그·침해 분석·시스템·권한 상승·네트워크·패킷)를
-데이터로 정의하고, 정적 HTML에 심어 브라우저에서 즉시 채점·해설·진행 기록(localStorage)이
-동작하도록 만든다. 채용공고(index)·시험 공부(study)·AI 트렌드(ai)·CVE 리포트(cve)·
-옷차림(outfit)과 같은 secjobs-theme 라이트/다크 테마와 6탭 내비게이션을 공유한다.
+문제의 원본은 SQLite DB(archive.db)의 wargame_questions 테이블이다.
+- 정적 20문제(web/log/sys/net × 4~6)는 아래 QUESTIONS를 최초 1회 DB로 이관해 id를 그대로 보존한다.
+- 매일 08:00 wargame_generator.py 가 EXAONE으로 새 문제를 2개씩 추가하면 is_daily=1 로 쌓이고,
+  빌드는 데일리 최신 문제를 맨 위에 배치하며 '오늘의 문제'/'YYYY-MM-DD 추가' 배지를 붙인다.
+
+브라우저에서는 즉시 채점·해설·진행 기록(localStorage, 키 secjobs-wargame-v1)이 동작한다.
+채용공고(index)·시험 공부(study)·AI 트렌드(ai)·CVE 리포트(cve)·옷차림(outfit)과 같은
+secjobs-theme 라이트/다크 테마와 6탭 내비게이션을 공유한다.
 """
 import json
 import os
@@ -14,6 +18,9 @@ from html import escape as esc
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WARGAME_HTML = os.path.join(BASE_DIR, "wargame.html")
+
+# 정적 20문제가 처음 만들어진 날 (DB created_date 기본값)
+STATIC_CREATED_DATE = "2026-11-20"
 
 CATS = [
     {"key": "web", "label": "웹 해킹"},
@@ -645,7 +652,20 @@ def _code_block(block):
             '</div>' % (esc(block["label"]), esc(block["code"])))
 
 
-def _render_static(q):
+def _daily_badges(q, today_str):
+    """데일리 자동 출제 문제에만 붙는 배지 (오늘의 문제 / YYYY-MM-DD 추가)."""
+    if not q.get("is_daily"):
+        return ""
+    created = q.get("created_date") or ""
+    out = []
+    if created == today_str:
+        out.append('<span class="q-badge q-badge-today">오늘의 문제</span>')
+    if created:
+        out.append('<span class="q-badge q-badge-date">%s 추가</span>' % esc(created))
+    return "".join(out)
+
+
+def _render_static(q, no=1, today_str=""):
     """서버 측에서 미리 그려 두는 카드 골격(문제·코드·보기). 채점은 JS가 한다."""
     cat = next(c["label"] for c in CATS if c["key"] == q["cat"])
     lv = next(l["label"] for l in LEVELS if l["key"] == q["level"])
@@ -680,6 +700,7 @@ def _render_static(q):
         '<span class="q-cat cat-%(cat)s">%(catlabel)s</span>'
         '<span class="lv lv-%(level)s">%(lv)s</span>'
         '<span class="q-type">%(typelabel)s</span>'
+        '%(badge)s'
         '<span class="q-state" hidden>해결</span>'
         '</div>'
         '<h2 class="q-title">%(title)s</h2>'
@@ -710,7 +731,8 @@ def _render_static(q):
         '</article>'
     ) % {
         "id": esc(q["id"]), "cat": q["cat"], "level": q["level"], "type": q["type"],
-        "no": "%02d" % (QUESTIONS.index(q) + 1),
+        "no": "%02d" % no,
+        "badge": _daily_badges(q, today_str),
         "catlabel": esc(cat), "lv": esc(lv), "typelabel": type_label,
         "title": esc(q["title"]), "brief": esc(q["brief"]), "blocks": blocks,
         "prompt": esc(q["prompt"]), "body": body,
@@ -1196,6 +1218,40 @@ CSS = """
       color: var(--ok-text);
       border-color: var(--ok-border);
       background: var(--ok-bg);
+    }
+
+    .q-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .q-badge-today {
+      color: #0f766e;
+      border: 1px solid #99f6e4;
+      background: #f0fdfa;
+    }
+
+    .q-badge-date {
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+      background: var(--bg-subtle);
+    }
+
+    [data-theme="dark"] .q-badge-today {
+      color: #5eead4;
+      border-color: rgba(20, 184, 166, 0.4);
+      background: rgba(20, 184, 166, 0.12);
+    }
+
+    [data-theme="dark"] .q-badge-date {
+      color: #cbd5e1;
+      border-color: var(--border-default);
+      background: var(--bg-subtle);
     }
 
     .q-title {
@@ -1715,6 +1771,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <span class="stat-chip">문제 <strong>__TOTAL__</strong></span>
         <span class="stat-chip">카테고리 <strong>4</strong></span>
         <span class="stat-chip">실습형 <strong>__INPUT_COUNT__</strong></span>
+        __TODAY_CHIP__
         <span class="stat-chip">기록 <strong>localStorage</strong></span>
       </div>
     </section>
@@ -2189,12 +2246,59 @@ __CARDS__
 """
 
 
+def seed_db(verbose=True):
+    """정적 20문제를 archive.db(wargame_questions)로 이관한다 (id 보존, 재실행 안전)."""
+    from db_manager import seed_wargame_questions, count_wargame_questions
+    before = count_wargame_questions()
+    inserted = seed_wargame_questions(QUESTIONS, created_date=STATIC_CREATED_DATE)
+    after = count_wargame_questions()
+    if verbose:
+        print("-> wargame_questions 이관: %d개 추가 (전체 %d개)" % (inserted, after))
+    return before, inserted, after
+
+
+def load_questions(verbose=True):
+    """DB의 wargame_questions를 읽는다. 테이블이 비었으면 정적 문제를 이관하고, DB 장애 시 내장 문제로 대체한다."""
+    try:
+        from db_manager import get_wargame_questions, count_wargame_questions
+        if count_wargame_questions(is_daily=0) == 0:
+            seed_db(verbose=verbose)
+        qs = get_wargame_questions()
+        if qs:
+            return qs
+    except Exception as e:  # DB 손상·권한 문제 시에도 페이지는 떠야 한다
+        if verbose:
+            print("  [경고] DB에서 워게임 문제를 읽지 못해 내장 문제로 빌드합니다: %s: %s"
+                  % (type(e).__name__, e))
+    fallback = []
+    for i, q in enumerate(QUESTIONS):
+        item = dict(q)
+        item.setdefault("created_date", STATIC_CREATED_DATE)
+        item["is_daily"] = 0
+        item["sort_order"] = i
+        fallback.append(item)
+    return fallback
+
+
+def sort_questions(qs):
+    """데일리 최신순 → 그 아래 정적 문제 순. 새로 추가된 문제가 맨 위에 오게 한다."""
+    daily = [q for q in qs if q.get("is_daily")]
+    static = [q for q in qs if not q.get("is_daily")]
+    daily.sort(key=lambda q: (q.get("created_date") or "", q.get("sort_order") or 0, q.get("id") or ""), reverse=True)
+    static.sort(key=lambda q: (q.get("sort_order") or 0, q.get("id") or ""))
+    return daily + static
+
+
 def build():
     kst = timezone(timedelta(hours=9))
-    built_at = datetime.now(kst).strftime("%Y-%m-%d %H:%M KST")
+    now = datetime.now(kst)
+    built_at = now.strftime("%Y-%m-%d %H:%M KST")
+    today_str = now.strftime("%Y-%m-%d")
+
+    questions = sort_questions(load_questions())
 
     payload = []
-    for q in QUESTIONS:
+    for q in questions:
         item = {
             "id": q["id"], "cat": q["cat"], "level": q["level"], "type": q["type"],
             "patterns": q.get("patterns", []),
@@ -2212,8 +2316,15 @@ def build():
     cats_json = json.dumps(CATS, ensure_ascii=False, separators=(",", ":"))
     levels_json = json.dumps(LEVELS, ensure_ascii=False, separators=(",", ":"))
 
-    cards = "\n".join("      " + _render_static(q).replace("\n", "\n      ") for q in QUESTIONS)
-    input_count = len([q for q in QUESTIONS if q["type"] == "input"])
+    cards = "\n".join(
+        "      " + _render_static(q, no=i + 1, today_str=today_str).replace("\n", "\n      ")
+        for i, q in enumerate(questions)
+    )
+    input_count = len([q for q in questions if q["type"] == "input"])
+    today_count = len([q for q in questions if q.get("is_daily") and q.get("created_date") == today_str])
+    daily_count = len([q for q in questions if q.get("is_daily")])
+    today_chip = (('<span class="stat-chip">오늘 추가 <strong>%d</strong></span>' % today_count)
+                  if today_count else "")
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
@@ -2221,7 +2332,8 @@ def build():
     html = html.replace("__DATA_JSON__", data_json.replace("</", "<\\/"))
     html = html.replace("__CATS_JSON__", cats_json.replace("</", "<\\/"))
     html = html.replace("__LEVELS_JSON__", levels_json.replace("</", "<\\/"))
-    html = html.replace("__TOTAL__", str(len(QUESTIONS)))
+    html = html.replace("__TODAY_CHIP__", today_chip)
+    html = html.replace("__TOTAL__", str(len(questions)))
     html = html.replace("__INPUT_COUNT__", str(input_count))
     html = html.replace("__BUILT_AT__", esc(built_at))
 
@@ -2229,13 +2341,17 @@ def build():
         f.write(html)
 
     cats_count = {}
-    for q in QUESTIONS:
+    for q in questions:
         cats_count[q["cat"]] = cats_count.get(q["cat"], 0) + 1
-    print("-> 'wargame.html' 생성 완료 (문제 %d개 · 실습형 %d개 · 카테고리 %s)"
-          % (len(QUESTIONS), input_count,
+    print("-> 'wargame.html' 생성 완료 (문제 %d개 · 실습형 %d개 · 데일리 %d개(오늘 %d개) · 카테고리 %s)"
+          % (len(questions), input_count, daily_count, today_count,
              ", ".join("%s %d" % (c["label"], cats_count.get(c["key"], 0)) for c in CATS)))
-    return len(QUESTIONS)
+    return len(questions)
 
 
 if __name__ == "__main__":
-    build()
+    import sys
+    if "--migrate" in sys.argv:
+        seed_db()
+    if "--migrate-only" not in sys.argv:
+        build()
