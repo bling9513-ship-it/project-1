@@ -2,7 +2,7 @@
 """
 보안 실무 유틸 · 치트시트 (tools.html) 빌더.
 
-- 상단 7탭 내비게이션(채용공고·시험 공부·AI 트렌드·CVE 리포트·옷차림·워게임·실무 유틸)과
+- 상단 공통 내비게이션(채용공고·시험 공부·AI 트렌드·CVE 리포트·옷차림·워게임·실무 유틸·피싱 레이더·오늘 뭐 먹지)과
   secjobs-theme 라이트/다크 테마를 다른 페이지와 그대로 공유한다.
 - 페이지 안의 모든 계산(인코딩·JWT 파싱·해시·정규식·권한/CIDR)은 브라우저 로컬에서만 수행하며
   입력값을 서버로 전송하지 않는다. 빌드 시점에는 정적 HTML 한 장만 만든다.
@@ -1373,6 +1373,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="wargame.html" class="nav-tab-item">워게임</a>
           <a href="tools.html" class="nav-tab-item active">실무 유틸</a>
           <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
+          <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
         </div>
       </div>
 

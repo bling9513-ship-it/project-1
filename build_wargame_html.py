@@ -9,7 +9,7 @@
 
 브라우저에서는 즉시 채점·해설·진행 기록(localStorage, 키 secjobs-wargame-v1)이 동작한다.
 채용공고(index)·시험 공부(study)·AI 트렌드(ai)·CVE 리포트(cve)·옷차림(outfit)과 같은
-secjobs-theme 라이트/다크 테마와 7탭 내비게이션을 공유한다.
+secjobs-theme 라이트/다크 테마와 공통 내비게이션을 공유한다.
 """
 import json
 import os
@@ -1740,6 +1740,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="wargame.html" class="nav-tab-item active">워게임</a>
           <a href="tools.html" class="nav-tab-item">실무 유틸</a>
           <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
+          <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
         </div>
       </div>
 

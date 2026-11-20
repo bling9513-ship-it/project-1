@@ -1511,6 +1511,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="wargame.html" class="nav-tab-item">워게임</a>
           <a href="tools.html" class="nav-tab-item">실무 유틸</a>
           <a href="radar.html" class="nav-tab-item active">피싱 레이더</a>
+          <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
         </div>
       </div>
 
