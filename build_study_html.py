@@ -1203,15 +1203,15 @@ html_content = """<!DOCTYPE html>
         <div class="form-group">
           <label class="form-label">학습 자료 유형</label>
           <div class="source-type-selector">
-            <button type="button" class="source-type-btn active" id="btnSourceFile" onclick="setSourceType('file')">문서 파일 (PDF / TXT / MD)</button>
-            <button type="button" class="source-type-btn" id="btnSourceUrl" onclick="setSourceType('url')">웹 링크 (URL)</button>
+            <button type="button" class="source-type-btn active" id="btnSourceFile" data-action="source-type" data-type="file">문서 파일 (PDF / TXT / MD)</button>
+            <button type="button" class="source-type-btn" id="btnSourceUrl" data-action="source-type" data-type="url">웹 링크 (URL)</button>
           </div>
         </div>
 
         <div class="form-group" id="fileInputGroup">
           <label class="form-label">문서 파일 첨부</label>
-          <input type="file" id="studyFileInput" accept=".pdf,.txt,.md,.json" style="display:none;" onchange="handleFileSelect(event)">
-          <div class="drop-zone" id="dropZone" onclick="document.getElementById('studyFileInput').click()">
+          <input type="file" id="studyFileInput" accept=".pdf,.txt,.md,.json" style="display:none;" data-action="file-select">
+          <div class="drop-zone" id="dropZone" data-action="pick-file">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;color:var(--text-muted);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             <div class="drop-text" id="dropFileName">클릭하여 PDF, TXT, MD 파일 선택 또는 드래그 앤 드롭</div>
             <div class="drop-hint">CPPG 요약본, 기출 해설서, 기술 표준 문서를 지원합니다</div>
@@ -1232,7 +1232,7 @@ html_content = """<!DOCTYPE html>
           </div>
         </div>
 
-        <button type="button" class="submit-btn" id="btnRequestAnalysis" onclick="requestAnalysis()">
+        <button type="button" class="submit-btn" id="btnRequestAnalysis" data-action="request-analysis">
           <span>AI 분석 &amp; 카테고리 퀴즈 생성</span>
         </button>
       </div>
@@ -1756,7 +1756,7 @@ html_content = """<!DOCTYPE html>
           }
 
           choicesHtml += `
-            <div class="choice-row ${extraClass}" onclick="handleSelectChoice('${q.id}', ${choiceNum})">
+            <div class="choice-row ${extraClass}" data-action="select-choice" data-id="${escapeHtml(q.id)}" data-choice="${choiceNum}">
               <div class="choice-circle">${circles[cIdx] || (cIdx+1)}</div>
               <div class="choice-text">${escapeHtml(optText)}</div>
             </div>
@@ -1872,7 +1872,7 @@ html_content = """<!DOCTYPE html>
         chips.push({ key: 'law', label: '포렌식·법률' });
       }
       bar.innerHTML = chips.map(ch =>
-        `<button class="summary-chip-btn${ch.key === 'all' ? ' active' : ''}" data-filter="${ch.key}" onclick="setSummaryFilter('${ch.key}')">${escapeHtml(ch.label)}</button>`
+        `<button class="summary-chip-btn${ch.key === 'all' ? ' active' : ''}" data-action="summary-filter" data-filter="${escapeHtml(ch.key)}">${escapeHtml(ch.label)}</button>`
       ).join('');
     }
 
@@ -1900,11 +1900,11 @@ html_content = """<!DOCTYPE html>
       const sums = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.summaries) || [];
       const counts = sums.map(s => (s.topics || []).length);
       const total = counts.reduce((a, b) => a + b, 0);
-      let html = `<button class="summary-chip-btn active" data-filter="all" onclick="setIsmspFilter('all')">전체 (${total})</button>`;
+      let html = `<button class="summary-chip-btn active" data-action="ismsp-filter" data-filter="all">전체 (${total})</button>`;
       sums.forEach((s, i) => {
         let area = (s.title || '').split('.')[0].trim();
         if (!area.endsWith('영역')) area += '영역';
-        html += `<button class="summary-chip-btn" data-filter="sec${i}" onclick="setIsmspFilter('sec${i}')">${escapeHtml(area)} (${counts[i]})</button>`;
+        html += `<button class="summary-chip-btn" data-action="ismsp-filter" data-filter="sec${i}">${escapeHtml(area)} (${counts[i]})</button>`;
       });
       bar.innerHTML = html;
     }
@@ -2039,7 +2039,7 @@ html_content = """<!DOCTYPE html>
           <div class="summary-toolbar">
             <input type="text" id="summarySearchBox" class="summary-search-box"
                    placeholder="개념·조문·수치 검색 (예: 접속기록, 과징금, 가명정보, 72시간)..."
-                   oninput="handleSummarySearch(this.value)">
+                   data-action="summary-search">
             <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
           <div class="summary-section-note">5과목 전 범위 핵심정리 ${cppgCounts.content}선 + 용어·조문 사전 ${cppgCounts.term}선 · AI 특강 ${cppgCounts.ai}선 포함 · 총 ${cppgCounts.total}선</div>
@@ -2052,7 +2052,7 @@ html_content = """<!DOCTYPE html>
           <div class="summary-toolbar">
             <input type="text" id="summarySearchBox" class="summary-search-box"
                    placeholder="궁금한 용어나 개념 검색 (예: ASLR, PAM, IPSec, 유출통지)..."
-                   oninput="handleSummarySearch(this.value)">
+                   data-action="summary-search">
             <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
           <div id="summaryCardsContainer" class="summary-section"></div>
@@ -2064,7 +2064,7 @@ html_content = """<!DOCTYPE html>
           <div class="summary-toolbar">
             <input type="text" id="summarySearchBox" class="summary-search-box"
                    placeholder="실기 명령어 또는 실무 가이드 검색 (예: find, umask, SQLi, Snort)..."
-                   oninput="handleSummarySearch(this.value)">
+                   data-action="summary-search">
             <div class="summary-chips-scroll" id="summaryChipsBar"></div>
           </div>
           <div id="summaryCardsContainer" class="summary-section"></div>
@@ -2076,7 +2076,7 @@ html_content = """<!DOCTYPE html>
           <div class="summary-toolbar">
             <input type="text" id="ismspSearchBox" class="summary-search-box"
                    placeholder="인증기준 번호나 요구사항 검색 (예: 2.5.4, 위탁, 파기, 접속기록, 결함)..."
-                   oninput="handleIsmspSearch(this.value)">
+                   data-action="ismsp-search">
             <div class="summary-chips-scroll" id="ismspChipsBar"></div>
           </div>
           <div id="ismspCardsContainer" class="summary-section"></div>
@@ -2215,6 +2215,58 @@ html_content = """<!DOCTYPE html>
       alert(`[분석 요청 접수]\\n카테고리: ${title}\\n\\n피클 비서가 엑사원 AI를 가동하여 핵심 요약과 실전 퀴즈를 생성합니다.\\n채팅창에서도 즉시 확인하실 수 있습니다!`);
       addResourcePanel.classList.remove('show');
     };
+
+    // ---- 이벤트 위임 ----
+    // CSP script-src 에서 'unsafe-inline' 을 쓰지 않으므로 인라인 onclick/oninput/onchange 대신
+    // data-action 속성 하나로 모아 문서 레벨에서 위임 처리한다.
+    function closestAction(el) {
+      return (el && el.closest) ? el.closest('[data-action]') : null;
+    }
+
+    document.addEventListener('click', function (e) {
+      const el = closestAction(e.target);
+      if (!el) return;
+      const action = el.getAttribute('data-action');
+      if (action === 'source-type') {
+        window.setSourceType(el.getAttribute('data-type'));
+      } else if (action === 'pick-file') {
+        const input = document.getElementById('studyFileInput');
+        if (input) input.click();
+      } else if (action === 'request-analysis') {
+        window.requestAnalysis();
+      } else if (action === 'select-choice') {
+        if (window.handleSelectChoice) {
+          window.handleSelectChoice(el.getAttribute('data-id'), parseInt(el.getAttribute('data-choice'), 10));
+        }
+      } else if (action === 'summary-filter') {
+        if (window.setSummaryFilter) window.setSummaryFilter(el.getAttribute('data-filter'));
+      } else if (action === 'ismsp-filter') {
+        if (window.setIsmspFilter) window.setIsmspFilter(el.getAttribute('data-filter'));
+      }
+    });
+
+    document.addEventListener('input', function (e) {
+      const el = e.target;
+      if (!el || !el.getAttribute) return;
+      const action = el.getAttribute('data-action');
+      if (action === 'summary-search') window.handleSummarySearch(el.value);
+      else if (action === 'ismsp-search') window.handleIsmspSearch(el.value);
+    });
+
+    document.addEventListener('change', function (e) {
+      const el = e.target;
+      if (!el || !el.getAttribute) return;
+      if (el.getAttribute('data-action') === 'file-select') window.handleFileSelect(e);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      // 키보드 접근성: Enter/Space 로 data-action 요소를 실행한다(버튼이 아닌 div 등).
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const el = closestAction(e.target);
+      if (!el || el.tagName === 'BUTTON' || el.tagName === 'INPUT') return;
+      e.preventDefault();
+      el.click();
+    });
 
     // Initial Load
     switchCategory('cppg');

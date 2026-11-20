@@ -2141,7 +2141,7 @@ def generate_html(jobs, update_time_str):
           <div class="empty-state">
             <div class="empty-title">일치하는 채용공고가 없습니다</div>
             <div class="empty-desc">검색어를 변경하거나 적용된 필터를 초기화해 보세요.</div>
-            <button class="reset-btn" onclick="resetFilters()">필터 초기화</button>
+            <button class="reset-btn" data-action="reset-filters">필터 초기화</button>
           </div>
         `;
         return;
@@ -2312,6 +2312,13 @@ def generate_html(jobs, update_time_str):
     // Initialize
     initTheme();
     renderFeed();
+
+    // 결과 없음 화면의 '필터 초기화' 버튼은 매번 새로 그려지므로 문서 레벨 위임으로 받는다.
+    // (CSP script-src 에서 'unsafe-inline' 을 쓰지 않아 인라인 onclick 을 사용할 수 없다)
+    document.addEventListener('click', function (e) {{
+      const el = (e.target && e.target.closest) ? e.target.closest('[data-action="reset-filters"]') : null;
+      if (el) resetFilters();
+    }});
 
     // 페이지를 오래 열어둔 경우에도 마감 시각이 지나면 목록에서 자동으로 ㅐ진다.
     let liveSignature = '';

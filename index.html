@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-mXDWY40YSW8BZ21V30bVbfVhJc3iU00ADk8ea5mb1Xs='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 정보보안 포지션 아카이브</title>
   <meta name="description" content="원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.">
@@ -1130,7 +1130,7 @@
       <div class="nav-actions">
         <div class="update-meta">
           <span class="live-dot"></span>
-          <span>2026-11-21 03:14:31 KST 기준</span>
+          <span>2026-11-21 04:02:14 KST 기준</span>
         </div>
         <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="테마 변경">
           <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1528,7 +1528,7 @@
           <div class="empty-state">
             <div class="empty-title">일치하는 채용공고가 없습니다</div>
             <div class="empty-desc">검색어를 변경하거나 적용된 필터를 초기화해 보세요.</div>
-            <button class="reset-btn" onclick="resetFilters()">필터 초기화</button>
+            <button class="reset-btn" data-action="reset-filters">필터 초기화</button>
           </div>
         `;
         return;
@@ -1699,6 +1699,13 @@
     // Initialize
     initTheme();
     renderFeed();
+
+    // 결과 없음 화면의 '필터 초기화' 버튼은 매번 새로 그려지므로 문서 레벨 위임으로 받는다.
+    // (CSP script-src 에서 'unsafe-inline' 을 쓰지 않아 인라인 onclick 을 사용할 수 없다)
+    document.addEventListener('click', function (e) {
+      const el = (e.target && e.target.closest) ? e.target.closest('[data-action="reset-filters"]') : null;
+      if (el) resetFilters();
+    });
 
     // 페이지를 오래 열어둔 경우에도 마감 시각이 지나면 목록에서 자동으로 ㅐ진다.
     let liveSignature = '';

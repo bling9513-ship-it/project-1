@@ -3,16 +3,20 @@
 정적 페이지 공통 보안 하드닝 유틸.
 
 - CSP 메타 태그 주입 (meta 태그만으로도 object-src/base-uri/form-action 을 잠글 수 있다)
+  · script-src 는 'self' + 페이지 내 인라인 <script> 본문의 SHA-256 해시만 허용한다.
+    ('unsafe-inline' 미사용 → 인라인 이벤트 핸들러(onclick 등)와 javascript: URL 이 원천 차단됨)
 - target="_blank" 앵커에 rel="noopener noreferrer" 강제
 - 외부에서 수집한 URL 을 href 에 넣기 전 http/https/mailto 스킴 화이트리스트 검증
 - <script> 안에 JSON 을 심을 때 "</" 가 스크립트를 조기 종료시키지 않도록 이스케이프
 """
+import base64
+import hashlib
 import re
 
-# 인라인 스크립트/스타일과 Pretendard CDN, Open-Meteo 런타임 조회만 허용한다.
+# 인라인 스크립트가 하나도 없을 때의 기본값(해시 없이 'self' 만 허용).
 CSP_VALUE = (
     "default-src 'self'; "
-    "script-src 'self' 'unsafe-inline'; "
+    "script-src 'self'; "
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
     "font-src 'self' data: https://cdn.jsdelivr.net; "
     "img-src 'self' data:; "
@@ -21,13 +25,36 @@ CSP_VALUE = (
     "base-uri 'self'; "
     "form-action 'self'"
 )
-CSP_META = '<meta http-equiv="Content-Security-Policy" content="%s">' % CSP_VALUE
 
 _CHARSET_RE = re.compile(r'<meta\s+charset=["\']?[^"\'>\s]+["\']?\s*/?>', re.I)
 _ANCHOR_BLANK_RE = re.compile(r'<a\b[^>]*?target\s*=\s*("_blank"|\'_blank\')[^>]*>', re.I)
 _REL_RE = re.compile(r'rel\s*=\s*("([^"]*)"|\'([^\']*)\')', re.I)
 _SAFE_SCHEME_RE = re.compile(r'^(?:https?:|mailto:)', re.I)
 _BAD_CHARS_RE = re.compile(r'[\s<>"\'`\\]')
+
+# <script ...> ... </script> 스캔. 브라우저와 동일하게 "먼저 열린 태그의 본문은
+# 첫 </script> 에서 끝난다"는 규칙으로 순차 소비하므로, 스크립트 본문 문자열 안에
+# 들어 있는 "<script" 예제 텍스트(예: XSS 학습 데이터)를 실제 태그로 오인하지 않는다.
+_SCRIPT_OPEN_RE = re.compile(r'<script\b([^>]*)>', re.I)
+_SCRIPT_CLOSE_RE = re.compile(r'</script\s*>', re.I)
+_ATTR_RE = re.compile(r'([^\s=/>]+)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)')
+_CSP_META_RE = re.compile(
+    r'<meta\b[^>]*http-equiv\s*=\s*["\']?Content-Security-Policy["\']?[^>]*>', re.I
+)
+_CSP_CONTENT_RE = re.compile(r'content\s*=\s*("[^"]*"|\'[^\']*\')', re.I)
+
+# 브라우저가 실행하는 스크립트 타입만 해시를 계산한다.
+# application/json, text/template, importmap 등은 실행되지 않으므로 CSP 검사 대상이 아니다.
+_EXECUTABLE_TYPES = {
+    "",
+    "text/javascript",
+    "application/javascript",
+    "application/x-javascript",
+    "text/ecmascript",
+    "application/ecmascript",
+    "text/jscript",
+    "module",
+}
 
 
 def safe_url(url, fallback="#"):
@@ -62,15 +89,75 @@ def _fix_rel(match):
     return tag[:-1].rstrip() + ' rel="noopener noreferrer">'
 
 
+def _parse_attrs(attr_text):
+    attrs = {}
+    for m in _ATTR_RE.finditer(attr_text or ""):
+        name = m.group(1).lower()
+        raw = m.group(2)
+        if raw[:1] in ("'", '"'):
+            raw = raw[1:-1]
+        attrs[name] = raw
+    return attrs
+
+
+def iter_scripts(html):
+    """(attrs dict, 본문 텍스트) 를 문서 등장 순서대로 돌려준다."""
+    pos = 0
+    while True:
+        m = _SCRIPT_OPEN_RE.search(html, pos)
+        if not m:
+            return
+        close = _SCRIPT_CLOSE_RE.search(html, m.end())
+        if not close:
+            return
+        yield _parse_attrs(m.group(1)), html[m.end():close.start()]
+        pos = close.end()
+
+
+def inline_script_hashes(html):
+    """실행되는 인라인 <script> 본문의 CSP source expression('sha256-...') 목록."""
+    hashes = []
+    seen = set()
+    for attrs, body in iter_scripts(html):
+        if "src" in attrs:
+            continue  # 외부 스크립트는 'self' 로 허용되고, 인라인 본문은 무시된다
+        if attrs.get("type", "").strip().lower() not in _EXECUTABLE_TYPES:
+            continue  # JSON/템플릿 등 데이터 블록은 실행되지 않는다
+        if not body:
+            continue
+        digest = hashlib.sha256(body.encode("utf-8")).digest()
+        expr = "'sha256-%s'" % base64.b64encode(digest).decode("ascii")
+        if expr not in seen:
+            seen.add(expr)
+            hashes.append(expr)
+    return hashes
+
+
+def build_csp(hashes):
+    """인라인 스크립트 해시를 script-src 에 등록한 CSP 문자열."""
+    script_src = "'self'" + ("".join(" " + h for h in hashes) if hashes else "")
+    return CSP_VALUE.replace("script-src 'self'", "script-src " + script_src, 1)
+
+
 def harden_html(html):
     """생성된 HTML 문자열에 CSP·rel 보강을 적용해 돌려준다."""
     if not html:
         return html
     html = _ANCHOR_BLANK_RE.sub(_fix_rel, html)
-    if "Content-Security-Policy" not in html:
-        m = _CHARSET_RE.search(html)
-        if m:
-            html = html[:m.end()] + "\n  " + CSP_META + html[m.end():]
-        elif "<head>" in html:
-            html = html.replace("<head>", "<head>\n  " + CSP_META, 1)
+
+    # 해시는 최종 HTML 의 스크립트 본문 바이트로 계산해야 한다(다른 변형을 모두 마친 뒤).
+    csp = build_csp(inline_script_hashes(html))
+    meta = '<meta http-equiv="Content-Security-Policy" content="%s">' % csp
+
+    existing = _CSP_META_RE.search(html)
+    if existing:
+        # 이미 CSP 가 있으면 script-src 를 포함해 새 정책으로 교체한다(중복 메타 방지 · 멱등).
+        html = html[:existing.start()] + meta + html[existing.end():]
+        return html
+
+    m = _CHARSET_RE.search(html)
+    if m:
+        html = html[:m.end()] + "\n  " + meta + html[m.end():]
+    elif "<head>" in html:
+        html = html.replace("<head>", "<head>\n  " + meta, 1)
     return html
