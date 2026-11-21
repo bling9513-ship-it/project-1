@@ -18,6 +18,7 @@ from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
 import ui_shell
+import game_guide
 from wargame_generator import rotate_answer
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -647,13 +648,117 @@ QUESTIONS = [
 ]
 
 
+# ---------------------------------------------------------------- 판단 근거 줄
+# 정답 판단에 쓰이는 코드·로그 줄(block index, [line index]) — 채점 직후 보드에서 강조한다.
+KEY_LINES = {
+    "web-01": [(0, [2, 3])],
+    "web-02": [(0, [1])],
+    "web-03": [(1, [3])],
+    "web-04": [(0, [1]), (1, [0])],
+    "web-05": [(0, [0]), (1, [1])],
+    "web-06": [(1, [2])],
+    "log-01": [(0, [0])],
+    "log-02": [(0, [0])],
+    "log-03": [(0, [5])],
+    "log-04": [(0, [1])],
+    "log-05": [(0, [0])],
+    "sys-01": [(0, [0])],
+    "sys-02": [(0, [2])],
+    "sys-03": [(1, [1])],
+    "sys-04": [(0, [1]), (1, [1])],
+    "sys-05": [(0, [4, 5])],
+    "net-01": [(0, [0, 2, 4])],
+    "net-02": [(0, [0])],
+    "net-03": [(1, [0]), (2, [0])],
+    "net-04": [(0, [6])],
+}
+
+STOPWORDS = set("the and for with from this that 이는 이고 그리고 하지만 대한 있는 없다 있다 한다 보다 위해 때를 것은".split())
+
+
+def _tokens(text):
+    import re
+    return {t for t in re.split(r"[^0-9A-Za-z가-힣]+", (text or "").lower()) if len(t) >= 3 and t not in STOPWORDS}
+
+
+def _key_lines(q):
+    """문제별 판단 근거 줄. 정적 문제는 KEY_LINES, 매일 추가되는 문제는 해설·문제 문장과
+    겹치는 토큰이 가장 많은 줄을 고른다(항상 한 줄 이상을 고른다)."""
+    if q.get("id") in KEY_LINES:
+        return KEY_LINES[q["id"]]
+    blocks = q.get("blocks") or []
+    vuln = (q.get("explain") or {}).get("vuln", "")
+    vuln_lines = [line.strip() for line in vuln.split("\n") if line.strip()]
+    picked = []
+    for block_index, block in enumerate(blocks):
+        hits = [i for i, line in enumerate(block["code"].split("\n"))
+                if line.strip() and line.strip() in vuln_lines]
+        if hits:
+            # 해설 코드 전체가 그대로 들어 있는 경우에는 정보량이 가장 많은 줄 두 개만 남긴다.
+            if len(hits) > 2:
+                lines = block["code"].split("\n")
+                ranked = sorted(hits, key=lambda i: (-len(_tokens(lines[i])), -i))
+                hits = sorted(ranked[:2])
+            picked.append((block_index, hits))
+    if picked:
+        return picked
+    # 해설 코드와 같은 줄이 없으면(로그·패킷 문제) 문제 문장과 겹치는 토큰이 많은 줄을 고른다.
+    target = _tokens(vuln) | _tokens(q.get("prompt", ""))
+    best = None
+    for block_index, block in enumerate(blocks):
+        for line_index, line in enumerate(block["code"].split("\n")):
+            score = len(_tokens(line) & target)
+            if score and (best is None or score > best[0]):
+                best = (score, block_index, line_index)
+    if best:
+        return [(best[1], [best[2]])]
+    if blocks:
+        first = next((i for i, line in enumerate(blocks[0]["code"].split("\n")) if line.strip()), 0)
+        return [(0, [first])]
+    return []
+
+
 # ---------------------------------------------------------------- 렌더 도우미
-def _code_block(block):
+def _code_block(block, key_lines=None):
+    lines = block["code"].split("\n")
+    key = set(key_lines or [])
+    body = "".join(
+        '<span class="cl%s" data-line="%d" data-badge="%s">%s</span>' % (
+            " is-key" if index in key else "",
+            index,
+            "판단 근거" if index in key else "",
+            esc(line) if line.strip() else " ",
+        )
+        for index, line in enumerate(lines)
+    )
     return ('<div class="code-block">'
             '<div class="code-head"><span class="code-label">%s</span>'
+            '<span class="code-badge" hidden>판단 근거</span>'
             '<span class="code-scroll-hint">옆으로 넘겨 보기</span></div>'
             '<div class="code-body"><pre>%s</pre></div>'
-            '</div>' % (esc(block["label"]), esc(block["code"])))
+            '</div>' % (esc(block["label"]), body))
+
+
+GUIDE_STAGE = (
+    '<div class="wg-demo">'
+    '<div class="wg-demo-code">'
+    '<span class="wg-demo-line" data-demo-line="0">q = request.args.get("q")</span>'
+    '<span class="wg-demo-line" data-demo-line="1">sql = "… LIKE \'%" + q + "%\'"</span>'
+    '<span class="wg-demo-line" data-demo-line="2">db.execute(sql)</span>'
+    '</div>'
+    '<div class="wg-demo-row">'
+    '<span class="wg-demo-opt" data-demo-opt="0"><i>A</i>SQL Injection</span>'
+    '<span class="wg-demo-opt" data-demo-opt="1"><i>B</i>XSS</span>'
+    '<span class="wg-demo-verdict" data-demo-verdict hidden>정답</span>'
+    '</div>'
+    '</div>'
+)
+
+GUIDE_HTML = game_guide.guide_html(
+    'wgGuide', GUIDE_STAGE,
+    ['① 코드 스캔', '② 보기 선택', '③ 판정'],
+    '취약한 코드 줄을 찾고, 보기를 고르면 그 줄이 판단 근거로 표시됩니다.',
+)
 
 
 def _daily_badges(q, today_str):
@@ -673,7 +778,8 @@ def _render_static(q, no=1, today_str=""):
     """서버 측에서 미리 그려 두는 카드 골격(문제·코드·보기). 채점은 JS가 한다."""
     cat = next(c["label"] for c in CATS if c["key"] == q["cat"])
     lv = next(l["label"] for l in LEVELS if l["key"] == q["level"])
-    blocks = "".join(_code_block(b) for b in q.get("blocks", []))
+    keys = {index: lines for index, lines in _key_lines(q)}
+    blocks = "".join(_code_block(b, keys.get(i)) for i, b in enumerate(q.get("blocks", [])))
     if q["type"] == "choice":
         body = "".join(
             '<button class="opt" type="button" data-idx="%d">'
@@ -719,6 +825,14 @@ def _render_static(q, no=1, today_str=""):
         '</div>'
         '<div class="hint-box" hidden><div class="hint-label">힌트</div><ol class="hint-list"></ol></div>'
         '<div class="q-feedback" hidden></div>'
+        '<div class="q-result" hidden>'
+        '<div class="q-result-gap"><span class="q-result-tag">다음 목표</span>'
+        '<span class="q-result-text"></span></div>'
+        '<div class="q-result-acts">'
+        '<button class="q-result-retry" type="button">원탭 재도전</button>'
+        '<button class="q-result-next" type="button">바로 다음 문제</button>'
+        '</div>'
+        '</div>'
         '<div class="q-explain" hidden>'
         '<div class="explain-head">해설 · 공격 원리와 대응</div>'
         '<div class="explain-grid">'
@@ -1890,9 +2004,9 @@ CSS = """
     }
 
     @media (max-width: 1023px) {
-      .wg-overview-copy { display: none; }
+      .wg-overview { margin-bottom: 8px; }
+      .wg-overview .hero-pill, .wg-overview .hero-title, .wg-overview .hero-desc { display: none; }
       .wg-kpis { display: none; }
-      .wg-overview { margin-bottom: 0; }
       .wg-mobile-bar {
         display: flex;
         align-items: center;
@@ -1992,6 +2106,95 @@ CSS = """
 
     @media (prefers-reduced-motion: reduce) {
       .wg-item, .wg-list-btn, .wg-rail-close, .wg-rail, .wg-rail-backdrop { transition: none !important; }
+    }
+"""
+
+
+CSS = CSS + game_guide.GUIDE_CSS + r"""
+    /* ----- 워게임: 목표 한 줄 ----- */
+    .wg-goal {
+      display: none; align-items: center; gap: 6px; margin: 0;
+      font-size: 11.5px; font-weight: 600; line-height: 1.45; color: var(--text-primary);
+    }
+    .wg-goal-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; letter-spacing: 0.02em;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 5px;
+    }
+
+    /* ----- 워게임: 게임 방법 미니 데모 (코드 스캔 → 선택 → 판정) ----- */
+    .wg-demo-code {
+      display: block; padding: 6px 7px; border-radius: 7px; background: var(--code-bg);
+      font-family: var(--font-mono); font-size: 9.6px; line-height: 1.5; color: var(--code-text);
+    }
+    .wg-demo-line {
+      display: block; padding: 0 4px; border-radius: 4px; border-left: 2px solid transparent;
+      color: var(--code-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+    .wg-demo-line.is-scan { border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: #f8fafc; }
+    .wg-demo-line.is-ok { border-left-color: #22c55e; background: rgba(34, 197, 94, 0.2); color: #dcfce7; }
+    .wg-demo-row { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
+    .wg-demo-opt {
+      display: inline-flex; align-items: center; gap: 3px; min-width: 0;
+      font-size: 8.8px; font-weight: 600; color: var(--text-secondary);
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 6px; padding: 3px 5px; white-space: nowrap;
+      transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
+    }
+    .wg-demo-opt i { font-style: normal; font-size: 8px; font-weight: 700; color: var(--text-muted); }
+    .wg-demo-opt.is-pick { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+    .wg-demo-opt.is-pick i { color: var(--accent-primary); }
+    .wg-demo-verdict {
+      display: inline-flex; align-items: center; gap: 2px; margin-left: auto;
+      font-size: 8.8px; font-weight: 700; color: #15803d; background: #dcfce7;
+      border: 1px solid #86efac; border-radius: 6px; padding: 3px 5px; white-space: nowrap;
+    }
+
+    /* ----- 워게임: 판단 근거 줄 하이라이트 ----- */
+    .code-body pre { padding: 10px 11px; }
+    .cl {
+      display: block; margin: 0 -4px; padding: 0 4px;
+      border-left: 2px solid transparent; border-radius: 2px;
+    }
+    .code-block.is-lit .cl.is-key { background: rgba(59, 130, 246, 0.18); border-left-color: #3b82f6; }
+    .code-block.is-lit.is-correct .cl.is-key { background: rgba(34, 197, 94, 0.2); border-left-color: #22c55e; }
+    .code-badge {
+      flex: 0 0 auto; font-size: 8.6px; font-weight: 700; letter-spacing: 0.01em;
+      padding: 1px 5px; border-radius: 4px;
+      color: #dbeafe; background: rgba(59, 130, 246, 0.32); border: 1px solid rgba(147, 197, 253, 0.5);
+    }
+    .code-block.is-correct .code-badge { color: #dcfce7; background: rgba(34, 197, 94, 0.3); border-color: rgba(134, 239, 172, 0.55); }
+
+    /* ----- 워게임: 채점 후 목표 격차 + 원탭 버튼 ----- */
+    .q-result {
+      margin-top: 10px; padding: 9px 10px; border-radius: 10px;
+      border: 1px solid var(--border-default); background: var(--bg-subtle);
+    }
+    .q-result-gap { display: flex; align-items: flex-start; gap: 6px; font-size: 11.5px; font-weight: 600; line-height: 1.5; color: var(--text-primary); }
+    .q-result-tag {
+      flex: 0 0 auto; font-size: 8.8px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default);
+      border-radius: 4px; padding: 1px 4px; margin-top: 1px;
+    }
+    .q-result-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px; margin-top: 8px; }
+    .q-result-acts button {
+      font-family: inherit; font-size: 12px; font-weight: 700; padding: 9px 6px;
+      border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary); cursor: pointer; white-space: nowrap;
+    }
+    .q-result-acts button:hover { border-color: var(--border-strong); background: var(--bg-surface); }
+    .q-result-acts .q-result-next { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    .q-result-acts .q-result-next:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #ffffff; }
+
+    @media (max-width: 640px) {
+      .wg-goal { display: flex; }
+      .wg-main-head { margin-bottom: 8px; }
+      .wg-mobile-bar { margin-bottom: 8px; padding: 7px 10px; }
+      .q-result-gap { font-size: 11px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .wg-demo-line, .wg-demo-opt, .gg-step { transition: none !important; }
     }
 """
 
@@ -2102,6 +2305,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <span class="hero-pill">SECURITY DRILL</span>
         <h1 class="hero-title">출퇴근길 보안 워게임</h1>
         <p class="hero-desc">현업에서 마주치는 결함을 짧은 코드·서버 로그·패킷으로 재구성했습니다. 한 문제 3분, 지하철에서 한 손으로 풀고 바로 채점받으세요. 정답을 확인하면 공격 원리와 실무 영향, 그리고 취약 코드와 시큐어 코드를 나란히 보여 줍니다. 매일 아침 08:00에 최신 CVE·보안 이슈를 소재로 새 문제 2개가 추가됩니다.</p>
+        <p class="wg-goal"><span class="wg-goal-tag">목표</span>취약 코드·로그의 판단 근거 줄을 짚어 3분 안에 판정하기</p>
       </div>
       <div class="wg-kpis" aria-label="진행 현황">
         <div class="wg-kpi">
@@ -2174,6 +2378,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </aside>
 
       <div class="wg-main">
+        __GUIDE__
         <div class="wg-main-head">
           <span class="wg-pos" id="wgPos">0 / __TOTAL__</span>
           <div class="wg-pager">
@@ -2229,6 +2434,7 @@ __CARDS__
     }
 
     // ---- 데이터 ----
+    __GUIDE_SCRIPTS__
     const DATA = __DATA_JSON__;
     const CATS = __CATS_JSON__;
     const LEVELS = __LEVELS_JSON__;
@@ -2382,6 +2588,87 @@ __CARDS__
       box.textContent = text;
     }
 
+    // ---- 목표 격차 · 원탭 재도전 · 판단 근거 줄 강조 ----
+    const TIERS = [{ n: 8, name: '분석가' }, { n: 16, name: '대응가' }, { n: 24, name: '마스터' }];
+
+    function solvedCount() {
+      return DATA.filter(function (q) { return RECORD[q.id].solved; }).length;
+    }
+
+    function perfectCount() {
+      return DATA.filter(function (q) {
+        const r = RECORD[q.id];
+        return r.solved && r.attempts === 1 && !r.revealed;
+      }).length;
+    }
+
+    function gapText() {
+      const solved = solvedCount();
+      const total = DATA.length;
+      const tier = TIERS.filter(function (t) { return t.n > solved; })[0];
+      const tierText = tier
+        ? "다음 티어 '" + tier.name + "'까지 " + (tier.n - solved) + '문제!'
+        : '모든 티어 완료!';
+      const perfect = perfectCount();
+      const perfectText = perfect < total ? '퍼펙트까지 ' + (total - perfect) + '문제!' : '퍼펙트 달성!';
+      return tierText + ' · ' + perfectText;
+    }
+
+    function highlightEvidence(card, correct) {
+      Array.from(card.querySelectorAll('.code-block')).forEach(function (block) {
+        if (!block.querySelector('.cl.is-key')) return;
+        block.classList.add('is-lit');
+        block.classList.toggle('is-correct', !!correct);
+        const badge = block.querySelector('.code-badge');
+        if (badge) {
+          badge.hidden = false;
+          badge.textContent = correct ? '정답 근거' : '판단 근거';
+        }
+      });
+      const first = card.querySelector('.code-block.is-lit .cl.is-key');
+      if (first && first.scrollIntoView) first.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+
+    function clearEvidence(card) {
+      Array.from(card.querySelectorAll('.code-block')).forEach(function (block) {
+        block.classList.remove('is-lit');
+        block.classList.remove('is-correct');
+        const badge = block.querySelector('.code-badge');
+        if (badge) badge.hidden = true;
+      });
+    }
+
+    function showResult(card) {
+      const box = card.querySelector('.q-result');
+      if (!box) return;
+      box.hidden = false;
+      const text = box.querySelector('.q-result-text');
+      if (text) text.textContent = gapText();
+    }
+
+    function retryCard(card, q) {
+      card.dataset.retry = '1';
+      card.classList.remove('is-solved');
+      const state = card.querySelector('.q-state');
+      if (state) state.hidden = true;
+      const input = card.querySelector('.answer-input');
+      if (input) { input.disabled = false; input.value = ''; }
+      const submit = card.querySelector('.btn-primary');
+      if (submit) submit.disabled = false;
+      Array.from(card.querySelectorAll('.opt')).forEach(function (opt) {
+        opt.disabled = false;
+        opt.classList.remove('is-wrong');
+        opt.classList.remove('is-correct');
+      });
+      const box = card.querySelector('.q-feedback');
+      if (box) { box.hidden = true; box.className = 'q-feedback'; box.textContent = ''; }
+      clearEvidence(card);
+      const result = card.querySelector('.q-result');
+      if (result) result.hidden = true;
+      const target = card.querySelector('.answer-input') || card.querySelector('.opt');
+      if (target) target.focus();
+    }
+
     function triesText(rec) {
       return rec.solved ? '정답 · 제출 ' + rec.attempts + '회' : (rec.attempts ? '제출 ' + rec.attempts + '회' : '');
     }
@@ -2419,12 +2706,12 @@ __CARDS__
         const opts = Array.from(card.querySelectorAll('.opt'));
         opts.forEach(function (btn) {
           btn.addEventListener('click', function () {
-            if (rec.solved) return;
+            const retry = card.dataset.retry === '1';
+            if (rec.solved && !retry) return;
             const picked = Number(btn.dataset.idx);
-            rec.attempts += 1;
+            if (!retry) rec.attempts += 1;
             if (picked === q.answer) {
-              rec.correct += 1;
-              rec.solved = true;
+              if (!retry) { rec.correct += 1; rec.solved = true; }
               opts.forEach(function (o) {
                 o.disabled = true;
                 if (Number(o.dataset.idx) === q.answer) o.classList.add('is-correct');
@@ -2437,6 +2724,8 @@ __CARDS__
               btn.disabled = true;
               feedback(card, '오답입니다. 제시된 코드와 로그의 흐름을 다시 대조해 보세요.', 'no');
             }
+            highlightEvidence(card, picked === q.answer);
+            showResult(card);
             updateTries(card, rec);
             saveRecord();
             renderSummary();
@@ -2449,13 +2738,14 @@ __CARDS__
         const input = card.querySelector('.answer-input');
         form.addEventListener('submit', function (ev) {
           ev.preventDefault();
-          if (rec.solved) return;
+          const retry = card.dataset.retry === '1';
+          if (rec.solved && !retry) return;
           const value = input.value;
           if (!normalizeInput(value)) { input.focus(); return; }
-          rec.attempts += 1;
-          if (matchesPattern(q, value)) {
-            rec.correct += 1;
-            rec.solved = true;
+          if (!retry) rec.attempts += 1;
+          const ok = matchesPattern(q, value);
+          if (ok) {
+            if (!retry) { rec.correct += 1; rec.solved = true; }
             feedback(card, '정답입니다. 입력값이 그대로 공격에 쓰입니다. 아래 해설에서 대응 코드를 확인하세요.', 'ok');
             markSolved(card, rec);
           } else {
@@ -2463,6 +2753,8 @@ __CARDS__
               ? '아직 정답이 아닙니다. 힌트 2단계를 열거나 아래 정답 보기를 사용할 수 있습니다.'
               : '아직 정답이 아닙니다. 형식(따옴표·주석·경로 구분자)을 힌트에서 확인해 보세요.', 'no');
           }
+          highlightEvidence(card, ok);
+          showResult(card);
           updateTries(card, rec);
           saveRecord();
           renderSummary();
@@ -2525,6 +2817,19 @@ __CARDS__
           showExplain(card);
           reveal.hidden = true;
           saveRecord();
+        });
+      }
+
+      // ---- 결과 영역: 목표 격차 + 원탭 재도전/바로 다음 문제 ----
+      const resultBox = card.querySelector('.q-result');
+      if (resultBox) {
+        const retry = resultBox.querySelector('.q-result-retry');
+        if (retry) retry.addEventListener('click', function () { retryCard(card, q); });
+        const next = resultBox.querySelector('.q-result-next');
+        if (next) next.addEventListener('click', function () {
+          const go = document.getElementById('wgNext');
+          if (go) go.click();
+          window.scrollTo({ top: 0, behavior: GameGuide.reduce ? 'auto' : 'smooth' });
         });
       }
 
@@ -2834,6 +3139,41 @@ __CARDS__
     const startId = initialProblemId();
     if (startId) selectProblem(startId, { silent: true });
     else applyFilters();
+
+    // ---- 게임 방법 데모: 코드 스캔 → 보기 선택 → 판정 (처음 한 번만 움직임) ----
+    (function initWargameGuide() {
+      const stage = document.getElementById('wgGuideStage');
+      if (!stage) return;
+      const lines = stage.querySelectorAll('[data-demo-line]');
+      const picks = stage.querySelectorAll('[data-demo-opt]');
+      const verdict = stage.querySelector('[data-demo-verdict]');
+
+      function paint(n) {
+        lines.forEach(function (line) {
+          const index = Number(line.getAttribute('data-demo-line'));
+          line.classList.toggle('is-scan', index === 1 && n <= 2);
+          line.classList.toggle('is-ok', index === 1 && n >= 3);
+        });
+        picks.forEach(function (pick) {
+          pick.classList.toggle('is-pick', n >= 2 && pick.getAttribute('data-demo-opt') === '0');
+        });
+        if (verdict) verdict.hidden = n < 3;
+      }
+
+      GameGuide.create({
+        key: 'wargame_demo_seen_v1',
+        steps: document.getElementById('wgGuideSteps'),
+        note: document.getElementById('wgGuideNote'),
+        replay: document.getElementById('wgGuideReplay'),
+        notes: [
+          '① 코드·로그를 훑어 판단이 걸리는 줄을 먼저 찾습니다.',
+          '② 그 줄을 근거로 보기를 고릅니다.',
+          '③ 정답이면 근거 줄이 초록으로 바뀌고 채점 기록이 올라갑니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    })();
   </script>
 </body>
 </html>
@@ -2984,6 +3324,8 @@ def build():
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
+    html = html.replace("__GUIDE__", GUIDE_HTML)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
     html = html.replace("__CARDS__", cards)
     html = html.replace("__DATA_JSON__", data_json.replace("</", "<\\/"))
     html = html.replace("__CATS_JSON__", cats_json.replace("</", "<\\/"))

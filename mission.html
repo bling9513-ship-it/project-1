@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-CSJUAAgqJNC9CeliK7t7Tq53xm1z4s9sD+keTBwPX+Y=' 'sha256-2XoakcXbiNPz7qPGe9UC2QnNc0LqI7BaTKIuYpt85uY=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-CSJUAAgqJNC9CeliK7t7Tq53xm1z4s9sD+keTBwPX+Y=' 'sha256-grkEqr3Zvg+BdFBIpFxKiIxnhKCu/I5g8YZAovz2ykw=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 퇴근길 미션</title>
   <meta name="description" content="회사에서 출발해 편의점·카페 같은 경유지를 들르고 제한 이동 수 안에 집에 도착하는 1분 경로 퍼즐. 매일 같은 지도로 열리는 오늘의 미션과 초급·중급·고급 연습 스테이지, 최고 기록과 연속 클리어를 제공합니다.">
@@ -763,8 +763,10 @@
       .board-col, .board-side { display: contents; }
       #board { order: 2; }
       .legend { order: 3; }
-      .meters { order: 4; flex-direction: row; align-items: center; gap: 10px; }
-      .meters .bar { flex: 1 1 auto; min-width: 48px; }
+      .meters { order: 4; flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
+      .meters .bar { flex: 1 1 24px; min-width: 24px; }
+      .meters .meter-row { flex: 0 0 auto; white-space: nowrap; gap: 4px; }
+      .meters .remain-chip { flex: 1 1 100%; justify-content: center; margin: 0; }
       .pad { order: 5; }
       .game-actions { order: 6; flex-direction: row; }
       .game-msg { order: 7; }
@@ -917,6 +919,112 @@
       .meters { flex-direction: column; align-items: stretch; gap: 3px; font-size: 11px; }
       .meter-row { font-size: 11px; white-space: nowrap; }
       .meters .bar { min-width: 0; }
+    }
+
+    /* ----- 게임 방법: 한 번만 움직이는 데모 (4종 공통) ----- */
+    .gg-card {
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 12px; padding: 11px 12px 10px; margin: 0 0 10px;
+      box-shadow: var(--card-shadow);
+    }
+    .gg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .gg-head-actions { display: inline-flex; align-items: center; gap: 6px; }
+    .gg-head h2 {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary);
+    }
+    .gg-head h2 svg { color: var(--accent-primary); flex-shrink: 0; }
+    .gg-auto { font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+    .gg-demo {
+      position: relative; margin-top: 8px; padding: 9px 9px 8px;
+      border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-page);
+      overflow: hidden;
+    }
+    .gg-steps { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
+    .gg-step {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap;
+      color: var(--text-muted); padding: 2px 5px; border-radius: 999px;
+      border: 1px solid transparent; transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+    }
+    .gg-step.is-done { color: var(--text-secondary); }
+    .gg-step.is-on { color: var(--accent-primary); background: var(--accent-subtle); border-color: var(--border-default); }
+    .gg-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); min-height: 15px; }
+    .gg-replay {
+      width: auto; border: 1px solid var(--border-default); border-radius: 7px;
+      background: var(--bg-surface); color: var(--accent-primary);
+      font-family: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 8px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .gg-replay:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .gg-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    @media (max-width: 420px) {
+      .gg-card { padding: 8px 10px 7px; }
+      .gg-demo { margin-top: 6px; padding: 7px 8px 6px; }
+      .gg-steps { margin-top: 6px; }
+      .gg-note { margin-top: 5px; min-height: 13px; }
+      .gg-replay { padding: 2px 6px; font-size: 10px; }
+      .gg-step { font-size: 8.6px; padding: 2px 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gg-step { transition: none !important; }
+    }
+
+    /* ----- 퇴근길 미션: 보드 위 다음 이동 하이라이트·남은 수·결과 격차 ----- */
+    .mg-guide {
+      display: flex; align-items: center; gap: 4px; margin: 0 0 8px; padding: 6px 8px;
+      border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface);
+    }
+    .mg-guide .gg-step { padding: 1px 4px; border-radius: 999px; }
+    .mg-guide .gg-step b {
+      font-style: normal; font-weight: 700; color: inherit;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 12px; height: 12px; border-radius: 50%; font-size: 8px;
+      background: var(--bg-subtle); border: 1px solid var(--border-default);
+    }
+    .mg-guide .gg-step.is-on b { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    .mg-guide .gg-arrow { color: var(--text-muted); font-size: 9px; }
+    .mg-guide .gg-replay { margin-left: auto; padding: 2px 7px; font-size: 10px; }
+
+    .board { position: relative; }
+    .cell.next::after {
+      content: ''; position: absolute; inset: 2px; border: 2px solid var(--accent-primary);
+      border-radius: 7px; opacity: 0.75;
+    }
+    .cell { position: relative; }
+    .cell.ghost-wp { box-shadow: inset 0 0 0 2px var(--accent-primary); }
+    .ghost-dot {
+      position: absolute; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-primary); opacity: 0.5; transform: translate(-50%, -50%);
+      transition: left 380ms ease, top 380ms ease; pointer-events: none; z-index: 4;
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+    }
+    .remain-chip {
+      display: inline-flex; align-items: center; gap: 3px; margin: 4px 0 0;
+      font-size: 10px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 1px 6px; white-space: nowrap; width: fit-content;
+    }
+    .remain-chip svg { flex: 0 0 auto; }
+    .remain-chip.is-done { color: #15803d; background: #dcfce7; border-color: #86efac; }
+
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin: 0 0 9px;
+      font-size: 12px; font-weight: 600; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--bg-surface); border: 1px solid var(--border-default); color: var(--accent-primary);
+    }
+    .result-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px; margin: 0 0 10px; }
+    .result-acts button {
+      font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 10px 6px;
+      border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary); cursor: pointer; white-space: nowrap;
+    }
+    .result-acts .result-next { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    @media (prefers-reduced-motion: reduce) {
+      .ghost-dot { transition: none !important; }
     }
 </style>
   <script>
@@ -1461,6 +1569,14 @@
       </div>
       <p class="game-scene" id="gameScene"></p>
 
+      <div class="mg-guide" id="mgGuide">
+        <span class="gg-step is-on" data-step="1"><b>1</b>경유지 확인</span>
+        <span class="gg-arrow">›</span>
+        <span class="gg-step" data-step="2"><b>2</b>이동</span>
+        <span class="gg-arrow">›</span>
+        <span class="gg-step" data-step="3"><b>3</b>도착</span>
+        <button type="button" class="gg-replay" id="mgReplay">다시 보기</button>
+      </div>
       <div class="board-wrap">
         <div class="board-col">
           <div class="board" id="board" role="grid" tabindex="0" aria-label="경로 지도"></div>
@@ -1486,6 +1602,7 @@
             <div class="meter-row"><span>이동</span><strong id="moveText">0 / 14</strong></div>
             <div class="bar" id="moveBarWrap"><i id="moveBar"></i></div>
             <div class="meter-row"><span>시간</span><strong id="timeText">00:00</strong></div>
+            <span class="remain-chip" id="remainLabel"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>최소까지 -수</span>
           </div>
 
           <div class="pad-row">
@@ -1522,6 +1639,14 @@
             <span class="fact"><small>시간</small><strong id="rTime">-</strong></span>
             <span class="fact"><small>최소 이동</small><strong id="rOpt">-</strong></span>
           </div>
+          <div class="result-gap">
+            <span class="result-gap-tag">다음 목표</span>
+            <span id="resultGapText"></span>
+          </div>
+          <div class="result-acts">
+            <button type="button" id="retryBtn">다시 도전</button>
+            <button type="button" class="result-next" id="nextBtn">연습 스테이지</button>
+          </div>
           <div class="share">
             <div class="share-preview" id="sharePreview"></div>
             <button type="button" class="btn btn-primary" id="copyBtn">결과 복사</button>
@@ -1547,12 +1672,77 @@
     <footer class="footer">
       Infosec Archive · 퇴근길 미션<br>
       지도는 날짜를 시드로 고른 검증된 퍼즐이며, 모든 스테이지는 BFS 최단 경로로 클리어 가능함을 빌드 단계에서 확인합니다. 플레이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-21 21:31 KST 기준 · 매일 00:00 새 지도
+      2026-11-21 23:14 KST 기준 · 매일 00:00 새 지도
     </footer>
   </main>
 
   <script>
     const DATA = {"daily":[{"id":"daily-01","size":7,"rows":[".......",".#.#.p.",".......",".#.#.#.",".XX..X.",".#.#.#.","......."],"start":[1,6],"goal":[6,2],"waypoints":[{"r":2,"c":3,"label":"약국","task":"상비약 사기"},{"r":2,"c":5,"label":"편의점","task":"우유 사기"}],"limit":13,"optimal":11,"scene":"회사 → 약국 · 상비약 사기 → 편의점 · 우유 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-02","size":7,"rows":["X......",".#.p.#.","......X",".#.#.#.",".......",".#.#.#.","......."],"start":[0,5],"goal":[4,0],"waypoints":[{"r":1,"c":4,"label":"편의점","task":"우유 사기"},{"r":2,"c":5,"label":"문구점","task":"노트 사기"}],"limit":13,"optimal":11,"scene":"회사 → 편의점 · 우유 사기 → 문구점 · 노트 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-03","size":7,"rows":[".X.....",".#.#.p.",".......",".p.#.#.",".X.....",".#.#.#.","X......"],"start":[4,6],"goal":[0,3],"waypoints":[{"r":2,"c":1,"label":"문구점","task":"노트 사기"},{"r":5,"c":4,"label":"우체국","task":"등기 부치기"}],"limit":15,"optimal":13,"scene":"회사 → 문구점 · 노트 사기 → 우체국 · 등기 부치기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-04","size":7,"rows":[".......",".p.#.#.",".......",".#.#X#.",".......",".#.#.#.",".X....X"],"start":[4,6],"goal":[6,0],"waypoints":[{"r":2,"c":3,"label":"문구점","task":"노트 사기"}],"limit":14,"optimal":12,"scene":"회사 → 문구점 · 노트 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-05","size":7,"rows":[".......",".#.#.#.",".......",".#.#.#.","....X..",".#.#.p.","X......"],"start":[0,2],"goal":[3,6],"waypoints":[{"r":4,"c":2,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":13,"optimal":11,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-06","size":7,"rows":[".......",".#.#.#.","...X...",".#.#.p.",".......",".#.#X#.","......."],"start":[6,5],"goal":[0,3],"waypoints":[{"r":2,"c":4,"label":"우체국","task":"등기 부치기"},{"r":4,"c":2,"label":"문구점","task":"노트 사기"}],"limit":14,"optimal":12,"scene":"회사 → 우체국 · 등기 부치기 → 문구점 · 노트 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-07","size":7,"rows":[".......",".#.#.#.",".X.....",".p.#.#.","...X...",".#.p.#.","......."],"start":[0,6],"goal":[6,3],"waypoints":[{"r":1,"c":2,"label":"약국","task":"상비약 사기"},{"r":2,"c":4,"label":"우체국","task":"등기 부치기"}],"limit":15,"optimal":13,"scene":"회사 → 약국 · 상비약 사기 → 우체국 · 등기 부치기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-08","size":7,"rows":["...X.X.",".#.#.p.",".......",".#.#.#.",".......",".#.#.p.","......."],"start":[2,0],"goal":[5,6],"waypoints":[{"r":1,"c":2,"label":"문구점","task":"노트 사기"}],"limit":13,"optimal":11,"scene":"회사 → 문구점 · 노트 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-09","size":7,"rows":[".......",".#.#.p.",".....X.",".#.p.#.","...X...",".#.#.#.","......."],"start":[3,0],"goal":[6,6],"waypoints":[{"r":3,"c":4,"label":"문구점","task":"노트 사기"},{"r":5,"c":2,"label":"편의점","task":"우유 사기"}],"limit":15,"optimal":13,"scene":"회사 → 문구점 · 노트 사기 → 편의점 · 우유 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-10","size":7,"rows":[".......",".#.#.#.","..X....",".#.#.#.",".......",".p.#.#.","...X..."],"start":[6,2],"goal":[0,2],"waypoints":[{"r":4,"c":2,"label":"세탁소","task":"맡긴 옷 찾기"},{"r":4,"c":5,"label":"문구점","task":"노트 사기"}],"limit":14,"optimal":12,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 문구점 · 노트 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-11","size":7,"rows":["X......",".#.#.#.",".......",".X.#.#.","...X...",".#.#.#.","......."],"start":[5,6],"goal":[2,0],"waypoints":[{"r":5,"c":4,"label":"약국","task":"상비약 사기"}],"limit":13,"optimal":11,"scene":"회사 → 약국 · 상비약 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-12","size":7,"rows":[".......",".#.#.p.","..X....",".#.#.#.",".......",".#.#.#.","..X...."],"start":[1,0],"goal":[4,6],"waypoints":[{"r":5,"c":4,"label":"약국","task":"상비약 사기"}],"limit":13,"optimal":11,"scene":"회사 → 약국 · 상비약 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-13","size":7,"rows":[".......",".p.#.#.",".......",".#.#.#.","..X....",".p.#.#.",".....X."],"start":[6,4],"goal":[4,0],"waypoints":[{"r":2,"c":5,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":14,"optimal":12,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-14","size":7,"rows":["..X....",".#.p.#X",".X.....",".#.#.#.",".......",".#.#.#.","......."],"start":[5,6],"goal":[0,1],"waypoints":[{"r":2,"c":5,"label":"편의점","task":"우유 사기"}],"limit":18,"optimal":16,"scene":"회사 → 편의점 · 우유 사기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-15","size":7,"rows":[".......",".#.#.#.",".......",".#.#.#.","...X...",".p.#.#.","..X...."],"start":[0,5],"goal":[6,6],"waypoints":[{"r":2,"c":3,"label":"카페","task":"원두 받기"}],"limit":13,"optimal":11,"scene":"회사 → 카페 · 원두 받기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-16","size":7,"rows":[".......",".#.#.#.",".......",".p.p.#.","......X","X#.#.#.","......."],"start":[6,1],"goal":[2,6],"waypoints":[{"r":1,"c":4,"label":"약국","task":"상비약 사기"},{"r":3,"c":2,"label":"카페","task":"원두 받기"}],"limit":13,"optimal":11,"scene":"회사 → 약국 · 상비약 사기 → 카페 · 원두 받기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-17","size":7,"rows":[".X.....",".p.#.#.",".......",".#.p.#.",".......",".#.#.#.",".....X."],"start":[3,0],"goal":[4,6],"waypoints":[{"r":2,"c":5,"label":"약국","task":"상비약 사기"},{"r":3,"c":2,"label":"서점","task":"예약 도서 찾기"}],"limit":13,"optimal":11,"scene":"회사 → 약국 · 상비약 사기 → 서점 · 예약 도서 찾기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-18","size":7,"rows":[".......",".#.#.#.","X......","Xp.#.#.",".......",".#.p.#.","......."],"start":[0,4],"goal":[6,2],"waypoints":[{"r":2,"c":2,"label":"문구점","task":"노트 사기"},{"r":4,"c":3,"label":"카페","task":"원두 받기"}],"limit":12,"optimal":10,"scene":"회사 → 문구점 · 노트 사기 → 카페 · 원두 받기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-19","size":7,"rows":[".......",".#.#.p.","......X",".#.#.p.","..X....",".#.#.#.","..X...."],"start":[5,0],"goal":[6,5],"waypoints":[{"r":2,"c":2,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":14,"optimal":12,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-20","size":7,"rows":[".......",".#.#.#.","......X",".#.#.#.",".......",".p.#.#.","..X...."],"start":[0,2],"goal":[5,0],"waypoints":[{"r":1,"c":4,"label":"편의점","task":"우유 사기"},{"r":2,"c":2,"label":"서점","task":"예약 도서 찾기"}],"limit":13,"optimal":11,"scene":"회사 → 편의점 · 우유 사기 → 서점 · 예약 도서 찾기 → 집","level":"daily","levelLabel":"오늘"},{"id":"daily-21","size":7,"rows":[".......","X#X#.#.",".......",".#.#.p.","..X....",".#.#.#.","......."],"start":[6,6],"goal":[0,3],"waypoints":[{"r":3,"c":2,"label":"카페","task":"원두 받기"},{"r":4,"c":4,"label":"편의점","task":"우유 사기"}],"limit":17,"optimal":15,"scene":"회사 → 카페 · 원두 받기 → 편의점 · 우유 사기 → 집","level":"daily","levelLabel":"오늘"}],"practice":{"beginner":[{"id":"beginner-01","size":7,"rows":[".X.....",".pX#.p.",".......",".#.#.#.","......X",".#.#.#.","......."],"start":[0,5],"goal":[4,0],"waypoints":[{"r":4,"c":4,"label":"편의점","task":"우유 사기"}],"limit":12,"optimal":9,"scene":"회사 → 편의점 · 우유 사기 → 집","level":"beginner","levelLabel":"초급"},{"id":"beginner-02","size":7,"rows":[".......",".#.#.#.",".......",".p.#.#.","XX.....",".#.#.#.","......."],"start":[2,0],"goal":[0,4],"waypoints":[{"r":3,"c":2,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":11,"optimal":8,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 집","level":"beginner","levelLabel":"초급"},{"id":"beginner-03","size":7,"rows":[".......",".#.#.#.",".......","X#.#.p.",".......",".#.#.#.","X......"],"start":[5,6],"goal":[2,0],"waypoints":[{"r":2,"c":4,"label":"우체국","task":"등기 부치기"},{"r":2,"c":5,"label":"카페","task":"원두 받기"}],"limit":12,"optimal":9,"scene":"회사 → 우체국 · 등기 부치기 → 카페 · 원두 받기 → 집","level":"beginner","levelLabel":"초급"},{"id":"beginner-04","size":7,"rows":[".......",".#.#.p.",".X.....",".#.#.#.","..X....",".#.#.#.","....X.."],"start":[6,6],"goal":[0,5],"waypoints":[{"r":4,"c":4,"label":"우체국","task":"등기 부치기"},{"r":4,"c":5,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":12,"optimal":9,"scene":"회사 → 우체국 · 등기 부치기 → 세탁소 · 맡긴 옷 찾기 → 집","level":"beginner","levelLabel":"초급"},{"id":"beginner-05","size":7,"rows":[".......",".#.p.#.",".......",".#.#Xp.","X......",".#.#.#.","......."],"start":[6,2],"goal":[1,6],"waypoints":[{"r":4,"c":5,"label":"서점","task":"예약 도서 찾기"}],"limit":12,"optimal":9,"scene":"회사 → 서점 · 예약 도서 찾기 → 집","level":"beginner","levelLabel":"초급"}],"mid":[{"id":"mid-01","size":7,"rows":[".......",".#.#.#.",".......",".#.p.#.",".......",".#X#.p.","......X"],"start":[0,0],"goal":[4,6],"waypoints":[{"r":4,"c":1,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":12,"optimal":10,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 집","level":"mid","levelLabel":"중급"},{"id":"mid-02","size":7,"rows":["....X..",".#.p.p.",".......",".#.#.#.",".......",".#X#.#.","......X"],"start":[6,3],"goal":[0,5],"waypoints":[{"r":2,"c":4,"label":"카페","task":"원두 받기"},{"r":3,"c":2,"label":"편의점","task":"우유 사기"}],"limit":14,"optimal":12,"scene":"회사 → 카페 · 원두 받기 → 편의점 · 우유 사기 → 집","level":"mid","levelLabel":"중급"},{"id":"mid-03","size":7,"rows":[".......",".#.#.#.",".......",".#.#.#.",".......",".p.#X#.","..X...."],"start":[3,6],"goal":[6,0],"waypoints":[{"r":1,"c":4,"label":"문구점","task":"노트 사기"},{"r":4,"c":2,"label":"서점","task":"예약 도서 찾기"}],"limit":15,"optimal":13,"scene":"회사 → 문구점 · 노트 사기 → 서점 · 예약 도서 찾기 → 집","level":"mid","levelLabel":"중급"},{"id":"mid-04","size":7,"rows":[".......",".#X#.#X",".......",".#.#.#.",".......",".p.#.#.","......."],"start":[3,0],"goal":[0,5],"waypoints":[{"r":4,"c":1,"label":"우체국","task":"등기 부치기"}],"limit":12,"optimal":10,"scene":"회사 → 우체국 · 등기 부치기 → 집","level":"mid","levelLabel":"중급"},{"id":"mid-05","size":7,"rows":["X......",".#.p.#.",".......",".#.#.#.",".......",".p.#.#.","..X...."],"start":[0,4],"goal":[6,5],"waypoints":[{"r":2,"c":4,"label":"카페","task":"원두 받기"},{"r":5,"c":2,"label":"세탁소","task":"맡긴 옷 찾기"}],"limit":15,"optimal":13,"scene":"회사 → 카페 · 원두 받기 → 세탁소 · 맡긴 옷 찾기 → 집","level":"mid","levelLabel":"중급"}],"adv":[{"id":"adv-01","size":7,"rows":[".......",".#.p.#.",".......",".#.#.#.","....X..",".#.#.#.",".X..X.."],"start":[2,0],"goal":[6,6],"waypoints":[{"r":1,"c":2,"label":"편의점","task":"우유 사기"},{"r":4,"c":5,"label":"문구점","task":"노트 사기"}],"limit":15,"optimal":14,"scene":"회사 → 편의점 · 우유 사기 → 문구점 · 노트 사기 → 집","level":"adv","levelLabel":"고급"},{"id":"adv-02","size":7,"rows":[".......",".#.#.#.","....X..",".#.p.#.",".....X.",".#.#.p.","......."],"start":[6,2],"goal":[2,6],"waypoints":[{"r":1,"c":2,"label":"세탁소","task":"맡긴 옷 찾기"},{"r":2,"c":3,"label":"약국","task":"상비약 사기"}],"limit":15,"optimal":14,"scene":"회사 → 세탁소 · 맡긴 옷 찾기 → 약국 · 상비약 사기 → 집","level":"adv","levelLabel":"고급"},{"id":"adv-03","size":7,"rows":[".......",".#.#.#.",".....X.",".#.#.p.","...X...",".#.#.#.","......."],"start":[2,0],"goal":[6,6],"waypoints":[{"r":2,"c":4,"label":"편의점","task":"우유 사기"},{"r":5,"c":2,"label":"약국","task":"상비약 사기"}],"limit":15,"optimal":14,"scene":"회사 → 편의점 · 우유 사기 → 약국 · 상비약 사기 → 집","level":"adv","levelLabel":"고급"},{"id":"adv-04","size":7,"rows":["..X....",".#.#.#.",".......",".#.#.#.","...X...",".#.p.#.","......."],"start":[5,0],"goal":[0,1],"waypoints":[{"r":3,"c":4,"label":"우체국","task":"등기 부치기"},{"r":4,"c":5,"label":"문구점","task":"노트 사기"}],"limit":19,"optimal":18,"scene":"회사 → 우체국 · 등기 부치기 → 문구점 · 노트 사기 → 집","level":"adv","levelLabel":"고급"},{"id":"adv-05","size":7,"rows":[".X.....",".#.#.p.",".......",".#.#.#.",".......",".#X#.X.","......."],"start":[6,5],"goal":[0,0],"waypoints":[{"r":1,"c":2,"label":"서점","task":"예약 도서 찾기"},{"r":2,"c":5,"label":"약국","task":"상비약 사기"}],"limit":16,"optimal":15,"scene":"회사 → 서점 · 예약 도서 찾기 → 약국 · 상비약 사기 → 집","level":"adv","levelLabel":"고급"}]},"levels":[{"key":"beginner","label":"초급"},{"key":"mid","label":"중급"},{"key":"adv","label":"고급"}],"practiceCount":15};
+    
+  /* ---------------------------------------------------------- 게임 방법 데모
+     처음 방문에 한 번만 자동 재생하고 마지막 장면에서 멈춘다. '다시 보기'로 재생.
+     prefers-reduced-motion 이면 애니메이션 없이 마지막 장면만 보여 준다. */
+  var GameGuide = (function () {
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var TIMING = [900, 1900];
+
+    function create(opts) {
+      var timers = [];
+      var last = opts.notes.length;
+
+      function clear() {
+        timers.forEach(function (t) { window.clearTimeout(t); });
+        timers = [];
+      }
+
+      function paintSteps(n) {
+        var chips = opts.steps ? opts.steps.querySelectorAll('.gg-step') : [];
+        for (var i = 0; i < chips.length; i += 1) {
+          var step = Number(chips[i].getAttribute('data-step'));
+          chips[i].classList.toggle('is-on', step === n);
+          chips[i].classList.toggle('is-done', step < n);
+        }
+      }
+
+      function apply(n) {
+        paintSteps(n);
+        if (opts.note) opts.note.textContent = opts.notes[n - 1];
+        if (opts.step) opts.step(n);
+      }
+
+      function settle() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(last);
+      }
+
+      function play() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(1);
+        if (reduce) { settle(); return; }
+        TIMING.forEach(function (delay, index) {
+          timers.push(window.setTimeout(function () { apply(index + 2); }, delay));
+        });
+      }
+
+      var seen = null;
+      try { seen = localStorage.getItem(opts.key); } catch (e) { seen = null; }
+      if (seen || reduce) {
+        settle();
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+      } else {
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+        play();
+      }
+      if (opts.replay) opts.replay.addEventListener('click', function () { play(); });
+
+      return { play: play, settle: settle };
+    }
+
+    return { create: create, reduce: reduce };
+  })();
+
 
     (function () {
       'use strict';
@@ -1586,6 +1776,13 @@
       const copyBtn = $('copyBtn');
       const levelSeg = $('levelSeg');
       const stageChips = $('stageChips');
+      const remainLabel = $('remainLabel');
+      const resultGapText = $('resultGapText');
+      const retryResultBtn = $('retryBtn');
+      const nextResultBtn = $('nextBtn');
+      const mgReplay = $('mgReplay');
+      let ghostEl = null;
+      let ghostTimers = [];
 
       function pad2(n) { return (n < 10 ? '0' : '') + n; }
       function isoOf(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
@@ -1785,6 +1982,69 @@
         }
         board.setAttribute('aria-label', '경로 지도 ' + puz.size + ' × ' + puz.size +
           ', 현재 ' + (game.pos[0] + 1) + '행 ' + (game.pos[1] + 1) + '열');
+        updateNextHint();
+      }
+
+      // ---- 최단 경로 계산: 경유지를 모두 들른 뒤 도착하는 최소 이동 ----
+      function planFrom(startR, startC, startMask) {
+        if (!puz) return null;
+        const size = puz.size;
+        const index = {};
+        puz.waypoints.forEach(function (w, i) { index[w.r + ',' + w.c] = i; });
+        const full = (1 << puz.waypoints.length) - 1;
+        const open = function (r, c) {
+          return r >= 0 && c >= 0 && r < size && c < size && puz.rows[r][c] !== '#' && puz.rows[r][c] !== 'X';
+        };
+        const seen = {};
+        const key = function (r, c, m) { return r + ',' + c + '|' + m; };
+        const queue = [{ r: startR, c: startC, m: startMask, d: 0, path: [[startR, startC]] }];
+        seen[key(startR, startC, startMask)] = true;
+        const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        while (queue.length) {
+          const cur = queue.shift();
+          if (cur.r === puz.goal[0] && cur.c === puz.goal[1] && cur.m === full) return cur;
+          for (let i = 0; i < dirs.length; i += 1) {
+            const nr = cur.r + dirs[i][0];
+            const nc = cur.c + dirs[i][1];
+            if (!open(nr, nc)) continue;
+            let nm = cur.m;
+            const wp = index[nr + ',' + nc];
+            if (wp !== undefined) nm = nm | (1 << wp);
+            const k = key(nr, nc, nm);
+            if (seen[k]) continue;
+            seen[k] = true;
+            queue.push({ r: nr, c: nc, m: nm, d: cur.d + 1, path: cur.path.concat([[nr, nc]]) });
+          }
+        }
+        return null;
+      }
+
+      function visitedMask() {
+        let mask = 0;
+        puz.waypoints.forEach(function (w, i) {
+          if (pathHas(w.r, w.c)) mask = mask | (1 << i);
+        });
+        return mask;
+      }
+
+      // 보드 위에서 다음 이동 칸을 하이라이트하고 남은 최소 수를 표시한다.
+      function updateNextHint() {
+        if (!puz) return;
+        cellEls.forEach(function (el) { el.classList.remove('next'); });
+        const plan = planFrom(game.pos[0], game.pos[1], visitedMask());
+        if (!remainLabel) return;
+        if (!plan) {
+          remainLabel.textContent = '길 없음';
+          remainLabel.classList.remove('is-done');
+          return;
+        }
+        remainLabel.textContent = plan.d === 0 ? '도착!' : '최소까지 ' + plan.d + '수 남음';
+        remainLabel.classList.toggle('is-done', plan.d === 0);
+        if (plan.d > 0 && plan.path.length > 1) {
+          const nxt = plan.path[1];
+          const el = cellEls[nxt[0] * puz.size + nxt[1]];
+          if (el) el.classList.add('next');
+        }
       }
 
       function updateMeters() {
@@ -2040,6 +2300,11 @@
         rMoves.textContent = game.moves + ' / ' + puz.limit + '수';
         rTime.textContent = fmtTime(seconds);
         rOpt.textContent = puz.optimal + '수';
+        if (resultGapText) {
+          const gap = game.moves - puz.optimal;
+          resultGapText.textContent = (gap <= 0 ? '별 3개 달성!' : '별 3개까지 ' + gap + '수!')
+            + ' · 최소 ' + puz.optimal + '수 · 이번 ' + game.moves + '수';
+        }
         sharePreview.textContent = shareText(seconds);
         copyBtn.textContent = '결과 복사';
         resultBox.hidden = false;
@@ -2171,6 +2436,79 @@
       renderLevels();
       renderStats();
       loadDaily();
+
+      if (retryResultBtn) retryResultBtn.addEventListener('click', function () { resetPuzzle(); });
+      if (nextResultBtn) nextResultBtn.addEventListener('click', function () {
+        const panel = document.getElementById('practicePanel');
+        if (panel) panel.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+      });
+
+      // ---- 게임 방법 데모: 경유지 확인 → 이동 → 도착 (처음 한 번만 움직임) ----
+      function clearGhost() {
+        ghostTimers.forEach(function (t) { window.clearTimeout(t); });
+        ghostTimers = [];
+        cellEls.forEach(function (el) { el.classList.remove('ghost-wp'); });
+        if (ghostEl && ghostEl.parentNode) ghostEl.parentNode.removeChild(ghostEl);
+        ghostEl = null;
+      }
+
+      function placeGhost(r, c) {
+        if (!puz || !cellEls.length) return;
+        if (!ghostEl) {
+          ghostEl = document.createElement('div');
+          ghostEl.className = 'ghost-dot';
+          board.appendChild(ghostEl);
+        }
+        const el = cellEls[r * puz.size + c];
+        if (!el) return;
+        ghostEl.style.left = (el.offsetLeft + el.offsetWidth / 2) + 'px';
+        ghostEl.style.top = (el.offsetTop + el.offsetHeight / 2) + 'px';
+      }
+
+      function demoStep(n) {
+        if (!puz || !game) return;
+        clearGhost();
+        cellEls.forEach(function (el) {
+          const r = Number(el.dataset.r);
+          const c = Number(el.dataset.c);
+          const isWp = puz.waypoints.some(function (w) { return w.r === r && w.c === c; });
+          if (isWp) el.classList.add('ghost-wp');
+        });
+        const plan = planFrom(puz.start[0], puz.start[1], 0);
+        if (!plan) return;
+        const path = plan.path;
+        if (reduceMotion()) {
+          placeGhost(path[path.length - 1][0], path[path.length - 1][1]);
+          return;
+        }
+        if (n <= 1) {
+          placeGhost(path[0][0], path[0][1]);
+          return;
+        }
+        if (n === 2) {
+          placeGhost(path[0][0], path[0][1]);
+          const upto = Math.min(path.length - 1, 4);
+          for (let i = 1; i <= upto; i += 1) {
+            ghostTimers.push(window.setTimeout(function () { placeGhost(path[i][0], path[i][1]); }, i * 240));
+          }
+          return;
+        }
+        placeGhost(path[path.length - 1][0], path[path.length - 1][1]);
+      }
+
+      GameGuide.create({
+        key: 'mission_demo_seen_v1',
+        steps: document.getElementById('mgGuide'),
+        note: null,
+        replay: mgReplay,
+        notes: [
+          '① 번호가 붙은 경유지를 모두 확인합니다.',
+          '② 방향키·스와이프로 한 칸씩 이동합니다.',
+          '③ 경유지를 다 들른 뒤 집에 도착하면 클리어입니다.'
+        ],
+        reset: clearGhost,
+        step: demoStep
+      });
       renderChips();
     })();
   </script>

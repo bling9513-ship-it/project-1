@@ -18,6 +18,7 @@ from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
 import ui_shell
+import game_guide
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MISSION_HTML = os.path.join(BASE_DIR, "mission.html")
@@ -1059,8 +1060,10 @@ CSS = """
       .board-col, .board-side { display: contents; }
       #board { order: 2; }
       .legend { order: 3; }
-      .meters { order: 4; flex-direction: row; align-items: center; gap: 10px; }
-      .meters .bar { flex: 1 1 auto; min-width: 48px; }
+      .meters { order: 4; flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
+      .meters .bar { flex: 1 1 24px; min-width: 24px; }
+      .meters .meter-row { flex: 0 0 auto; white-space: nowrap; gap: 4px; }
+      .meters .remain-chip { flex: 1 1 100%; justify-content: center; margin: 0; }
       .pad { order: 5; }
       .game-actions { order: 6; flex-direction: row; }
       .game-msg { order: 7; }
@@ -1213,6 +1216,63 @@ CSS = """
       .meters { flex-direction: column; align-items: stretch; gap: 3px; font-size: 11px; }
       .meter-row { font-size: 11px; white-space: nowrap; }
       .meters .bar { min-width: 0; }
+    }
+""" + game_guide.GUIDE_CSS + r"""
+    /* ----- 퇴근길 미션: 보드 위 다음 이동 하이라이트·남은 수·결과 격차 ----- */
+    .mg-guide {
+      display: flex; align-items: center; gap: 4px; margin: 0 0 8px; padding: 6px 8px;
+      border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface);
+    }
+    .mg-guide .gg-step { padding: 1px 4px; border-radius: 999px; }
+    .mg-guide .gg-step b {
+      font-style: normal; font-weight: 700; color: inherit;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 12px; height: 12px; border-radius: 50%; font-size: 8px;
+      background: var(--bg-subtle); border: 1px solid var(--border-default);
+    }
+    .mg-guide .gg-step.is-on b { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    .mg-guide .gg-arrow { color: var(--text-muted); font-size: 9px; }
+    .mg-guide .gg-replay { margin-left: auto; padding: 2px 7px; font-size: 10px; }
+
+    .board { position: relative; }
+    .cell.next::after {
+      content: ''; position: absolute; inset: 2px; border: 2px solid var(--accent-primary);
+      border-radius: 7px; opacity: 0.75;
+    }
+    .cell { position: relative; }
+    .cell.ghost-wp { box-shadow: inset 0 0 0 2px var(--accent-primary); }
+    .ghost-dot {
+      position: absolute; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-primary); opacity: 0.5; transform: translate(-50%, -50%);
+      transition: left 380ms ease, top 380ms ease; pointer-events: none; z-index: 4;
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+    }
+    .remain-chip {
+      display: inline-flex; align-items: center; gap: 3px; margin: 4px 0 0;
+      font-size: 10px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 1px 6px; white-space: nowrap; width: fit-content;
+    }
+    .remain-chip svg { flex: 0 0 auto; }
+    .remain-chip.is-done { color: #15803d; background: #dcfce7; border-color: #86efac; }
+
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin: 0 0 9px;
+      font-size: 12px; font-weight: 600; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--bg-surface); border: 1px solid var(--border-default); color: var(--accent-primary);
+    }
+    .result-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px; margin: 0 0 10px; }
+    .result-acts button {
+      font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 10px 6px;
+      border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary); cursor: pointer; white-space: nowrap;
+    }
+    .result-acts .result-next { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    @media (prefers-reduced-motion: reduce) {
+      .ghost-dot { transition: none !important; }
     }
 """
 
@@ -1379,6 +1439,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </div>
       <p class="game-scene" id="gameScene"></p>
 
+      <div class="mg-guide" id="mgGuide">
+        <span class="gg-step is-on" data-step="1"><b>1</b>경유지 확인</span>
+        <span class="gg-arrow">›</span>
+        <span class="gg-step" data-step="2"><b>2</b>이동</span>
+        <span class="gg-arrow">›</span>
+        <span class="gg-step" data-step="3"><b>3</b>도착</span>
+        <button type="button" class="gg-replay" id="mgReplay">다시 보기</button>
+      </div>
       <div class="board-wrap">
         <div class="board-col">
           <div class="board" id="board" role="grid" tabindex="0" aria-label="경로 지도"></div>
@@ -1404,6 +1472,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <div class="meter-row"><span>이동</span><strong id="moveText">0 / 14</strong></div>
             <div class="bar" id="moveBarWrap"><i id="moveBar"></i></div>
             <div class="meter-row"><span>시간</span><strong id="timeText">00:00</strong></div>
+            <span class="remain-chip" id="remainLabel"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>최소까지 -수</span>
           </div>
 
           <div class="pad-row">
@@ -1440,6 +1509,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <span class="fact"><small>시간</small><strong id="rTime">-</strong></span>
             <span class="fact"><small>최소 이동</small><strong id="rOpt">-</strong></span>
           </div>
+          <div class="result-gap">
+            <span class="result-gap-tag">다음 목표</span>
+            <span id="resultGapText"></span>
+          </div>
+          <div class="result-acts">
+            <button type="button" id="retryBtn">다시 도전</button>
+            <button type="button" class="result-next" id="nextBtn">연습 스테이지</button>
+          </div>
           <div class="share">
             <div class="share-preview" id="sharePreview"></div>
             <button type="button" class="btn btn-primary" id="copyBtn">결과 복사</button>
@@ -1471,6 +1548,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <script>
     const DATA = __DATA_JSON__;
+    __GUIDE_SCRIPTS__
 
     (function () {
       'use strict';
@@ -1504,6 +1582,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const copyBtn = $('copyBtn');
       const levelSeg = $('levelSeg');
       const stageChips = $('stageChips');
+      const remainLabel = $('remainLabel');
+      const resultGapText = $('resultGapText');
+      const retryResultBtn = $('retryBtn');
+      const nextResultBtn = $('nextBtn');
+      const mgReplay = $('mgReplay');
+      let ghostEl = null;
+      let ghostTimers = [];
 
       function pad2(n) { return (n < 10 ? '0' : '') + n; }
       function isoOf(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
@@ -1703,6 +1788,69 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
         board.setAttribute('aria-label', '경로 지도 ' + puz.size + ' × ' + puz.size +
           ', 현재 ' + (game.pos[0] + 1) + '행 ' + (game.pos[1] + 1) + '열');
+        updateNextHint();
+      }
+
+      // ---- 최단 경로 계산: 경유지를 모두 들른 뒤 도착하는 최소 이동 ----
+      function planFrom(startR, startC, startMask) {
+        if (!puz) return null;
+        const size = puz.size;
+        const index = {};
+        puz.waypoints.forEach(function (w, i) { index[w.r + ',' + w.c] = i; });
+        const full = (1 << puz.waypoints.length) - 1;
+        const open = function (r, c) {
+          return r >= 0 && c >= 0 && r < size && c < size && puz.rows[r][c] !== '#' && puz.rows[r][c] !== 'X';
+        };
+        const seen = {};
+        const key = function (r, c, m) { return r + ',' + c + '|' + m; };
+        const queue = [{ r: startR, c: startC, m: startMask, d: 0, path: [[startR, startC]] }];
+        seen[key(startR, startC, startMask)] = true;
+        const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        while (queue.length) {
+          const cur = queue.shift();
+          if (cur.r === puz.goal[0] && cur.c === puz.goal[1] && cur.m === full) return cur;
+          for (let i = 0; i < dirs.length; i += 1) {
+            const nr = cur.r + dirs[i][0];
+            const nc = cur.c + dirs[i][1];
+            if (!open(nr, nc)) continue;
+            let nm = cur.m;
+            const wp = index[nr + ',' + nc];
+            if (wp !== undefined) nm = nm | (1 << wp);
+            const k = key(nr, nc, nm);
+            if (seen[k]) continue;
+            seen[k] = true;
+            queue.push({ r: nr, c: nc, m: nm, d: cur.d + 1, path: cur.path.concat([[nr, nc]]) });
+          }
+        }
+        return null;
+      }
+
+      function visitedMask() {
+        let mask = 0;
+        puz.waypoints.forEach(function (w, i) {
+          if (pathHas(w.r, w.c)) mask = mask | (1 << i);
+        });
+        return mask;
+      }
+
+      // 보드 위에서 다음 이동 칸을 하이라이트하고 남은 최소 수를 표시한다.
+      function updateNextHint() {
+        if (!puz) return;
+        cellEls.forEach(function (el) { el.classList.remove('next'); });
+        const plan = planFrom(game.pos[0], game.pos[1], visitedMask());
+        if (!remainLabel) return;
+        if (!plan) {
+          remainLabel.textContent = '길 없음';
+          remainLabel.classList.remove('is-done');
+          return;
+        }
+        remainLabel.textContent = plan.d === 0 ? '도착!' : '최소까지 ' + plan.d + '수 남음';
+        remainLabel.classList.toggle('is-done', plan.d === 0);
+        if (plan.d > 0 && plan.path.length > 1) {
+          const nxt = plan.path[1];
+          const el = cellEls[nxt[0] * puz.size + nxt[1]];
+          if (el) el.classList.add('next');
+        }
       }
 
       function updateMeters() {
@@ -1958,6 +2106,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         rMoves.textContent = game.moves + ' / ' + puz.limit + '수';
         rTime.textContent = fmtTime(seconds);
         rOpt.textContent = puz.optimal + '수';
+        if (resultGapText) {
+          const gap = game.moves - puz.optimal;
+          resultGapText.textContent = (gap <= 0 ? '별 3개 달성!' : '별 3개까지 ' + gap + '수!')
+            + ' · 최소 ' + puz.optimal + '수 · 이번 ' + game.moves + '수';
+        }
         sharePreview.textContent = shareText(seconds);
         copyBtn.textContent = '결과 복사';
         resultBox.hidden = false;
@@ -2089,6 +2242,79 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       renderLevels();
       renderStats();
       loadDaily();
+
+      if (retryResultBtn) retryResultBtn.addEventListener('click', function () { resetPuzzle(); });
+      if (nextResultBtn) nextResultBtn.addEventListener('click', function () {
+        const panel = document.getElementById('practicePanel');
+        if (panel) panel.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+      });
+
+      // ---- 게임 방법 데모: 경유지 확인 → 이동 → 도착 (처음 한 번만 움직임) ----
+      function clearGhost() {
+        ghostTimers.forEach(function (t) { window.clearTimeout(t); });
+        ghostTimers = [];
+        cellEls.forEach(function (el) { el.classList.remove('ghost-wp'); });
+        if (ghostEl && ghostEl.parentNode) ghostEl.parentNode.removeChild(ghostEl);
+        ghostEl = null;
+      }
+
+      function placeGhost(r, c) {
+        if (!puz || !cellEls.length) return;
+        if (!ghostEl) {
+          ghostEl = document.createElement('div');
+          ghostEl.className = 'ghost-dot';
+          board.appendChild(ghostEl);
+        }
+        const el = cellEls[r * puz.size + c];
+        if (!el) return;
+        ghostEl.style.left = (el.offsetLeft + el.offsetWidth / 2) + 'px';
+        ghostEl.style.top = (el.offsetTop + el.offsetHeight / 2) + 'px';
+      }
+
+      function demoStep(n) {
+        if (!puz || !game) return;
+        clearGhost();
+        cellEls.forEach(function (el) {
+          const r = Number(el.dataset.r);
+          const c = Number(el.dataset.c);
+          const isWp = puz.waypoints.some(function (w) { return w.r === r && w.c === c; });
+          if (isWp) el.classList.add('ghost-wp');
+        });
+        const plan = planFrom(puz.start[0], puz.start[1], 0);
+        if (!plan) return;
+        const path = plan.path;
+        if (reduceMotion()) {
+          placeGhost(path[path.length - 1][0], path[path.length - 1][1]);
+          return;
+        }
+        if (n <= 1) {
+          placeGhost(path[0][0], path[0][1]);
+          return;
+        }
+        if (n === 2) {
+          placeGhost(path[0][0], path[0][1]);
+          const upto = Math.min(path.length - 1, 4);
+          for (let i = 1; i <= upto; i += 1) {
+            ghostTimers.push(window.setTimeout(function () { placeGhost(path[i][0], path[i][1]); }, i * 240));
+          }
+          return;
+        }
+        placeGhost(path[path.length - 1][0], path[path.length - 1][1]);
+      }
+
+      GameGuide.create({
+        key: 'mission_demo_seen_v1',
+        steps: document.getElementById('mgGuide'),
+        note: null,
+        replay: mgReplay,
+        notes: [
+          '① 번호가 붙은 경유지를 모두 확인합니다.',
+          '② 방향키·스와이프로 한 칸씩 이동합니다.',
+          '③ 경유지를 다 들른 뒤 집에 도착하면 클리어입니다.'
+        ],
+        reset: clearGhost,
+        step: demoStep
+      });
       renderChips();
     })();
   </script>
@@ -2117,6 +2343,7 @@ def build():
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
     html = html.replace("__NAV_TABS__", NAV_TABS)
     html = html.replace("__DATA_JSON__", data_json.replace("</", "<\\/"))
     html = html.replace("__BUILT_AT__", esc(built_at))

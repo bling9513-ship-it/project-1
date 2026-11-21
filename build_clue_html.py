@@ -18,6 +18,7 @@ from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
 import ui_shell
+import game_guide
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CLUE_HTML = os.path.join(BASE_DIR, "clue.html")
@@ -1020,6 +1021,79 @@ CSS = """
     @media (max-width: 640px) {
       .clue-rail .arc-grid { grid-template-columns: minmax(0, 1fr); }
     }
+""" + game_guide.GUIDE_CSS + r"""
+    /* ----- 3단서 추리: 단서 타임라인·즉시 피드백·결과 격차 ----- */
+    .clue-track { display: flex; align-items: center; gap: 0; }
+    .track-step {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap;
+      transition: color 160ms ease;
+    }
+    .track-step .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--bg-muted);
+      display: block; transition: background-color 160ms ease, transform 160ms ease;
+    }
+    .track-step.is-on { color: var(--accent-primary); }
+    .track-step.is-on .dot { background: var(--accent-primary); }
+    .track-step.is-pop .dot { animation: clueDotPop 340ms ease; }
+    .track-line { width: 10px; height: 1px; background: var(--border-default); margin: 0 3px; flex: 0 0 auto; }
+    @keyframes clueDotPop { 0% { transform: scale(1); } 45% { transform: scale(1.7); } 100% { transform: scale(1); } }
+
+    .clue-flash {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 8px; padding: 7px 9px;
+      border-radius: 9px; font-size: 11.5px; font-weight: 600; line-height: 1.45;
+      border: 1px solid var(--border-default); background: var(--bg-page); color: var(--text-primary);
+    }
+    .clue-flash.ok { border-color: var(--ok-border); background: var(--ok-bg); color: var(--ok-text); }
+    .clue-flash.no { border-color: var(--no-border); background: var(--no-bg); color: var(--no-text); }
+    .clue-flash-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--accent-subtle); color: var(--accent-primary);
+    }
+    .clue-flash.ok .clue-flash-tag { background: var(--ok-text); color: #ffffff; }
+    .clue-flash.no .clue-flash-tag { background: var(--no-text); color: #ffffff; }
+
+    .clue.is-fresh { animation: cluePop 380ms ease; }
+    .clue.is-fresh .clue-label { color: var(--accent-primary); }
+    @keyframes cluePop { 0% { transform: translateY(-3px); opacity: 0.4; } 100% { transform: none; opacity: 1; } }
+
+    .clue-demo { display: flex; align-items: center; gap: 5px; }
+    .clue-demo-card {
+      flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px;
+      padding: 5px 6px; border-radius: 7px; border: 1px dashed var(--border-default);
+      background: var(--bg-surface); color: var(--text-muted);
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+    }
+    .clue-demo-card b { font-size: 9px; font-weight: 700; }
+    .clue-demo-card i { font-style: normal; font-size: 10.5px; font-weight: 600; }
+    .clue-demo-card.is-open {
+      border-style: solid; border-color: var(--accent-primary);
+      background: var(--accent-subtle); color: var(--accent-primary);
+    }
+    .clue-demo-pick {
+      flex: 0 0 auto; align-self: center; font-size: 9px; font-weight: 700; color: #15803d;
+      background: #dcfce7; border: 1px solid #86efac; border-radius: 6px; padding: 3px 5px;
+    }
+
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin: 0 0 10px;
+      font-size: 12px; font-weight: 600; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--bg-surface); border: 1px solid var(--border-default); color: var(--accent-primary);
+    }
+    .result-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px; margin-top: 10px; }
+    .result-acts button {
+      font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 10px 6px;
+      border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary); cursor: pointer; white-space: nowrap;
+    }
+    .result-acts .result-next { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    @media (prefers-reduced-motion: reduce) {
+      .track-step, .track-step .dot, .clue-demo-card { transition: none !important; }
+      .track-step.is-pop .dot, .clue.is-fresh { animation: none !important; }
+    }
 """
 
 HTML_TEMPLATE = """<!DOCTYPE html>
@@ -1146,6 +1220,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="clue-layout">
       <div class="clue-main">
 
+    __GUIDE__
+
     <section class="panel player" id="playPanel" aria-label="3단서 추리 플레이어">
       <div class="player-top">
         <div class="player-meta">
@@ -1153,12 +1229,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <span class="player-date" id="pDate">—</span>
           <span class="today-tag" id="pToday" hidden>오늘의 문제</span>
         </div>
-        <div class="dots" id="pDots" aria-label="열린 단서 수">
-          <i class="dot on"></i><i class="dot"></i><i class="dot"></i>
+        <div class="clue-track" id="pDots" aria-label="열린 단서 수">
+          <span class="track-step is-on" data-step="1"><i class="dot on"></i>1 사건</span>
+          <span class="track-line"></span>
+          <span class="track-step" data-step="2"><i class="dot"></i>2 정황</span>
+          <span class="track-line"></span>
+          <span class="track-step" data-step="3"><i class="dot"></i>3 결정</span>
         </div>
       </div>
       <h2 class="player-title" id="pTitle">문제를 불러오는 중입니다</h2>
 
+      <div class="clue-flash" id="clueFlash" role="status" aria-live="polite" hidden></div>
       <div class="clues" id="clueList"></div>
 
       <div class="clue-foot">
@@ -1186,6 +1267,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
         <p class="result-answer">정답 <strong id="resultAnswer"></strong></p>
         <p class="result-explain" id="resultExplain"></p>
+        <div class="result-gap">
+          <span class="result-gap-tag">다음 목표</span>
+          <span id="resultGapText"></span>
+        </div>
+        <div class="result-acts">
+          <button type="button" id="retryBtn">한 판 더</button>
+          <button type="button" class="result-next" id="nextBtn">다른 문제</button>
+        </div>
         <div class="share">
           <div class="share-preview" id="sharePreview"></div>
           <button class="btn btn-primary" id="copyBtn" type="button">결과 복사</button>
@@ -1254,6 +1343,7 @@ __ARC_CARDS__
 
     // ---- 데이터 ----
     const DATA = __DATA_JSON__;
+    __GUIDE_SCRIPTS__
     const CATS = __CATS_JSON__;
     const STORE_KEY = 'secjobs-clue-v1';
     const TODAY = '__TODAY__';
@@ -1353,8 +1443,37 @@ __ARC_CARDS__
     const resultExplain = document.getElementById('resultExplain');
     const sharePreview = document.getElementById('sharePreview');
     const copyBtn = document.getElementById('copyBtn');
+    const clueFlash = document.getElementById('clueFlash');
+    const resultGapText = document.getElementById('resultGapText');
 
     let currentId = null;
+    // 단서를 방금 열었을 때 타임라인 점을 튀게 하기 위한 표시
+    let popStep = -1;
+    // 같은 문제를 연습모드로 다시 풀 때만 쓰는 임시 진행 상황(기록은 건드리지 않는다).
+    let practiceRun = null;
+
+    function runOf(p) {
+      if (practiceRun && practiceRun.id === p.id) return practiceRun;
+      return rec(p.id);
+    }
+
+    function isPractice(p) { return !!(practiceRun && practiceRun.id === p.id); }
+
+    function showFlash(kind, tag, text) {
+      if (!clueFlash) return;
+      clueFlash.hidden = false;
+      clueFlash.className = 'clue-flash' + (kind ? ' ' + kind : '');
+      clueFlash.innerHTML = '<span class="clue-flash-tag"></span><span class="clue-flash-text"></span>';
+      clueFlash.querySelector('.clue-flash-tag').textContent = tag;
+      clueFlash.querySelector('.clue-flash-text').textContent = text;
+    }
+
+    function hideFlash() {
+      if (!clueFlash) return;
+      clueFlash.hidden = true;
+      clueFlash.className = 'clue-flash';
+      clueFlash.textContent = '';
+    }
 
     function fmtDate(d) {
       const parts = String(d || '').split('-');
@@ -1379,7 +1498,8 @@ __ARC_CARDS__
       let html = '';
       for (let i = 0; i < 3; i++) {
         const open = i < r.clues;
-        html += '<div class="clue ' + (open ? 'open' : 'locked') + '">'
+        const fresh = i === r.clues - 1 && r.clues > 1;
+        html += '<div class="clue ' + (open ? 'open' : 'locked') + (fresh ? ' is-fresh' : '') + '">'
           + '<div class="clue-head">'
           + '<span class="clue-label">단서 ' + (i + 1) + '</span>'
           + '<span class="clue-step">' + (i + 1) + ' / 3</span>'
@@ -1390,9 +1510,19 @@ __ARC_CARDS__
       clueList.innerHTML = html;
     }
 
-    function renderDots(n) {
-      const dots = pDots.querySelectorAll('.dot');
-      dots.forEach((dot, i) => { dot.classList.toggle('on', i < n); });
+    function renderDots(n, popIndex) {
+      const steps = pDots.querySelectorAll('.track-step');
+      steps.forEach((step, i) => {
+        const on = i < n;
+        step.classList.toggle('is-on', on);
+        const dot = step.querySelector('.dot');
+        if (dot) dot.classList.toggle('on', on);
+        step.classList.remove('is-pop');
+        if (popIndex === i && on) {
+          void step.offsetWidth;
+          step.classList.add('is-pop');
+        }
+      });
       pDots.setAttribute('aria-label', n + '단서 공개');
     }
 
@@ -1422,8 +1552,9 @@ __ARC_CARDS__
       }
       resultBox.hidden = false;
       resultBox.classList.toggle('gave-up', !r.solved);
-      resultBadge.textContent = r.solved ? '정답' : '정답 확인';
+      resultBadge.textContent = r.solved ? (isPractice(p) ? '연습 정답' : '정답') : '정답 확인';
       resultTitle.textContent = r.solved ? (r.clues + '단서 만에 해결 (' + dotsText(r.clues) + ')') : '정답을 확인했습니다';
+      if (resultGapText) resultGapText.textContent = gapText(r);
       resultAnswer.textContent = '';
       resultAnswer.textContent = p.choices[p.answer];
       resultExplain.textContent = p.explain;
@@ -1434,14 +1565,16 @@ __ARC_CARDS__
     function renderPlayer() {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
+      const r = runOf(p);
       pCat.textContent = catLabel[p.cat] || p.cat;
       pCat.className = 'badge cat-' + p.cat;
       pDate.textContent = fmtDate(p.date);
       pToday.hidden = !(p.date === TODAY);
       pTitle.textContent = p.title;
       pPrompt.textContent = p.prompt;
-      renderDots(r.clues);
+      renderDots(r.clues, popStep);
+      popStep = -1;
+      hideFlash();
       renderClues(p, r);
       renderOptions(p, r);
       renderResult(p, r);
@@ -1461,47 +1594,77 @@ __ARC_CARDS__
     function pick(idx) {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
-      if (r.solved || r.gaveUp) return;
+      const practice = isPractice(p);
+      const r = runOf(p);
+      if (!practice && (r.solved || r.gaveUp)) return;
       if (r.wrong.indexOf(idx) !== -1) return;
       r.attempts += 1;
       if (idx === p.answer) {
         r.solved = true;
-        saveRecord();
+        if (!practice) saveRecord();
         renderPlayer();
         renderStats();
         renderArchive();
+        showFlash('ok', '정답', (practice ? '연습 · ' : '') + r.clues + '단서 만에 해결했습니다.');
         return;
       }
       r.wrong.push(idx);
-      saveRecord();
+      if (!practice) saveRecord();
       renderOptions(p, r);
       triesText.textContent = '시도 ' + r.attempts + '회';
       askMsg.textContent = r.clues < 3
         ? '다시 골라 보세요. 다음 단서를 열면 범위가 좁혀집니다.'
         : '아직 정답이 아닙니다. 남은 보기를 다시 살펴보세요.';
       askMsg.className = 'ask-msg no';
+      showFlash('no', '오답', r.clues < 3
+        ? '다음 단서를 열면 범위가 좁혀집니다. 같은 보기를 다시 고를 수는 없습니다.'
+        : '남은 보기에서 다시 골라 보세요.');
     }
 
     function revealNextClue() {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
+      const r = runOf(p);
       if (r.solved || r.gaveUp || r.clues >= 3) return;
       r.clues += 1;
-      saveRecord();
+      if (!isPractice(p)) saveRecord();
+      popStep = r.clues - 1;
       renderPlayer();
       renderStats();
       renderArchive();
     }
 
+    function startPractice() {
+      const p = byId[currentId];
+      if (!p) return;
+      practiceRun = { id: p.id, solved: false, clues: 1, attempts: 0, gaveUp: false, wrong: [] };
+      renderPlayer();
+      const top = document.getElementById('playPanel').getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top , behavior: 'smooth' });
+      nextClueBtn.focus();
+    }
+
+    function openNextPuzzle() {
+      if (!DATA.length) return;
+      const index = DATA.findIndex(p => p.id === currentId);
+      let next = null;
+      for (let step = 1; step <= DATA.length; step++) {
+        const candidate = DATA[(index + step) % DATA.length];
+        if (!rec(candidate.id).solved) { next = candidate; break; }
+      }
+      if (!next) next = DATA[(index + 1) % DATA.length];
+      practiceRun = null;
+      loadPuzzle(next.id, true);
+    }
+
     function giveUp() {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
+      const practice = isPractice(p);
+      const r = runOf(p);
       if (r.solved || r.gaveUp) return;
       r.gaveUp = true;
-      saveRecord();
+      if (!practice) saveRecord();
       renderPlayer();
       renderStats();
       renderArchive();
@@ -1544,6 +1707,10 @@ __ARC_CARDS__
     nextClueBtn.addEventListener('click', revealNextClue);
     giveUpBtn.addEventListener('click', giveUp);
     copyBtn.addEventListener('click', copyResult);
+    const retryResultBtn = document.getElementById('retryBtn');
+    if (retryResultBtn) retryResultBtn.addEventListener('click', startPractice);
+    const nextResultBtn = document.getElementById('nextBtn');
+    if (nextResultBtn) nextResultBtn.addEventListener('click', openNextPuzzle);
 
     // ---- 지난 문제 ----
     const catFilter = document.getElementById('catFilter');
@@ -1626,7 +1793,10 @@ __ARC_CARDS__
       const total = DATA.length;
       const solved = DATA.filter(p => rec(p.id).solved).length;
       document.getElementById('solvedStat').textContent = solved + ' / ' + total;
+      document.getElementById('streakNum').textContent = streakDays() + '일';
+    }
 
+    function streakDays() {
       const solvedDates = {};
       DATA.forEach(p => { if (rec(p.id).solved) solvedDates[p.date] = true; });
       const todayN = dayNumber(TODAY);
@@ -1636,7 +1806,17 @@ __ARC_CARDS__
         streak += 1;
         start -= 1;
       }
-      document.getElementById('streakNum').textContent = streak + '일';
+      return streak;
+    }
+
+    function gapText(r) {
+      const streak = streakDays();
+      const streakText = '연속 ' + streak + '일 도전!';
+      if (!r.solved) return streakText + ' · 다음 문제로 연속을 이어 가세요.';
+      const clueText = r.clues > 1
+        ? '최소 단서 클리어까지 ' + (r.clues - 1) + '단계!'
+        : '최소 단서 클리어 달성!';
+      return streakText + ' · ' + clueText;
     }
 
     function dateString(dayN) {
@@ -1660,7 +1840,36 @@ __ARC_CARDS__
       }
       renderArchive();
       renderStats();
+      initClueGuide();
     })();
+
+    // ---- 게임 방법 데모: 단서 열기 → 좁히기 → 정답 (처음 한 번만 움직임) ----
+    function initClueGuide() {
+      const stage = document.getElementById('clueGuideStage');
+      if (!stage) return;
+      const cards = stage.querySelectorAll('[data-demo-card]');
+      const pick = stage.querySelector('[data-demo-pick]');
+      function paint(n) {
+        cards.forEach(function (card) {
+          const index = Number(card.getAttribute('data-demo-card'));
+          card.classList.toggle('is-open', index < n);
+        });
+        if (pick) pick.hidden = n < 3;
+      }
+      GameGuide.create({
+        key: 'clue_demo_seen_v1',
+        steps: document.getElementById('clueGuideSteps'),
+        note: document.getElementById('clueGuideNote'),
+        replay: document.getElementById('clueGuideReplay'),
+        notes: [
+          '① 첫 단서를 읽고 가능한 범위를 머리에 둡니다.',
+          '② 필요하면 다음 단서를 열어 범위를 좁힙니다.',
+          '③ 범위가 좁혀지면 정답을 고릅니다. 열은 단서가 적을수록 좋은 기록입니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    }
   </script>
 </body>
 </html>
@@ -1741,6 +1950,22 @@ def load_questions(verbose=True):
     return fallback
 
 
+GUIDE_STAGE = (
+    '<div class="clue-demo">'
+    '<span class="clue-demo-card" data-demo-card="0"><b>단서 1</b><i>사건</i></span>'
+    '<span class="clue-demo-card" data-demo-card="1"><b>단서 2</b><i>정황</i></span>'
+    '<span class="clue-demo-card" data-demo-card="2"><b>단서 3</b><i>결정</i></span>'
+    '<span class="clue-demo-pick" data-demo-pick hidden>정답</span>'
+    '</div>'
+)
+
+GUIDE_HTML = game_guide.guide_html(
+    'clueGuide', GUIDE_STAGE,
+    ['① 단서 열기', '② 좁히기', '③ 정답'],
+    '단서를 하나씩 열면 위 타임라인이 채워지고, 범위가 좁혀집니다.',
+)
+
+
 def build():
     kst = timezone(timedelta(hours=9))
     now = datetime.now(kst)
@@ -1773,6 +1998,8 @@ def build():
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
+    html = html.replace("__GUIDE__", GUIDE_HTML)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
     html = html.replace("__CAT_CHIPS__", _cat_chips(questions))
     html = html.replace("__ARC_CARDS__", arc_cards)
     html = html.replace("__DATA_JSON__", data_json.replace("</", "<\\/"))

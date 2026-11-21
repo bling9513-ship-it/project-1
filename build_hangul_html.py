@@ -513,6 +513,20 @@ CSS = """
     .hg-key:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
     .hg-key.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); }
     .hg-key.is-off { font-size: 10px; font-weight: 600; color: var(--text-secondary); }
+    .hg-key.is-hint {
+      position: relative; border-color: var(--accent-primary); background: var(--accent-subtle);
+      color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-subtle);
+      animation: hgHintPulse 900ms ease-in-out 2;
+    }
+    .hg-key.is-hint::after {
+      content: '힌트'; position: absolute; top: -7px; right: -5px;
+      font-size: 8px; font-weight: 700; line-height: 1; padding: 2px 3px;
+      border-radius: 4px; background: var(--accent-primary); color: #ffffff; letter-spacing: -0.01em;
+    }
+    @keyframes hgHintPulse {
+      0%, 100% { box-shadow: 0 0 0 2px var(--accent-subtle); }
+      50% { box-shadow: 0 0 0 4px var(--accent-subtle); }
+    }
     .hg-pad-note { margin-top: 7px; font-size: 10px; color: var(--text-muted); }
 
     .hg-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 11px; }
@@ -619,8 +633,8 @@ CSS = """
 
     @media (prefers-reduced-motion: reduce) {
       .hg-syl.is-changed, .hg-syl.is-reject, .hg-part.is-changed, .hg-part.is-reject,
-      .hg-star.is-pop, .hg-demo-tile.is-pop { animation: none !important; }
-      .hg-star, .hg-demo-tile, .hg-seg-btn { transition: none !important; }
+      .hg-star.is-pop, .hg-demo-tile.is-pop, .hg-key.is-hint { animation: none !important; }
+      .hg-star, .hg-demo-tile, .hg-seg-btn, .hg-key { transition: none !important; }
     }
 """
 
@@ -1044,6 +1058,7 @@ JS = r"""
     cell: null,
     padTab: 'jamo',
     letterCho: null,
+    hintTarget: null,
     lastPracticeId: null,
     store: emptyStore(),
     timer: null,
@@ -1188,6 +1203,7 @@ JS = r"""
 
   function buildLetterKeys() {
     var current = state.cell && state.cell.part === 'whole' ? state.word[state.cell.pos] : '';
+    var hint = state.hintTarget;
     if (!state.letterCho) {
       var parts = current ? decompose(current) : null;
       state.letterCho = parts ? parts.cho : CHO[0];
@@ -1208,10 +1224,12 @@ JS = r"""
     for (var i = 0; i < list.length; i += 1) {
       var button = document.createElement('button');
       button.type = 'button';
-      button.className = 'hg-key' + (list[i] === current ? ' is-current' : '');
+      button.className = 'hg-key' + (list[i] === current ? ' is-current' : '')
+        + (hint && list[i] === hint ? ' is-hint' : '');
       button.setAttribute('data-syllable', list[i]);
+      if (hint && list[i] === hint) button.setAttribute('data-hint', '1');
       button.textContent = list[i];
-      button.setAttribute('aria-label', list[i] + ' 글자로 바꾸기');
+      button.setAttribute('aria-label', list[i] + ' 글자로 바꾸기' + (hint && list[i] === hint ? ' (힌트 목표 글자)' : ''));
       el.letterGrid.appendChild(button);
     }
   }
@@ -1415,6 +1433,7 @@ JS = r"""
     state.cell = { pos: 0, part: 'cho' };
     state.padTab = 'jamo';
     state.letterCho = null;
+    state.hintTarget = null;
     state.dayKey = opts.dayKey || state.dayKey || state.todayKey;
     el.dayBadge.hidden = state.mode !== 'daily' || state.dayKey === state.todayKey;
     if (state.mode === 'daily') el.dayBadge.hidden = true;
@@ -1461,6 +1480,7 @@ JS = r"""
     state.history.push(state.word);
     state.word = next;
     state.moves += 1;
+    state.hintTarget = null;
     if (!state.running) startTimer();
     paint();
     popCell(pos, part);
@@ -1625,6 +1645,7 @@ JS = r"""
     state.cell = { pos: 0, part: 'cho' };
     state.padTab = 'jamo';
     state.letterCho = null;
+    state.hintTarget = null;
     buildWordRow();
     paint();
     setStatus('처음부터 다시 시작합니다. 기록은 그대로입니다.');
@@ -1637,25 +1658,49 @@ JS = r"""
       setStatus('지금 단어에서 목표까지 가는 길을 찾지 못했습니다. 되돌려 보세요.', 'bad');
       return;
     }
-    state.hints += 1;
+    var pos = -1;
     for (var i = 0; i < state.word.length; i += 1) {
-      if (state.word[i] === next[i]) continue;
-      var before = decompose(state.word[i]);
-      var after = decompose(next[i]);
-      if (!before || !after) break;
-      for (var p = 0; p < PARTS.length; p += 1) {
-        var part = PARTS[p];
-        if (before[part] === after[part]) continue;
-        state.cell = { pos: i, part: part };
-        state.padTab = 'jamo';
-        state.letterCho = null;
-        paint();
-        if (!after[part]) setStatus('힌트 · ' + (i + 1) + '번째 글자의 받침을 없애 보세요.', 'good');
-        else setStatus('힌트 · ' + (i + 1) + '번째 글자 ' + PART_LABEL[part] + ' → ' + after[part], 'good');
-        return;
-      }
+      if (state.word[i] !== next[i]) { pos = i; break; }
     }
-    setStatus('힌트를 찾지 못했습니다.', 'bad');
+    if (pos < 0) {
+      setStatus('힌트를 찾지 못했습니다.', 'bad');
+      return;
+    }
+    var before = decompose(state.word[pos]);
+    var after = decompose(next[pos]);
+    if (!before || !after) {
+      setStatus('힌트를 찾지 못했습니다.', 'bad');
+      return;
+    }
+    // 자모를 딱 한 칸만 바꾸면 도달하는 경우에만 자모 힌트를 쓴다.
+    var diffPart = null;
+    var diffs = 0;
+    for (var p = 0; p < PARTS.length; p += 1) {
+      if (before[PARTS[p]] === after[PARTS[p]]) continue;
+      diffs += 1;
+      diffPart = PARTS[p];
+    }
+    state.hints += 1;
+    if (diffs === 1) {
+      state.cell = { pos: pos, part: diffPart };
+      state.padTab = 'jamo';
+      state.letterCho = null;
+      state.hintTarget = null;
+      paint();
+      if (!after[diffPart]) setStatus('힌트 · ' + (pos + 1) + '번째 글자의 받침을 없애 보세요.', 'good');
+      else setStatus('힌트 · ' + (pos + 1) + '번째 글자 ' + PART_LABEL[diffPart] + ' → ' + after[diffPart], 'good');
+      return;
+    }
+    // 음절을 통째로 바꿔야 하는 경우: 글자 모드로 넘기고 목표 음절 칩을 강조한다.
+    state.cell = { pos: pos, part: 'whole' };
+    state.padTab = 'letter';
+    state.letterCho = after.cho;
+    state.hintTarget = next[pos];
+    paint();
+    var chip = el.letterGrid.querySelector('.hg-key.is-hint');
+    if (chip && chip.scrollIntoView) chip.scrollIntoView({ block: 'nearest' });
+    var particle = after.jong && after.jong !== 'ㄹ' ? '으로' : '로';
+    setStatus('힌트 · ' + (pos + 1) + '번째 글자를 ' + next[pos] + particle + ' 바꿔야 합니다. 강조된 글자를 누르세요.', 'good');
   }
 
   /* ------------------------------------------------------------ 가이드 데모 */
@@ -1792,6 +1837,7 @@ JS = r"""
       state.cell = { pos: Number(syllable.getAttribute('data-pos')), part: 'whole' };
       state.padTab = 'letter';
       state.letterCho = null;
+      state.hintTarget = null;
       paint();
       return;
     }
@@ -1799,6 +1845,7 @@ JS = r"""
     if (!cell) return;
     state.cell = { pos: Number(cell.getAttribute('data-pos')), part: cell.getAttribute('data-part') };
     state.padTab = 'jamo';
+    state.hintTarget = null;
     paint();
   });
 
@@ -1816,22 +1863,40 @@ JS = r"""
 
   el.padTabJamo.addEventListener('click', function () {
     state.padTab = 'jamo';
+    state.hintTarget = null;
     if (state.cell && state.cell.part === 'whole') state.cell = { pos: state.cell.pos, part: 'cho' };
     paint();
   });
 
   el.padTabLetter.addEventListener('click', function () {
     state.padTab = 'letter';
+    state.hintTarget = null;
     if (state.cell) state.cell = { pos: state.cell.pos, part: 'whole' };
     state.letterCho = null;
     paint();
   });
 
+  function focusCho(cho) {
+    var node = el.letterChoRow.querySelector('[data-cho="' + cho + '"]');
+    if (node) { node.focus(); return true; }
+    var first = el.letterGrid.querySelector('.hg-key');
+    if (first) { first.focus(); return true; }
+    return false;
+  }
+
   el.letterChoRow.addEventListener('click', function (event) {
     var button = event.target.closest ? event.target.closest('.hg-cho') : null;
     if (!button) return;
     state.letterCho = button.getAttribute('data-cho');
+    state.hintTarget = null;
     paint();
+    // 팔레트를 다시 그리면 포커스가 body로 떨어지므로 같은 초성 버튼으로 되돌린다.
+    if (document.activeElement === document.body || document.activeElement === null) {
+      if (!focusCho(state.letterCho)) {
+        var active = el.letterChoRow.querySelector('.hg-cho.is-active');
+        if (active) active.focus();
+      }
+    }
   });
 
   el.undoBtn.addEventListener('click', undo);

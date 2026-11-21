@@ -17,6 +17,7 @@ from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
 import ui_shell
+import game_guide
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "chart_data.json")
@@ -1049,6 +1050,67 @@ CSS = """
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
     }
+""" + game_guide.GUIDE_CSS + r"""
+    /* ----- 차트 추리실: 캔들 하이라이트·예측 배지·결과 격차 ----- */
+    .chart-card { position: relative; }
+    .pick-badge {
+      display: inline-flex; align-items: center; gap: 6px; margin: 0 0 8px;
+      padding: 5px 9px; border-radius: 8px; border: 1px solid var(--border-default);
+      background: var(--bg-subtle); font-size: 11.5px; font-weight: 600; color: var(--text-primary);
+    }
+    .pick-badge-tag {
+      font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--accent-subtle); color: var(--accent-primary);
+    }
+    .pick-badge.is-ok { border-color: var(--ok-border); background: var(--ok-bg); }
+    .pick-badge.is-ok .pick-badge-tag { background: var(--ok-text); color: #ffffff; }
+    .pick-badge.is-no { border-color: var(--no-border); background: var(--no-bg); }
+    .pick-badge.is-no .pick-badge-tag { background: var(--no-text); color: #ffffff; }
+    .hover-band { fill: var(--bg-muted); opacity: 0.4; pointer-events: none; }
+    .candle-up.is-hot, .candle-down.is-hot { stroke: var(--text-primary); stroke-width: 1.1; }
+
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin: 0 0 10px;
+      font-size: 12px; font-weight: 600; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--bg-surface); border: 1px solid var(--border-default); color: var(--accent-primary);
+    }
+    .result-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px; margin-top: 10px; }
+    .result-acts button {
+      font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 10px 6px;
+      border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary); cursor: pointer; white-space: nowrap;
+    }
+    .result-acts .result-next { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+
+    .chart-demo { display: flex; align-items: flex-end; gap: 4px; height: 44px; justify-content: center; }
+    .chart-demo-bar { width: 9px; border-radius: 2px; background: var(--up); opacity: 0.45; transition: opacity 160ms ease, transform 160ms ease; }
+    .chart-demo-bar.down { background: var(--down); }
+    .chart-demo-bar.is-scan { opacity: 1; transform: scaleY(1.06); }
+    .chart-demo-side { display: flex; flex-direction: column; gap: 3px; margin-left: 8px; }
+    .chart-demo-chip {
+      font-size: 9px; font-weight: 600; color: var(--text-muted); padding: 2px 5px;
+      border: 1px dashed var(--border-default); border-radius: 6px; white-space: nowrap;
+    }
+    .chart-demo-chip.is-on { border-style: solid; border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+    .chart-demo-chip.is-pick { border-style: solid; border-color: #16a34a; color: #15803d; background: #dcfce7; }
+    @media (prefers-reduced-motion: reduce) {
+      .chart-demo-bar { transition: none !important; }
+    }
+    /* ----- 목표 한 줄(모바일) ----- */
+    .chart-goal { display: none; align-items: center; gap: 6px; margin: 8px 0 0; font-size: 11.5px; font-weight: 600; line-height: 1.45; color: var(--text-primary); }
+    .chart-goal-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default);
+      border-radius: 4px; padding: 1px 5px;
+    }
+    @media (max-width: 640px) {
+      .hero .hero-desc { display: none; }
+      .chart-goal { display: flex; }
+      .hero-title { font-size: 20px; }
+    }
 """
 
 
@@ -1156,6 +1218,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span class="hero-pill">CHART MYSTERY</span>
       <h1 class="hero-title">차트 추리실</h1>
       <p class="hero-desc">날짜와 종목명을 가린 과거 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 그 시점의 시장 국면을 맞히는 게임입니다. 가격과 거래량만으로 시작해 필요하면 이동평균·변동성 같은 기술적 단서를 열어 볼 수 있고, 정답을 고르면 실제 기간·종목·출처와 해설이 함께 공개됩니다. 모든 차트는 실제 과거 시세이고 실시간 시세나 투자 조언이 아닙니다.</p>
+      <p class="chart-goal"><span class="chart-goal-tag">목표</span>이름을 가린 차트에서 가려진 다음 구간 맞히기</p>
       <div class="hero-stats">
         <span class="stat-chip">문제 <strong>__TOTAL__</strong></span>
         <span class="stat-chip">오늘 <strong id="statToday">미도전</strong></span>
@@ -1166,6 +1229,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </section>
 
     <section class="panel player" id="playPanel" aria-label="차트 추리실 플레이어">
+      __GUIDE__
       <div class="player-top">
         <div class="player-meta">
           <span class="badge cat-domestic" id="pCat">분야</span>
@@ -1182,6 +1246,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <div class="player-grid">
         <div class="player-main">
       <div class="chart-card">
+        <div class="pick-badge" id="pickBadge" hidden><span class="pick-badge-tag">내 예측</span><span class="pick-badge-text"></span></div>
         <div class="chart-toolbar">
           <div class="chart-legend" id="legend"></div>
           <button class="btn btn-line btn-sm" id="indicatorBtn" type="button" aria-pressed="false">보조 지표 보기</button>
@@ -1228,6 +1293,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
         <p class="result-answer">정답 <strong id="resultAnswer"></strong></p>
         <p class="result-explain" id="resultExplain"></p>
+        <div class="result-gap">
+          <span class="result-gap-tag">다음 목표</span>
+          <span id="resultGapText"></span>
+        </div>
+        <div class="result-acts">
+          <button type="button" id="retryBtn">다시 풀기</button>
+          <button type="button" class="result-next" id="nextBtn">다음 차트</button>
+        </div>
         <div class="share">
           <div class="share-preview" id="sharePreview"></div>
           <button class="btn btn-primary" id="copyBtn" type="button">결과 복사</button>
@@ -1292,6 +1365,7 @@ __ARC_CARDS__      </div>
 
     // ---- 데이터 ----
     const DATA = __DATA_JSON__;
+    __GUIDE_SCRIPTS__
     const CATS = __CATS_JSON__;
     const TODAY_ID = '__TODAY_ID__';
     const STORE_KEY = 'secjobs-chart-v1';
@@ -1325,6 +1399,7 @@ __ARC_CARDS__      </div>
     const revealSource = document.getElementById('revealSource');
     const resultAnswer = document.getElementById('resultAnswer');
     const resultExplain = document.getElementById('resultExplain');
+    const resultGapText = document.getElementById('resultGapText');
     const sharePreview = document.getElementById('sharePreview');
     const copyBtn = document.getElementById('copyBtn');
     const solvedStat = document.getElementById('solvedStat');
@@ -1348,6 +1423,8 @@ __ARC_CARDS__      </div>
     let indicator = false;
     let showPrices = false;
     let hoverIndex = -1;
+    // 결과 뒤 '다시 풀기'는 기록을 건드리지 않는 연습 모드로 돌린다.
+    let practiceMode = false;
 
     // ---- 공유 링크 (?id=<차트 ID> · #<차트 ID> 해시도 받아 준다) ----
     function chartUrl(id) {
@@ -1561,10 +1638,10 @@ __ARC_CARDS__      </div>
         const bodyH = Math.max(1.1, Math.abs(y(o) - y(c)));
         const bodyW = Math.max(1.4, bw * 0.62);
         parts.push('<line class="wick-' + (up ? 'up' : 'down') + (future ? ' is-future' : '') + '" x1="' + cxp + '" y1="' + y(hh).toFixed(1) + '" x2="' + cxp + '" y2="' + y(ll).toFixed(1) + '"></line>');
-        parts.push('<rect class="candle-' + cls + '" x="' + (x(i) - bodyW / 2).toFixed(1) + '" y="' + bodyTop.toFixed(1) + '" width="' + bodyW.toFixed(1) + '" height="' + bodyH.toFixed(1) + '"></rect>');
+        parts.push('<rect class="candle-' + cls + '" data-i="' + i + '" x="' + (x(i) - bodyW / 2).toFixed(1) + '" y="' + bodyTop.toFixed(1) + '" width="' + bodyW.toFixed(1) + '" height="' + bodyH.toFixed(1) + '"></rect>');
         const value = hasVolume ? v : Math.abs(c - ep.bars[Math.max(0, i - 1)][4]);
         const vh = Math.max(0.7, volH * value / vmax);
-        parts.push('<rect class="candle-' + cls + '" x="' + (x(i) - bodyW / 2).toFixed(1) + '" y="' + (volTop + volH - vh).toFixed(1) + '" width="' + bodyW.toFixed(1) + '" height="' + vh.toFixed(1) + '"></rect>');
+        parts.push('<rect class="candle-vol candle-' + cls + '" data-i="' + i + '" x="' + (x(i) - bodyW / 2).toFixed(1) + '" y="' + (volTop + volH - vh).toFixed(1) + '" width="' + bodyW.toFixed(1) + '" height="' + vh.toFixed(1) + '"></rect>');
       }
 
       // 가려진 구간 시작 표시
@@ -1578,6 +1655,7 @@ __ARC_CARDS__      </div>
         parts.push('<rect class="bar-hit" data-i="' + i + '" x="' + (padL + bw * i).toFixed(1) + '" y="' + top + '" width="' + bw.toFixed(2) + '" height="' + (volTop + volH - top) + '"></rect>');
       }
       parts.push('<line class="hover-line" id="hoverLine" style="display:none" x1="0" y1="' + top + '" x2="0" y2="' + (volTop + volH) + '"></line>');
+      parts.splice(parts.length - 1, 0, '<rect class="hover-band" id="hoverBand" style="display:none" x="0" y="' + top + '" width="0" height="' + (volTop + volH - top) + '"></rect>');
 
       chartSvg.innerHTML = parts.join('');
       chartSvg.setAttribute('class', indicator ? 'show-ma' : '');
@@ -1592,14 +1670,28 @@ __ARC_CARDS__      </div>
 
     function placeHover(i) {
       const line = chartSvg.querySelector('#hoverLine');
+      const band = chartSvg.querySelector('#hoverBand');
+      const f = byId[currentId];
+      const bars = f ? f.bars.length : 0;
+      const bw = bars ? (CHART.W - CHART.padL - CHART.padR) / bars : 0;
+      chartSvg.querySelectorAll('.is-hot').forEach(node => node.classList.remove('is-hot'));
       if (!line) return;
       const ep = byId[currentId];
-      if (!ep || i < 0 || i >= plottedCount(ep)) { line.style.display = 'none'; return; }
-      const bw = (CHART.W - CHART.padL - CHART.padR) / ep.bars.length;
+      if (!ep || i < 0 || i >= plottedCount(ep)) {
+        line.style.display = 'none';
+        if (band) band.style.display = 'none';
+        return;
+      }
       const px = (CHART.padL + bw * (i + 0.5)).toFixed(1);
       line.setAttribute('x1', px);
       line.setAttribute('x2', px);
       line.style.display = '';
+      if (band) {
+        band.setAttribute('x', (CHART.padL + bw * i).toFixed(1));
+        band.setAttribute('width', Math.max(2, bw * 0.92).toFixed(1));
+        band.style.display = '';
+      }
+      chartSvg.querySelectorAll('[data-i="' + i + '"]').forEach(node => node.classList.add('is-hot'));
     }
 
     function renderLegend(ep, hasVolume) {
@@ -1619,21 +1711,27 @@ __ARC_CARDS__      </div>
       const bar = ep.bars[i];
       const prev = ep.bars[Math.max(0, i - 1)][4];
       const chg = (bar[4] / prev - 1) * 100;
-      const hasVolume = ep.bars.some(b => b[5] > 0);
-      if (!hasVolume) {
-        chartTip.innerHTML = '<div class="tip-dim">' + (i + 1) + '번째 봉</div><div>등락 ' + pctText(chg) + '</div>';
+      const open = bar[1];
+      const close = bar[4];
+      const body = (close / open - 1) * 100;
+      const volume = '거래량 ' + Math.round(bar[5] || 0).toLocaleString('ko-KR');
+      let html = '<div class="tip-dim">' + (i + 1) + '번째 봉</div>';
+      if (showPrices) {
+        html += '<div>시가 ' + priceText(open) + ' · 종가 ' + priceText(close) + '</div>'
+          + '<div class="tip-dim">' + escapeHtml(bar[0]) + ' · ' + volume + '</div>'
+          + '<div class="tip-dim">전일 대비 ' + pctText(chg) + '</div>';
       } else {
-        chartTip.innerHTML = '<div class="tip-dim">' + (i + 1) + '번째 봉</div><div>등락 ' + pctText(chg) + '</div>'
-          + (showPrices
-            ? '<div class="tip-dim">' + escapeHtml(bar[0]) + ' · 종가 ' + priceText(bar[4]) + '</div><div class="tip-dim">거래량 ' + Math.round(bar[5]).toLocaleString('ko-KR') + '</div>'
-            : '<div class="tip-dim">종가·날짜는 공개 전입니다</div>');
+        html += '<div>시가 대비 ' + pctText(body) + '</div>'
+          + '<div class="tip-dim">' + volume + ' · 전일 대비 ' + pctText(chg) + '</div>'
+          + '<div class="tip-dim">가격·날짜는 정답 확인 뒤 공개</div>';
       }
+      chartTip.innerHTML = html;
       chartTip.hidden = false;
       const rect = chartSvg.getBoundingClientRect();
       const bw = (CHART.W - CHART.padL - CHART.padR) / ep.bars.length;
       const px = (CHART.padL + bw * (i + 0.5)) / CHART.W * rect.width;
       chartTip.style.left = Math.max(40, Math.min(rect.width - 40, px)) + 'px';
-      chartTip.style.top = Math.max(30, rect.height * (CHART.top + 40) / CHART.H) + 'px';
+      chartTip.style.top = Math.max(30, rect.height * 0.46) + 'px';
     }
 
     function hideTip() {
@@ -1737,7 +1835,37 @@ __ARC_CARDS__      </div>
       askMsg.textContent = gaveUp ? '정답을 봤으니 기록에는 해결로 남지 않습니다.' : (correct ? '' : '가려진 구간을 함께 열었습니다.');
       askMsg.className = 'ask-msg' + (correct || gaveUp ? '' : ' no');
       sharePreview.textContent = shareText(ep);
+      if (resultGapText) resultGapText.textContent = gapText(ep);
       refreshStats();
+    }
+
+    function gapText(ep) {
+      const total = DATA.length;
+      const solved = solvedCount();
+      const tiers = [
+        { n: Math.ceil(total * 0.35), name: '추리꾼' },
+        { n: Math.ceil(total * 0.7), name: '분석가' },
+        { n: total, name: '마스터' }
+      ];
+      const tier = tiers.filter(t => t.n > solved)[0];
+      const streak = '연속 정답 ' + (store.streak || 0) + '회!';
+      const grade = tier
+        ? "다음 등급('" + tier.name + "')까지 " + (tier.n - solved) + '문제!'
+        : '모든 등급 달성!';
+      return streak + ' · ' + grade;
+    }
+
+    function showPickBadge(ep, correct, pick) {
+      const badge = document.getElementById('pickBadge');
+      if (!badge) return;
+      if (pick === undefined || pick === null || pick < 0) { badge.hidden = true; return; }
+      const practice = practiceMode ? '연습 · ' : '';
+      badge.hidden = false;
+      badge.className = 'pick-badge' + (correct ? ' is-ok' : ' is-no');
+      const tag = badge.querySelector('.pick-badge-tag');
+      const text = badge.querySelector('.pick-badge-text');
+      if (tag) tag.textContent = correct ? '내 예측 적중' : '내 예측';
+      if (text) text.textContent = practice + ep.quiz.choices[pick] + (correct ? ' · 맞음' : ' · 빗나감');
     }
 
     function shareText(ep) {
@@ -1775,10 +1903,13 @@ __ARC_CARDS__      </div>
       renderClues(ep);
       const rec = recordFor(id);
       renderOptions(ep, rec);
-      if (answered || gaveUp) renderResult(ep, !!rec.solved);
-      else {
+      if (answered || gaveUp) {
+        renderResult(ep, !!rec.solved);
+        showPickBadge(ep, rec.pick === ep.quiz.answer, rec.pick);
+      } else {
         askMsg.textContent = '';
         askMsg.className = 'ask-msg';
+        showPickBadge(ep, false, -1);
       }
       giveUp.hidden = answered || gaveUp;
       indicatorBtn.textContent = indicator ? '보조 지표 숨기기' : '보조 지표 보기';
@@ -1820,25 +1951,66 @@ __ARC_CARDS__      </div>
       const ep = byId[currentId];
       const pick = Number(btn.dataset.idx);
       const correct = pick === ep.quiz.answer;
-      const r = recordFor(ep.id);
+      const r = practiceMode
+        ? { solved: false, revealed: false, gaveUp: false, clues: 0, pick: -1 }
+        : recordFor(ep.id);
       answered = true;
       r.revealed = true;
       r.pick = pick;
       r.clues = Math.max(r.clues || 0, openClues);
       if (correct) {
         r.solved = true;
-        store.streak = (store.streak || 0) + 1;
-        store.lastDate = todayKst();
-      } else {
+        if (!practiceMode) {
+          store.streak = (store.streak || 0) + 1;
+          store.lastDate = todayKst();
+        }
+      } else if (!practiceMode) {
         store.streak = 0;
       }
-      saveStore();
+      if (!practiceMode) saveStore();
       showPrices = true;
       drawChart();
       renderOptions(ep, r);
       renderResult(ep, correct);
+      showPickBadge(ep, correct, pick);
       pSub.textContent = '정답 확인 완료 · 가려졌던 구간까지 표시됩니다';
     });
+
+    function startPractice() {
+      const ep = byId[currentId];
+      if (!ep) return;
+      practiceMode = true;
+      answered = false;
+      gaveUp = false;
+      openClues = 0;
+      showPrices = false;
+      indicator = false;
+      hoverIndex = -1;
+      resultBox.hidden = true;
+      showPickBadge(ep, false, -1);
+      drawChart();
+      renderClues(ep);
+      renderOptions(ep, { pick: -1 });
+      askMsg.textContent = '연습 모드 · 기록에는 반영되지 않습니다.';
+      askMsg.className = 'ask-msg';
+      giveUp.hidden = false;
+      indicatorBtn.textContent = '보조 지표 보기';
+      indicatorBtn.setAttribute('aria-pressed', 'false');
+      pSub.textContent = '연습 모드 · 날짜와 종목명은 정답을 확인할 때 공개됩니다';
+    }
+
+    function openNextChart() {
+      if (!DATA.length) return;
+      practiceMode = false;
+      const index = DATA.findIndex(ep => ep.id === currentId);
+      let next = null;
+      for (let step = 1; step <= DATA.length; step += 1) {
+        const candidate = DATA[(index + step) % DATA.length];
+        if (!recordFor(candidate.id).solved) { next = candidate; break; }
+      }
+      if (!next) next = DATA[(index + 1) % DATA.length];
+      load(next.id, { scroll: true });
+    }
 
     giveUp.addEventListener('click', () => {
       const ep = byId[currentId];
@@ -1883,6 +2055,10 @@ __ARC_CARDS__      </div>
     }
 
     copyBtn.addEventListener('click', () => copyText(sharePreview.textContent));
+    const retryResultBtn = document.getElementById('retryBtn');
+    if (retryResultBtn) retryResultBtn.addEventListener('click', startPractice);
+    const nextResultBtn = document.getElementById('nextBtn');
+    if (nextResultBtn) nextResultBtn.addEventListener('click', openNextChart);
 
     // 차트 호버/터치 → 봉별 값
     function indexFromEvent(event) {
@@ -1953,11 +2129,67 @@ __ARC_CARDS__      </div>
       const linked = chartIdFromUrl();
       load(linked || TODAY_ID);
       if (linked) syncUrl(linked);
+      initChartGuide();
     })();
+
+    // ---- 게임 방법 데모: 캔들 탐색 → 단서 1개 → 예측 (처음 한 번만 움직임) ----
+    function initChartGuide() {
+      const stage = document.getElementById('chartGuideStage');
+      if (!stage) return;
+      const bars = stage.querySelectorAll('[data-demo-bar]');
+      const clueChip = stage.querySelector('[data-demo-chip="clue"]');
+      const pickChip = stage.querySelector('[data-demo-chip="pick"]');
+      function paint(n) {
+        bars.forEach(function (bar) {
+          const index = Number(bar.getAttribute('data-demo-bar'));
+          bar.classList.toggle('is-scan', index === 1 && n <= 2);
+        });
+        if (clueChip) {
+          clueChip.classList.toggle('is-on', n >= 2);
+          clueChip.classList.remove('is-pick');
+        }
+        if (pickChip) {
+          pickChip.classList.toggle('is-pick', n >= 3);
+        }
+      }
+      GameGuide.create({
+        key: 'chart_demo_seen_v1',
+        steps: document.getElementById('chartGuideSteps'),
+        note: document.getElementById('chartGuideNote'),
+        replay: document.getElementById('chartGuideReplay'),
+        notes: [
+          '① 봉을 짚으면 그 봉만 밝아지고 시가·종가·거래량이 뜹니다.',
+          '② 단서를 하나 열면 이동평균선이 차트에 그려집니다.',
+          '③ 정한 예측은 차트 위에 배지로 남고, 확인 직후 실제 구간이 공개됩니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    }
   </script>
 </body>
 </html>
 """
+
+
+GUIDE_STAGE = (
+    '<div class="chart-demo">'
+    '<span class="chart-demo-bar" data-demo-bar="0" style="height:18px"></span>'
+    '<span class="chart-demo-bar is-scan" data-demo-bar="1" style="height:28px"></span>'
+    '<span class="chart-demo-bar down" data-demo-bar="2" style="height:14px"></span>'
+    '<span class="chart-demo-bar" data-demo-bar="3" style="height:22px"></span>'
+    '<span class="chart-demo-side">'
+    '<span class="chart-demo-chip" data-demo-chip="clue">단서 1 · 거래량</span>'
+    '<span class="chart-demo-chip" data-demo-chip="pick">예측 · 다음 봉 상승</span>'
+    '</span>'
+    '</div>'
+)
+
+GUIDE_HTML = game_guide.guide_html(
+    'chartGuide', GUIDE_STAGE,
+    ['① 캔들 탐색', '② 단서 1개', '③ 예측'],
+    '봉을 짚어 시가·종가·거래량을 확인하고, 단서 하나로 방향을 정해 예측합니다.',
+)
 
 
 def build():
@@ -1984,6 +2216,8 @@ def build():
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
+    html = html.replace("__GUIDE__", GUIDE_HTML)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
     html = html.replace("__TOTAL__", str(len(episodes)))
     html = html.replace("__CAT_CHIPS__", render_cat_chips(episodes))
     html = html.replace("__ARC_CARDS__", cards)

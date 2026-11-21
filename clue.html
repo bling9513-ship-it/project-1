@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-8cISElK3TwT13Z1Myy9yOOzNYl2Xgc49TJdkLfZFDXU=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-egGAOxEVhY2BhVcFwDpYQSl5kf/PWJnw7NAJt74K32o=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 하루 한 판 3단서 추리</title>
   <meta name="description" content="매일 한 문제, 단서 세 개로 답을 맞히는 1분 추리 게임. 첫 단서만 열린 상태에서 시작해 필요할 때 다음 단서를 열고, 적게 열수록 좋은 기록입니다. 기술·생활·문화·과학·자연·역사 분야의 지난 문제를 다시 풀고 연속 해결 기록을 남길 수 있습니다.">
@@ -812,6 +812,128 @@
     @media (max-width: 640px) {
       .clue-rail .arc-grid { grid-template-columns: minmax(0, 1fr); }
     }
+
+    /* ----- 게임 방법: 한 번만 움직이는 데모 (4종 공통) ----- */
+    .gg-card {
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 12px; padding: 11px 12px 10px; margin: 0 0 10px;
+      box-shadow: var(--card-shadow);
+    }
+    .gg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .gg-head-actions { display: inline-flex; align-items: center; gap: 6px; }
+    .gg-head h2 {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary);
+    }
+    .gg-head h2 svg { color: var(--accent-primary); flex-shrink: 0; }
+    .gg-auto { font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+    .gg-demo {
+      position: relative; margin-top: 8px; padding: 9px 9px 8px;
+      border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-page);
+      overflow: hidden;
+    }
+    .gg-steps { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
+    .gg-step {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap;
+      color: var(--text-muted); padding: 2px 5px; border-radius: 999px;
+      border: 1px solid transparent; transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+    }
+    .gg-step.is-done { color: var(--text-secondary); }
+    .gg-step.is-on { color: var(--accent-primary); background: var(--accent-subtle); border-color: var(--border-default); }
+    .gg-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); min-height: 15px; }
+    .gg-replay {
+      width: auto; border: 1px solid var(--border-default); border-radius: 7px;
+      background: var(--bg-surface); color: var(--accent-primary);
+      font-family: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 8px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .gg-replay:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .gg-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    @media (max-width: 420px) {
+      .gg-card { padding: 8px 10px 7px; }
+      .gg-demo { margin-top: 6px; padding: 7px 8px 6px; }
+      .gg-steps { margin-top: 6px; }
+      .gg-note { margin-top: 5px; min-height: 13px; }
+      .gg-replay { padding: 2px 6px; font-size: 10px; }
+      .gg-step { font-size: 8.6px; padding: 2px 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gg-step { transition: none !important; }
+    }
+
+    /* ----- 3단서 추리: 단서 타임라인·즉시 피드백·결과 격차 ----- */
+    .clue-track { display: flex; align-items: center; gap: 0; }
+    .track-step {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap;
+      transition: color 160ms ease;
+    }
+    .track-step .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--bg-muted);
+      display: block; transition: background-color 160ms ease, transform 160ms ease;
+    }
+    .track-step.is-on { color: var(--accent-primary); }
+    .track-step.is-on .dot { background: var(--accent-primary); }
+    .track-step.is-pop .dot { animation: clueDotPop 340ms ease; }
+    .track-line { width: 10px; height: 1px; background: var(--border-default); margin: 0 3px; flex: 0 0 auto; }
+    @keyframes clueDotPop { 0% { transform: scale(1); } 45% { transform: scale(1.7); } 100% { transform: scale(1); } }
+
+    .clue-flash {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 8px; padding: 7px 9px;
+      border-radius: 9px; font-size: 11.5px; font-weight: 600; line-height: 1.45;
+      border: 1px solid var(--border-default); background: var(--bg-page); color: var(--text-primary);
+    }
+    .clue-flash.ok { border-color: var(--ok-border); background: var(--ok-bg); color: var(--ok-text); }
+    .clue-flash.no { border-color: var(--no-border); background: var(--no-bg); color: var(--no-text); }
+    .clue-flash-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--accent-subtle); color: var(--accent-primary);
+    }
+    .clue-flash.ok .clue-flash-tag { background: var(--ok-text); color: #ffffff; }
+    .clue-flash.no .clue-flash-tag { background: var(--no-text); color: #ffffff; }
+
+    .clue.is-fresh { animation: cluePop 380ms ease; }
+    .clue.is-fresh .clue-label { color: var(--accent-primary); }
+    @keyframes cluePop { 0% { transform: translateY(-3px); opacity: 0.4; } 100% { transform: none; opacity: 1; } }
+
+    .clue-demo { display: flex; align-items: center; gap: 5px; }
+    .clue-demo-card {
+      flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px;
+      padding: 5px 6px; border-radius: 7px; border: 1px dashed var(--border-default);
+      background: var(--bg-surface); color: var(--text-muted);
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+    }
+    .clue-demo-card b { font-size: 9px; font-weight: 700; }
+    .clue-demo-card i { font-style: normal; font-size: 10.5px; font-weight: 600; }
+    .clue-demo-card.is-open {
+      border-style: solid; border-color: var(--accent-primary);
+      background: var(--accent-subtle); color: var(--accent-primary);
+    }
+    .clue-demo-pick {
+      flex: 0 0 auto; align-self: center; font-size: 9px; font-weight: 700; color: #15803d;
+      background: #dcfce7; border: 1px solid #86efac; border-radius: 6px; padding: 3px 5px;
+    }
+
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin: 0 0 10px;
+      font-size: 12px; font-weight: 600; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap-tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      background: var(--bg-surface); border: 1px solid var(--border-default); color: var(--accent-primary);
+    }
+    .result-acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px; margin-top: 10px; }
+    .result-acts button {
+      font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 10px 6px;
+      border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary); cursor: pointer; white-space: nowrap;
+    }
+    .result-acts .result-next { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    @media (prefers-reduced-motion: reduce) {
+      .track-step, .track-step .dot, .clue-demo-card { transition: none !important; }
+      .track-step.is-pop .dot, .clue.is-fresh { animation: none !important; }
+    }
 </style>
   <script>
     (function () {
@@ -1320,6 +1442,8 @@
     <div class="clue-layout">
       <div class="clue-main">
 
+    <section class="gg-card" id="clueGuideCard" aria-labelledby="clueGuideTitle"><div class="gg-head"><h2 id="clueGuideTitle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v.01"></path><path d="M11 12h1v4h1"></path></svg> 게임 방법</h2><div class="gg-head-actions"><span class="gg-auto">자동 1회</span><button type="button" class="gg-replay" id="clueGuideReplay">다시 보기</button></div></div><div class="gg-demo" id="clueGuideStage" aria-hidden="true"><div class="clue-demo"><span class="clue-demo-card" data-demo-card="0"><b>단서 1</b><i>사건</i></span><span class="clue-demo-card" data-demo-card="1"><b>단서 2</b><i>정황</i></span><span class="clue-demo-card" data-demo-card="2"><b>단서 3</b><i>결정</i></span><span class="clue-demo-pick" data-demo-pick hidden>정답</span></div><div class="gg-steps" id="clueGuideSteps"><span class="gg-step" data-step="1">① 단서 열기</span><span class="gg-step" data-step="2">② 좁히기</span><span class="gg-step" data-step="3">③ 정답</span></div></div><p class="gg-note" id="clueGuideNote">단서를 하나씩 열면 위 타임라인이 채워지고, 범위가 좁혀집니다.</p></section>
+
     <section class="panel player" id="playPanel" aria-label="3단서 추리 플레이어">
       <div class="player-top">
         <div class="player-meta">
@@ -1327,12 +1451,17 @@
           <span class="player-date" id="pDate">—</span>
           <span class="today-tag" id="pToday" hidden>오늘의 문제</span>
         </div>
-        <div class="dots" id="pDots" aria-label="열린 단서 수">
-          <i class="dot on"></i><i class="dot"></i><i class="dot"></i>
+        <div class="clue-track" id="pDots" aria-label="열린 단서 수">
+          <span class="track-step is-on" data-step="1"><i class="dot on"></i>1 사건</span>
+          <span class="track-line"></span>
+          <span class="track-step" data-step="2"><i class="dot"></i>2 정황</span>
+          <span class="track-line"></span>
+          <span class="track-step" data-step="3"><i class="dot"></i>3 결정</span>
         </div>
       </div>
       <h2 class="player-title" id="pTitle">문제를 불러오는 중입니다</h2>
 
+      <div class="clue-flash" id="clueFlash" role="status" aria-live="polite" hidden></div>
       <div class="clues" id="clueList"></div>
 
       <div class="clue-foot">
@@ -1360,6 +1489,14 @@
         </div>
         <p class="result-answer">정답 <strong id="resultAnswer"></strong></p>
         <p class="result-explain" id="resultExplain"></p>
+        <div class="result-gap">
+          <span class="result-gap-tag">다음 목표</span>
+          <span id="resultGapText"></span>
+        </div>
+        <div class="result-acts">
+          <button type="button" id="retryBtn">한 판 더</button>
+          <button type="button" class="result-next" id="nextBtn">다른 문제</button>
+        </div>
         <div class="share">
           <div class="share-preview" id="sharePreview"></div>
           <button class="btn btn-primary" id="copyBtn" type="button">결과 복사</button>
@@ -1462,7 +1599,7 @@
     <footer class="footer">
       Infosec Archive · 하루 한 판 · 3단서 추리<br>
       정답·단서는 학습과 오락을 위한 것으로, 사실 확인을 거친 소재를 짧게 각색했습니다. 풀이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-21 21:31 KST 기준 · 매일 08:00 새 문제
+      2026-11-21 23:14 KST 기준 · 매일 08:00 새 문제
     </footer>
   </main>
 
@@ -1502,6 +1639,71 @@
 
     // ---- 데이터 ----
     const DATA = [{"id":"daily-20261121-01","date":"2026-11-21","cat":"history","title":"밤길을 잃지 않게 한 고정된 빛","prompt":"이 별은 무엇일까요?","clues":["밤하늘에서 방향을 알려주는 별들은 오래도록 항해와 여행의 기준이 되었고, 많은 문화권에 길잡이 이야기로 남았다.","지구의 자전축이 거의 향하는 방향에 자리해, 하늘의 한 지점에 거의 머무는 것처럼 보인다.","작은곰자리의 꼬리 끝에서 빛나며, 오랫동안 항해자들이 방향을 확인할 때 의지한 별이다."],"choices":["카시오페이아자리","오리온자리","북두칠성","북극성"],"answer":3,"explain":"작은곰자리의 꼬리 끝에 있는 밝은 별로, 지구의 자전축이 가리키는 방향과 가까워 밤하늘에서 거의 제자리에 있는 것처럼 보인다. 그래서 항해자와 탐험자들에게 방향 확인의 기준이 되어 온 널리 알려진 천체다."},{"id":"seed-14","date":"2026-11-20","cat":"science","title":"1초를 다시 정의한 진동","prompt":"이 원자는 무엇일까요?","clues":["1967년 국제도량형총회는 1초의 기준을 지구 자전에서 다른 것으로 바꿨다.","어떤 원자의 두 에너지 상태 사이를 오갈 때 나오는 전자기파의 진동 수를 세기로 했다.","그 원자는 이 원소이며, 이 진동이 9,192,631,770번 일어나는 시간을 1초로 정했다."],"choices":["우라늄","세슘","수소","루비듐"],"answer":1,"explain":"세슘-133 원자의 특정 전이 진동 9,192,631,770회가 1초입니다. 원자 시계는 이 진동을 세어 지구 자전보다 안정적인 시간 기준을 제공합니다."},{"id":"seed-13","date":"2026-11-19","cat":"tech","title":"두 자리 숫자가 만든 세기의 소동","prompt":"이 문제는 무엇이라고 부를까요?","clues":["저장 공간을 아끼려고 연도를 1999 대신 99처럼 뒤 두 자리로만 저장하던 관행이 있었다.","2000년이 되면 이 값이 00이 되어 시스템이 1900년으로 읽을 수 있다는 우려가 퍼졌다.","1999년 말 전 세계가 대비했고, 큰 사고 없이 넘어가자 과대포장이었다는 말도 나왔다."],"choices":["밀레니엄 버그(Y2K)","윤초","랜섬웨어","데드락"],"answer":0,"explain":"Y2K 문제는 연도 두 자리 저장 방식이 2000년에 1900으로 해석될 수 있다는 우려였습니다. 점검 비용은 컸지만 미리 고쳐 둔 덕에 실제 피해는 제한적이었습니다."},{"id":"seed-12","date":"2026-11-18","cat":"history","title":"1844년, 네 단어가 바꾼 거리","prompt":"이 통신 장치는 무엇일까요?","clues":["1844년 5월, 워싱턴에서 볼티모어까지 철도 옆에 깔린 선을 따라 신호가 전해졌다.","메시지는 What hath God wrought 네 단어였고, 60km 거리가 순식간에 닿았다.","점과 선의 조합으로 글자를 보내는 이 방식은 이후 해저 케이블과 통신의 기초가 됐다."],"choices":["전화기","팩시밀리","라디오","전신기"],"answer":3,"explain":"새뮤얼 모스의 전신기가 1844년 5월 24일 시연됐습니다. 모스 부호는 점과 선의 길이 조합으로 글자를 전달하며 통신의 첫 표준 부호가 됐습니다."},{"id":"seed-11","date":"2026-11-17","cat":"nature","title":"절반만 잠드는 바다의 숨","prompt":"이 동물은 무엇일까요?","clues":["포유류라서 물 밖에서 숨을 쉬어야 하지만, 바다에서 평생 산다.","잠을 잘 때 뇌의 절반만 재우고, 나머지 절반은 숨을 쉬게 한다.","잠자는 동안 한쪽 눈을 뜨고 헤엄치며, 무리와 함께 조류를 따라 움직인다."],"choices":["상어","물개","돌고래","바다거북"],"answer":2,"explain":"돌고래는 반구 교대 수면을 합니다. 한쪽 뇌가 깨어 숨을 관리하고 다른 쪽은 쉬며, 잠자는 동안에도 몸이 가라앉지 않도록 움직입니다."},{"id":"seed-10","date":"2026-11-16","cat":"culture","title":"한 장의 종이를 접어 만드는 1,000개의 모양","prompt":"이 놀이는 무엇일까요?","clues":["6세기 무렵 종이와 함께 전해져 예법과 놀이로 자리 잡은 종이 문화다.","같은 종이라도 접는 순서에 따라 모양이 달라져, 1,000개를 접으면 소원이 이뤄진다는 이야기가 있다.","2010년대에는 이 접는 방식을 응용해 접히는 태양광 패널과 의료 기구까지 설계된다."],"choices":["다도","종이접기","페이퍼 커팅","종이죽 공예"],"answer":1,"explain":"일본의 오리가미는 에도 시대에 대중화됐고, 학 1,000마리 전설은 지금도 세계에 퍼져 있습니다. 현대에는 접기 구조가 공학 설계에도 쓰입니다."},{"id":"seed-09","date":"2026-11-15","cat":"tech","title":"사진 한 장에 숨은 2,000자","prompt":"사진 파일에 함께 저장되는 이 정보는 무엇일까요?","clues":["이미지 파일을 열면 눈에 보이는 사진 뒤에 작은 글자 데이터가 함께 들어 있다.","찍은 시각, 기기 이름, 조리개 값, 때로는 촬영 위치 좌표까지 기록된다.","올리는 서비스에 따라 이 정보가 지워지기도 하는데, 그대로 두면 집 위치가 드러날 수 있다."],"choices":["EXIF","썸네일","해시태그","메타 태그"],"answer":0,"explain":"EXIF는 카메라와 휴대전화가 사진에 남기는 촬영 정보입니다. 위치 좌표와 기기 정보까지 담을 수 있어, 공개 게시 전 제거 여부를 확인하는 것이 좋습니다."},{"id":"seed-08","date":"2026-11-14","cat":"nature","title":"우주에서 보이는 살아 있는 구조","prompt":"이 구조는 무엇일까요?","clues":["2,000km 넘게 이어지는 이 구조는 흙이나 돌이 아니라 살아 있는 생물이 만든 것이다.","작은 생물과 그 몸속에 사는 조류가 함께 살며 탄산칼슘 껍데기를 쌓아 만든다.","호주 동북 해안에 있고 1981년 유네스코 세계유산이 됐으며, 수온 상승으로 백화가 반복된다."],"choices":["미드-아틀란틱 릿지","사하라 사막","아마존 열대우림","그레이트 배리어 리프"],"answer":3,"explain":"산호 폴립과 공생 조류가 만든 그레이트 배리어 리프는 2,300km에 걸쳐 이어지는 세계 최대 산호초 지대입니다. 수온 상승으로 산호 백화가 반복되고 있습니다."},{"id":"seed-07","date":"2026-11-13","cat":"history","title":"백성이 글을 읽게 하려고 만든 28자","prompt":"이 문자는 무엇일까요?","clues":["1443년, 한 왕이 백성이 글을 몰라 억울한 일을 겪는 것을 안타깝게 여겨 직접 만들었다.","처음에는 기본 자모가 28자였고, 하늘·땅·사람의 모양을 본떠 만든 자음이 들어갔다.","창제 당시 이름은 《훈민정음》이며, 오늘날 24자로 정리되어 국어를 적는 데 쓰인다."],"choices":["키릴 문자","가나","한글","한자"],"answer":2,"explain":"세종이 1443년 창제하고 1446년 《훈민정음》으로 반포했습니다. 자음은 발음 기관의 모양을, 모음은 하늘·땅·사람을 본떴으며 지금은 자모 24자를 씁니다."},{"id":"seed-06","date":"2026-11-12","cat":"tech","title":"주머니 속에서 살아남는 얇은 판","prompt":"휴대전화 앞면을 덮는 이 유리는 무엇일까요?","clues":["두께가 1mm 남짓인데도 바닥에 떨어뜨려도 쉽게 깨지지 않아, 휴대전화 앞면을 덮는다.","일반 유리를 400도 부근의 용융염에 담그면 표면의 작은 이온이 더 큰 이온으로 바뀐다.","표면이 눌린 상태로 굳어 생긴 압축층이 흠을 막아, 같은 두께의 보통 유리보다 훨씬 질기다."],"choices":["사파이어 유리","강화유리","아크릴","폴리카보네이트"],"answer":1,"explain":"이온 교환으로 표면에 압축 응력을 만든 강화유리입니다. 1960년대 코닝이 개발한 이 공정은 오늘날 스마트폰 커버 글래스의 기본이 됐습니다."},{"id":"seed-05","date":"2026-11-11","cat":"culture","title":"1999년 일본에서 태어난 176개의 그림","prompt":"이 그림 문자는 무엇일까요?","clues":["휴대전화 화면의 12×12 격자를 채우려고 그린 작은 그림들이 시작이었다.","1999년 한 일본 통신사의 디자이너가 176개를 완성했고, 문자처럼 보내며 메시지 문화를 바꿨다.","2010년 유니코드 표준에 들어가 기기와 나라를 넘어 같은 그림으로 보이게 됐고, 지금은 3,700개를 넘는다."],"choices":["이모지","카오모지","아스키 아트","픽토그램"],"answer":0,"explain":"일본 통신사 NTT도코모가 1999년 176개의 그림 문자를 만들면서 이모지가 시작됐습니다. 이후 유니코드에 등재되며 애플·구글 기기에서 같은 코드로 표현됩니다."},{"id":"seed-04","date":"2026-11-10","cat":"science","title":"달력이 맞추지 못한 여섯 시간","prompt":"4년에 한 번만 오는 이 날짜는 언제일까요?","clues":["지구가 태양을 한 바퀴 도는 데 걸리는 시간은 달력의 1년보다 약 6시간 길다.","이 차이를 그대로 두면 계절이 조금씩 밀려나, 100년이면 24일가량 어긋난다.","그래서 4년마다 하루를 더 넣는데, 그날이 있는 해는 연도가 4의 배수인지로 판단한다."],"choices":["12월 31일","1월 1일","6월 31일","2월 29일"],"answer":3,"explain":"1년은 365.2422일이라 4년마다 약 하루가 남습니다. 그래서 윤년에 2월 29일을 넣고, 100의 배수 해는 윤년에서 빼되 400의 배수 해는 다시 포함합니다."},{"id":"seed-03","date":"2026-11-09","cat":"life","title":"성을 지킨 검은 물","prompt":"이 음료는 무엇일까요?","clues":["17세기 후반, 한 도시를 포위했던 군대가 철수하며 자루에 든 검은 낟알을 남겨 두었다.","도시 사람들은 처음엔 이 낟알을 낙타 사료로 여겼지만, 끓인 물의 향에 끌려 마시기 시작했다.","이후 유럽에 퍼진 이 음료는 악마의 음료라 불리다가, 오늘날 아침을 여는 대표 음료가 됐다."],"choices":["코코아","맥주","커피","홍차"],"answer":2,"explain":"1683년 빈을 포위했던 오스만 군대가 철수하며 남긴 자루가 커피였다는 이야기가 전해집니다. 터키식으로 끓여 마시는 법이 유럽에 퍼지며 커피하우스 문화가 시작됐습니다."},{"id":"seed-02","date":"2026-11-08","cat":"nature","title":"피가 파란 바다의 두뇌","prompt":"이 동물은 무엇일까요?","clues":["심장이 세 개이고, 산소를 나르는 단백질이 구리를 품어 피가 푸르게 보이는 무척추동물이다.","몸 표면의 색소 세포를 0.2초 만에 바꿔 주변 환경과 감정을 표현한다.","뉴런의 3분의 2가 다리에 몰려 있어, 다리 하나만 떼어 내도 먹이를 향해 움직인다."],"choices":["불가사리","문어","오징어","해파리"],"answer":1,"explain":"문어는 헤모시아닌 때문에 피가 파랗고 심장이 세 개입니다. 중앙 뇌보다 다리의 신경이 많아 분산형 지능을 갖춘 것으로 알려져 있습니다. 오징어도 피는 푸르지만 다리가 열 개입니다."},{"id":"seed-01","date":"2026-11-07","cat":"life","title":"실패한 접착제가 책갈피가 된 날","prompt":"자국 없이 붙였다 떼는 이 문구류는 무엇일까요?","clues":["1968년, 한 화학자는 아주 강한 접착제를 만들려 했지만 결과물은 손끝에 살짝 붙는 정도였다.","이 물질은 사내에서 실패작으로 분류됐고, 동료가 찬송가 책의 페이지를 표시하는 데 쓰기 시작했다.","1977년 시제품이 나왔고 1980년 전국 판매가 시작된 이 문구류는, 붙였다 떼도 자국이 남지 않는다."],"choices":["포스트잇","청테이프","자석 메모홀더","양면테이프"],"answer":0,"explain":"3M의 스펜서 실버는 1968년 강한 접착제를 만들려다 접착력이 약한 소재를 얻었습니다. 동료 아서 프라이가 찬송가 책갈피로 쓰면서 용도를 찾았고, 1980년 포스트잇으로 전국 판매되며 사무용 필수품이 됐습니다."}];
+    
+  /* ---------------------------------------------------------- 게임 방법 데모
+     처음 방문에 한 번만 자동 재생하고 마지막 장면에서 멈춘다. '다시 보기'로 재생.
+     prefers-reduced-motion 이면 애니메이션 없이 마지막 장면만 보여 준다. */
+  var GameGuide = (function () {
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var TIMING = [900, 1900];
+
+    function create(opts) {
+      var timers = [];
+      var last = opts.notes.length;
+
+      function clear() {
+        timers.forEach(function (t) { window.clearTimeout(t); });
+        timers = [];
+      }
+
+      function paintSteps(n) {
+        var chips = opts.steps ? opts.steps.querySelectorAll('.gg-step') : [];
+        for (var i = 0; i < chips.length; i += 1) {
+          var step = Number(chips[i].getAttribute('data-step'));
+          chips[i].classList.toggle('is-on', step === n);
+          chips[i].classList.toggle('is-done', step < n);
+        }
+      }
+
+      function apply(n) {
+        paintSteps(n);
+        if (opts.note) opts.note.textContent = opts.notes[n - 1];
+        if (opts.step) opts.step(n);
+      }
+
+      function settle() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(last);
+      }
+
+      function play() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(1);
+        if (reduce) { settle(); return; }
+        TIMING.forEach(function (delay, index) {
+          timers.push(window.setTimeout(function () { apply(index + 2); }, delay));
+        });
+      }
+
+      var seen = null;
+      try { seen = localStorage.getItem(opts.key); } catch (e) { seen = null; }
+      if (seen || reduce) {
+        settle();
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+      } else {
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+        play();
+      }
+      if (opts.replay) opts.replay.addEventListener('click', function () { play(); });
+
+      return { play: play, settle: settle };
+    }
+
+    return { create: create, reduce: reduce };
+  })();
+
     const CATS = [{"key":"tech","label":"기술"},{"key":"life","label":"생활"},{"key":"culture","label":"문화"},{"key":"science","label":"과학"},{"key":"nature","label":"자연"},{"key":"history","label":"역사"}];
     const STORE_KEY = 'secjobs-clue-v1';
     const TODAY = '2026-11-21';
@@ -1601,8 +1803,37 @@
     const resultExplain = document.getElementById('resultExplain');
     const sharePreview = document.getElementById('sharePreview');
     const copyBtn = document.getElementById('copyBtn');
+    const clueFlash = document.getElementById('clueFlash');
+    const resultGapText = document.getElementById('resultGapText');
 
     let currentId = null;
+    // 단서를 방금 열었을 때 타임라인 점을 튀게 하기 위한 표시
+    let popStep = -1;
+    // 같은 문제를 연습모드로 다시 풀 때만 쓰는 임시 진행 상황(기록은 건드리지 않는다).
+    let practiceRun = null;
+
+    function runOf(p) {
+      if (practiceRun && practiceRun.id === p.id) return practiceRun;
+      return rec(p.id);
+    }
+
+    function isPractice(p) { return !!(practiceRun && practiceRun.id === p.id); }
+
+    function showFlash(kind, tag, text) {
+      if (!clueFlash) return;
+      clueFlash.hidden = false;
+      clueFlash.className = 'clue-flash' + (kind ? ' ' + kind : '');
+      clueFlash.innerHTML = '<span class="clue-flash-tag"></span><span class="clue-flash-text"></span>';
+      clueFlash.querySelector('.clue-flash-tag').textContent = tag;
+      clueFlash.querySelector('.clue-flash-text').textContent = text;
+    }
+
+    function hideFlash() {
+      if (!clueFlash) return;
+      clueFlash.hidden = true;
+      clueFlash.className = 'clue-flash';
+      clueFlash.textContent = '';
+    }
 
     function fmtDate(d) {
       const parts = String(d || '').split('-');
@@ -1627,7 +1858,8 @@
       let html = '';
       for (let i = 0; i < 3; i++) {
         const open = i < r.clues;
-        html += '<div class="clue ' + (open ? 'open' : 'locked') + '">'
+        const fresh = i === r.clues - 1 && r.clues > 1;
+        html += '<div class="clue ' + (open ? 'open' : 'locked') + (fresh ? ' is-fresh' : '') + '">'
           + '<div class="clue-head">'
           + '<span class="clue-label">단서 ' + (i + 1) + '</span>'
           + '<span class="clue-step">' + (i + 1) + ' / 3</span>'
@@ -1638,9 +1870,19 @@
       clueList.innerHTML = html;
     }
 
-    function renderDots(n) {
-      const dots = pDots.querySelectorAll('.dot');
-      dots.forEach((dot, i) => { dot.classList.toggle('on', i < n); });
+    function renderDots(n, popIndex) {
+      const steps = pDots.querySelectorAll('.track-step');
+      steps.forEach((step, i) => {
+        const on = i < n;
+        step.classList.toggle('is-on', on);
+        const dot = step.querySelector('.dot');
+        if (dot) dot.classList.toggle('on', on);
+        step.classList.remove('is-pop');
+        if (popIndex === i && on) {
+          void step.offsetWidth;
+          step.classList.add('is-pop');
+        }
+      });
       pDots.setAttribute('aria-label', n + '단서 공개');
     }
 
@@ -1670,8 +1912,9 @@
       }
       resultBox.hidden = false;
       resultBox.classList.toggle('gave-up', !r.solved);
-      resultBadge.textContent = r.solved ? '정답' : '정답 확인';
+      resultBadge.textContent = r.solved ? (isPractice(p) ? '연습 정답' : '정답') : '정답 확인';
       resultTitle.textContent = r.solved ? (r.clues + '단서 만에 해결 (' + dotsText(r.clues) + ')') : '정답을 확인했습니다';
+      if (resultGapText) resultGapText.textContent = gapText(r);
       resultAnswer.textContent = '';
       resultAnswer.textContent = p.choices[p.answer];
       resultExplain.textContent = p.explain;
@@ -1682,14 +1925,16 @@
     function renderPlayer() {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
+      const r = runOf(p);
       pCat.textContent = catLabel[p.cat] || p.cat;
       pCat.className = 'badge cat-' + p.cat;
       pDate.textContent = fmtDate(p.date);
       pToday.hidden = !(p.date === TODAY);
       pTitle.textContent = p.title;
       pPrompt.textContent = p.prompt;
-      renderDots(r.clues);
+      renderDots(r.clues, popStep);
+      popStep = -1;
+      hideFlash();
       renderClues(p, r);
       renderOptions(p, r);
       renderResult(p, r);
@@ -1709,47 +1954,77 @@
     function pick(idx) {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
-      if (r.solved || r.gaveUp) return;
+      const practice = isPractice(p);
+      const r = runOf(p);
+      if (!practice && (r.solved || r.gaveUp)) return;
       if (r.wrong.indexOf(idx) !== -1) return;
       r.attempts += 1;
       if (idx === p.answer) {
         r.solved = true;
-        saveRecord();
+        if (!practice) saveRecord();
         renderPlayer();
         renderStats();
         renderArchive();
+        showFlash('ok', '정답', (practice ? '연습 · ' : '') + r.clues + '단서 만에 해결했습니다.');
         return;
       }
       r.wrong.push(idx);
-      saveRecord();
+      if (!practice) saveRecord();
       renderOptions(p, r);
       triesText.textContent = '시도 ' + r.attempts + '회';
       askMsg.textContent = r.clues < 3
         ? '다시 골라 보세요. 다음 단서를 열면 범위가 좁혀집니다.'
         : '아직 정답이 아닙니다. 남은 보기를 다시 살펴보세요.';
       askMsg.className = 'ask-msg no';
+      showFlash('no', '오답', r.clues < 3
+        ? '다음 단서를 열면 범위가 좁혀집니다. 같은 보기를 다시 고를 수는 없습니다.'
+        : '남은 보기에서 다시 골라 보세요.');
     }
 
     function revealNextClue() {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
+      const r = runOf(p);
       if (r.solved || r.gaveUp || r.clues >= 3) return;
       r.clues += 1;
-      saveRecord();
+      if (!isPractice(p)) saveRecord();
+      popStep = r.clues - 1;
       renderPlayer();
       renderStats();
       renderArchive();
     }
 
+    function startPractice() {
+      const p = byId[currentId];
+      if (!p) return;
+      practiceRun = { id: p.id, solved: false, clues: 1, attempts: 0, gaveUp: false, wrong: [] };
+      renderPlayer();
+      const top = document.getElementById('playPanel').getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top , behavior: 'smooth' });
+      nextClueBtn.focus();
+    }
+
+    function openNextPuzzle() {
+      if (!DATA.length) return;
+      const index = DATA.findIndex(p => p.id === currentId);
+      let next = null;
+      for (let step = 1; step <= DATA.length; step++) {
+        const candidate = DATA[(index + step) % DATA.length];
+        if (!rec(candidate.id).solved) { next = candidate; break; }
+      }
+      if (!next) next = DATA[(index + 1) % DATA.length];
+      practiceRun = null;
+      loadPuzzle(next.id, true);
+    }
+
     function giveUp() {
       const p = byId[currentId];
       if (!p) return;
-      const r = rec(p.id);
+      const practice = isPractice(p);
+      const r = runOf(p);
       if (r.solved || r.gaveUp) return;
       r.gaveUp = true;
-      saveRecord();
+      if (!practice) saveRecord();
       renderPlayer();
       renderStats();
       renderArchive();
@@ -1792,6 +2067,10 @@
     nextClueBtn.addEventListener('click', revealNextClue);
     giveUpBtn.addEventListener('click', giveUp);
     copyBtn.addEventListener('click', copyResult);
+    const retryResultBtn = document.getElementById('retryBtn');
+    if (retryResultBtn) retryResultBtn.addEventListener('click', startPractice);
+    const nextResultBtn = document.getElementById('nextBtn');
+    if (nextResultBtn) nextResultBtn.addEventListener('click', openNextPuzzle);
 
     // ---- 지난 문제 ----
     const catFilter = document.getElementById('catFilter');
@@ -1874,7 +2153,10 @@
       const total = DATA.length;
       const solved = DATA.filter(p => rec(p.id).solved).length;
       document.getElementById('solvedStat').textContent = solved + ' / ' + total;
+      document.getElementById('streakNum').textContent = streakDays() + '일';
+    }
 
+    function streakDays() {
       const solvedDates = {};
       DATA.forEach(p => { if (rec(p.id).solved) solvedDates[p.date] = true; });
       const todayN = dayNumber(TODAY);
@@ -1884,7 +2166,17 @@
         streak += 1;
         start -= 1;
       }
-      document.getElementById('streakNum').textContent = streak + '일';
+      return streak;
+    }
+
+    function gapText(r) {
+      const streak = streakDays();
+      const streakText = '연속 ' + streak + '일 도전!';
+      if (!r.solved) return streakText + ' · 다음 문제로 연속을 이어 가세요.';
+      const clueText = r.clues > 1
+        ? '최소 단서 클리어까지 ' + (r.clues - 1) + '단계!'
+        : '최소 단서 클리어 달성!';
+      return streakText + ' · ' + clueText;
     }
 
     function dateString(dayN) {
@@ -1908,7 +2200,36 @@
       }
       renderArchive();
       renderStats();
+      initClueGuide();
     })();
+
+    // ---- 게임 방법 데모: 단서 열기 → 좁히기 → 정답 (처음 한 번만 움직임) ----
+    function initClueGuide() {
+      const stage = document.getElementById('clueGuideStage');
+      if (!stage) return;
+      const cards = stage.querySelectorAll('[data-demo-card]');
+      const pick = stage.querySelector('[data-demo-pick]');
+      function paint(n) {
+        cards.forEach(function (card) {
+          const index = Number(card.getAttribute('data-demo-card'));
+          card.classList.toggle('is-open', index < n);
+        });
+        if (pick) pick.hidden = n < 3;
+      }
+      GameGuide.create({
+        key: 'clue_demo_seen_v1',
+        steps: document.getElementById('clueGuideSteps'),
+        note: document.getElementById('clueGuideNote'),
+        replay: document.getElementById('clueGuideReplay'),
+        notes: [
+          '① 첫 단서를 읽고 가능한 범위를 머리에 둡니다.',
+          '② 필요하면 다음 단서를 열어 범위를 좁힙니다.',
+          '③ 범위가 좁혀지면 정답을 고릅니다. 열은 단서가 적을수록 좋은 기록입니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    }
   </script>
 <nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab is-active" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link is-current" href="clue.html" aria-current="page"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
 (function () {

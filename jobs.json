@@ -1,55 +1,5 @@
 [
   {
-    "job_key": "incruit:2610220002280:9d8db073",
-    "company": "HR컨설팅(주)",
-    "title": "인프라 보안 (그룹사)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610220002280",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "",
-    "deadline": "D-Day (~11/21 토) 23시 마감",
-    "deadline_label": "D-Day (~11/21 토) 23시 마감",
-    "summary": "그룹사 인프라 보안 체계 구축·운영 및 보안 취약점 관리 업무",
-    "tags": [
-      "#인프라보안",
-      "#그룹사보안",
-      "#취약점관리",
-      "#보안체계구축"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-21 08:01:42 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "incruit:342705:e4aa891e",
-    "company": "(주)힐링페이퍼",
-    "title": "개인정보보호 담당자",
-    "url": "https://career.rememberapp.co.kr/job/posting/342705",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울",
-    "deadline": "D-Day (~11/21 토) 23시 마감",
-    "deadline_label": "D-Day (~11/21 토) 23시 마감",
-    "summary": "힐링페이퍼에서 개인정보보호 담당자로 개인정보 처리와 보호 조치를 수행합니다.",
-    "tags": [
-      "#개인정보보호",
-      "#개인정보처리",
-      "#정보보안",
-      "#컴플라이언스"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-21 08:01:42 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
     "job_key": "saramin:55503007:3ec39e7f",
     "company": "(주)맨토스파워",
     "title": "[대기업] CISO(정보보호 총괄 임원) 채용",
