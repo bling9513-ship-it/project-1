@@ -2160,7 +2160,8 @@ async function checkStudyReviewTimeline(context, base) {
       const btn = document.querySelector('#questionsList .q-card [data-action="toggle-bookmark"]');
       const id = btn.getAttribute('data-id');
       const q = (window.ALL_QUESTIONS || []).find((x) => x.id === id);
-      return { id, answer: q ? q.answer : null, choices: q ? q.options.length : 0 };
+      const opts = (q && (q.options || q.choices)) || [];
+      return { id, answer: q ? q.answer : null, choices: opts.length };
     });
     assert.ok(picked.answer, `${tag}: question data missing`);
     const wrongChoice = picked.answer === 1 ? 2 : 1;
