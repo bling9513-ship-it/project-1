@@ -29,15 +29,15 @@ SEED_BASE = 20261121
 DIRS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
 # 경유 미션 소재 (퇴근길에 들르는 동네 가게)
-# (상호, 목록에 쓰는 짧은 미션, 지도 설명에 쓰는 연결 문구)
+# (상호, 미션 문구)
 MISSIONS = [
-    ("편의점", "우유 사기", "우유를 사고"),
-    ("카페", "원두 받기", "원두를 받고"),
-    ("서점", "예약 도서 찾기", "예약 도서를 찾고"),
-    ("우체국", "등기 부치기", "등기를 부치고"),
-    ("약국", "상비약 사기", "상비약을 사고"),
-    ("세탁소", "맡긴 옷 찾기", "맡긴 옷을 찾고"),
-    ("문구점", "노트 사기", "노트를 사고"),
+    ("편의점", "우유 사기"),
+    ("카페", "원두 받기"),
+    ("서점", "예약 도서 찾기"),
+    ("우체국", "등기 부치기"),
+    ("약국", "상비약 사기"),
+    ("세탁소", "맡긴 옷 찾기"),
+    ("문구점", "노트 사기"),
 ]
 
 LEVELS = [
@@ -200,8 +200,7 @@ def generate_puzzle(seed, level_key, min_optimal, max_optimal, slack, waypoint_c
             "open": sorted(open_cells),
             "parks": sorted(parks),
             "blocked": sorted(blocked),
-            "waypoints": [{"cell": list(cell), "label": missions[i][0],
-                           "task": missions[i][1], "line": missions[i][2]}
+            "waypoints": [{"cell": list(cell), "label": missions[i][0], "task": missions[i][1]}
                           for i, cell in enumerate(waypoints)],
             "optimal": best,
             "limit": best + slack,
