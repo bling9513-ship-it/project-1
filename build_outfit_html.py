@@ -808,9 +808,35 @@ CSS = """
     }
 
     /* Layout */
-    .container { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+    .container { max-width: 980px; margin: 0 auto; padding: 26px 20px 80px; }
 
-    .hero { margin-bottom: 20px; }
+    .of-layout { display: block; }
+    .of-rail, .of-main { min-width: 0; }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1320px; }
+      .of-layout {
+        display: grid;
+        grid-template-columns: 330px minmax(0, 1fr);
+        gap: 22px;
+        align-items: start;
+      }
+      .of-rail {
+        position: sticky;
+        top: 78px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: calc(100vh - 96px);
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+    }
+
+    .hero { margin-bottom: 14px; }
+
+    .hero-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .hero .hero-pill { margin-bottom: 0; }
 
     .hero-pill {
       display: inline-block;
@@ -826,11 +852,11 @@ CSS = """
     }
 
     .hero-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 700;
       letter-spacing: -0.03em;
       color: var(--text-primary);
-      margin-bottom: 8px;
+      margin: 0 0 8px;
     }
 
     .hero-desc {
@@ -857,6 +883,97 @@ CSS = """
     }
 
     .stat-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* 오늘 날씨 · 추천 (레일 첫 카드) */
+    .wx-card .wx-head { padding: 13px 15px 0; }
+
+    .wx-now {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 11px 15px 0;
+      padding: 10px 12px;
+      border: 1px solid var(--border-default);
+      border-radius: 11px;
+      background: var(--bg-page);
+      min-width: 0;
+    }
+
+    .wx-now .wx-icon { width: 38px; height: 38px; }
+
+    .wx-now-main { display: flex; align-items: baseline; gap: 7px; min-width: 0; flex-shrink: 0; }
+    .wx-now-main .wx-temp { font-size: 27px; }
+    .wx-now-main .wx-cond { font-size: 12px; margin-top: 0; }
+
+    .wx-now .wx-facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px 10px;
+      margin-left: auto;
+      font-size: 11px;
+      line-height: 1.5;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .wx-now .wx-facts span { white-space: nowrap; }
+
+    .wx-rec { padding: 11px 15px 0; }
+
+    .rec-text {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: 0;
+      word-break: keep-all;
+    }
+
+    .rec-style {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      word-break: keep-all;
+    }
+
+    .rec-style[hidden] { display: none; }
+
+    .wx-rec .wx-tips { margin-top: 7px; }
+
+    .style-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 11px;
+      padding: 10px 15px 11px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .style-bar-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .style-bar .chips { gap: 5px; }
+    .style-bar .chip { padding: 5px 9px; font-size: 11.5px; }
+
+    .wx-tomorrow { font-size: 11.5px; }
+
+    /* 레일 필터 */
+    .of-rail .controls { padding: 13px 14px; margin-bottom: 0; }
+    .of-rail .control-row { padding: 10px 0; }
+    .of-rail .control-head { margin-bottom: 7px; }
+    .of-rail .slider-row { margin-bottom: 8px; gap: 7px; }
+    .of-rail .band-chips { gap: 4px; }
+    .of-rail .band-chips .chip { padding: 4px 8px; font-size: 11px; border-radius: 7px; }
+    .of-rail .seg-tabs { gap: 4px; }
+    .of-rail .seg-tab { padding: 5px 10px; font-size: 11.5px; }
+
+    .of-main .result-meta { margin: 0 2px 12px; }
 
     /* 오늘의 코디 브리핑 */
     .wx-card {
@@ -1223,7 +1340,7 @@ CSS = """
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(244px, 1fr));
       gap: 12px;
     }
 
@@ -1363,6 +1480,44 @@ CSS = """
       line-height: 1.8;
     }
 
+    /* 모바일: 오늘 추천이 첫 화면에 오도록 압축 */
+    @media (max-width: 1023px) {
+      .hero { margin-bottom: 10px; }
+      .hero .hero-pill { display: none; }
+      .hero-title { font-size: 20px; margin-bottom: 7px; }
+      .hero-desc { display: none; }
+      .hero-stats { gap: 5px; }
+      .hero-stats .stat-chip { font-size: 10.5px; padding: 2px 7px; gap: 4px; }
+      .hero-stats .stat-seoul { display: none; }
+      .of-rail { margin-bottom: 0; }
+      .of-rail .controls { margin-top: 10px; }
+      .of-rail .band-chips {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+        gap: 4px;
+      }
+      .of-rail .band-chips .chip {
+        min-width: 0;
+        padding: 5px 4px;
+        font-size: 10.5px;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .of-rail .band-chips::-webkit-scrollbar { display: none; }
+      .of-rail .band-chips .chip { flex: 0 0 auto; }
+      .wx-now { flex-wrap: wrap; }
+      .wx-now .wx-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1px 10px;
+        margin-left: 0;
+        flex: 1 1 100%;
+        margin-top: 2px;
+      }
+      .of-main { margin-top: 14px; }
+    }
+
     /* Mobile */
     @media (max-width: 640px) {
       .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
@@ -1377,11 +1532,13 @@ CSS = """
       .hero-desc { font-size: 13px; line-height: 1.6; }
       .hero-stats { gap: 6px; }
       .stat-chip { font-size: 11px; padding: 3px 8px; }
-      .wx-head { padding: 13px 14px 0; }
+      .wx-head { padding: 12px 14px 0; }
       .wx-title { font-size: 13.5px; }
-      .wx-body { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 12px 14px 14px; }
       .wx-temp { font-size: 24px; }
+      .wx-now { margin: 10px 14px 0; padding: 9px 11px; }
+      .wx-rec { padding: 10px 14px 0; }
       .rec-text { font-size: 13px; }
+      .style-bar { padding: 9px 14px 10px; margin-top: 10px; }
       .wx-tomorrow { padding: 9px 14px; font-size: 11.5px; }
       .wx-attr { margin-left: 0; flex: 1 1 100%; }
       .controls { padding: 14px; border-radius: 12px; }
@@ -1425,6 +1582,11 @@ CSS = """
       .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
     }
 """
 
@@ -1539,93 +1701,102 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <main class="container">
 
-    <!-- Hero -->
+    <!-- 페이지 머리 (모바일은 한 줄 요약) -->
     <section class="hero">
-      <span class="hero-pill">OUTFIT GUIDE</span>
-      <h1 class="hero-title">계절별 옷차림</h1>
-      <p class="hero-desc">서울의 오늘·내일 날씨를 기준으로, 기온 구간마다 아우터부터 신발·소품까지 실제로 입을 수 있는 조합을 정리했습니다. 기온 슬라이더를 움직이거나 계절·스타일을 고르면 그 조건의 코디만 남습니다.</p>
+      <div class="hero-top">
+        <span class="hero-pill">OUTFIT GUIDE</span>
+        <h1 class="hero-title">계절별 옷차림</h1>
+      </div>
+      <p class="hero-desc">서울의 오늘·내일 날씨를 기준으로, 기온 구간마다 아우터부터 신발·소품까지 실제로 입을 수 있는 조합을 정리했습니다. 기온 슬라이더를 움직이거나 스타일을 고르면 그 조건의 코디만 남습니다.</p>
       <div class="hero-stats">
         <span class="stat-chip">기온 구간 <strong>8단계</strong></span>
         <span class="stat-chip">코디 <strong>24개</strong></span>
         <span class="stat-chip">스타일 <strong>3종</strong></span>
-        <span class="stat-chip">기준 <strong>서울</strong></span>
+        <span class="stat-chip stat-seoul">기준 <strong>서울</strong></span>
       </div>
     </section>
 
-    <!-- 오늘의 코디 브리핑 -->
-    <section class="wx-card" id="wxCard">
-      <div class="wx-head">
-        <div class="wx-title"><span class="bar"></span>오늘 · 내일 서울 날씨와 추천 코디</div>
-        <span class="wx-time"><span class="live-dot"></span><span id="wxUpdated">__WX_UPDATED__</span></span>
-      </div>
-      <div class="wx-body">
-        <div class="wx-now">
-          <div class="wx-now-main">
+    <div class="of-layout">
+
+      <!-- 좌측(모바일 상단): 오늘 날씨 + 추천 + 필터 -->
+      <aside class="of-rail" aria-label="오늘 날씨와 코디 필터">
+        <section class="wx-card" id="wxCard">
+          <div class="wx-head">
+            <div class="wx-title"><span class="bar"></span>오늘 서울 날씨와 추천 코디</div>
+            <span class="wx-time"><span class="live-dot"></span><span id="wxUpdated">__WX_UPDATED__</span></span>
+          </div>
+          <div class="wx-now">
             <span class="wx-icon" id="wxNowIcon">__NOW_ICON__</span>
-            <div>
-              <div class="wx-temp" id="wxNowTemp">__NOW_TEMP__</div>
-              <div class="wx-cond" id="wxCond">__NOW_COND__</div>
+            <div class="wx-now-main">
+              <span class="wx-temp" id="wxNowTemp">__NOW_TEMP__</span>
+              <span class="wx-cond" id="wxCond">__NOW_COND__</span>
+            </div>
+            <div class="wx-facts">
+              <span>체감 <strong id="wxFeels">__NOW_FEELS__</strong></span>
+              <span>최저 <strong id="wxLow">__TODAY_LOW__</strong></span>
+              <span>최고 <strong id="wxHigh">__TODAY_HIGH__</strong></span>
+              <span>강수 <strong id="wxPop">__TODAY_POP__</strong></span>
+              <span>바람 <strong id="wxWind">__TODAY_WIND__</strong></span>
             </div>
           </div>
-          <div class="wx-facts">
-            <span>체감 <strong id="wxFeels">__NOW_FEELS__</strong></span>
-            <span>최저 <strong id="wxLow">__TODAY_LOW__</strong></span>
-            <span>최고 <strong id="wxHigh">__TODAY_HIGH__</strong></span>
-            <span>강수 <strong id="wxPop">__TODAY_POP__</strong></span>
-            <span>바람 <strong id="wxWind">__TODAY_WIND__</strong></span>
+          <div class="wx-rec">
+            <div class="rec-head">
+              <span class="rec-badge __REC_TONE__" id="recBand">__REC_BADGE__</span>
+              <span class="rec-label" id="recLabel">오늘 추천 코디</span>
+            </div>
+            <p class="rec-text" id="recText">__REC_TEXT__</p>
+            <p class="rec-style" id="recStyleLine" hidden></p>
+            <ul class="wx-tips" id="wxTips">__REC_TIPS__</ul>
           </div>
-        </div>
-        <div class="wx-rec">
-          <div class="rec-head">
-            <span class="rec-badge __REC_TONE__" id="recBand">__REC_BADGE__</span>
-            <span class="rec-label">오늘 추천</span>
+          <div class="style-bar">
+            <span class="style-bar-label">스타일</span>
+            <div class="chips" id="styleChips">__STYLE_CHIPS__</div>
           </div>
-          <p class="rec-text" id="recText">__REC_TEXT__</p>
-          <ul class="wx-tips" id="wxTips">__REC_TIPS__</ul>
-        </div>
-      </div>
-      <div class="wx-tomorrow">
-        <span class="tm-label">내일</span>
-        <span class="wx-icon" id="wxTomorrowIcon">__TOMORROW_ICON__</span>
-        <span id="wxTomorrowText">__TOMORROW_TEXT__</span>
-        <span class="wx-attr"><a href="https://developer.apple.com/weatherkit/data-source-attribution/" target="_blank" rel="noopener noreferrer">Apple Weather</a> 기본값 · 실시간 Open-Meteo</span>
-      </div>
-    </section>
+          <div class="wx-tomorrow">
+            <span class="tm-label">내일</span>
+            <span class="wx-icon" id="wxTomorrowIcon">__TOMORROW_ICON__</span>
+            <span id="wxTomorrowText">__TOMORROW_TEXT__</span>
+            <span class="wx-attr"><a href="https://developer.apple.com/weatherkit/data-source-attribution/" target="_blank" rel="noopener noreferrer">Apple Weather</a> 기본값 · 실시간 Open-Meteo</span>
+          </div>
+        </section>
 
-    <!-- 필터 -->
-    <section class="controls">
-      <div class="control-row">
-        <div class="control-head">
-          <span class="control-label">기온으로 찾기</span>
-          <span class="slider-value" id="sliderValue">지금 __NOW_TEMP__ · __TODAY_BAND_NAME__</span>
-        </div>
-        <div class="slider-row">
-          <span class="slider-bound">-10°</span>
-          <input type="range" id="tempSlider" min="-10" max="35" step="1" value="__SLIDER_VALUE__" aria-label="기온 선택">
-          <span class="slider-bound">35°</span>
-        </div>
-        <div class="chips" id="tempChips">__TEMP_CHIPS__</div>
-      </div>
-      <div class="control-row">
-        <div class="control-head"><span class="control-label">계절</span></div>
-        <div class="seg-tabs" id="seasonTabs">__SEASON_TABS__</div>
-      </div>
-      <div class="control-row">
-        <div class="control-head"><span class="control-label">스타일</span></div>
-        <div class="chips" id="styleChips">__STYLE_CHIPS__</div>
-      </div>
-    </section>
+        <section class="controls">
+          <div class="control-row">
+            <div class="control-head">
+              <span class="control-label">기온으로 찾기</span>
+              <span class="slider-value" id="sliderValue">지금 __NOW_TEMP__ · __TODAY_BAND_NAME__</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-bound">-10°</span>
+              <input type="range" id="tempSlider" min="-10" max="35" step="1" value="__SLIDER_VALUE__" aria-label="기온 선택">
+              <span class="slider-bound">35°</span>
+            </div>
+            <div class="chips band-chips" id="tempChips">__TEMP_CHIPS__</div>
+          </div>
+          <div class="control-row">
+            <div class="control-head">
+              <span class="control-label">계절</span>
+              <button class="reset-btn" id="resetFilters" type="button">필터 초기화</button>
+            </div>
+            <div class="seg-tabs" id="seasonTabs">__SEASON_TABS__</div>
+          </div>
+        </section>
+      </aside>
 
-    <div class="result-meta">
-      <span><strong id="visibleCount">__TOTAL_CARDS__</strong>개 코디 · 전체 __TOTAL_CARDS__개</span>
-      <button class="reset-btn" id="resetFilters">필터 초기화</button>
+      <!-- 우측(모바일 아래): 기온 구간별 코디 -->
+      <div class="of-main">
+        <div class="result-meta">
+          <span><strong id="visibleCount">__TOTAL_CARDS__</strong>개 코디 · 전체 __TOTAL_CARDS__개</span>
+          <span id="resultHint">오늘 추천 구간부터 보여 줍니다</span>
+        </div>
+
+        <section class="outfit-list" id="outfitList">
+          __SECTIONS__
+        </section>
+
+        <div class="empty-state" id="emptyState">선택한 조건에 맞는 코디가 없습니다. 기온이나 스타일을 바꿔 보세요.</div>
+      </div>
     </div>
-
-    <section class="outfit-list" id="outfitList">
-      __SECTIONS__
-    </section>
-
-    <div class="empty-state" id="emptyState">선택한 조건에 맞는 코디가 없습니다. 기온이나 스타일을 바꿔 보세요.</div>
 
     <footer class="footer">
       Infosec Archive · 계절별 옷차림 가이드<br>
@@ -1671,7 +1842,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     // ---- 상태 ----
-    const state = { season: 'all', band: null, style: 'all' };
+    const TODAY_KEY = __TODAY_KEY__;
+    const OF = __OF_JSON__;
+    const STYLE_LABEL = { all: '전체', office: '출근·오피스', casual: '캐주얼·데일리', outdoor: '운동·야외' };
+    const isNarrow = function () { return window.matchMedia('(max-width: 1023px)').matches; };
+    const state = { season: 'all', band: isNarrow() ? TODAY_KEY : null, style: 'all' };
+    // 지금 보고 있는 날씨(빌드 기본값 → Open-Meteo 실시간으로 갱신)
+    const wxNow = {
+      temp: WX_BUILD.now_temp, feels: WX_BUILD.now_feels, cond: WX_BUILD.now_cond,
+      low: WX_BUILD.today_low, high: WX_BUILD.today_high, pop: WX_BUILD.today_pop, wind: WX_BUILD.today_wind
+    };
 
     const sections = Array.from(document.querySelectorAll('.band-section'));
     const tempChips = Array.from(document.querySelectorAll('#tempChips .chip'));
@@ -1680,6 +1860,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     const slider = document.getElementById('tempSlider');
     const sliderValue = document.getElementById('sliderValue');
     const visibleCount = document.getElementById('visibleCount');
+    const resultHint = document.getElementById('resultHint');
     const emptyState = document.getElementById('emptyState');
 
     function bandForTemp(t) {
@@ -1690,6 +1871,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function bandByKey(k) { return BANDS.filter(b => b.key === k)[0] || null; }
+    function todayBand() { return bandForTemp(typeof wxNow.temp === 'number' ? wxNow.temp : 15); }
 
     function toneClass(key) {
       if (!key) return '';
@@ -1716,26 +1898,46 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         sec.hidden = !secShown;
         sec.classList.toggle('is-selected', !!state.band && sec.dataset.band === state.band);
       });
-      tempChips.forEach(c => c.classList.toggle('active', c.dataset.band === state.band));
+      tempChips.forEach(c => {
+        const on = (c.dataset.band || null) === state.band;
+        c.classList.toggle('active', on);
+        c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
       seasonTabs.forEach(t => t.classList.toggle('active', t.dataset.season === state.season));
-      styleChips.forEach(c => c.classList.toggle('active', c.dataset.style === state.style));
+      styleChips.forEach(c => {
+        const on = (c.dataset.style || 'all') === state.style;
+        c.classList.toggle('active', on);
+        c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
       visibleCount.textContent = shown;
       emptyState.classList.toggle('show', shown === 0);
+      if (resultHint) {
+        const b = state.band ? bandByKey(state.band) : null;
+        resultHint.textContent = b
+          ? b.range + ' 구간만 보는 중'
+          : (state.season === 'all' ? '전체 기온 구간' : '선택한 계절 구간');
+      }
     }
 
     function selectBand(key, temp) {
+      const b = bandByKey(key);
+      if (!b) return;
       state.band = key;
       state.season = 'all';
-      const b = bandByKey(key);
       if (temp !== undefined && temp !== null) slider.value = temp;
-      else if (b) slider.value = Math.min(35, Math.max(-10, Math.round((Math.max(b.min, -10) + Math.min(b.max, 35)) / 2)));
-      sliderValue.textContent = b ? (slider.value + '°C · ' + b.name) : '전체 기온';
+      else slider.value = Math.min(35, Math.max(-10, Math.round((Math.max(b.min, -10) + Math.min(b.max, 35)) / 2)));
+      sliderValue.textContent = slider.value + '°C · ' + b.name;
       apply();
     }
 
     tempChips.forEach(chip => {
       chip.addEventListener('click', () => {
-        if (state.band === chip.dataset.band) {
+        if (!chip.dataset.band) {
+          state.band = null;
+          state.season = 'all';
+          sliderValue.textContent = '전체 기온';
+          apply();
+        } else if (state.band === chip.dataset.band) {
           state.band = null;
           sliderValue.textContent = '전체 기온';
           apply();
@@ -1756,7 +1958,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     styleChips.forEach(chip => {
       chip.addEventListener('click', () => {
-        state.style = chip.dataset.style;
+        state.style = chip.dataset.style || 'all';
+        paintToday();
         apply();
       });
     });
@@ -1771,12 +1974,48 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     });
 
     document.getElementById('resetFilters').addEventListener('click', () => {
-      state.season = 'all'; state.band = null; state.style = 'all';
-      const t = WX_BUILD.now_temp;
+      state.season = 'all'; state.style = 'all';
+      state.band = isNarrow() ? TODAY_KEY : null;
+      const t = wxNow.temp;
       if (typeof t === 'number') slider.value = Math.min(35, Math.max(-10, Math.round(t)));
-      sliderValue.textContent = '전체 기온';
+      sliderValue.textContent = typeof t === 'number' ? ('지금 ' + t + '° · ' + todayBand().name) : '전체 기온';
+      paintToday();
       apply();
     });
+
+    // 오늘 추천 카드: 오늘 기온 구간 + 고른 스타일의 코디를 바로 보여 준다.
+    function paintToday() {
+      const b = todayBand();
+      sections.forEach(sec => sec.classList.toggle('is-today', sec.dataset.band === b.key));
+      // 실시간 기온으로 오늘 구간이 바뀌면 그 구간을 목록 맨 위로 올린다.
+      const list = document.getElementById('outfitList');
+      const todaySection = list ? list.querySelector('.band-section[data-band="' + b.key + '"]') : null;
+      if (todaySection && list.firstElementChild !== todaySection) {
+        list.insertBefore(todaySection, list.firstElementChild);
+      }
+      const badge = document.getElementById('recBand');
+      const label = document.getElementById('recLabel');
+      const text = document.getElementById('recText');
+      const line = document.getElementById('recStyleLine');
+      if (!badge || !text) return;
+      badge.textContent = b.range + ' · ' + b.name;
+      badge.className = 'rec-badge ' + toneClass(b.key);
+      const set = OF[b.key] || {};
+      const outfit = set[state.style];
+      if (state.style === 'all' || !outfit) {
+        label.textContent = '오늘 추천 코디';
+        text.textContent = b.line;
+        if (line) { line.hidden = true; line.textContent = ''; }
+      } else {
+        label.textContent = '오늘 추천 · ' + (STYLE_LABEL[state.style] || '스타일');
+        text.textContent = outfit.title;
+        if (line) {
+          line.textContent = '아우터 ' + outfit.outer + ' · 상의 ' + outfit.top + ' · 하의 ' + outfit.bottom;
+          line.hidden = false;
+        }
+      }
+      return b;
+    }
 
     // ---- 날씨 (Open-Meteo 실시간, 실패 시 빌드 기본값) ----
     const COND_BY_CODE = function (code) {
@@ -1833,15 +2072,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function renderToday(wx) {
-      const b = bandForTemp(typeof wx.temp === 'number' ? wx.temp : 15);
-      sections.forEach(sec => sec.classList.toggle('is-today', sec.dataset.band === b.key));
-      const badge = document.getElementById('recBand');
-      badge.textContent = b.range + ' · ' + b.name;
-      badge.className = 'rec-badge ' + toneClass(b.key);
-      document.getElementById('recText').textContent = b.line;
+      wxNow.temp = wx.temp; wxNow.feels = wx.feels; wxNow.cond = wx.cond;
+      wxNow.low = wx.low; wxNow.high = wx.high; wxNow.pop = wx.pop; wxNow.wind = wx.wind;
       const tipsEl = document.getElementById('wxTips');
       tipsEl.innerHTML = composeTips(wx).map(t => '<li>' + t.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</li>').join('');
-      return b;
+      return paintToday();
     }
 
     function renderWx(wx) {
@@ -1878,6 +2113,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     })();
 
     // Open-Meteo: 현재 기온·체감·최저/최고·강수확률·바람
+    const livePrevToday = todayBand().key;
     fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&timezone=Asia%2FSeoul&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code&forecast_days=2&wind_speed_unit=kmh')
       .then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
       .then(d => {
@@ -1898,8 +2134,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           updated_text: '실시간 ' + (d.current.time || '').slice(11, 16) + ' 기준'
         };
         const b = renderWx(wx);
-        if (state.band === null && state.season === 'all') {
+        if (state.band === null || state.band === livePrevToday) {
+          if (state.band !== null) state.band = b.key;
+          slider.value = Math.min(35, Math.max(-10, Math.round(wx.temp)));
           sliderValue.textContent = '지금 ' + fmtTemp(wx.temp) + ' · ' + b.name;
+          apply();
         }
       })
       .catch(() => {
@@ -1922,9 +2161,10 @@ def build():
     today_band = band_for(wx.get("now_temp"))
 
     # 필터 UI
-    temp_chips = "".join(
-        '<button class="chip" data-band="%s" data-temp="%d" type="button">%s</button>'
-        % (b["key"], int(min(max((max(b["min"], -10) + min(b["max"], 35)) / 2, -10), 35)), esc(b["label"]))
+    temp_chips = '<button class="chip" data-band="" type="button">전체</button>' + "".join(
+        '<button class="chip" data-band="%s" data-temp="%d" type="button" title="%s" aria-label="%s">%s</button>'
+        % (b["key"], int(min(max((max(b["min"], -10) + min(b["max"], 35)) / 2, -10), 35)),
+           esc(b["label"]), esc(b["label"]), esc(b["range"]))
         for b in BANDS
     )
     season_tabs = "".join(
@@ -1953,7 +2193,10 @@ def build():
         rec_text = today_band["line"]
         today_flag_key = today_band["key"]
 
-    sections_html = "\n      ".join(band_section(b, today_flag_key) for b in BANDS)
+    # 오늘 구간을 맨 위로 — 모바일 첫 화면이 오늘 코디에서 시작한다.
+    ordered_bands = ([today_band] if today_flag_key else []) + \
+        [b for b in BANDS if not (today_flag_key and b["key"] == today_band["key"])]
+    sections_html = "\n      ".join(band_section(b, today_flag_key) for b in ordered_bands)
     total_cards = len(BANDS) * len(STYLES)
 
     def tt(v):
@@ -2001,6 +2244,21 @@ def build():
     html = html.replace("__BANDS_JSON__", safe_json_for_script(json.dumps(
         [{"key": b["key"], "min": b["min"], "max": b["max"], "range": b["range"], "name": b["name"], "line": b["line"]} for b in BANDS],
         ensure_ascii=False)))
+    html = html.replace("__TODAY_KEY__", json.dumps(today_flag_key))
+    outfits_lite = {}
+    for bk in [b["key"] for b in BANDS]:
+        per_style = {}
+        for (band_key, style_key), data in OUTFITS.items():
+            if band_key != bk:
+                continue
+            per_style[style_key] = {
+                "title": data["title"],
+                "outer": data["items"]["outer"],
+                "top": data["items"]["top"],
+                "bottom": data["items"]["bottom"],
+            }
+        outfits_lite[bk] = per_style
+    html = html.replace("__OF_JSON__", safe_json_for_script(json.dumps(outfits_lite, ensure_ascii=False)))
     html = html.replace("__WX_JSON__", safe_json_for_script(json.dumps(wx, ensure_ascii=False)))
 
     with open(OUTFIT_HTML, "w", encoding="utf-8") as f:

@@ -268,6 +268,7 @@ ICONS = {
     "route": '<circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.4 6h5.1a3.5 3.5 0 0 1 0 7H9.5a2.5 2.5 0 0 0 0 5h6.1"/>',
     "star": '<path d="M12 3.6l2.6 5.3 5.8.9-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.6 9.8l5.8-.9z"/>',
     "shuffle": '<path d="M17 4l3 3-3 3"/><path d="M20 7H8.5a4.5 4.5 0 0 0 0 9H12"/><path d="M17 14l3 3-3 3"/><path d="M20 17h-4"/>',
+    "chev": '<path d="M6 9.5l6 6 6-6"/>',
 }
 
 
@@ -604,9 +605,40 @@ CSS = """
     }
 
     /* Layout */
-    .container { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+    .container { max-width: 980px; margin: 0 auto; padding: 26px 20px 80px; }
 
-    .hero { margin-bottom: 20px; }
+    .pk-layout { display: block; }
+    .pk-rail, .pk-main { min-width: 0; }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1320px; }
+      .pk-layout {
+        display: grid;
+        grid-template-columns: 336px minmax(0, 1fr);
+        gap: 22px;
+        align-items: start;
+      }
+      .pk-rail {
+        position: sticky;
+        top: 78px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: calc(100vh - 96px);
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+      .pk-rail .panel { margin-bottom: 0; }
+      .pk-main .panel { margin-bottom: 16px; }
+      .pk-main .split { margin-bottom: 16px; }
+      .pk-main .split .panel { margin-bottom: 0; }
+      .course-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+    }
+
+    .hero { margin-bottom: 14px; }
+
+    .hero-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .hero .hero-pill { margin-bottom: 0; }
 
     .hero-pill {
       display: inline-block;
@@ -622,11 +654,11 @@ CSS = """
     }
 
     .hero-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 700;
       letter-spacing: -0.03em;
       color: var(--text-primary);
-      margin-bottom: 8px;
+      margin: 0 0 8px;
     }
 
     .hero-desc {
@@ -653,6 +685,85 @@ CSS = """
     }
 
     .stat-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* 레일: 오늘 날씨 · 추천 모드 */
+    .pk-rail .panel-head { padding: 12px 14px 0; }
+    .pk-rail .panel-body { padding: 11px 14px 13px; }
+
+    .pk-rail .wx-body {
+      display: block;
+      padding: 10px 14px 12px;
+    }
+
+    .pk-rail .wx-now {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 3px 11px;
+      padding: 9px 11px;
+      margin-bottom: 9px;
+    }
+
+    .pk-rail .wx-now-main { margin-bottom: 0; }
+    .pk-rail .wx-icon { width: 36px; height: 36px; }
+    .pk-rail .wx-temp { font-size: 25px; }
+    .pk-rail .wx-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1px 10px;
+      flex: 1 1 100%;
+      font-size: 11px;
+    }
+
+    .pk-rail .mode-title { font-size: 14.5px; }
+    .pk-rail .rec-text { font-size: 12.5px; margin-bottom: 9px; }
+    .pk-rail .mode-note { margin-top: 7px; }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 9px;
+      padding-top: 9px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .quick-link:hover { color: var(--accent-primary); }
+    .quick-link svg { flex-shrink: 0; }
+
+    /* 레일: 룰렛 조건 */
+    .pk-rail .control-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+    }
+    .pk-rail .control-head {
+      flex: 0 0 36px;
+      margin: 0;
+      padding-top: 5px;
+      display: block;
+    }
+    .pk-rail .chips { flex: 1 1 auto; gap: 5px; min-width: 0; }
+    .pk-rail .chip { padding: 5px 9px; font-size: 11.5px; }
+
+    .draw-row { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
+    .draw-row .btn-primary { flex: 1 1 auto; justify-content: center; }
+    .pk-rail .slot-note { margin-left: 0; flex: 1 1 100%; font-size: 11px; }
+
+    /* 결과 카드 */
+    .result-panel .panel-head { padding: 13px 16px 0; }
+    .result-panel { scroll-margin-top: 66px; }
+    .result-panel .panel-body { padding: 12px 16px 15px; }
+    .result-panel .slot { margin: 0; }
+    .result-empty { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+
+    #outingPanel { scroll-margin-top: 72px; }
 
     /* 공통 패널 */
     .panel {
@@ -1159,6 +1270,24 @@ CSS = """
     .footer a:hover { color: var(--text-secondary); }
 
     /* Mobile */
+    @media (max-width: 1023px) {
+      .hero { margin-bottom: 10px; }
+      .hero .hero-pill { display: none; }
+      .hero-title { font-size: 20px; margin-bottom: 7px; }
+      .hero-desc { display: none; }
+      .hero-stats { gap: 5px; }
+      .hero-stats .stat-chip { font-size: 10.5px; padding: 2px 7px; gap: 4px; }
+      .hero-stats .stat-seoul { display: none; }
+      .split { margin-top: 12px; }
+      .pk-main .panel { margin-bottom: 12px; }
+      .pk-rail { margin-bottom: 12px; }
+      .pk-rail .panel { margin-bottom: 10px; }
+      .pk-rail .mode-note { display: none; }
+      .pk-rail #styleChips { gap: 4px; }
+      .pk-rail #styleChips .chip { padding: 4px 8px; font-size: 11px; }
+      .quick-link { margin-top: 7px; padding-top: 7px; }
+    }
+
     @media (max-width: 760px) {
       .wx-body { grid-template-columns: minmax(0, 1fr); }
       .split { grid-template-columns: minmax(0, 1fr); }
@@ -1203,6 +1332,11 @@ CSS = """
       .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
     }
 
     /* 내비게이션 9탭 대응: 넘침 없이 한 줄 유지, 좁은 화면은 탭 영역만 가로 스크롤 */
@@ -1368,173 +1502,192 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <main class="container">
 
-    <!-- Hero -->
+    <!-- 페이지 머리 (모바일은 한 줄 요약) -->
     <section class="hero">
-      <span class="hero-pill">DAILY PICK</span>
-      <h1 class="hero-title">오늘 뭐 먹지</h1>
+      <div class="hero-top">
+        <span class="hero-pill">DAILY PICK</span>
+        <h1 class="hero-title">오늘 뭐 먹지</h1>
+      </div>
       <p class="hero-desc">서울 날씨를 읽고 오늘 입맛에 맞는 메뉴를 골라 드립니다. 추운 날엔 국물, 비 오는 날엔 전·면처럼 추천 모드가 자동으로 바뀌고, 조건을 좁혀 룰렛으로 한 가지를 뽑을 수 있습니다. 주말·퇴근 후 나들이 코스도 함께 정리했습니다.</p>
       <div class="hero-stats">
         <span class="stat-chip">메뉴 <strong>__MENU_COUNT__종</strong></span>
         <span class="stat-chip">나들이 <strong>__COURSE_COUNT__곳</strong></span>
         <span class="stat-chip">추천 모드 <strong>3종 + 자동</strong></span>
-        <span class="stat-chip">기록 <strong>이 브라우저에만</strong></span>
+        <span class="stat-chip stat-seoul">기록 <strong>이 브라우저에만</strong></span>
       </div>
     </section>
 
-    <!-- 날씨 + 추천 모드 -->
-    <section class="panel" id="wxCard">
-      <div class="panel-head">
-        <div class="panel-title"><span class="bar"></span>오늘 서울 날씨와 추천 모드</div>
-        <span class="panel-meta"><span class="live-dot"></span><span id="wxUpdated">__WX_UPDATED__</span></span>
-      </div>
-      <div class="wx-body">
-        <div class="wx-now">
-          <div class="wx-now-main">
-            <span class="wx-icon" id="wxNowIcon">__NOW_ICON__</span>
-            <div>
-              <div class="wx-temp" id="wxNowTemp">__NOW_TEMP__</div>
-              <div class="wx-cond" id="wxNowCond">__NOW_COND__</div>
-            </div>
-          </div>
-          <div class="wx-facts">
-            <span>체감 <strong id="wxNowFeels">__NOW_FEELS__</strong></span>
-            <span>최저 <strong id="wxLow">__TODAY_LOW__</strong></span>
-            <span>최고 <strong id="wxHigh">__TODAY_HIGH__</strong></span>
-            <span>강수 <strong id="wxPop">__TODAY_POP__</strong></span>
-            <span>바람 <strong id="wxWind">__TODAY_WIND__</strong></span>
-          </div>
-        </div>
-        <div class="wx-rec">
-          <div class="rec-head">
-            <span class="badge tone-__MODE_TONE__" id="modeBadge">__MODE_BADGE__</span>
-            <span class="rec-label">오늘의 추천 모드</span>
-          </div>
-          <div class="mode-title" id="modeTitle">__MODE_HEAD__</div>
-          <p class="rec-text" id="modeLine">__MODE_LINE__</p>
-          <div class="mode-chips" id="modeChips">
-            <button class="chip active" type="button" data-mode="auto" aria-pressed="true">오늘 날씨</button>
-            <button class="chip" type="button" data-mode="cold" aria-pressed="false">추운 날</button>
-            <button class="chip" type="button" data-mode="rain" aria-pressed="false">비 오는 날</button>
-            <button class="chip" type="button" data-mode="warm" aria-pressed="false">맑은·더운 날</button>
-          </div>
-          <div class="mode-note" id="modeNote">__MODE_NOTE__</div>
-        </div>
-      </div>
-    </section>
+    <div class="pk-layout">
 
-    <!-- 룰렛 -->
-    <section class="panel" id="roulette">
-      <div class="panel-head">
-        <div class="panel-title"><span class="bar"></span>오늘 뭐 먹지 룰렛</div>
-        <span class="panel-meta">후보 <strong id="candCount">__CAND_COUNT__</strong>개</span>
-      </div>
-      <div class="panel-body">
-        <div class="control-row">
-          <div class="control-head"><span class="control-label">상황</span></div>
-          <div class="chips" id="sitChips">__SIT_CHIPS__</div>
-        </div>
-        <div class="control-row">
-          <div class="control-head"><span class="control-label">동행</span></div>
-          <div class="chips" id="compChips">__COMP_CHIPS__</div>
-        </div>
-        <div class="control-row">
-          <div class="control-head"><span class="control-label">스타일</span></div>
-          <div class="chips" id="styleChips">__STYLE_CHIPS__</div>
-        </div>
-
-        <div class="slot" id="slotCard">
-          <div class="slot-hint" id="slotHint">
-            __HINT_ICON__
-            <p id="slotHintText">조건을 고르고 <strong>메뉴 뽑기</strong>를 눌러 보세요.<br>날씨 모드에 맞는 후보 중에서 한 가지를 골라 드립니다.</p>
+      <!-- 좌측(모바일 상단): 오늘 날씨·추천 모드 + 룰렛 조건 -->
+      <aside class="pk-rail" aria-label="오늘 날씨와 룰렛 조건">
+        <section class="panel" id="wxCard">
+          <div class="panel-head">
+            <div class="panel-title"><span class="bar"></span>오늘 서울 날씨와 추천 모드</div>
+            <span class="panel-meta"><span class="live-dot"></span><span id="wxUpdated">__WX_UPDATED__</span></span>
           </div>
-          <div class="slot-body" id="slotBody" hidden>
-            <div class="pick-head">
-              <div style="min-width:0;">
-                <div class="pick-name" id="pickName"></div>
-                <div class="pick-price" id="pickPrice"></div>
+          <div class="wx-body">
+            <div class="wx-now">
+              <span class="wx-icon" id="wxNowIcon">__NOW_ICON__</span>
+              <div class="wx-now-main">
+                <span class="wx-temp" id="wxNowTemp">__NOW_TEMP__</span>
+                <span class="wx-cond" id="wxNowCond">__NOW_COND__</span>
               </div>
-              <button class="star-btn" id="pickStar" type="button" aria-pressed="false" aria-label="뽑은 메뉴 즐겨찾기" title="즐겨찾기">__PICK_STAR_ICON__</button>
+              <div class="wx-facts">
+                <span>체감 <strong id="wxNowFeels">__NOW_FEELS__</strong></span>
+                <span>최저 <strong id="wxLow">__TODAY_LOW__</strong></span>
+                <span>최고 <strong id="wxHigh">__TODAY_HIGH__</strong></span>
+                <span>강수 <strong id="wxPop">__TODAY_POP__</strong></span>
+                <span>바람 <strong id="wxWind">__TODAY_WIND__</strong></span>
+              </div>
             </div>
-            <div class="pick-tags">
-              <span class="badge" id="pickCat"></span>
-              <span class="badge" id="pickModeBadge"></span>
+            <div class="wx-rec">
+              <div class="rec-head">
+                <span class="badge tone-__MODE_TONE__" id="modeBadge">__MODE_BADGE__</span>
+                <span class="rec-label">오늘의 추천 모드</span>
+              </div>
+              <div class="mode-title" id="modeTitle">__MODE_HEAD__</div>
+              <p class="rec-text" id="modeLine">__MODE_LINE__</p>
+              <div class="mode-chips" id="modeChips">
+                <button class="chip active" type="button" data-mode="auto" aria-pressed="true">오늘 날씨</button>
+                <button class="chip" type="button" data-mode="cold" aria-pressed="false">추운 날</button>
+                <button class="chip" type="button" data-mode="rain" aria-pressed="false">비 오는 날</button>
+                <button class="chip" type="button" data-mode="warm" aria-pressed="false">맑은·더운 날</button>
+              </div>
+              <div class="mode-note" id="modeNote">__MODE_NOTE__</div>
             </div>
-            <div class="pick-block">
-              <div class="pick-label">오늘 날씨 추천 이유</div>
-              <p class="pick-text" id="pickReason"></p>
-            </div>
-            <div class="pick-block">
-              <div class="pick-label">곁들임 추천</div>
-              <p class="pick-text" id="pickSide"></p>
-            </div>
-            <div class="pick-meta" id="pickMeta"></div>
+            <a class="quick-link" href="#outingPanel">
+              <span>나들이 코스 __COURSE_COUNT__곳 보기</span>
+              __CHEV_DOWN_ICON__
+            </a>
           </div>
+        </section>
+
+        <section class="panel" id="roulette">
+          <div class="panel-head">
+            <div class="panel-title"><span class="bar"></span>오늘 뭐 먹지 룰렛</div>
+            <span class="panel-meta">후보 <strong id="candCount">__CAND_COUNT__</strong>개</span>
+          </div>
+          <div class="panel-body">
+            <div class="control-row">
+              <div class="control-head"><span class="control-label">상황</span></div>
+              <div class="chips" id="sitChips">__SIT_CHIPS__</div>
+            </div>
+            <div class="control-row">
+              <div class="control-head"><span class="control-label">동행</span></div>
+              <div class="chips" id="compChips">__COMP_CHIPS__</div>
+            </div>
+            <div class="control-row">
+              <div class="control-head"><span class="control-label">스타일</span></div>
+              <div class="chips" id="styleChips">__STYLE_CHIPS__</div>
+            </div>
+            <div class="draw-row">
+              <button class="btn btn-primary" id="drawBtn" type="button">__DRAW_ICON__<span id="drawLabel">메뉴 뽑기</span></button>
+              <button class="btn" id="excludeBtn" type="button" hidden>제외</button>
+            </div>
+            <span class="slot-note" id="pickNote"></span>
+          </div>
+        </section>
+      </aside>
+
+      <div class="pk-main">
+
+        <!-- 뽑은 메뉴 -->
+        <section class="panel result-panel" id="resultPanel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="bar"></span>오늘의 추천</div>
+            <span class="panel-meta" id="resultMeta">조건에 맞는 한 가지</span>
+          </div>
+          <div class="panel-body">
+            <div class="slot" id="slotCard">
+              <div class="slot-hint" id="slotHint">
+                __HINT_ICON__
+                <p id="slotHintText">위에서 조건을 고르고 <strong>메뉴 뽑기</strong>를 눌러 보세요.<br>날씨 모드에 맞는 후보 중에서 한 가지를 골라 드립니다.</p>
+              </div>
+              <div class="slot-body" id="slotBody" hidden>
+                <div class="pick-head">
+                  <div style="min-width:0;">
+                    <div class="pick-name" id="pickName"></div>
+                    <div class="pick-price" id="pickPrice"></div>
+                  </div>
+                  <button class="star-btn" id="pickStar" type="button" aria-pressed="false" aria-label="뽑은 메뉴 즐겨찾기" title="즐겨찾기">__PICK_STAR_ICON__</button>
+                </div>
+                <div class="pick-tags">
+                  <span class="badge" id="pickCat"></span>
+                  <span class="badge" id="pickModeBadge"></span>
+                </div>
+                <div class="pick-block">
+                  <div class="pick-label">오늘 날씨 추천 이유</div>
+                  <p class="pick-text" id="pickReason"></p>
+                </div>
+                <div class="pick-block">
+                  <div class="pick-label">곁들임 추천</div>
+                  <p class="pick-text" id="pickSide"></p>
+                </div>
+                <div class="pick-meta" id="pickMeta"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 즐겨찾기 · 최근 기록 -->
+        <div class="split">
+          <section class="panel">
+            <div class="panel-head">
+              <div class="panel-title"><span class="bar"></span>즐겨찾기</div>
+              <span class="panel-meta"><strong id="favCount">0</strong>개</span>
+            </div>
+            <div class="panel-body">
+              <div class="list" id="favList"></div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <div class="panel-title"><span class="bar"></span>최근 뽑은 기록</div>
+              <span class="panel-meta">최대 10개</span>
+            </div>
+            <div class="panel-body">
+              <div class="list" id="recentList"></div>
+            </div>
+          </section>
         </div>
 
-        <div class="pick-actions">
-          <button class="btn btn-primary" id="drawBtn" type="button">__DRAW_ICON__<span id="drawLabel">메뉴 뽑기</span></button>
-          <button class="btn" id="excludeBtn" type="button" hidden>제외하고 뽑기</button>
-          <span class="slot-note" id="pickNote"></span>
-        </div>
+        <!-- 메뉴 풀 -->
+        <section class="panel" id="menuPool">
+          <div class="panel-head">
+            <div class="panel-title"><span class="bar"></span>메뉴 풀</div>
+            <span class="panel-meta"><strong id="menuCount">__MENU_COUNT__</strong>종 · 위 필터가 함께 적용됩니다</span>
+          </div>
+          <div class="panel-body">
+            <div class="menu-grid" id="menuGrid">
+              __MENU_CARDS__
+            </div>
+            <div class="empty-state" id="menuEmpty">선택한 조건에 맞는 메뉴가 없습니다. 필터를 넓혀 보세요.</div>
+          </div>
+        </section>
+
+        <!-- 나들이 코스 -->
+        <section class="panel" id="outingPanel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="bar"></span>주말·퇴근 후 서울 나들이</div>
+            <span class="panel-meta"><strong id="courseCount">__COURSE_COUNT__</strong>곳</span>
+          </div>
+          <div class="panel-body">
+            <div class="control-row" style="padding-top:0;border-top:none;">
+              <div class="control-head"><span class="control-label">코스 유형</span></div>
+              <div class="chips" id="courseChips">__COURSE_CHIPS__</div>
+            </div>
+            <div class="result-meta" style="margin-top:12px;">
+              <span id="courseMeta">__COURSE_META__</span>
+            </div>
+            <div class="course-grid" id="courseGrid">
+              __COURSE_CARDS__
+            </div>
+            <div class="empty-state" id="courseEmpty">선택한 유형의 코스가 없습니다.</div>
+          </div>
+        </section>
       </div>
-    </section>
-
-    <!-- 즐겨찾기 · 최근 기록 -->
-    <div class="split">
-      <section class="panel">
-        <div class="panel-head">
-          <div class="panel-title"><span class="bar"></span>즐겨찾기</div>
-          <span class="panel-meta"><strong id="favCount">0</strong>개</span>
-        </div>
-        <div class="panel-body">
-          <div class="list" id="favList"></div>
-        </div>
-      </section>
-      <section class="panel">
-        <div class="panel-head">
-          <div class="panel-title"><span class="bar"></span>최근 뽑은 기록</div>
-          <span class="panel-meta">최대 10개</span>
-        </div>
-        <div class="panel-body">
-          <div class="list" id="recentList"></div>
-        </div>
-      </section>
     </div>
-
-    <!-- 메뉴 풀 -->
-    <section class="panel" id="menuPool">
-      <div class="panel-head">
-        <div class="panel-title"><span class="bar"></span>메뉴 풀</div>
-        <span class="panel-meta"><strong id="menuCount">__MENU_COUNT__</strong>종 · 위 필터가 함께 적용됩니다</span>
-      </div>
-      <div class="panel-body">
-        <div class="menu-grid" id="menuGrid">
-          __MENU_CARDS__
-        </div>
-        <div class="empty-state" id="menuEmpty">선택한 조건에 맞는 메뉴가 없습니다. 필터를 넓혀 보세요.</div>
-      </div>
-    </section>
-
-    <!-- 나들이 코스 -->
-    <section class="panel" id="outingPanel">
-      <div class="panel-head">
-        <div class="panel-title"><span class="bar"></span>주말·퇴근 후 서울 나들이</div>
-        <span class="panel-meta"><strong id="courseCount">__COURSE_COUNT__</strong>곳</span>
-      </div>
-      <div class="panel-body">
-        <div class="control-row" style="padding-top:0;border-top:none;">
-          <div class="control-head"><span class="control-label">코스 유형</span></div>
-          <div class="chips" id="courseChips">__COURSE_CHIPS__</div>
-        </div>
-        <div class="result-meta" style="margin-top:12px;">
-          <span id="courseMeta">__COURSE_META__</span>
-        </div>
-        <div class="course-grid" id="courseGrid">
-          __COURSE_CARDS__
-        </div>
-        <div class="empty-state" id="courseEmpty">선택한 유형의 코스가 없습니다.</div>
-      </div>
-    </section>
 
     <footer class="footer">
       Infosec Archive · 오늘 뭐 먹지 · 날씨 맞춤 메뉴 추천<br>
@@ -2041,7 +2194,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         const m = menuById(card.dataset.id);
         if (m) {
           commitPick(m, false);
-          document.getElementById('roulette').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     }
@@ -2226,6 +2379,7 @@ def build():
     html = html.replace("__COURSE_CARDS__", "\n          ".join(course_card(c, mode) for c in COURSES))
     html = html.replace("__COURSE_META__", esc("%s 기준으로 날씨에 맞는 코스를 위로 보여 줍니다" % MODES[mode]["label"]))
     html = html.replace("__HINT_ICON__", icon("bowl", 26))
+    html = html.replace("__CHEV_DOWN_ICON__", icon("chev", 14))
     html = html.replace("__PICK_STAR_ICON__", icon("star", 14))
     html = html.replace("__DRAW_ICON__", icon("shuffle", 14))
     html = html.replace("__STAR_PATH__", "'" + ICONS["star"].replace("'", "\\'") + "'")
