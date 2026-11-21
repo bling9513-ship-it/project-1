@@ -1491,6 +1491,11 @@ async function checkWargame(page, width) {
     assert.ok(geo.railRight <= geo.mainLeft + 1, `${tag}: rail is not left of the problem`);
     assert.equal(geo.sticky, 'sticky', `${tag}: rail is not sticky`);
 
+    // 문제 수는 데일리 출제로 매일 늘어난다 → 기대값은 고정 숫자 대신 레일에서 센다
+    const railCounts = await page.evaluate(() => ({
+      total: document.querySelectorAll('.wg-item').length,
+      done: document.querySelectorAll('.wg-item.is-done').length,
+    }));
     await page.click('.chip[data-group="status"][data-value="done"]');
     await page.waitForTimeout(150);
     const filtered = await page.evaluate(() => ({
@@ -1510,14 +1515,14 @@ async function checkWargame(page, width) {
       shown: document.querySelectorAll('.q-card:not([hidden])').length,
       activeDone: document.querySelector('.wg-item.is-active').classList.contains('is-done'),
     }));
-    assert.equal(todo.items, 23, `${tag}: todo filter shows ${todo.items} items`);
+    assert.equal(todo.items, railCounts.total - railCounts.done, `${tag}: todo filter shows ${todo.items} items (전체 ${railCounts.total} · 완료 ${railCounts.done})`);
     assert.equal(todo.shown, 1, `${tag}: todo filter must keep one card`);
     assert.equal(todo.activeDone, false, `${tag}: todo filter kept the solved problem`);
 
     await page.click('#resetFilters');
     await page.waitForTimeout(120);
     const reset = await page.evaluate(() => document.querySelectorAll('.wg-item').length);
-    assert.equal(reset, 24, `${tag}: filters did not reset (${reset})`);
+    assert.equal(reset, railCounts.total, `${tag}: filters did not reset (${reset} / 전체 ${railCounts.total})`);
   }
   console.log(`wargame interactions ${width}px passed`);
 }
