@@ -5266,6 +5266,8 @@ async function checkWashLayout(page, width) {
       fields: document.querySelectorAll('input, textarea, select').length,
       source: !!document.querySelector('.ws-foot a[href^="https://"]'),
       checked: document.querySelector('.ws-foot') ? document.querySelector('.ws-foot').textContent.indexOf('2026-11-22') >= 0 : false,
+      meta: document.querySelector('.ws-meta') ? document.querySelector('.ws-meta').textContent.replace(/\s+/g, ' ') : '',
+      foot: document.querySelector('.ws-foot') ? document.querySelector('.ws-foot').textContent.replace(/\s+/g, ' ') : '',
     };
   });
   assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
@@ -5283,6 +5285,9 @@ async function checkWashLayout(page, width) {
   assert.equal(state.fields, 0, `${tag}: input fields are not allowed on this page`);
   assert.equal(state.source, true, `${tag}: source link missing`);
   assert.equal(state.checked, true, `${tag}: checked date missing`);
+  assert.ok(state.meta.indexOf('KS K 0021:2024') >= 0, `${tag}: standard edition missing (${state.meta})`);
+  assert.ok(state.meta.indexOf('ISO 3758:2023') >= 0, `${tag}: ISO comparison missing (${state.meta})`);
+  assert.ok(state.foot.indexOf('2024-12-31') >= 0, `${tag}: revision date missing in source (${state.foot})`);
 
   // 첫 화면: 가상 라벨과 기호 설명이 함께 보여야 한다.
   const limit = width <= 768 ? state.tabTop - 2 : state.viewport;

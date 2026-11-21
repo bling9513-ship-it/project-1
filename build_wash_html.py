@@ -2,14 +2,14 @@
 """세탁 라벨 읽기(wash.html) — 한 장 생활 도식 빌더.
 
 구성
-  · 기호 도감: 실제 옷 케어라벨 모양의 카드 안에 KS K 0021 / ISO 3758 취급표시기호를
+  · 기호 도감: 실제 옷 케어라벨 모양의 카드 안에 KS K 0021:2024 / ISO 3758:2023 취급표시기호를
     카테고리(물세탁 · 표백 · 건조 · 다림질·드라이)별로 배치한다. 기호를 누르면
     (키보드 Enter/Space 포함) 아래 설명 카드에 이름 · 한 줄 뜻 · 주의할 점이 바로 열린다.
   · 라벨 읽기 퀴즈: 옷 6종의 기호 조합 라벨을 보여 주고 4지선다로 세탁법을 고르게 한다.
     답을 고르면 정답 여부와 함께 근거가 되는 기호가 라벨 위에서 파란색으로 강조된다.
   · 모든 기호는 인라인 SVG 로 직접 그린다(이모지 0 · 그라데이션 0). 그림은 표준 도안을
     복제하지 않고 뜻을 살려 단순화한 것으로, 실제 라벨과 굵기·모양이 조금 다를 수 있다.
-  · 출처(국가기술표준원 KS K 0021)와 확인일을 하단에 표기한다.
+  · 출처(국가기술표준원 KS K 0021:2024 · ISO 3758:2023 대조)와 확인일을 하단에 표기한다.
 """
 import json
 import os
@@ -23,8 +23,11 @@ DATA_PATH = os.path.join(BASE_DIR, "wash_data.json")
 WASH_HTML = os.path.join(BASE_DIR, "wash.html")
 KST = timezone(timedelta(hours=9))
 CHECKED_ON = "2026-11-22"
-STANDARD = "KS K 0021"
+STANDARD = "KS K 0021:2024"
 STANDARD_TITLE = "섬유 제품의 취급에 관한 표시 기호 및 그 표시 방법"
+STANDARD_EDITION = "2024-12-31 개정 · 국가기술표준원 고시 제2024-0699호"
+STANDARD_INTL = "ISO 3758:2023"
+STANDARD_INTL_NOTE = "GINETEX 케어 기호 안내(ISO 3758:2023) 대조"
 STANDARD_URL = ("https://www.standard.go.kr/KSCI/standardIntro/getStandardSearchView.do"
                 "?ksNo=KSK0021")
 
@@ -172,9 +175,9 @@ SYMBOLS = [
         tub("40"),
     ),
     symbol(
-        "wash-hand", "물세탁", "손세탁 (30℃ 이하)",
-        "세탁기를 쓰지 말고 손으로 살살 주물러 빨아요.",
-        "세탁기 '울 코스'도 쓰지 않는다는 뜻이에요. 비틀어 짜지 말고 눌러서 물을 빼요.",
+        "wash-hand", "물세탁", "손세탁 (세탁기 사용 금지)",
+        "세탁기를 쓰지 말고 손으로 살살 주물러 빨아요. 물통 안에 숫자가 있으면 그 온도가 넘지 말아야 할 최고 온도예요.",
+        "KS K 0021:2024는 30℃·40℃ 손세탁으로 나눠 표시하고, 숫자가 없는 국제 기호(ISO 3758:2023)는 상온(약 20~30℃) 손세탁이에요. 세탁기 울 코스도 쓰지 말고, 비틀어 짜지 말고 눌러서 물을 빼요.",
         tub(hand=True),
     ),
     symbol(
@@ -226,9 +229,9 @@ SYMBOLS = [
         square("machine", prohibited=True),
     ),
     symbol(
-        "iron-low", "다림질·드라이", "110℃ 이하 다림질",
-        "다리미 점 하나는 낮은 온도(110℃ 이하)로 다리라는 뜻이에요.",
-        "헝겊을 한 장 덮고 스팀은 피하세요. 열에 약한 장식은 다리미를 대지 않아요.",
+        "iron-low", "다림질·드라이", "120℃ 이하 다림질",
+        "다리미 점 하나는 최대 120℃로 다리라는 뜻이에요(KS K 0021:2024 · ISO 3758:2023).",
+        "스팀은 피하고 헝겊을 한 장 덮으세요. 옛 판본 자료에는 110℃로 적혀 있으니, 옷 라벨에 숫자가 있으면 그 숫자를 먼저 따르세요.",
         iron(),
     ),
     symbol(
@@ -288,7 +291,7 @@ QUIZZES = [
         "wool-knit", "울 니트", "울 100% · 겨울",
         ["wash-hand", "bleach-no", "dry-flat", "iron-no"],
         [
-            "30℃ 이하 물에 손세탁하고, 뉘어서 말려요.",
+            "상온(약 20~30℃) 물에 손세탁하고, 뉘어서 말려요.",
             "세탁기 울 코스로 돌린 뒤 건조기에 넣어요.",
             "염소계 표백제로 얼룩을 뺀 뒤 다림질해요.",
             "40℃ 일반 세탁 후 옷걸이에 걸어 말려요.",
@@ -313,13 +316,13 @@ QUIZZES = [
         "white-shirt", "흰 면 셔츠", "면 100% · 흰색",
         ["wash-40", "bleach-any", "iron-low", "clean-p"],
         [
-            "40℃ 일반 세탁, 염소 표백 가능, 110℃ 이하 다림질이에요.",
+            "40℃ 일반 세탁, 염소 표백 가능, 120℃ 이하 다림질이에요.",
             "30℃ 손세탁만 되고 표백은 금지예요.",
             "건조기 고온 건조 후 뜨거운 다리미를 대요.",
             "물세탁과 드라이클리닝이 모두 금지예요.",
         ],
         0, ["wash-40", "bleach-any", "iron-low"],
-        "흰 면은 40℃ 일반 세탁과 염소계 표백이 가능해요. 다림질은 점 하나, 110℃ 이하로 낮게 해요.",
+        "흰 면은 40℃ 일반 세탁과 염소계 표백이 가능해요. 다림질은 점 하나, 120℃ 이하로 낮게 해요.",
     ),
     _quiz(
         "padding", "패딩 점퍼", "겉감 나일론 · 충전재 오리털",
@@ -403,6 +406,9 @@ def build_data(now=None):
             "code": STANDARD,
             "title": STANDARD_TITLE,
             "org": "국가기술표준원",
+            "edition": STANDARD_EDITION,
+            "intl": STANDARD_INTL,
+            "intlNote": STANDARD_INTL_NOTE,
             "url": STANDARD_URL,
         },
         "categories": CATEGORIES,
@@ -523,7 +529,7 @@ CSS = """
       color: var(--accent-primary); background: var(--accent-subtle);
       border: 1px solid var(--border-default); border-radius: 6px; padding: 3px 8px;
     }
-    .ws-meta { display: flex; align-items: center; gap: 7px; margin-top: 6px; font-size: 11px; color: var(--text-muted); }
+    .ws-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 7px; margin-top: 6px; font-size: 11px; color: var(--text-muted); }
     .ws-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); }
 
     .ws-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 12px; margin: 11px 0; }
@@ -644,6 +650,10 @@ CSS = """
     .ws-summary-score { font-size: 27px; font-weight: 800; letter-spacing: -0.04em; margin-top: 8px; font-variant-numeric: tabular-nums; }
     .ws-summary-score span { font-size: 13px; color: var(--text-muted); font-weight: 700; margin-left: 3px; }
 
+    @media (max-width: 640px) {
+      .update-meta { display: none; }
+    }
+
     @media (min-width: 900px) {
       .ws-hero h1 { font-size: 24px; }
       .ws-tabs { max-width: 380px; }
@@ -690,7 +700,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 세탁 라벨 읽기</title>
-  <meta name="description" content="옷 케어라벨의 세탁 기호를 눌러 뜻과 주의할 점을 바로 보고, 실제 옷 라벨 6종으로 세탁법을 맞혀 보는 한 장 생활 도식. 국가기술표준원 KS K 0021 취급표시기호 기준.">
+  <meta name="description" content="옷 케어라벨의 세탁 기호를 눌러 뜻과 주의할 점을 바로 보고, 실제 옷 라벨 6종으로 세탁법을 맞혀 보는 한 장 생활 도식. 국가기술표준원 KS K 0021:2024(2024-12-31 개정) 기준, ISO 3758:2023 대조.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
@@ -720,7 +730,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <div class="nav-actions">
         <div class="update-meta">
           <span class="live-dot"></span>
-          <span>KS K 0021 확인 2026-11-22</span>
+          <span>KS K 0021:2024 확인 2026-11-22</span>
         </div>
         <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경">
           <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -753,9 +763,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <h1>세탁 라벨, 한 장으로 읽기</h1>
       <p>기호를 누르면 뜻과 주의할 점이 바로 열립니다. 마지막에는 실제 옷 라벨로 풀어 보세요.</p>
       <div class="ws-meta">
-        <span>국가기술표준원 KS K 0021</span>
+        <span>국가기술표준원 KS K 0021:2024</span>
         <span class="ws-sep"></span>
-        <span>2026-11-22 확인</span>
+        <span>ISO 3758:2023 대조</span>
       </div>
     </section>
 
@@ -795,7 +805,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       </div>
 
       <p class="ws-foot">
-        출처: 국가기술표준원 <a href="__STANDARD_URL__" target="_blank" rel="noopener noreferrer">KS K 0021 섬유 제품의 취급에 관한 표시 기호 및 그 표시 방법</a> · 확인일 2026-11-22.
+        출처: 국가기술표준원 <a href="__STANDARD_URL__" target="_blank" rel="noopener noreferrer">KS K 0021:2024 섬유 제품의 취급에 관한 표시 기호 및 그 표시 방법</a> · 2024-12-31 개정(고시 제2024-0699호) · 국제 비교: GINETEX 케어 기호 안내(ISO 3758:2023) · 확인일 2026-11-22.
         실제 라벨은 보통 물세탁 → 표백 → 다림질 → 드라이클리닝 → 건조 순서로 놓여요.
         그림은 표준 도안을 복제하지 않고 뜻을 살려 단순하게 다시 그린 것으로, 실제 라벨과 굵기·모양이 조금 다를 수 있습니다. 표시가 없는 칸은 '아무거나 괜찮다'는 뜻이 아니에요.
       </p>
