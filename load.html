@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-cygsooii4AhadSvm/ct+QLGfZOjPyoyy4R5oEbH8HBg=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 한 번 더 싣기</title>
+  <meta name="description" content="손수레 한도 100kg, 좌우 균형 28kg. 표기 무게만 보고 상자를 더 실을지 지금 배송할지 고르는 푸시 유어 럭 게임. 매일 KST 날짜로 같은 상자 순서가 열리고, 하루 5회차 점수와 최고 연속 배송을 겨룹니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
+      --warn-bg: #fffbeb; --warn-text: #b45309; --warn-border: #fde68a;
+      --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
+      --warn-bg: rgba(245, 158, 11, 0.12); --warn-text: #fcd34d; --warn-border: rgba(245, 158, 11, 0.32);
+      --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+    }
+    .nav-container { max-width: 1360px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo-img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; display: block; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); flex-shrink: 0; }
+    .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; }
+    .update-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; flex-shrink: 0; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+    .icon-btn:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .load-wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 72px; }
+
+    .load-hero { margin-bottom: 13px; }
+    .load-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin-bottom: 8px;
+    }
+    .load-hero h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; }
+    .load-hero p { margin-top: 5px; font-size: 13px; color: var(--text-secondary); max-width: 680px; }
+
+    .load-shell { display: grid; grid-template-columns: 324px minmax(0, 1fr); gap: 16px; align-items: start; }
+    .load-rail { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 76px; }
+
+    .load-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 13px 14px;
+      box-shadow: var(--card-shadow);
+      min-width: 0;
+    }
+    .load-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+    .load-card-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .load-card-head span { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .load-foot { margin-top: 9px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
+
+    .load-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 11px; }
+    .load-seg-btn {
+      border: 0; background: transparent; border-radius: 8px; padding: 8px 4px;
+      font-family: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: -0.02em;
+      color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+    .load-seg-btn:hover { color: var(--text-primary); }
+    .load-seg-btn.is-active { background: var(--bg-surface); color: var(--text-primary); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); }
+
+    .load-meter { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; font-size: 11.5px; color: var(--text-secondary); }
+    .load-meter strong { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .load-meter span { white-space: nowrap; }
+
+    .streak-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+    .streak-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: -0.01em;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 999px; padding: 3px 8px;
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .streak-chip.is-hot { color: var(--warn-text); background: var(--warn-bg); border-color: var(--warn-border); }
+    .streak-best { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+    .load-status { margin-top: 9px; font-size: 10.5px; line-height: 1.5; color: var(--text-muted); min-height: 16px; }
+
+    /* ----- 게임 방법(움직이는 3단계 데모) ----- */
+    .guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .guide-toggle {
+      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
+      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
+    }
+    .guide-body { margin-top: 9px; }
+    .gl-stage {
+      position: relative; display: flex; align-items: flex-end; gap: 12px;
+      padding: 13px 11px 10px; border: 1px solid var(--border-default); border-radius: 12px;
+      background: var(--bg-page); min-height: 86px;
+    }
+    .gl-cart { position: relative; width: 74px; flex: 0 0 auto; }
+    .gl-stack {
+      position: relative; height: 40px; display: flex; flex-direction: column-reverse; gap: 2px;
+      align-items: center; margin-bottom: 3px;
+    }
+    .gl-crate {
+      width: 28px; height: 15px; border: 1px solid var(--border-strong); border-radius: 3px;
+      background: var(--bg-subtle); color: var(--text-secondary);
+      font-size: 7px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    }
+    .gl-box {
+      position: absolute; left: 50%; margin-left: -15px; bottom: 21px; width: 30px; height: 17px;
+      border: 1px solid var(--accent-primary); border-radius: 3px; background: var(--accent-subtle);
+      color: var(--accent-primary); font-size: 7.5px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; animation: glDrop 9s ease-in-out infinite;
+    }
+    .gl-bed { display: block; position: relative; height: 7px; border-radius: 3px; background: var(--text-muted); }
+    .gl-bed::before {
+      content: ""; position: absolute; left: 4px; right: -9px; top: -13px; height: 13px;
+      border-left: 2px solid var(--border-strong); border-top: 2px solid var(--border-strong);
+      border-top-left-radius: 4px;
+    }
+    .gl-wheels { display: block; position: relative; height: 8px; }
+    .gl-wheels span {
+      position: absolute; top: 1px; width: 8px; height: 8px; border-radius: 50%;
+      border: 2px solid var(--text-muted); background: var(--bg-surface);
+    }
+    .gl-wheels span:first-child { left: 10px; }
+    .gl-wheels span:last-child { right: 10px; }
+    .gl-meter { display: block; flex: 1 1 auto; min-width: 0; }
+    .gl-meter-track {
+      display: block; position: relative; height: 9px; border-radius: 999px; background: var(--bg-muted); overflow: hidden;
+    }
+    .gl-fill {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px;
+      background: var(--ok-text); animation: glFill 9s ease-in-out infinite;
+    }
+    .gl-meter-marks { display: flex; justify-content: space-between; margin-top: 3px; font-size: 6.5px; color: var(--text-muted); }
+    .gl-kg { display: block; }
+    .gl-kg { margin-top: 4px; font-size: 9px; font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums; opacity: 0; animation: glKg 9s ease-in-out infinite; }
+    .gl-chips { display: flex; align-items: center; gap: 6px; margin-top: 8px; min-height: 22px; }
+    .gl-ship {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 3px 9px; border-radius: 7px; background: var(--accent-primary); color: #ffffff;
+      font-size: 9.5px; font-weight: 700; opacity: 0; animation: glShip 9s ease-in-out infinite;
+    }
+    .gl-bonus { font-size: 11px; font-weight: 700; color: var(--ok-text); font-variant-numeric: tabular-nums; opacity: 0; animation: glBonus 9s ease-in-out infinite; }
+    .gl-balance { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 8.5px; color: var(--text-muted); }
+    .gl-balance b { color: var(--accent-primary); font-weight: 700; }
+    .guide-caption { position: relative; height: 18px; margin-top: 8px; }
+    .gc-step {
+      position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10.5px; font-weight: 600; color: var(--text-secondary); opacity: 0; white-space: nowrap;
+    }
+    .gc-num {
+      display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px;
+      border-radius: 50%; background: var(--bg-muted); color: var(--text-secondary);
+      font-size: 8.5px; font-weight: 700; flex-shrink: 0;
+    }
+    .gc-3 .gc-num { background: var(--ok-text); color: #ffffff; }
+    .gc-1 { animation: gc1 9s ease infinite; }
+    .gc-2 { animation: gc2 9s ease infinite; }
+    .gc-3 { animation: gc3 9s ease infinite; }
+    .guide-note { margin-top: 6px; font-size: 10px; line-height: 1.5; color: var(--text-muted); }
+
+    @keyframes glDrop {
+      0%, 4% { opacity: 0; transform: translateY(-24px) rotate(-4deg); }
+      7% { opacity: 1; transform: translateY(-24px) rotate(-4deg); }
+      16% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      18% { transform: translateY(2px); }
+      21%, 92% { opacity: 1; transform: translateY(0); }
+      96%, 100% { opacity: 0; transform: translateY(0); }
+    }
+    @keyframes glFill {
+      0%, 18% { width: 0; background: var(--ok-text); }
+      34% { width: 48%; background: var(--ok-text); }
+      50%, 62% { width: 72%; background: var(--warn-text); }
+      92% { width: 72%; background: var(--warn-text); }
+      96%, 100% { width: 0; background: var(--ok-text); }
+    }
+    @keyframes glKg {
+      0%, 18% { opacity: 0; }
+      26%, 92% { opacity: 1; }
+      96%, 100% { opacity: 0; }
+    }
+    @keyframes glShip {
+      0%, 56% { opacity: 0; transform: scale(0.86); }
+      62% { opacity: 1; transform: scale(1.06); }
+      66%, 92% { opacity: 1; transform: scale(1); }
+      96%, 100% { opacity: 0; transform: scale(0.86); }
+    }
+    @keyframes glBonus {
+      0%, 62% { opacity: 0; transform: translateY(4px); }
+      68% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; transform: translateY(-4px); }
+      90%, 100% { opacity: 0; transform: translateY(-8px); }
+    }
+    @keyframes gc1 {
+      0%, 30% { opacity: 1; }
+      36%, 100% { opacity: 0; }
+    }
+    @keyframes gc2 {
+      0%, 34% { opacity: 0; }
+      38%, 56% { opacity: 1; }
+      62%, 100% { opacity: 0; }
+    }
+    @keyframes gc3 {
+      0%, 58% { opacity: 0; }
+      62%, 92% { opacity: 1; }
+      96%, 100% { opacity: 0; }
+    }
+
+    /* ----- 목표 ----- */
+    .goal-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .goal-row { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--text-secondary); }
+    .goal-row svg { width: 12px; height: 12px; flex-shrink: 0; fill: var(--bg-muted); stroke: none; }
+    .goal-row.is-on svg { fill: var(--warn-text); }
+    .goal-row.is-on { color: var(--text-primary); font-weight: 600; }
+    .goal-label { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .goal-row b { font-variant-numeric: tabular-nums; font-size: 11.5px; }
+    .goal-bar { position: relative; height: 6px; margin-top: 9px; border-radius: 999px; background: var(--bg-muted); overflow: hidden; }
+    .goal-bar span { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--accent-primary); transition: width 420ms ease; }
+
+    /* ----- 기록 ----- */
+    .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .record-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
+    .record-grid dd { font-size: 14.5px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .record-history { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-top: 9px; }
+    .record-history li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--text-secondary); }
+    .record-history li span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .record-history li.is-empty { color: var(--text-muted); }
+
+    /* ----- 보드(손수레) ----- */
+    .load-main { min-width: 0; }
+    .load-main-head { display: flex; align-items: baseline; gap: 9px; margin-bottom: 8px; }
+    .load-main-title { font-size: 14px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+    .load-main-sub { flex: 1 1 auto; min-width: 0; font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .load-reset { border: 0; background: transparent; font-family: inherit; font-size: 10.5px; font-weight: 600; color: var(--accent-primary); cursor: pointer; padding: 2px 0; white-space: nowrap; }
+    .load-reset:hover { text-decoration: underline; }
+
+    .cart-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 18px;
+      padding: 11px 13px 12px;
+      box-shadow: var(--card-shadow);
+      max-width: 600px;
+      transition: border-color 220ms ease, box-shadow 220ms ease;
+    }
+    .cart-card.is-warn { border-color: var(--warn-border); }
+    .cart-card.is-danger { border-color: var(--no-border); box-shadow: 0 0 0 3px var(--no-bg); }
+    .cart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--text-muted); }
+    .cart-cap { font-size: 11.5px; color: var(--text-secondary); white-space: nowrap; }
+    .cart-cap b { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .cart-cap.is-warn b { color: var(--warn-text); }
+    .cart-cap.is-danger b { color: var(--no-text); }
+
+    .cart-stage { position: relative; padding: 8px 0 2px; }
+    .cart-rig { position: relative; margin: 0 auto; max-width: 420px; transform-origin: 50% 88%; transition: transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .cart-deck {
+      position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      padding: 8px 9px 6px; border: 1px dashed var(--border-strong); border-bottom: 0;
+      border-top-left-radius: 10px; border-top-right-radius: 10px; background: var(--bg-page);
+    }
+    .cart-deck::after {
+      content: ""; position: absolute; left: 50%; top: 8px; bottom: 6px; width: 1px;
+      background: var(--border-subtle);
+    }
+    .deck-col { display: flex; flex-direction: column; min-width: 0; }
+    .deck-head {
+      display: flex; align-items: baseline; justify-content: center; gap: 5px;
+      font-size: 9.5px; color: var(--text-muted); margin-bottom: 5px; white-space: nowrap;
+    }
+    .deck-head b { font-size: 12px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .deck-head.is-heavy b { color: var(--warn-text); }
+    .deck-head.is-over b { color: var(--no-text); }
+    .crate-stack { display: flex; flex-direction: column-reverse; gap: 2px; height: 100px; min-width: 0; }
+    .deck-empty {
+      position: absolute; left: 0; right: 0; top: 56%; transform: translateY(-50%);
+      text-align: center; font-size: 10px; color: var(--text-muted); pointer-events: none;
+    }
+    .crate {
+      position: relative; flex: 1 1 0; min-height: 7px; max-height: 24px;
+      border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg-surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8.5px; font-weight: 700; line-height: 1; color: var(--text-secondary);
+      font-variant-numeric: tabular-nums; overflow: hidden; letter-spacing: -0.02em;
+    }
+    .crate.is-heavy { background: var(--bg-subtle); }
+    .crate.is-light { background: var(--accent-subtle); border-color: var(--border-default); color: var(--accent-primary); }
+    .crate.is-new { animation: crateDrop 340ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+    .crate.is-fallen { animation: crateFall 520ms ease-in both; }
+    .cart-bed { height: 9px; border-radius: 0 0 4px 4px; background: var(--text-muted); }
+    .cart-frame { position: relative; height: 17px; }
+    .cart-frame span {
+      position: absolute; top: 1px; width: 13px; height: 13px; border-radius: 50%;
+      border: 2.5px solid var(--text-muted); background: var(--bg-surface);
+    }
+    .cart-frame span:first-child { left: 34px; }
+    .cart-frame span:last-child { right: 34px; }
+    .cart-rig.is-bounce { animation: cartBounce 300ms cubic-bezier(0.2, 0.9, 0.3, 1.1); }
+    .cart-rig.is-shake { animation: cartShake 480ms ease-in-out; }
+
+    .cart-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .gauge-head, .tilt-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--text-muted); }
+    .gauge-head b, .tilt-head b { font-size: 10.5px; font-weight: 700; letter-spacing: -0.01em; }
+    .gauge-head b.is-safe { color: var(--ok-text); }
+    .gauge-head b.is-warn { color: var(--warn-text); }
+    .gauge-head b.is-danger { color: var(--no-text); }
+    .gauge-head b.is-danger { animation: valuePulse 900ms ease-in-out infinite; }
+    .gauge-track {
+      position: relative; height: 10px; margin-top: 5px; border-radius: 999px;
+      background: var(--bg-muted); overflow: hidden;
+    }
+    .gauge-track::after {
+      content: ""; position: absolute; left: 70%; top: 0; bottom: 0; width: 1px; background: var(--bg-surface); opacity: 0.9;
+    }
+    .gauge-fill {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px;
+      background: var(--ok-text); transition: width 420ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 300ms ease;
+    }
+    .gauge-fill.is-warn { background: var(--warn-text); }
+    .gauge-fill.is-danger { background: var(--no-text); }
+    .gauge-legend { display: flex; align-items: center; gap: 8px; margin-top: 5px; font-size: 9px; color: var(--text-muted); flex-wrap: wrap; }
+    .gauge-legend span { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+    .gauge-legend i { width: 6px; height: 6px; border-radius: 2px; display: inline-block; }
+    .lg-safe { background: var(--ok-text); }
+    .lg-warn { background: var(--warn-text); }
+    .lg-danger { background: var(--no-text); }
+
+    .tilt-track { position: relative; height: 9px; margin-top: 5px; border-radius: 999px; background: var(--bg-muted); }
+    .tilt-track::before {
+      content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--border-strong);
+    }
+    .tilt-zone { position: absolute; top: 0; bottom: 0; background: var(--warn-bg); opacity: 0.9; }
+    .tilt-zone.left { left: 0; width: 25%; border-radius: 999px 0 0 999px; }
+    .tilt-zone.right { right: 0; width: 25%; border-radius: 0 999px 999px 0; }
+    .tilt-fill { position: absolute; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--ok-text); transition: left 320ms ease, width 320ms ease, background-color 300ms ease; }
+    .tilt-fill.is-warn { background: var(--warn-text); }
+    .tilt-fill.is-danger { background: var(--no-text); }
+    .tilt-note { margin-top: 4px; font-size: 9px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ----- 상자 카드 ----- */
+    .box-card {
+      margin-top: 12px; max-width: 600px;
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 12px 13px; box-shadow: var(--card-shadow);
+    }
+    .box-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--text-muted); }
+    .box-tag { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: var(--text-secondary); }
+    .box-tag::before { content: ""; width: 6px; height: 6px; border-radius: 2px; background: var(--accent-primary); }
+    .box-body { display: flex; align-items: center; gap: 11px; margin-top: 8px; }
+    .box-icon {
+      width: 42px; height: 42px; flex: 0 0 auto; border-radius: 10px;
+      border: 1px solid var(--border-default); background: var(--bg-page);
+      display: flex; align-items: center; justify-content: center; color: var(--accent-primary);
+    }
+    .box-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .box-info { min-width: 0; flex: 1 1 auto; }
+    .box-name { font-size: 15px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .box-stats { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+    .box-stat {
+      display: inline-flex; align-items: baseline; gap: 3px;
+      font-size: 10.5px; color: var(--text-muted); background: var(--bg-subtle);
+      border-radius: 6px; padding: 2px 6px; white-space: nowrap;
+    }
+    .box-stat b { font-size: 12.5px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .box-stat.score b { color: var(--accent-primary); }
+
+    .next-strip {
+      display: flex; align-items: center; gap: 7px; margin-top: 9px; padding: 6px 8px;
+      border: 1px dashed var(--border-strong); border-radius: 9px; background: var(--bg-page);
+      font-size: 10.5px; color: var(--text-secondary); min-width: 0;
+    }
+    .next-tag { font-size: 9.5px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+    .next-name { font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .next-kg, .next-score { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .next-score { margin-left: auto; color: var(--accent-primary); font-weight: 700; }
+
+    .box-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+    .side-btn {
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 11px 6px; border: 1px solid var(--border-default); border-radius: 11px;
+      background: var(--bg-page); color: var(--text-primary);
+      font-family: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: -0.02em;
+      cursor: pointer; min-width: 0; white-space: nowrap;
+      transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+    .side-btn:hover { border-color: var(--border-strong); background: var(--bg-subtle); }
+    .side-btn:active { transform: scale(0.985); }
+    .side-btn .risk-tag {
+      font-size: 9px; font-weight: 700; padding: 1px 4px; border-radius: 4px;
+      background: var(--ok-bg); color: var(--ok-text); white-space: nowrap;
+    }
+    .side-btn .risk-tag.is-near { background: var(--warn-bg); color: var(--warn-text); }
+    .side-btn .risk-tag.is-risk { background: var(--no-bg); color: var(--no-text); }
+    .side-btn.is-risk { border-color: var(--no-border); }
+    .side-btn:disabled, .ship-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .ship-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; margin-top: 7px; padding: 12px 8px;
+      border: 0; border-radius: 11px; background: var(--accent-primary); color: #ffffff;
+      font-family: inherit; font-size: 13.5px; font-weight: 700; letter-spacing: -0.02em;
+      cursor: pointer; transition: background-color 160ms ease, transform 160ms ease;
+    }
+    .ship-btn:hover { background: var(--accent-hover); }
+    .ship-btn:active { transform: scale(0.99); }
+    .ship-btn span { font-size: 11.5px; font-weight: 700; opacity: 0.92; font-variant-numeric: tabular-nums; }
+    .box-note { margin-top: 7px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
+
+    /* ----- 회차 결과 ----- */
+    .trip-panel {
+      position: relative; margin-top: 12px; max-width: 600px;
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 14px; box-shadow: var(--card-shadow);
+      animation: panelIn 260ms ease-out both;
+    }
+    .trip-panel.is-fail { border-color: var(--no-border); background: var(--no-bg); }
+    .trip-badge {
+      display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px;
+      font-size: 10.5px; font-weight: 700;
+      background: var(--ok-bg); color: var(--ok-text); border: 1px solid var(--ok-border);
+    }
+    .trip-panel.is-fail .trip-badge { background: var(--no-bg); color: var(--no-text); border-color: var(--no-border); }
+    .trip-title { margin-top: 7px; font-size: 15px; font-weight: 700; letter-spacing: -0.03em; }
+    .trip-score { display: flex; align-items: baseline; gap: 4px; margin-top: 4px; }
+    .trip-score strong { font-size: 34px; font-weight: 700; letter-spacing: -0.045em; font-variant-numeric: tabular-nums; }
+    .trip-score span { font-size: 13px; color: var(--text-muted); }
+    .trip-panel.is-fail .trip-score strong { color: var(--no-text); }
+    .trip-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+    .trip-grid dt { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+    .trip-grid dd { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .trip-note { margin-top: 9px; font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
+    .load-primary {
+      width: 100%; margin-top: 11px; padding: 11px 8px; border: 0; border-radius: 11px;
+      background: var(--accent-primary); color: #ffffff; font-family: inherit;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .load-primary:hover { background: var(--accent-hover); }
+
+    /* ----- 최종 결과 ----- */
+    .result {
+      position: relative; margin-top: 12px; max-width: 600px;
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 16px; box-shadow: var(--card-shadow);
+      animation: panelIn 300ms ease-out both;
+    }
+    .result-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .result-badge {
+      display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px;
+      font-size: 10.5px; font-weight: 700; background: var(--accent-subtle); color: var(--accent-primary);
+      border: 1px solid var(--border-default);
+    }
+    .result-title { margin-top: 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+    .result-score { display: flex; align-items: baseline; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
+    .result-score strong { font-size: 36px; font-weight: 700; letter-spacing: -0.045em; font-variant-numeric: tabular-nums; }
+    .result-score .unit { font-size: 13px; color: var(--text-muted); }
+    .result-best { margin-left: auto; font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .result-stars { display: flex; align-items: center; gap: 5px; margin-top: 7px; }
+    .result-stars svg, .goal-row svg { width: 16px; height: 16px; }
+    .result-stars svg { fill: var(--bg-muted); }
+    .result-stars svg.is-on { fill: var(--warn-text); }
+    .result-stars svg.is-pop { animation: starPop 380ms cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+    .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 11px; }
+    .result-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
+    .result-grid dd { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .result-hint { margin-top: 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); }
+    .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 11px; }
+    .load-ghost {
+      padding: 11px 8px; border: 1px solid var(--border-default); border-radius: 11px;
+      background: var(--bg-page); color: var(--text-primary); font-family: inherit;
+      font-size: 12.5px; font-weight: 600; cursor: pointer;
+    }
+    .load-ghost:hover { background: var(--bg-subtle); }
+
+    /* ----- 연습 스테이지 ----- */
+    .practice { margin-top: 14px; max-width: 600px; }
+    .practice-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .practice-head h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+    .practice-head span { font-size: 10.5px; color: var(--text-muted); }
+    .practice-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .stage {
+      display: flex; flex-direction: column; gap: 2px; min-width: 0;
+      padding: 9px 10px; border: 1px solid var(--border-default); border-radius: 11px;
+      background: var(--bg-surface); font-family: inherit; text-align: left; cursor: pointer;
+      transition: border-color 160ms ease, background-color 160ms ease;
+    }
+    .stage:hover { border-color: var(--border-strong); }
+    .stage.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .stage-level { font-size: 9px; font-weight: 700; color: var(--text-muted); }
+    .stage-title { font-size: 11.5px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stage-best { font-size: 9.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .stage.is-current .stage-best { color: var(--accent-primary); font-weight: 600; }
+
+    .bonus-pop {
+      position: absolute; left: 50%; top: -4px; transform: translateX(-50%);
+      font-size: 20px; font-weight: 700; color: var(--ok-text); font-variant-numeric: tabular-nums;
+      pointer-events: none; opacity: 0;
+    }
+    .bonus-pop.is-on { animation: bonusPop 900ms ease-out both; }
+    .result-burst { position: relative; width: 0; height: 0; }
+    .result-burst span {
+      position: absolute; left: 0; top: 0; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--warn-text); opacity: 0;
+    }
+    .result.is-new .result-burst span { animation: burst 620ms ease-out both; }
+    .result.is-new .result-burst span:nth-child(2) { animation-delay: 40ms; }
+    .result.is-new .result-burst span:nth-child(3) { animation-delay: 80ms; }
+    .result.is-new .result-burst span:nth-child(4) { animation-delay: 120ms; }
+    .result.is-new .result-burst span:nth-child(5) { animation-delay: 60ms; }
+    .result.is-new .result-burst span:nth-child(6) { animation-delay: 100ms; }
+
+    @keyframes crateDrop {
+      0% { opacity: 0; transform: translateY(-26px) scale(1.08) rotate(-3deg); }
+      60% { opacity: 1; transform: translateY(2px) scale(0.98) rotate(0deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes crateFall {
+      0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(46px) rotate(-18deg); }
+    }
+    @keyframes cartBounce {
+      0% { transform: translateY(0); }
+      35% { transform: translateY(3px); }
+      70% { transform: translateY(-1px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes cartShake {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      15% { transform: translateX(-5px) rotate(-1.6deg); }
+      32% { transform: translateX(5px) rotate(1.6deg); }
+      48% { transform: translateX(-4px) rotate(-1.2deg); }
+      66% { transform: translateX(3px) rotate(0.8deg); }
+      84% { transform: translateX(-2px) rotate(-0.4deg); }
+    }
+    @keyframes valuePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    @keyframes panelIn {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes starPop {
+      0% { transform: scale(0.5); opacity: 0.4; }
+      70% { transform: scale(1.18); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes bonusPop {
+      0% { opacity: 0; transform: translate(-50%, 6px) scale(0.9); }
+      25% { opacity: 1; transform: translate(-50%, -6px) scale(1.06); }
+      70% { opacity: 1; transform: translate(-50%, -18px) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -32px) scale(0.98); }
+    }
+    @keyframes burst {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--bx, 18px), var(--by, -14px)) scale(1); }
+    }
+
+    @media (max-width: 900px) {
+      .load-shell { grid-template-columns: 290px minmax(0, 1fr); }
+    }
+
+    @media (max-width: 860px) {
+      .load-wrap { padding: 14px 14px 72px; }
+      .load-shell { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+      .load-rail, .load-main { display: contents; }
+      .load-main-head { order: 1; }
+      #statusCard { order: 2; }
+      .cart-card { order: 3; }
+      .box-card { order: 4; }
+      #tripPanel, #resultBox { order: 5; }
+      #guideCard { order: 6; }
+      #goalCard { order: 7; }
+      #recordCard { order: 8; }
+      #practiceWrap { order: 9; }
+      .load-card, .cart-card, .box-card, .trip-panel, .result, .practice { max-width: none; }
+      .cart-card { padding: 10px 12px 11px; }
+      .crate-stack { height: 74px; }
+      .load-hero { margin-bottom: 10px; }
+      .load-hero h1 { font-size: 20px; }
+      .load-hero p { font-size: 11.5px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .box-note { display: none; }
+      .gauge-legend { display: none; }
+      .gauge-head, .tilt-head { font-size: 10px; }
+      .cart-meters { gap: 10px; margin-top: 8px; }
+      .load-status { margin-top: 7px; }
+      .load-card-head { margin-bottom: 7px; }
+      .load-main-head { margin-bottom: 5px; }
+      .box-card { padding: 11px 12px; }
+      .box-icon { width: 38px; height: 38px; }
+      .box-body { margin-top: 7px; }
+    }
+
+    @media (max-width: 640px) {
+      .load-hero p { display: none; }
+      .load-hero { margin-bottom: 8px; }
+      .load-pill { margin-bottom: 6px; padding: 2px 7px; }
+      .load-hero h1 { font-size: 19px; }
+      #statusCard .load-card-head { display: none; }
+      .load-status { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+      .load-main-head { margin-bottom: 5px; }
+      .load-main-title { font-size: 13px; }
+      .cart-stage { padding: 4px 0 1px; }
+      .cart-deck { padding: 6px 8px 4px; }
+      .crate-stack { height: 58px; }
+      .cart-head { font-size: 10px; }
+      .load-meter strong { font-size: 15px; }
+      .next-strip { margin-top: 7px; padding: 5px 8px; }
+      .load-wrap { padding-top: 10px; }
+      .load-card { padding: 11px 12px; }
+      .load-meter { margin-top: 8px; }
+      .streak-row { margin-top: 6px; }
+      .load-status { margin-top: 6px; }
+      .cart-meters { margin-top: 6px; }
+      .crate-stack { height: 54px; }
+      .box-card { padding: 10px 11px; }
+      .box-body { margin-top: 5px; }
+      .next-strip { margin-top: 6px; }
+      .box-actions { margin-top: 8px; }
+      .ship-btn { margin-top: 6px; padding: 11px 8px; }
+      .practice-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .box-name { font-size: 14px; }
+    }
+
+    @media (max-width: 380px) {
+      .load-wrap { padding: 12px 10px 72px; }
+      .load-card { padding: 11px 11px; }
+      .side-btn { font-size: 11.5px; padding: 10px 4px; }
+      .side-btn .risk-tag { font-size: 8px; padding: 1px 3px; }
+      .trip-grid dd, .result-grid dd { font-size: 12.5px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gl-box { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .gl-fill { animation: none !important; width: 72% !important; background: var(--warn-text) !important; }
+      .gl-kg { animation: none !important; opacity: 1 !important; }
+      .gl-ship { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .gl-bonus { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .gc-1 { animation: none !important; opacity: 0 !important; }
+      .gc-2 { animation: none !important; opacity: 0 !important; }
+      .gc-3 { animation: none !important; opacity: 1 !important; }
+      .crate.is-new, .crate.is-fallen { animation: none !important; }
+      .cart-rig.is-bounce, .cart-rig.is-shake { animation: none !important; }
+      .result.is-new .result-burst span { animation: none !important; }
+      .result-stars svg.is-pop { animation: none !important; }
+      .bonus-pop.is-on { animation: none !important; }
+      .trip-panel, .result { animation: none !important; }
+      .gauge-head b.is-danger { animation: none !important; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="load">
+
+  <!-- Global Nav -->
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">한 번 더 싣기</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link is-current" role="menuitem" href="load.html" aria-current="page">한 번 더 싣기</a></div></div></nav><div class="ia-actions"><span class="ia-meta">매일 KST 00:00 새 상자 순서</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="load-wrap">
+    <div class="load-hero">
+      <span class="load-pill">일일 챌린지 · 하루 5회차</span>
+      <h1>한 번 더 싣기</h1>
+      <p>상자에는 표기 무게만 적혀 있습니다. 한도 100kg과 좌우 균형 28kg을 넘지 않게 실으면서, 더 실을지 지금 배송할지 고르세요. 넘치면 그 회차 점수가 사라집니다.</p>
+    </div>
+
+    <div class="load-shell">
+      <aside class="load-rail" aria-label="게임 진행">
+        <section class="load-card" id="statusCard">
+          <div class="load-card-head">
+            <h2>진행</h2>
+            <span id="modeNote">오늘의 배송</span>
+          </div>
+          <div class="load-seg" role="group" aria-label="게임 모드">
+            <button type="button" class="load-seg-btn is-active" id="modeDaily" data-mode="daily" aria-pressed="true">오늘의 챌린지</button>
+            <button type="button" class="load-seg-btn" id="modePractice" data-mode="practice" aria-pressed="false">자유 연습</button>
+          </div>
+          <div class="load-meter">
+            <span>회차 <strong id="tripValue">1</strong> / <span id="tripTotal">5</span></span>
+            <span>누적 <strong id="totalValue">0</strong>점</span>
+          </div>
+          <div class="streak-row">
+            <span class="streak-chip" id="streakChip">연속 0회 · ×1.0</span>
+            <span class="streak-best" id="streakBest">최고 0회</span>
+          </div>
+          <p class="load-status" id="loadStatus" role="status" aria-live="polite">손수레가 도착했습니다. 표기 무게를 보고 첫 상자를 실어 보세요.</p>
+        </section>
+
+        <section class="load-card guide" id="guideCard" aria-labelledby="guideTitle">
+          <div class="guide-head">
+            <h2 id="guideTitle">게임 방법</h2>
+            <button type="button" class="guide-toggle" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
+          </div>
+          <div class="guide-body" id="guideBody">
+            <div class="gl-stage" aria-hidden="true">
+              <span class="gl-cart">
+                <span class="gl-stack"><span class="gl-crate">12</span></span>
+                <span class="gl-box">18</span>
+                <span class="gl-bed"></span>
+                <span class="gl-wheels"><span></span><span></span></span>
+              </span>
+              <span class="gl-meter">
+                <span class="gl-meter-track"><span class="gl-fill"></span></span>
+                <span class="gl-meter-marks"><span>0</span><span>70</span><span>100kg</span></span>
+                <span class="gl-kg">62kg 싣는 중</span>
+              </span>
+            </div>
+            <div class="gl-chips" aria-hidden="true">
+              <span class="gl-ship">지금 배송</span>
+              <span class="gl-bonus">+38점</span>
+              <span class="gl-balance">균형 <b>×1.25</b></span>
+            </div>
+            <div class="guide-caption" aria-hidden="true">
+              <span class="gc-step gc-1"><span class="gc-num">1</span>상자를 왼쪽·오른쪽에 싣기</span>
+              <span class="gc-step gc-2"><span class="gc-num">2</span>무게·균형 게이지가 차오름</span>
+              <span class="gc-step gc-3"><span class="gc-num">3</span>지금 배송하면 점수 확정</span>
+            </div>
+            <p class="guide-note">표기 무게는 어림값입니다. 실측이 한도(100kg)나 균형(28kg)을 넘으면 그 회차는 0점. 다음 상자 표기를 보고 미리 판단하세요.</p>
+          </div>
+        </section>
+
+        <section class="load-card" id="goalCard">
+          <div class="load-card-head">
+            <h2>목표</h2>
+            <span id="goalNote">별 3단계</span>
+          </div>
+          <ul class="goal-list" id="goalList"></ul>
+          <div class="goal-bar"><span id="goalFill"></span></div>
+          <p class="load-foot" id="goalHint">균형이 좋을수록 배율이 오르고, 연속 배송이 쌓이면 더 커집니다.</p>
+        </section>
+
+        <section class="load-card" id="recordCard">
+          <div class="load-card-head">
+            <h2>기록</h2>
+            <span id="recordDate">—</span>
+          </div>
+          <dl class="record-grid">
+            <div><dt>오늘 최고</dt><dd id="recBest">—</dd></div>
+            <div><dt>완주</dt><dd id="recPlays">0판</dd></div>
+            <div><dt>최고 연속</dt><dd id="recStreak">0회</dd></div>
+          </dl>
+          <ul class="record-history" id="recHistory"></ul>
+          <p class="load-foot">기록은 이 브라우저(localStorage)에만 저장됩니다. 서버로 보내지 않습니다.</p>
+        </section>
+      </aside>
+
+      <section class="load-main" aria-label="손수레 적재">
+        <div class="load-main-head">
+          <h2 class="load-main-title" id="boardTitle">오늘의 배송</h2>
+          <span class="load-main-sub" id="boardSub"></span>
+          <button type="button" class="load-reset" id="resetBtn">처음부터</button>
+        </div>
+
+        <div class="cart-card" id="cartCard">
+          <div class="cart-head">
+            <span>손수레 적재량</span>
+            <span class="cart-cap" id="cartCap"><b id="cartTotal">0</b> / 100kg</span>
+          </div>
+          <div class="cart-stage">
+            <div class="cart-rig" id="cartRig">
+              <div class="cart-deck">
+                <div class="deck-col">
+                  <span class="deck-head" id="headLeft"><span>왼쪽</span><span><b id="leftValue">0</b>kg</span></span>
+                  <div class="crate-stack" id="stackLeft" aria-label="왼쪽 적재"></div>
+                </div>
+                <div class="deck-col">
+                  <span class="deck-head" id="headRight"><span>오른쪽</span><span><b id="rightValue">0</b>kg</span></span>
+                  <div class="crate-stack" id="stackRight" aria-label="오른쪽 적재"></div>
+                </div>
+                <p class="deck-empty" id="deckEmpty">상자를 실으면 여기에 쌓입니다</p>
+              </div>
+              <div class="cart-bed"></div>
+              <div class="cart-frame"><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="cart-meters">
+            <div class="gauge">
+              <div class="gauge-head"><span>무게</span><b id="gaugeValue" class="is-safe">안전</b></div>
+              <div class="gauge-track"><span class="gauge-fill" id="gaugeFill"></span></div>
+              <div class="gauge-legend">
+                <span><i class="lg-safe"></i>안전 0-70</span>
+                <span><i class="lg-warn"></i>주의 70-90</span>
+                <span><i class="lg-danger"></i>위험 90+</span>
+              </div>
+            </div>
+            <div class="tilt">
+              <div class="tilt-head"><span>좌우 균형</span><b id="tiltValue">균형</b></div>
+              <div class="tilt-track">
+                <span class="tilt-zone left"></span>
+                <span class="tilt-zone right"></span>
+                <span class="tilt-fill" id="tiltFill"></span>
+              </div>
+              <p class="tilt-note" id="tiltNote">허용 28kg</p>
+            </div>
+          </div>
+        </div>
+
+        <section class="box-card" id="boxCard" aria-labelledby="boxName">
+          <div class="box-head">
+            <span class="box-tag">현재 상자</span>
+            <span id="boxCount">1 / 5</span>
+          </div>
+          <div class="box-body">
+            <span class="box-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3.5 8.2L12 4l8.5 4.2v7.6L12 20l-8.5-4.2z"></path><path d="M3.5 8.2L12 12.4l8.5-4.2M12 12.4V20"></path></svg>
+            </span>
+            <div class="box-info">
+              <div class="box-name" id="boxName">상자를 기다리는 중</div>
+              <div class="box-stats">
+                <span class="box-stat">표기 <b id="boxKg">0~0</b>kg</span>
+                <span class="box-stat score">점수 <b id="boxScore">0</b></span>
+              </div>
+            </div>
+          </div>
+          <div class="next-strip" id="nextCard">
+            <span class="next-tag">다음 상자</span>
+            <span class="next-name" id="nextName">—</span>
+            <span class="next-kg" id="nextRange">—</span>
+            <span class="next-score" id="nextScore">—</span>
+          </div>
+          <div class="box-actions">
+            <button type="button" class="side-btn" id="loadLeft">왼쪽에 싣기<span class="risk-tag" id="riskLeft">안전</span></button>
+            <button type="button" class="side-btn" id="loadRight">오른쪽에 싣기<span class="risk-tag" id="riskRight">안전</span></button>
+          </div>
+          <button type="button" class="ship-btn" id="shipBtn">지금 배송<span id="shipPreview">+0점</span></button>
+          <p class="box-note" id="boxNote">표기 무게는 어림값입니다. 실측은 싣는 순간 정해집니다.</p>
+        </section>
+
+        <section class="trip-panel" id="tripPanel" hidden aria-labelledby="tripTitle">
+          <span class="trip-badge" id="tripBadge">배송 완료</span>
+          <h2 class="trip-title" id="tripTitle">1회차 배송 완료</h2>
+          <div class="trip-score"><strong id="tripScore">0</strong><span>점</span><span class="bonus-pop" id="bonusPop">+0</span></div>
+          <dl class="trip-grid">
+            <div><dt>상자 점수</dt><dd id="tripSum">0</dd></div>
+            <div><dt>균형 배율</dt><dd id="tripBal">×1.0</dd></div>
+            <div><dt>연속 배율</dt><dd id="tripStreak">×1.0</dd></div>
+          </dl>
+          <p class="trip-note" id="tripNote"></p>
+          <button type="button" class="load-primary" id="nextTripBtn">다음 회차</button>
+        </section>
+
+        <section class="result" id="resultBox" hidden aria-labelledby="resultTitle">
+          <div class="result-head">
+            <span class="result-badge" id="resultBadge">완주</span>
+            <span class="result-burst" aria-hidden="true"><span style="--bx:20px;--by:-16px"></span><span style="--bx:14px;--by:14px"></span><span style="--bx:-18px;--by:-12px"></span><span style="--bx:-16px;--by:16px"></span><span style="--bx:26px;--by:2px"></span><span style="--bx:-26px;--by:4px"></span></span>
+          </div>
+          <h2 class="result-title" id="resultTitle">5회차 배송을 마쳤습니다</h2>
+          <div class="result-score">
+            <strong id="resultTotal">0</strong><span class="unit">점</span>
+            <span class="result-best" id="resultBest">최고 0점</span>
+          </div>
+          <div class="result-stars" id="resultStars" aria-label="별점"></div>
+          <dl class="result-grid">
+            <div><dt>배송 성공</dt><dd id="resultDeliveries">0/5</dd></div>
+            <div><dt>최고 연속</dt><dd id="resultStreak">0회</dd></div>
+            <div><dt>오늘 최고</dt><dd id="resultToday">0점</dd></div>
+          </dl>
+          <p class="result-hint" id="resultHint"></p>
+          <div class="result-actions">
+            <button type="button" class="load-primary" id="retryBtn">다시 하기</button>
+            <button type="button" class="load-ghost" id="practiceBtn">연습 모드</button>
+          </div>
+        </section>
+
+        <section class="practice" id="practiceWrap" hidden aria-label="연습 스테이지">
+          <div class="practice-head">
+            <h3>연습 스테이지</h3>
+            <span id="practiceNote">9판 · 자유 반복</span>
+          </div>
+          <div class="practice-list" id="practiceList"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script type="application/json" id="loadData">{"built_at":"2026-11-21 20:13:10 KST","rules":{"limit":100,"tilt":28,"trips":5,"streakStep":0.1,"streakCap":5,"tiers":[{"min":0.9,"mult":1.5},{"min":0.78,"mult":1.25},{"min":0.62,"mult":1.0},{"min":0.0,"mult":0.75}]},"levels":{"daily":"오늘","beginner":"입문","mid":"중급","adv":"고급"},"daily":[{"id":"daily-01","title":"골목 배송","level":"daily","seed":7000011,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":751,"stars":[751,880,998],"optimal":1073,"tripBest":[170,210,202,238,254],"limit":100,"tilt":28,"batches":[[{"id":"daily-01-t1-b1","name":"캠핑 의자","kg":11,"lo":8,"hi":14,"score":20},{"id":"daily-01-t1-b2","name":"신발 상자","kg":18,"lo":15,"hi":20,"score":20},{"id":"daily-01-t1-b3","name":"악기 케이스","kg":23,"lo":22,"hi":24,"score":30},{"id":"daily-01-t1-b4","name":"신발 상자","kg":8,"lo":5,"hi":10,"score":25},{"id":"daily-01-t1-b5","name":"미니 냉장고","kg":23,"lo":21,"hi":24,"score":18},{"id":"daily-01-t1-b6","name":"악기 케이스","kg":19,"lo":17,"hi":20,"score":34},{"id":"daily-01-t1-b7","name":"주방용품","kg":11,"lo":8,"hi":14,"score":23}],[{"id":"daily-01-t2-b1","name":"화분","kg":13,"lo":12,"hi":16,"score":21},{"id":"daily-01-t2-b2","name":"이불 보따리","kg":11,"lo":9,"hi":13,"score":20},{"id":"daily-01-t2-b3","name":"문구 세트","kg":18,"lo":15,"hi":20,"score":22},{"id":"daily-01-t2-b4","name":"문구 세트","kg":8,"lo":5,"hi":9,"score":23},{"id":"daily-01-t2-b5","name":"쌀 포대","kg":24,"lo":22,"hi":25,"score":15},{"id":"daily-01-t2-b6","name":"책 박스","kg":19,"lo":16,"hi":22,"score":26},{"id":"daily-01-t2-b7","name":"신발 상자","kg":8,"lo":6,"hi":9,"score":28},{"id":"daily-01-t2-b8","name":"주방용품","kg":19,"lo":18,"hi":20,"score":19}],[{"id":"daily-01-t3-b1","name":"공구함","kg":22,"lo":20,"hi":24,"score":20},{"id":"daily-01-t3-b2","name":"과일 상자","kg":18,"lo":17,"hi":21,"score":22},{"id":"daily-01-t3-b3","name":"책 박스","kg":17,"lo":16,"hi":19,"score":25},{"id":"daily-01-t3-b4","name":"쌀 포대","kg":24,"lo":22,"hi":27,"score":17},{"id":"daily-01-t3-b5","name":"와인 상자","kg":18,"lo":15,"hi":21,"score":28},{"id":"daily-01-t3-b6","name":"캠핑 의자","kg":13,"lo":12,"hi":14,"score":21}],[{"id":"daily-01-t4-b1","name":"쌀 포대","kg":19,"lo":18,"hi":20,"score":24},{"id":"daily-01-t4-b2","name":"문구 세트","kg":9,"lo":7,"hi":12,"score":25},{"id":"daily-01-t4-b3","name":"와인 상자","kg":18,"lo":17,"hi":19,"score":28},{"id":"daily-01-t4-b4","name":"공구함","kg":23,"lo":22,"hi":25,"score":16},{"id":"daily-01-t4-b5","name":"유리병 상자","kg":20,"lo":17,"hi":21,"score":29},{"id":"daily-01-t4-b6","name":"화분","kg":17,"lo":14,"hi":19,"score":28},{"id":"daily-01-t4-b7","name":"캠핑 의자","kg":8,"lo":5,"hi":11,"score":28}],[{"id":"daily-01-t5-b1","name":"주방용품","kg":19,"lo":18,"hi":20,"score":17},{"id":"daily-01-t5-b2","name":"라면 박스","kg":15,"lo":12,"hi":17,"score":19},{"id":"daily-01-t5-b3","name":"문구 세트","kg":8,"lo":5,"hi":10,"score":34},{"id":"daily-01-t5-b4","name":"택배 소포","kg":10,"lo":7,"hi":12,"score":19},{"id":"daily-01-t5-b5","name":"전자레인지","kg":24,"lo":22,"hi":25,"score":18},{"id":"daily-01-t5-b6","name":"미니 냉장고","kg":24,"lo":23,"hi":26,"score":14},{"id":"daily-01-t5-b7","name":"이불 보따리","kg":13,"lo":12,"hi":14,"score":20}]]},{"id":"daily-02","title":"시장길 배송","level":"daily","seed":7007930,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":881,"stars":[881,1032,1171],"optimal":1259,"tripBest":[150,249,221,304,334],"limit":100,"tilt":28,"batches":[[{"id":"daily-02-t1-b1","name":"전공서적","kg":18,"lo":14,"hi":20,"score":36},{"id":"daily-02-t1-b2","name":"캠핑 의자","kg":12,"lo":9,"hi":14,"score":26},{"id":"daily-02-t1-b3","name":"전자레인지","kg":24,"lo":21,"hi":28,"score":16},{"id":"daily-02-t1-b4","name":"생수 팩","kg":20,"lo":18,"hi":21,"score":22},{"id":"daily-02-t1-b5","name":"공구함","kg":19,"lo":18,"hi":22,"score":18},{"id":"daily-02-t1-b6","name":"신발 상자","kg":8,"lo":7,"hi":12,"score":17},{"id":"daily-02-t1-b7","name":"책 박스","kg":21,"lo":20,"hi":23,"score":22}],[{"id":"daily-02-t2-b1","name":"이불 보따리","kg":18,"lo":17,"hi":21,"score":21},{"id":"daily-02-t2-b2","name":"신발 상자","kg":18,"lo":14,"hi":22,"score":20},{"id":"daily-02-t2-b3","name":"전공서적","kg":14,"lo":12,"hi":16,"score":39},{"id":"daily-02-t2-b4","name":"화분","kg":13,"lo":10,"hi":15,"score":29},{"id":"daily-02-t2-b5","name":"이불 보따리","kg":11,"lo":7,"hi":12,"score":24},{"id":"daily-02-t2-b6","name":"전자레인지","kg":24,"lo":22,"hi":26,"score":18},{"id":"daily-02-t2-b7","name":"미니 냉장고","kg":22,"lo":21,"hi":25,"score":11}],[{"id":"daily-02-t3-b1","name":"악기 케이스","kg":23,"lo":20,"hi":26,"score":30},{"id":"daily-02-t3-b2","name":"문구 세트","kg":8,"lo":5,"hi":12,"score":25},{"id":"daily-02-t3-b3","name":"전공서적","kg":21,"lo":18,"hi":25,"score":25},{"id":"daily-02-t3-b4","name":"공구함","kg":23,"lo":19,"hi":26,"score":20},{"id":"daily-02-t3-b5","name":"책 박스","kg":19,"lo":17,"hi":23,"score":23},{"id":"daily-02-t3-b6","name":"라면 박스","kg":14,"lo":10,"hi":15,"score":18}],[{"id":"daily-02-t4-b1","name":"화분","kg":16,"lo":15,"hi":18,"score":27},{"id":"daily-02-t4-b2","name":"과일 상자","kg":14,"lo":10,"hi":18,"score":21},{"id":"daily-02-t4-b3","name":"공구함","kg":16,"lo":12,"hi":18,"score":31},{"id":"daily-02-t4-b4","name":"전공서적","kg":19,"lo":15,"hi":22,"score":26},{"id":"daily-02-t4-b5","name":"서류 상자","kg":18,"lo":14,"hi":19,"score":26},{"id":"daily-02-t4-b6","name":"캠핑 의자","kg":9,"lo":5,"hi":10,"score":25},{"id":"daily-02-t4-b7","name":"미니 냉장고","kg":24,"lo":20,"hi":27,"score":14}],[{"id":"daily-02-t5-b1","name":"전공서적","kg":22,"lo":19,"hi":26,"score":27},{"id":"daily-02-t5-b2","name":"와인 상자","kg":18,"lo":14,"hi":22,"score":28},{"id":"daily-02-t5-b3","name":"라면 박스","kg":14,"lo":10,"hi":16,"score":21},{"id":"daily-02-t5-b4","name":"책 박스","kg":18,"lo":17,"hi":21,"score":24},{"id":"daily-02-t5-b5","name":"와인 상자","kg":17,"lo":16,"hi":18,"score":32},{"id":"daily-02-t5-b6","name":"과일 상자","kg":8,"lo":6,"hi":11,"score":27},{"id":"daily-02-t5-b7","name":"캠핑 의자","kg":12,"lo":10,"hi":15,"score":21}]]},{"id":"daily-03","title":"이사 도움","level":"daily","seed":7015849,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":728,"stars":[728,853,967],"optimal":1040,"tripBest":[168,158,263,259,191],"limit":100,"tilt":28,"batches":[[{"id":"daily-03-t1-b1","name":"캠핑 의자","kg":9,"lo":8,"hi":12,"score":20},{"id":"daily-03-t1-b2","name":"공구함","kg":23,"lo":20,"hi":26,"score":20},{"id":"daily-03-t1-b3","name":"신발 상자","kg":8,"lo":6,"hi":9,"score":18},{"id":"daily-03-t1-b4","name":"생수 팩","kg":22,"lo":19,"hi":24,"score":15},{"id":"daily-03-t1-b5","name":"과일 상자","kg":15,"lo":12,"hi":18,"score":19},{"id":"daily-03-t1-b6","name":"책 박스","kg":19,"lo":16,"hi":22,"score":20},{"id":"daily-03-t1-b7","name":"쌀 포대","kg":20,"lo":19,"hi":22,"score":27}],[{"id":"daily-03-t2-b1","name":"쌀 포대","kg":24,"lo":23,"hi":26,"score":15},{"id":"daily-03-t2-b2","name":"이불 보따리","kg":14,"lo":12,"hi":17,"score":20},{"id":"daily-03-t2-b3","name":"쌀 포대","kg":22,"lo":20,"hi":24,"score":17},{"id":"daily-03-t2-b4","name":"와인 상자","kg":18,"lo":16,"hi":21,"score":27},{"id":"daily-03-t2-b5","name":"라면 박스","kg":13,"lo":10,"hi":16,"score":17},{"id":"daily-03-t2-b6","name":"전공서적","kg":20,"lo":19,"hi":23,"score":28}],[{"id":"daily-03-t3-b1","name":"악기 케이스","kg":23,"lo":21,"hi":25,"score":30},{"id":"daily-03-t3-b2","name":"캠핑 의자","kg":10,"lo":8,"hi":11,"score":25},{"id":"daily-03-t3-b3","name":"신발 상자","kg":8,"lo":7,"hi":10,"score":16},{"id":"daily-03-t3-b4","name":"공구함","kg":23,"lo":20,"hi":25,"score":20},{"id":"daily-03-t3-b5","name":"이불 보따리","kg":10,"lo":7,"hi":11,"score":24},{"id":"daily-03-t3-b6","name":"전공서적","kg":21,"lo":20,"hi":23,"score":31},{"id":"daily-03-t3-b7","name":"공구함","kg":20,"lo":19,"hi":23,"score":22},{"id":"daily-03-t3-b8","name":"서류 상자","kg":8,"lo":7,"hi":10,"score":38}],[{"id":"daily-03-t4-b1","name":"와인 상자","kg":18,"lo":15,"hi":19,"score":28},{"id":"daily-03-t4-b2","name":"화분","kg":15,"lo":14,"hi":18,"score":21},{"id":"daily-03-t4-b3","name":"택배 소포","kg":11,"lo":10,"hi":13,"score":22},{"id":"daily-03-t4-b4","name":"신발 상자","kg":18,"lo":17,"hi":21,"score":20},{"id":"daily-03-t4-b5","name":"캠핑 의자","kg":13,"lo":11,"hi":14,"score":26},{"id":"daily-03-t4-b6","name":"전자레인지","kg":24,"lo":22,"hi":26,"score":16},{"id":"daily-03-t4-b7","name":"신발 상자","kg":9,"lo":8,"hi":11,"score":24},{"id":"daily-03-t4-b8","name":"라면 박스","kg":12,"lo":9,"hi":15,"score":17}],[{"id":"daily-03-t5-b1","name":"전자레인지","kg":24,"lo":23,"hi":27,"score":13},{"id":"daily-03-t5-b2","name":"쌀 포대","kg":24,"lo":22,"hi":26,"score":19},{"id":"daily-03-t5-b3","name":"주방용품","kg":15,"lo":13,"hi":16,"score":25},{"id":"daily-03-t5-b4","name":"악기 케이스","kg":22,"lo":20,"hi":23,"score":34},{"id":"daily-03-t5-b5","name":"유리병 상자","kg":18,"lo":16,"hi":20,"score":28},{"id":"daily-03-t5-b6","name":"신발 상자","kg":8,"lo":5,"hi":10,"score":22}]]},{"id":"daily-04","title":"새벽 배송","level":"daily","seed":7023768,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":792,"stars":[792,928,1053],"optimal":1132,"tripBest":[236,162,225,228,281],"limit":100,"tilt":28,"batches":[[{"id":"daily-04-t1-b1","name":"미니 냉장고","kg":24,"lo":23,"hi":27,"score":11},{"id":"daily-04-t1-b2","name":"유리병 상자","kg":20,"lo":16,"hi":24,"score":29},{"id":"daily-04-t1-b3","name":"와인 상자","kg":11,"lo":9,"hi":15,"score":37},{"id":"daily-04-t1-b4","name":"유리병 상자","kg":20,"lo":18,"hi":22,"score":29},{"id":"daily-04-t1-b5","name":"택배 소포","kg":11,"lo":9,"hi":12,"score":23},{"id":"daily-04-t1-b6","name":"서류 상자","kg":11,"lo":7,"hi":14,"score":28},{"id":"daily-04-t1-b7","name":"악기 케이스","kg":19,"lo":16,"hi":23,"score":34}],[{"id":"daily-04-t2-b1","name":"유리병 상자","kg":17,"lo":14,"hi":19,"score":31},{"id":"daily-04-t2-b2","name":"책 박스","kg":17,"lo":13,"hi":18,"score":29},{"id":"daily-04-t2-b3","name":"미니 냉장고","kg":24,"lo":23,"hi":28,"score":15},{"id":"daily-04-t2-b4","name":"공구함","kg":20,"lo":18,"hi":24,"score":17},{"id":"daily-04-t2-b5","name":"과일 상자","kg":16,"lo":15,"hi":17,"score":26},{"id":"daily-04-t2-b6","name":"쌀 포대","kg":24,"lo":20,"hi":25,"score":15}],[{"id":"daily-04-t3-b1","name":"이불 보따리","kg":18,"lo":16,"hi":19,"score":21},{"id":"daily-04-t3-b2","name":"택배 소포","kg":8,"lo":7,"hi":9,"score":20},{"id":"daily-04-t3-b3","name":"주방용품","kg":19,"lo":16,"hi":23,"score":15},{"id":"daily-04-t3-b4","name":"유리병 상자","kg":20,"lo":18,"hi":22,"score":29},{"id":"daily-04-t3-b5","name":"신발 상자","kg":10,"lo":8,"hi":12,"score":20},{"id":"daily-04-t3-b6","name":"문구 세트","kg":9,"lo":6,"hi":11,"score":20},{"id":"daily-04-t3-b7","name":"생수 팩","kg":21,"lo":20,"hi":22,"score":18}],[{"id":"daily-04-t4-b1","name":"택배 소포","kg":9,"lo":8,"hi":12,"score":20},{"id":"daily-04-t4-b2","name":"와인 상자","kg":18,"lo":14,"hi":20,"score":28},{"id":"daily-04-t4-b3","name":"주방용품","kg":19,"lo":18,"hi":21,"score":19},{"id":"daily-04-t4-b4","name":"악기 케이스","kg":19,"lo":15,"hi":22,"score":29},{"id":"daily-04-t4-b5","name":"이불 보따리","kg":18,"lo":16,"hi":21,"score":21},{"id":"daily-04-t4-b6","name":"주방용품","kg":19,"lo":18,"hi":23,"score":20},{"id":"daily-04-t4-b7","name":"캠핑 의자","kg":9,"lo":8,"hi":11,"score":25},{"id":"daily-04-t4-b8","name":"서류 상자","kg":9,"lo":6,"hi":10,"score":22}],[{"id":"daily-04-t5-b1","name":"문구 세트","kg":18,"lo":17,"hi":21,"score":22},{"id":"daily-04-t5-b2","name":"서류 상자","kg":10,"lo":9,"hi":14,"score":23},{"id":"daily-04-t5-b3","name":"주방용품","kg":19,"lo":15,"hi":22,"score":20},{"id":"daily-04-t5-b4","name":"전자레인지","kg":24,"lo":20,"hi":28,"score":14},{"id":"daily-04-t5-b5","name":"신발 상자","kg":8,"lo":5,"hi":11,"score":21},{"id":"daily-04-t5-b6","name":"악기 케이스","kg":20,"lo":16,"hi":21,"score":34},{"id":"daily-04-t5-b7","name":"와인 상자","kg":16,"lo":14,"hi":17,"score":28}]]},{"id":"daily-05","title":"장보기 대행","level":"daily","seed":7031687,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":790,"stars":[790,926,1050],"optimal":1129,"tripBest":[238,229,211,177,273],"limit":100,"tilt":28,"batches":[[{"id":"daily-05-t1-b1","name":"악기 케이스","kg":23,"lo":22,"hi":25,"score":34},{"id":"daily-05-t1-b2","name":"와인 상자","kg":13,"lo":11,"hi":14,"score":36},{"id":"daily-05-t1-b3","name":"생수 팩","kg":24,"lo":20,"hi":28,"score":18},{"id":"daily-05-t1-b4","name":"이불 보따리","kg":10,"lo":7,"hi":14,"score":21},{"id":"daily-05-t1-b5","name":"서류 상자","kg":18,"lo":16,"hi":19,"score":26},{"id":"daily-05-t1-b6","name":"신발 상자","kg":9,"lo":8,"hi":11,"score":24},{"id":"daily-05-t1-b7","name":"책 박스","kg":19,"lo":16,"hi":23,"score":23}],[{"id":"daily-05-t2-b1","name":"라면 박스","kg":18,"lo":14,"hi":21,"score":17},{"id":"daily-05-t2-b2","name":"라면 박스","kg":18,"lo":17,"hi":21,"score":17},{"id":"daily-05-t2-b3","name":"공구함","kg":17,"lo":15,"hi":19,"score":32},{"id":"daily-05-t2-b4","name":"문구 세트","kg":9,"lo":6,"hi":12,"score":24},{"id":"daily-05-t2-b5","name":"악기 케이스","kg":23,"lo":21,"hi":26,"score":26},{"id":"daily-05-t2-b6","name":"신발 상자","kg":9,"lo":5,"hi":12,"score":23},{"id":"daily-05-t2-b7","name":"라면 박스","kg":13,"lo":12,"hi":17,"score":21}],[{"id":"daily-05-t3-b1","name":"신발 상자","kg":10,"lo":8,"hi":11,"score":22},{"id":"daily-05-t3-b2","name":"생수 팩","kg":24,"lo":21,"hi":26,"score":18},{"id":"daily-05-t3-b3","name":"쌀 포대","kg":19,"lo":18,"hi":21,"score":19},{"id":"daily-05-t3-b4","name":"유리병 상자","kg":20,"lo":16,"hi":22,"score":29},{"id":"daily-05-t3-b5","name":"유리병 상자","kg":20,"lo":16,"hi":21,"score":29},{"id":"daily-05-t3-b6","name":"라면 박스","kg":12,"lo":10,"hi":14,"score":13},{"id":"daily-05-t3-b7","name":"택배 소포","kg":9,"lo":6,"hi":10,"score":20}],[{"id":"daily-05-t4-b1","name":"생수 팩","kg":23,"lo":22,"hi":27,"score":18},{"id":"daily-05-t4-b2","name":"전자레인지","kg":23,"lo":22,"hi":25,"score":18},{"id":"daily-05-t4-b3","name":"택배 소포","kg":18,"lo":14,"hi":20,"score":19},{"id":"daily-05-t4-b4","name":"악기 케이스","kg":19,"lo":18,"hi":23,"score":33},{"id":"daily-05-t4-b5","name":"과일 상자","kg":15,"lo":11,"hi":17,"score":21},{"id":"daily-05-t4-b6","name":"전공서적","kg":22,"lo":18,"hi":24,"score":27}],[{"id":"daily-05-t5-b1","name":"택배 소포","kg":18,"lo":14,"hi":21,"score":19},{"id":"daily-05-t5-b2","name":"공구함","kg":21,"lo":20,"hi":25,"score":19},{"id":"daily-05-t5-b3","name":"신발 상자","kg":8,"lo":6,"hi":11,"score":17},{"id":"daily-05-t5-b4","name":"와인 상자","kg":15,"lo":13,"hi":17,"score":32},{"id":"daily-05-t5-b5","name":"쌀 포대","kg":24,"lo":23,"hi":28,"score":15},{"id":"daily-05-t5-b6","name":"서류 상자","kg":11,"lo":7,"hi":14,"score":28},{"id":"daily-05-t5-b7","name":"화분","kg":17,"lo":16,"hi":18,"score":28}]]},{"id":"daily-06","title":"택배 폭탄","level":"daily","seed":7039606,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":820,"stars":[820,961,1090],"optimal":1172,"tripBest":[148,276,202,300,246],"limit":100,"tilt":28,"batches":[[{"id":"daily-06-t1-b1","name":"전공서적","kg":19,"lo":18,"hi":21,"score":30},{"id":"daily-06-t1-b2","name":"라면 박스","kg":18,"lo":17,"hi":19,"score":17},{"id":"daily-06-t1-b3","name":"주방용품","kg":18,"lo":16,"hi":20,"score":21},{"id":"daily-06-t1-b4","name":"신발 상자","kg":10,"lo":8,"hi":13,"score":20},{"id":"daily-06-t1-b5","name":"미니 냉장고","kg":24,"lo":23,"hi":27,"score":11},{"id":"daily-06-t1-b6","name":"전자레인지","kg":24,"lo":22,"hi":27,"score":18}],[{"id":"daily-06-t2-b1","name":"서류 상자","kg":10,"lo":9,"hi":13,"score":26},{"id":"daily-06-t2-b2","name":"문구 세트","kg":8,"lo":5,"hi":9,"score":26},{"id":"daily-06-t2-b3","name":"신발 상자","kg":18,"lo":15,"hi":21,"score":20},{"id":"daily-06-t2-b4","name":"과일 상자","kg":18,"lo":16,"hi":21,"score":22},{"id":"daily-06-t2-b5","name":"캠핑 의자","kg":10,"lo":9,"hi":13,"score":25},{"id":"daily-06-t2-b6","name":"주방용품","kg":14,"lo":11,"hi":17,"score":30},{"id":"daily-06-t2-b7","name":"과일 상자","kg":16,"lo":13,"hi":18,"score":18},{"id":"daily-06-t2-b8","name":"과일 상자","kg":18,"lo":17,"hi":21,"score":22}],[{"id":"daily-06-t3-b1","name":"이불 보따리","kg":18,"lo":16,"hi":20,"score":21},{"id":"daily-06-t3-b2","name":"신발 상자","kg":10,"lo":7,"hi":13,"score":16},{"id":"daily-06-t3-b3","name":"캠핑 의자","kg":13,"lo":11,"hi":14,"score":24},{"id":"daily-06-t3-b4","name":"택배 소포","kg":9,"lo":8,"hi":10,"score":19},{"id":"daily-06-t3-b5","name":"이불 보따리","kg":14,"lo":11,"hi":17,"score":18},{"id":"daily-06-t3-b6","name":"미니 냉장고","kg":24,"lo":23,"hi":25,"score":14},{"id":"daily-06-t3-b7","name":"생수 팩","kg":23,"lo":22,"hi":24,"score":19}],[{"id":"daily-06-t4-b1","name":"와인 상자","kg":14,"lo":13,"hi":16,"score":31},{"id":"daily-06-t4-b2","name":"문구 세트","kg":8,"lo":6,"hi":11,"score":29},{"id":"daily-06-t4-b3","name":"전자레인지","kg":24,"lo":22,"hi":26,"score":12},{"id":"daily-06-t4-b4","name":"와인 상자","kg":18,"lo":17,"hi":19,"score":28},{"id":"daily-06-t4-b5","name":"유리병 상자","kg":15,"lo":13,"hi":17,"score":41},{"id":"daily-06-t4-b6","name":"라면 박스","kg":13,"lo":10,"hi":16,"score":13},{"id":"daily-06-t4-b7","name":"신발 상자","kg":18,"lo":16,"hi":21,"score":20}],[{"id":"daily-06-t5-b1","name":"쌀 포대","kg":24,"lo":22,"hi":25,"score":18},{"id":"daily-06-t5-b2","name":"캠핑 의자","kg":18,"lo":15,"hi":20,"score":23},{"id":"daily-06-t5-b3","name":"라면 박스","kg":11,"lo":10,"hi":12,"score":16},{"id":"daily-06-t5-b4","name":"신발 상자","kg":8,"lo":6,"hi":9,"score":22},{"id":"daily-06-t5-b5","name":"생수 팩","kg":24,"lo":21,"hi":25,"score":18},{"id":"daily-06-t5-b6","name":"문구 세트","kg":8,"lo":6,"hi":9,"score":20},{"id":"daily-06-t5-b7","name":"문구 세트","kg":18,"lo":15,"hi":21,"score":22},{"id":"daily-06-t5-b8","name":"과일 상자","kg":13,"lo":12,"hi":15,"score":23}]]},{"id":"daily-07","title":"마감 러시","level":"daily","seed":7047525,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":822,"stars":[822,963,1092],"optimal":1174,"tripBest":[230,215,247,289,195],"limit":100,"tilt":28,"batches":[[{"id":"daily-07-t1-b1","name":"악기 케이스","kg":19,"lo":18,"hi":20,"score":32},{"id":"daily-07-t1-b2","name":"문구 세트","kg":8,"lo":7,"hi":10,"score":27},{"id":"daily-07-t1-b3","name":"캠핑 의자","kg":13,"lo":11,"hi":14,"score":27},{"id":"daily-07-t1-b4","name":"이불 보따리","kg":18,"lo":15,"hi":21,"score":21},{"id":"daily-07-t1-b5","name":"서류 상자","kg":8,"lo":6,"hi":10,"score":31},{"id":"daily-07-t1-b6","name":"쌀 포대","kg":24,"lo":22,"hi":27,"score":15},{"id":"daily-07-t1-b7","name":"와인 상자","kg":14,"lo":11,"hi":15,"score":28},{"id":"daily-07-t1-b8","name":"택배 소포","kg":18,"lo":17,"hi":21,"score":19}],[{"id":"daily-07-t2-b1","name":"라면 박스","kg":15,"lo":13,"hi":17,"score":17},{"id":"daily-07-t2-b2","name":"화분","kg":15,"lo":12,"hi":18,"score":27},{"id":"daily-07-t2-b3","name":"신발 상자","kg":8,"lo":5,"hi":11,"score":18},{"id":"daily-07-t2-b4","name":"서류 상자","kg":18,"lo":16,"hi":19,"score":26},{"id":"daily-07-t2-b5","name":"이불 보따리","kg":18,"lo":17,"hi":19,"score":21},{"id":"daily-07-t2-b6","name":"이불 보따리","kg":13,"lo":11,"hi":14,"score":21},{"id":"daily-07-t2-b7","name":"미니 냉장고","kg":24,"lo":21,"hi":25,"score":14},{"id":"daily-07-t2-b8","name":"전자레인지","kg":17,"lo":15,"hi":18,"score":23}],[{"id":"daily-07-t3-b1","name":"주방용품","kg":15,"lo":13,"hi":17,"score":22},{"id":"daily-07-t3-b2","name":"쌀 포대","kg":22,"lo":21,"hi":24,"score":19},{"id":"daily-07-t3-b3","name":"책 박스","kg":14,"lo":13,"hi":17,"score":34},{"id":"daily-07-t3-b4","name":"유리병 상자","kg":18,"lo":15,"hi":21,"score":31},{"id":"daily-07-t3-b5","name":"악기 케이스","kg":19,"lo":18,"hi":22,"score":31},{"id":"daily-07-t3-b6","name":"전공서적","kg":20,"lo":18,"hi":23,"score":26}],[{"id":"daily-07-t4-b1","name":"서류 상자","kg":8,"lo":6,"hi":9,"score":34},{"id":"daily-07-t4-b2","name":"과일 상자","kg":12,"lo":10,"hi":13,"score":19},{"id":"daily-07-t4-b3","name":"와인 상자","kg":15,"lo":13,"hi":17,"score":27},{"id":"daily-07-t4-b4","name":"공구함","kg":23,"lo":22,"hi":26,"score":20},{"id":"daily-07-t4-b5","name":"전공서적","kg":20,"lo":19,"hi":23,"score":26},{"id":"daily-07-t4-b6","name":"과일 상자","kg":18,"lo":15,"hi":20,"score":22},{"id":"daily-07-t4-b7","name":"주방용품","kg":19,"lo":17,"hi":20,"score":19}],[{"id":"daily-07-t5-b1","name":"주방용품","kg":17,"lo":14,"hi":20,"score":18},{"id":"daily-07-t5-b2","name":"미니 냉장고","kg":24,"lo":21,"hi":25,"score":16},{"id":"daily-07-t5-b3","name":"라면 박스","kg":15,"lo":14,"hi":18,"score":16},{"id":"daily-07-t5-b4","name":"전공서적","kg":20,"lo":17,"hi":23,"score":23},{"id":"daily-07-t5-b5","name":"캠핑 의자","kg":10,"lo":8,"hi":12,"score":20},{"id":"daily-07-t5-b6","name":"유리병 상자","kg":20,"lo":19,"hi":23,"score":29}]]},{"id":"daily-08","title":"동네 순회","level":"daily","seed":7055444,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":776,"stars":[776,909,1031],"optimal":1109,"tripBest":[174,191,270,255,218],"limit":100,"tilt":28,"batches":[[{"id":"daily-08-t1-b1","name":"와인 상자","kg":15,"lo":14,"hi":16,"score":29},{"id":"daily-08-t1-b2","name":"생수 팩","kg":24,"lo":23,"hi":25,"score":18},{"id":"daily-08-t1-b3","name":"신발 상자","kg":18,"lo":15,"hi":21,"score":20},{"id":"daily-08-t1-b4","name":"악기 케이스","kg":21,"lo":20,"hi":23,"score":27},{"id":"daily-08-t1-b5","name":"책 박스","kg":21,"lo":20,"hi":22,"score":22},{"id":"daily-08-t1-b6","name":"캠핑 의자","kg":9,"lo":8,"hi":10,"score":26}],[{"id":"daily-08-t2-b1","name":"전자레인지","kg":22,"lo":19,"hi":25,"score":12},{"id":"daily-08-t2-b2","name":"주방용품","kg":11,"lo":9,"hi":15,"score":28},{"id":"daily-08-t2-b3","name":"미니 냉장고","kg":24,"lo":21,"hi":25,"score":18},{"id":"daily-08-t2-b4","name":"전공서적","kg":22,"lo":18,"hi":24,"score":30},{"id":"daily-08-t2-b5","name":"유리병 상자","kg":17,"lo":13,"hi":21,"score":28},{"id":"daily-08-t2-b6","name":"와인 상자","kg":15,"lo":11,"hi":16,"score":26}],[{"id":"daily-08-t3-b1","name":"신발 상자","kg":8,"lo":5,"hi":11,"score":23},{"id":"daily-08-t3-b2","name":"라면 박스","kg":9,"lo":8,"hi":13,"score":26},{"id":"daily-08-t3-b3","name":"생수 팩","kg":24,"lo":22,"hi":25,"score":18},{"id":"daily-08-t3-b4","name":"생수 팩","kg":20,"lo":19,"hi":23,"score":26},{"id":"daily-08-t3-b5","name":"택배 소포","kg":8,"lo":4,"hi":12,"score":26},{"id":"daily-08-t3-b6","name":"전공서적","kg":16,"lo":12,"hi":17,"score":31},{"id":"daily-08-t3-b7","name":"공구함","kg":23,"lo":20,"hi":27,"score":17}],[{"id":"daily-08-t4-b1","name":"택배 소포","kg":11,"lo":8,"hi":15,"score":15},{"id":"daily-08-t4-b2","name":"문구 세트","kg":8,"lo":7,"hi":9,"score":26},{"id":"daily-08-t4-b3","name":"책 박스","kg":21,"lo":19,"hi":22,"score":24},{"id":"daily-08-t4-b4","name":"전공서적","kg":21,"lo":18,"hi":22,"score":31},{"id":"daily-08-t4-b5","name":"신발 상자","kg":8,"lo":6,"hi":9,"score":21},{"id":"daily-08-t4-b6","name":"미니 냉장고","kg":24,"lo":21,"hi":28,"score":14},{"id":"daily-08-t4-b7","name":"책 박스","kg":21,"lo":17,"hi":24,"score":24}],[{"id":"daily-08-t5-b1","name":"문구 세트","kg":8,"lo":5,"hi":9,"score":24},{"id":"daily-08-t5-b2","name":"주방용품","kg":17,"lo":15,"hi":18,"score":16},{"id":"daily-08-t5-b3","name":"과일 상자","kg":16,"lo":14,"hi":19,"score":22},{"id":"daily-08-t5-b4","name":"전자레인지","kg":24,"lo":22,"hi":28,"score":16},{"id":"daily-08-t5-b5","name":"서류 상자","kg":18,"lo":15,"hi":19,"score":26},{"id":"daily-08-t5-b6","name":"미니 냉장고","kg":24,"lo":20,"hi":27,"score":16}]]},{"id":"daily-09","title":"비 오는 날","level":"daily","seed":7063363,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":659,"stars":[659,772,876],"optimal":942,"tripBest":[136,155,180,164,307],"limit":100,"tilt":28,"batches":[[{"id":"daily-09-t1-b1","name":"캠핑 의자","kg":10,"lo":7,"hi":13,"score":21},{"id":"daily-09-t1-b2","name":"공구함","kg":19,"lo":18,"hi":20,"score":20},{"id":"daily-09-t1-b3","name":"생수 팩","kg":24,"lo":21,"hi":26,"score":18},{"id":"daily-09-t1-b4","name":"악기 케이스","kg":21,"lo":19,"hi":25,"score":29},{"id":"daily-09-t1-b5","name":"이불 보따리","kg":18,"lo":16,"hi":19,"score":21},{"id":"daily-09-t1-b6","name":"유리병 상자","kg":19,"lo":16,"hi":21,"score":27},{"id":"daily-09-t1-b7","name":"과일 상자","kg":12,"lo":9,"hi":16,"score":18}],[{"id":"daily-09-t2-b1","name":"생수 팩","kg":24,"lo":21,"hi":27,"score":18},{"id":"daily-09-t2-b2","name":"생수 팩","kg":22,"lo":21,"hi":24,"score":21},{"id":"daily-09-t2-b3","name":"미니 냉장고","kg":23,"lo":19,"hi":26,"score":15},{"id":"daily-09-t2-b4","name":"전자레인지","kg":23,"lo":20,"hi":24,"score":19},{"id":"daily-09-t2-b5","name":"라면 박스","kg":8,"lo":5,"hi":9,"score":21},{"id":"daily-09-t2-b6","name":"택배 소포","kg":8,"lo":6,"hi":12,"score":20}],[{"id":"daily-09-t3-b1","name":"미니 냉장고","kg":22,"lo":19,"hi":26,"score":12},{"id":"daily-09-t3-b2","name":"과일 상자","kg":13,"lo":10,"hi":16,"score":26},{"id":"daily-09-t3-b3","name":"이불 보따리","kg":18,"lo":17,"hi":22,"score":21},{"id":"daily-09-t3-b4","name":"생수 팩","kg":22,"lo":19,"hi":23,"score":14},{"id":"daily-09-t3-b5","name":"캠핑 의자","kg":12,"lo":8,"hi":16,"score":27},{"id":"daily-09-t3-b6","name":"유리병 상자","kg":18,"lo":17,"hi":21,"score":26}],[{"id":"daily-09-t4-b1","name":"책 박스","kg":21,"lo":19,"hi":24,"score":23},{"id":"daily-09-t4-b2","name":"미니 냉장고","kg":20,"lo":18,"hi":23,"score":23},{"id":"daily-09-t4-b3","name":"생수 팩","kg":20,"lo":19,"hi":22,"score":18},{"id":"daily-09-t4-b4","name":"과일 상자","kg":13,"lo":11,"hi":15,"score":19},{"id":"daily-09-t4-b5","name":"생수 팩","kg":24,"lo":22,"hi":27,"score":18},{"id":"daily-09-t4-b6","name":"라면 박스","kg":18,"lo":15,"hi":19,"score":17}],[{"id":"daily-09-t5-b1","name":"유리병 상자","kg":18,"lo":14,"hi":21,"score":32},{"id":"daily-09-t5-b2","name":"생수 팩","kg":24,"lo":22,"hi":27,"score":18},{"id":"daily-09-t5-b3","name":"캠핑 의자","kg":9,"lo":6,"hi":11,"score":20},{"id":"daily-09-t5-b4","name":"서류 상자","kg":8,"lo":4,"hi":9,"score":30},{"id":"daily-09-t5-b5","name":"공구함","kg":23,"lo":22,"hi":26,"score":20},{"id":"daily-09-t5-b6","name":"신발 상자","kg":8,"lo":4,"hi":12,"score":26},{"id":"daily-09-t5-b7","name":"화분","kg":17,"lo":14,"hi":18,"score":24}]]},{"id":"daily-10","title":"한파 배송","level":"daily","seed":7071282,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":842,"stars":[842,986,1119],"optimal":1203,"tripBest":[174,238,184,300,307],"limit":100,"tilt":28,"batches":[[{"id":"daily-10-t1-b1","name":"문구 세트","kg":18,"lo":15,"hi":19,"score":22},{"id":"daily-10-t1-b2","name":"책 박스","kg":13,"lo":12,"hi":16,"score":30},{"id":"daily-10-t1-b3","name":"쌀 포대","kg":24,"lo":23,"hi":27,"score":15},{"id":"daily-10-t1-b4","name":"화분","kg":17,"lo":14,"hi":18,"score":22},{"id":"daily-10-t1-b5","name":"이불 보따리","kg":9,"lo":8,"hi":12,"score":27},{"id":"daily-10-t1-b6","name":"전자레인지","kg":24,"lo":22,"hi":25,"score":18}],[{"id":"daily-10-t2-b1","name":"이불 보따리","kg":10,"lo":7,"hi":11,"score":24},{"id":"daily-10-t2-b2","name":"전공서적","kg":22,"lo":20,"hi":24,"score":27},{"id":"daily-10-t2-b3","name":"택배 소포","kg":10,"lo":7,"hi":12,"score":20},{"id":"daily-10-t2-b4","name":"미니 냉장고","kg":24,"lo":22,"hi":26,"score":17},{"id":"daily-10-t2-b5","name":"화분","kg":10,"lo":7,"hi":11,"score":32},{"id":"daily-10-t2-b6","name":"과일 상자","kg":12,"lo":10,"hi":14,"score":24},{"id":"daily-10-t2-b7","name":"화분","kg":18,"lo":17,"hi":20,"score":25}],[{"id":"daily-10-t3-b1","name":"공구함","kg":20,"lo":18,"hi":22,"score":19},{"id":"daily-10-t3-b2","name":"주방용품","kg":19,"lo":18,"hi":20,"score":19},{"id":"daily-10-t3-b3","name":"생수 팩","kg":21,"lo":18,"hi":23,"score":17},{"id":"daily-10-t3-b4","name":"악기 케이스","kg":19,"lo":18,"hi":22,"score":38},{"id":"daily-10-t3-b5","name":"와인 상자","kg":17,"lo":16,"hi":18,"score":30},{"id":"daily-10-t3-b6","name":"서류 상자","kg":10,"lo":7,"hi":13,"score":27}],[{"id":"daily-10-t4-b1","name":"서류 상자","kg":8,"lo":6,"hi":10,"score":36},{"id":"daily-10-t4-b2","name":"캠핑 의자","kg":10,"lo":8,"hi":12,"score":21},{"id":"daily-10-t4-b3","name":"캠핑 의자","kg":18,"lo":15,"hi":19,"score":23},{"id":"daily-10-t4-b4","name":"책 박스","kg":19,"lo":18,"hi":22,"score":27},{"id":"daily-10-t4-b5","name":"와인 상자","kg":14,"lo":12,"hi":16,"score":31},{"id":"daily-10-t4-b6","name":"전자레인지","kg":24,"lo":23,"hi":25,"score":16},{"id":"daily-10-t4-b7","name":"택배 소포","kg":12,"lo":11,"hi":14,"score":20}],[{"id":"daily-10-t5-b1","name":"전공서적","kg":21,"lo":19,"hi":23,"score":25},{"id":"daily-10-t5-b2","name":"책 박스","kg":14,"lo":13,"hi":16,"score":30},{"id":"daily-10-t5-b3","name":"택배 소포","kg":11,"lo":10,"hi":14,"score":20},{"id":"daily-10-t5-b4","name":"유리병 상자","kg":20,"lo":17,"hi":21,"score":29},{"id":"daily-10-t5-b5","name":"라면 박스","kg":18,"lo":16,"hi":20,"score":17},{"id":"daily-10-t5-b6","name":"캠핑 의자","kg":11,"lo":10,"hi":12,"score":25},{"id":"daily-10-t5-b7","name":"택배 소포","kg":18,"lo":16,"hi":20,"score":19}]]},{"id":"daily-11","title":"연휴 전 배송","level":"daily","seed":7079201,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":827,"stars":[827,968,1098],"optimal":1181,"tripBest":[222,205,207,257,290],"limit":100,"tilt":28,"batches":[[{"id":"daily-11-t1-b1","name":"이불 보따리","kg":13,"lo":12,"hi":15,"score":18},{"id":"daily-11-t1-b2","name":"책 박스","kg":16,"lo":15,"hi":17,"score":34},{"id":"daily-11-t1-b3","name":"라면 박스","kg":15,"lo":14,"hi":17,"score":19},{"id":"daily-11-t1-b4","name":"악기 케이스","kg":17,"lo":15,"hi":19,"score":37},{"id":"daily-11-t1-b5","name":"이불 보따리","kg":18,"lo":17,"hi":20,"score":21},{"id":"daily-11-t1-b6","name":"주방용품","kg":19,"lo":18,"hi":21,"score":19},{"id":"daily-11-t1-b7","name":"쌀 포대","kg":23,"lo":22,"hi":25,"score":16}],[{"id":"daily-11-t2-b1","name":"문구 세트","kg":8,"lo":7,"hi":9,"score":25},{"id":"daily-11-t2-b2","name":"공구함","kg":19,"lo":17,"hi":22,"score":19},{"id":"daily-11-t2-b3","name":"과일 상자","kg":18,"lo":17,"hi":21,"score":22},{"id":"daily-11-t2-b4","name":"신발 상자","kg":10,"lo":8,"hi":13,"score":21},{"id":"daily-11-t2-b5","name":"이불 보따리","kg":18,"lo":15,"hi":19,"score":21},{"id":"daily-11-t2-b6","name":"전자레인지","kg":21,"lo":19,"hi":24,"score":16},{"id":"daily-11-t2-b7","name":"주방용품","kg":18,"lo":15,"hi":19,"score":22}],[{"id":"daily-11-t3-b1","name":"주방용품","kg":12,"lo":9,"hi":13,"score":24},{"id":"daily-11-t3-b2","name":"공구함","kg":19,"lo":18,"hi":20,"score":27},{"id":"daily-11-t3-b3","name":"유리병 상자","kg":20,"lo":17,"hi":22,"score":29},{"id":"daily-11-t3-b4","name":"생수 팩","kg":24,"lo":21,"hi":27,"score":18},{"id":"daily-11-t3-b5","name":"이불 보따리","kg":11,"lo":8,"hi":12,"score":17},{"id":"daily-11-t3-b6","name":"전자레인지","kg":24,"lo":22,"hi":27,"score":19}],[{"id":"daily-11-t4-b1","name":"미니 냉장고","kg":24,"lo":22,"hi":26,"score":14},{"id":"daily-11-t4-b2","name":"주방용품","kg":18,"lo":15,"hi":19,"score":19},{"id":"daily-11-t4-b3","name":"전공서적","kg":21,"lo":20,"hi":22,"score":24},{"id":"daily-11-t4-b4","name":"생수 팩","kg":20,"lo":19,"hi":21,"score":16},{"id":"daily-11-t4-b5","name":"신발 상자","kg":8,"lo":5,"hi":11,"score":29},{"id":"daily-11-t4-b6","name":"서류 상자","kg":8,"lo":7,"hi":11,"score":30},{"id":"daily-11-t4-b7","name":"라면 박스","kg":18,"lo":15,"hi":19,"score":17}],[{"id":"daily-11-t5-b1","name":"미니 냉장고","kg":18,"lo":16,"hi":20,"score":19},{"id":"daily-11-t5-b2","name":"과일 상자","kg":15,"lo":14,"hi":16,"score":25},{"id":"daily-11-t5-b3","name":"악기 케이스","kg":23,"lo":22,"hi":24,"score":30},{"id":"daily-11-t5-b4","name":"캠핑 의자","kg":8,"lo":6,"hi":11,"score":27},{"id":"daily-11-t5-b5","name":"라면 박스","kg":18,"lo":16,"hi":21,"score":17},{"id":"daily-11-t5-b6","name":"이불 보따리","kg":12,"lo":9,"hi":13,"score":20},{"id":"daily-11-t5-b7","name":"생수 팩","kg":24,"lo":21,"hi":26,"score":15}]]},{"id":"daily-12","title":"월말 정산","level":"daily","seed":7087120,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":718,"stars":[718,841,954],"optimal":1026,"tripBest":[146,178,159,232,311],"limit":100,"tilt":28,"batches":[[{"id":"daily-12-t1-b1","name":"공구함","kg":23,"lo":20,"hi":25,"score":20},{"id":"daily-12-t1-b2","name":"쌀 포대","kg":24,"lo":22,"hi":28,"score":15},{"id":"daily-12-t1-b3","name":"주방용품","kg":19,"lo":16,"hi":20,"score":19},{"id":"daily-12-t1-b4","name":"신발 상자","kg":8,"lo":4,"hi":9,"score":21},{"id":"daily-12-t1-b5","name":"생수 팩","kg":22,"lo":18,"hi":23,"score":22},{"id":"daily-12-t1-b6","name":"전자레인지","kg":21,"lo":17,"hi":25,"score":19}],[{"id":"daily-12-t2-b1","name":"악기 케이스","kg":23,"lo":19,"hi":27,"score":30},{"id":"daily-12-t2-b2","name":"미니 냉장고","kg":24,"lo":21,"hi":28,"score":17},{"id":"daily-12-t2-b3","name":"문구 세트","kg":8,"lo":5,"hi":12,"score":25},{"id":"daily-12-t2-b4","name":"캠핑 의자","kg":10,"lo":7,"hi":12,"score":21},{"id":"daily-12-t2-b5","name":"쌀 포대","kg":24,"lo":21,"hi":28,"score":15},{"id":"daily-12-t2-b6","name":"미니 냉장고","kg":24,"lo":23,"hi":26,"score":14},{"id":"daily-12-t2-b7","name":"와인 상자","kg":15,"lo":14,"hi":16,"score":32}],[{"id":"daily-12-t3-b1","name":"이불 보따리","kg":14,"lo":12,"hi":17,"score":21},{"id":"daily-12-t3-b2","name":"생수 팩","kg":18,"lo":17,"hi":19,"score":26},{"id":"daily-12-t3-b3","name":"악기 케이스","kg":19,"lo":18,"hi":22,"score":27},{"id":"daily-12-t3-b4","name":"전자레인지","kg":22,"lo":20,"hi":25,"score":13},{"id":"daily-12-t3-b5","name":"쌀 포대","kg":24,"lo":22,"hi":28,"score":19},{"id":"daily-12-t3-b6","name":"주방용품","kg":19,"lo":15,"hi":20,"score":19}],[{"id":"daily-12-t4-b1","name":"문구 세트","kg":8,"lo":4,"hi":11,"score":19},{"id":"daily-12-t4-b2","name":"책 박스","kg":18,"lo":16,"hi":20,"score":21},{"id":"daily-12-t4-b3","name":"책 박스","kg":21,"lo":17,"hi":24,"score":24},{"id":"daily-12-t4-b4","name":"전공서적","kg":22,"lo":18,"hi":24,"score":27},{"id":"daily-12-t4-b5","name":"악기 케이스","kg":23,"lo":20,"hi":25,"score":28},{"id":"daily-12-t4-b6","name":"유리병 상자","kg":12,"lo":10,"hi":14,"score":37},{"id":"daily-12-t4-b7","name":"캠핑 의자","kg":18,"lo":15,"hi":20,"score":23}],[{"id":"daily-12-t5-b1","name":"이불 보따리","kg":18,"lo":15,"hi":19,"score":21},{"id":"daily-12-t5-b2","name":"생수 팩","kg":20,"lo":17,"hi":22,"score":27},{"id":"daily-12-t5-b3","name":"과일 상자","kg":11,"lo":8,"hi":13,"score":33},{"id":"daily-12-t5-b4","name":"와인 상자","kg":18,"lo":14,"hi":21,"score":30},{"id":"daily-12-t5-b5","name":"유리병 상자","kg":16,"lo":14,"hi":19,"score":37},{"id":"daily-12-t5-b6","name":"화분","kg":18,"lo":16,"hi":20,"score":25},{"id":"daily-12-t5-b7","name":"신발 상자","kg":8,"lo":7,"hi":12,"score":18},{"id":"daily-12-t5-b8","name":"화분","kg":13,"lo":11,"hi":14,"score":27}]]},{"id":"daily-13","title":"첫 배송","level":"daily","seed":7095039,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":725,"stars":[725,850,963],"optimal":1036,"tripBest":[204,183,236,174,239],"limit":100,"tilt":28,"batches":[[{"id":"daily-13-t1-b1","name":"캠핑 의자","kg":12,"lo":9,"hi":15,"score":27},{"id":"daily-13-t1-b2","name":"악기 케이스","kg":23,"lo":22,"hi":24,"score":30},{"id":"daily-13-t1-b3","name":"생수 팩","kg":22,"lo":19,"hi":26,"score":22},{"id":"daily-13-t1-b4","name":"주방용품","kg":15,"lo":13,"hi":18,"score":26},{"id":"daily-13-t1-b5","name":"와인 상자","kg":18,"lo":14,"hi":20,"score":31},{"id":"daily-13-t1-b6","name":"서류 상자","kg":18,"lo":16,"hi":22,"score":26},{"id":"daily-13-t1-b7","name":"이불 보따리","kg":14,"lo":13,"hi":17,"score":18}],[{"id":"daily-13-t2-b1","name":"주방용품","kg":12,"lo":10,"hi":13,"score":27},{"id":"daily-13-t2-b2","name":"생수 팩","kg":19,"lo":15,"hi":23,"score":25},{"id":"daily-13-t2-b3","name":"쌀 포대","kg":24,"lo":20,"hi":27,"score":19},{"id":"daily-13-t2-b4","name":"공구함","kg":22,"lo":20,"hi":23,"score":19},{"id":"daily-13-t2-b5","name":"신발 상자","kg":8,"lo":7,"hi":12,"score":21},{"id":"daily-13-t2-b6","name":"미니 냉장고","kg":22,"lo":18,"hi":24,"score":10}],[{"id":"daily-13-t3-b1","name":"신발 상자","kg":9,"lo":8,"hi":12,"score":18},{"id":"daily-13-t3-b2","name":"택배 소포","kg":8,"lo":5,"hi":10,"score":22},{"id":"daily-13-t3-b3","name":"와인 상자","kg":17,"lo":13,"hi":18,"score":31},{"id":"daily-13-t3-b4","name":"생수 팩","kg":24,"lo":21,"hi":26,"score":18},{"id":"daily-13-t3-b5","name":"쌀 포대","kg":20,"lo":16,"hi":21,"score":19},{"id":"daily-13-t3-b6","name":"전자레인지","kg":20,"lo":17,"hi":22,"score":23},{"id":"daily-13-t3-b7","name":"캠핑 의자","kg":13,"lo":12,"hi":16,"score":27}],[{"id":"daily-13-t4-b1","name":"전자레인지","kg":19,"lo":15,"hi":21,"score":20},{"id":"daily-13-t4-b2","name":"공구함","kg":23,"lo":21,"hi":26,"score":19},{"id":"daily-13-t4-b3","name":"악기 케이스","kg":19,"lo":16,"hi":23,"score":29},{"id":"daily-13-t4-b4","name":"이불 보따리","kg":18,"lo":16,"hi":19,"score":21},{"id":"daily-13-t4-b5","name":"전공서적","kg":22,"lo":21,"hi":23,"score":27},{"id":"daily-13-t4-b6","name":"캠핑 의자","kg":11,"lo":9,"hi":14,"score":23}],[{"id":"daily-13-t5-b1","name":"생수 팩","kg":24,"lo":23,"hi":28,"score":18},{"id":"daily-13-t5-b2","name":"주방용품","kg":16,"lo":13,"hi":17,"score":21},{"id":"daily-13-t5-b3","name":"생수 팩","kg":24,"lo":20,"hi":28,"score":18},{"id":"daily-13-t5-b4","name":"악기 케이스","kg":23,"lo":21,"hi":27,"score":32},{"id":"daily-13-t5-b5","name":"과일 상자","kg":13,"lo":9,"hi":14,"score":25},{"id":"daily-13-t5-b6","name":"전자레인지","kg":24,"lo":23,"hi":25,"score":18}]]},{"id":"daily-14","title":"늦은 귀가","level":"daily","seed":7102958,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":693,"stars":[693,812,921],"optimal":990,"tripBest":[189,238,157,190,216],"limit":100,"tilt":28,"batches":[[{"id":"daily-14-t1-b1","name":"과일 상자","kg":11,"lo":9,"hi":14,"score":28},{"id":"daily-14-t1-b2","name":"와인 상자","kg":15,"lo":12,"hi":16,"score":24},{"id":"daily-14-t1-b3","name":"공구함","kg":20,"lo":17,"hi":23,"score":19},{"id":"daily-14-t1-b4","name":"악기 케이스","kg":23,"lo":21,"hi":24,"score":30},{"id":"daily-14-t1-b5","name":"책 박스","kg":17,"lo":15,"hi":19,"score":25},{"id":"daily-14-t1-b6","name":"생수 팩","kg":21,"lo":18,"hi":24,"score":18}],[{"id":"daily-14-t2-b1","name":"유리병 상자","kg":20,"lo":19,"hi":21,"score":29},{"id":"daily-14-t2-b2","name":"주방용품","kg":17,"lo":14,"hi":18,"score":19},{"id":"daily-14-t2-b3","name":"택배 소포","kg":9,"lo":8,"hi":12,"score":19},{"id":"daily-14-t2-b4","name":"신발 상자","kg":8,"lo":7,"hi":11,"score":26},{"id":"daily-14-t2-b5","name":"미니 냉장고","kg":23,"lo":21,"hi":26,"score":15},{"id":"daily-14-t2-b6","name":"유리병 상자","kg":14,"lo":11,"hi":16,"score":36},{"id":"daily-14-t2-b7","name":"전자레인지","kg":24,"lo":22,"hi":25,"score":13}],[{"id":"daily-14-t3-b1","name":"전공서적","kg":20,"lo":18,"hi":21,"score":24},{"id":"daily-14-t3-b2","name":"서류 상자","kg":18,"lo":16,"hi":21,"score":26},{"id":"daily-14-t3-b3","name":"화분","kg":14,"lo":11,"hi":16,"score":23},{"id":"daily-14-t3-b4","name":"미니 냉장고","kg":22,"lo":20,"hi":25,"score":14},{"id":"daily-14-t3-b5","name":"쌀 포대","kg":24,"lo":21,"hi":26,"score":16},{"id":"daily-14-t3-b6","name":"유리병 상자","kg":12,"lo":11,"hi":15,"score":38}],[{"id":"daily-14-t4-b1","name":"쌀 포대","kg":24,"lo":22,"hi":26,"score":15},{"id":"daily-14-t4-b2","name":"쌀 포대","kg":24,"lo":23,"hi":26,"score":15},{"id":"daily-14-t4-b3","name":"캠핑 의자","kg":18,"lo":17,"hi":21,"score":23},{"id":"daily-14-t4-b4","name":"전공서적","kg":16,"lo":13,"hi":19,"score":38},{"id":"daily-14-t4-b5","name":"와인 상자","kg":14,"lo":11,"hi":16,"score":26},{"id":"daily-14-t4-b6","name":"과일 상자","kg":14,"lo":12,"hi":17,"score":20},{"id":"daily-14-t4-b7","name":"이불 보따리","kg":13,"lo":12,"hi":16,"score":24}],[{"id":"daily-14-t5-b1","name":"라면 박스","kg":18,"lo":16,"hi":20,"score":17},{"id":"daily-14-t5-b2","name":"주방용품","kg":18,"lo":15,"hi":20,"score":22},{"id":"daily-14-t5-b3","name":"문구 세트","kg":9,"lo":8,"hi":11,"score":26},{"id":"daily-14-t5-b4","name":"미니 냉장고","kg":24,"lo":23,"hi":26,"score":14},{"id":"daily-14-t5-b5","name":"이불 보따리","kg":13,"lo":12,"hi":15,"score":24},{"id":"daily-14-t5-b6","name":"주방용품","kg":19,"lo":16,"hi":20,"score":19},{"id":"daily-14-t5-b7","name":"전공서적","kg":22,"lo":20,"hi":24,"score":27}]]}],"practice":[{"id":"p-b1","title":"연습 · 빈 손수레","level":"beginner","seed":9100007,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":589,"stars":[589,712,836],"optimal":950,"tripBest":[160,152,193,193,252],"limit":100,"tilt":28,"batches":[[{"id":"p-b1-t1-b1","name":"와인 상자","kg":16,"lo":14,"hi":18,"score":30},{"id":"p-b1-t1-b2","name":"악기 케이스","kg":23,"lo":21,"hi":24,"score":30},{"id":"p-b1-t1-b3","name":"책 박스","kg":17,"lo":15,"hi":18,"score":25},{"id":"p-b1-t1-b4","name":"생수 팩","kg":21,"lo":20,"hi":22,"score":22},{"id":"p-b1-t1-b5","name":"미니 냉장고","kg":24,"lo":22,"hi":25,"score":15},{"id":"p-b1-t1-b6","name":"이불 보따리","kg":9,"lo":8,"hi":10,"score":25}],[{"id":"p-b1-t2-b1","name":"공구함","kg":20,"lo":18,"hi":21,"score":24},{"id":"p-b1-t2-b2","name":"전공서적","kg":18,"lo":16,"hi":20,"score":23},{"id":"p-b1-t2-b3","name":"서류 상자","kg":18,"lo":16,"hi":20,"score":26},{"id":"p-b1-t2-b4","name":"전자레인지","kg":24,"lo":23,"hi":25,"score":19},{"id":"p-b1-t2-b5","name":"책 박스","kg":21,"lo":19,"hi":23,"score":20},{"id":"p-b1-t2-b6","name":"택배 소포","kg":8,"lo":7,"hi":10,"score":28}],[{"id":"p-b1-t3-b1","name":"주방용품","kg":19,"lo":17,"hi":21,"score":19},{"id":"p-b1-t3-b2","name":"서류 상자","kg":10,"lo":8,"hi":11,"score":26},{"id":"p-b1-t3-b3","name":"문구 세트","kg":9,"lo":8,"hi":10,"score":26},{"id":"p-b1-t3-b4","name":"택배 소포","kg":18,"lo":16,"hi":20,"score":19},{"id":"p-b1-t3-b5","name":"전자레인지","kg":21,"lo":19,"hi":23,"score":17},{"id":"p-b1-t3-b6","name":"생수 팩","kg":24,"lo":23,"hi":26,"score":21},{"id":"p-b1-t3-b7","name":"신발 상자","kg":9,"lo":7,"hi":11,"score":24}],[{"id":"p-b1-t4-b1","name":"전자레인지","kg":23,"lo":21,"hi":24,"score":20},{"id":"p-b1-t4-b2","name":"전공서적","kg":20,"lo":18,"hi":22,"score":28},{"id":"p-b1-t4-b3","name":"라면 박스","kg":14,"lo":12,"hi":15,"score":13},{"id":"p-b1-t4-b4","name":"생수 팩","kg":24,"lo":22,"hi":25,"score":18},{"id":"p-b1-t4-b5","name":"이불 보따리","kg":11,"lo":9,"hi":12,"score":20},{"id":"p-b1-t4-b6","name":"캠핑 의자","kg":12,"lo":10,"hi":13,"score":27},{"id":"p-b1-t4-b7","name":"서류 상자","kg":10,"lo":8,"hi":11,"score":27}],[{"id":"p-b1-t5-b1","name":"서류 상자","kg":9,"lo":8,"hi":11,"score":22},{"id":"p-b1-t5-b2","name":"화분","kg":18,"lo":17,"hi":20,"score":25},{"id":"p-b1-t5-b3","name":"서류 상자","kg":18,"lo":16,"hi":19,"score":26},{"id":"p-b1-t5-b4","name":"주방용품","kg":15,"lo":13,"hi":17,"score":29},{"id":"p-b1-t5-b5","name":"생수 팩","kg":24,"lo":22,"hi":26,"score":18},{"id":"p-b1-t5-b6","name":"쌀 포대","kg":19,"lo":18,"hi":21,"score":26},{"id":"p-b1-t5-b7","name":"캠핑 의자","kg":10,"lo":9,"hi":12,"score":26},{"id":"p-b1-t5-b8","name":"과일 상자","kg":10,"lo":8,"hi":12,"score":32}]]},{"id":"p-b2","title":"연습 · 가벼운 짐","level":"beginner","seed":9106158,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":615,"stars":[615,744,873],"optimal":992,"tripBest":[141,198,216,213,225],"limit":100,"tilt":28,"batches":[[{"id":"p-b2-t1-b1","name":"책 박스","kg":17,"lo":16,"hi":18,"score":22},{"id":"p-b2-t1-b2","name":"쌀 포대","kg":24,"lo":22,"hi":25,"score":11},{"id":"p-b2-t1-b3","name":"화분","kg":17,"lo":16,"hi":19,"score":26},{"id":"p-b2-t1-b4","name":"전자레인지","kg":20,"lo":18,"hi":22,"score":22},{"id":"p-b2-t1-b5","name":"악기 케이스","kg":20,"lo":19,"hi":22,"score":32},{"id":"p-b2-t1-b6","name":"미니 냉장고","kg":24,"lo":22,"hi":25,"score":16}],[{"id":"p-b2-t2-b1","name":"문구 세트","kg":8,"lo":6,"hi":9,"score":18},{"id":"p-b2-t2-b2","name":"책 박스","kg":20,"lo":18,"hi":21,"score":25},{"id":"p-b2-t2-b3","name":"캠핑 의자","kg":10,"lo":8,"hi":11,"score":19},{"id":"p-b2-t2-b4","name":"전자레인지","kg":21,"lo":20,"hi":22,"score":13},{"id":"p-b2-t2-b5","name":"신발 상자","kg":8,"lo":6,"hi":10,"score":24},{"id":"p-b2-t2-b6","name":"이불 보따리","kg":18,"lo":17,"hi":20,"score":21},{"id":"p-b2-t2-b7","name":"주방용품","kg":19,"lo":18,"hi":21,"score":20},{"id":"p-b2-t2-b8","name":"전자레인지","kg":24,"lo":23,"hi":25,"score":16}],[{"id":"p-b2-t3-b1","name":"쌀 포대","kg":24,"lo":23,"hi":25,"score":15},{"id":"p-b2-t3-b2","name":"주방용품","kg":19,"lo":18,"hi":21,"score":19},{"id":"p-b2-t3-b3","name":"신발 상자","kg":8,"lo":6,"hi":9,"score":18},{"id":"p-b2-t3-b4","name":"전자레인지","kg":19,"lo":18,"hi":20,"score":25},{"id":"p-b2-t3-b5","name":"캠핑 의자","kg":9,"lo":7,"hi":11,"score":24},{"id":"p-b2-t3-b6","name":"택배 소포","kg":18,"lo":16,"hi":20,"score":19},{"id":"p-b2-t3-b7","name":"라면 박스","kg":15,"lo":14,"hi":17,"score":13}],[{"id":"p-b2-t4-b1","name":"책 박스","kg":21,"lo":20,"hi":22,"score":27},{"id":"p-b2-t4-b2","name":"전자레인지","kg":24,"lo":22,"hi":25,"score":18},{"id":"p-b2-t4-b3","name":"책 박스","kg":21,"lo":20,"hi":22,"score":24},{"id":"p-b2-t4-b4","name":"신발 상자","kg":9,"lo":8,"hi":11,"score":23},{"id":"p-b2-t4-b5","name":"라면 박스","kg":18,"lo":16,"hi":20,"score":17},{"id":"p-b2-t4-b6","name":"악기 케이스","kg":19,"lo":17,"hi":20,"score":32},{"id":"p-b2-t4-b7","name":"캠핑 의자","kg":12,"lo":11,"hi":14,"score":20}],[{"id":"p-b2-t5-b1","name":"라면 박스","kg":11,"lo":10,"hi":12,"score":13},{"id":"p-b2-t5-b2","name":"과일 상자","kg":16,"lo":14,"hi":18,"score":24},{"id":"p-b2-t5-b3","name":"생수 팩","kg":21,"lo":20,"hi":22,"score":19},{"id":"p-b2-t5-b4","name":"이불 보따리","kg":18,"lo":17,"hi":20,"score":21},{"id":"p-b2-t5-b5","name":"유리병 상자","kg":17,"lo":15,"hi":18,"score":30},{"id":"p-b2-t5-b6","name":"미니 냉장고","kg":22,"lo":20,"hi":23,"score":16}]]},{"id":"p-b3","title":"연습 · 두 상자","level":"beginner","seed":9112309,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":750,"stars":[750,907,1064],"optimal":1209,"tripBest":[156,251,268,294,239],"limit":100,"tilt":28,"batches":[[{"id":"p-b3-t1-b1","name":"신발 상자","kg":8,"lo":6,"hi":10,"score":26},{"id":"p-b3-t1-b2","name":"과일 상자","kg":12,"lo":10,"hi":13,"score":19},{"id":"p-b3-t1-b3","name":"와인 상자","kg":14,"lo":12,"hi":15,"score":28},{"id":"p-b3-t1-b4","name":"쌀 포대","kg":24,"lo":23,"hi":26,"score":15},{"id":"p-b3-t1-b5","name":"전자레인지","kg":24,"lo":23,"hi":25,"score":16},{"id":"p-b3-t1-b6","name":"공구함","kg":22,"lo":21,"hi":23,"score":22},{"id":"p-b3-t1-b7","name":"전공서적","kg":22,"lo":21,"hi":23,"score":23}],[{"id":"p-b3-t2-b1","name":"와인 상자","kg":15,"lo":13,"hi":17,"score":28},{"id":"p-b3-t2-b2","name":"화분","kg":10,"lo":9,"hi":11,"score":34},{"id":"p-b3-t2-b3","name":"공구함","kg":20,"lo":19,"hi":22,"score":16},{"id":"p-b3-t2-b4","name":"라면 박스","kg":11,"lo":9,"hi":13,"score":23},{"id":"p-b3-t2-b5","name":"주방용품","kg":14,"lo":13,"hi":16,"score":31},{"id":"p-b3-t2-b6","name":"공구함","kg":23,"lo":22,"hi":25,"score":20},{"id":"p-b3-t2-b7","name":"유리병 상자","kg":19,"lo":17,"hi":21,"score":27}],[{"id":"p-b3-t3-b1","name":"주방용품","kg":13,"lo":11,"hi":14,"score":28},{"id":"p-b3-t3-b2","name":"문구 세트","kg":8,"lo":7,"hi":10,"score":26},{"id":"p-b3-t3-b3","name":"화분","kg":14,"lo":13,"hi":16,"score":26},{"id":"p-b3-t3-b4","name":"책 박스","kg":21,"lo":20,"hi":22,"score":24},{"id":"p-b3-t3-b5","name":"책 박스","kg":19,"lo":17,"hi":20,"score":27},{"id":"p-b3-t3-b6","name":"생수 팩","kg":24,"lo":23,"hi":26,"score":18},{"id":"p-b3-t3-b7","name":"택배 소포","kg":18,"lo":17,"hi":19,"score":19},{"id":"p-b3-t3-b8","name":"택배 소포","kg":8,"lo":7,"hi":9,"score":23}],[{"id":"p-b3-t4-b1","name":"쌀 포대","kg":20,"lo":18,"hi":22,"score":24},{"id":"p-b3-t4-b2","name":"화분","kg":10,"lo":8,"hi":12,"score":30},{"id":"p-b3-t4-b3","name":"캠핑 의자","kg":18,"lo":16,"hi":20,"score":23},{"id":"p-b3-t4-b4","name":"택배 소포","kg":8,"lo":6,"hi":9,"score":26},{"id":"p-b3-t4-b5","name":"책 박스","kg":18,"lo":16,"hi":19,"score":27},{"id":"p-b3-t4-b6","name":"이불 보따리","kg":18,"lo":16,"hi":19,"score":21},{"id":"p-b3-t4-b7","name":"생수 팩","kg":20,"lo":18,"hi":21,"score":16}],[{"id":"p-b3-t5-b1","name":"책 박스","kg":21,"lo":20,"hi":22,"score":24},{"id":"p-b3-t5-b2","name":"쌀 포대","kg":18,"lo":17,"hi":20,"score":26},{"id":"p-b3-t5-b3","name":"택배 소포","kg":8,"lo":7,"hi":10,"score":24},{"id":"p-b3-t5-b4","name":"주방용품","kg":16,"lo":14,"hi":17,"score":21},{"id":"p-b3-t5-b5","name":"주방용품","kg":19,"lo":18,"hi":21,"score":19},{"id":"p-b3-t5-b6","name":"공구함","kg":23,"lo":21,"hi":25,"score":22},{"id":"p-b3-t5-b7","name":"문구 세트","kg":8,"lo":6,"hi":9,"score":32}]]},{"id":"p-m1","title":"연습 · 시장길","level":"mid","seed":9118460,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":744,"stars":[744,886,1006],"optimal":1094,"tripBest":[184,196,205,291,217],"limit":100,"tilt":28,"batches":[[{"id":"p-m1-t1-b1","name":"이불 보따리","kg":18,"lo":17,"hi":19,"score":21},{"id":"p-m1-t1-b2","name":"문구 세트","kg":9,"lo":7,"hi":12,"score":22},{"id":"p-m1-t1-b3","name":"미니 냉장고","kg":24,"lo":23,"hi":25,"score":10},{"id":"p-m1-t1-b4","name":"쌀 포대","kg":24,"lo":21,"hi":26,"score":15},{"id":"p-m1-t1-b5","name":"주방용품","kg":17,"lo":14,"hi":18,"score":21},{"id":"p-m1-t1-b6","name":"서류 상자","kg":8,"lo":5,"hi":9,"score":34},{"id":"p-m1-t1-b7","name":"과일 상자","kg":18,"lo":16,"hi":21,"score":22}],[{"id":"p-m1-t2-b1","name":"이불 보따리","kg":18,"lo":15,"hi":21,"score":21},{"id":"p-m1-t2-b2","name":"서류 상자","kg":10,"lo":9,"hi":12,"score":28},{"id":"p-m1-t2-b3","name":"신발 상자","kg":9,"lo":6,"hi":12,"score":19},{"id":"p-m1-t2-b4","name":"캠핑 의자","kg":9,"lo":8,"hi":11,"score":21},{"id":"p-m1-t2-b5","name":"전자레인지","kg":24,"lo":23,"hi":27,"score":15},{"id":"p-m1-t2-b6","name":"택배 소포","kg":11,"lo":10,"hi":12,"score":15},{"id":"p-m1-t2-b7","name":"공구함","kg":23,"lo":21,"hi":24,"score":20},{"id":"p-m1-t2-b8","name":"택배 소포","kg":18,"lo":17,"hi":19,"score":19}],[{"id":"p-m1-t3-b1","name":"과일 상자","kg":15,"lo":12,"hi":18,"score":19},{"id":"p-m1-t3-b2","name":"전자레인지","kg":20,"lo":17,"hi":23,"score":22},{"id":"p-m1-t3-b3","name":"와인 상자","kg":18,"lo":15,"hi":20,"score":28},{"id":"p-m1-t3-b4","name":"악기 케이스","kg":23,"lo":20,"hi":24,"score":30},{"id":"p-m1-t3-b5","name":"라면 박스","kg":11,"lo":9,"hi":12,"score":15},{"id":"p-m1-t3-b6","name":"생수 팩","kg":21,"lo":20,"hi":24,"score":17},{"id":"p-m1-t3-b7","name":"택배 소포","kg":11,"lo":10,"hi":12,"score":22}],[{"id":"p-m1-t4-b1","name":"과일 상자","kg":12,"lo":10,"hi":15,"score":26},{"id":"p-m1-t4-b2","name":"공구함","kg":23,"lo":20,"hi":26,"score":20},{"id":"p-m1-t4-b3","name":"문구 세트","kg":8,"lo":7,"hi":11,"score":26},{"id":"p-m1-t4-b4","name":"유리병 상자","kg":20,"lo":19,"hi":22,"score":29},{"id":"p-m1-t4-b5","name":"캠핑 의자","kg":9,"lo":6,"hi":10,"score":21},{"id":"p-m1-t4-b6","name":"와인 상자","kg":16,"lo":14,"hi":17,"score":27},{"id":"p-m1-t4-b7","name":"유리병 상자","kg":18,"lo":15,"hi":20,"score":30},{"id":"p-m1-t4-b8","name":"라면 박스","kg":11,"lo":10,"hi":12,"score":15}],[{"id":"p-m1-t5-b1","name":"문구 세트","kg":18,"lo":15,"hi":21,"score":22},{"id":"p-m1-t5-b2","name":"유리병 상자","kg":18,"lo":16,"hi":21,"score":28},{"id":"p-m1-t5-b3","name":"전공서적","kg":20,"lo":19,"hi":22,"score":30},{"id":"p-m1-t5-b4","name":"공구함","kg":19,"lo":16,"hi":20,"score":17},{"id":"p-m1-t5-b5","name":"전공서적","kg":22,"lo":21,"hi":23,"score":27},{"id":"p-m1-t5-b6","name":"서류 상자","kg":8,"lo":7,"hi":11,"score":30},{"id":"p-m1-t5-b7","name":"화분","kg":13,"lo":12,"hi":16,"score":27}]]},{"id":"p-m2","title":"연습 · 쌓아 올리기","level":"mid","seed":9124611,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":765,"stars":[765,911,1035],"optimal":1125,"tripBest":[195,193,205,291,241],"limit":100,"tilt":28,"batches":[[{"id":"p-m2-t1-b1","name":"문구 세트","kg":8,"lo":7,"hi":11,"score":22},{"id":"p-m2-t1-b2","name":"과일 상자","kg":16,"lo":13,"hi":19,"score":20},{"id":"p-m2-t1-b3","name":"생수 팩","kg":18,"lo":17,"hi":21,"score":23},{"id":"p-m2-t1-b4","name":"서류 상자","kg":18,"lo":16,"hi":21,"score":26},{"id":"p-m2-t1-b5","name":"전공서적","kg":19,"lo":16,"hi":20,"score":23},{"id":"p-m2-t1-b6","name":"주방용품","kg":17,"lo":15,"hi":18,"score":16},{"id":"p-m2-t1-b7","name":"서류 상자","kg":18,"lo":15,"hi":20,"score":26}],[{"id":"p-m2-t2-b1","name":"전자레인지","kg":19,"lo":16,"hi":22,"score":22},{"id":"p-m2-t2-b2","name":"화분","kg":9,"lo":6,"hi":10,"score":32},{"id":"p-m2-t2-b3","name":"미니 냉장고","kg":22,"lo":19,"hi":24,"score":15},{"id":"p-m2-t2-b4","name":"과일 상자","kg":14,"lo":11,"hi":17,"score":20},{"id":"p-m2-t2-b5","name":"와인 상자","kg":18,"lo":15,"hi":20,"score":28},{"id":"p-m2-t2-b6","name":"공구함","kg":20,"lo":17,"hi":21,"score":21},{"id":"p-m2-t2-b7","name":"유리병 상자","kg":12,"lo":9,"hi":15,"score":40}],[{"id":"p-m2-t3-b1","name":"서류 상자","kg":18,"lo":16,"hi":20,"score":26},{"id":"p-m2-t3-b2","name":"책 박스","kg":20,"lo":18,"hi":23,"score":23},{"id":"p-m2-t3-b3","name":"주방용품","kg":17,"lo":15,"hi":20,"score":16},{"id":"p-m2-t3-b4","name":"화분","kg":18,"lo":16,"hi":21,"score":25},{"id":"p-m2-t3-b5","name":"캠핑 의자","kg":10,"lo":8,"hi":11,"score":24},{"id":"p-m2-t3-b6","name":"유리병 상자","kg":19,"lo":16,"hi":22,"score":29},{"id":"p-m2-t3-b7","name":"신발 상자","kg":18,"lo":17,"hi":21,"score":20}],[{"id":"p-m2-t4-b1","name":"라면 박스","kg":10,"lo":9,"hi":11,"score":29},{"id":"p-m2-t4-b2","name":"미니 냉장고","kg":20,"lo":17,"hi":21,"score":26},{"id":"p-m2-t4-b3","name":"공구함","kg":15,"lo":13,"hi":17,"score":26},{"id":"p-m2-t4-b4","name":"과일 상자","kg":18,"lo":16,"hi":19,"score":22},{"id":"p-m2-t4-b5","name":"와인 상자","kg":15,"lo":13,"hi":17,"score":29},{"id":"p-m2-t4-b6","name":"라면 박스","kg":18,"lo":15,"hi":20,"score":17},{"id":"p-m2-t4-b7","name":"책 박스","kg":19,"lo":17,"hi":20,"score":23}],[{"id":"p-m2-t5-b1","name":"라면 박스","kg":14,"lo":11,"hi":15,"score":17},{"id":"p-m2-t5-b2","name":"쌀 포대","kg":24,"lo":23,"hi":25,"score":15},{"id":"p-m2-t5-b3","name":"서류 상자","kg":18,"lo":16,"hi":21,"score":26},{"id":"p-m2-t5-b4","name":"이불 보따리","kg":11,"lo":10,"hi":12,"score":20},{"id":"p-m2-t5-b5","name":"택배 소포","kg":8,"lo":7,"hi":9,"score":19},{"id":"p-m2-t5-b6","name":"쌀 포대","kg":22,"lo":20,"hi":24,"score":18},{"id":"p-m2-t5-b7","name":"책 박스","kg":20,"lo":18,"hi":23,"score":27},{"id":"p-m2-t5-b8","name":"신발 상자","kg":8,"lo":7,"hi":10,"score":16}]]},{"id":"p-m3","title":"연습 · 무거운 상자","level":"mid","seed":9130762,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":698,"stars":[698,832,945],"optimal":1027,"tripBest":[149,180,194,222,281],"limit":100,"tilt":28,"batches":[[{"id":"p-m3-t1-b1","name":"과일 상자","kg":18,"lo":15,"hi":21,"score":22},{"id":"p-m3-t1-b2","name":"미니 냉장고","kg":24,"lo":23,"hi":26,"score":14},{"id":"p-m3-t1-b3","name":"악기 케이스","kg":23,"lo":20,"hi":24,"score":30},{"id":"p-m3-t1-b4","name":"화분","kg":14,"lo":12,"hi":17,"score":24},{"id":"p-m3-t1-b5","name":"와인 상자","kg":17,"lo":16,"hi":19,"score":29},{"id":"p-m3-t1-b6","name":"이불 보따리","kg":11,"lo":10,"hi":12,"score":23},{"id":"p-m3-t1-b7","name":"주방용품","kg":18,"lo":16,"hi":21,"score":23}],[{"id":"p-m3-t2-b1","name":"책 박스","kg":21,"lo":18,"hi":23,"score":23},{"id":"p-m3-t2-b2","name":"화분","kg":15,"lo":13,"hi":17,"score":21},{"id":"p-m3-t2-b3","name":"미니 냉장고","kg":24,"lo":23,"hi":25,"score":15},{"id":"p-m3-t2-b4","name":"캠핑 의자","kg":18,"lo":15,"hi":20,"score":23},{"id":"p-m3-t2-b5","name":"택배 소포","kg":8,"lo":7,"hi":10,"score":27},{"id":"p-m3-t2-b6","name":"라면 박스","kg":18,"lo":17,"hi":19,"score":17},{"id":"p-m3-t2-b7","name":"주방용품","kg":16,"lo":15,"hi":18,"score":17}],[{"id":"p-m3-t3-b1","name":"전공서적","kg":18,"lo":15,"hi":19,"score":31},{"id":"p-m3-t3-b2","name":"택배 소포","kg":8,"lo":6,"hi":9,"score":24},{"id":"p-m3-t3-b3","name":"악기 케이스","kg":17,"lo":15,"hi":20,"score":35},{"id":"p-m3-t3-b4","name":"미니 냉장고","kg":22,"lo":19,"hi":24,"score":18},{"id":"p-m3-t3-b5","name":"쌀 포대","kg":24,"lo":22,"hi":27,"score":17},{"id":"p-m3-t3-b6","name":"라면 박스","kg":18,"lo":16,"hi":21,"score":17}],[{"id":"p-m3-t4-b1","name":"캠핑 의자","kg":8,"lo":5,"hi":10,"score":31},{"id":"p-m3-t4-b2","name":"책 박스","kg":21,"lo":19,"hi":24,"score":24},{"id":"p-m3-t4-b3","name":"주방용품","kg":18,"lo":16,"hi":19,"score":18},{"id":"p-m3-t4-b4","name":"쌀 포대","kg":22,"lo":21,"hi":24,"score":16},{"id":"p-m3-t4-b5","name":"생수 팩","kg":16,"lo":14,"hi":18,"score":25},{"id":"p-m3-t4-b6","name":"미니 냉장고","kg":24,"lo":23,"hi":27,"score":11},{"id":"p-m3-t4-b7","name":"문구 세트","kg":9,"lo":8,"hi":11,"score":18}],[{"id":"p-m3-t5-b1","name":"서류 상자","kg":10,"lo":9,"hi":12,"score":24},{"id":"p-m3-t5-b2","name":"전공서적","kg":18,"lo":15,"hi":20,"score":23},{"id":"p-m3-t5-b3","name":"과일 상자","kg":12,"lo":9,"hi":14,"score":23},{"id":"p-m3-t5-b4","name":"전자레인지","kg":24,"lo":23,"hi":27,"score":18},{"id":"p-m3-t5-b5","name":"와인 상자","kg":14,"lo":12,"hi":17,"score":25},{"id":"p-m3-t5-b6","name":"캠핑 의자","kg":13,"lo":10,"hi":14,"score":21},{"id":"p-m3-t5-b7","name":"쌀 포대","kg":24,"lo":23,"hi":26,"score":15}]]},{"id":"p-a1","title":"연습 · 마감 압박","level":"adv","seed":9136913,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":755,"stars":[755,881,997],"optimal":1049,"tripBest":[145,215,200,205,286],"limit":100,"tilt":28,"batches":[[{"id":"p-a1-t1-b1","name":"화분","kg":10,"lo":9,"hi":13,"score":31},{"id":"p-a1-t1-b2","name":"공구함","kg":23,"lo":22,"hi":25,"score":20},{"id":"p-a1-t1-b3","name":"라면 박스","kg":14,"lo":11,"hi":15,"score":17},{"id":"p-a1-t1-b4","name":"쌀 포대","kg":24,"lo":23,"hi":26,"score":15},{"id":"p-a1-t1-b5","name":"유리병 상자","kg":12,"lo":11,"hi":16,"score":33},{"id":"p-a1-t1-b6","name":"생수 팩","kg":23,"lo":20,"hi":25,"score":20}],[{"id":"p-a1-t2-b1","name":"악기 케이스","kg":22,"lo":21,"hi":26,"score":33},{"id":"p-a1-t2-b2","name":"유리병 상자","kg":17,"lo":14,"hi":20,"score":28},{"id":"p-a1-t2-b3","name":"생수 팩","kg":20,"lo":17,"hi":23,"score":19},{"id":"p-a1-t2-b4","name":"쌀 포대","kg":24,"lo":22,"hi":28,"score":15},{"id":"p-a1-t2-b5","name":"와인 상자","kg":13,"lo":11,"hi":15,"score":35},{"id":"p-a1-t2-b6","name":"신발 상자","kg":18,"lo":16,"hi":22,"score":20}],[{"id":"p-a1-t3-b1","name":"유리병 상자","kg":16,"lo":15,"hi":17,"score":33},{"id":"p-a1-t3-b2","name":"전공서적","kg":16,"lo":15,"hi":20,"score":34},{"id":"p-a1-t3-b3","name":"이불 보따리","kg":10,"lo":7,"hi":12,"score":27},{"id":"p-a1-t3-b4","name":"생수 팩","kg":21,"lo":19,"hi":23,"score":17},{"id":"p-a1-t3-b5","name":"공구함","kg":21,"lo":20,"hi":24,"score":22},{"id":"p-a1-t3-b6","name":"전자레인지","kg":24,"lo":21,"hi":26,"score":16},{"id":"p-a1-t3-b7","name":"캠핑 의자","kg":13,"lo":11,"hi":17,"score":25}],[{"id":"p-a1-t4-b1","name":"쌀 포대","kg":24,"lo":23,"hi":27,"score":19},{"id":"p-a1-t4-b2","name":"과일 상자","kg":13,"lo":11,"hi":14,"score":23},{"id":"p-a1-t4-b3","name":"택배 소포","kg":18,"lo":15,"hi":19,"score":19},{"id":"p-a1-t4-b4","name":"전공서적","kg":18,"lo":16,"hi":20,"score":25},{"id":"p-a1-t4-b5","name":"주방용품","kg":19,"lo":18,"hi":23,"score":19},{"id":"p-a1-t4-b6","name":"이불 보따리","kg":18,"lo":14,"hi":21,"score":21},{"id":"p-a1-t4-b7","name":"택배 소포","kg":8,"lo":6,"hi":9,"score":22}],[{"id":"p-a1-t5-b1","name":"책 박스","kg":21,"lo":18,"hi":24,"score":24},{"id":"p-a1-t5-b2","name":"전공서적","kg":22,"lo":18,"hi":25,"score":27},{"id":"p-a1-t5-b3","name":"쌀 포대","kg":20,"lo":18,"hi":21,"score":26},{"id":"p-a1-t5-b4","name":"와인 상자","kg":15,"lo":12,"hi":18,"score":29},{"id":"p-a1-t5-b5","name":"택배 소포","kg":8,"lo":7,"hi":11,"score":30},{"id":"p-a1-t5-b6","name":"주방용품","kg":15,"lo":13,"hi":19,"score":21},{"id":"p-a1-t5-b7","name":"문구 세트","kg":18,"lo":17,"hi":22,"score":22}]]},{"id":"p-a2","title":"연습 · 균형의 한계","level":"adv","seed":9143064,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":724,"stars":[724,845,956],"optimal":1006,"tripBest":[154,180,169,289,214],"limit":100,"tilt":28,"batches":[[{"id":"p-a2-t1-b1","name":"전공서적","kg":22,"lo":20,"hi":26,"score":31},{"id":"p-a2-t1-b2","name":"생수 팩","kg":20,"lo":19,"hi":23,"score":20},{"id":"p-a2-t1-b3","name":"전공서적","kg":22,"lo":21,"hi":23,"score":27},{"id":"p-a2-t1-b4","name":"화분","kg":15,"lo":14,"hi":17,"score":21},{"id":"p-a2-t1-b5","name":"책 박스","kg":21,"lo":20,"hi":22,"score":24},{"id":"p-a2-t1-b6","name":"이불 보따리","kg":10,"lo":6,"hi":13,"score":17}],[{"id":"p-a2-t2-b1","name":"미니 냉장고","kg":24,"lo":20,"hi":26,"score":14},{"id":"p-a2-t2-b2","name":"택배 소포","kg":8,"lo":7,"hi":10,"score":17},{"id":"p-a2-t2-b3","name":"문구 세트","kg":8,"lo":4,"hi":9,"score":22},{"id":"p-a2-t2-b4","name":"문구 세트","kg":18,"lo":15,"hi":19,"score":22},{"id":"p-a2-t2-b5","name":"쌀 포대","kg":24,"lo":22,"hi":26,"score":15},{"id":"p-a2-t2-b6","name":"과일 상자","kg":16,"lo":12,"hi":17,"score":19},{"id":"p-a2-t2-b7","name":"서류 상자","kg":8,"lo":5,"hi":9,"score":27},{"id":"p-a2-t2-b8","name":"라면 박스","kg":12,"lo":8,"hi":15,"score":13}],[{"id":"p-a2-t3-b1","name":"화분","kg":15,"lo":12,"hi":16,"score":28},{"id":"p-a2-t3-b2","name":"미니 냉장고","kg":23,"lo":21,"hi":24,"score":15},{"id":"p-a2-t3-b3","name":"신발 상자","kg":8,"lo":5,"hi":10,"score":17},{"id":"p-a2-t3-b4","name":"주방용품","kg":19,"lo":16,"hi":23,"score":19},{"id":"p-a2-t3-b5","name":"쌀 포대","kg":24,"lo":20,"hi":25,"score":15},{"id":"p-a2-t3-b6","name":"전공서적","kg":21,"lo":18,"hi":22,"score":31},{"id":"p-a2-t3-b7","name":"라면 박스","kg":11,"lo":7,"hi":13,"score":20}],[{"id":"p-a2-t4-b1","name":"유리병 상자","kg":20,"lo":19,"hi":24,"score":29},{"id":"p-a2-t4-b2","name":"이불 보따리","kg":11,"lo":9,"hi":12,"score":24},{"id":"p-a2-t4-b3","name":"문구 세트","kg":8,"lo":4,"hi":9,"score":26},{"id":"p-a2-t4-b4","name":"서류 상자","kg":9,"lo":7,"hi":10,"score":30},{"id":"p-a2-t4-b5","name":"책 박스","kg":21,"lo":20,"hi":25,"score":24},{"id":"p-a2-t4-b6","name":"택배 소포","kg":11,"lo":7,"hi":13,"score":15},{"id":"p-a2-t4-b7","name":"쌀 포대","kg":24,"lo":23,"hi":26,"score":15},{"id":"p-a2-t4-b8","name":"캠핑 의자","kg":12,"lo":8,"hi":16,"score":21}],[{"id":"p-a2-t5-b1","name":"택배 소포","kg":12,"lo":10,"hi":14,"score":16},{"id":"p-a2-t5-b2","name":"생수 팩","kg":24,"lo":21,"hi":27,"score":16},{"id":"p-a2-t5-b3","name":"책 박스","kg":17,"lo":16,"hi":18,"score":27},{"id":"p-a2-t5-b4","name":"전자레인지","kg":23,"lo":19,"hi":25,"score":16},{"id":"p-a2-t5-b5","name":"전공서적","kg":22,"lo":19,"hi":25,"score":27},{"id":"p-a2-t5-b6","name":"문구 세트","kg":8,"lo":6,"hi":12,"score":32}]]},{"id":"p-a3","title":"연습 · 마지막 회차","level":"adv","seed":9149215,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":765,"stars":[765,893,1010],"optimal":1063,"tripBest":[276,226,209,216,136],"limit":100,"tilt":28,"batches":[[{"id":"p-a3-t1-b1","name":"캠핑 의자","kg":9,"lo":8,"hi":13,"score":27},{"id":"p-a3-t1-b2","name":"라면 박스","kg":14,"lo":12,"hi":15,"score":20},{"id":"p-a3-t1-b3","name":"화분","kg":18,"lo":17,"hi":20,"score":25},{"id":"p-a3-t1-b4","name":"서류 상자","kg":10,"lo":9,"hi":11,"score":27},{"id":"p-a3-t1-b5","name":"유리병 상자","kg":20,"lo":18,"hi":23,"score":29},{"id":"p-a3-t1-b6","name":"악기 케이스","kg":19,"lo":18,"hi":22,"score":37},{"id":"p-a3-t1-b7","name":"이불 보따리","kg":10,"lo":7,"hi":11,"score":19},{"id":"p-a3-t1-b8","name":"공구함","kg":20,"lo":18,"hi":24,"score":17}],[{"id":"p-a3-t2-b1","name":"생수 팩","kg":21,"lo":20,"hi":25,"score":18},{"id":"p-a3-t2-b2","name":"문구 세트","kg":18,"lo":14,"hi":19,"score":22},{"id":"p-a3-t2-b3","name":"캠핑 의자","kg":18,"lo":14,"hi":20,"score":23},{"id":"p-a3-t2-b4","name":"유리병 상자","kg":17,"lo":15,"hi":19,"score":29},{"id":"p-a3-t2-b5","name":"택배 소포","kg":12,"lo":10,"hi":14,"score":20},{"id":"p-a3-t2-b6","name":"과일 상자","kg":13,"lo":11,"hi":16,"score":25},{"id":"p-a3-t2-b7","name":"택배 소포","kg":18,"lo":14,"hi":20,"score":19}],[{"id":"p-a3-t3-b1","name":"과일 상자","kg":16,"lo":15,"hi":20,"score":22},{"id":"p-a3-t3-b2","name":"택배 소포","kg":9,"lo":6,"hi":11,"score":15},{"id":"p-a3-t3-b3","name":"문구 세트","kg":8,"lo":4,"hi":9,"score":20},{"id":"p-a3-t3-b4","name":"생수 팩","kg":24,"lo":22,"hi":27,"score":18},{"id":"p-a3-t3-b5","name":"미니 냉장고","kg":24,"lo":22,"hi":28,"score":16},{"id":"p-a3-t3-b6","name":"화분","kg":18,"lo":17,"hi":20,"score":25},{"id":"p-a3-t3-b7","name":"주방용품","kg":12,"lo":8,"hi":16,"score":30}],[{"id":"p-a3-t4-b1","name":"화분","kg":15,"lo":14,"hi":16,"score":25},{"id":"p-a3-t4-b2","name":"유리병 상자","kg":20,"lo":18,"hi":21,"score":29},{"id":"p-a3-t4-b3","name":"화분","kg":18,"lo":14,"hi":19,"score":25},{"id":"p-a3-t4-b4","name":"책 박스","kg":18,"lo":16,"hi":19,"score":26},{"id":"p-a3-t4-b5","name":"전자레인지","kg":20,"lo":19,"hi":24,"score":28},{"id":"p-a3-t4-b6","name":"악기 케이스","kg":15,"lo":13,"hi":17,"score":34},{"id":"p-a3-t4-b7","name":"택배 소포","kg":18,"lo":14,"hi":20,"score":19}],[{"id":"p-a3-t5-b1","name":"공구함","kg":21,"lo":20,"hi":25,"score":24},{"id":"p-a3-t5-b2","name":"쌀 포대","kg":24,"lo":23,"hi":27,"score":15},{"id":"p-a3-t5-b3","name":"전자레인지","kg":24,"lo":20,"hi":28,"score":16},{"id":"p-a3-t5-b4","name":"미니 냉장고","kg":24,"lo":20,"hi":25,"score":10},{"id":"p-a3-t5-b5","name":"캠핑 의자","kg":13,"lo":11,"hi":14,"score":25},{"id":"p-a3-t5-b6","name":"과일 상자","kg":10,"lo":7,"hi":11,"score":32}]]}],"fallback":{"id":"fallback","title":"기본 배송","level":"daily","seed":20261121,"note":"표기 무게는 어림값입니다. 실측이 한도를 넘으면 그 회차는 0점입니다.","goal":781,"stars":[781,915,1038],"optimal":1116,"tripBest":[212,259,212,207,227],"limit":100,"tilt":28,"batches":[[{"id":"fallback-t1-b1","name":"생수 팩","kg":20,"lo":19,"hi":22,"score":17},{"id":"fallback-t1-b2","name":"와인 상자","kg":10,"lo":9,"hi":13,"score":37},{"id":"fallback-t1-b3","name":"전자레인지","kg":17,"lo":15,"hi":18,"score":22},{"id":"fallback-t1-b4","name":"전공서적","kg":22,"lo":21,"hi":23,"score":27},{"id":"fallback-t1-b5","name":"유리병 상자","kg":13,"lo":11,"hi":16,"score":38},{"id":"fallback-t1-b6","name":"쌀 포대","kg":23,"lo":21,"hi":26,"score":16}],[{"id":"fallback-t2-b1","name":"유리병 상자","kg":19,"lo":17,"hi":20,"score":26},{"id":"fallback-t2-b2","name":"쌀 포대","kg":20,"lo":17,"hi":23,"score":27},{"id":"fallback-t2-b3","name":"라면 박스","kg":12,"lo":10,"hi":14,"score":20},{"id":"fallback-t2-b4","name":"화분","kg":18,"lo":16,"hi":19,"score":25},{"id":"fallback-t2-b5","name":"와인 상자","kg":18,"lo":17,"hi":21,"score":28},{"id":"fallback-t2-b6","name":"신발 상자","kg":8,"lo":5,"hi":10,"score":31},{"id":"fallback-t2-b7","name":"전공서적","kg":22,"lo":19,"hi":23,"score":28}],[{"id":"fallback-t3-b1","name":"공구함","kg":22,"lo":19,"hi":24,"score":20},{"id":"fallback-t3-b2","name":"미니 냉장고","kg":22,"lo":19,"hi":25,"score":17},{"id":"fallback-t3-b3","name":"악기 케이스","kg":23,"lo":20,"hi":26,"score":33},{"id":"fallback-t3-b4","name":"신발 상자","kg":8,"lo":7,"hi":9,"score":16},{"id":"fallback-t3-b5","name":"책 박스","kg":15,"lo":13,"hi":17,"score":32},{"id":"fallback-t3-b6","name":"유리병 상자","kg":19,"lo":17,"hi":20,"score":26}],[{"id":"fallback-t4-b1","name":"전자레인지","kg":24,"lo":21,"hi":26,"score":16},{"id":"fallback-t4-b2","name":"화분","kg":15,"lo":12,"hi":16,"score":23},{"id":"fallback-t4-b3","name":"미니 냉장고","kg":24,"lo":21,"hi":25,"score":14},{"id":"fallback-t4-b4","name":"택배 소포","kg":12,"lo":10,"hi":14,"score":23},{"id":"fallback-t4-b5","name":"악기 케이스","kg":22,"lo":21,"hi":25,"score":30},{"id":"fallback-t4-b6","name":"과일 상자","kg":13,"lo":12,"hi":14,"score":24},{"id":"fallback-t4-b7","name":"문구 세트","kg":9,"lo":6,"hi":12,"score":19}],[{"id":"fallback-t5-b1","name":"전공서적","kg":22,"lo":19,"hi":24,"score":27},{"id":"fallback-t5-b2","name":"주방용품","kg":15,"lo":13,"hi":18,"score":17},{"id":"fallback-t5-b3","name":"책 박스","kg":21,"lo":19,"hi":23,"score":24},{"id":"fallback-t5-b4","name":"캠핑 의자","kg":13,"lo":12,"hi":16,"score":25},{"id":"fallback-t5-b5","name":"전자레인지","kg":23,"lo":20,"hi":25,"score":15},{"id":"fallback-t5-b6","name":"와인 상자","kg":16,"lo":15,"hi":19,"score":28},{"id":"fallback-t5-b7","name":"화분","kg":11,"lo":10,"hi":14,"score":33}]]}}</script>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ---------------------------------------------------------------- 데이터 */
+    var dataEl = document.getElementById('loadData');
+    var DATA = {};
+    try { DATA = JSON.parse((dataEl && dataEl.textContent) || '{}'); } catch (e) { DATA = {}; }
+    var RULES = DATA.rules || {};
+    var LIMIT = RULES.limit || 100;
+    var TILT = RULES.tilt || 28;
+    var TRIPS = RULES.trips || 5;
+    var STREAK_STEP = RULES.streakStep || 0.1;
+    var STREAK_CAP = RULES.streakCap || 5;
+    var TIERS = Array.isArray(RULES.tiers) && RULES.tiers.length ? RULES.tiers
+      : [{ min: 0.9, mult: 1.5 }, { min: 0.78, mult: 1.25 }, { min: 0.62, mult: 1 }, { min: 0, mult: 0.75 }];
+    var LEVELS = DATA.levels || { daily: '오늘', beginner: '입문', mid: '중급', adv: '고급' };
+    var DAILY = Array.isArray(DATA.daily) ? DATA.daily : [];
+    var PRACTICE = Array.isArray(DATA.practice) ? DATA.practice : [];
+    var FALLBACK = DATA.fallback || null;
+
+    var STORE_KEY = 'load_cart_stats_v1';
+    var GUIDE_KEY = 'load_guide_seen_v1';
+    var WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+    var STAR_PATH = 'M12 3.4l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z';
+    var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    /* ---------------------------------------------------------------- DOM */
+    var el = {};
+    ['modeDaily', 'modePractice', 'modeNote', 'tripValue', 'tripTotal', 'totalValue', 'streakChip', 'streakBest', 'loadStatus',
+     'guideCard', 'guideToggle', 'guideBody',
+     'goalList', 'goalNote', 'goalFill', 'goalHint',
+     'recBest', 'recPlays', 'recStreak', 'recordDate', 'recHistory',
+     'boardTitle', 'boardSub', 'resetBtn', 'cartCard', 'cartCap', 'cartTotal', 'cartRig',
+     'stackLeft', 'stackRight', 'headLeft', 'headRight', 'deckEmpty', 'leftValue', 'rightValue', 'tiltNote',
+     'gaugeValue', 'gaugeFill', 'tiltValue', 'tiltFill',
+     'boxCard', 'boxCount', 'boxName', 'boxKg', 'boxScore', 'nextCard', 'nextName', 'nextRange', 'nextScore',
+     'loadLeft', 'loadRight', 'riskLeft', 'riskRight', 'shipBtn', 'shipPreview', 'boxNote',
+     'tripPanel', 'tripBadge', 'tripTitle', 'tripScore', 'bonusPop', 'tripSum', 'tripBal', 'tripStreak', 'tripNote', 'nextTripBtn',
+     'resultBox', 'resultBadge', 'resultTitle', 'resultTotal', 'resultBest', 'resultStars',
+     'resultDeliveries', 'resultStreak', 'resultToday', 'resultHint', 'retryBtn', 'practiceBtn',
+     'practiceWrap', 'practiceNote', 'practiceList', 'themeToggle', 'moonIcon', 'sunIcon'
+    ].forEach(function (id) { el[id] = document.getElementById(id); });
+
+    /* ---------------------------------------------------------------- 상태 */
+    var state = {
+      mode: 'daily',
+      challenge: null,
+      practiceId: null,
+      tripIndex: 0,
+      boxIndex: 0,
+      left: 0,
+      right: 0,
+      tripScoreSum: 0,
+      tripBoxes: 0,
+      total: 0,
+      streak: 0,
+      bestStreak: 0,
+      deliveries: 0,
+      overloads: 0,
+      placed: { left: [], right: [] },
+      tripDone: false,
+      finished: false,
+      store: null,
+      dayKey: ''
+    };
+
+    /* ---------------------------------------------------------------- 유틸 */
+    function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+    function kstKey() {
+      var t = new Date(Date.now() + 9 * 3600000);
+      return t.getUTCFullYear() + '-' + pad2(t.getUTCMonth() + 1) + '-' + pad2(t.getUTCDate());
+    }
+
+    function dayOrdinal(key) {
+      var p = String(key).split('-').map(Number);
+      return Math.floor(Date.UTC(p[0], p[1] - 1, p[2]) / 86400000);
+    }
+
+    function dayLabel(key) {
+      var p = String(key).split('-').map(Number);
+      var d = new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+      return p[1] + '/' + p[2] + ' (' + WEEKDAYS[d.getUTCDay()] + ')';
+    }
+
+    function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+
+    function starsOf(challenge, score) {
+      var stars = (challenge && challenge.stars) || [0, 0, 0];
+      var count = 0;
+      for (var i = 0; i < stars.length; i += 1) if (score >= stars[i]) count += 1;
+      return count;
+    }
+
+    function balanceInfo() {
+      var total = state.left + state.right;
+      if (total <= 0) return { ratio: 1, mult: 1 };
+      var ratio = 1 - Math.abs(state.left - state.right) / total;
+      var mult = TIERS[TIERS.length - 1].mult;
+      for (var i = 0; i < TIERS.length; i += 1) {
+        if (ratio >= TIERS[i].min) { mult = TIERS[i].mult; break; }
+      }
+      return { ratio: ratio, mult: mult };
+    }
+
+    function streakMult(n) {
+      return Math.round((1 + Math.min(n, STREAK_CAP) * STREAK_STEP) * 100) / 100;
+    }
+
+    function previewScore() {
+      if (!state.tripBoxes) return 0;
+      return Math.round(state.tripScoreSum * balanceInfo().mult * streakMult(state.streak));
+    }
+
+    function readStore() {
+      var raw = null;
+      var parsed = null;
+      try { raw = localStorage.getItem(STORE_KEY); } catch (e) { raw = null; }
+      try { parsed = raw ? JSON.parse(raw) : null; } catch (e) { parsed = null; }
+      var store = (parsed && typeof parsed === 'object') ? parsed : {};
+      if (!store.days || typeof store.days !== 'object') store.days = {};
+      if (!store.best || typeof store.best !== 'object') store.best = {};
+      if (!store.totals || typeof store.totals !== 'object') store.totals = { plays: 0, deliveries: 0, overloads: 0 };
+      if (!store.streak || typeof store.streak !== 'object') store.streak = { best: 0 };
+      return store;
+    }
+
+    function writeStore() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state.store)); } catch (e) {}
+    }
+
+    function setStatus(text) { if (el.loadStatus) el.loadStatus.textContent = text; }
+
+    /* ---------------------------------------------------------------- 챌린지 */
+    function dailyChallenge() {
+      if (!DAILY.length) return FALLBACK;
+      var index = dayOrdinal(state.dayKey) % DAILY.length;
+      return DAILY[index] || FALLBACK;
+    }
+
+    function batch() {
+      if (!state.challenge || !Array.isArray(state.challenge.batches)) return [];
+      return state.challenge.batches[state.tripIndex] || [];
+    }
+
+    function currentBox() { return batch()[state.boxIndex] || null; }
+    function nextBox() { return batch()[state.boxIndex + 1] || null; }
+
+    function loadChallenge(challenge, mode, practiceId) {
+      if (!challenge) return;
+      state.mode = mode;
+      state.challenge = challenge;
+      state.practiceId = practiceId || null;
+      state.tripIndex = 0;
+      state.boxIndex = 0;
+      state.left = 0;
+      state.right = 0;
+      state.tripScoreSum = 0;
+      state.tripBoxes = 0;
+      state.total = 0;
+      state.streak = 0;
+      state.bestStreak = 0;
+      state.deliveries = 0;
+      state.overloads = 0;
+      state.placed = { left: [], right: [] };
+      state.tripDone = false;
+      state.finished = false;
+      el.tripPanel.hidden = true;
+      el.resultBox.hidden = true;
+      el.boxCard.hidden = false;
+      el.resultBox.classList.remove('is-new');
+      el.tripPanel.classList.remove('is-fail');
+      setModeButtons();
+      renderAll();
+      setStatus(mode === 'practice'
+        ? '연습 스테이지입니다. 기록은 최고 점수로만 남습니다.'
+        : '오늘의 상자 순서입니다. 표기 무게를 보고 첫 상자를 실어 보세요.');
+    }
+
+    function setModeButtons() {
+      var daily = state.mode === 'daily';
+      el.modeDaily.classList.toggle('is-active', daily);
+      el.modePractice.classList.toggle('is-active', !daily);
+      el.modeDaily.setAttribute('aria-pressed', daily ? 'true' : 'false');
+      el.modePractice.setAttribute('aria-pressed', daily ? 'false' : 'true');
+      el.practiceWrap.hidden = daily;
+    }
+
+    function setMode(mode) {
+      if (mode === 'practice') {
+        var target = null;
+        for (var i = 0; i < PRACTICE.length; i += 1) {
+          if (PRACTICE[i].id === state.practiceId) target = PRACTICE[i];
+        }
+        if (!target) target = PRACTICE[0] || FALLBACK;
+        state.mode = 'practice';
+        state.practiceId = target ? target.id : null;
+        loadChallenge(target, 'practice', state.practiceId);
+        renderPractice();
+        return;
+      }
+      state.mode = 'daily';
+      state.practiceId = null;
+      loadChallenge(dailyChallenge(), 'daily');
+    }
+
+    /* ---------------------------------------------------------------- 위험도 */
+    function riskOf(side, box) {
+      var kgLo = box.lo;
+      var kgHi = box.hi;
+      var l = state.left + (side === 'left' ? kgHi : 0);
+      var r = state.right + (side === 'right' ? kgHi : 0);
+      var worstOver = l + r > LIMIT;
+      var worstTilt = Math.abs(l - r) > TILT;
+      var l2 = state.left + (side === 'left' ? kgLo : 0);
+      var r2 = state.right + (side === 'right' ? kgLo : 0);
+      var bestOver = l2 + r2 > LIMIT;
+      var bestTilt = Math.abs(l2 - r2) > TILT;
+      if (worstOver || worstTilt) {
+        if (bestOver || bestTilt) return { level: 'risk', text: '넘침' };
+        return { level: 'risk', text: '위험' };
+      }
+      var total = l + r;
+      var tilt = Math.abs(l - r);
+      if (total >= LIMIT * 0.85 || tilt >= TILT * 0.8) return { level: 'near', text: '주의' };
+      return { level: 'safe', text: '안전' };
+    }
+
+    /* ---------------------------------------------------------------- 렌더 */
+    function reveal(node) {
+      if (!node || node.hidden) return;
+      var rect = node.getBoundingClientRect();
+      var bar = document.querySelector('.ia-tabbar');
+      var limit = bar && getComputedStyle(bar).display !== 'none'
+        ? bar.getBoundingClientRect().top : window.innerHeight;
+      if (rect.top >= 64 && rect.bottom <= limit - 8) return;
+      try { node.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); }
+      catch (e) { node.scrollIntoView(); }
+    }
+
+    function renderAll() {
+      renderStatus();
+      renderCart();
+      renderBox();
+      renderGoal();
+      renderRecord();
+      renderPractice();
+    }
+
+    function renderStatus() {
+      var challenge = state.challenge;
+      el.tripValue.textContent = String(Math.min(state.tripIndex + 1, TRIPS));
+      el.tripTotal.textContent = String(TRIPS);
+      el.totalValue.textContent = String(state.total);
+      var mult = streakMult(state.streak);
+      el.streakChip.textContent = '연속 ' + state.streak + '회 · ×' + mult.toFixed(1);
+      el.streakChip.classList.toggle('is-hot', mult >= 1.3);
+      el.streakBest.textContent = '최고 ' + (state.store ? state.store.streak.best || 0 : 0) + '회';
+      el.modeNote.textContent = challenge
+        ? (state.mode === 'practice' ? (LEVELS[challenge.level] || '연습') : '오늘의 배송')
+        : '오늘의 배송';
+      el.boardTitle.textContent = challenge ? challenge.title : '오늘의 배송';
+      el.boardSub.textContent = challenge ? ('목표 ' + challenge.goal + '점 · ' + TRIPS + '회차') : '';
+    }
+
+    function renderStacks() {
+      el.stackLeft.textContent = '';
+      el.stackRight.textContent = '';
+      function fill(stack, list) {
+        list.forEach(function (box) {
+          var crate = document.createElement('span');
+          crate.className = 'crate' + (box.kg >= 18 ? ' is-heavy' : (box.kg <= 10 ? ' is-light' : ''));
+          crate.textContent = String(box.kg);
+          crate.setAttribute('title', box.name + ' · ' + box.kg + 'kg');
+          stack.appendChild(crate);
+        });
+      }
+      fill(el.stackLeft, state.placed.left);
+      fill(el.stackRight, state.placed.right);
+    }
+
+    function renderCart() {
+      var total = state.left + state.right;
+      var ratio = clamp(total / LIMIT, 0, 1);
+      el.cartTotal.textContent = String(total);
+      el.cartCap.classList.toggle('is-warn', total >= LIMIT * 0.7 && total <= LIMIT * 0.9);
+      el.cartCap.classList.toggle('is-danger', total > LIMIT * 0.9);
+      el.leftValue.textContent = String(state.left);
+      el.rightValue.textContent = String(state.right);
+      var tilt = Math.abs(state.left - state.right);
+      el.headLeft.classList.toggle('is-heavy', state.left > state.right && state.left > 0);
+      el.headRight.classList.toggle('is-heavy', state.right > state.left && state.right > 0);
+      el.headLeft.classList.toggle('is-over', state.left - state.right > TILT);
+      el.headRight.classList.toggle('is-over', state.right - state.left > TILT);
+      el.deckEmpty.hidden = (state.left + state.right) > 0;
+
+      var fill = el.gaugeFill;
+      fill.style.width = Math.round(ratio * 100) + '%';
+      fill.classList.toggle('is-warn', total >= LIMIT * 0.7 && total <= LIMIT * 0.9);
+      fill.classList.toggle('is-danger', total > LIMIT * 0.9);
+      var level = total > LIMIT ? 'over' : (total > LIMIT * 0.9 ? 'danger' : (total >= LIMIT * 0.7 ? 'warn' : 'safe'));
+      el.gaugeValue.textContent = level === 'over' ? '초과 ' + (total - LIMIT) + 'kg'
+        : (level === 'danger' ? '위험' : (level === 'warn' ? '주의' : '안전'));
+      el.gaugeValue.className = 'is-' + (level === 'over' ? 'danger' : level);
+      el.cartCard.classList.toggle('is-warn', level === 'warn');
+      el.cartCard.classList.toggle('is-danger', level === 'danger' || level === 'over');
+
+      var pct = clamp(tilt / TILT, 0, 1);
+      var width = Math.round(pct * 50);
+      if (state.right >= state.left) {
+        el.tiltFill.style.left = '50%';
+      } else {
+        el.tiltFill.style.left = (50 - width) + '%';
+      }
+      el.tiltFill.style.width = width + '%';
+      el.tiltFill.classList.toggle('is-warn', pct >= 0.6 && pct < 0.85);
+      el.tiltFill.classList.toggle('is-danger', pct >= 0.85);
+      el.tiltValue.textContent = tilt > TILT ? '넘침' : (pct >= 0.85 ? '위험' : (pct >= 0.6 ? '기움' : '균형'));
+      el.tiltNote.textContent = tilt > TILT ? ('허용 초과 ' + (tilt - TILT) + 'kg') : ('차이 ' + tilt + ' / 28kg');
+      el.tiltValue.className = pct >= 0.85 ? 'is-danger' : (pct >= 0.6 ? 'is-warn' : '');
+
+      if (total > 0) {
+        var deg = clamp(((state.right - state.left) / Math.max(total, 1)) * 14, -5.5, 5.5);
+        el.cartRig.style.transform = 'rotate(' + deg.toFixed(2) + 'deg)';
+      } else {
+        el.cartRig.style.transform = '';
+      }
+    }
+
+    function riskOn(button, tag, side) {
+      var box = currentBox();
+      if (!box || state.tripDone || state.finished) {
+        tag.textContent = '';
+        tag.className = 'risk-tag';
+        button.classList.remove('is-risk');
+        return;
+      }
+      var risk = riskOf(side, box);
+      tag.textContent = risk.text;
+      tag.className = 'risk-tag' + (risk.level === 'safe' ? '' : (risk.level === 'near' ? ' is-near' : ' is-risk'));
+      button.classList.toggle('is-risk', risk.level === 'risk');
+    }
+
+    function renderBox() {
+      var box = currentBox();
+      var list = batch();
+      var disabled = state.tripDone || state.finished || !box;
+      el.loadLeft.disabled = !!disabled;
+      el.loadRight.disabled = !!disabled;
+      el.shipBtn.disabled = state.tripDone || state.finished || !state.tripBoxes;
+      el.boxCount.textContent = list.length
+        ? (Math.min(state.boxIndex + 1, list.length) + ' / ' + list.length)
+        : '0 / 0';
+      if (box) {
+        el.boxName.textContent = box.name;
+        el.boxKg.textContent = box.lo + '~' + box.hi;
+        el.boxScore.textContent = String(box.score);
+      } else {
+        el.boxName.textContent = list.length ? '회차 상자를 모두 확인했습니다' : '상자를 기다리는 중';
+        el.boxKg.textContent = '—';
+        el.boxScore.textContent = '—';
+      }
+      var next = nextBox();
+      if (next) {
+        el.nextName.textContent = next.name;
+        el.nextRange.textContent = next.lo + '~' + next.hi + 'kg';
+        el.nextScore.textContent = next.score + '점';
+        el.nextCard.hidden = false;
+      } else {
+        el.nextName.textContent = list.length ? '이번 회차 마지막 상자' : '—';
+        el.nextRange.textContent = '';
+        el.nextScore.textContent = '';
+        el.nextCard.hidden = false;
+      }
+      el.shipPreview.textContent = state.tripDone ? '회차 종료' : ('+' + previewScore() + '점');
+      var info = balanceInfo();
+      riskOn(el.loadLeft, el.riskLeft, 'left');
+      riskOn(el.loadRight, el.riskRight, 'right');
+      if (state.tripDone) {
+        el.boxNote.textContent = '이번 회차가 끝났습니다. 아래 결과에서 다음 회차로 넘어가세요.';
+      } else if (!box) {
+        el.boxNote.textContent = '이번 회차 상자를 모두 실었습니다. 지금 배송하세요.';
+      } else {
+        var cap = LIMIT - (state.left + state.right);
+        el.boxNote.textContent = '남은 무게 ' + cap + 'kg · 균형 여유 ' + (TILT - Math.abs(state.left - state.right)) + 'kg · 균형 배율 ×' + info.mult;
+      }
+    }
+
+    function starSvg(on, pop) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('aria-hidden', 'true');
+      if (on) svg.setAttribute('class', pop ? 'is-on is-pop' : 'is-on');
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', STAR_PATH);
+      svg.appendChild(path);
+      return svg;
+    }
+
+    function renderGoal() {
+      var challenge = state.challenge;
+      el.goalList.textContent = '';
+      if (!challenge) return;
+      var stars = challenge.stars || [];
+      var labels = ['목표', '한 단계 위', '최고 기록'];
+      for (var i = 0; i < stars.length; i += 1) {
+        var row = document.createElement('li');
+        row.className = 'goal-row' + (state.total >= stars[i] ? ' is-on' : '');
+        row.appendChild(starSvg(state.total >= stars[i], false));
+        var label = document.createElement('span');
+        label.className = 'goal-label';
+        label.textContent = labels[i] || ('별 ' + (i + 1));
+        row.appendChild(label);
+        var value = document.createElement('b');
+        value.textContent = String(stars[i]);
+        row.appendChild(value);
+        el.goalList.appendChild(row);
+      }
+      var top = stars[stars.length - 1] || 1;
+      el.goalFill.style.width = clamp(Math.round((state.total / top) * 100), 0, 100) + '%';
+      el.goalNote.textContent = '내 점수 ' + state.total;
+    }
+
+    function renderRecord() {
+      state.store = state.store || readStore();
+      var day = state.store.days[state.dayKey] || null;
+      el.recBest.textContent = day && day.best ? day.best + '점' : '—';
+      el.recPlays.textContent = (day && day.plays ? day.plays : 0) + '판';
+      el.recStreak.textContent = (state.store.streak.best || 0) + '회';
+      el.recordDate.textContent = dayLabel(state.dayKey);
+      el.recHistory.textContent = '';
+      var keys = Object.keys(state.store.days).sort().reverse().slice(0, 3);
+      if (!keys.length) {
+        var empty = document.createElement('li');
+        empty.className = 'is-empty';
+        empty.textContent = '아직 완주 기록이 없습니다.';
+        el.recHistory.appendChild(empty);
+        return;
+      }
+      keys.forEach(function (key) {
+        var row = document.createElement('li');
+        var when = document.createElement('span');
+        when.textContent = dayLabel(key);
+        var value = document.createElement('span');
+        value.textContent = (state.store.days[key].best || 0) + '점';
+        row.appendChild(when);
+        row.appendChild(value);
+        el.recHistory.appendChild(row);
+      });
+    }
+
+    function renderPractice() {
+      el.practiceList.textContent = '';
+      if (!PRACTICE.length) return;
+      el.practiceNote.textContent = PRACTICE.length + '판 · 자유 반복';
+      PRACTICE.forEach(function (challenge) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'stage' + (state.practiceId === challenge.id ? ' is-current' : '');
+        button.setAttribute('data-pid', challenge.id);
+        button.setAttribute('aria-pressed', state.practiceId === challenge.id ? 'true' : 'false');
+        var level = document.createElement('span');
+        level.className = 'stage-level';
+        level.textContent = LEVELS[challenge.level] || '연습';
+        var title = document.createElement('span');
+        title.className = 'stage-title';
+        title.textContent = challenge.title;
+        var best = document.createElement('span');
+        best.className = 'stage-best';
+        var record = state.store && state.store.best ? state.store.best[challenge.id] : 0;
+        best.textContent = (record ? '최고 ' + record + '점' : '목표 ' + challenge.goal + '점');
+        button.appendChild(level);
+        button.appendChild(title);
+        button.appendChild(best);
+        button.addEventListener('click', function () {
+          state.mode = 'practice';
+          state.practiceId = challenge.id;
+          loadChallenge(challenge, 'practice', challenge.id);
+          renderPractice();
+        });
+        el.practiceList.appendChild(button);
+      });
+    }
+
+    /* ---------------------------------------------------------------- 상자 싣기 */
+    function animateCrate(stack, box, fallen) {
+      var crate = document.createElement('span');
+      crate.className = 'crate' + (box.kg >= 18 ? ' is-heavy' : (box.kg <= 10 ? ' is-light' : ''))
+        + (fallen ? ' is-fallen' : ' is-new');
+      crate.textContent = String(box.kg);
+      crate.setAttribute('title', box.name + ' · 실측 ' + box.kg + 'kg');
+      stack.appendChild(crate);
+      return crate;
+    }
+
+    function bounce() {
+      el.cartRig.classList.remove('is-bounce');
+      void el.cartRig.offsetWidth;
+      el.cartRig.classList.add('is-bounce');
+      if (reduceMotion) el.cartRig.classList.remove('is-bounce');
+    }
+
+    function shake() {
+      el.cartRig.classList.remove('is-shake');
+      void el.cartRig.offsetWidth;
+      el.cartRig.classList.add('is-shake');
+    }
+
+    function loadSide(side) {
+      if (state.tripDone || state.finished) return;
+      var box = currentBox();
+      if (!box) return;
+      var kg = box.kg;
+      state.left += side === 'left' ? kg : 0;
+      state.right += side === 'right' ? kg : 0;
+      state.tripScoreSum += box.score;
+      state.tripBoxes += 1;
+      state.boxIndex += 1;
+      state.placed[side].push(box);
+
+      var total = state.left + state.right;
+      var failure = '';
+      if (total > LIMIT) failure = 'over';
+      else if (Math.abs(state.left - state.right) > TILT) failure = 'tilt';
+
+      if (failure) {
+        animateCrate(side === 'left' ? el.stackLeft : el.stackRight, box, true);
+        state.overloads += 1;
+        state.streak = 0;
+        state.tripDone = true;
+        renderCart();
+        shake();
+        showTrip(false, failure, box);
+        renderStatus();
+        renderBox();
+        reveal(el.tripPanel);
+        return;
+      }
+
+      animateCrate(side === 'left' ? el.stackLeft : el.stackRight, box, false);
+      bounce();
+      if (total > LIMIT * 0.9) shake();
+      renderCart();
+      renderStatus();
+      renderBox();
+      var cap = LIMIT - total;
+      var via = side === 'left' ? '왼쪽' : '오른쪽';
+      if (state.boxIndex >= batch().length) {
+        setStatus(via + '에 ' + box.name + ' ' + kg + 'kg을 실었습니다. 이번 회차 마지막 상자입니다. 지금 배송하세요.');
+      } else if (cap <= 12) {
+        setStatus(via + '에 ' + box.name + ' ' + kg + 'kg을 실었습니다. 남은 무게 ' + cap + 'kg, 다음 상자는 넘칠 수 있습니다.');
+      } else {
+        setStatus(via + '에 ' + box.name + ' ' + kg + 'kg(실측)을 실었습니다. 남은 무게 ' + cap + 'kg.');
+      }
+    }
+
+    /* ---------------------------------------------------------------- 배송 */
+    function ship() {
+      if (state.tripDone || state.finished || !state.tripBoxes) return;
+      var info = balanceInfo();
+      var mult = streakMult(state.streak);
+      var gained = Math.round(state.tripScoreSum * info.mult * mult);
+      state.total += gained;
+      state.streak += 1;
+      state.bestStreak = Math.max(state.bestStreak, state.streak);
+      state.deliveries += 1;
+      state.tripDone = true;
+      showTrip(true, '', null, {
+        gained: gained,
+        sum: state.tripScoreSum,
+        bal: info.mult,
+        ratio: info.ratio,
+        streak: mult
+      });
+      popBonus(gained);
+      renderAll();
+      setStatus('배송 완료. ' + gained + '점을 받았습니다. 연속 ' + state.streak + '회입니다.');
+      reveal(el.tripPanel);
+    }
+
+    function countUp(node, target) {
+      if (!node) return;
+      if (reduceMotion) { node.textContent = String(target); return; }
+      var start = performance.now();
+      var duration = 520;
+      function step(now) {
+        var t = Math.min(1, (now - start) / duration);
+        var eased = 1 - Math.pow(1 - t, 3);
+        node.textContent = String(Math.round(target * eased));
+        if (t < 1) window.requestAnimationFrame(step);
+        else node.textContent = String(target);
+      }
+      node.textContent = '0';
+      window.requestAnimationFrame(step);
+    }
+
+    function popBonus(points) {
+      var pop = el.bonusPop;
+      pop.textContent = '+' + points;
+      pop.classList.remove('is-on');
+      void pop.offsetWidth;
+      pop.classList.add('is-on');
+    }
+
+    function showTrip(ok, reason, box, detail) {
+      el.tripPanel.hidden = false;
+      el.boxCard.hidden = true;
+      el.tripPanel.classList.toggle('is-fail', !ok);
+      var last = state.tripIndex >= TRIPS - 1;
+      el.tripTitle.textContent = (state.tripIndex + 1) + '회차 ' + (ok ? '배송 완료' : '실패');
+      if (ok) {
+        el.tripBadge.textContent = '배송 완료';
+        el.tripScore.setAttribute('data-value', String(detail.gained));
+        countUp(el.tripScore, detail.gained);
+        el.tripSum.textContent = String(detail.sum);
+        el.tripBal.textContent = '×' + detail.bal.toFixed(2).replace(/0$/, '');
+        el.tripStreak.textContent = '×' + detail.streak.toFixed(1);
+        var cap = LIMIT - (state.left + state.right);
+        var tilt = TILT - Math.abs(state.left - state.right);
+        el.tripNote.textContent = '한도까지 ' + cap + 'kg, 균형 여유 ' + tilt + 'kg이 남아 있었습니다. '
+          + (detail.bal >= 1.5 ? '좌우가 거의 같아 최고 균형 배율을 받았습니다.' : '균형을 더 맞췄다면 배율이 올라갑니다.');
+      } else {
+        el.tripBadge.textContent = reason === 'over' ? '과적' : '전복';
+        el.tripScore.textContent = '0';
+        el.tripScore.setAttribute('data-value', '0');
+        el.tripSum.textContent = String(state.tripScoreSum);
+        el.tripBal.textContent = '×0';
+        el.tripStreak.textContent = '×0';
+        var over = (state.left + state.right) - LIMIT;
+        var tiltOver = Math.abs(state.left - state.right) - TILT;
+        el.tripNote.textContent = reason === 'over'
+          ? (box.name + ' 실측 ' + box.kg + 'kg을 실어 한도를 ' + over + 'kg 넘겼습니다. 이번 회차 점수와 연속 보너스가 사라졌습니다. 다음에는 표기 상한을 보고 배송하세요.')
+          : (box.name + '을 실어 좌우 차가 ' + tiltOver + 'kg 넘었습니다. 한쪽으로 쏠리면 손수레가 전복됩니다. 무거운 상자는 가벼운 쪽에 실으세요.');
+      }
+      el.nextTripBtn.textContent = last ? '결과 보기' : '다음 회차';
+    }
+
+    function nextTrip() {
+      el.tripPanel.hidden = true;
+      el.boxCard.hidden = false;
+      if (state.tripIndex >= TRIPS - 1) { finish(); return; }
+      state.tripIndex += 1;
+      state.boxIndex = 0;
+      state.left = 0;
+      state.right = 0;
+      state.tripScoreSum = 0;
+      state.tripBoxes = 0;
+      state.placed = { left: [], right: [] };
+      state.tripDone = false;
+      renderStacks();
+      renderAll();
+      setStatus((state.tripIndex + 1) + '회차 손수레가 도착했습니다. 표기 무게를 확인하세요.');
+      reveal(el.boxCard);
+    }
+
+    function finish() {
+      state.finished = true;
+      var challenge = state.challenge;
+      var stars = starsOf(challenge, state.total);
+      var day = state.store.days[state.dayKey] || { best: 0, plays: 0, streak: 0, stars: 0, last: 0 };
+      var prevBest = day.best || 0;
+      day.plays = (day.plays || 0) + 1;
+      day.last = state.total;
+      day.stars = Math.max(day.stars || 0, stars);
+      day.best = Math.max(prevBest, state.total);
+      day.streak = Math.max(day.streak || 0, state.bestStreak);
+      state.store.days[state.dayKey] = day;
+      var record = state.store.best[challenge.id] || 0;
+      var personalBest = state.total > record;
+      if (personalBest) state.store.best[challenge.id] = state.total;
+      state.store.totals.plays = (state.store.totals.plays || 0) + 1;
+      state.store.totals.deliveries = (state.store.totals.deliveries || 0) + state.deliveries;
+      state.store.totals.overloads = (state.store.totals.overloads || 0) + state.overloads;
+      state.store.streak.best = Math.max(state.store.streak.best || 0, state.bestStreak);
+      writeStore();
+
+      el.resultBox.hidden = false;
+      el.boxCard.hidden = true;
+      el.resultBox.classList.toggle('is-new', personalBest || state.total >= day.best);
+      el.resultBadge.textContent = state.mode === 'practice' ? '연습 완료' : '완주';
+      el.resultTitle.textContent = (personalBest ? '신기록입니다. ' : '') + TRIPS + '회차 배송을 마쳤습니다';
+      el.resultTotal.setAttribute('data-value', String(state.total));
+      countUp(el.resultTotal, state.total);
+      el.resultBest.textContent = '최고 ' + Math.max(record, state.total) + '점';
+      el.resultStars.textContent = '';
+      for (var i = 0; i < 3; i += 1) el.resultStars.appendChild(starSvg(i < stars, i < stars));
+      el.resultDeliveries.textContent = state.deliveries + '/' + TRIPS;
+      el.resultStreak.textContent = state.bestStreak + '회';
+      el.resultToday.textContent = (day.best || 0) + '점';
+      var top = challenge.stars[challenge.stars.length - 1] || 1;
+      if (stars >= 3) {
+        el.resultHint.textContent = '최고 별점입니다. 같은 상자 순서로 다른 선택을 시험해 더 높은 점수에 도전해 보세요.';
+      } else if (state.overloads > 0) {
+        el.resultHint.textContent = '과적 ' + state.overloads + '회로 회차 점수를 잃었습니다. 표기 상한까지 남은 무게를 계산해 보세요.';
+      } else {
+        el.resultHint.textContent = '최고 별점까지 ' + (top - state.total > 0 ? top - state.total : 0) + '점 남았습니다. 무게를 더 실을지 판단해 보세요.';
+      }
+      renderAll();
+      setStatus('완주했습니다. 총 ' + state.total + '점 · 별 ' + stars + '개.');
+      reveal(el.resultBox);
+    }
+
+    /* ---------------------------------------------------------------- 가이드·테마 */
+    function setGuide(open) {
+      el.guideBody.hidden = !open;
+      el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      el.guideToggle.textContent = open ? '접기' : '게임 방법';
+      if (!open) {
+        try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
+      }
+    }
+
+    function initGuide() {
+      var seen = null;
+      try { seen = localStorage.getItem(GUIDE_KEY); } catch (e) { seen = null; }
+      setGuide(!seen);
+    }
+
+    function initTheme() {
+      var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (el.sunIcon) el.sunIcon.style.display = dark ? 'block' : 'none';
+      if (el.moonIcon) el.moonIcon.style.display = dark ? 'none' : 'block';
+    }
+
+    /* ---------------------------------------------------------------- 초기화 */
+    state.dayKey = kstKey();
+    state.store = readStore();
+    initTheme();
+    initGuide();
+    loadChallenge(dailyChallenge(), 'daily');
+
+    el.modeDaily.addEventListener('click', function () { setMode('daily'); });
+    el.modePractice.addEventListener('click', function () { setMode('practice'); });
+    el.loadLeft.addEventListener('click', function () { loadSide('left'); });
+    el.loadRight.addEventListener('click', function () { loadSide('right'); });
+    el.shipBtn.addEventListener('click', ship);
+    el.nextTripBtn.addEventListener('click', nextTrip);
+    el.retryBtn.addEventListener('click', function () {
+      if (state.mode === 'practice') loadChallenge(state.challenge, 'practice', state.practiceId);
+      else loadChallenge(dailyChallenge(), 'daily');
+    });
+    el.practiceBtn.addEventListener('click', function () { setMode('practice'); });
+    el.resetBtn.addEventListener('click', function () {
+      var mode = state.mode;
+      var practiceId = state.practiceId;
+      var challenge = state.challenge;
+      loadChallenge(challenge, mode, practiceId);
+      setStatus('이번 판을 처음부터 다시 시작합니다. 기록은 그대로입니다.');
+    });
+    el.guideToggle.addEventListener('click', function () {
+      setGuide(el.guideBody.hidden);
+    });
+    el.themeToggle.addEventListener('click', function () {
+      var root = document.documentElement;
+      var dark = root.getAttribute('data-theme') === 'dark';
+      if (dark) root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', 'dark');
+      try { localStorage.setItem('secjobs-theme', dark ? 'light' : 'dark'); } catch (e) {}
+      initTheme();
+    });
+
+    /* 자정이 지나면 새 상자 순서가 열린다(탭을 열어 둔 경우 포함). */
+    function checkDay() {
+      var key = kstKey();
+      if (key === state.dayKey) return;
+      state.dayKey = key;
+      if (state.mode === 'daily') {
+        loadChallenge(dailyChallenge(), 'daily');
+        setStatus('날짜가 바뀌어 오늘의 새 상자 순서가 열렸습니다.');
+      } else {
+        renderRecord();
+      }
+    }
+    window.setInterval(checkDay, 60000);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) checkDay();
+    });
+  })();
+  </script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><a class="ia-tab is-active" href="wargame.html" aria-current="page"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></a><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a></div><p class="ia-sheet-group">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link is-current" href="load.html" aria-current="page"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  function openSheet() {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (sheetClose) sheetClose.focus();
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet();
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>

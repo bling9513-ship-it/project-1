@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html'];
+  'seat.html', 'load.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -1333,6 +1333,41 @@ async function checkReducedMotion(browser, base) {
     assert.equal(demo.seat, '1', `reduced motion: guide seat name hidden (${demo.seat})`);
     assert.equal(demo.check, '1', `reduced motion: guide check hidden (${demo.check})`);
     assert.equal(demo.caption, '1', `reduced motion: guide final caption hidden (${demo.caption})`);
+
+    await page.goto(`${base}/load.html`, { waitUntil: 'load' });
+    await page.waitForTimeout(220);
+    const loadDemo = await page.evaluate(() => {
+      const style = (sel) => getComputedStyle(document.querySelector(sel));
+      return {
+        anim: style('.gl-box').animationName,
+        boxOpacity: style('.gl-box').opacity,
+        fillWidth: style('.gl-fill').width,
+        ship: style('.gl-ship').opacity,
+        bonus: style('.gl-bonus').opacity,
+        step1: style('.gc-1').opacity,
+        step3: style('.gc-3').opacity,
+        deckWidth: document.querySelector('.cart-deck').getBoundingClientRect().width,
+        rigTransition: style('#cartRig').transitionDuration,
+      };
+    });
+    assert.equal(loadDemo.anim, 'none', `reduced motion: load guide still animating (${loadDemo.anim})`);
+    assert.equal(loadDemo.boxOpacity, '1', `reduced motion: load guide box hidden (${loadDemo.boxOpacity})`);
+    assert.ok(parseFloat(loadDemo.fillWidth) > loadDemo.deckWidth * 0.3,
+      `reduced motion: load guide gauge not filled (${loadDemo.fillWidth})`);
+    assert.equal(loadDemo.ship, '1', `reduced motion: load guide ship chip hidden`);
+    assert.equal(loadDemo.bonus, '1', `reduced motion: load guide bonus hidden`);
+    assert.equal(loadDemo.step1, '0', `reduced motion: load guide step 1 visible (${loadDemo.step1})`);
+    assert.equal(loadDemo.step3, '1', `reduced motion: load guide step 3 hidden (${loadDemo.step3})`);
+    assert.ok(loadDemo.rigTransition === '1e-05s' || parseFloat(loadDemo.rigTransition) <= 0.02,
+      `reduced motion: cart tilt transition ${loadDemo.rigTransition}`);
+
+    await page.click('#loadLeft');
+    await page.waitForTimeout(120);
+    const crate = await page.evaluate(() => {
+      const node = document.querySelector('#stackLeft .crate');
+      return node ? getComputedStyle(node).animationName : 'missing';
+    });
+    assert.equal(crate, 'none', `reduced motion: crate drop still animating (${crate})`);
     console.log('prefers-reduced-motion passed');
   } finally {
     await context.close();
@@ -3247,6 +3282,328 @@ async function checkSeatGame(page, width) {
   console.log(`${tag} passed`);
 }
 
+
+// ---- 한 번 더 싣기: 게임 방법 3단계 데모 · 손수레 보드 · 첫 화면 ---- 
+async function checkLoadLayout(page, width) {
+  const tag = `load layout ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(150);
+
+  const guide = await page.evaluate(() => {
+    const anim = (sel) => {
+      const node = document.querySelector(sel);
+      return node ? getComputedStyle(node).animationName : null;
+    };
+    return {
+      exists: !!document.getElementById('guideCard'),
+      expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+      bodyHidden: document.getElementById('guideBody').hidden,
+      label: document.getElementById('guideToggle').textContent.trim(),
+      steps: document.querySelectorAll('.gc-step').length,
+      box: anim('.gl-box'),
+      fill: anim('.gl-fill'),
+      ship: anim('.gl-ship'),
+      caption: anim('.gc-3'),
+    };
+  });
+  assert.ok(guide.exists, `${tag}: game guide missing`);
+  assert.equal(guide.expanded, 'true', `${tag}: guide should be open on the first visit`);
+  assert.equal(guide.bodyHidden, false, `${tag}: guide body hidden on the first visit`);
+  assert.equal(guide.label, '접기', `${tag}: guide toggle label ${guide.label}`);
+  assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+  for (const [name, value] of Object.entries({ box: guide.box, fill: guide.fill, ship: guide.ship, caption: guide.caption })) {
+    assert.ok(value && value !== 'none', `${tag}: guide demo ${name} animation missing (${value})`);
+  }
+
+  await page.click('#guideToggle');
+  await page.waitForTimeout(180);
+  const collapsed = await page.evaluate(() => ({
+    hidden: document.getElementById('guideBody').hidden,
+    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+    label: document.getElementById('guideToggle').textContent.trim(),
+    saved: !!localStorage.getItem('load_guide_seen_v1'),
+  }));
+  assert.equal(collapsed.hidden, true, `${tag}: guide did not collapse`);
+  assert.equal(collapsed.expanded, 'false', `${tag}: guide aria-expanded after collapse`);
+  assert.equal(collapsed.label, '게임 방법', `${tag}: collapsed label ${collapsed.label}`);
+  assert.equal(collapsed.saved, true, `${tag}: guide seen flag not stored`);
+
+  // 가이드 카드를 누르면 브라우저가 그 위치로 스크롤하므로, 첫 화면 측정 전에 맨 위로 되돌린다.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(150);
+  const geo = await page.evaluate(() => {
+    const box = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    const limit = bar && getComputedStyle(bar).display !== 'none'
+      ? bar.getBoundingClientRect().top : window.innerHeight;
+    const deck = document.querySelector('.cart-deck');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      limit,
+      mode: box('#modeDaily'),
+      status: box('#statusCard'),
+      cart: box('#cartCard'),
+      gauge: box('.gauge'),
+      box: box('#boxCard'),
+      actions: box('#loadLeft'),
+      ship: box('#shipBtn'),
+      deck: box('.cart-deck'),
+      columns: deck ? getComputedStyle(deck).gridTemplateColumns.split(' ').length : 0,
+      rail: box('.load-rail'),
+    };
+  });
+  assert.equal(geo.overflow, 0, `${tag}: horizontal overflow ${geo.overflow}px`);
+  assert.equal(geo.columns, 2, `${tag}: cart deck is not two columns`);
+  assert.ok(geo.deck && geo.deck.width >= 120, `${tag}: cart deck too narrow`);
+  assert.ok(geo.status.top < geo.cart.top && geo.cart.top < geo.box.top, `${tag}: board order is off`);
+  if (width <= 768) {
+    assert.ok(geo.mode && geo.mode.top >= 0 && geo.mode.bottom <= geo.limit,
+      `${tag}: mode switch is not in the first screen`);
+    assert.ok(geo.gauge && geo.gauge.bottom <= geo.limit, `${tag}: weight gauge is below the first screen`);
+    assert.ok(geo.actions && geo.actions.top < geo.limit, `${tag}: load buttons are not in the first screen`);
+    if (width === 390) {
+      assert.ok(geo.actions.bottom <= geo.limit, `${tag}: load buttons are cut by the first screen`);
+      assert.ok(geo.ship && geo.ship.bottom <= geo.limit + 1, `${tag}: ship button is cut by the first screen`);
+    }
+  } else {
+    assert.ok(geo.rail.right <= geo.cart.left + 1, `${tag}: side rail is not left of the board`);
+    assert.ok(geo.actions && geo.actions.width >= 140, `${tag}: load buttons too narrow`);
+  }
+  console.log(`${tag} passed`);
+}
+
+// ---- 한 번 더 싣기: 싣기 → 게이지·균형 변화 → 배송 → 과적 → 재도전·저장 ---- 
+async function checkLoadGame(page, width) {
+  const tag = `load game ${width}px`;
+  await page.evaluate(() => localStorage.removeItem('load_cart_stats_v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#loadLeft').waitFor({ state: 'attached' });
+
+  const data = await page.evaluate(() => JSON.parse(document.getElementById('loadData').textContent));
+  const todayKey = await page.evaluate(() => {
+    const t = new Date(Date.now() + 9 * 3600000);
+    const p = (n) => String(n).padStart(2, '0');
+    return `${t.getUTCFullYear()}-${p(t.getUTCMonth() + 1)}-${p(t.getUTCDate())}`;
+  });
+  const ordinal = Math.floor(Date.parse(todayKey + 'T00:00:00Z') / 86400000);
+  const challenge = data.daily[ordinal % data.daily.length];
+  const trips = challenge.batches.length;
+  const limit = challenge.limit;
+  const tilt = challenge.tilt;
+
+  const read = () => page.evaluate(() => {
+    const store = JSON.parse(localStorage.getItem('load_cart_stats_v1') || 'null');
+    return {
+      title: document.getElementById('boardTitle').textContent.trim(),
+      trip: document.getElementById('tripValue').textContent.trim(),
+      trips: document.getElementById('tripTotal').textContent.trim(),
+      total: document.getElementById('totalValue').textContent.trim(),
+      left: Number(document.getElementById('leftValue').textContent),
+      right: Number(document.getElementById('rightValue').textContent),
+      cart: Number(document.getElementById('cartTotal').textContent),
+      gaugeWidth: parseFloat(document.getElementById('gaugeFill').style.width) || 0,
+      gaugeClass: document.getElementById('gaugeFill').className,
+      tiltNote: document.getElementById('tiltNote').textContent.trim(),
+      preview: document.getElementById('shipPreview').textContent.trim(),
+      shipDisabled: document.getElementById('shipBtn').disabled,
+      boxName: document.getElementById('boxName').textContent.trim(),
+      nextName: document.getElementById('nextName').textContent.trim(),
+      risk: [document.getElementById('riskLeft').textContent.trim(),
+        document.getElementById('riskRight').textContent.trim()],
+      crates: document.querySelectorAll('.crate').length,
+      boxHidden: document.getElementById('boxCard').hidden,
+      tripHidden: document.getElementById('tripPanel').hidden,
+      tripBadge: document.getElementById('tripBadge').textContent.trim(),
+      tripScore: document.getElementById('tripScore').getAttribute('data-value'),
+      streakChip: document.getElementById('streakChip').textContent.trim(),
+      resultHidden: document.getElementById('resultBox').hidden,
+      resultTotal: document.getElementById('resultTotal').getAttribute('data-value'),
+      resultStars: document.querySelectorAll('#resultStars svg.is-on').length,
+      practiceHidden: document.getElementById('practiceWrap').hidden,
+      store,
+    };
+  });
+
+  const initial = await read();
+  assert.equal(initial.title, challenge.title, `${tag}: board title ${initial.title}`);
+  assert.equal(initial.trip, '1', `${tag}: start trip ${initial.trip}`);
+  assert.equal(initial.trips, String(trips), `${tag}: trip total ${initial.trips}`);
+  assert.equal(initial.total, '0', `${tag}: start total ${initial.total}`);
+  assert.equal(initial.shipDisabled, true, `${tag}: ship enabled with an empty cart`);
+  assert.equal(initial.store, null, `${tag}: fresh storage expected`);
+  assert.equal(initial.practiceHidden, true, `${tag}: practice list shown in daily mode`);
+  assert.equal(initial.nextName, challenge.batches[0][1].name, `${tag}: next box preview ${initial.nextName}`);
+
+  const first = challenge.batches[0][0];
+  await page.click('#loadLeft');
+  await page.waitForTimeout(450);
+  const loaded = await read();
+  assert.equal(loaded.left, first.kg, `${tag}: left weight ${loaded.left} vs ${first.kg}`);
+  assert.equal(loaded.cart, first.kg, `${tag}: cart weight ${loaded.cart}`);
+  assert.ok(loaded.gaugeWidth > 0, `${tag}: weight gauge did not move`);
+  assert.equal(loaded.crates, 1, `${tag}: crates ${loaded.crates}`);
+  assert.ok(/^\+[1-9]/.test(loaded.preview), `${tag}: ship preview ${loaded.preview}`);
+  assert.equal(loaded.shipDisabled, false, `${tag}: ship still disabled after loading`);
+  assert.ok(loaded.tiltNote.includes(String(first.kg)), `${tag}: tilt note ${loaded.tiltNote}`);
+  assert.ok(['안전', '주의', '위험', '넘침'].includes(loaded.risk[0]), `${tag}: risk tag ${loaded.risk[0]}`);
+
+  const motion = await page.evaluate(() => {
+    const rig = document.getElementById('cartRig');
+    const out = {};
+    ['is-bounce', 'is-shake'].forEach((cls) => {
+      rig.classList.remove(cls);
+      rig.classList.add(cls);
+      out[cls] = getComputedStyle(rig).animationName;
+      rig.classList.remove(cls);
+    });
+    return out;
+  });
+  assert.ok(motion['is-bounce'] && motion['is-bounce'] !== 'none', `${tag}: cart bounce animation missing`);
+  assert.ok(motion['is-shake'] && motion['is-shake'] !== 'none', `${tag}: cart shake animation missing`);
+
+  const crateAnim = await page.evaluate(() => {
+    const crate = document.createElement('span');
+    crate.className = 'crate is-new';
+    document.getElementById('stackLeft').appendChild(crate);
+    const name = getComputedStyle(crate).animationName;
+    crate.remove();
+    return name;
+  });
+  assert.ok(crateAnim && crateAnim !== 'none', `${tag}: crate drop animation missing (${crateAnim})`);
+
+  // 지금 배송: 미리보기 점수와 회차 점수가 같아야 한다.
+  const preview = Number(loaded.preview.replace(/[^0-9]/g, ''));
+  await page.click('#shipBtn');
+  await page.waitForFunction(() => document.getElementById('tripScore').hasAttribute('data-value'));
+  const shipped = await read();
+  assert.equal(shipped.tripHidden, false, `${tag}: trip result not shown`);
+  assert.equal(shipped.tripBadge, '배송 완료', `${tag}: trip badge ${shipped.tripBadge}`);
+  assert.equal(Number(shipped.tripScore), preview, `${tag}: trip score ${shipped.tripScore} vs preview ${preview}`);
+  assert.equal(shipped.total, String(preview), `${tag}: running total ${shipped.total}`);
+  assert.equal(shipped.boxHidden, true, `${tag}: box card should make room for the result`);
+  assert.ok(shipped.streakChip.includes('연속 1회'), `${tag}: streak chip ${shipped.streakChip}`);
+
+  await page.click('#nextTripBtn');
+  await page.waitForTimeout(180);
+  const second = await read();
+  assert.equal(second.trip, '2', `${tag}: trip after next ${second.trip}`);
+  assert.equal(second.total, String(preview), `${tag}: total lost between trips`);
+  assert.equal(second.crates, 0, `${tag}: crates left from the previous trip`);
+  assert.equal(second.boxHidden, false, `${tag}: box card did not return`);
+
+  // 전체 5회차를 '표기 상한까지도 안전한' 계획으로 완주한다.
+  await page.click('#resetBtn');
+  await page.waitForTimeout(180);
+  assert.equal((await read()).total, '0', `${tag}: reset did not clear the score`);
+
+  const plan = (ch) => ch.batches.map((tripBoxes) => {
+    let L = 0;
+    let R = 0;
+    const sides = [];
+    for (const box of tripBoxes) {
+      const options = ['left', 'right'].map((side) => {
+        const nl = L + (side === 'left' ? box.hi : 0);
+        const nr = R + (side === 'right' ? box.hi : 0);
+        return { side, nl, nr, ok: nl + nr <= ch.limit && Math.abs(nl - nr) <= ch.tilt };
+      }).filter((option) => option.ok);
+      if (!options.length) break;
+      options.sort((a, b) => Math.abs(a.nl - a.nr) - Math.abs(b.nl - b.nr));
+      L = options[0].nl; R = options[0].nr;
+      sides.push(options[0].side);
+    }
+    return sides;
+  });
+
+  const sidesPerTrip = plan(challenge);
+  let expected = 0;
+  for (let t = 0; t < sidesPerTrip.length; t += 1) {
+    for (const side of sidesPerTrip[t]) {
+      await page.click(side === 'left' ? '#loadLeft' : '#loadRight');
+      await page.waitForTimeout(35);
+    }
+    const before = await read();
+    const gained = Number(before.preview.replace(/[^0-9]/g, ''));
+    await page.click('#shipBtn');
+    await page.waitForFunction(() => document.getElementById('tripScore').hasAttribute('data-value'));
+    const after = await read();
+    assert.equal(Number(after.tripScore), gained, `${tag}: trip ${t + 1} score ${after.tripScore} vs ${gained}`);
+    expected += gained;
+    await page.click('#nextTripBtn');
+    await page.waitForTimeout(140);
+  }
+  await page.waitForTimeout(700);
+  const done = await read();
+  assert.equal(done.resultHidden, false, `${tag}: final result not shown`);
+  assert.equal(Number(done.resultTotal), expected, `${tag}: final total ${done.resultTotal} vs ${expected}`);
+  assert.equal(done.total, String(expected), `${tag}: running total after finish`);
+  assert.ok(done.resultStars >= 0 && done.resultStars <= 3, `${tag}: stars ${done.resultStars}`);
+  assert.ok(done.store && done.store.days && done.store.days[todayKey],
+    `${tag}: daily record missing`);
+  assert.equal(done.store.days[todayKey].plays, 1, `${tag}: plays ${done.store.days[todayKey].plays}`);
+  assert.equal(done.store.days[todayKey].best, expected, `${tag}: daily best ${done.store.days[todayKey].best}`);
+  assert.equal(done.store.best[challenge.id], expected, `${tag}: challenge best not stored`);
+  assert.equal(done.store.totals.plays, 1, `${tag}: totals.plays ${done.store.totals.plays}`);
+  assert.ok(done.store.streak.best >= 1, `${tag}: streak best ${done.store.streak.best}`);
+
+  // 과적: 표기 상한을 무시하고 계속 실으면 회차가 0점으로 끝난다.
+  await page.click('#retryBtn');
+  await page.waitForTimeout(200);
+  let busted = null;
+  for (let i = 0; i < 8; i += 1) {
+    const now = await read();
+    if (!now.tripHidden) { busted = now; break; }
+    const side = now.left <= now.right ? 'left' : 'right';
+    await page.click(side === 'left' ? '#loadLeft' : '#loadRight');
+    await page.waitForTimeout(140);
+  }
+  if (!busted) busted = await read();
+  assert.equal(busted.tripHidden, false, `${tag}: loading past the limit did not end the trip`);
+  assert.ok(['과적', '전복'].includes(busted.tripBadge), `${tag}: bust badge ${busted.tripBadge}`);
+  assert.equal(Number(busted.tripScore), 0, `${tag}: busted trip scored ${busted.tripScore}`);
+  assert.ok(busted.streakChip.includes('연속 0회'), `${tag}: streak not reset (${busted.streakChip})`);
+
+  // 연습 모드: 스테이지 목록 → 다른 스테이지 로드
+  await page.click('#modePractice');
+  await page.locator('#practiceWrap:not([hidden])').waitFor({ timeout: 5000 });
+  const practice = await page.evaluate(() => ({
+    stages: document.querySelectorAll('.stage').length,
+    current: document.querySelectorAll('.stage.is-current').length,
+    title: document.getElementById('boardTitle').textContent.trim(),
+    trip: document.getElementById('tripValue').textContent.trim(),
+  }));
+  assert.equal(practice.stages, data.practice.length, `${tag}: practice stages ${practice.stages}`);
+  assert.equal(practice.current, 1, `${tag}: current stage ${practice.current}`);
+  assert.equal(practice.trip, '1', `${tag}: practice trip ${practice.trip}`);
+  await page.click(`.stage[data-pid="${data.practice[2].id}"]`);
+  await page.waitForTimeout(160);
+  const switched = await page.evaluate(() => ({
+    title: document.getElementById('boardTitle').textContent.trim(),
+    boxHidden: document.getElementById('boxCard').hidden,
+    tripHidden: document.getElementById('tripPanel').hidden,
+  }));
+  assert.equal(switched.title, data.practice[2].title, `${tag}: stage switch title ${switched.title}`);
+  assert.equal(switched.boxHidden, false, `${tag}: practice switch kept the result panel`);
+  assert.equal(switched.tripHidden, true, `${tag}: practice switch kept the trip panel`);
+
+  // 가이드 토글: 접힌 상태에서 열고 다시 접는다.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.click('#guideToggle');
+  await page.waitForTimeout(160);
+  assert.equal(await page.evaluate(() => document.getElementById('guideBody').hidden), false,
+    `${tag}: guide did not reopen`);
+  await page.click('#guideToggle');
+  await page.waitForTimeout(160);
+  assert.equal(await page.evaluate(() => document.getElementById('guideToggle').textContent.trim()), '게임 방법',
+    `${tag}: guide did not collapse again`);
+
+  console.log(`${tag} passed`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -3321,6 +3678,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'ops') await checkOpsGame(page, base, width);
     if (name === 'seat') await checkSeatLayout(page, width);
     if (name === 'seat') await checkSeatGame(page, width);
+    if (name === 'load') await checkLoadLayout(page, width);
+    if (name === 'load') await checkLoadGame(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -3389,6 +3748,7 @@ async function main() {
           if (width === 768 && name === 'pick') await checkPick(page, width);
           if (name === 'ops') await checkOpsLayout(page, width);
           if (name === 'seat') await checkSeatLayout(page, width);
+          if (name === 'load') await checkLoadLayout(page, width);
         } finally {
           await page.close();
         }

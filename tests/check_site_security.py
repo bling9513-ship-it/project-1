@@ -13,7 +13,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ("today", "index", "study", "ai", "cve", "wargame", "tools", "radar", "outfit", "pick", "clue", "mission", "chart", "ops", "seat")
+PAGES = ("today", "index", "study", "ai", "cve", "wargame", "tools", "radar", "outfit", "pick", "clue", "mission", "chart", "ops", "seat", "load")
 PRETENDARD = "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
 PRETENDARD_SRI = "sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg"
 SCRIPT_TYPES = {"", "module", "text/javascript", "application/javascript",
