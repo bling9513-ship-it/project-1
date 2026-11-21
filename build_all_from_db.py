@@ -4,7 +4,8 @@ SQLite DB(archive.db)를 Single Source of Truth로 하여
 채용 공고 대시보드(index.html, jobs.json), 시험 공부 허브(study.html, infosec_exam_data.js),
 AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(cve.html, cve_data.json),
 옷차림 가이드(outfit.html), 출퇴근길 보안 워게임(wargame.html), 보안 실무 유틸·치트시트(tools.html),
-피싱·스미싱 판별 레이더(radar.html), 오늘 뭐 먹지·날씨 맞춤 추천(pick.html)을 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
+피싱·스미싱 판별 레이더(radar.html), 오늘 뭐 먹지·날씨 맞춤 추천(pick.html),
+하루 한 판 · 3단서 추리(clue.html)을 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
    이 스크립트는 DB에 적재된 ai_insights / cve_reports 를 각 HTML로 빌드하는 역할만 한다.
@@ -93,6 +94,10 @@ def build_all():
     from build_pick_html import build as build_pick
     pick_total = build_pick()
 
+    # 14. clue.html 재생성 (하루 한 판 · 3단서 추리: 오늘의 문제 + 지난 문제 아카이브)
+    from build_clue_html import build as build_clue
+    clue_total = build_clue()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -104,7 +109,8 @@ def build_all():
     print(f"  - 보안 워게임 문제: {wargame_total}개 (카테고리 4종)")
     print(f"  - 보안 실무 유틸: {tool_total}종 · 치트시트 명령어 {cmd_total}개")
     print(f"  - 피싱·스미싱 판별: {radar_total}문항 (정상 안내 4문항 · 트렌드 6종 · 긴급 대응 5단계)")
-    print(f"  - 오늘 뭐 먹지: 메뉴 {pick_total}종 · 나들이 코스 16곳 (날씨 모드 3종 + 자동 · 9탭 내비게이션)")
+    print(f"  - 오늘 뭐 먹지: 메뉴 {pick_total}종 · 나들이 코스 16곳 (날씨 모드 3종 + 자동 · 10탭 내비게이션)")
+    print(f"  - 하루 한 판 3단서 추리: 문제 {clue_total}개 (단서 3단계 · 4지선다 · 분야 6종)")
 
 if __name__ == "__main__":
     build_all()

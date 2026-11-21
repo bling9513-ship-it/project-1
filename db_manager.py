@@ -200,6 +200,33 @@ def init_db(db_path=DB_PATH):
     cur.execute("CREATE INDEX IF NOT EXISTS idx_wargame_daily ON wargame_questions(is_daily);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_wargame_category ON wargame_questions(category);")
 
+    # 5-c. 하루 한 판 · 3단서 추리 문제 테이블 (초기 시드 + 매일 자동 출제분)
+    #   단서는 3단계로 나눠 저장하고, 첫 단서만 기본 공개한다.
+    #   id 규칙: 시드 seed-01..., 데일리 daily-YYYYMMDD-NN
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS clue_questions (
+        id TEXT PRIMARY KEY,
+        puzzle_date TEXT NOT NULL,          -- YYYY-MM-DD (KST)
+        category TEXT NOT NULL,              -- tech, life, culture, science, nature, history
+        title TEXT NOT NULL,                 -- 제목(정답을 노출하지 않는 한 줄)
+        prompt TEXT NOT NULL,                -- 최종 질문
+        clue1 TEXT NOT NULL,
+        clue2 TEXT NOT NULL,
+        clue3 TEXT NOT NULL,
+        choices_json TEXT NOT NULL,          -- JSON Array (4지선다)
+        answer_idx INTEGER NOT NULL,         -- 0~3
+        explanation TEXT NOT NULL,           -- 정답 해설
+        is_daily INTEGER NOT NULL DEFAULT 0, -- 1 = 08:00 자동 출제분
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        source_ref TEXT,                     -- 근거 메모(선택)
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    );
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_clue_date ON clue_questions(puzzle_date);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_clue_category ON clue_questions(category);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_clue_daily ON clue_questions(is_daily);")
+
     # 6. DB 메타 정보 테이블
     cur.execute("""
     CREATE TABLE IF NOT EXISTS db_meta (
@@ -1404,6 +1431,155 @@ def get_wargame_titles(db_path=DB_PATH, limit=300):
     conn = get_connection(db_path)
     rows = conn.execute(
         "SELECT title FROM wargame_questions ORDER BY created_date DESC, sort_order ASC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    conn.close()
+    return [r[0] for r in rows if r[0]]
+
+
+# ---------------------------------------------------------------------------
+# 8) 하루 한 판 · 3단서 추리 (clue_questions)
+# ---------------------------------------------------------------------------
+CLUE_CATEGORIES = ("tech", "life", "culture", "science", "nature", "history")
+
+
+def clue_row_from_question(q, puzzle_date, is_daily=0, sort_order=0, now_dt=None):
+    """빌더/생성기의 문제 dict를 clue_questions 행 dict로 변환한다.
+
+    q 키: id, category, title, prompt, clues[3], choices[4], answer, explanation,
+          source_ref, puzzle_date, is_daily, sort_order
+    """
+    clues = list(q.get("clues") or [])
+    clues += [""] * (3 - len(clues))
+    now = _now_iso(now_dt)
+    return {
+        "id": q["id"],
+        "puzzle_date": q.get("puzzle_date") or puzzle_date,
+        "category": q.get("category"),
+        "title": q["title"],
+        "prompt": q.get("prompt") or "이것은 무엇일까요?",
+        "clue1": clues[0],
+        "clue2": clues[1],
+        "clue3": clues[2],
+        "choices_json": _json_dump(q.get("choices")),
+        "answer_idx": q.get("answer") if q.get("answer") is not None else q.get("answer_idx", 0),
+        "explanation": q.get("explanation") or "",
+        "is_daily": 1 if (q.get("is_daily") or is_daily) else 0,
+        "sort_order": int(q.get("sort_order", sort_order) or 0),
+        "source_ref": q.get("source_ref") or "",
+        "created_at": now,
+        "updated_at": now,
+    }
+
+
+_CLUE_COLUMNS = (
+    "id", "puzzle_date", "category", "title", "prompt", "clue1", "clue2", "clue3",
+    "choices_json", "answer_idx", "explanation", "is_daily", "sort_order", "source_ref",
+    "created_at", "updated_at",
+)
+
+
+def seed_clue_questions(questions, db_path=DB_PATH):
+    """초기 시드 문제를 DB로 이관한다 (id 보존, 이미 있으면 건드리지 않음)."""
+    init_db(db_path)
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    inserted = 0
+    try:
+        for idx, q in enumerate(questions):
+            row = clue_row_from_question(
+                q, q.get("puzzle_date"), is_daily=q.get("is_daily", 0), sort_order=idx)
+            cur.execute(
+                "INSERT OR IGNORE INTO clue_questions (%s) VALUES (%s)"
+                % (", ".join(_CLUE_COLUMNS), ", ".join("?" * len(_CLUE_COLUMNS))),
+                [row[c] for c in _CLUE_COLUMNS],
+            )
+            inserted += cur.rowcount if cur.rowcount > 0 else 0
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+    return inserted
+
+
+def insert_clue_questions(rows, db_path=DB_PATH):
+    """검증을 통과한 문제 행들을 한 트랜잭션으로 적재한다. 실패 시 전부 롤백."""
+    if not rows:
+        return 0
+    init_db(db_path)
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    try:
+        for row in rows:
+            cur.execute(
+                "INSERT INTO clue_questions (%s) VALUES (%s)"
+                % (", ".join(_CLUE_COLUMNS), ", ".join("?" * len(_CLUE_COLUMNS))),
+                [row[c] for c in _CLUE_COLUMNS],
+            )
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+    return len(rows)
+
+
+def get_clue_questions(db_path=DB_PATH):
+    """빌더가 바로 쓸 수 있는 형태로 3단서 추리 문제를 반환한다 (최신 날짜 → 오래된 날짜)."""
+    init_db(db_path)
+    conn = get_connection(db_path)
+    rows = conn.execute(
+        """SELECT * FROM clue_questions
+           ORDER BY puzzle_date DESC, is_daily DESC, sort_order ASC, id ASC"""
+    ).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        try:
+            choices = json.loads(r["choices_json"] or "[]")
+        except (json.JSONDecodeError, TypeError):
+            choices = []
+        out.append({
+            "id": r["id"],
+            "puzzle_date": r["puzzle_date"],
+            "category": r["category"],
+            "title": r["title"],
+            "prompt": r["prompt"],
+            "clues": [r["clue1"], r["clue2"], r["clue3"]],
+            "choices": choices,
+            "answer": int(r["answer_idx"]),
+            "explanation": r["explanation"],
+            "is_daily": int(r["is_daily"] or 0),
+            "sort_order": int(r["sort_order"] or 0),
+            "source_ref": r["source_ref"] or "",
+        })
+    return out
+
+
+def count_clue_questions(db_path=DB_PATH, created_date=None, is_daily=None):
+    init_db(db_path)
+    conn = get_connection(db_path)
+    sql = "SELECT COUNT(*) FROM clue_questions WHERE 1=1"
+    args = []
+    if created_date:
+        sql += " AND puzzle_date = ?"
+        args.append(created_date)
+    if is_daily is not None:
+        sql += " AND is_daily = ?"
+        args.append(1 if is_daily else 0)
+    n = conn.execute(sql, args).fetchone()[0]
+    conn.close()
+    return n
+
+
+def get_clue_titles(db_path=DB_PATH, limit=300):
+    init_db(db_path)
+    conn = get_connection(db_path)
+    rows = conn.execute(
+        "SELECT title FROM clue_questions ORDER BY puzzle_date DESC, sort_order ASC LIMIT ?",
         (limit,),
     ).fetchall()
     conn.close()
