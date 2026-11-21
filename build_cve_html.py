@@ -159,7 +159,19 @@ CSS = """
       color: var(--text-primary);
     }
 
-    .nav-tabs { display: flex; gap: 6px; margin-left: 10px; }
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      margin-left: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar { display: none; }
 
     .nav-tab-item {
       padding: 5px 12px;
@@ -1096,6 +1108,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="tools.html" class="nav-tab-item">실무 유틸</a>
           <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
           <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
+          <a href="clue.html" class="nav-tab-item">3단서 추리</a>
         </div>
       </div>
 
@@ -1171,11 +1184,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <div class="glossary-body">
           <div class="glossary-item">
             <div class="glossary-term">CISA KEV<span>Known Exploited Vulnerabilities</span></div>
-            <p>미국 CISA가 <b>실제 공격에 악용된 것이 확인된</b> 취약점 목록입니다. KEV 배지는 이론적인 위험이 아니라 이미 공격에 쓰이고 있다는 뜻이며, 등재 항목에는 패치 조치 기한이 함께 부여됩니다. 노출된 자산이 있다면 기한 안에 패치·완화 조치를 끝내는 것을 원칙으로 삼습니다.</p>
+            <p>미국 CISA가 <b>실제 공격에 악용된 것이 확인된</b> 취약점 목록입니다. KEV 배지는 이론적인 위험이 아니라 이미 공격에 쓰이고 있다는 뜻입니다. 등재 항목의 조치 기한은 <b>CISA BOD 22-01에 따른 미국 연방 민간 행정부 기관 대상 의무 기한</b>이며, 일반 기업·기관에는 법적 의무가 아니라 패치 우선순위를 정할 때 참고하는 지표입니다. 노출된 자산이 있다면 그 기한을 목표 시점으로 삼아 패치·완화 조치를 서두르는 것이 좋습니다.</p>
           </div>
           <div class="glossary-item">
             <div class="glossary-term">EPSS<span>Exploit Prediction Scoring System · FIRST</span></div>
-            <p>공개된 취약점이 <b>향후 30일 안에 실제로 악용될 확률</b>을 0~100%로 추정한 점수입니다(매일 갱신). 10% 이상은 악용 가능성이 높은 편으로 보고 우선 확인하고, 1% 미만은 상대적으로 낮게 봅니다. 확률일 뿐이므로 KEV·CVSS·인터넷 노출 여부와 함께 판단하세요. ‘악용 위험 상위 N%’는 같은 날 전체 CVE 중 이 항목의 추정 순위를 뜻합니다.</p>
+            <p>공개된 취약점이 <b>향후 30일 안에 실제로 악용될 확률</b>을 0~100%로 추정한 점수입니다(매일 갱신). 점수는 확률일 뿐이라 “몇 %부터 위험하다”는 공통 임계값은 없습니다. FIRST도 각 조직이 자산 중요도·인터넷 노출·위험 허용도에 맞춰 조치 기준을 정하도록 안내합니다. 아래 10% 이상·1% 미만 같은 구간은 운영 예시일 뿐 절대 기준이 아니므로, KEV·CVSS·인터넷 노출 여부와 함께 판단하세요. ‘악용 위험 상위 N%’는 같은 날 전체 CVE 중 이 항목의 추정 순위를 뜻합니다.</p>
           </div>
           <div class="glossary-item">
             <div class="glossary-term">CVSS<span>Common Vulnerability Scoring System</span></div>

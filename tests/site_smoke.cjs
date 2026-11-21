@@ -3,8 +3,97 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick'];
+const pages = ['index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue'];
 const root = path.join(__dirname, '..');
+
+async function assertCveJump(page, cid, label) {
+  await page.waitForFunction((id) => {
+    const el = document.getElementById('cve-' + id);
+    return !!el && document.activeElement === el;
+  }, cid, { timeout: 5000 });
+  await page.waitForFunction((id) => {
+    const el = document.getElementById('cve-' + id);
+    const r = el.getBoundingClientRect();
+    return r.top >= 0 && r.top < 220;
+  }, cid, { timeout: 5000 });
+  const state = await page.evaluate((id) => {
+    const el = document.getElementById('cve-' + id);
+    const active = document.querySelector('.segment-btn.active');
+    return {
+      activeId: document.activeElement ? document.activeElement.id : null,
+      focused: el.classList.contains('is-focused'),
+      term: document.getElementById('searchInput').value,
+      visible: document.getElementById('visibleCount').textContent,
+      cards: document.querySelectorAll('#cveList .cve-card').length,
+      activeFilter: active && active.dataset ? (active.dataset.filter || null) : null,
+      hash: location.hash,
+    };
+  }, cid);
+  assert.equal(state.activeId, 'cve-' + cid, `${label}: activeElement`);
+  assert.equal(state.focused, true, `${label}: focus highlight missing`);
+  assert.equal(state.term, '', `${label}: search term not cleared`);
+  assert.equal(state.activeFilter, 'all', `${label}: filter not reset`);
+  assert.equal(state.hash, '#cve-' + encodeURIComponent(cid), `${label}: url hash not updated`);
+  assert.ok(parseInt(state.visible, 10) === state.cards && state.cards > 1, `${label}: list not restored`);
+}
+
+// '이번 주 우선 조치' 행 → CVE 카드 이동 (검색·필터로 카드를 숨긴 상태에서도 동작해야 한다)
+async function checkCvePriorityNav(page, width) {
+  await page.locator('.priority-list a.priority-row[data-cve]').first().waitFor({ state: 'attached' });
+  const target = await page.evaluate(() => {
+    const row = document.querySelector('.priority-list a.priority-row[data-cve]');
+    return row ? { cid: row.getAttribute('data-cve'), href: row.getAttribute('href') } : null;
+  });
+  assert.ok(target, 'priority row not found');
+  assert.equal(target.href, '#cve-' + target.cid, 'priority row must link to its card');
+
+  // 1) 검색어로 대상 카드를 숨긴 뒤 키보드 Tab + Enter
+  await page.fill('#searchInput', 'java4shell');
+  if (await page.locator('#cve-' + target.cid).count() > 0) {
+    await page.fill('#searchInput', 'zzzz-no-such-cve');
+  }
+  await page.waitForFunction((id) => !document.getElementById('cve-' + id), target.cid, { timeout: 5000 });
+  assert.equal(await page.locator('#cve-' + target.cid).count(), 0, 'target card not hidden by search');
+  await page.evaluate(() => { if (document.activeElement) document.activeElement.blur(); });
+  let reached = false;
+  for (let i = 0; i < 80; i += 1) {
+    reached = await page.evaluate(() => !!document.activeElement
+      && document.activeElement.classList.contains('priority-row'));
+    if (reached) break;
+    await page.keyboard.press('Tab');
+  }
+  assert.ok(reached, 'could not reach the priority row with Tab');
+  assert.equal(await page.evaluate(() => document.activeElement.getAttribute('data-cve')),
+    target.cid, 'Tab focus landed on another row');
+  await page.keyboard.press('Enter');
+  await assertCveJump(page, target.cid, `cve ${width}px keyboard jump`);
+
+  // 2) 필터로 대상 카드를 숨긴 뒤 마우스 클릭
+  let filtered = null;
+  const rows = await page.evaluate(() => {
+    const items = (typeof CVE_ITEMS !== 'undefined' && Array.isArray(CVE_ITEMS)) ? CVE_ITEMS : [];
+    return Array.from(document.querySelectorAll('.priority-list a.priority-row[data-cve]'))
+      .slice(0, 8)
+      .map((row) => {
+        const cid = row.getAttribute('data-cve');
+        const item = items.find((x) => x.cve_id === cid);
+        return { cid, severity: item ? item.severity : null };
+      });
+  });
+  for (const row of rows) {
+    const hideFilter = row.severity === 'CRITICAL' ? 'high' : 'critical';
+    await page.click(`.segment-btn[data-filter="${hideFilter}"]`);
+    if (await page.locator('#cve-' + row.cid).count() === 0) {
+      filtered = row;
+      break;
+    }
+    await page.click('.segment-btn[data-filter="all"]');
+  }
+  assert.ok(filtered, 'could not hide any priority row target with a severity filter');
+  await page.click(`.priority-row[data-cve="${filtered.cid}"]`);
+  await assertCveJump(page, filtered.cid, `cve ${width}px click jump`);
+  console.log(`cve priority nav ${width}px passed`);
+}
 
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
@@ -40,6 +129,8 @@ async function checkPage(context, base, name, width) {
 
     const cards = { index: '#jobsContainer .job-card, #jobsContainer .list-row', ai: '#aiGrid .ai-card', cve: '#cveList .cve-card' };
     if (cards[name]) await page.locator(cards[name]).first().waitFor({ state: 'attached' });
+
+    if (name === 'cve') await checkCvePriorityNav(page, width);
 
     const blocked = await page.evaluate(() => ({
       csp: window.smokeCspViolations,

@@ -643,7 +643,19 @@ CSS = """
       white-space: nowrap;
     }
 
-    .nav-tabs { display: flex; gap: 6px; margin-left: 10px; }
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      margin-left: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar { display: none; }
 
     .nav-tab-item {
       padding: 5px 12px;
@@ -1514,6 +1526,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="tools.html" class="nav-tab-item">실무 유틸</a>
           <a href="radar.html" class="nav-tab-item active">피싱 레이더</a>
           <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
+          <a href="clue.html" class="nav-tab-item">3단서 추리</a>
         </div>
       </div>
 

@@ -131,7 +131,19 @@
       white-space: nowrap;
     }
 
-    .nav-tabs { display: flex; gap: 6px; margin-left: 10px; }
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      margin-left: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar { display: none; }
 
     .nav-tab-item {
       padding: 5px 12px;
@@ -981,6 +993,7 @@
           <a href="tools.html" class="nav-tab-item active">실무 유틸</a>
           <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
           <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
+          <a href="clue.html" class="nav-tab-item">3단서 추리</a>
         </div>
       </div>
 
@@ -1785,7 +1798,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
     <footer class="footer">
       Infosec Archive · 보안 실무 유틸 · 치트시트<br>
       모든 변환·계산은 브라우저에서만 수행되며 서버로 전송되지 않습니다. 명령은 점검 권한이 있는 대상에만 사용하세요.<br>
-      2026-11-21 08:45 KST 기준
+      2026-11-21 09:28 KST 기준
     </footer>
   </main>
 
