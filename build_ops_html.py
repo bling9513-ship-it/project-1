@@ -17,6 +17,7 @@ from datetime import datetime, timedelta, timezone
 from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
+import game_guide
 import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -60,6 +61,32 @@ POOL = [
 ]
 
 SPEC_KEYS = ("infra", "sec")
+
+GUIDE_STAGE = (
+    '<div class="ops-demo">'
+    '<div class="ops-demo-board">'
+    '<span class="ops-demo-alert" data-demo-alert="0"><i></i>결제 API 5xx</span>'
+    '<div class="ops-demo-people">'
+    '<span class="ops-demo-person" data-demo-person="infra"><b>인프라</b>'
+    '<em class="ops-demo-rec" data-demo-rec hidden>추천</em>'
+    '<span class="ops-demo-check" data-demo-check hidden>'
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>'
+    '</span></span>'
+    '<span class="ops-demo-person" data-demo-person="sec"><b>보안</b></span>'
+    '</div>'
+    '</div>'
+    '<div class="ops-demo-foot">'
+    '<span class="ops-demo-count" data-demo-count="0">남은 경보 6건</span>'
+    '<span class="ops-demo-done" data-demo-done hidden>처리 완료 · +345점</span>'
+    '</div>'
+    '</div>'
+)
+
+GUIDE_HTML = game_guide.guide_html(
+    'opsGuide', GUIDE_STAGE,
+    ['① 경보 탭', '② 추천 담당', '③ 처리 완료'],
+    '경보 카드를 누르면 전문 담당 카드가 파란색으로 켜집니다. 그 담당에게 배정하면 처리 시간이 40% 줄어듭니다.',
+)
 
 
 def _validate_pool():
@@ -387,10 +414,16 @@ CSS = """
     @media (max-width: 767px) {
       .ops-shell { grid-template-columns: 1fr; gap: 10px; }
       .ops-rail { display: contents; }
+      .ops-main { display: contents; }
+      .ops-guide { display: block; order: 0; margin-bottom: 0; }
       .ops-rail > .ops-card:nth-of-type(1) { order: 1; }
       .ops-rail > .ops-card:nth-of-type(2) { order: 2; }
-      .ops-main { order: 3; }
-      .ops-rail > .ops-card:nth-of-type(3) { order: 4; }
+      .ops-main-head { order: 3; }
+      .ops-board { order: 4; }
+      .ops-result { order: 5; }
+      .ops-foot { order: 6; }
+      .ops-rail > .ops-card:nth-of-type(3) { order: 7; }
+      .ops-guide .gg-card { margin-bottom: 0; }
       .ops-card { padding: 11px 12px; }
       .ops-card-head { margin-bottom: 7px; }
       .ops-clock { margin-top: 8px; }
@@ -414,6 +447,9 @@ CSS = """
       .ops-hero .ops-pill { display: none; }
       .ops-hero h1 { font-size: 19px; }
       .ops-hero p { display: none; }
+      .ops-hint { display: none; }
+      .ops-main-sub { display: none; }
+      .ops-main-head { justify-content: flex-start; gap: 8px; }
       .ops-alert { min-height: 108px; }
       .ops-result-score strong { font-size: 28px; }
       .ops-clock-value { font-size: 22px; }
@@ -424,6 +460,13 @@ CSS = """
       .ops-person { grid-template-columns: 24px minmax(0, 1fr); gap: 7px; padding: 7px 8px; }
       .ops-person-avatar { width: 24px; height: 24px; }
       .ops-person-name { font-size: 11.5px; }
+      .ops-main-count { font-size: 10.5px; }
+    }
+
+    @media (max-width: 767px) {
+      .ops-demo-board { gap: 6px; }
+      .ops-demo-alert { font-size: 9px; padding: 4px 6px; }
+      .ops-demo-person { font-size: 9px; padding: 4px 6px; }
     }
 
     @media (max-width: 380px) {
@@ -432,11 +475,101 @@ CSS = """
       .oa-title { font-size: 12.5px; }
     }
 
+    /* ----- 게임 방법 데모 (경보 탭 → 추천 담당 → 처리 완료) ----- */
+    .ops-guide { margin-bottom: 12px; max-width: 560px; }
+    .ops-demo { display: flex; flex-direction: column; gap: 6px; max-width: 520px; }
+    .ops-guide .gg-steps { justify-content: flex-start; }
+    .ops-demo-board { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .ops-demo-alert {
+      display: inline-flex; align-items: center; gap: 5px; min-width: 0;
+      padding: 5px 7px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 9.5px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+    }
+    .ops-demo-alert i { width: 6px; height: 6px; border-radius: 50%; background: var(--no-text); flex: 0 0 auto; }
+    .ops-demo-alert.is-tap { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+    .ops-demo-alert.is-done { border-color: var(--ok-border); color: var(--ok-text); background: var(--ok-bg); }
+    .ops-demo-alert.is-done i { background: var(--ok-text); }
+    .ops-demo-people { display: inline-flex; align-items: center; gap: 5px; }
+    .ops-demo-person {
+      position: relative; display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 7px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 9.5px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap;
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+    .ops-demo-person b { font-weight: 700; }
+    .ops-demo-rec {
+      font-style: normal; font-size: 7.5px; font-weight: 700; color: #ffffff;
+      background: var(--accent-primary); border-radius: 4px; padding: 1px 3px;
+    }
+    .ops-demo-person.is-rec { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .ops-demo-check {
+      position: absolute; right: -5px; top: -5px; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
+    }
+    .ops-demo-check svg { width: 8px; height: 8px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .ops-demo-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .ops-demo-count { font-size: 9px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .ops-demo-done { font-size: 9px; font-weight: 700; color: var(--ok-text); font-variant-numeric: tabular-nums; }
+
+    /* ----- 보드 즉시 피드백: 추천 담당 · 추천 경보 · 남은 경보 카운터 ----- */
+    .ops-person { position: relative; }
+    .ops-person-badge {
+      display: none; font-size: 8px; font-weight: 700; color: #ffffff;
+      background: var(--accent-primary); border-radius: 4px; padding: 1px 4px; margin-left: 4px;
+      vertical-align: 1px;
+    }
+    .ops-person.is-rec { border-color: var(--accent-primary); background: var(--accent-subtle); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .ops-person.is-rec .ops-person-badge { display: inline-block; }
+    .ops-person.is-rec .ops-person-avatar { background: var(--bg-surface); color: var(--accent-primary); }
+    .ops-alert .oa-badge {
+      display: none; position: absolute; right: 9px; top: 9px;
+      font-size: 8px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--accent-primary); border-radius: 4px; padding: 0 4px;
+    }
+    .ops-alert.is-suggested { border-color: var(--accent-primary); border-style: dashed; }
+    .ops-alert.is-suggested .oa-badge { display: inline-block; }
+    .ops-alert.is-pop { animation: opsCardPop 320ms ease-out; }
+    .ops-person.is-done-pop .ops-person-count { animation: opsCountPop 320ms ease-out; }
+    .ops-main-count {
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .ops-main-count.is-pop { animation: opsCountPop 320ms ease-out; }
+    @keyframes opsCardPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(0.965); }
+      100% { transform: scale(1); }
+    }
+    @keyframes opsCountPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.18); color: var(--accent-primary); }
+      100% { transform: scale(1); }
+    }
+
+    /* ----- 결과: 목표 격차 + 원탭 재도전 최우선 ----- */
+    .ops-result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin-top: 9px;
+      font-size: 12.5px; font-weight: 700; line-height: 1.5; color: var(--text-primary);
+    }
+    .ops-result-gap .tag {
+      flex: 0 0 auto; margin-top: 1px; font-size: 8.5px; font-weight: 700;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 4px;
+    }
+    .ops-result-actions.is-first { margin-top: 10px; }
+
     @media (prefers-reduced-motion: reduce) {
       .ops-seg-btn, .ops-person, .ops-alert { transition: none !important; }
       .ops-bar span, .oa-progress span, .ops-person-bar span { transition: none !important; }
+      .ops-alert.is-pop, .ops-person.is-done-pop .ops-person-count, .ops-main-count.is-pop { animation: none !important; }
+      .ops-demo-alert, .ops-demo-person { transition: none !important; }
     }
 """
+
+CSS = CSS + game_guide.GUIDE_CSS
 
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="ko">
@@ -540,8 +673,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <div class="ops-card-head">
             <h2>대응 인력</h2>
             <span>2명</span>
-          </div>
-          <div id="rosterList"></div>
+          </div>          <div id="rosterList"></div>
           <p class="ops-hint">담당을 고른 뒤 경보 카드를 누르면 배치됩니다. 이미 배치한 경보를 다시 누르면 대기열 맨 뒤로 갑니다.</p>
         </section>
 
@@ -560,8 +692,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </aside>
 
       <section class="ops-main" aria-label="경보 보드">
+        <div class="ops-guide">__GUIDE__</div>
         <div class="ops-main-head">
           <h2 class="ops-main-title" id="boardDate">오늘의 경보 6건</h2>
+          <span class="ops-main-count" id="boardCount" aria-live="polite">남은 6건</span>
           <span class="ops-main-sub" id="boardSub">두 담당에게 나눠 배치하세요</span>
         </div>
         <div class="ops-board" id="alertBoard" aria-label="경보 목록"></div>
@@ -569,6 +703,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <section class="ops-result" id="resultBox" aria-labelledby="resultTitle" hidden>
           <span class="ops-result-badge" id="resultBadge">교대 종료</span>
           <h2 class="ops-result-title" id="resultTitle">60초 관제 결과</h2>
+          <p class="ops-result-gap" id="resultGap"><span class="tag">다음 목표</span><span id="resultGapText">—</span></p>
+          <div class="ops-result-actions is-first">
+            <button type="button" class="ops-primary" id="retryBtn">바로 재도전</button>
+            <button type="button" class="ops-ghost" id="switchPracticeBtn">연습 모드</button>
+          </div>
           <div class="ops-result-score">
             <strong id="resultScore">0</strong><span class="unit">점</span>
             <span class="ops-result-best" id="resultBest"></span>
@@ -579,10 +718,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <div><dt>다운타임</dt><dd id="resultDowntime">0초</dd></div>
           </dl>
           <p class="ops-result-hint" id="resultHint"></p>
-          <div class="ops-result-actions">
-            <button type="button" class="ops-primary" id="retryBtn">다시 도전</button>
-            <button type="button" class="ops-ghost" id="switchPracticeBtn">연습으로 실험</button>
-          </div>
         </section>
 
         <p class="ops-foot">배치·점수 기록은 이 브라우저(localStorage)에만 저장됩니다. 서버로 보내지 않습니다.</p>
@@ -591,6 +726,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   </main>
 
   <script type="application/json" id="opsData">__DATA_JSON__</script>
+
+  <script>
+__GUIDE_SCRIPTS__
+  </script>
 
   <script>
   (function () {
@@ -625,7 +764,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
      'liveScore', 'liveDowntime', 'opsStatus', 'startBtn', 'resetPlanBtn', 'rosterList', 'alertBoard',
      'resultBox', 'resultBadge', 'resultTitle', 'resultScore', 'resultBest', 'resultCompleted', 'resultMissed',
      'resultDowntime', 'resultHint', 'retryBtn', 'switchPracticeBtn', 'recBest', 'recStreak', 'recLast',
-     'recHistory', 'recordDate', 'boardDate', 'boardSub', 'themeToggle', 'moonIcon', 'sunIcon'
+     'recHistory', 'recordDate', 'boardDate', 'boardSub', 'boardCount', 'resultGap', 'resultGapText',
+     'themeToggle', 'moonIcon', 'sunIcon'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
     var rosterEls = {};
@@ -646,6 +786,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       timer: null,
       result: null,
       best: null,
+      recommend: null,
       store: null
     };
 
@@ -728,6 +869,23 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function setStatus(text) { el.opsStatus.textContent = text; }
+
+    /* 카드·카운터가 살아 움직이게: 클래스를 붙였다 잠시 뒤 뺀다. */
+    function pulse(node, cls) {
+      if (!node) return;
+      node.classList.remove(cls);
+      void node.offsetWidth;
+      node.classList.add(cls);
+      window.setTimeout(function () { node.classList.remove(cls); }, 380);
+    }
+
+    function flashRecommend(rid) {
+      state.recommend = rid;
+      renderRoster();
+      window.setTimeout(function () {
+        if (state.recommend === rid) { state.recommend = null; renderRoster(); }
+      }, 1500);
+    }
 
     function assignedCount() { return state.queues.infra.length + state.queues.sec.length; }
 
@@ -932,7 +1090,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         btn.innerHTML =
           '<span class="ops-person-avatar">' + responderIcon(r.id) + '</span>' +
           '<span class="ops-person-body">' +
-            '<span class="ops-person-top"><span class="ops-person-name">' + esc(r.name) + '</span>' +
+            '<span class="ops-person-top"><span class="ops-person-name">' + esc(r.name) +
+            '<span class="ops-person-badge">추천</span></span>' +
             '<span class="ops-person-count">배치 0건</span></span>' +
             '<span class="ops-person-state">대기 중</span>' +
             '<span class="ops-person-bar"><span></span></span>' +
@@ -966,6 +1125,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         btn.dataset.sev = String(a.data.sev);
         btn.dataset.state = a.state;
         btn.innerHTML =
+          '<span class="oa-badge" aria-hidden="true">추천</span>' +
           '<span class="oa-top"><span class="oa-sev sev-' + a.data.sev + '">' + SEV_LABEL[a.data.sev] + '</span>' +
           '<span class="oa-spec">' + specLabel(a.data.spec) + ' 전문</span></span>' +
           '<strong class="oa-title">' + esc(a.data.title) + '</strong>' +
@@ -1009,7 +1169,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       el.resultBox.hidden = true;
       buildBoard();
       render();
-      el.boardDate.textContent = '오늘의 경보 ' + state.alerts.length + '건';
+      el.boardDate.textContent = '오늘의 경보';
       el.boardSub.textContent = dayLabel(todayKey()) + ' · 같은 판으로 다시 도전';
     }
 
@@ -1054,6 +1214,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       a.state = 'queued';
       state.queues[rid].push(id);
       setStatus(SPEC_LABEL[rid] + ' 담당에 배치' + (a.data.spec === rid ? ' · 전문 매칭' : ' · 비전문'));
+      if (a.data.spec === rid) flashRecommend(rid);
+      pulse(cardEls[id], 'is-pop');
       if (state.mode === 'live') pump(rid, currentTime());
       render();
     }
@@ -1179,6 +1341,26 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     /* ---------------------------------------------------------------- 결과 */
+    /* 한 가지 목표 격차: 다음 등급(B→A→S)까지 남은 점수, 또는 남은 경보 건수. */
+    function gapFor(result) {
+      var best = state.best && state.best.score ? state.best.score : 0;
+      if (!best) return '오늘의 최적 배치를 계산하지 못했습니다. 한 판 더 진행해 보세요.';
+      var targets = [{ name: 'B', min: 0.6 }, { name: 'A', min: 0.8 }, { name: 'S', min: 0.95 }];
+      var next = null;
+      targets.forEach(function (target) {
+        if (next) return;
+        if (result.score < target.min * best) {
+          next = { name: target.name, need: Math.max(1, Math.ceil(target.min * best - result.score)) };
+        }
+      });
+      if (result.mode === 'live' && result.missed > 0) {
+        return '남은 경보 ' + result.missed + '건만 더 처리하면 ' +
+          (next ? next.name + '등급까지 ' + next.need + '점!' : '오늘 최적에 더 가까워집니다!');
+      }
+      if (next) return '다음 등급 ' + next.name + '까지 ' + next.need + '점!';
+      return '오늘 최적 배치(S등급)를 달성했습니다!';
+    }
+
     function hintFor(result) {
       var best = state.best || { score: result.score };
       var gap = Math.max(0, best.score - result.score);
@@ -1249,6 +1431,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       el.resultMissed.textContent = result.missed + '건';
       el.resultDowntime.textContent = result.downtime + '초';
       el.resultHint.textContent = hintFor(result);
+      el.resultGapText.textContent = gapFor(result);
       el.resultBox.hidden = false;
       el.resultBox.scrollIntoView({ block: 'nearest' });
     }
@@ -1319,6 +1502,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         var queued = state.queues[r.id].length;
         card.classList.toggle('is-active', state.active === r.id);
         card.classList.toggle('is-busy', !!working);
+        card.classList.toggle('is-rec', state.recommend === r.id);
         card.setAttribute('aria-pressed', state.active === r.id ? 'true' : 'false');
         card.querySelector('.ops-person-count').textContent = '배치 ' + queued + '건';
         var stateText;
@@ -1345,10 +1529,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function renderBoard() {
       var t = currentTime();
       var isLive = state.mode === 'live';
+      var remaining = 0;
       state.alerts.forEach(function (a) {
+        if (a.state !== 'done' && a.state !== 'missed') remaining += 1;
         var card = cardEls[a.id];
         if (!card) return;
         card.dataset.state = a.state;
+        card.classList.toggle('is-suggested',
+          a.state === 'ready' && a.data.spec === state.active && state.phase !== 'ended');
         var stateText = '';
         var meta = '기본 ' + a.data.base + '초';
         var pct = 0;
@@ -1378,6 +1566,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         card.querySelector('.oa-meta').textContent = meta;
         card.querySelector('.oa-progress span').style.width = pct + '%';
       });
+      if (el.boardCount) {
+        var countText = '남은 ' + remaining + '건 · 처리 ' + (state.alerts.length - remaining) + '/' + state.alerts.length;
+        if (el.boardCount.textContent !== countText) {
+          el.boardCount.textContent = countText;
+          pulse(el.boardCount, 'is-pop');
+        }
+      }
     }
 
     function renderRecord() {
@@ -1453,7 +1648,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       el.resultBox.hidden = true;
     });
 
-    el.boardDate.textContent = '오늘의 경보 6건';
+    el.boardDate.textContent = '오늘의 경보';
 
     /* ---------------------------------------------------------------- 테마 */
     function setTheme(theme) {
@@ -1485,6 +1680,44 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     /* ---------------------------------------------------------------- 시작 */
+    // ---- 게임 방법 데모: 경보 탭 → 추천 담당 → 처리 완료 (처음 한 번만 움직임) ----
+    (function initOpsGuide() {
+      var stage = document.getElementById('opsGuideStage');
+      if (!stage) return;
+      var alertChip = stage.querySelector('[data-demo-alert]');
+      var person = stage.querySelector('[data-demo-person="infra"]');
+      var rec = stage.querySelector('[data-demo-rec]');
+      var check = stage.querySelector('[data-demo-check]');
+      var count = stage.querySelector('[data-demo-count]');
+      var done = stage.querySelector('[data-demo-done]');
+
+      function paint(n) {
+        if (alertChip) {
+          alertChip.classList.toggle('is-tap', n >= 1);
+          alertChip.classList.toggle('is-done', n >= 3);
+        }
+        if (person) person.classList.toggle('is-rec', n === 2);
+        if (rec) rec.hidden = n !== 2;
+        if (check) check.hidden = n < 3;
+        if (count) count.textContent = n >= 3 ? '남은 경보 5건' : '남은 경보 6건';
+        if (done) done.hidden = n < 3;
+      }
+
+      GameGuide.create({
+        key: 'ops_demo_seen_v1',
+        steps: document.getElementById('opsGuideSteps'),
+        note: document.getElementById('opsGuideNote'),
+        replay: document.getElementById('opsGuideReplay'),
+        notes: [
+          '① 도착한 경보 카드를 누릅니다. 전문 담당이 파란색 추천으로 켜집니다.',
+          '② 추천 담당에게 배정하면 처리 시간이 40% 줄어듭니다.',
+          '③ 처리가 끝나면 카드가 팝하고 남은 경보 수가 줄어듭니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    })();
+
     state.store = loadStore();
     buildRoster();
     resetBoard();
@@ -1503,6 +1736,8 @@ def build():
 
     html = HTML_TEMPLATE
     html = html.replace("__CSS__", CSS)
+    html = html.replace("__GUIDE__", GUIDE_HTML)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
     html = html.replace("__DATA_JSON__", payload)
 
     with open(DATA_PATH, "w", encoding="utf-8") as f:

@@ -17,6 +17,7 @@ import random
 from datetime import datetime, timedelta, timezone
 
 from html_guard import harden_html, safe_json_for_script
+import game_guide
 import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -332,6 +333,14 @@ CSS = """
     }
     .load-hero h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; }
     .load-hero p { margin-top: 5px; font-size: 13px; color: var(--text-secondary); max-width: 680px; }
+    .load-goal {
+      display: flex; align-items: center; gap: 6px; margin: 4px 0 0;
+      font-size: 11.5px; font-weight: 600; line-height: 1.45; color: var(--text-primary);
+    }
+    .load-goal .tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 5px;
+    }
 
     .load-shell { display: grid; grid-template-columns: 324px minmax(0, 1fr); gap: 16px; align-items: start; }
     .load-rail { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 76px; }
@@ -375,144 +384,6 @@ CSS = """
     .streak-best { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
     .load-status { margin-top: 9px; font-size: 10.5px; line-height: 1.5; color: var(--text-muted); min-height: 16px; }
 
-    /* ----- 게임 방법(움직이는 3단계 데모) ----- */
-    .guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
-    .guide-toggle {
-      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
-      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
-    }
-    .guide-body { margin-top: 9px; }
-    .gl-stage {
-      position: relative; display: flex; align-items: flex-end; gap: 12px;
-      padding: 13px 11px 10px; border: 1px solid var(--border-default); border-radius: 12px;
-      background: var(--bg-page); min-height: 86px;
-    }
-    .gl-cart { position: relative; width: 74px; flex: 0 0 auto; }
-    .gl-stack {
-      position: relative; height: 40px; display: flex; flex-direction: column-reverse; gap: 2px;
-      align-items: center; margin-bottom: 3px;
-    }
-    .gl-crate {
-      width: 28px; height: 15px; border: 1px solid var(--border-strong); border-radius: 3px;
-      background: var(--bg-subtle); color: var(--text-secondary);
-      font-size: 7px; font-weight: 700; display: flex; align-items: center; justify-content: center;
-    }
-    .gl-box {
-      position: absolute; left: 50%; margin-left: -15px; bottom: 21px; width: 30px; height: 17px;
-      border: 1px solid var(--accent-primary); border-radius: 3px; background: var(--accent-subtle);
-      color: var(--accent-primary); font-size: 7.5px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; animation: glDrop 9s ease-in-out infinite;
-    }
-    .gl-bed { display: block; position: relative; height: 7px; border-radius: 3px; background: var(--text-muted); }
-    .gl-bed::before {
-      content: ""; position: absolute; left: 4px; right: -9px; top: -13px; height: 13px;
-      border-left: 2px solid var(--border-strong); border-top: 2px solid var(--border-strong);
-      border-top-left-radius: 4px;
-    }
-    .gl-wheels { display: block; position: relative; height: 8px; }
-    .gl-wheels span {
-      position: absolute; top: 1px; width: 8px; height: 8px; border-radius: 50%;
-      border: 2px solid var(--text-muted); background: var(--bg-surface);
-    }
-    .gl-wheels span:first-child { left: 10px; }
-    .gl-wheels span:last-child { right: 10px; }
-    .gl-meter { display: block; flex: 1 1 auto; min-width: 0; }
-    .gl-meter-track {
-      display: block; position: relative; height: 9px; border-radius: 999px; background: var(--bg-muted); overflow: hidden;
-    }
-    .gl-fill {
-      position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px;
-      background: var(--ok-text); animation: glFill 9s ease-in-out infinite;
-    }
-    .gl-meter-marks { display: flex; justify-content: space-between; margin-top: 3px; font-size: 6.5px; color: var(--text-muted); }
-    .gl-kg { display: block; }
-    .gl-kg { margin-top: 4px; font-size: 9px; font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums; opacity: 0; animation: glKg 9s ease-in-out infinite; }
-    .gl-chips { display: flex; align-items: center; gap: 6px; margin-top: 8px; min-height: 22px; }
-    .gl-ship {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 3px 9px; border-radius: 7px; background: var(--accent-primary); color: #ffffff;
-      font-size: 9.5px; font-weight: 700; opacity: 0; animation: glShip 9s ease-in-out infinite;
-    }
-    .gl-bonus { font-size: 11px; font-weight: 700; color: var(--ok-text); font-variant-numeric: tabular-nums; opacity: 0; animation: glBonus 9s ease-in-out infinite; }
-    .gl-balance { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 8.5px; color: var(--text-muted); }
-    .gl-balance b { color: var(--accent-primary); font-weight: 700; }
-    .guide-caption { position: relative; height: 18px; margin-top: 8px; }
-    .gc-step {
-      position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px;
-      font-size: 10.5px; font-weight: 600; color: var(--text-secondary); opacity: 0; white-space: nowrap;
-    }
-    .gc-num {
-      display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px;
-      border-radius: 50%; background: var(--bg-muted); color: var(--text-secondary);
-      font-size: 8.5px; font-weight: 700; flex-shrink: 0;
-    }
-    .gc-3 .gc-num { background: var(--ok-text); color: #ffffff; }
-    .gc-1 { animation: gc1 9s ease infinite; }
-    .gc-2 { animation: gc2 9s ease infinite; }
-    .gc-3 { animation: gc3 9s ease infinite; }
-    .guide-note { margin-top: 6px; font-size: 10px; line-height: 1.5; color: var(--text-muted); }
-
-    @keyframes glDrop {
-      0%, 4% { opacity: 0; transform: translateY(-24px) rotate(-4deg); }
-      7% { opacity: 1; transform: translateY(-24px) rotate(-4deg); }
-      16% { opacity: 1; transform: translateY(0) rotate(0deg); }
-      18% { transform: translateY(2px); }
-      21%, 92% { opacity: 1; transform: translateY(0); }
-      96%, 100% { opacity: 0; transform: translateY(0); }
-    }
-    @keyframes glFill {
-      0%, 18% { width: 0; background: var(--ok-text); }
-      34% { width: 48%; background: var(--ok-text); }
-      50%, 62% { width: 72%; background: var(--warn-text); }
-      92% { width: 72%; background: var(--warn-text); }
-      96%, 100% { width: 0; background: var(--ok-text); }
-    }
-    @keyframes glKg {
-      0%, 18% { opacity: 0; }
-      26%, 92% { opacity: 1; }
-      96%, 100% { opacity: 0; }
-    }
-    @keyframes glShip {
-      0%, 56% { opacity: 0; transform: scale(0.86); }
-      62% { opacity: 1; transform: scale(1.06); }
-      66%, 92% { opacity: 1; transform: scale(1); }
-      96%, 100% { opacity: 0; transform: scale(0.86); }
-    }
-    @keyframes glBonus {
-      0%, 62% { opacity: 0; transform: translateY(4px); }
-      68% { opacity: 1; transform: translateY(0); }
-      80% { opacity: 1; transform: translateY(-4px); }
-      90%, 100% { opacity: 0; transform: translateY(-8px); }
-    }
-    @keyframes gc1 {
-      0%, 30% { opacity: 1; }
-      36%, 100% { opacity: 0; }
-    }
-    @keyframes gc2 {
-      0%, 34% { opacity: 0; }
-      38%, 56% { opacity: 1; }
-      62%, 100% { opacity: 0; }
-    }
-    @keyframes gc3 {
-      0%, 58% { opacity: 0; }
-      62%, 92% { opacity: 1; }
-      96%, 100% { opacity: 0; }
-    }
-
-    /* ----- 목표 ----- */
-    .goal-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .goal-row { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--text-secondary); }
-    .goal-row svg { width: 12px; height: 12px; flex-shrink: 0; fill: var(--bg-muted); stroke: none; }
-    .goal-row.is-on svg { fill: var(--warn-text); }
-    .goal-row.is-on { color: var(--text-primary); font-weight: 600; }
-    .goal-label { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .goal-row b { font-variant-numeric: tabular-nums; font-size: 11.5px; }
-    .goal-bar { position: relative; height: 6px; margin-top: 9px; border-radius: 999px; background: var(--bg-muted); overflow: hidden; }
-    .goal-bar span { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--accent-primary); transition: width 420ms ease; }
-
-    /* ----- 기록 ----- */
     .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
     .record-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
     .record-grid dd { font-size: 14.5px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -632,6 +503,13 @@ CSS = """
     .tilt-fill { position: absolute; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--ok-text); transition: left 320ms ease, width 320ms ease, background-color 300ms ease; }
     .tilt-fill.is-warn { background: var(--warn-text); }
     .tilt-fill.is-danger { background: var(--no-text); }
+    .tilt-preview {
+      position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 1px;
+      background: var(--accent-primary); transform: translateX(-1px);
+      transition: left 240ms ease, background-color 240ms ease;
+    }
+    .tilt-preview.is-warn { background: var(--warn-text); }
+    .tilt-preview.is-danger { background: var(--no-text); }
     .tilt-note { margin-top: 4px; font-size: 9px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     /* ----- 상자 카드 ----- */
@@ -761,6 +639,41 @@ CSS = """
     .result-grid dd { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
     .result-hint { margin-top: 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); }
     .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 11px; }
+    .result-actions.is-first { margin-top: 10px; }
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin-top: 8px;
+      font-size: 12.5px; font-weight: 700; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap .tag {
+      flex: 0 0 auto; margin-top: 1px; font-size: 8.5px; font-weight: 700;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 4px;
+    }
+
+    /* ----- 게임 방법 데모 (좌/우 싣기 → 무게·균형 → 지금 배송) ----- */
+    .guide .gg-card { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+    .ld-demo { display: flex; flex-direction: column; gap: 6px; }
+    .ld-cart { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 44px; }
+    .ld-bed { width: 64px; height: 26px; border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg-surface); position: relative; }
+    .ld-crate {
+      position: absolute; left: 6px; bottom: 4px; width: 24px; height: 15px;
+      border: 1px solid var(--accent-primary); border-radius: 3px; background: var(--accent-subtle);
+      color: var(--accent-primary); font-size: 7px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+    .ld-crate.is-off { opacity: 0; transform: translateY(-8px); }
+    .ld-wheel { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--text-muted); background: var(--bg-surface); align-self: flex-end; margin-bottom: -4px; }
+    .ld-meter { position: relative; }
+    .ld-track { display: block; height: 8px; border-radius: 999px; background: var(--bg-muted); overflow: hidden; }
+    .ld-fill { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ok-text); transition: width 320ms ease, background-color 300ms ease; }
+    .ld-fill.is-warn { background: var(--warn-text); }
+    .ld-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 3px; font-size: 8.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .ld-ship {
+      align-self: flex-start; padding: 3px 8px; border-radius: 6px; background: var(--accent-primary); color: #ffffff;
+      font-size: 9px; font-weight: 700; transition: opacity 160ms ease, transform 160ms ease;
+    }
+    .ld-ship.is-off { opacity: 0; transform: scale(0.9); }
     .load-ghost {
       padding: 11px 8px; border: 1px solid var(--border-default); border-radius: 11px;
       background: var(--bg-page); color: var(--text-primary); font-family: inherit;
@@ -890,8 +803,10 @@ CSS = """
 
     @media (max-width: 640px) {
       .load-hero p { display: none; }
+      .load-hero .load-goal { display: flex; }
       .load-hero { margin-bottom: 8px; }
-      .load-pill { margin-bottom: 6px; padding: 2px 7px; }
+      .load-pill { display: none; }
+      .load-goal { margin-top: 3px; font-size: 11px; }
       .load-hero h1 { font-size: 19px; }
       #statusCard .load-card-head { display: none; }
       .load-status { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
@@ -928,14 +843,7 @@ CSS = """
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .gl-box { animation: none !important; opacity: 1 !important; transform: none !important; }
-      .gl-fill { animation: none !important; width: 72% !important; background: var(--warn-text) !important; }
-      .gl-kg { animation: none !important; opacity: 1 !important; }
-      .gl-ship { animation: none !important; opacity: 1 !important; transform: none !important; }
-      .gl-bonus { animation: none !important; opacity: 1 !important; transform: none !important; }
-      .gc-1 { animation: none !important; opacity: 0 !important; }
-      .gc-2 { animation: none !important; opacity: 0 !important; }
-      .gc-3 { animation: none !important; opacity: 1 !important; }
+      .ld-crate, .ld-fill, .ld-ship, .ld-balance, .tilt-preview { transition: none !important; }
       .crate.is-new, .crate.is-fallen { animation: none !important; }
       .cart-rig.is-bounce, .cart-rig.is-shake { animation: none !important; }
       .result.is-new .result-burst span { animation: none !important; }
@@ -945,6 +853,30 @@ CSS = """
       .gauge-head b.is-danger { animation: none !important; }
     }
 """
+
+CSS = CSS + game_guide.GUIDE_CSS
+
+GUIDE_STAGE = (
+    '<div class="ld-demo">'
+    '<span class="ld-cart">'
+    '<span class="ld-bed"><i class="ld-crate" data-demo-crate>18</i></span>'
+    '<span class="ld-wheel" aria-hidden="true"></span>'
+    '<span class="ld-wheel" aria-hidden="true"></span>'
+    '</span>'
+    '<span class="ld-meter">'
+    '<span class="ld-track"><span class="ld-fill" data-demo-fill></span></span>'
+    '<span class="ld-meta"><span data-demo-kg>62kg / 100kg</span><span data-demo-bal>균형 ×1.25</span></span>'
+    '</span>'
+    '<span class="ld-ship is-off" data-demo-ship>지금 배송 +38점</span>'
+    '</div>'
+)
+
+GUIDE_HTML = game_guide.guide_html(
+    'loadGuide', GUIDE_STAGE,
+    ['① 좌/우 싣기', '② 무게·균형', '③ 지금 배송'],
+    '상자 표기 무게 범위를 보고 왼쪽·오른쪽에 싣습니다. 무게 100kg·좌우 차이 28kg을 넘으면 그 회차는 0점입니다.',
+)
+
 
 HTML_TEMPLATE = r"""<!DOCTYPE html>
 <html lang="ko">
@@ -1013,6 +945,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <div class="load-hero">
       <span class="load-pill">일일 챌린지 · 하루 5회차</span>
       <h1>한 번 더 싣기</h1>
+      <p class="load-goal"><span class="tag">목표</span><span id="loadGoal">한도 100kg·균형 28kg을 지키며 5회차를 완주해 별 3개</span></p>
       <p>상자에는 표기 무게만 적혀 있습니다. 한도 100kg과 좌우 균형 28kg을 넘지 않게 실으면서, 더 실을지 지금 배송할지 고르세요. 넘치면 그 회차 점수가 사라집니다.</p>
     </div>
 
@@ -1038,37 +971,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <p class="load-status" id="loadStatus" role="status" aria-live="polite">손수레가 도착했습니다. 표기 무게를 보고 첫 상자를 실어 보세요.</p>
         </section>
 
-        <section class="load-card guide" id="guideCard" aria-labelledby="guideTitle">
-          <div class="guide-head">
-            <h2 id="guideTitle">게임 방법</h2>
-            <button type="button" class="guide-toggle" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
-          </div>
-          <div class="guide-body" id="guideBody">
-            <div class="gl-stage" aria-hidden="true">
-              <span class="gl-cart">
-                <span class="gl-stack"><span class="gl-crate">12</span></span>
-                <span class="gl-box">18</span>
-                <span class="gl-bed"></span>
-                <span class="gl-wheels"><span></span><span></span></span>
-              </span>
-              <span class="gl-meter">
-                <span class="gl-meter-track"><span class="gl-fill"></span></span>
-                <span class="gl-meter-marks"><span>0</span><span>70</span><span>100kg</span></span>
-                <span class="gl-kg">62kg 싣는 중</span>
-              </span>
-            </div>
-            <div class="gl-chips" aria-hidden="true">
-              <span class="gl-ship">지금 배송</span>
-              <span class="gl-bonus">+38점</span>
-              <span class="gl-balance">균형 <b>×1.25</b></span>
-            </div>
-            <div class="guide-caption" aria-hidden="true">
-              <span class="gc-step gc-1"><span class="gc-num">1</span>상자를 왼쪽·오른쪽에 싣기</span>
-              <span class="gc-step gc-2"><span class="gc-num">2</span>무게·균형 게이지가 차오름</span>
-              <span class="gc-step gc-3"><span class="gc-num">3</span>지금 배송하면 점수 확정</span>
-            </div>
-            <p class="guide-note">표기 무게는 어림값입니다. 실측이 한도(100kg)나 균형(28kg)을 넘으면 그 회차는 0점. 다음 상자 표기를 보고 미리 판단하세요.</p>
-          </div>
+        <section class="load-card guide" id="guideCard" aria-label="게임 방법">
+          __GUIDE__
         </section>
 
         <section class="load-card" id="goalCard">
@@ -1141,6 +1045,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <div class="tilt-track">
                 <span class="tilt-zone left"></span>
                 <span class="tilt-zone right"></span>
+                <span class="tilt-preview" id="tiltPreviewL" hidden></span>
+                <span class="tilt-preview" id="tiltPreviewR" hidden></span>
                 <span class="tilt-fill" id="tiltFill"></span>
               </div>
               <p class="tilt-note" id="tiltNote">허용 28kg</p>
@@ -1198,6 +1104,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <span class="result-burst" aria-hidden="true"><span style="--bx:20px;--by:-16px"></span><span style="--bx:14px;--by:14px"></span><span style="--bx:-18px;--by:-12px"></span><span style="--bx:-16px;--by:16px"></span><span style="--bx:26px;--by:2px"></span><span style="--bx:-26px;--by:4px"></span></span>
           </div>
           <h2 class="result-title" id="resultTitle">5회차 배송을 마쳤습니다</h2>
+          <p class="result-gap"><span class="tag">다음 목표</span><span id="resultGapText">—</span></p>
+          <div class="result-actions is-first">
+            <button type="button" class="load-primary" id="retryBtn">바로 재도전</button>
+            <button type="button" class="load-ghost" id="practiceBtn">연습 모드</button>
+          </div>
           <div class="result-score">
             <strong id="resultTotal">0</strong><span class="unit">점</span>
             <span class="result-best" id="resultBest">최고 0점</span>
@@ -1209,10 +1120,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <div><dt id="resultTodayLabel">오늘 최고</dt><dd id="resultToday">0점</dd></div>
           </dl>
           <p class="result-hint" id="resultHint"></p>
-          <div class="result-actions">
-            <button type="button" class="load-primary" id="retryBtn">다시 하기</button>
-            <button type="button" class="load-ghost" id="practiceBtn">연습 모드</button>
-          </div>
         </section>
 
         <section class="practice" id="practiceWrap" hidden aria-label="연습 스테이지">
@@ -1227,6 +1134,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </main>
 
   <script type="application/json" id="loadData">__DATA_JSON__</script>
+
+  <script>
+__GUIDE_SCRIPTS__
+  </script>
 
   <script>
   (function () {
@@ -1250,7 +1161,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     var FALLBACK = DATA.fallback || null;
 
     var STORE_KEY = 'load_cart_stats_v1';
-    var GUIDE_KEY = 'load_guide_seen_v1';
     var WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
     var STAR_PATH = 'M12 3.4l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z';
     var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -1258,7 +1168,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     /* ---------------------------------------------------------------- DOM */
     var el = {};
     ['modeDaily', 'modePractice', 'modeNote', 'tripValue', 'tripTotal', 'totalValue', 'streakChip', 'streakBest', 'loadStatus',
-     'guideCard', 'guideToggle', 'guideBody',
+     'guideCard',
+     'loadGoal', 'tiltPreviewL', 'tiltPreviewR',
      'goalList', 'goalNote', 'goalFill', 'goalHint',
      'recBest', 'recPlays', 'recStreak', 'recordDate', 'recHistory',
      'boardTitle', 'boardSub', 'resetBtn', 'dayBadge', 'cartCard', 'cartCap', 'cartTotal', 'cartRig',
@@ -1268,7 +1179,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
      'loadLeft', 'loadRight', 'riskLeft', 'riskRight', 'shipBtn', 'shipPreview', 'boxNote',
      'tripPanel', 'tripBadge', 'tripTitle', 'tripScore', 'bonusPop', 'tripSum', 'tripBal', 'tripStreak', 'tripNote', 'nextTripBtn',
      'resultBox', 'resultBadge', 'resultTitle', 'resultTotal', 'resultBest', 'resultStars',
-     'resultDeliveries', 'resultStreak', 'resultToday', 'resultTodayLabel', 'resultHint', 'retryBtn', 'practiceBtn',
+     'resultDeliveries', 'resultStreak', 'resultToday', 'resultTodayLabel', 'resultHint', 'resultGapText', 'retryBtn', 'practiceBtn',
      'practiceWrap', 'practiceNote', 'practiceList', 'themeToggle', 'moonIcon', 'sunIcon'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
@@ -1427,6 +1338,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       el.tripPanel.classList.remove('is-fail');
       setModeButtons();
       renderAll();
+      if (el.loadGoal) {
+        el.loadGoal.textContent = TRIPS + '회차 완주 · 별 3개까지 ' + (challenge.stars[challenge.stars.length - 1] || 0) + '점';
+      }
       setStatus(mode === 'practice'
         ? '연습 스테이지입니다. 기록은 최고 점수로만 남습니다.'
         : '오늘의 상자 순서입니다. 표기 무게를 보고 첫 상자를 실어 보세요.');
@@ -1472,13 +1386,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       var bestOver = l2 + r2 > LIMIT;
       var bestTilt = Math.abs(l2 - r2) > TILT;
       if (worstOver || worstTilt) {
-        if (bestOver || bestTilt) return { level: 'risk', text: '넘침' };
-        return { level: 'risk', text: '위험' };
+        if (bestOver || bestTilt) return { level: 'risk', text: '넘침', tilt: Math.abs(l - r) };
+        return { level: 'risk', text: '위험', tilt: Math.abs(l - r) };
       }
       var total = l + r;
       var tilt = Math.abs(l - r);
-      if (total >= LIMIT * 0.85 || tilt >= TILT * 0.8) return { level: 'near', text: '주의' };
-      return { level: 'safe', text: '안전' };
+      if (total >= LIMIT * 0.85 || tilt >= TILT * 0.8) return { level: 'near', text: '주의', tilt: tilt };
+      return { level: 'safe', text: '안전', tilt: tilt };
     }
 
     /* ---------------------------------------------------------------- 렌더 */
@@ -1574,6 +1488,24 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       el.tiltNote.textContent = tilt > TILT ? ('허용 초과 ' + (tilt - TILT) + 'kg') : ('차이 ' + tilt + ' / 28kg');
       el.tiltValue.className = pct >= 0.85 ? 'is-danger' : (pct >= 0.6 ? 'is-warn' : '');
 
+      // 기울기 미리보기: 지금 상자를 좌/우에 실었을 때 균형이 어디로 가는지 버튼·트랙에 동시에 보여 준다.
+      var box = currentBox();
+      var canPreview = !!box && !state.tripDone && !state.finished;
+      [['left', el.tiltPreviewL], ['right', el.tiltPreviewR]].forEach(function (pair) {
+        var marker = pair[1];
+        if (!marker) return;
+        if (!canPreview) { marker.hidden = true; return; }
+        var nl = state.left + (pair[0] === 'left' ? box.hi : 0);
+        var nr = state.right + (pair[0] === 'right' ? box.hi : 0);
+        var diff = Math.abs(nl - nr);
+        var ratio = Math.min(1, diff / TILT) * 50;
+        marker.style.left = (nl >= nr ? 50 + ratio : 50 - ratio) + '%';
+        marker.className = 'tilt-preview' + (diff > TILT ? ' is-danger' : (diff >= TILT * 0.85 ? ' is-warn' : ''));
+        marker.hidden = false;
+        marker.setAttribute('aria-label', (pair[0] === 'left' ? '왼쪽' : '오른쪽') + '에 실으면 기울기 ' + diff + 'kg');
+        marker.title = (pair[0] === 'left' ? '왼쪽' : '오른쪽') + '에 실으면 기울기 ' + diff + 'kg';
+      });
+
       if (total > 0) {
         var deg = clamp(((state.right - state.left) / Math.max(total, 1)) * 14, -5.5, 5.5);
         el.cartRig.style.transform = 'rotate(' + deg.toFixed(2) + 'deg)';
@@ -1591,7 +1523,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         return;
       }
       var risk = riskOf(side, box);
-      tag.textContent = risk.text;
+      tag.textContent = risk.text + (typeof risk.tilt === 'number' ? ' ' + risk.tilt : '');
       tag.className = 'risk-tag' + (risk.level === 'safe' ? '' : (risk.level === 'near' ? ' is-near' : ' is-risk'));
       button.classList.toggle('is-risk', risk.level === 'risk');
     }
@@ -1953,6 +1885,15 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       }
       el.resultToday.textContent = isDaily ? ((day && day.best) || 0) + '점' : Math.max(record, state.total) + '점';
       var top = challenge.stars[challenge.stars.length - 1] || 1;
+      var streakBest = (state.store.streak && state.store.streak.best) || 0;
+      if (stars >= 3) {
+        el.resultGapText.textContent = state.bestStreak > streakBest
+          ? '연속 배송 신기록(' + state.bestStreak + '회)을 세웠습니다!'
+          : '연속 배송 신기록까지 ' + Math.max(1, streakBest + 1 - state.bestStreak) + '회!';
+      } else {
+        el.resultGapText.textContent = '별 3개(목표 ' + top + '점)까지 ' + Math.max(1, top - state.total) + '점!';
+      }
+      el.resultHint.textContent = '';
       if (stars >= 3) {
         el.resultHint.textContent = '최고 별점입니다. 같은 상자 순서로 다른 선택을 시험해 더 높은 점수에 도전해 보세요.';
       } else if (state.overloads > 0) {
@@ -1966,19 +1907,44 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     }
 
     /* ---------------------------------------------------------------- 가이드·테마 */
-    function setGuide(open) {
-      el.guideBody.hidden = !open;
-      el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      el.guideToggle.textContent = open ? '접기' : '게임 방법';
-      if (!open) {
-        try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
-      }
-    }
+    // ---- 게임 방법 데모: 좌/우 싣기 → 무게·균형 → 지금 배송 (처음 한 번만 움직임) ----
+    (function initLoadGuide() {
+      var stage = document.getElementById('loadGuideStage');
+      if (!stage) return;
+      var crate = stage.querySelector('[data-demo-crate]');
+      var fill = stage.querySelector('[data-demo-fill]');
+      var kg = stage.querySelector('[data-demo-kg]');
+      var bal = stage.querySelector('[data-demo-bal]');
+      var ship = stage.querySelector('[data-demo-ship]');
 
-    function initGuide() {
-      var seen = null;
-      try { seen = localStorage.getItem(GUIDE_KEY); } catch (e) { seen = null; }
-      setGuide(!seen);
+      function paint(n) {
+        if (crate) crate.classList.toggle('is-off', n < 1);
+        if (fill) {
+          fill.style.width = n >= 2 ? '62%' : '0%';
+          fill.classList.toggle('is-warn', n >= 2);
+        }
+        if (kg) kg.textContent = n >= 2 ? '62kg / 100kg' : '0kg / 100kg';
+        if (bal) bal.textContent = n >= 2 ? '균형 ×1.25' : '균형 ×1.0';
+        if (ship) ship.classList.toggle('is-off', n < 3);
+      }
+
+      GameGuide.create({
+        key: 'load_demo_seen_v1',
+        steps: document.getElementById('loadGuideSteps'),
+        note: document.getElementById('loadGuideNote'),
+        replay: document.getElementById('loadGuideReplay'),
+        notes: [
+          '① 표기 무게를 보고 왼쪽·오른쪽 중 가벼운 쪽에 싣습니다.',
+          '② 무게 100kg·좌우 차이 28kg 게이지가 함께 차오릅니다.',
+          '③ 더 실을지 지금 배송할지 고르면 회차 점수가 확정됩니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    })();
+
+    if (el.loadGoal) {
+      el.loadGoal.textContent = TRIPS + '회차 완주 · 별 3개까지 점수 목표';
     }
 
     function initTheme() {
@@ -1991,7 +1957,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     state.todayKey = kstKey();
     state.store = readStore();
     initTheme();
-    initGuide();
     startDaily();
 
     el.modeDaily.addEventListener('click', function () { setMode('daily'); });
@@ -2009,9 +1974,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       if (state.mode === 'practice') loadChallenge(state.challenge, 'practice', state.practiceId);
       else startDaily();
       setStatus('이번 판을 처음부터 다시 시작합니다. 기록은 그대로입니다.');
-    });
-    el.guideToggle.addEventListener('click', function () {
-      setGuide(el.guideBody.hidden);
     });
     el.themeToggle.addEventListener('click', function () {
       var root = document.documentElement;
@@ -2060,6 +2022,8 @@ def build():
     payload = safe_json_for_script(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
 
     html = HTML_TEMPLATE.replace("__CSS__", CSS).replace("__DATA_JSON__", payload)
+    html = html.replace("__GUIDE__", GUIDE_HTML)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
 
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

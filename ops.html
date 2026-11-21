@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-fZsglgpR/ng6kHmEv5QePVwpyelnj11lbC+RUxCHhBI=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-1He+TIhzZ/EUXnXIlDB4hq+MC5VPacoYNZgKIGEE60M=' 'sha256-/lf8EsznGxufE1s1ENvuw51U4TvwgpPqBPaRwpznqf4=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 퇴근 전 60초 관제실</title>
   <meta name="description" content="서비스 경보 6건을 인프라·자동화 담당과 보안·분석 담당에게 배치해 다운타임과 미처리 경보를 줄이는 60초 관제 게임. 매일 KST 날짜 시드로 같은 경보가 나오고, 타이머 없는 연습 모드에서 최적 배치를 실험할 수 있습니다.">
@@ -267,10 +267,16 @@
     @media (max-width: 767px) {
       .ops-shell { grid-template-columns: 1fr; gap: 10px; }
       .ops-rail { display: contents; }
+      .ops-main { display: contents; }
+      .ops-guide { display: block; order: 0; margin-bottom: 0; }
       .ops-rail > .ops-card:nth-of-type(1) { order: 1; }
       .ops-rail > .ops-card:nth-of-type(2) { order: 2; }
-      .ops-main { order: 3; }
-      .ops-rail > .ops-card:nth-of-type(3) { order: 4; }
+      .ops-main-head { order: 3; }
+      .ops-board { order: 4; }
+      .ops-result { order: 5; }
+      .ops-foot { order: 6; }
+      .ops-rail > .ops-card:nth-of-type(3) { order: 7; }
+      .ops-guide .gg-card { margin-bottom: 0; }
       .ops-card { padding: 11px 12px; }
       .ops-card-head { margin-bottom: 7px; }
       .ops-clock { margin-top: 8px; }
@@ -294,6 +300,9 @@
       .ops-hero .ops-pill { display: none; }
       .ops-hero h1 { font-size: 19px; }
       .ops-hero p { display: none; }
+      .ops-hint { display: none; }
+      .ops-main-sub { display: none; }
+      .ops-main-head { justify-content: flex-start; gap: 8px; }
       .ops-alert { min-height: 108px; }
       .ops-result-score strong { font-size: 28px; }
       .ops-clock-value { font-size: 22px; }
@@ -304,6 +313,13 @@
       .ops-person { grid-template-columns: 24px minmax(0, 1fr); gap: 7px; padding: 7px 8px; }
       .ops-person-avatar { width: 24px; height: 24px; }
       .ops-person-name { font-size: 11.5px; }
+      .ops-main-count { font-size: 10.5px; }
+    }
+
+    @media (max-width: 767px) {
+      .ops-demo-board { gap: 6px; }
+      .ops-demo-alert { font-size: 9px; padding: 4px 6px; }
+      .ops-demo-person { font-size: 9px; padding: 4px 6px; }
     }
 
     @media (max-width: 380px) {
@@ -312,9 +328,146 @@
       .oa-title { font-size: 12.5px; }
     }
 
+    /* ----- 게임 방법 데모 (경보 탭 → 추천 담당 → 처리 완료) ----- */
+    .ops-guide { margin-bottom: 12px; max-width: 560px; }
+    .ops-demo { display: flex; flex-direction: column; gap: 6px; max-width: 520px; }
+    .ops-guide .gg-steps { justify-content: flex-start; }
+    .ops-demo-board { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .ops-demo-alert {
+      display: inline-flex; align-items: center; gap: 5px; min-width: 0;
+      padding: 5px 7px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 9.5px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+    }
+    .ops-demo-alert i { width: 6px; height: 6px; border-radius: 50%; background: var(--no-text); flex: 0 0 auto; }
+    .ops-demo-alert.is-tap { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+    .ops-demo-alert.is-done { border-color: var(--ok-border); color: var(--ok-text); background: var(--ok-bg); }
+    .ops-demo-alert.is-done i { background: var(--ok-text); }
+    .ops-demo-people { display: inline-flex; align-items: center; gap: 5px; }
+    .ops-demo-person {
+      position: relative; display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 7px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 9.5px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap;
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+    .ops-demo-person b { font-weight: 700; }
+    .ops-demo-rec {
+      font-style: normal; font-size: 7.5px; font-weight: 700; color: #ffffff;
+      background: var(--accent-primary); border-radius: 4px; padding: 1px 3px;
+    }
+    .ops-demo-person.is-rec { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .ops-demo-check {
+      position: absolute; right: -5px; top: -5px; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
+    }
+    .ops-demo-check svg { width: 8px; height: 8px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .ops-demo-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .ops-demo-count { font-size: 9px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .ops-demo-done { font-size: 9px; font-weight: 700; color: var(--ok-text); font-variant-numeric: tabular-nums; }
+
+    /* ----- 보드 즉시 피드백: 추천 담당 · 추천 경보 · 남은 경보 카운터 ----- */
+    .ops-person { position: relative; }
+    .ops-person-badge {
+      display: none; font-size: 8px; font-weight: 700; color: #ffffff;
+      background: var(--accent-primary); border-radius: 4px; padding: 1px 4px; margin-left: 4px;
+      vertical-align: 1px;
+    }
+    .ops-person.is-rec { border-color: var(--accent-primary); background: var(--accent-subtle); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .ops-person.is-rec .ops-person-badge { display: inline-block; }
+    .ops-person.is-rec .ops-person-avatar { background: var(--bg-surface); color: var(--accent-primary); }
+    .ops-alert .oa-badge {
+      display: none; position: absolute; right: 9px; top: 9px;
+      font-size: 8px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--accent-primary); border-radius: 4px; padding: 0 4px;
+    }
+    .ops-alert.is-suggested { border-color: var(--accent-primary); border-style: dashed; }
+    .ops-alert.is-suggested .oa-badge { display: inline-block; }
+    .ops-alert.is-pop { animation: opsCardPop 320ms ease-out; }
+    .ops-person.is-done-pop .ops-person-count { animation: opsCountPop 320ms ease-out; }
+    .ops-main-count {
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .ops-main-count.is-pop { animation: opsCountPop 320ms ease-out; }
+    @keyframes opsCardPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(0.965); }
+      100% { transform: scale(1); }
+    }
+    @keyframes opsCountPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.18); color: var(--accent-primary); }
+      100% { transform: scale(1); }
+    }
+
+    /* ----- 결과: 목표 격차 + 원탭 재도전 최우선 ----- */
+    .ops-result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin-top: 9px;
+      font-size: 12.5px; font-weight: 700; line-height: 1.5; color: var(--text-primary);
+    }
+    .ops-result-gap .tag {
+      flex: 0 0 auto; margin-top: 1px; font-size: 8.5px; font-weight: 700;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 4px;
+    }
+    .ops-result-actions.is-first { margin-top: 10px; }
+
     @media (prefers-reduced-motion: reduce) {
       .ops-seg-btn, .ops-person, .ops-alert { transition: none !important; }
       .ops-bar span, .oa-progress span, .ops-person-bar span { transition: none !important; }
+      .ops-alert.is-pop, .ops-person.is-done-pop .ops-person-count, .ops-main-count.is-pop { animation: none !important; }
+      .ops-demo-alert, .ops-demo-person { transition: none !important; }
+    }
+
+    /* ----- 게임 방법: 한 번만 움직이는 데모 (4종 공통) ----- */
+    .gg-card {
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 12px; padding: 11px 12px 10px; margin: 0 0 10px;
+      box-shadow: var(--card-shadow);
+    }
+    .gg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .gg-head-actions { display: inline-flex; align-items: center; gap: 6px; }
+    .gg-head h2 {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary);
+    }
+    .gg-head h2 svg { color: var(--accent-primary); flex-shrink: 0; }
+    .gg-auto { font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+    .gg-demo {
+      position: relative; margin-top: 8px; padding: 9px 9px 8px;
+      border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-page);
+      overflow: hidden;
+    }
+    .gg-steps { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
+    .gg-step {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap;
+      color: var(--text-muted); padding: 2px 5px; border-radius: 999px;
+      border: 1px solid transparent; transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+    }
+    .gg-step.is-done { color: var(--text-secondary); }
+    .gg-step.is-on { color: var(--accent-primary); background: var(--accent-subtle); border-color: var(--border-default); }
+    .gg-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); min-height: 15px; }
+    .gg-replay {
+      width: auto; border: 1px solid var(--border-default); border-radius: 7px;
+      background: var(--bg-surface); color: var(--accent-primary);
+      font-family: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 8px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .gg-replay:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .gg-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    @media (max-width: 420px) {
+      .gg-card { padding: 8px 10px 7px; }
+      .gg-demo { margin-top: 6px; padding: 7px 8px 6px; }
+      .gg-steps { margin-top: 6px; }
+      .gg-note { margin-top: 5px; min-height: 13px; }
+      .gg-replay { padding: 2px 6px; font-size: 10px; }
+      .gg-step { font-size: 8.6px; padding: 2px 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gg-step { transition: none !important; }
     }
 </style>
   <script>
@@ -817,8 +970,7 @@
           <div class="ops-card-head">
             <h2>대응 인력</h2>
             <span>2명</span>
-          </div>
-          <div id="rosterList"></div>
+          </div>          <div id="rosterList"></div>
           <p class="ops-hint">담당을 고른 뒤 경보 카드를 누르면 배치됩니다. 이미 배치한 경보를 다시 누르면 대기열 맨 뒤로 갑니다.</p>
         </section>
 
@@ -837,8 +989,10 @@
       </aside>
 
       <section class="ops-main" aria-label="경보 보드">
+        <div class="ops-guide"><section class="gg-card" id="opsGuideCard" aria-labelledby="opsGuideTitle"><div class="gg-head"><h2 id="opsGuideTitle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v.01"></path><path d="M11 12h1v4h1"></path></svg> 게임 방법</h2><div class="gg-head-actions"><span class="gg-auto">자동 1회</span><button type="button" class="gg-replay" id="opsGuideReplay">다시 보기</button></div></div><div class="gg-demo" id="opsGuideStage" aria-hidden="true"><div class="ops-demo"><div class="ops-demo-board"><span class="ops-demo-alert" data-demo-alert="0"><i></i>결제 API 5xx</span><div class="ops-demo-people"><span class="ops-demo-person" data-demo-person="infra"><b>인프라</b><em class="ops-demo-rec" data-demo-rec hidden>추천</em><span class="ops-demo-check" data-demo-check hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg></span></span><span class="ops-demo-person" data-demo-person="sec"><b>보안</b></span></div></div><div class="ops-demo-foot"><span class="ops-demo-count" data-demo-count="0">남은 경보 6건</span><span class="ops-demo-done" data-demo-done hidden>처리 완료 · +345점</span></div></div><div class="gg-steps" id="opsGuideSteps"><span class="gg-step" data-step="1">① 경보 탭</span><span class="gg-step" data-step="2">② 추천 담당</span><span class="gg-step" data-step="3">③ 처리 완료</span></div></div><p class="gg-note" id="opsGuideNote">경보 카드를 누르면 전문 담당 카드가 파란색으로 켜집니다. 그 담당에게 배정하면 처리 시간이 40% 줄어듭니다.</p></section></div>
         <div class="ops-main-head">
           <h2 class="ops-main-title" id="boardDate">오늘의 경보 6건</h2>
+          <span class="ops-main-count" id="boardCount" aria-live="polite">남은 6건</span>
           <span class="ops-main-sub" id="boardSub">두 담당에게 나눠 배치하세요</span>
         </div>
         <div class="ops-board" id="alertBoard" aria-label="경보 목록"></div>
@@ -846,6 +1000,11 @@
         <section class="ops-result" id="resultBox" aria-labelledby="resultTitle" hidden>
           <span class="ops-result-badge" id="resultBadge">교대 종료</span>
           <h2 class="ops-result-title" id="resultTitle">60초 관제 결과</h2>
+          <p class="ops-result-gap" id="resultGap"><span class="tag">다음 목표</span><span id="resultGapText">—</span></p>
+          <div class="ops-result-actions is-first">
+            <button type="button" class="ops-primary" id="retryBtn">바로 재도전</button>
+            <button type="button" class="ops-ghost" id="switchPracticeBtn">연습 모드</button>
+          </div>
           <div class="ops-result-score">
             <strong id="resultScore">0</strong><span class="unit">점</span>
             <span class="ops-result-best" id="resultBest"></span>
@@ -856,10 +1015,6 @@
             <div><dt>다운타임</dt><dd id="resultDowntime">0초</dd></div>
           </dl>
           <p class="ops-result-hint" id="resultHint"></p>
-          <div class="ops-result-actions">
-            <button type="button" class="ops-primary" id="retryBtn">다시 도전</button>
-            <button type="button" class="ops-ghost" id="switchPracticeBtn">연습으로 실험</button>
-          </div>
         </section>
 
         <p class="ops-foot">배치·점수 기록은 이 브라우저(localStorage)에만 저장됩니다. 서버로 보내지 않습니다.</p>
@@ -867,7 +1022,75 @@
     </div>
   </main>
 
-  <script type="application/json" id="opsData">{"version":1,"built_date":"2026-11-21","built_at":"2026-11-21 23:14 KST","responders":[{"id":"infra","name":"인프라·자동화","short":"인프라","spec":"infra","desc":"서버·배포·수집"},{"id":"sec","name":"보안·분석","short":"보안","spec":"sec","desc":"탐지·계정·악성코드"}],"alerts":[{"id":"inf-01","title":"결제 API 5xx 급증","service":"결제 게이트웨이","spec":"infra","sev":3,"base":9},{"id":"inf-02","title":"수집 배치 잡 지연","service":"데이터 파이프라인","spec":"infra","sev":2,"base":8},{"id":"inf-03","title":"로그 파이프라인 적체","service":"로그 수집기","spec":"infra","sev":2,"base":7},{"id":"inf-04","title":"CDN 캐시 미스 폭증","service":"정적 자원 CDN","spec":"infra","sev":1,"base":6},{"id":"inf-05","title":"DB 커넥션 풀 고갈","service":"주문 DB","spec":"infra","sev":3,"base":11},{"id":"inf-06","title":"TLS 인증서 만료 임박","service":"API 게이트웨이","spec":"infra","sev":2,"base":5},{"id":"inf-07","title":"CI 러너 디스크 92%","service":"빌드 러너","spec":"infra","sev":1,"base":7},{"id":"inf-08","title":"오토스케일링 미동작","service":"웹 프런트","spec":"infra","sev":3,"base":10},{"id":"inf-09","title":"알림 큐 적체","service":"메시지 큐","spec":"infra","sev":2,"base":8},{"id":"inf-10","title":"이미지 워커 중단","service":"미디어 워커","spec":"infra","sev":1,"base":6},{"id":"inf-11","title":"사내 DNS 응답 지연","service":"DNS 서버","spec":"infra","sev":2,"base":6},{"id":"inf-12","title":"야간 백업 누락","service":"백업 서버","spec":"infra","sev":1,"base":5},{"id":"sec-01","title":"WAF 차단 급증(SQLi)","service":"웹 방화벽","spec":"sec","sev":3,"base":8},{"id":"sec-02","title":"비정상 로그인 성공","service":"계정 인증","spec":"sec","sev":3,"base":10},{"id":"sec-03","title":"악성 파일 업로드 의심","service":"파일 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-04","title":"취약점 스캐너 대량 요청","service":"외부 노출 API","spec":"sec","sev":2,"base":7},{"id":"sec-05","title":"권한 상승 시도 탐지","service":"관리자 콘솔","spec":"sec","sev":3,"base":11},{"id":"sec-06","title":"피싱 메일 대량 유입","service":"메일 게이트웨이","spec":"sec","sev":2,"base":8},{"id":"sec-07","title":"EDR 격리 요청 미처리","service":"단말 관제","spec":"sec","sev":2,"base":7},{"id":"sec-08","title":"비인가 크롤링 증가","service":"공개 API","spec":"sec","sev":1,"base":6},{"id":"sec-09","title":"시크릿 키 노출 의심","service":"소스 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-10","title":"IDS 이상 트래픽","service":"네트워크 센서","spec":"sec","sev":2,"base":8},{"id":"sec-11","title":"계정 잠금 폭주","service":"인증 서비스","spec":"sec","sev":1,"base":5},{"id":"sec-12","title":"감사 로그 누락","service":"감사 로그","spec":"sec","sev":1,"base":6}],"days":{"2026-11-21":["inf-03","sec-02","sec-06","sec-10","inf-09","inf-05"],"2026-11-22":["inf-09","inf-04","sec-07","sec-11","sec-10","inf-10"],"2026-11-23":["inf-08","sec-09","inf-11","sec-03","sec-12","inf-10"],"2026-11-24":["inf-01","inf-11","inf-03","sec-03","sec-01","sec-11"],"2026-11-25":["inf-01","sec-01","inf-08","inf-06","sec-09","sec-04"],"2026-11-26":["inf-08","sec-10","sec-11","inf-12","sec-02","inf-01"],"2026-11-27":["sec-09","sec-03","inf-01","sec-05","inf-05","inf-10"],"2026-11-28":["sec-11","inf-02","sec-07","inf-08","inf-11","sec-01"],"2026-11-29":["sec-03","inf-01","sec-07","sec-01","inf-07","inf-05"],"2026-11-30":["sec-12","sec-06","sec-05","inf-01","inf-10","inf-03"],"2026-12-01":["inf-12","sec-04","sec-12","inf-04","sec-03","inf-03"],"2026-12-02":["inf-05","sec-01","inf-03","sec-09","sec-03","inf-10"],"2026-12-03":["inf-01","sec-05","sec-11","inf-12","sec-12","inf-03"],"2026-12-04":["inf-01","sec-02","sec-06","sec-04","inf-12","inf-08"]},"settings":{"live_seconds":60,"arrivals":[0,0,0,2,4,6],"penalty_per_second":8,"match_speed":0.6,"match_bonus":1.15}}</script>
+  <script type="application/json" id="opsData">{"version":1,"built_date":"2026-11-22","built_at":"2026-11-22 00:01 KST","responders":[{"id":"infra","name":"인프라·자동화","short":"인프라","spec":"infra","desc":"서버·배포·수집"},{"id":"sec","name":"보안·분석","short":"보안","spec":"sec","desc":"탐지·계정·악성코드"}],"alerts":[{"id":"inf-01","title":"결제 API 5xx 급증","service":"결제 게이트웨이","spec":"infra","sev":3,"base":9},{"id":"inf-02","title":"수집 배치 잡 지연","service":"데이터 파이프라인","spec":"infra","sev":2,"base":8},{"id":"inf-03","title":"로그 파이프라인 적체","service":"로그 수집기","spec":"infra","sev":2,"base":7},{"id":"inf-04","title":"CDN 캐시 미스 폭증","service":"정적 자원 CDN","spec":"infra","sev":1,"base":6},{"id":"inf-05","title":"DB 커넥션 풀 고갈","service":"주문 DB","spec":"infra","sev":3,"base":11},{"id":"inf-06","title":"TLS 인증서 만료 임박","service":"API 게이트웨이","spec":"infra","sev":2,"base":5},{"id":"inf-07","title":"CI 러너 디스크 92%","service":"빌드 러너","spec":"infra","sev":1,"base":7},{"id":"inf-08","title":"오토스케일링 미동작","service":"웹 프런트","spec":"infra","sev":3,"base":10},{"id":"inf-09","title":"알림 큐 적체","service":"메시지 큐","spec":"infra","sev":2,"base":8},{"id":"inf-10","title":"이미지 워커 중단","service":"미디어 워커","spec":"infra","sev":1,"base":6},{"id":"inf-11","title":"사내 DNS 응답 지연","service":"DNS 서버","spec":"infra","sev":2,"base":6},{"id":"inf-12","title":"야간 백업 누락","service":"백업 서버","spec":"infra","sev":1,"base":5},{"id":"sec-01","title":"WAF 차단 급증(SQLi)","service":"웹 방화벽","spec":"sec","sev":3,"base":8},{"id":"sec-02","title":"비정상 로그인 성공","service":"계정 인증","spec":"sec","sev":3,"base":10},{"id":"sec-03","title":"악성 파일 업로드 의심","service":"파일 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-04","title":"취약점 스캐너 대량 요청","service":"외부 노출 API","spec":"sec","sev":2,"base":7},{"id":"sec-05","title":"권한 상승 시도 탐지","service":"관리자 콘솔","spec":"sec","sev":3,"base":11},{"id":"sec-06","title":"피싱 메일 대량 유입","service":"메일 게이트웨이","spec":"sec","sev":2,"base":8},{"id":"sec-07","title":"EDR 격리 요청 미처리","service":"단말 관제","spec":"sec","sev":2,"base":7},{"id":"sec-08","title":"비인가 크롤링 증가","service":"공개 API","spec":"sec","sev":1,"base":6},{"id":"sec-09","title":"시크릿 키 노출 의심","service":"소스 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-10","title":"IDS 이상 트래픽","service":"네트워크 센서","spec":"sec","sev":2,"base":8},{"id":"sec-11","title":"계정 잠금 폭주","service":"인증 서비스","spec":"sec","sev":1,"base":5},{"id":"sec-12","title":"감사 로그 누락","service":"감사 로그","spec":"sec","sev":1,"base":6}],"days":{"2026-11-22":["inf-09","inf-04","sec-07","sec-11","sec-10","inf-10"],"2026-11-23":["inf-08","sec-09","inf-11","sec-03","sec-12","inf-10"],"2026-11-24":["inf-01","inf-11","inf-03","sec-03","sec-01","sec-11"],"2026-11-25":["inf-01","sec-01","inf-08","inf-06","sec-09","sec-04"],"2026-11-26":["inf-08","sec-10","sec-11","inf-12","sec-02","inf-01"],"2026-11-27":["sec-09","sec-03","inf-01","sec-05","inf-05","inf-10"],"2026-11-28":["sec-11","inf-02","sec-07","inf-08","inf-11","sec-01"],"2026-11-29":["sec-03","inf-01","sec-07","sec-01","inf-07","inf-05"],"2026-11-30":["sec-12","sec-06","sec-05","inf-01","inf-10","inf-03"],"2026-12-01":["inf-12","sec-04","sec-12","inf-04","sec-03","inf-03"],"2026-12-02":["inf-05","sec-01","inf-03","sec-09","sec-03","inf-10"],"2026-12-03":["inf-01","sec-05","sec-11","inf-12","sec-12","inf-03"],"2026-12-04":["inf-01","sec-02","sec-06","sec-04","inf-12","inf-08"],"2026-12-05":["sec-07","inf-10","inf-01","inf-07","sec-12","sec-01"]},"settings":{"live_seconds":60,"arrivals":[0,0,0,2,4,6],"penalty_per_second":8,"match_speed":0.6,"match_bonus":1.15}}</script>
+
+  <script>
+
+  /* ---------------------------------------------------------- 게임 방법 데모
+     처음 방문에 한 번만 자동 재생하고 마지막 장면에서 멈춘다. '다시 보기'로 재생.
+     prefers-reduced-motion 이면 애니메이션 없이 마지막 장면만 보여 준다. */
+  var GameGuide = (function () {
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var TIMING = [900, 1900];
+
+    function create(opts) {
+      var timers = [];
+      var last = opts.notes.length;
+
+      function clear() {
+        timers.forEach(function (t) { window.clearTimeout(t); });
+        timers = [];
+      }
+
+      function paintSteps(n) {
+        var chips = opts.steps ? opts.steps.querySelectorAll('.gg-step') : [];
+        for (var i = 0; i < chips.length; i += 1) {
+          var step = Number(chips[i].getAttribute('data-step'));
+          chips[i].classList.toggle('is-on', step === n);
+          chips[i].classList.toggle('is-done', step < n);
+        }
+      }
+
+      function apply(n) {
+        paintSteps(n);
+        if (opts.note) opts.note.textContent = opts.notes[n - 1];
+        if (opts.step) opts.step(n);
+      }
+
+      function settle() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(last);
+      }
+
+      function play() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(1);
+        if (reduce) { settle(); return; }
+        TIMING.forEach(function (delay, index) {
+          timers.push(window.setTimeout(function () { apply(index + 2); }, delay));
+        });
+      }
+
+      var seen = null;
+      try { seen = localStorage.getItem(opts.key); } catch (e) { seen = null; }
+      if (seen || reduce) {
+        settle();
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+      } else {
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+        play();
+      }
+      if (opts.replay) opts.replay.addEventListener('click', function () { play(); });
+
+      return { play: play, settle: settle };
+    }
+
+    return { create: create, reduce: reduce };
+  })();
+
+  </script>
 
   <script>
   (function () {
@@ -902,7 +1125,8 @@
      'liveScore', 'liveDowntime', 'opsStatus', 'startBtn', 'resetPlanBtn', 'rosterList', 'alertBoard',
      'resultBox', 'resultBadge', 'resultTitle', 'resultScore', 'resultBest', 'resultCompleted', 'resultMissed',
      'resultDowntime', 'resultHint', 'retryBtn', 'switchPracticeBtn', 'recBest', 'recStreak', 'recLast',
-     'recHistory', 'recordDate', 'boardDate', 'boardSub', 'themeToggle', 'moonIcon', 'sunIcon'
+     'recHistory', 'recordDate', 'boardDate', 'boardSub', 'boardCount', 'resultGap', 'resultGapText',
+     'themeToggle', 'moonIcon', 'sunIcon'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
     var rosterEls = {};
@@ -923,6 +1147,7 @@
       timer: null,
       result: null,
       best: null,
+      recommend: null,
       store: null
     };
 
@@ -1005,6 +1230,23 @@
     }
 
     function setStatus(text) { el.opsStatus.textContent = text; }
+
+    /* 카드·카운터가 살아 움직이게: 클래스를 붙였다 잠시 뒤 뺀다. */
+    function pulse(node, cls) {
+      if (!node) return;
+      node.classList.remove(cls);
+      void node.offsetWidth;
+      node.classList.add(cls);
+      window.setTimeout(function () { node.classList.remove(cls); }, 380);
+    }
+
+    function flashRecommend(rid) {
+      state.recommend = rid;
+      renderRoster();
+      window.setTimeout(function () {
+        if (state.recommend === rid) { state.recommend = null; renderRoster(); }
+      }, 1500);
+    }
 
     function assignedCount() { return state.queues.infra.length + state.queues.sec.length; }
 
@@ -1209,7 +1451,8 @@
         btn.innerHTML =
           '<span class="ops-person-avatar">' + responderIcon(r.id) + '</span>' +
           '<span class="ops-person-body">' +
-            '<span class="ops-person-top"><span class="ops-person-name">' + esc(r.name) + '</span>' +
+            '<span class="ops-person-top"><span class="ops-person-name">' + esc(r.name) +
+            '<span class="ops-person-badge">추천</span></span>' +
             '<span class="ops-person-count">배치 0건</span></span>' +
             '<span class="ops-person-state">대기 중</span>' +
             '<span class="ops-person-bar"><span></span></span>' +
@@ -1243,6 +1486,7 @@
         btn.dataset.sev = String(a.data.sev);
         btn.dataset.state = a.state;
         btn.innerHTML =
+          '<span class="oa-badge" aria-hidden="true">추천</span>' +
           '<span class="oa-top"><span class="oa-sev sev-' + a.data.sev + '">' + SEV_LABEL[a.data.sev] + '</span>' +
           '<span class="oa-spec">' + specLabel(a.data.spec) + ' 전문</span></span>' +
           '<strong class="oa-title">' + esc(a.data.title) + '</strong>' +
@@ -1286,7 +1530,7 @@
       el.resultBox.hidden = true;
       buildBoard();
       render();
-      el.boardDate.textContent = '오늘의 경보 ' + state.alerts.length + '건';
+      el.boardDate.textContent = '오늘의 경보';
       el.boardSub.textContent = dayLabel(todayKey()) + ' · 같은 판으로 다시 도전';
     }
 
@@ -1331,6 +1575,8 @@
       a.state = 'queued';
       state.queues[rid].push(id);
       setStatus(SPEC_LABEL[rid] + ' 담당에 배치' + (a.data.spec === rid ? ' · 전문 매칭' : ' · 비전문'));
+      if (a.data.spec === rid) flashRecommend(rid);
+      pulse(cardEls[id], 'is-pop');
       if (state.mode === 'live') pump(rid, currentTime());
       render();
     }
@@ -1456,6 +1702,26 @@
     }
 
     /* ---------------------------------------------------------------- 결과 */
+    /* 한 가지 목표 격차: 다음 등급(B→A→S)까지 남은 점수, 또는 남은 경보 건수. */
+    function gapFor(result) {
+      var best = state.best && state.best.score ? state.best.score : 0;
+      if (!best) return '오늘의 최적 배치를 계산하지 못했습니다. 한 판 더 진행해 보세요.';
+      var targets = [{ name: 'B', min: 0.6 }, { name: 'A', min: 0.8 }, { name: 'S', min: 0.95 }];
+      var next = null;
+      targets.forEach(function (target) {
+        if (next) return;
+        if (result.score < target.min * best) {
+          next = { name: target.name, need: Math.max(1, Math.ceil(target.min * best - result.score)) };
+        }
+      });
+      if (result.mode === 'live' && result.missed > 0) {
+        return '남은 경보 ' + result.missed + '건만 더 처리하면 ' +
+          (next ? next.name + '등급까지 ' + next.need + '점!' : '오늘 최적에 더 가까워집니다!');
+      }
+      if (next) return '다음 등급 ' + next.name + '까지 ' + next.need + '점!';
+      return '오늘 최적 배치(S등급)를 달성했습니다!';
+    }
+
     function hintFor(result) {
       var best = state.best || { score: result.score };
       var gap = Math.max(0, best.score - result.score);
@@ -1526,6 +1792,7 @@
       el.resultMissed.textContent = result.missed + '건';
       el.resultDowntime.textContent = result.downtime + '초';
       el.resultHint.textContent = hintFor(result);
+      el.resultGapText.textContent = gapFor(result);
       el.resultBox.hidden = false;
       el.resultBox.scrollIntoView({ block: 'nearest' });
     }
@@ -1596,6 +1863,7 @@
         var queued = state.queues[r.id].length;
         card.classList.toggle('is-active', state.active === r.id);
         card.classList.toggle('is-busy', !!working);
+        card.classList.toggle('is-rec', state.recommend === r.id);
         card.setAttribute('aria-pressed', state.active === r.id ? 'true' : 'false');
         card.querySelector('.ops-person-count').textContent = '배치 ' + queued + '건';
         var stateText;
@@ -1622,10 +1890,14 @@
     function renderBoard() {
       var t = currentTime();
       var isLive = state.mode === 'live';
+      var remaining = 0;
       state.alerts.forEach(function (a) {
+        if (a.state !== 'done' && a.state !== 'missed') remaining += 1;
         var card = cardEls[a.id];
         if (!card) return;
         card.dataset.state = a.state;
+        card.classList.toggle('is-suggested',
+          a.state === 'ready' && a.data.spec === state.active && state.phase !== 'ended');
         var stateText = '';
         var meta = '기본 ' + a.data.base + '초';
         var pct = 0;
@@ -1655,6 +1927,13 @@
         card.querySelector('.oa-meta').textContent = meta;
         card.querySelector('.oa-progress span').style.width = pct + '%';
       });
+      if (el.boardCount) {
+        var countText = '남은 ' + remaining + '건 · 처리 ' + (state.alerts.length - remaining) + '/' + state.alerts.length;
+        if (el.boardCount.textContent !== countText) {
+          el.boardCount.textContent = countText;
+          pulse(el.boardCount, 'is-pop');
+        }
+      }
     }
 
     function renderRecord() {
@@ -1730,7 +2009,7 @@
       el.resultBox.hidden = true;
     });
 
-    el.boardDate.textContent = '오늘의 경보 6건';
+    el.boardDate.textContent = '오늘의 경보';
 
     /* ---------------------------------------------------------------- 테마 */
     function setTheme(theme) {
@@ -1762,6 +2041,44 @@
     }
 
     /* ---------------------------------------------------------------- 시작 */
+    // ---- 게임 방법 데모: 경보 탭 → 추천 담당 → 처리 완료 (처음 한 번만 움직임) ----
+    (function initOpsGuide() {
+      var stage = document.getElementById('opsGuideStage');
+      if (!stage) return;
+      var alertChip = stage.querySelector('[data-demo-alert]');
+      var person = stage.querySelector('[data-demo-person="infra"]');
+      var rec = stage.querySelector('[data-demo-rec]');
+      var check = stage.querySelector('[data-demo-check]');
+      var count = stage.querySelector('[data-demo-count]');
+      var done = stage.querySelector('[data-demo-done]');
+
+      function paint(n) {
+        if (alertChip) {
+          alertChip.classList.toggle('is-tap', n >= 1);
+          alertChip.classList.toggle('is-done', n >= 3);
+        }
+        if (person) person.classList.toggle('is-rec', n === 2);
+        if (rec) rec.hidden = n !== 2;
+        if (check) check.hidden = n < 3;
+        if (count) count.textContent = n >= 3 ? '남은 경보 5건' : '남은 경보 6건';
+        if (done) done.hidden = n < 3;
+      }
+
+      GameGuide.create({
+        key: 'ops_demo_seen_v1',
+        steps: document.getElementById('opsGuideSteps'),
+        note: document.getElementById('opsGuideNote'),
+        replay: document.getElementById('opsGuideReplay'),
+        notes: [
+          '① 도착한 경보 카드를 누릅니다. 전문 담당이 파란색 추천으로 켜집니다.',
+          '② 추천 담당에게 배정하면 처리 시간이 40% 줄어듭니다.',
+          '③ 처리가 끝나면 카드가 팝하고 남은 경보 수가 줄어듭니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
+      });
+    })();
+
     state.store = loadStore();
     buildRoster();
     resetBoard();

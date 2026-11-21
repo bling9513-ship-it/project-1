@@ -18,6 +18,7 @@ import random
 from datetime import datetime, timedelta, timezone
 
 from html_guard import harden_html, safe_json_for_script
+import game_guide
 import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -620,133 +621,6 @@ CSS = """
     .wait-empty { font-size: 11px; color: var(--text-muted); }
     .seat-hint { margin-top: 9px; font-size: 10.5px; line-height: 1.45; color: var(--text-muted); }
 
-    /* ----- 게임 방법(애니메이션 데모) ----- */
-    .guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
-    .guide-toggle {
-      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
-      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
-    }
-    .guide-body { margin-top: 9px; }
-    .guide-demo {
-      display: flex; align-items: center; gap: 7px;
-      padding: 8px 9px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-page);
-    }
-    .gd-wait { position: relative; display: inline-flex; flex: 0 0 auto; }
-    .gd-chip {
-      display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 22px;
-      padding: 0 7px; border: 1px solid var(--accent-primary); border-radius: 7px;
-      background: var(--accent-subtle); color: var(--accent-primary);
-      font-size: 10px; font-weight: 700;
-      animation: gdChip 7.2s ease-in-out infinite;
-    }
-    .gd-tap {
-      position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px;
-      border-radius: 50%; border: 1.5px solid var(--accent-primary); opacity: 0;
-      animation: gdTap 7.2s ease-out infinite;
-    }
-    .gd-arrow { flex: 0 0 auto; font-size: 10px; color: var(--text-muted); }
-    .gd-seats { display: grid; grid-template-columns: repeat(2, 26px); grid-template-rows: repeat(2, 21px); gap: 3px; flex: 0 0 auto; }
-    .gd-seat {
-      position: relative; display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border-default); border-radius: 5px; background: var(--bg-surface);
-    }
-    .gd-tag { font-size: 6.5px; color: var(--text-muted); white-space: nowrap; }
-    .gd-in {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      border-radius: 4px; background: var(--bg-surface);
-      font-size: 8px; font-weight: 700; color: var(--text-primary);
-      opacity: 0; animation: gdIn 7.2s ease-in-out infinite;
-    }
-    .gd-check {
-      position: absolute; right: -4px; top: -4px; width: 11px; height: 11px; border-radius: 50%;
-      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
-      opacity: 0; animation: gdCheckAnim 7.2s ease-in-out infinite;
-    }
-    .gd-check svg { width: 7px; height: 7px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .gd-cond {
-      margin-left: auto; display: flex; align-items: center; gap: 4px; flex: 0 0 auto;
-      padding: 3px 6px; border: 1px solid var(--border-default); border-radius: 8px;
-      background: var(--bg-surface); font-size: 9.5px; color: var(--text-secondary);
-    }
-    .gd-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--border-strong); animation: gdDot 7.2s ease-in-out infinite; }
-    .gd-counts { position: relative; width: 19px; height: 12px; font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; }
-    .gd-counts b { position: absolute; left: 0; top: 0; font-weight: 700; }
-    .gd-bad { color: var(--text-muted); animation: gdBad 7.2s steps(1, end) infinite; }
-    .gd-ok { color: var(--ok-text); opacity: 0; animation: gdOk 7.2s steps(1, end) infinite; }
-    .guide-caption { position: relative; height: 18px; margin-top: 8px; }
-    .gc-step {
-      position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px;
-      font-size: 10.5px; font-weight: 600; color: var(--text-secondary); opacity: 0; white-space: nowrap;
-    }
-    .gc-num {
-      display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px;
-      border-radius: 50%; background: var(--bg-muted); color: var(--text-secondary);
-      font-size: 8.5px; font-weight: 700; flex-shrink: 0;
-    }
-    .gc-3 .gc-num { background: var(--ok-text); color: #ffffff; }
-    .gc-1 { animation: gc1 7.2s ease infinite; }
-    .gc-2 { animation: gc2 7.2s ease infinite; }
-    .gc-3 { animation: gc3 7.2s ease infinite; }
-    .guide-note { margin-top: 6px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
-
-    @keyframes gdChip {
-      0% { transform: none; opacity: 1; box-shadow: 0 0 0 0 var(--accent-subtle); }
-      8% { transform: scale(1.05); }
-      14% { transform: scale(1.05); box-shadow: 0 0 0 5px var(--accent-subtle); }
-      20% { transform: none; box-shadow: 0 0 0 0 var(--accent-subtle); }
-      32% { transform: translateX(58px) scale(0.86); opacity: 1; }
-      36% { transform: translateX(58px) scale(0.72); opacity: 0; }
-      92% { transform: none; opacity: 0; }
-      98%, 100% { transform: none; opacity: 1; }
-    }
-    @keyframes gdTap {
-      0%, 8% { opacity: 0; transform: scale(0.6); }
-      14% { opacity: 0.75; transform: scale(1); }
-      26%, 100% { opacity: 0; transform: scale(1.5); }
-    }
-    @keyframes gdIn {
-      0%, 30% { opacity: 0; transform: scale(0.4); }
-      36% { opacity: 1; transform: scale(1.14); }
-      42%, 92% { opacity: 1; transform: scale(1); }
-      97%, 100% { opacity: 0; transform: scale(0.4); }
-    }
-    @keyframes gdCheckAnim {
-      0%, 42% { opacity: 0; transform: scale(0.3); }
-      48% { opacity: 1; transform: scale(1.2); }
-      54%, 92% { opacity: 1; transform: scale(1); }
-      97%, 100% { opacity: 0; transform: scale(0.3); }
-    }
-    @keyframes gdDot {
-      0%, 46% { background: transparent; border-color: var(--border-strong); }
-      52%, 92% { background: var(--ok-text); border-color: var(--ok-text); }
-      97%, 100% { background: transparent; border-color: var(--border-strong); }
-    }
-    @keyframes gdBad {
-      0% { opacity: 1; }
-      52%, 92% { opacity: 0; }
-      97%, 100% { opacity: 1; }
-    }
-    @keyframes gdOk {
-      0% { opacity: 0; }
-      52%, 92% { opacity: 1; }
-      97%, 100% { opacity: 0; }
-    }
-    @keyframes gc1 {
-      0%, 26% { opacity: 1; }
-      32%, 100% { opacity: 0; }
-    }
-    @keyframes gc2 {
-      0%, 30% { opacity: 0; }
-      34%, 52% { opacity: 1; }
-      58%, 100% { opacity: 0; }
-    }
-    @keyframes gc3 {
-      0%, 54% { opacity: 0; }
-      60%, 92% { opacity: 1; }
-      97%, 100% { opacity: 0; }
-    }
-
     .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
     .record-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
     .record-grid dd { font-size: 14.5px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -905,12 +779,21 @@ CSS = """
       .seat-hero { display: none; }
       #statusCard { padding: 10px 12px; }
       #statusCard .seat-card-head { display: none; }
+      .seat-guide { padding: 9px 10px 8px; }
+      .seat-guide .gg-note { display: none; }
+      .seat-guide .gg-demo { padding: 6px 7px 5px; }
+      .sg-seats { grid-template-rows: repeat(2, 20px); }
       .seat-seg-btn { padding: 7px 4px; }
       .seat-meter { margin-top: 8px; }
       .seat-stars { margin-top: 3px; }
       .seat-status { margin-top: 4px; font-size: 10.5px; min-height: 15px; }
       .seat-ghost { margin-top: 6px; padding: 7px 10px; font-size: 11.5px; }
-      .seat-cell { min-height: 54px; padding: 6px 7px; }
+      .seat-cell { min-height: 50px; padding: 5px 7px; }
+      .coach { padding: 8px 10px 9px; }
+      .coach-cols { padding-bottom: 3px; }
+      .coach-top { padding-bottom: 4px; }
+      .coach-bottom { padding-top: 4px; }
+      .seat-grid, .coach-cols { gap: 6px; }
       .seat-result { padding: 14px; }
       .result-score strong { font-size: 28px; }
     }
@@ -964,22 +847,117 @@ CSS = """
       100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
     }
 
+    /* ----- 게임 방법 데모 (승객 선택 → 가능 좌석 → 조건 충족) ----- */
+    .seat-guide { padding: 11px 12px 10px; }
+    .seat-guide .gg-card { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+    .sg-demo { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .sg-pax {
+      position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 1px;
+      padding: 4px 8px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 10px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap;
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+    .sg-pax em { font-style: normal; font-size: 7.5px; font-weight: 600; color: var(--text-muted); }
+    .sg-pax.is-on { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .sg-arrow { font-size: 10px; color: var(--text-muted); }
+    .sg-seats { display: grid; grid-template-columns: repeat(2, 38px); grid-template-rows: repeat(2, 26px); gap: 3px; }
+    .sg-seat {
+      position: relative; display: flex; align-items: flex-start; justify-content: flex-start;
+      padding: 2px 3px; border: 1px solid var(--border-default); border-radius: 5px;
+      background: var(--bg-surface); font-size: 6.5px; color: var(--text-muted); overflow: hidden;
+      transition: border-color 160ms ease, background-color 160ms ease;
+    }
+    .sg-seat b { font-weight: 600; }
+    .sg-name {
+      position: absolute; left: 2px; bottom: 1px; font-style: normal; font-size: 8px; font-weight: 700;
+      color: var(--text-primary); opacity: 0; transition: opacity 160ms ease;
+    }
+    .sg-free {
+      position: absolute; right: 3px; bottom: 2px; font-style: normal; font-size: 6.5px; font-weight: 700;
+      color: var(--accent-primary); opacity: 0; transition: opacity 160ms ease;
+    }
+    .sg-check {
+      position: absolute; right: -5px; top: -5px; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.5); transition: opacity 160ms ease, transform 200ms ease;
+    }
+    .sg-check svg { width: 8px; height: 8px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .sg-seat.is-ok { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .sg-seat.is-ok .sg-free { opacity: 1; }
+    .sg-seat.is-done { border-color: var(--ok-border); background: var(--ok-bg); }
+    .sg-seat.is-done .sg-name { opacity: 1; }
+    .sg-seat.is-done .sg-check { opacity: 1; transform: none; }
+
+    /* ----- 보드 즉시 피드백: 가능 좌석 · 충족 조건 ----- */
+    .sc-avail {
+      position: absolute; right: 4px; bottom: 4px;
+      font-size: 7.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--bg-surface); border: 1px solid var(--accent-primary); border-radius: 4px; padding: 0 3px;
+      opacity: 0; transform: scale(0.85); pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+    .seat-cell.is-target { border-color: var(--accent-primary); border-style: solid; background: var(--accent-subtle); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .seat-cell.is-target .sc-avail { opacity: 1; transform: none; }
+    .seat-cell.is-target .sc-sub { visibility: hidden; }
+    .seat-cell.is-swap { border-color: var(--accent-primary); border-style: dashed; }
+    .seat-cell.is-swap .sc-avail { opacity: 1; transform: none; color: var(--text-secondary); border-color: var(--border-strong); }
+    .seat-cell.is-swap .sc-sub { visibility: hidden; }
+    .chip.is-ok { color: var(--ok-text); border-color: var(--ok-border); background: var(--ok-bg); }
+    .wait-state {
+      display: inline-flex; align-items: center; gap: 2px; margin-left: auto;
+      font-size: 8.5px; font-weight: 700; color: var(--ok-text);
+    }
+    .wait-state svg { width: 9px; height: 9px; stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .wait-card.is-seated { background: var(--ok-bg); border-color: var(--ok-border); opacity: 0.86; }
+    .wait-card.is-seated .wait-state { display: inline-flex; }
+
+    /* ----- 결과: 목표 격차 + 원탭 재도전 최우선 ----- */
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin-top: 8px;
+      font-size: 12.5px; font-weight: 700; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap .tag {
+      flex: 0 0 auto; margin-top: 1px; font-size: 8.5px; font-weight: 700;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 4px;
+    }
+    .result-actions.is-first { margin-top: 10px; }
+
     @media (prefers-reduced-motion: reduce) {
       .seat-seg-btn, .seat-cell, .wait-card, .stage { transition: none !important; }
       .seat-cell.is-selected, .wait-card.is-selected, .coach.is-cleared,
       .seat-cell.is-landing, .seat-cell.is-landing .sc-name,
       .seat-result.is-new, .result-stars .star.is-pop { animation: none !important; }
       .seat-result.is-new .result-burst span { animation: none !important; opacity: 0 !important; }
-      /* 데모는 움직이지 않고 '완료된 한 장면'으로 보여 준다. */
-      .gd-chip, .gd-tap { animation: none !important; opacity: 0 !important; }
-      .gd-in, .gd-check { animation: none !important; opacity: 1 !important; transform: none !important; }
-      .gd-dot { animation: none !important; background: var(--ok-text) !important; border-color: var(--ok-text) !important; }
-      .gd-bad { animation: none !important; opacity: 0 !important; }
-      .gd-ok { animation: none !important; opacity: 1 !important; }
-      .gc-step { animation: none !important; opacity: 0 !important; }
-      .gc-3 { animation: none !important; opacity: 1 !important; }
+      .sg-pax, .sg-seat, .sg-free, .sg-check, .seat-cell.is-target .sc-avail { transition: none !important; }
     }
 """
+
+CSS = CSS + game_guide.GUIDE_CSS
+
+GUIDE_STAGE = (
+    '<div class="sg-demo">'
+    '<span class="sg-pax" data-demo-pax>하늘<em>창가 · 일행</em></span>'
+    '<span class="sg-arrow">→</span>'
+    '<span class="sg-seats">'
+    '<span class="sg-seat" data-demo-seat="0"><b>창가</b>'
+    '<i class="sg-name" data-demo-name>하늘</i><i class="sg-free" data-demo-free>가능</i>'
+    '<span class="sg-check" data-demo-check hidden>'
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>'
+    '</span></span>'
+    '<span class="sg-seat"><b>통로</b></span>'
+    '<span class="sg-seat"><b>창가</b></span>'
+    '<span class="sg-seat"><b>통로</b></span>'
+    '</span>'
+    '</div>'
+)
+
+GUIDE_HTML = game_guide.guide_html(
+    'seatGuide', GUIDE_STAGE,
+    ['① 승객 선택', '② 가능 좌석', '③ 조건 충족'],
+    '승객을 고르면 조건에 맞는 빈 좌석만 「가능」으로 켜집니다. 앉히면 충족한 조건이 초록 체크로 바뀝니다.',
+)
 
 
 HTML_TEMPLATE = r"""<!DOCTYPE html>
@@ -1065,43 +1043,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
           <div class="seat-meter">
             <span>이동 <strong id="moveValue">0</strong>수</span>
-            <span class="seat-meter-par">기준 <strong id="parValue">2</strong>수</span>
+            <span class="seat-meter-par">목표 <strong id="parValue">2</strong>수 이내</span>
           </div>
           <div class="seat-stars" id="starRow" aria-label="예상 별점"></div>
           <p class="seat-status" id="seatStatus" role="status" aria-live="polite">막차가 도착했습니다. 반대편 문 쪽부터 자리를 잡아 보세요.</p>
         </section>
 
-        <section class="seat-card guide" id="guideCard" aria-labelledby="guideTitle">
-          <div class="guide-head">
-            <h2 id="guideTitle">게임 방법</h2>
-            <button type="button" class="guide-toggle" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
-          </div>
-          <div class="guide-body" id="guideBody">
-            <div class="guide-demo" aria-hidden="true">
-              <span class="gd-wait">
-                <span class="gd-chip">하늘</span>
-                <span class="gd-tap"></span>
-              </span>
-              <span class="gd-arrow">→</span>
-              <span class="gd-seats">
-                <span class="gd-seat"><span class="gd-tag">창가</span><span class="gd-in">하늘</span><span class="gd-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg></span></span>
-                <span class="gd-seat"><span class="gd-tag">통로</span></span>
-                <span class="gd-seat"><span class="gd-tag">창가</span></span>
-                <span class="gd-seat"><span class="gd-tag">통로</span></span>
-              </span>
-              <span class="gd-cond">
-                <span class="gd-dot"></span>
-                <span class="gd-cond-label">창가</span>
-                <span class="gd-counts"><b class="gd-bad">0/1</b><b class="gd-ok">1/1</b></span>
-              </span>
-            </div>
-            <div class="guide-caption" aria-hidden="true">
-              <span class="gc-step gc-1"><span class="gc-num">1</span>대기 승객을 탭해 고르기</span>
-              <span class="gc-step gc-2"><span class="gc-num">2</span>점선으로 표시된 좌석을 탭</span>
-              <span class="gc-step gc-3"><span class="gc-num">3</span>조건을 모두 맞추면 클리어</span>
-            </div>
-            <p class="guide-note">승객을 고르면 조건에 맞는 좌석이 점선으로 표시됩니다. 앉은 승객을 누르면 그 승객이 선택됩니다.</p>
-          </div>
+        <section class="seat-card seat-guide" id="guideCard" aria-label="게임 방법">
+          __GUIDE__
         </section>
 
         <section class="seat-card" id="condCard">
@@ -1164,6 +1113,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <span class="result-burst" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></span>
           </div>
           <h2 class="result-title" id="resultTitle">모든 조건을 만족했습니다</h2>
+          <p class="result-gap"><span class="tag">다음 목표</span><span id="resultGapText">—</span></p>
+          <div class="result-actions is-first">
+            <button type="button" class="seat-primary" id="retryBtn">다시 도전</button>
+            <button type="button" class="seat-ghost" id="nextBtn" hidden>다음 판</button>
+          </div>
           <div class="result-score">
             <strong id="resultMoves">0</strong><span class="unit">수</span>
             <span class="result-par" id="resultPar">기준 2수</span>
@@ -1175,10 +1129,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <div><dt>오늘 클리어</dt><dd id="resultClears">1판</dd></div>
           </dl>
           <p class="result-hint" id="resultHint"></p>
-          <div class="result-actions">
-            <button type="button" class="seat-primary" id="retryBtn">다시 하기</button>
-            <button type="button" class="seat-ghost" id="nextBtn" hidden>다음 연습</button>
-          </div>
         </section>
 
       </section>
@@ -1194,6 +1144,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </main>
 
   <script type="application/json" id="seatData">__DATA_JSON__</script>
+
+  <script>
+__GUIDE_SCRIPTS__
+  </script>
 
   <script>
   (function () {
@@ -1218,11 +1172,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     /* ---------------------------------------------------------------- DOM */
     var el = {};
     ['modeDaily', 'modePractice', 'modeNote', 'moveValue', 'parValue', 'starRow', 'seatStatus',
-     'resetBtn', 'guideCard', 'guideToggle', 'guideBody',
+     'resetBtn',
      'condValue', 'condList', 'waitValue', 'waitList', 'waitEmpty', 'selectHint',
      'recordDate', 'recToday', 'recClears', 'recStreak', 'recHistory', 'boardTitle', 'boardSub',
      'seatGrid', 'coachTag', 'resultBox', 'resultBadge', 'resultTitle', 'resultMoves', 'resultPar',
-     'resultStars', 'resultEff', 'resultBest', 'resultClears', 'resultHint', 'retryBtn', 'nextBtn',
+     'resultStars', 'resultEff', 'resultBest', 'resultClears', 'resultHint', 'resultGapText', 'retryBtn', 'nextBtn',
      'practiceWrap', 'practiceNote', 'practiceList', 'themeToggle', 'moonIcon', 'sunIcon'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
@@ -1244,7 +1198,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     var waitEls = {};
     var passengerIndex = {};
     var prevCondDone = {};
-    var GUIDE_KEY = 'seat_guide_seen_v1';
 
     /* ---------------------------------------------------------------- 유틸 */
     function pad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -1525,14 +1478,20 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         check.className = 'sc-check';
         check.setAttribute('aria-hidden', 'true');
         check.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>';
+        var avail = document.createElement('span');
+        avail.className = 'sc-avail';
+        avail.setAttribute('aria-hidden', 'true');
+        avail.textContent = '가능';
         cell.appendChild(top);
         cell.appendChild(name);
         cell.appendChild(sub);
         cell.appendChild(check);
+        cell.appendChild(avail);
         cell.__label = label;
         cell.__tag = tag;
         cell.__name = name;
         cell.__sub = sub;
+        cell.__avail = avail;
         cell.addEventListener('click', (function (index) {
           return function () { onSeatClick(index); };
         })(i));
@@ -1589,7 +1548,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         cell.classList.toggle('is-senior', seatHasTag(i, 'senior'));
         cell.classList.toggle('is-selected', !!pid && pid === selected);
         cell.classList.toggle('is-ok', !!pid && passengerOk(pid, seatOfP));
-        cell.classList.toggle('is-target', !!selected && !state.cleared && canTake(selected, i));
+        var canSit = !!selected && !state.cleared && !pid && canTake(selected, i);
+        var canSwap = !!selected && !state.cleared && !!pid && pid !== selected && canTake(selected, i);
+        cell.classList.toggle('is-target', canSit);
+        cell.classList.toggle('is-swap', canSwap);
+        if (cell.__avail) cell.__avail.textContent = canSit ? '가능' : '교환';
         var text = seat.label + ' ' + (seatHasTag(i, 'window') ? '창가' : '통로') + ' · ' + cell.__sub.textContent;
         text += pid ? ' · ' + passengerName(pid) : ' · 빈 자리';
         cell.setAttribute('aria-label', text);
@@ -1620,6 +1583,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         (pass.conds || []).forEach(function (tag) {
           var chip = document.createElement('span');
           chip.className = 'chip';
+          chip.setAttribute('data-tag', tag);
           chip.textContent = TAG_LABEL[tag] || tag;
           chips.appendChild(chip);
         });
@@ -1637,6 +1601,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         }
         card.appendChild(top);
         card.appendChild(chips);
+        var stateBadge = document.createElement('span');
+        stateBadge.className = 'wait-state';
+        stateBadge.hidden = true;
+        stateBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>앉음';
+        top.appendChild(stateBadge);
+        card.__state = stateBadge;
+        card.__chips = chips;
         card.addEventListener('click', function () { onWaitClick(pass.id); });
         waitEls[pass.id] = card;
         el.waitList.appendChild(card);
@@ -1644,20 +1615,30 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     }
 
     function renderWaiting() {
+      var waiting = 0;
       var shown = 0;
       state.puzzle.passengers.forEach(function (pass) {
         var card = waitEls[pass.id];
         if (!card) return;
-        var waiting = isWaiting(pass.id);
-        card.hidden = !waiting;
-        if (!waiting) return;
-        shown += 1;
+        var seat = seatOf(pass.id);
+        var seated = seat !== -1;
+        var isWait = isWaiting(pass.id);
+        card.hidden = !seated && !isWait;
+        if (isWait) waiting += 1;
+        if (!card.hidden) shown += 1;
         var selected = state.selected === pass.id;
         card.classList.toggle('is-selected', selected);
+        card.classList.toggle('is-seated', seated);
         card.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        if (card.__state) card.__state.hidden = !seated;
+        // 앉은 승객은 좌석에서 충족한 조건 칩이 즉시 초록으로 바뀐다.
+        Array.prototype.forEach.call(card.__chips ? card.__chips.children : [], function (chip) {
+          var tag = chip.getAttribute('data-tag');
+          chip.classList.toggle('is-ok', !!seated && !!tag && seatHasTag(seat, tag));
+        });
       });
-      el.waitValue.textContent = shown + '명';
-      el.waitEmpty.hidden = shown > 0;
+      el.waitValue.textContent = waiting + '명';
+      el.waitEmpty.hidden = waiting > 0;
       el.waitList.hidden = shown === 0;
     }
 
@@ -1804,6 +1785,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       var best = recordClear(stars);
       el.resultBadge.textContent = '클리어';
       el.resultTitle.textContent = '모든 조건을 만족했습니다';
+      var over = Math.max(0, state.moves - puzzle.par);
+      el.resultGapText.textContent = over > 0
+        ? '별 3개(최소 이동)까지 ' + over + '수만 더 줄이면 됩니다!'
+        : '별 3개 · 최소 이동(' + puzzle.par + '수)으로 클리어!';
       el.resultMoves.textContent = String(state.moves);
       el.resultPar.textContent = '기준 ' + puzzle.par + '수';
       el.resultStars.innerHTML = starMarkup(stars);
@@ -1893,21 +1878,41 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     }
 
     /* ---------------------------------------------------------------- 게임 방법 */
-    function setGuide(open, persist) {
-      if (!el.guideBody || !el.guideToggle) return;
-      el.guideBody.hidden = !open;
-      el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      el.guideToggle.textContent = open ? '접기' : '게임 방법';
-      if (persist && open) {
-        try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
-      }
-    }
+    // ---- 게임 방법 데모: 승객 선택 → 가능 좌석 → 조건 충족 (처음 한 번만 움직임) ----
+    (function initSeatGuide() {
+      var stage = document.getElementById('seatGuideStage');
+      if (!stage) return;
+      var pax = stage.querySelector('[data-demo-pax]');
+      var seat = stage.querySelector('[data-demo-seat="0"]');
+      var free = stage.querySelector('[data-demo-free]');
+      var name = stage.querySelector('[data-demo-name]');
+      var check = stage.querySelector('[data-demo-check]');
 
-    if (el.guideToggle) {
-      el.guideToggle.addEventListener('click', function () {
-        setGuide(el.guideBody.hidden, true);
+      function paint(n) {
+        if (pax) pax.classList.toggle('is-on', n >= 1);
+        if (seat) {
+          seat.classList.toggle('is-ok', n === 2);
+          seat.classList.toggle('is-done', n >= 3);
+        }
+        if (free) free.hidden = n !== 2;
+        if (name) name.hidden = n < 3;
+        if (check) check.hidden = n < 3;
+      }
+
+      GameGuide.create({
+        key: 'seat_demo_seen_v1',
+        steps: document.getElementById('seatGuideSteps'),
+        note: document.getElementById('seatGuideNote'),
+        replay: document.getElementById('seatGuideReplay'),
+        notes: [
+          '① 대기 승객을 탭해 고릅니다. 조건은 카드에 적혀 있습니다.',
+          '② 앉을 수 있는 빈 좌석만 「가능」으로 켜집니다.',
+          '③ 앉히면 충족한 조건이 초록 체크로 바뀌고 남은 조건 수가 줄어듭니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
       });
-    }
+    })();
 
     /* ---------------------------------------------------------------- 이벤트 */
     el.modeDaily.addEventListener('click', function () { setMode('daily'); });
@@ -1963,12 +1968,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     state.store = loadStore();
     state.dayKey = kstKey(0);
     buildGrid();
-    (function initGuide() {
-      var seen = false;
-      try { seen = localStorage.getItem(GUIDE_KEY) === '1'; } catch (e) {}
-      // 첫 방문에는 펼쳐서 보여 주고(본 것으로 기록), 다음부터는 접힌 채로 시작한다.
-      setGuide(!seen, !seen);
-    })();
     loadPuzzle(dailyPuzzle(), 'daily');
     renderPracticeList();
     setStatus('막차가 도착했습니다. 대기 승객부터 조건에 맞는 좌석에 앉혀 보세요.');
@@ -1993,6 +1992,8 @@ def build():
     payload = safe_json_for_script(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
 
     html = HTML_TEMPLATE.replace("__CSS__", CSS).replace("__DATA_JSON__", payload)
+    html = html.replace("__GUIDE__", GUIDE_HTML)
+    html = html.replace("__GUIDE_SCRIPTS__", game_guide.GUIDE_JS)
 
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

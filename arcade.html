@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-OYlgS5M1/cRqslS6f5z0JLVFRpcTJo+uhST25JuUP8k=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-vSRNYX9rJXzaVqG7jsY5Ou9tYfWSW4p47xNXiLCj4yk=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 아케이드</title>
   <meta name="description" content="실시간 Canvas 벽돌깨기와 지렁이. 점수 구간별 티어 등급과 게임·난이도별로 분리된 랭킹, 닉네임 기록 등록을 한 화면에서 겨룹니다.">
@@ -280,25 +280,39 @@
     .arc-nick-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); }
     .arc-nick-note.arc-nick-error { color: var(--no-text); }
 
-    /* ----- 게임 방법(Canvas 프리뷰) ----- */
-    .arc-guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .arc-guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
-    .arc-guide-actions { display: inline-flex; gap: 6px; align-items: center; }
-    .arc-guide-link {
-      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
-      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
+    /* ----- 게임 방법(Canvas 프리뷰 · 1회 재생 후 정지) ----- */
+    .arc-guide-frame {
+      position: relative; margin: 0 auto; width: 100%; max-width: 340px;
+      border: 1px solid var(--border-default); border-radius: 10px; background: var(--arc-navy); padding: 5px;
     }
-    .arc-guide-body { margin-top: 9px; }
-    .arc-guide-frame { position: relative; max-width: 400px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--arc-navy); padding: 6px; }
-    .arc-guide-canvas { display: block; width: 100%; aspect-ratio: 15 / 8; border-radius: 8px; }
-    .arc-guide-cap { margin-top: 7px; font-size: 10px; color: var(--text-muted); }
-    .arc-steps { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-top: 9px; }
-    .arc-step { display: flex; gap: 8px; font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
-    .arc-step-num {
-      flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--accent-subtle); color: var(--accent-primary);
-      font-size: 10px; font-weight: 700; margin-top: 1px;
+    .arc-guide-canvas { display: block; width: 100%; aspect-ratio: 15 / 8; border-radius: 7px; }
+
+    /* ----- 목표 한 줄 · 실시간 추격 배지 ----- */
+    .arc-goal {
+      display: flex; align-items: center; gap: 6px; margin: 4px 0 0;
+      font-size: 11.5px; font-weight: 600; line-height: 1.45; color: var(--text-primary);
+    }
+    .arc-goal .tag {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 5px;
+    }
+    .arc-chase { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; width: 100%; }
+    .arc-chase span {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 10.5px; font-weight: 700; font-variant-numeric: tabular-nums;
+      border-radius: 6px; padding: 2px 6px; white-space: nowrap;
+      border: 1px solid var(--border-default); background: var(--bg-subtle); color: var(--text-secondary);
+    }
+    .arc-chase-tier { color: var(--accent-primary) !important; background: var(--accent-subtle) !important; border-color: var(--accent-primary) !important; }
+    .arc-chase span.is-done { color: var(--ok-text) !important; background: var(--ok-bg) !important; border-color: var(--ok-border) !important; }
+    .arc-chase span.is-pop { animation: chasePop 320ms ease-out; }
+    @keyframes chasePop { 0% { transform: scale(1); } 45% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+    /* ----- 결과: 목표 격차 + 한 판 더 ----- */
+    .arc-overlay-gap {
+      display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px;
+      border-radius: 6px; background: rgba(49, 130, 246, 0.18); border: 1px solid rgba(143, 193, 254, 0.45);
+      font-size: 11.5px; font-weight: 700; color: #dbeafe;
     }
 
     .arc-foot-note { margin-top: 12px; font-size: 10.5px; line-height: 1.55; color: var(--text-muted); }
@@ -307,6 +321,7 @@
       .arc-shell { grid-template-columns: minmax(0, 1fr); }
       .arc-main { grid-column: 1; grid-row: 1; }
       .arc-rail { grid-column: 1; grid-row: 2; position: static; }
+      .arc-rail #guideCard { order: -1; }
       .arc-dpad { display: grid; }
     }
 
@@ -314,7 +329,9 @@
       .arc-wrap { padding: 12px 14px 72px; }
       .arc-hero { margin-bottom: 8px; }
       .arc-hero h1 { font-size: 20px; }
-      .arc-hero p { margin-top: 4px; font-size: 12px; }
+      .arc-hero p { display: none; }
+      .arc-hero .arc-goal { display: flex; margin-top: 3px; font-size: 11px; }
+      .arc-chase span { font-size: 10px; }
       .arc-toolbar { gap: 6px; margin-bottom: 8px; }
       .arc-seg-btn { padding: 7px 11px; font-size: 12px; }
       .arc-board-label { display: none; }
@@ -339,6 +356,55 @@
     @media (prefers-reduced-motion: reduce) {
       .arc-seg-btn, .arc-rank-tab, .arc-ghost-btn, .arc-primary, .arc-dpad-btn { transition: none !important; }
       .arc-primary:active, .arc-ghost-btn:active, .arc-dpad-btn:active { transform: none !important; }
+    }
+
+    /* ----- 게임 방법: 한 번만 움직이는 데모 (4종 공통) ----- */
+    .gg-card {
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 12px; padding: 11px 12px 10px; margin: 0 0 10px;
+      box-shadow: var(--card-shadow);
+    }
+    .gg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .gg-head-actions { display: inline-flex; align-items: center; gap: 6px; }
+    .gg-head h2 {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary);
+    }
+    .gg-head h2 svg { color: var(--accent-primary); flex-shrink: 0; }
+    .gg-auto { font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+    .gg-demo {
+      position: relative; margin-top: 8px; padding: 9px 9px 8px;
+      border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-page);
+      overflow: hidden;
+    }
+    .gg-steps { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
+    .gg-step {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap;
+      color: var(--text-muted); padding: 2px 5px; border-radius: 999px;
+      border: 1px solid transparent; transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+    }
+    .gg-step.is-done { color: var(--text-secondary); }
+    .gg-step.is-on { color: var(--accent-primary); background: var(--accent-subtle); border-color: var(--border-default); }
+    .gg-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); min-height: 15px; }
+    .gg-replay {
+      width: auto; border: 1px solid var(--border-default); border-radius: 7px;
+      background: var(--bg-surface); color: var(--accent-primary);
+      font-family: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 8px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .gg-replay:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .gg-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    @media (max-width: 420px) {
+      .gg-card { padding: 8px 10px 7px; }
+      .gg-demo { margin-top: 6px; padding: 7px 8px 6px; }
+      .gg-steps { margin-top: 6px; }
+      .gg-note { margin-top: 5px; min-height: 13px; }
+      .gg-replay { padding: 2px 6px; font-size: 10px; }
+      .gg-step { font-size: 8.6px; padding: 2px 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gg-step { transition: none !important; }
     }
 </style>
   <script>
@@ -806,6 +872,7 @@
     <div class="arc-hero">
       <span class="arc-pill">Canvas 아케이드</span>
       <h1>벽돌깨기 · 지렁이</h1>
+      <p class="arc-goal"><span class="tag">목표</span><span id="arcGoal">다음 티어까지 점수를 쌓고 오늘 최고 기록을 넘기기</span></p>
       <p>벽돌을 깨고 먹이를 먹으며 점수를 쌓으세요. 게임과 난이도마다 점수판이 따로 열리고, 기록에는 닉네임과 티어 등급이 붙습니다.</p>
     </div>
 
@@ -829,6 +896,10 @@
             <div class="arc-hud-item"><span>내 최고</span><strong id="hudBest">0</strong></div>
             <div class="arc-hud-item"><span id="hudLivesLabel">목숨</span><strong id="hudLives">3</strong></div>
             <span class="arc-hud-aux" id="hudAux">스테이지 1 · 콤보 0</span>
+            <div class="arc-chase" id="arcChase" aria-live="polite">
+              <span class="arc-chase-tier" id="chaseTier">다음 티어 실버까지 800점</span>
+              <span class="arc-chase-rival" id="chaseRival">추월까지 0점</span>
+            </div>
             <div class="arc-hud-actions">
               <button type="button" class="arc-ghost-btn" id="pauseBtn" disabled>일시정지</button>
               <button type="button" class="arc-ghost-btn" id="quitBtn" disabled>판 포기</button>
@@ -841,6 +912,7 @@
               <h3 id="overlayTitle">벽돌깨기</h3>
               <p id="overlayText">패들을 움직여 공을 튕겨내고 벽돌을 모두 깨세요.</p>
               <div class="arc-overlay-stats" id="overlayStats" hidden></div>
+              <p class="arc-overlay-gap" id="overlayGap" hidden></p>
               <div class="arc-nick" id="nickPanel" hidden>
                 <div class="arc-nick-head">
                   <strong id="nickScore">0</strong>
@@ -895,25 +967,23 @@
           <p class="arc-rank-foot">기록은 닉네임과 함께 이 기기에만 남습니다(verified: false). 서버 랭킹은 별도 검증 경로로만 연결됩니다.</p>
         </section>
 
-        <section class="arc-card" id="guideCard" aria-labelledby="guideTitle">
-          <div class="arc-guide-head">
-            <h2 id="guideTitle">게임 방법</h2>
-            <div class="arc-guide-actions">
-              <button type="button" class="arc-guide-link" id="guideReplay">다시 보기</button>
-              <button type="button" class="arc-guide-link" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
+        <section class="gg-card" id="guideCard" aria-labelledby="guideTitle">
+          <div class="gg-head">
+            <h2 id="guideTitle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v.01"></path><path d="M11 12h1v4h1"></path></svg> 게임 방법</h2>
+            <div class="gg-head-actions">
+              <span class="gg-auto">자동 1회</span>
+              <button type="button" class="gg-replay" id="guideReplay">다시 보기</button>
             </div>
           </div>
-          <div class="arc-guide-body" id="guideBody">
-            <div class="arc-guide-frame">
-              <canvas class="arc-guide-canvas" id="guideCanvas" width="300" height="160" aria-label="조작 방법 미리보기"></canvas>
+          <div class="gg-demo" id="guideStage">
+            <div class="arc-guide-frame"><canvas class="arc-guide-canvas" id="guideCanvas" width="300" height="160" aria-label="조작 방법 미리보기"></canvas></div>
+            <div class="gg-steps" id="guideSteps">
+              <span class="gg-step" data-step="1">① 반사 준비</span>
+              <span class="gg-step" data-step="2">② 반사·콤보</span>
+              <span class="gg-step" data-step="3">③ 스테이지</span>
             </div>
-            <p class="arc-guide-cap" id="guideCaption">미리보기: 패들이 공을 받아 벽돌을 깨는 장면</p>
-            <ol class="arc-steps" id="guideSteps">
-              <li class="arc-step"><span class="arc-step-num">1</span><span class="arc-step-text">패들을 좌우로 움직여 공을 튕겨냅니다.</span></li>
-              <li class="arc-step"><span class="arc-step-num">2</span><span class="arc-step-text">벽돌을 연달아 깨면 콤보 점수가 붙습니다.</span></li>
-              <li class="arc-step"><span class="arc-step-num">3</span><span class="arc-step-text">벽돌을 모두 깨면 다음 스테이지가 열립니다.</span></li>
-            </ol>
           </div>
+          <p class="gg-note" id="guideCaption">패들이 공을 받아 벽돌을 깨는 장면</p>
         </section>
       </aside>
     </div>
@@ -921,7 +991,7 @@
     <p class="arc-foot-note">이 화면의 기록은 브라우저 저장소(arcade_ranking_v1)에만 남고 서버로 보내지 않습니다. 기기를 바꾸면 기록도 따로입니다.</p>
   </main>
 
-  <script type="application/json" id="arcadeData">{"built_at":"2026-11-21 23:14:34 KST","tiers":["브론즈","실버","골드","플래티넘","다이아","챌린저"],"boards":[{"key":"brick:normal","game":"brick","difficulty":"normal","label":"벽돌깨기 · 보통","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":800},{"name":"골드","min":1800},{"name":"플래티넘","min":3200},{"name":"다이아","min":5200},{"name":"챌린저","min":7600}],"rivals":[{"name":"패들장인","score":9400,"tier":"챌린저","note":"스테이지 9"},{"name":"야간반사","score":7700,"tier":"챌린저","note":"스테이지 8"},{"name":"블루벽돌","score":6150,"tier":"다이아","note":"스테이지 7"},{"name":"코랄러시","score":4900,"tier":"플래티넘","note":"스테이지 6"},{"name":"집중근무","score":3650,"tier":"플래티넘","note":"스테이지 5"},{"name":"첫출근러","score":2480,"tier":"골드","note":"스테이지 4"}]},{"key":"brick:hard","game":"brick","difficulty":"hard","label":"벽돌깨기 · 어려움","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":620},{"name":"골드","min":1400},{"name":"플래티넘","min":2600},{"name":"다이아","min":4200},{"name":"챌린저","min":6200}],"rivals":[{"name":"강철패들","score":7250,"tier":"챌린저","note":"스테이지 8"},{"name":"심야당직","score":5980,"tier":"다이아","note":"스테이지 7"},{"name":"속도광","score":4600,"tier":"다이아","note":"스테이지 6"},{"name":"벽돌수집가","score":3450,"tier":"플래티넘","note":"스테이지 5"},{"name":"늦은퇴근","score":2520,"tier":"골드","note":"스테이지 4"},{"name":"신입관제","score":1740,"tier":"골드","note":"스테이지 3"}]},{"key":"snake:normal","game":"snake","difficulty":"normal","label":"지렁이 · 보통","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":300},{"name":"골드","min":620},{"name":"플래티넘","min":1000},{"name":"다이아","min":1450},{"name":"챌린저","min":1950}],"rivals":[{"name":"꼬리장인","score":2130,"tier":"챌린저","note":"길이 46"},{"name":"먹이사냥","score":1720,"tier":"다이아","note":"길이 39"},{"name":"새벽순찰","score":1310,"tier":"플래티넘","note":"길이 31"},{"name":"격자감각","score":1010,"tier":"플래티넘","note":"길이 26"},{"name":"서행운전","score":770,"tier":"골드","note":"길이 21"},{"name":"첫뱀","score":530,"tier":"실버","note":"길이 16"}]},{"key":"snake:hard","game":"snake","difficulty":"hard","label":"지렁이 · 어려움","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":240},{"name":"골드","min":500},{"name":"플래티넘","min":830},{"name":"다이아","min":1200},{"name":"챌린저","min":1600}],"rivals":[{"name":"독니","score":1610,"tier":"챌린저","note":"길이 38"},{"name":"급커브","score":1290,"tier":"다이아","note":"길이 32"},{"name":"벽타기","score":990,"tier":"플래티넘","note":"길이 27"},{"name":"좌회전","score":760,"tier":"골드","note":"길이 22"},{"name":"짧은꼬리","score":570,"tier":"골드","note":"길이 18"},{"name":"신입뱀","score":390,"tier":"실버","note":"길이 14"}]}],"guide":{"brick":["패들을 좌우로 움직여 공을 튕겨냅니다. 마우스·터치 드래그, ←/→ 키 모두 됩니다.","벽돌을 연달아 깨면 콤보가 올라 점수가 커집니다. 공이 패들에 닿으면 콤보는 초기화됩니다.","벽돌을 모두 깨면 다음 스테이지가 열립니다. 목숨은 3개, 공을 놓치면 하나 줄어듭니다."],"snake":["먹이를 먹으면 몸이 길어지고 점수와 속도가 함께 오릅니다.","스와이프 또는 화면 아래 방향키 패드, PC는 방향키·WASD로 방향을 바꿉니다.","벽과 자기 몸, 어려움 난이도의 장애물에 부딪히면 끝납니다. 노란 보너스 먹이는 3배 점수입니다."]},"config":{"brick":{"normal":{"speed":320,"paddleW":88,"rows":5,"lives":3},"hard":{"speed":385,"paddleW":72,"rows":6,"lives":3}},"snake":{"normal":{"tickMs":150,"minTickMs":85,"obstacles":false,"bonusEvery":5},"hard":{"tickMs":120,"minTickMs":72,"obstacles":true,"bonusEvery":4}}},"ranking":{"storageKey":"arcade_ranking_v1","maxRows":10,"localOnly":true,"note":"이 기기 기록은 verified:false 로컬 기록입니다. 서버 검증 없이 글로벌 랭킹으로 올리지 않습니다."}}</script>
+  <script type="application/json" id="arcadeData">{"built_at":"2026-11-21 23:48:09 KST","tiers":["브론즈","실버","골드","플래티넘","다이아","챌린저"],"boards":[{"key":"brick:normal","game":"brick","difficulty":"normal","label":"벽돌깨기 · 보통","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":800},{"name":"골드","min":1800},{"name":"플래티넘","min":3200},{"name":"다이아","min":5200},{"name":"챌린저","min":7600}],"rivals":[{"name":"패들장인","score":9400,"tier":"챌린저","note":"스테이지 9"},{"name":"야간반사","score":7700,"tier":"챌린저","note":"스테이지 8"},{"name":"블루벽돌","score":6150,"tier":"다이아","note":"스테이지 7"},{"name":"코랄러시","score":4900,"tier":"플래티넘","note":"스테이지 6"},{"name":"집중근무","score":3650,"tier":"플래티넘","note":"스테이지 5"},{"name":"첫출근러","score":2480,"tier":"골드","note":"스테이지 4"}]},{"key":"brick:hard","game":"brick","difficulty":"hard","label":"벽돌깨기 · 어려움","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":620},{"name":"골드","min":1400},{"name":"플래티넘","min":2600},{"name":"다이아","min":4200},{"name":"챌린저","min":6200}],"rivals":[{"name":"강철패들","score":7250,"tier":"챌린저","note":"스테이지 8"},{"name":"심야당직","score":5980,"tier":"다이아","note":"스테이지 7"},{"name":"속도광","score":4600,"tier":"다이아","note":"스테이지 6"},{"name":"벽돌수집가","score":3450,"tier":"플래티넘","note":"스테이지 5"},{"name":"늦은퇴근","score":2520,"tier":"골드","note":"스테이지 4"},{"name":"신입관제","score":1740,"tier":"골드","note":"스테이지 3"}]},{"key":"snake:normal","game":"snake","difficulty":"normal","label":"지렁이 · 보통","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":300},{"name":"골드","min":620},{"name":"플래티넘","min":1000},{"name":"다이아","min":1450},{"name":"챌린저","min":1950}],"rivals":[{"name":"꼬리장인","score":2130,"tier":"챌린저","note":"길이 46"},{"name":"먹이사냥","score":1720,"tier":"다이아","note":"길이 39"},{"name":"새벽순찰","score":1310,"tier":"플래티넘","note":"길이 31"},{"name":"격자감각","score":1010,"tier":"플래티넘","note":"길이 26"},{"name":"서행운전","score":770,"tier":"골드","note":"길이 21"},{"name":"첫뱀","score":530,"tier":"실버","note":"길이 16"}]},{"key":"snake:hard","game":"snake","difficulty":"hard","label":"지렁이 · 어려움","tiers":[{"name":"브론즈","min":0},{"name":"실버","min":240},{"name":"골드","min":500},{"name":"플래티넘","min":830},{"name":"다이아","min":1200},{"name":"챌린저","min":1600}],"rivals":[{"name":"독니","score":1610,"tier":"챌린저","note":"길이 38"},{"name":"급커브","score":1290,"tier":"다이아","note":"길이 32"},{"name":"벽타기","score":990,"tier":"플래티넘","note":"길이 27"},{"name":"좌회전","score":760,"tier":"골드","note":"길이 22"},{"name":"짧은꼬리","score":570,"tier":"골드","note":"길이 18"},{"name":"신입뱀","score":390,"tier":"실버","note":"길이 14"}]}],"guide":{"brick":["패들을 좌우로 움직여 공을 튕겨냅니다. 마우스·터치 드래그, ←/→ 키 모두 됩니다.","벽돌을 연달아 깨면 콤보가 올라 점수가 커집니다. 공이 패들에 닿으면 콤보는 초기화됩니다.","벽돌을 모두 깨면 다음 스테이지가 열립니다. 목숨은 3개, 공을 놓치면 하나 줄어듭니다."],"snake":["먹이를 먹으면 몸이 길어지고 점수와 속도가 함께 오릅니다.","스와이프 또는 화면 아래 방향키 패드, PC는 방향키·WASD로 방향을 바꿉니다.","벽과 자기 몸, 어려움 난이도의 장애물에 부딪히면 끝납니다. 노란 보너스 먹이는 3배 점수입니다."]},"config":{"brick":{"normal":{"speed":320,"paddleW":88,"rows":5,"lives":3},"hard":{"speed":385,"paddleW":72,"rows":6,"lives":3}},"snake":{"normal":{"tickMs":150,"minTickMs":85,"obstacles":false,"bonusEvery":5},"hard":{"tickMs":120,"minTickMs":72,"obstacles":true,"bonusEvery":4}}},"ranking":{"storageKey":"arcade_ranking_v1","maxRows":10,"localOnly":true,"note":"이 기기 기록은 verified:false 로컬 기록입니다. 서버 검증 없이 글로벌 랭킹으로 올리지 않습니다."}}</script>
   <script>
 
 (function () {
@@ -945,9 +1015,15 @@
    'gameBrick', 'gameSnake', 'diffNormal', 'diffHard', 'boardLabel', 'bestBoard',
    'myBest', 'tierBadge', 'tierNext', 'rankLocal', 'rankRival', 'rankList', 'rankNote', 'rankBoardLabel',
    'nickPanel', 'nickScore', 'nickTier', 'nickInput', 'nickSave', 'nickNote',
-   'guideCard', 'guideCanvas', 'guideBody', 'guideToggle', 'guideReplay', 'guideSteps', 'guideCaption',
+   'guideCard', 'guideCanvas', 'guideStage', 'guideReplay', 'guideSteps', 'guideCaption',
+   'arcGoal', 'chaseTier', 'chaseRival', 'overlayGap',
    'arcStatus', 'dpad', 'themeToggle', 'moonIcon', 'sunIcon'
   ].forEach(function (id) { el[id] = document.getElementById(id); });
+
+  // 결과 화면에서는 '한 판 더'를 닉네임 패널보다 위에 두어 원탭 재도전을 먼저 만진다.
+  if (el.overlayBtn && el.nickPanel && el.nickPanel.parentNode === el.overlay) {
+    el.overlay.insertBefore(el.overlayBtn, el.nickPanel);
+  }
 
   var canvas = el.gameCanvas;
   var ctx = canvas.getContext('2d');
@@ -1079,9 +1155,43 @@
   }
 
   /* ------------------------------------------------------------ HUD · 기록 카드 */
+  function setChaseText(node, text) {
+    if (!node || node.textContent === text) return;
+    node.textContent = text;
+    node.classList.remove('is-pop');
+    void node.offsetWidth;
+    node.classList.add('is-pop');
+    window.setTimeout(function () { node.classList.remove('is-pop'); }, 360);
+  }
+
+  /* 플레이 중 실시간 추격 배지: 다음 티어까지 남은 점수 + 가장 가까운 라이벌 추월까지. */
+  function syncChase() {
+    var info = board();
+    if (!info) return;
+    var tier = tierInfo(info, state.score);
+    if (el.chaseTier) {
+      if (tier.next) setChaseText(el.chaseTier, '다음 티어 ' + tier.next.name + '까지 ' + formatScore(tier.next.need) + '점');
+      else setChaseText(el.chaseTier, '최고 티어 ' + tier.name);
+      el.chaseTier.classList.toggle('is-done', !tier.next || tier.next.need <= 20);
+    }
+    var asc = (Array.isArray(info.rivals) ? info.rivals.slice() : []).sort(function (a, b) {
+      return (a.score || 0) - (b.score || 0);
+    });
+    var rival = null;
+    for (var i = 0; i < asc.length; i += 1) {
+      if ((asc[i].score || 0) > state.score) { rival = asc[i]; break; }
+    }
+    if (el.chaseRival) {
+      if (rival) setChaseText(el.chaseRival, "'" + rival.name + "' 추월까지 " + formatScore(rival.score - state.score) + '점');
+      else setChaseText(el.chaseRival, '기준 라이벌 1위 추월!');
+      el.chaseRival.classList.toggle('is-done', !rival);
+    }
+  }
+
   function syncHud() {
     el.hudScore.textContent = formatScore(state.score);
     el.hudBest.textContent = formatScore(bestScore());
+    syncChase();
     if (state.game === 'brick') {
       el.hudLivesLabel.textContent = '목숨';
       el.hudLives.textContent = String(Brick.lives);
@@ -1103,6 +1213,9 @@
     el.tierBadge.setAttribute('data-tier', String(tier.index));
     if (tier.next) el.tierNext.textContent = '다음 등급 ' + tier.next.name + '까지 ' + formatScore(tier.next.need) + '점';
     else el.tierNext.textContent = '최고 등급입니다. 이 점수를 넘겨 보세요.';
+    if (el.arcGoal && info && info.tiers && info.tiers[1]) {
+      el.arcGoal.textContent = '다음 티어 ' + info.tiers[1].name + '까지 ' + formatScore(info.tiers[1].min) + '점 · 게임 오버에 닉네임 등록';
+    }
   }
 
   function renderSegments() {
@@ -1198,6 +1311,7 @@
     } else {
       el.overlayStats.hidden = true;
     }
+    if (el.overlayGap) el.overlayGap.hidden = true;
   }
 
   function hideOverlay() { el.overlay.hidden = true; }
@@ -1226,9 +1340,9 @@
     renderRanks();
     showOverlay(state.game === 'brick' ? '벽돌깨기' : '지렁이',
       state.game === 'brick'
-        ? '패들을 움직여 공을 튕겨내고 벽돌을 모두 깨세요.'
-        : '먹이를 먹으며 벽과 몸을 피하세요. 방향키·스와이프로 움직입니다.',
-      '시작하기');
+        ? '첫 반사: 패들을 좌우로 움직여 떨어지는 공을 받아내세요.'
+        : '첫 방향 전환: 스와이프나 방향키로 먹이 쪽으로 꺾으세요.',
+      '바로 시작하기');
     setStatus('시작하기를 누르면 게임이 시작됩니다.');
     el.stage.setAttribute('data-dir', '1,0');
   }
@@ -1299,7 +1413,24 @@
     var best = bestScore();
     var isBest = score > 0 && score >= best;
     var detail = score > 0 ? (reason || '이번 판을 마쳤습니다.') : ((reason ? reason + ' ' : '') + '점수를 얻지 못했습니다.');
-    showOverlay('기록 종료', detail, '다시 하기');
+    showOverlay('기록 종료', detail, '한 판 더');
+    if (el.overlayGap) {
+      if (tier.next) {
+        el.overlayGap.textContent = '다음 티어 ' + tier.next.name + '까지 ' + formatScore(tier.next.need) + '점!';
+      } else {
+        var ahead = null;
+        var rows = (Array.isArray(info.rivals) ? info.rivals.slice() : []).sort(function (a, b) {
+          return (a.score || 0) - (b.score || 0);
+        });
+        for (var k = 0; k < rows.length; k += 1) {
+          if ((rows[k].score || 0) > score) { ahead = rows[k]; break; }
+        }
+        el.overlayGap.textContent = ahead
+          ? "'" + ahead.name + "' 추월까지 " + formatScore(ahead.score - score) + '점!'
+          : '기준 라이벌 1위를 넘었습니다!';
+      }
+      el.overlayGap.hidden = false;
+    }
     if (score > 0) showNickPanel(score, tier, isBest);
     setStatus('기록 종료 · ' + formatScore(score) + '점 · ' + tier.name + '.');
     syncHud();
@@ -1915,25 +2046,33 @@
   });
 
   /* ------------------------------------------------------------ 게임 방법 프리뷰 */
+  var GUIDE_STEPS = {
+    brick: ['① 반사 준비', '② 반사·콤보', '③ 스테이지'],
+    snake: ['① 방향 전환', '② 먹이·성장', '③ 보너스 먹이']
+  };
+
+  function paintGuideStep(n) {
+    var chips = el.guideSteps ? el.guideSteps.querySelectorAll('.gg-step') : [];
+    for (var i = 0; i < chips.length; i += 1) {
+      var step = Number(chips[i].getAttribute('data-step'));
+      chips[i].classList.toggle('is-on', step === n);
+      chips[i].classList.toggle('is-done', step < n);
+    }
+  }
+
   function renderGuideSteps(game) {
-    var steps = GUIDE[game] || [];
+    var labels = GUIDE_STEPS[game] || GUIDE_STEPS.brick;
     el.guideSteps.textContent = '';
-    for (var i = 0; i < steps.length; i += 1) {
-      var li = document.createElement('li');
-      li.className = 'arc-step';
-      var num = document.createElement('span');
-      num.className = 'arc-step-num';
-      num.textContent = String(i + 1);
-      var text = document.createElement('span');
-      text.className = 'arc-step-text';
-      text.textContent = steps[i];
-      li.appendChild(num);
-      li.appendChild(text);
-      el.guideSteps.appendChild(li);
+    for (var i = 0; i < labels.length; i += 1) {
+      var chip = document.createElement('span');
+      chip.className = 'gg-step';
+      chip.setAttribute('data-step', String(i + 1));
+      chip.textContent = labels[i];
+      el.guideSteps.appendChild(chip);
     }
     el.guideCaption.textContent = game === 'brick'
-      ? '미리보기: 패들이 공을 받아 벽돌을 깨는 장면'
-      : '미리보기: 지렁이가 먹이를 먹고 길어지는 장면';
+      ? '패들이 공을 받아 벽돌을 깨면 콤보가 붙고, 벽돌을 모두 깨면 다음 스테이지가 열립니다.'
+      : '방향을 바꿔 먹이를 먹으면 길어지고, 노란 보너스 먹이는 3배 점수입니다.';
   }
 
   var Guide = {
@@ -1942,7 +2081,6 @@
     running: false,
     t: 0,
     game: 'brick',
-    autoClose: true,
     size: function () {
       var rect = el.guideCanvas.getBoundingClientRect();
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -2025,13 +2163,12 @@
       if (this.raf) { window.cancelAnimationFrame(this.raf); this.raf = null; }
       this.running = false;
     },
-    start: function (game, autoClose) {
+    start: function (game) {
       this.game = game;
-      this.autoClose = autoClose !== false;
       this.t = 0;
       this.stop();
       if (!this.gctx) return;
-      if (REDUCE) { this.draw(0.8); return; }
+      if (REDUCE) { this.draw(1); paintGuideStep(3); return; }
       this.running = true;
       var self = this;
       var last = 0;
@@ -2043,11 +2180,12 @@
         self.t += dt;
         var p = Math.min(1, self.t / 3.6);
         self.draw(p);
+        paintGuideStep(p < 0.34 ? 1 : (p < 0.7 ? 2 : 3));
         if (self.t >= 4.2) {
           self.draw(1);
+          paintGuideStep(3);
           self.running = false;
           self.raf = null;
-          if (self.autoClose) onGuideDone();
           return;
         }
         self.raf = window.requestAnimationFrame(step);
@@ -2056,31 +2194,8 @@
     }
   };
 
-  var guideAutoClosed = false;
-
-  function onGuideDone() {
-    if (guideAutoClosed) return;
-    if (el.guideBody.hidden) return;
-    guideAutoClosed = true;
-    setGuide(false);
-    setStatus('게임 방법 안내를 접었습니다. 다시 보기는 게임 방법 카드에 있습니다.');
-  }
-
-  function setGuide(open) {
-    el.guideBody.hidden = !open;
-    el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    el.guideToggle.textContent = open ? '접기' : '게임 방법';
-    if (open) Guide.start(state.game, false);
-    else {
-      Guide.stop();
-      try { localStorage.setItem('arcade_guide_seen_v1', '1'); } catch (err) {}
-    }
-  }
-
-  el.guideToggle.addEventListener('click', function () { setGuide(el.guideBody.hidden); });
   el.guideReplay.addEventListener('click', function () {
-    if (el.guideBody.hidden) setGuide(true);
-    else Guide.start(state.game, false);
+    Guide.start(state.game);
     setStatus('게임 방법 미리보기를 다시 재생합니다.');
   });
 
@@ -2088,8 +2203,9 @@
   function switchGame(game) {
     if (state.game === game) return;
     state.game = game;
+    renderGuideSteps(game);
     resetBoard();
-    if (!el.guideBody.hidden) Guide.start(state.game, false);
+    Guide.start(state.game);
   }
 
   function switchDifficulty(difficulty) {
@@ -2143,12 +2259,13 @@
 
   var guideSeen = false;
   try { guideSeen = localStorage.getItem('arcade_guide_seen_v1') === '1'; } catch (err) { guideSeen = false; }
-  if (guideSeen) {
-    el.guideBody.hidden = true;
-    el.guideToggle.setAttribute('aria-expanded', 'false');
-    el.guideToggle.textContent = '게임 방법';
+  // 데모는 처음 한 번 움직이고 마지막 장면에서 멈춘다. 재방문에는 마지막 장면만 보여 준다.
+  if (guideSeen || REDUCE) {
+    Guide.draw(1);
+    paintGuideStep(3);
   } else {
-    Guide.start(state.game, true);
+    try { localStorage.setItem('arcade_guide_seen_v1', '1'); } catch (err) {}
+    Guide.start(state.game);
   }
 
   window.requestAnimationFrame(loop);
