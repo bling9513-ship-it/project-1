@@ -171,6 +171,11 @@ def _desktop_menu(current):
 
 
 def _mobile_tabs(current):
+    tabbed = set()
+    for _key, _label, _href, pages, _icon in MOBILE_TABS:
+        tabbed.update(pages)
+    # 탭이 없는 페이지(옷차림·오늘 뭐 먹지)는 '전체' 메뉴 안에 있으므로 전체를 활성으로 표시한다.
+    all_active = " is-active" if current not in tabbed else ""
     parts = ['<nav class="ia-tabbar" aria-label="빠른 이동">']
     for tab_key, label, href, pages, icon in MOBILE_TABS:
         active = " is-active" if current in pages else ""
@@ -182,9 +187,11 @@ def _mobile_tabs(current):
             )
         )
     parts.append(
-        '<button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" '
+        '<button type="button" class="ia-tab{active}" id="iaAllBtn" aria-expanded="false" '
         'aria-controls="iaSheet"><span class="ia-tab-icon">{icon}</span>'
-        '<span class="ia-tab-label">전체</span></button>'.format(icon=ICONS["grid"])
+        '<span class="ia-tab-label">전체</span></button>'.format(
+            active=all_active, icon=ICONS["grid"]
+        )
     )
     parts.append("</nav>")
     return "".join(parts)
