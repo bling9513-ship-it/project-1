@@ -570,7 +570,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </div>
           </div>
 
-          <div class="arc-stage" id="stage" data-game="brick" data-difficulty="normal" data-board="brick:normal" data-phase="idle" data-dir="1,0">
+          <div class="arc-stage" id="stage" tabindex="0" aria-label="게임 영역" data-game="brick" data-difficulty="normal" data-board="brick:normal" data-phase="idle" data-dir="1,0">
             <canvas class="arc-canvas" id="gameCanvas" width="480" height="640" aria-label="게임 화면" role="img"></canvas>
             <div class="arc-overlay" id="overlay">
               <h3 id="overlayTitle">벽돌깨기</h3>
@@ -1602,9 +1602,20 @@ ARCADE_JS = r"""
     });
   });
 
+  /* 대화형 요소(버튼·링크·입력 등)에 포커스가 있으면 Space/Enter의 기본 동작을 먼저 보장한다. */
+  var INTERACTIVE_SELECTOR = 'button, a[href], input, select, textarea, summary, label, '
+    + '[role="button"], [role="tab"], [role="link"], [role="checkbox"], [role="switch"], [role="slider"], '
+    + '[contenteditable="true"], audio[controls], video[controls]';
+
+  function isInteractive(node) {
+    if (!node || node.nodeType !== 1) return false;
+    if (node.isContentEditable) return true;
+    return !!(node.closest && node.closest(INTERACTIVE_SELECTOR));
+  }
+
   document.addEventListener('keydown', function (event) {
     var target = event.target;
-    if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+    if (isInteractive(target) || isInteractive(document.activeElement)) return;
     if (sheetEl && !sheetEl.hidden) return;
     var key = event.key;
     if (state.game === 'brick') {
