@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-13개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+14개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
-- 시트: 카테고리별 13개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 게임·챌린지 메뉴는 '기존 게임 / 미니게임' 소제목으로 묶는다(데스크톱 드롭다운·모바일 시트 공통).
+- 시트: 카테고리별 14개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
 """
 import re
@@ -27,25 +28,33 @@ PAGES = [
     ("clue", "clue.html", "3단서 추리", "3단서 추리"),
     ("mission", "mission.html", "퇴근길 미션", "퇴근길 미션"),
     ("chart", "chart.html", "차트 추리실", "차트 추리실"),
+    ("ops", "ops.html", "60초 관제실", "60초 관제실"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
 PAGE_LABEL = {key: label for key, _file, label, _short in PAGES}
 PAGE_SHORT = {key: short for key, _file, _label, short in PAGES}
 
-# (그룹 이름, 페이지 키 목록) — 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
+# 게임·챌린지 메뉴의 소제목 묶음 — 기존 4종과 새 미니게임을 구분해 보여 준다.
+GAME_GROUPS = [
+    ("기존 게임", ["wargame", "clue", "mission", "chart"]),
+    ("미니게임", ["ops"]),
+]
+
+# (그룹 이름, 항목 목록) — 항목은 페이지 키(str) 또는 (소제목, 페이지 키 목록).
+# 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
 GROUPS = [
     ("보안·채용", ["index", "study"]),
     ("브리핑·유틸", ["today", "ai", "cve", "tools", "radar"]),
     ("데일리·생활", ["outfit", "pick"]),
-    ("게임·챌린지", ["wargame", "clue", "mission", "chart"]),
+    ("게임·챌린지", GAME_GROUPS),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
     ("브리핑·트렌드", ["today", "ai", "cve", "tools", "radar"]),
     ("데일리·생활", ["outfit", "pick"]),
-    ("게임·챌린지", ["wargame", "clue", "mission", "chart"]),
+    ("게임·챌린지", GAME_GROUPS),
 ]
 
 # 모바일 하단 탭 바 — (키, 라벨, 기본 링크, 이 탭이 활성인 페이지 키 목록, 아이콘 키)
@@ -53,7 +62,7 @@ MOBILE_TABS = [
     ("jobs", "채용", "index.html", ["index"], "briefcase"),
     ("study", "학습", "study.html", ["study"], "book"),
     ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
-    ("game", "게임", "wargame.html", ["wargame", "clue", "mission", "chart"], "game"),
+    ("game", "게임", "wargame.html", ["wargame", "clue", "mission", "chart", "ops"], "game"),
 ]
 
 ICONS = {
@@ -129,9 +138,24 @@ _CLOSE = (
 )
 
 
+def _flatten_keys(items):
+    """항목 목록(페이지 키 / (소제목, 키 목록)) 을 페이지 키 목록으로 평탄화한다."""
+    keys = []
+    for item in items:
+        if isinstance(item, str):
+            keys.append(item)
+        else:
+            keys.extend(item[1])
+    return keys
+
+
+def _has_subgroups(items):
+    return any(not isinstance(item, str) for item in items)
+
+
 def _is_dropdown(key):
-    for _title, keys in DESKTOP_DROPDOWNS:
-        if key in keys:
+    for _title, items in DESKTOP_DROPDOWNS:
+        if key in _flatten_keys(items):
             return True
     return False
 
@@ -147,7 +171,8 @@ def _desktop_menu(current):
                 active=active, file=PAGE_FILE[key], cur=cur, label=PAGE_LABEL[key]
             )
         )
-    for title, keys in DESKTOP_DROPDOWNS:
+    for title, items in DESKTOP_DROPDOWNS:
+        keys = _flatten_keys(items)
         group_active = " is-active" if current in keys else ""
         expanded = "true" if current in keys else "false"
         parts.append('<div class="ia-menu-group">')
@@ -158,14 +183,32 @@ def _desktop_menu(current):
             )
         )
         parts.append('<div class="ia-drop" role="menu">')
-        for key in keys:
+
+        def _drop_link(key):
             cur = ' aria-current="page"' if current == key else ""
             cls = "ia-drop-link is-current" if current == key else "ia-drop-link"
-            parts.append(
+            return (
                 '<a class="{cls}" role="menuitem" href="{file}"{cur}>{label}</a>'.format(
                     cls=cls, file=PAGE_FILE[key], cur=cur, label=PAGE_LABEL[key]
                 )
             )
+
+        if not _has_subgroups(items):
+            for key in items:
+                parts.append(_drop_link(key))
+        else:
+            first_sub = True
+            for item in items:
+                if isinstance(item, str):
+                    parts.append(_drop_link(item))
+                    continue
+                sub_title, sub_keys = item
+                if not first_sub:
+                    parts.append('<div class="ia-drop-sep" aria-hidden="true"></div>')
+                first_sub = False
+                parts.append('<p class="ia-drop-label">{title}</p>'.format(title=sub_title))
+                for key in sub_keys:
+                    parts.append(_drop_link(key))
         parts.append("</div></div>")
     parts.append("</nav>")
     return "".join(parts)
@@ -208,21 +251,41 @@ def _sheet(current):
         'aria-label="전체 메뉴 닫기">' + _CLOSE + "</button></div>",
         '<div class="ia-sheet-body">',
     ]
-    for title, keys in GROUPS:
-        parts.append('<p class="ia-sheet-group">{title}</p>'.format(title=title))
-        parts.append('<div class="ia-sheet-links">')
-        for key in keys:
-            cls = "ia-sheet-link"
-            cur = ' aria-current="page"' if current == key else ""
-            if current == key:
-                cls += " is-current"
-            parts.append(
-                '<a class="{cls}" href="{file}"{cur}><span>{label}</span>'
-                '<span class="ia-sheet-file">{file}</span></a>'.format(
-                    cls=cls, file=PAGE_FILE[key], cur=cur, label=PAGE_LABEL[key]
-                )
+    def _sheet_link(key):
+        cls = "ia-sheet-link"
+        cur = ' aria-current="page"' if current == key else ""
+        if current == key:
+            cls += " is-current"
+        return (
+            '<a class="{cls}" href="{file}"{cur}><span>{label}</span>'
+            '<span class="ia-sheet-file">{file}</span></a>'.format(
+                cls=cls, file=PAGE_FILE[key], cur=cur, label=PAGE_LABEL[key]
             )
-        parts.append("</div>")
+        )
+
+    for title, items in GROUPS:
+        parts.append('<p class="ia-sheet-group">{title}</p>'.format(title=title))
+        if not _has_subgroups(items):
+            parts.append('<div class="ia-sheet-links">')
+            for key in items:
+                parts.append(_sheet_link(key))
+            parts.append("</div>")
+            continue
+        leading = [item for item in items if isinstance(item, str)]
+        if leading:
+            parts.append('<div class="ia-sheet-links">')
+            for key in leading:
+                parts.append(_sheet_link(key))
+            parts.append("</div>")
+        for item in items:
+            if isinstance(item, str):
+                continue
+            sub_title, sub_keys = item
+            parts.append('<p class="ia-sheet-sub">{title}</p>'.format(title=sub_title))
+            parts.append('<div class="ia-sheet-links">')
+            for key in sub_keys:
+                parts.append(_sheet_link(key))
+            parts.append("</div>")
     parts.append("</div></section>")
     return "".join(parts)
 
@@ -393,6 +456,16 @@ NAV_CSS = """
   .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
   .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
 
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
   .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
 
   .ia-meta {
@@ -550,6 +623,13 @@ NAV_CSS = """
   .ia-sheet-link:active { transform: scale(0.98); }
   .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
   .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
 
   body.ia-sheet-open { overflow: hidden; }
 
