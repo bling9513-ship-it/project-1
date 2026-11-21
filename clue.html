@@ -718,6 +718,100 @@
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
     }
+
+    /* ===== 2차 UI/UX: PC 2단(좌 플레이어 ↔ 우 지난 문제 레일) · 모바일 1줄 요약 ===== */
+    .clue-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .clue-overview-copy { min-width: 0; }
+    .clue-overview .hero-pill { margin-bottom: 10px; }
+    .clue-overview .hero-title { margin-bottom: 6px; }
+    .clue-overview .hero-desc { margin-bottom: 0; }
+
+    .clue-kpis { display: flex; gap: 8px; flex: 0 0 auto; }
+    .clue-kpi {
+      min-width: 92px;
+      padding: 8px 12px 9px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .clue-kpi-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; }
+    .clue-kpi-value { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .clue-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 336px;
+      gap: 20px;
+      align-items: start;
+    }
+    .clue-main { min-width: 0; }
+    .clue-main .player { margin-bottom: 0; }
+
+    .clue-rail {
+      position: sticky;
+      top: 78px;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 98px);
+      min-width: 0;
+    }
+    .clue-rail .archive {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0;
+      min-height: 0;
+      padding: 16px;
+    }
+    .clue-rail .chips { margin-bottom: 10px; gap: 4px; }
+    .clue-rail .chip { padding: 4px 9px; font-size: 11px; border-radius: 8px; }
+    .clue-rail .arc-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      min-height: 0;
+      padding: 1px;
+    }
+    .clue-rail .arc-card { padding: 9px 10px; gap: 4px; border-radius: 9px; }
+    .clue-rail .arc-title { font-size: 12px; }
+    .clue-rail .arc-date,
+    .clue-rail .arc-state { font-size: 10.5px; }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1200px; }
+      .clue-layout { grid-template-columns: minmax(0, 1fr) 320px; }
+    }
+
+    @media (max-width: 1023px) {
+      .clue-overview-copy { display: none; }
+      .clue-overview { margin-bottom: 10px; }
+      .clue-kpis { flex: 1 1 auto; gap: 6px; }
+      .clue-kpi { flex: 1 1 0; min-width: 0; padding: 7px 10px; }
+      .clue-kpi-label { font-size: 10.5px; }
+      .clue-kpi-value { font-size: 14px; }
+      .clue-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .clue-rail { position: static; max-height: none; }
+      .clue-rail .arc-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        overflow: visible;
+      }
+      .clue-rail .arc-card { padding: 11px 12px; }
+      .clue-rail .arc-title { font-size: 13px; }
+    }
+
+    @media (max-width: 640px) {
+      .clue-rail .arc-grid { grid-template-columns: minmax(0, 1fr); }
+    }
 </style>
   <script>
     (function () {
@@ -1184,17 +1278,30 @@
 
   <main class="container">
 
-    <section class="hero">
-      <span class="hero-pill">DAILY PUZZLE</span>
-      <h1 class="hero-title">하루 한 판 · 3단서 추리</h1>
-      <p class="hero-desc">단서는 세 개, 시간은 1분. 첫 단서만 열린 채로 시작해 필요할 때 다음 단서를 열고, 적게 열고 맞힐수록 기록이 좋습니다. 정답을 고르면 해설이 열리고, 정답을 담지 않은 결과 문구를 복사해 공유할 수 있습니다. 지난 문제는 분야별로 골라 다시 풀 수 있습니다.</p>
-      <div class="hero-stats">
-        <span class="stat-chip">문제 <strong>15</strong></span>
-        <span class="stat-chip">오늘 분야 <strong>역사</strong></span>
-        <span class="stat-chip">연속 <strong id="streakNum">0일</strong></span>
-        <span class="stat-chip">해결 <strong id="solvedStat">0 / 15</strong></span>
+    <section class="clue-overview">
+      <div class="clue-overview-copy">
+        <span class="hero-pill">DAILY PUZZLE</span>
+        <h1 class="hero-title">하루 한 판 · 3단서 추리</h1>
+        <p class="hero-desc">단서는 세 개, 시간은 1분. 첫 단서만 열린 채로 시작해 필요할 때 다음 단서를 열고, 적게 열고 맞힐수록 기록이 좋습니다. 정답을 고르면 해설이 열리고, 정답을 담지 않은 결과 문구를 복사해 공유할 수 있습니다. 지난 문제는 분야별로 골라 다시 풀 수 있습니다.</p>
+      </div>
+      <div class="clue-kpis" aria-label="추리 기록 요약">
+        <div class="clue-kpi">
+          <span class="clue-kpi-label">오늘 분야</span>
+          <span class="clue-kpi-value">역사</span>
+        </div>
+        <div class="clue-kpi">
+          <span class="clue-kpi-label">연속</span>
+          <span class="clue-kpi-value" id="streakNum">0일</span>
+        </div>
+        <div class="clue-kpi">
+          <span class="clue-kpi-label">해결</span>
+          <span class="clue-kpi-value" id="solvedStat">0 / 15</span>
+        </div>
       </div>
     </section>
+
+    <div class="clue-layout">
+      <div class="clue-main">
 
     <section class="panel player" id="playPanel" aria-label="3단서 추리 플레이어">
       <div class="player-top">
@@ -1244,6 +1351,9 @@
       </div>
     </section>
 
+      </div>
+
+      <aside class="clue-rail" aria-label="지난 문제 아카이브">
     <section class="panel archive" id="archivePanel">
       <div class="panel-head">
         <div class="panel-title"><span class="bar"></span>지난 문제</div>
@@ -1329,11 +1439,13 @@
       </div>
       <div class="empty" id="arcEmpty" hidden>이 분야의 문제가 아직 없습니다. 다른 분야를 골라 보세요.</div>
     </section>
+      </aside>
+    </div>
 
     <footer class="footer">
       Infosec Archive · 하루 한 판 · 3단서 추리<br>
       정답·단서는 학습과 오락을 위한 것으로, 사실 확인을 거친 소재를 짧게 각색했습니다. 풀이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-21 12:42 KST 기준 · 매일 08:00 새 문제
+      2026-11-21 13:03 KST 기준 · 매일 08:00 새 문제
     </footer>
   </main>
 

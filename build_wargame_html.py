@@ -1716,6 +1716,283 @@ CSS = """
       .filter-row { flex-direction: column; gap: 6px; margin-bottom: 12px; }
       .filter-label { flex: none; padding-top: 0; font-size: 10.5px; }
     }
+
+    /* ===== 2차 UI/UX: PC 좌측 문제 탐색 레일 · 모바일 진행률 한 줄 + 문제 목록 시트 ===== */
+    .wg-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .wg-overview-copy { min-width: 0; }
+    .wg-overview .hero-pill { margin-bottom: 10px; }
+    .wg-overview .hero-title { margin-bottom: 6px; }
+    .wg-overview .hero-desc { margin-bottom: 0; }
+
+    .wg-kpis { display: flex; gap: 8px; flex: 0 0 auto; }
+    .wg-kpi {
+      min-width: 104px;
+      padding: 9px 12px 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .wg-kpi-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; }
+    .wg-kpi-value { font-size: 19px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .wg-kpi-unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-left: 3px; white-space: nowrap; }
+
+    .wg-mobile-bar { display: none; }
+
+    .wg-layout {
+      display: grid;
+      grid-template-columns: 276px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .wg-main { min-width: 0; }
+
+    .wg-rail {
+      position: sticky;
+      top: 78px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      padding: 15px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      max-height: calc(100vh - 98px);
+    }
+    .wg-rail-head { display: none; }
+    .wg-rail-backdrop { display: none; }
+    .wg-rail-section { display: flex; flex-direction: column; gap: 7px; }
+    .wg-rail-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; }
+    .wg-rail .chips { gap: 4px; }
+    .wg-rail .chip { padding: 4px 9px; font-size: 11.5px; border-radius: 8px; }
+    .wg-rail .chip em { font-size: 10px; }
+
+    .wg-rail-progress {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .wg-rail-progress-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--text-muted); }
+    .wg-rail-progress-top b { color: var(--text-primary); font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .wg-rail-progress .sum-bar { margin-top: 0; }
+    .wg-rail-progress .cat-progress { margin-top: 2px; }
+    .wg-rail-progress .cat-bar { font-size: 10.5px; padding: 2px 6px; }
+
+    .wg-rail-listwrap { display: flex; flex-direction: column; gap: 6px; min-height: 0; flex: 1 1 auto; }
+    .wg-rail-listhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .wg-rail-listhead span { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .wg-rail-reset {
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 4px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .wg-rail-reset:hover { color: var(--text-primary); }
+
+    .wg-rail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      padding-right: 2px;
+    }
+    .wg-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 7px 8px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+    .wg-item:hover { background: var(--bg-subtle); }
+    .wg-item:active { transform: scale(0.99); }
+    .wg-item.is-active { background: var(--accent-subtle); border-color: var(--accent-primary); }
+    .wg-item-no { flex: 0 0 20px; font-size: 10.5px; font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .wg-item.is-active .wg-item-no { color: var(--accent-primary); }
+    .wg-item-body { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
+    .wg-item-title { font-size: 12px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wg-item-meta { font-size: 10.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wg-item-state { flex: 0 0 auto; font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .wg-item-state.is-done { color: var(--ok-text); }
+    .wg-item-state.is-revealed { color: var(--text-muted); }
+    .wg-item-dot { display: none; flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%; background: var(--ok-text); }
+    .wg-item.is-done .wg-item-dot { display: block; }
+
+    .wg-rail-progress-reset {
+      align-self: flex-start;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 4px;
+      cursor: pointer;
+    }
+    .wg-rail-progress-reset:hover { color: var(--text-primary); }
+
+    .wg-main-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .wg-pos { font-size: 12px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .wg-pager { display: flex; gap: 6px; }
+    .wg-pager .btn-ghost:disabled { opacity: 0.42; cursor: default; }
+    .wg-pager .btn-ghost:disabled:hover { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-default); }
+
+    .wg-list-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      background: var(--bg-surface);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 150ms ease;
+    }
+    .wg-list-btn:active { transform: scale(0.97); }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1320px; }
+    }
+
+    @media (max-width: 1023px) {
+      .wg-overview-copy { display: none; }
+      .wg-kpis { display: none; }
+      .wg-overview { margin-bottom: 0; }
+      .wg-mobile-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 0 0 10px;
+        padding: 9px 12px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-default);
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+      }
+      .wg-mobile-progress {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        min-width: 0;
+        font-size: 11.5px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .wg-mobile-progress b { color: var(--text-primary); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .wg-mobile-dot { color: var(--border-strong); }
+
+      .wg-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .wg-main-head { margin-bottom: 10px; }
+
+      .wg-rail {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        z-index: 90;
+        max-height: 86vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+        padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+        box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 240ms;
+      }
+      .wg-rail.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+      }
+      .wg-rail-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px 0 6px;
+      }
+      .wg-rail-head strong { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; }
+      .wg-rail-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid var(--border-default);
+        background: var(--bg-page);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: transform 160ms ease;
+      }
+      .wg-rail-close svg { width: 18px; height: 18px; }
+      .wg-rail-close:active { transform: scale(0.94); }
+      .wg-rail-list { overflow: visible; }
+      .wg-rail-listwrap { flex: 0 0 auto; }
+      .wg-rail .chip { padding: 6px 10px; font-size: 12px; }
+
+      .wg-rail-backdrop {
+        position: fixed;
+        inset: 0;
+        display: block;
+        background: rgba(15, 23, 42, 0.44);
+        opacity: 0;
+        transition: opacity 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 88;
+      }
+      .wg-rail-backdrop[hidden] { display: none !important; }
+      .wg-rail-backdrop.is-open { opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .q-brief { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    }
+
+    body.wg-sheet-open { overflow: hidden; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wg-item, .wg-list-btn, .wg-rail-close, .wg-rail, .wg-rail-backdrop { transition: none !important; }
+    }
 """
 
 
@@ -1820,62 +2097,96 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <main class="container">
 
-    <section class="hero">
-      <span class="hero-pill">SECURITY DRILL</span>
-      <h1 class="hero-title">출퇴근길 보안 워게임</h1>
-      <p class="hero-desc">현업에서 마주치는 결함을 짧은 코드·서버 로그·패킷으로 재구성했습니다. 한 문제 3분, 지하철에서 한 손으로 풀고 바로 채점받으세요. 정답을 확인하면 공격 원리와 실무 영향, 그리고 취약 코드와 시큐어 코드를 나란히 보여 줍니다. 매일 아침 08:00에 최신 CVE·보안 이슈를 소재로 새 문제 2개가 추가됩니다.</p>
-      <div class="hero-stats">
-        <span class="stat-chip">문제 <strong>__TOTAL__</strong></span>
-        <span class="stat-chip">카테고리 <strong>4</strong></span>
-        <span class="stat-chip">실습형 <strong>__INPUT_COUNT__</strong></span>
-        __TODAY_CHIP__
-        <span class="stat-chip">기록 <strong>localStorage</strong></span>
+    <section class="wg-overview">
+      <div class="wg-overview-copy">
+        <span class="hero-pill">SECURITY DRILL</span>
+        <h1 class="hero-title">출퇴근길 보안 워게임</h1>
+        <p class="hero-desc">현업에서 마주치는 결함을 짧은 코드·서버 로그·패킷으로 재구성했습니다. 한 문제 3분, 지하철에서 한 손으로 풀고 바로 채점받으세요. 정답을 확인하면 공격 원리와 실무 영향, 그리고 취약 코드와 시큐어 코드를 나란히 보여 줍니다. 매일 아침 08:00에 최신 CVE·보안 이슈를 소재로 새 문제 2개가 추가됩니다.</p>
       </div>
-    </section>
-
-    <section class="summary" aria-label="진행 현황">
-      <div class="sum-main">
-        <div class="sum-num"><strong id="solvedNum">0</strong><span>/ __TOTAL__</span></div>
-        <div class="sum-label">해결한 문제</div>
-        <div class="sum-bar"><i id="solvedBar"></i></div>
-      </div>
-      <div class="sum-side">
-        <div class="sum-rows">
-          <span class="sum-row">정답률 <strong id="accNum">—</strong></span>
-          <span class="sum-row">제출 <strong id="tryNum">0</strong>회</span>
-          <span class="sum-row">실습형 <strong id="inputNum">0</strong> / __INPUT_COUNT__</span>
+      <div class="wg-kpis" aria-label="진행 현황">
+        <div class="wg-kpi">
+          <span class="wg-kpi-label">전체 문제</span>
+          <span class="wg-kpi-value">__TOTAL__</span><span class="wg-kpi-unit">문제</span>
         </div>
-        <div class="cat-progress" id="catProgress"></div>
-      </div>
-    </section>
-
-    <section class="controls" aria-label="문제 필터">
-      <div class="filter-row">
-        <div class="filter-label">카테고리</div>
-        <div class="chips" id="catFilter"></div>
-      </div>
-      <div class="filter-row">
-        <div class="filter-label">난이도</div>
-        <div class="chips" id="levelFilter"></div>
-      </div>
-      <div class="filter-row">
-        <div class="filter-label">상태</div>
-        <div class="chips" id="statusFilter"></div>
-      </div>
-      <div class="controls-foot">
-        <span class="visible-count" id="visibleCount">__TOTAL__문제</span>
-        <div class="foot-btns">
-          <button class="btn-ghost" type="button" id="resetFilters">필터 초기화</button>
-          <button class="btn-ghost" type="button" id="resetProgress">기록 초기화</button>
+        <div class="wg-kpi">
+          <span class="wg-kpi-label">해결</span>
+          <span class="wg-kpi-value" id="kpiSolved">0</span><span class="wg-kpi-unit">/ __TOTAL__</span>
+        </div>
+        <div class="wg-kpi">
+          <span class="wg-kpi-label">데일리</span>
+          <span class="wg-kpi-value" id="kpiDaily">0</span><span class="wg-kpi-unit">/ __DAILY__</span>
+        </div>
+        <div class="wg-kpi">
+          <span class="wg-kpi-label">정답률</span>
+          <span class="wg-kpi-value" id="kpiAcc">—</span><span class="wg-kpi-unit" id="kpiTries">제출 0회</span>
         </div>
       </div>
     </section>
 
-    <div class="q-list" id="qList">
-__CARDS__
+    <div class="wg-mobile-bar">
+      <div class="wg-mobile-progress">
+        <span>해결 <b id="mSolved">0</b><span class="wg-muted">/ __TOTAL__</span></span>
+        <span class="wg-mobile-dot">·</span>
+        <span>정답률 <b id="mAcc">—</b></span>
+      </div>
+      <button class="wg-list-btn" type="button" id="wgListOpen" aria-expanded="false" aria-controls="wgRail">
+        문제 목록
+      </button>
     </div>
 
-    <div class="empty-state" id="emptyState">조건에 맞는 문제가 없습니다. 필터를 초기화해 보세요.</div>
+    <div class="wg-layout">
+      <div class="wg-rail-backdrop" id="wgRailBackdrop" hidden></div>
+      <aside class="wg-rail" id="wgRail" aria-label="문제 탐색">
+        <div class="wg-rail-head">
+          <strong>문제 목록</strong>
+          <button class="wg-rail-close" type="button" id="wgRailClose" aria-label="문제 목록 닫기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+        <div class="wg-rail-progress">
+          <div class="wg-rail-progress-top">
+            <span>해결 <b id="railSolved">0</b> / __TOTAL__</span>
+            <span id="railAcc">정답률 —</span>
+          </div>
+          <div class="sum-bar"><i id="solvedBar"></i></div>
+          <div class="cat-progress" id="catProgress"></div>
+        </div>
+        <div class="wg-rail-section">
+          <span class="wg-rail-label">카테고리</span>
+          <div class="chips" id="catFilter"></div>
+        </div>
+        <div class="wg-rail-section">
+          <span class="wg-rail-label">난이도</span>
+          <div class="chips" id="levelFilter"></div>
+        </div>
+        <div class="wg-rail-section">
+          <span class="wg-rail-label">상태</span>
+          <div class="chips" id="statusFilter"></div>
+        </div>
+        <div class="wg-rail-listwrap">
+          <div class="wg-rail-listhead">
+            <span id="visibleCount">__TOTAL__문제</span>
+            <button class="wg-rail-reset" type="button" id="resetFilters">필터 초기화</button>
+          </div>
+          <div class="wg-rail-list" id="wgList"></div>
+        </div>
+        <button class="wg-rail-progress-reset" type="button" id="resetProgress">기록 초기화</button>
+      </aside>
+
+      <div class="wg-main">
+        <div class="wg-main-head">
+          <span class="wg-pos" id="wgPos">0 / __TOTAL__</span>
+          <div class="wg-pager">
+            <button class="btn-ghost" type="button" id="wgPrev">이전 문제</button>
+            <button class="btn-ghost" type="button" id="wgNext">다음 문제</button>
+          </div>
+        </div>
+        <div class="q-list" id="qList">
+__CARDS__
+        </div>
+        <div class="empty-state" id="emptyState">조건에 맞는 문제가 없습니다. 필터를 초기화해 보세요.</div>
+      </div>
+    </div>
 
     <footer class="footer">
       Infosec Archive · 출퇴근길 보안 워게임<br>
@@ -1922,6 +2233,7 @@ __CARDS__
     const CATS = __CATS_JSON__;
     const LEVELS = __LEVELS_JSON__;
     const STORE_KEY = 'secjobs-wargame-v1';
+    const TODAY = '__TODAY__';
 
     const catLabel = {};
     CATS.forEach(c => { catLabel[c.key] = c.label; });
@@ -2015,19 +2327,24 @@ __CARDS__
       });
     }
 
-    // ---- 요약 ----
+    // ---- 요약(KPI·레일 진행률) ----
     function renderSummary() {
       const solved = DATA.filter(q => RECORD[q.id].solved).length;
       const attempts = DATA.reduce((a, q) => a + RECORD[q.id].attempts, 0);
       const correct = DATA.reduce((a, q) => a + RECORD[q.id].correct, 0);
-      const inputSolved = DATA.filter(q => q.type === 'input' && RECORD[q.id].solved).length;
+      const acc = attempts ? Math.round((correct / attempts) * 100) + '%' : '—';
+      const daily = DATA.filter(q => q.daily);
+      const dailySolved = daily.filter(q => RECORD[q.id].solved).length;
 
-      document.getElementById('solvedNum').textContent = solved;
+      document.getElementById('kpiSolved').textContent = solved;
+      document.getElementById('kpiAcc').textContent = acc;
+      document.getElementById('kpiTries').textContent = '제출 ' + attempts + '회';
+      document.getElementById('kpiDaily').textContent = dailySolved;
+      document.getElementById('railSolved').textContent = solved;
+      document.getElementById('railAcc').textContent = '정답률 ' + acc;
+      document.getElementById('mSolved').textContent = solved;
+      document.getElementById('mAcc').textContent = acc;
       document.getElementById('solvedBar').style.width = (DATA.length ? (solved / DATA.length) * 100 : 0) + '%';
-      document.getElementById('accNum').textContent = attempts ? Math.round((correct / attempts) * 100) + '%' : '—';
-      document.getElementById('tryNum').textContent = attempts;
-      const inputNum = document.getElementById('inputNum');
-      if (inputNum) inputNum.textContent = inputSolved;
 
       document.getElementById('catProgress').innerHTML = CATS.map(function (c) {
         const total = DATA.filter(q => q.cat === c.key).length;
@@ -2124,6 +2441,7 @@ __CARDS__
             saveRecord();
             renderSummary();
             buildFilterChips();
+            renderRail();
           });
         });
       } else {
@@ -2149,6 +2467,7 @@ __CARDS__
           saveRecord();
           renderSummary();
           buildFilterChips();
+          renderRail();
         });
 
         const quick = card.querySelector('.quick-chips');
@@ -2226,7 +2545,7 @@ __CARDS__
       updateTries(card, rec);
     }
 
-    // ---- 필터 적용 ----
+    // ---- 필터 & 문제 선택 레일 ----
     function matchesFilters(q) {
       if (filters.cat !== 'all' && q.cat !== filters.cat) return false;
       if (filters.level !== 'all' && q.level !== filters.level) return false;
@@ -2235,17 +2554,221 @@ __CARDS__
       return true;
     }
 
-    function applyFilters() {
-      let shown = 0;
-      DATA.forEach(function (q) {
-        const card = cardOf(q.id);
-        if (!card) return;
-        const ok = matchesFilters(q);
-        card.hidden = !ok;
-        if (ok) shown += 1;
+    function questionOf(id) {
+      for (let i = 0; i < DATA.length; i++) if (DATA[i].id === id) return DATA[i];
+      return null;
+    }
+
+    function filteredQuestions() { return DATA.filter(matchesFilters); }
+
+    let currentId = null;
+
+    function cardTitle(id) {
+      const card = cardOf(id);
+      const h = card ? card.querySelector('.q-title') : null;
+      return h ? h.textContent : id;
+    }
+
+    function renderRail() {
+      const rail = document.getElementById('wgList');
+      const items = filteredQuestions();
+      rail.textContent = '';
+      items.forEach(function (q) {
+        const idx = DATA.indexOf(q);
+        const r = RECORD[q.id];
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'wg-item' + (q.id === currentId ? ' is-active' : '') + (r.solved ? ' is-done' : '');
+        btn.setAttribute('data-id', q.id);
+        if (q.id === currentId) btn.setAttribute('aria-current', 'true');
+
+        const no = document.createElement('span');
+        no.className = 'wg-item-no';
+        no.textContent = String(idx + 1).padStart(2, '0');
+
+        const body = document.createElement('span');
+        body.className = 'wg-item-body';
+        const title = document.createElement('span');
+        title.className = 'wg-item-title';
+        title.textContent = cardTitle(q.id);
+        const meta = document.createElement('span');
+        meta.className = 'wg-item-meta';
+        meta.textContent = (catLabel[q.cat] || q.cat) + ' · ' + (levelLabel[q.level] || q.level);
+        body.appendChild(title);
+        body.appendChild(meta);
+
+        const state = document.createElement('span');
+        state.className = 'wg-item-state';
+        state.textContent = r.solved ? '해결' : (r.revealed ? '정답 확인' : '');
+
+        btn.appendChild(no);
+        btn.appendChild(body);
+        btn.appendChild(state);
+        btn.addEventListener('click', function () {
+          selectProblem(q.id, { closeSheet: true, scroll: true });
+        });
+        rail.appendChild(btn);
       });
-      emptyState.classList.toggle('show', shown === 0);
-      document.getElementById('visibleCount').textContent = shown + '문제 표시 / 전체 ' + DATA.length;
+      document.getElementById('visibleCount').textContent = items.length + '문제 / 전체 ' + DATA.length;
+    }
+
+    function updatePager() {
+      const q = questionOf(currentId);
+      const posEl = document.getElementById('wgPos');
+      const prevBtn = document.getElementById('wgPrev');
+      const nextBtn = document.getElementById('wgNext');
+      const items = filteredQuestions();
+      if (!q) {
+        posEl.textContent = '문제 없음';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+      const idx = DATA.indexOf(q);
+      posEl.textContent = (catLabel[q.cat] || q.cat) + ' · ' + String(idx + 1).padStart(2, '0') + ' / ' + DATA.length;
+      const at = items.findIndex(function (x) { return x.id === q.id; });
+      prevBtn.disabled = at <= 0;
+      nextBtn.disabled = at < 0 || at >= items.length - 1;
+    }
+
+    function selectProblem(id, opts) {
+      const q = questionOf(id);
+      if (!q) return;
+      opts = opts || {};
+      currentId = id;
+      DATA.forEach(function (x) {
+        const card = cardOf(x.id);
+        if (card) card.hidden = x.id !== id;
+      });
+      emptyState.classList.toggle('show', filteredQuestions().length === 0);
+      renderRail();
+      updatePager();
+      if (!opts.silent) {
+        try { history.replaceState(null, '', '#q-' + encodeURIComponent(id)); } catch (e) {}
+      }
+      if (opts.closeSheet) {
+        closeRail(false);
+        const card = cardOf(id);
+        if (card) {
+          card.setAttribute('tabindex', '-1');
+          try { card.focus({ preventScroll: true }); } catch (e) {}
+        }
+      }
+      if (opts.scroll) {
+        const anchor = document.getElementById('wgPos');
+        const top = (anchor ? anchor.getBoundingClientRect().top : 0) + window.scrollY - 76;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+    }
+
+    function applyFilters() {
+      const items = filteredQuestions();
+      if (!items.length) {
+        currentId = null;
+        DATA.forEach(function (q) {
+          const card = cardOf(q.id);
+          if (card) card.hidden = true;
+        });
+        emptyState.classList.add('show');
+        renderRail();
+        updatePager();
+        return;
+      }
+      const keep = items.some(function (q) { return q.id === currentId; });
+      selectProblem(keep ? currentId : items[0].id, {});
+    }
+
+    // ---- 모바일 문제 목록 시트 ----
+    const railEl = document.getElementById('wgRail');
+    const railBackdrop = document.getElementById('wgRailBackdrop');
+    const listOpenBtn = document.getElementById('wgListOpen');
+    const railCloseBtn = document.getElementById('wgRailClose');
+    let railTimer = null;
+    const railReduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function railIsOpen() { return railEl.classList.contains('is-open'); }
+
+    function markRailOpen() {
+      if (listOpenBtn.getAttribute('aria-expanded') !== 'true') return;
+      railEl.classList.add('is-open');
+      railBackdrop.classList.add('is-open');
+      if (railCloseBtn) railCloseBtn.focus();
+    }
+
+    function openRail() {
+      if (window.innerWidth > 1023) return;
+      if (railTimer) { window.clearTimeout(railTimer); railTimer = null; }
+      railBackdrop.hidden = false;
+      document.body.classList.add('wg-sheet-open');
+      listOpenBtn.setAttribute('aria-expanded', 'true');
+      if (railReduceMotion) {
+        markRailOpen();
+        return;
+      }
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(markRailOpen);
+      });
+    }
+
+    function closeRail(restoreFocus) {
+      if (!railIsOpen()) return;
+      railEl.classList.remove('is-open');
+      railBackdrop.classList.remove('is-open');
+      document.body.classList.remove('wg-sheet-open');
+      listOpenBtn.setAttribute('aria-expanded', 'false');
+      if (railTimer) window.clearTimeout(railTimer);
+      railTimer = window.setTimeout(function () {
+        railBackdrop.hidden = true;
+        railTimer = null;
+      }, 240);
+      if (restoreFocus !== false) listOpenBtn.focus();
+    }
+
+    listOpenBtn.addEventListener('click', function () {
+      if (railIsOpen()) closeRail();
+      else openRail();
+    });
+    if (railCloseBtn) railCloseBtn.addEventListener('click', function () { closeRail(); });
+    railBackdrop.addEventListener('click', function () { closeRail(); });
+
+    document.addEventListener('keydown', function (event) {
+      if (!railIsOpen()) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeRail();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const focusables = Array.prototype.slice.call(
+          railEl.querySelectorAll('button:not([disabled]), a[href], input, select, textarea')
+        ).filter(function (el) { return el.offsetParent !== null; });
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 1023 && railIsOpen()) closeRail(false);
+    });
+
+    document.getElementById('wgPrev').addEventListener('click', function () { stepProblem(-1); });
+    document.getElementById('wgNext').addEventListener('click', function () { stepProblem(1); });
+
+    function stepProblem(dir) {
+      const items = filteredQuestions();
+      if (!items.length) return;
+      let idx = items.findIndex(function (q) { return q.id === currentId; });
+      if (idx < 0) idx = 0;
+      const next = Math.min(items.length - 1, Math.max(0, idx + dir));
+      if (items[next].id !== currentId) selectProblem(items[next].id, { scroll: true });
     }
 
     // ---- 초기화 ----
@@ -2292,11 +2815,25 @@ __CARDS__
     });
 
     // ---- 시작 ----
+    function initialProblemId() {
+      let hash = String(location.hash || '');
+      if (hash.indexOf('#q-') === 0) {
+        let id = hash.slice(3);
+        try { id = decodeURIComponent(id); } catch (e) {}
+        if (questionOf(id)) return id;
+      }
+      const today = DATA.filter(function (q) { return q.daily && q.created === TODAY; });
+      if (today.length) return today[0].id;
+      return DATA.length ? DATA[0].id : null;
+    }
+
     buildFilterChips();
     bindFilterClicks();
     DATA.forEach(initCard);
     renderSummary();
-    applyFilters();
+    const startId = initialProblemId();
+    if (startId) selectProblem(startId, { silent: true });
+    else applyFilters();
   </script>
 </body>
 </html>
@@ -2420,6 +2957,8 @@ def build():
             "id": q["id"], "cat": q["cat"], "level": q["level"], "type": q["type"],
             "patterns": q.get("patterns", []),
             "hints": q.get("hints", []),
+            "daily": bool(q.get("is_daily")),
+            "created": q.get("created_date") or "",
         }
         if q["type"] == "choice":
             item["answer"] = q["answer"]
@@ -2450,6 +2989,8 @@ def build():
     html = html.replace("__CATS_JSON__", cats_json.replace("</", "<\\/"))
     html = html.replace("__LEVELS_JSON__", levels_json.replace("</", "<\\/"))
     html = html.replace("__TODAY_CHIP__", today_chip)
+    html = html.replace("__TODAY__", today_str)
+    html = html.replace("__DAILY__", str(daily_count))
     html = html.replace("__TOTAL__", str(len(questions)))
     html = html.replace("__INPUT_COUNT__", str(input_count))
     html = html.replace("__BUILT_AT__", esc(built_at))
