@@ -127,6 +127,8 @@ def check_marks(data):
     glass = by_id.get("glass") or {}
     check("유리 깨짐 예외", "깨진" in (glass.get("caution") or ""), glass.get("caution"))
     check("유리 종량제", "종량제" in (glass.get("caution") or ""), glass.get("caution"))
+    check("유리 특수규격마대", "특수규격마대" in (glass.get("caution") or ""), glass.get("caution"))
+    check("유리 대형폐기물", "대형폐기물" in (glass.get("caution") or ""), glass.get("caution"))
     check("유리 보증금 반납", "보증금" in (glass.get("rule") or ""), glass.get("rule"))
 
     # 종이팩: 일반팩(합성수지) / 멸균팩(알루미늄박)
