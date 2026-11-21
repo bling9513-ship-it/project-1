@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html'];
+  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html', 'food.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -5742,8 +5742,297 @@ async function checkRecycleFlow(page, width) {
   assert.deepEqual(violations, [], `${tag}: CSP violations`);
 }
 
-async function checkPage(context, base, name, width) {
-  const page = await context.newPage();
+// ---- 식품 라벨·영양성분표: 첫 화면(라벨 도식 + 설명 카드) · 넘침 0 · 입력 필드 0 ----
+async function checkFoodLayout(page, width) {
+  const tag = `food ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(60);
+  const state = await page.evaluate(() => {
+    const r = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      const b = el.getBoundingClientRect();
+      return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      hero: r('.fn-hero'),
+      tabs: r('.fn-tabs'),
+      catRow: r('.fn-cats'),
+      pack: r('#fnPack'),
+      desc: r('#fnDesc'),
+      tabTop: bar ? bar.getBoundingClientRect().top : 0,
+      viewport: window.innerHeight,
+      rows: document.querySelectorAll('.fn-nrow').length,
+      catCount: document.querySelectorAll('.fn-cat').length,
+      fields: document.querySelectorAll('.fn-field').length,
+      vals: Array.from(document.querySelectorAll('.fn-nval')).map((el) => el.textContent.trim()),
+      pcts: Array.from(document.querySelectorAll('.fn-npct')).map((el) => el.textContent.trim()),
+      basis: document.getElementById('fnColBasis').textContent.trim(),
+      active: Array.from(document.querySelectorAll('#fnPack [data-zone].is-active')).map((el) => el.getAttribute('data-zone')),
+      title: document.getElementById('fnDescTitle').textContent.trim(),
+      num: document.getElementById('fnDescNum').textContent.trim(),
+      total: document.getElementById('fnDescTotal').textContent.trim(),
+      hasSheet: !!document.querySelector('#fnPack .fn-sheet'),
+      guideHidden: document.getElementById('fnPanelGuide').hidden,
+      formFields: document.querySelectorAll('input, textarea').length,
+      sources: Array.from(document.querySelectorAll('.fn-foot a[href^="https://"]')).map((a) => a.getAttribute('href')),
+      foot: document.querySelector('.fn-foot') ? document.querySelector('.fn-foot').textContent.replace(/\s+/g, ' ') : '',
+      meta: document.querySelector('.fn-meta') ? document.querySelector('.fn-meta').textContent.replace(/\s+/g, ' ') : '',
+      base: Array.from(document.querySelectorAll('.fn-base-list li')).map((li) => li.textContent.replace(/\s+/g, ' ').trim()),
+      allergens: document.querySelectorAll('.fn-field-al').length,
+    };
+  });
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.equal(state.rows, 9, `${tag}: nutrient rows ${state.rows}`);
+  assert.equal(state.catCount, 4, `${tag}: category chips ${state.catCount}`);
+  assert.equal(state.fields, 5, `${tag}: label fields ${state.fields}`);
+  assert.deepEqual(state.vals.slice(0, 3), ['250kcal', '450mg', '32g'], `${tag}: per-100 values ${state.vals}`);
+  assert.deepEqual(state.pcts.slice(0, 3), ['–', '23%', '10%'], `${tag}: per-100 percents ${state.pcts}`);
+  assert.equal(state.basis, '100g당', `${tag}: basis header ${state.basis}`);
+  assert.equal(state.active.length, 1, `${tag}: ${state.active.length} highlighted label zones`);
+  assert.deepEqual(state.active, ['serving'], `${tag}: default zone ${state.active.join(',')}`);
+  assert.equal(state.num, '1', `${tag}: first item number ${state.num}`);
+  assert.equal(state.total, '13', `${tag}: item total ${state.total}`);
+  assert.ok(state.title.indexOf('총 내용량') >= 0, `${tag}: first item title ${state.title}`);
+  assert.equal(state.hasSheet, true, `${tag}: mock label sheet missing`);
+  assert.equal(state.guideHidden, false, `${tag}: guide panel must be open first`);
+  assert.equal(state.formFields, 0, `${tag}: input fields are not allowed on this page`);
+  assert.equal(state.allergens, 1, `${tag}: allergen row missing`);
+  assert.ok(state.sources.length >= 5, `${tag}: source links ${state.sources.length}`);
+  assert.ok(state.sources.every((href) => href && href.indexOf('https://') === 0), `${tag}: non-https source link`);
+  assert.ok(state.foot.indexOf('2026-11-22') >= 0, `${tag}: checked date missing`);
+  assert.ok(state.foot.indexOf('2023-01-01') >= 0, `${tag}: 소비기한 시행일 notice missing`);
+  assert.ok(state.foot.indexOf('2031-01-01') >= 0, `${tag}: 우유류 유예 notice missing`);
+  assert.ok(state.meta.indexOf('식약처') >= 0, `${tag}: authority missing (${state.meta})`);
+  assert.equal(state.base.length, 7, `${tag}: baseline rows ${state.base.length}`);
+  assert.ok(state.base.join(' ').indexOf('2,000mg') >= 0, `${tag}: baseline values ${state.base.join(' ')}`);
+
+  // 첫 화면: 라벨 도식이 탭 바 위에서 끝나고, 설명 카드가 같은 화면에서 시작해야 한다.
+  const limit = width <= 768 ? state.tabTop - 2 : state.viewport;
+  for (const key of ['hero', 'tabs', 'catRow', 'pack', 'desc']) {
+    const box = state[key];
+    assert.ok(box, `${tag}: ${key} missing`);
+    assert.ok(box.top >= 0, `${tag}: ${key} starts above the viewport (${Math.round(box.top)})`);
+    assert.ok(box.bottom <= limit || key === 'desc',
+      `${tag}: ${key} ends at ${Math.round(box.bottom)}, below ${Math.round(limit)}`);
+  }
+  assert.ok(state.desc.top < limit, `${tag}: 설명 카드가 첫 화면에 시작하지 않음 (${Math.round(state.desc.top)})`);
+}
+
+// ---- 식품 라벨·영양성분표: 100g당↔총 내용량 · 항목 클릭/키보드 · 카테고리 필터 · 라벨 퀴즈 ----
+async function checkFoodFlow(page, width) {
+  const tag = `food flow ${width}px`;
+  const read = () => page.evaluate(() => ({
+    vals: Array.from(document.querySelectorAll('.fn-nval')).map((el) => el.textContent.trim()),
+    pcts: Array.from(document.querySelectorAll('.fn-npct')).map((el) => el.textContent.trim()),
+    basis: document.getElementById('fnColBasis').textContent.trim(),
+    note: document.getElementById('fnBasisNote').textContent.trim(),
+    pressed: Array.from(document.querySelectorAll('.fn-switch-btn[aria-pressed="true"]')).map((b) => b.getAttribute('data-basis')),
+    active: Array.from(document.querySelectorAll('#fnPack [data-zone].is-active')).map((el) => el.getAttribute('data-zone')),
+    title: document.getElementById('fnDescTitle').textContent.trim(),
+    cat: document.getElementById('fnDescCat').textContent.trim(),
+    num: document.getElementById('fnDescNum').textContent.trim(),
+  }));
+
+  // 100g당 → 총 내용량: 수치가 3배로 뛴다(토글만으로, 입력 필드 없이).
+  await page.click('#fnBasisTotal');
+  await page.waitForTimeout(90);
+  let state = await read();
+  assert.deepEqual(state.vals, ['750kcal', '1,350mg', '96g', '54g', '30g', '0g', '15g', '45mg', '24g'],
+    `${tag}: total values ${state.vals}`);
+  assert.deepEqual(state.pcts, ['–', '68%', '30%', '54%', '56%', '–', '100%', '15%', '44%'],
+    `${tag}: total percents ${state.pcts}`);
+  assert.equal(state.basis, '총 내용량당', `${tag}: basis header after toggle ${state.basis}`);
+  assert.deepEqual(state.pressed, ['total'], `${tag}: pressed basis ${state.pressed}`);
+  assert.ok(state.note.indexOf('한 봉지') >= 0, `${tag}: basis note ${state.note}`);
+  await page.click('#fnBasis100');
+  await page.waitForTimeout(60);
+  assert.equal((await read()).vals[0], '250kcal', `${tag}: 100g당으로 되돌리기 실패`);
+
+  // 라벨 구역 클릭 → 설명 카드
+  await page.click('.fn-nrow[data-zone="sodium"]');
+  await page.waitForTimeout(70);
+  state = await read();
+  assert.ok(state.title.indexOf('나트륨') >= 0, `${tag}: sodium description ${state.title}`);
+  assert.deepEqual(state.active, ['sodium'], `${tag}: sodium zone ${state.active.join(',')}`);
+
+  // 키보드 Tab + Enter
+  await page.focus('.fn-field[data-zone="allergen"]');
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(70);
+  state = await read();
+  assert.ok(state.title.indexOf('알레르기') >= 0, `${tag}: keyboard description ${state.title}`);
+  assert.deepEqual(state.active, ['allergen'], `${tag}: keyboard zone ${state.active.join(',')}`);
+
+  // 소비기한·보관 항목 사이 이동
+  await page.click('.fn-field[data-zone="expiry"]');
+  await page.waitForTimeout(50);
+  await page.click('#fnNext');
+  await page.waitForTimeout(50);
+  state = await read();
+  assert.equal(state.cat, '소비기한·보관', `${tag}: next item category ${state.cat}`);
+  assert.ok(state.title.indexOf('보관방법') >= 0, `${tag}: next item title ${state.title}`);
+  await page.click('#fnPrev');
+  await page.waitForTimeout(50);
+  assert.ok((await read()).title.indexOf('소비기한') >= 0, `${tag}: prev item title`);
+
+  // 카테고리 필터: 고른 분류 밖의 라벨 구역은 흐려지고 눌리지 않는다.
+  await page.click('.fn-cat[data-cat="영양성분"]');
+  await page.waitForTimeout(90);
+  const filtered = await page.evaluate(() => ({
+    dim: Array.from(document.querySelectorAll('#fnPack [data-zone].is-dim')).map((el) => el.getAttribute('data-zone')),
+    disabled: Array.from(document.querySelectorAll('#fnPack button:disabled')).map((el) => el.getAttribute('data-zone')),
+    pressed: Array.from(document.querySelectorAll('.fn-cat[aria-pressed="true"]')).map((el) => el.getAttribute('data-cat')),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    cat: document.getElementById('fnDescCat').textContent.trim(),
+  }));
+  assert.deepEqual(filtered.pressed, ['영양성분'], `${tag}: pressed chips ${filtered.pressed.join(',')}`);
+  assert.deepEqual([...new Set(filtered.dim)].sort(), ['allergen', 'expiry', 'ingredients', 'storage', 'type'],
+    `${tag}: dimmed zones ${filtered.dim.join(',')}`);
+  assert.equal(filtered.disabled.length, 5, `${tag}: disabled zones ${filtered.disabled.length}`);
+  assert.equal(filtered.cat, '영양성분', `${tag}: category jump ${filtered.cat}`);
+  assert.equal(filtered.overflow, 0, `${tag}: filtered view overflows ${filtered.overflow}px`);
+  await page.click('.fn-cat[data-cat="소비기한·보관"]');
+  await page.waitForTimeout(60);
+  assert.equal((await read()).cat, '소비기한·보관', `${tag}: category switch`);
+  await page.click('.fn-cat[data-cat="전체"]');
+  await page.waitForTimeout(60);
+  assert.equal(await page.evaluate(() => document.querySelectorAll('#fnPack [data-zone].is-dim').length), 0,
+    `${tag}: all zones were not restored`);
+
+  // 라벨 퀴즈 탭
+  await page.click('#fnTabQuiz');
+  await page.waitForTimeout(160);
+  const quiz = await page.evaluate(() => ({
+    guideHidden: document.getElementById('fnPanelGuide').hidden,
+    quizHidden: document.getElementById('fnPanelQuiz').hidden,
+    progress: document.getElementById('fnQuizProgress').textContent.trim(),
+    item: document.getElementById('fnItemName').textContent.trim(),
+    excerpt: document.querySelectorAll('#fnQuizLabel .fn-ex').length,
+    want: FOOD.quizzes[0].excerpt.length,
+    options: document.querySelectorAll('#fnOptions .fn-opt').length,
+    nextDisabled: document.getElementById('fnQuizNext').disabled,
+    resultHidden: document.getElementById('fnResult').hidden,
+    answer: FOOD.quizzes[0].answer,
+    evidence: FOOD.quizzes[0].evidence.slice(),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  assert.equal(quiz.guideHidden, true, `${tag}: guide panel still visible`);
+  assert.equal(quiz.quizHidden, false, `${tag}: quiz panel not open`);
+  assert.equal(quiz.progress, '1 / 7', `${tag}: quiz progress ${quiz.progress}`);
+  assert.equal(quiz.item, '300g 과자 한 봉지', `${tag}: first item ${quiz.item}`);
+  assert.equal(quiz.excerpt, quiz.want, `${tag}: excerpt lines ${quiz.excerpt}`);
+  assert.equal(quiz.options, 4, `${tag}: options ${quiz.options}`);
+  assert.equal(quiz.nextDisabled, true, `${tag}: next button must start disabled`);
+  assert.equal(quiz.resultHidden, true, `${tag}: result must start hidden`);
+  assert.equal(quiz.overflow, 0, `${tag}: quiz view overflows ${quiz.overflow}px`);
+
+  // 정답 → 결과 · 근거 라벨 구역 강조
+  await page.click(`#fnOptions .fn-opt[data-idx="${quiz.answer}"]`);
+  await page.waitForTimeout(120);
+  const right = await page.evaluate(() => ({
+    hidden: document.getElementById('fnResult').hidden,
+    cls: document.getElementById('fnResult').className,
+    text: document.getElementById('fnResult').innerText,
+    evidence: Array.from(document.querySelectorAll('#fnQuizLabel .fn-ex.is-evidence')).map((n) => n.getAttribute('data-zone')),
+    nextDisabled: document.getElementById('fnQuizNext').disabled,
+    score: document.getElementById('fnQuizScore').textContent.trim(),
+    disabled: document.querySelectorAll('#fnOptions .fn-opt:disabled').length,
+    correct: document.querySelectorAll('#fnOptions .fn-opt.is-correct').length,
+  }));
+  assert.equal(right.hidden, false, `${tag}: result not shown`);
+  assert.equal(right.cls.indexOf('is-no'), -1, `${tag}: correct answer marked wrong`);
+  assert.ok(right.text.indexOf('정답') >= 0, `${tag}: result text ${right.text}`);
+  assert.ok(right.text.indexOf('근거 라벨 구역') >= 0, `${tag}: evidence list missing`);
+  assert.deepEqual([...new Set(right.evidence)].sort(), [...new Set(quiz.evidence)].sort(),
+    `${tag}: evidence zones ${right.evidence.join(',')}`);
+  assert.equal(right.nextDisabled, false, `${tag}: next button still disabled`);
+  assert.equal(right.disabled, 4, `${tag}: options not locked after answering`);
+  assert.equal(right.correct, 1, `${tag}: correct option highlight ${right.correct}`);
+  assert.equal(right.score, '1', `${tag}: score ${right.score}`);
+
+  // 다음 문제 → 오답 → 결과 · 맞는 답 표시, 3배 환산값이 남지 않는지
+  await page.click('#fnQuizNext');
+  await page.waitForTimeout(120);
+  const second = await page.evaluate(() => ({
+    progress: document.getElementById('fnQuizProgress').textContent.trim(),
+    options: document.querySelectorAll('#fnOptions .fn-opt:not(:disabled)').length,
+    resultHidden: document.getElementById('fnResult').hidden,
+    evidence: document.querySelectorAll('#fnQuizLabel .fn-ex.is-evidence').length,
+    answer: FOOD.quizzes[1].answer,
+  }));
+  assert.equal(second.progress, '2 / 7', `${tag}: second progress ${second.progress}`);
+  assert.equal(second.resultHidden, true, `${tag}: result leaked to the next item`);
+  assert.equal(second.evidence, 0, `${tag}: evidence highlight leaked`);
+  assert.equal(second.options, 4, `${tag}: next options not clickable`);
+  const wrongIdx = (second.answer + 1) % 4;
+  await page.click(`#fnOptions .fn-opt[data-idx="${wrongIdx}"]`);
+  await page.waitForTimeout(120);
+  const wrong = await page.evaluate(() => ({
+    cls: document.getElementById('fnResult').className,
+    text: document.getElementById('fnResult').innerText,
+    wrong: document.querySelectorAll('#fnOptions .fn-opt.is-wrong').length,
+    correct: document.querySelectorAll('#fnOptions .fn-opt.is-correct').length,
+    evidence: document.querySelectorAll('#fnQuizLabel .fn-ex.is-evidence').length,
+    score: document.getElementById('fnQuizScore').textContent.trim(),
+  }));
+  assert.ok(wrong.cls.indexOf('is-no') >= 0, `${tag}: wrong answer not marked (${wrong.cls})`);
+  assert.ok(wrong.text.indexOf('맞는 답') >= 0, `${tag}: correct option not shown`);
+  assert.equal(wrong.wrong, 1, `${tag}: wrong option highlight ${wrong.wrong}`);
+  assert.equal(wrong.correct, 1, `${tag}: correct option highlight ${wrong.correct}`);
+  assert.equal(wrong.evidence, 2, `${tag}: evidence highlight ${wrong.evidence}`);
+  assert.equal(wrong.score, '1', `${tag}: score after a wrong answer ${wrong.score}`);
+
+  // 나머지 다섯 문제 → 요약 · 다시 풀기
+  for (let i = 0; i < 5; i += 1) {
+    await page.click('#fnQuizNext');
+    await page.waitForTimeout(80);
+    const answer = await page.evaluate((n) => FOOD.quizzes[n].answer, i + 2);
+    await page.click(`#fnOptions .fn-opt[data-idx="${answer}"]`);
+    await page.waitForTimeout(60);
+  }
+  await page.click('#fnQuizNext');
+  await page.waitForTimeout(120);
+  const done = await page.evaluate(() => ({
+    bodyHidden: document.getElementById('fnQuizBody').hidden,
+    summaryHidden: document.getElementById('fnSummary').hidden,
+    score: document.getElementById('fnSummaryNum').textContent.trim(),
+    total: document.getElementById('fnSummaryTotal').textContent.trim(),
+    progress: document.getElementById('fnQuizProgress').textContent.trim(),
+  }));
+  assert.equal(done.summaryHidden, false, `${tag}: summary not shown`);
+  assert.equal(done.bodyHidden, true, `${tag}: quiz body still visible at the end`);
+  assert.equal(done.score, '6', `${tag}: summary score ${done.score}`);
+  assert.equal(done.total, '/ 7', `${tag}: summary total ${done.total}`);
+  assert.equal(done.progress, '7 / 7', `${tag}: end progress ${done.progress}`);
+
+  // 요약에서 '라벨 도감으로' → 도감으로 돌아갔다가 퀴즈로 다시 들어와 '다시 풀기'
+  await page.click('#fnBackGuide');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('fnPanelGuide').hidden), false,
+    `${tag}: 라벨 도감으로 did not reopen the guide`);
+  await page.click('#fnTabQuiz');
+  await page.waitForTimeout(120);
+  await page.click('#fnRestart');
+  await page.waitForTimeout(100);
+  const restarted = await page.evaluate(() => ({
+    progress: document.getElementById('fnQuizProgress').textContent.trim(),
+    score: document.getElementById('fnQuizScore').textContent.trim(),
+    bodyHidden: document.getElementById('fnQuizBody').hidden,
+    summaryHidden: document.getElementById('fnSummary').hidden,
+  }));
+  assert.equal(restarted.progress, '1 / 7', `${tag}: restart progress ${restarted.progress}`);
+  assert.equal(restarted.score, '0', `${tag}: restart score ${restarted.score}`);
+  assert.equal(restarted.bodyHidden, false, `${tag}: quiz body not restored`);
+  assert.equal(restarted.summaryHidden, true, `${tag}: summary still visible after restart`);
+
+  const violations = await page.evaluate(() => window.smokeCspViolations || []);
+  assert.deepEqual(violations, [], `${tag}: CSP violations`);
+}
+
+async function checkPage(context, base, name, width) {  const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => {
@@ -5828,6 +6117,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'wash' && (width === 390 || width === 1280)) await checkWashFlow(page, width);
     if (name === 'recycle') await checkRecycleLayout(page, width);
     if (name === 'recycle' && (width === 390 || width === 1280)) await checkRecycleFlow(page, width);
+    if (name === 'food') await checkFoodLayout(page, width);
+    if (name === 'food' && (width === 390 || width === 1280)) await checkFoodFlow(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -6295,6 +6586,7 @@ async function main() {
           if (name === 'cards') await checkCardsLayout(page, width);
           if (name === 'wash') await checkWashLayout(page, width);
           if (name === 'recycle') await checkRecycleLayout(page, width);
+          if (name === 'food') await checkFoodLayout(page, width);
         } finally {
           await page.close();
         }

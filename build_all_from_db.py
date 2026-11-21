@@ -8,7 +8,7 @@ AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(c
 하루 한 판 · 3단서 추리(clue.html), 퇴근길 미션(mission.html), 차트 추리실(chart.html),
 퇴근 전 60초 관제실(ops.html), 막차 자리 배치(seat.html), 한 번 더 싣기(load.html),
 실시간 Canvas 아케이드(arcade.html), 한글 한 칸 변신(hangul.html), 오늘의 카드(cards.html), 세탁 라벨 읽기(wash.html),
-재질 표시·분리배출(recycle.html)을 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
+재질 표시·분리배출(recycle.html), 식품 라벨·영양성분표 읽기(food.html)을 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
    이 스크립트는 DB에 적재된 ai_insights / cve_reports 를 각 HTML로 빌드하는 역할만 한다.
@@ -149,6 +149,10 @@ def build_all():
     from build_recycle_html import build as build_recycle
     recycle_total = build_recycle()
 
+    # 26. food.html 재생성 (식품 라벨·영양성분표 도식: 영양정보 9항목 + 표시사항 + 라벨 퀴즈 7문항)
+    from build_food_html import build as build_food
+    food_total = build_food()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -172,6 +176,7 @@ def build_all():
     print(f"  - 오늘의 카드: 카드 {cards_total['cards']}장 · 덱 {cards_total['decks']}개 · 오늘 {cards_total['today']}")
     print(f"  - 세탁 라벨 읽기: 기호 {wash_total['symbols']}개 · 옷 {wash_total['quizzes']}벌 (기준 {wash_total['checkedOn']} 확인)")
     print(f"  - 재질 표시·분리배출: 마크 {recycle_total['marks']}종 · 품목 {recycle_total['quizzes']}개 (확인 {recycle_total['checkedOn']})")
+    print(f"  - 식품 라벨·영양성분표: 영양성분 {food_total['nutrients']}행 · 항목 {food_total['items']}개 · 퀴즈 {food_total['quizzes']}문항 (확인 {food_total['checkedOn']})")
     print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
           f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 

@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CARDS_HTML = os.path.join(BASE_DIR, "cards.html")
 CARDS_JSON = os.path.join(BASE_DIR, "cards_data.json")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 21
+SHEET_PAGES = 22
 CHECKED_ON = "2026-11-22"
 DECK_IDS = ("condition", "digital")
 CREDIBLE_ORGS = ("질병관리청", "국민건강보험공단", "서울아산병원", "대한안과학회", "미국안과학회",
@@ -229,7 +229,7 @@ def main():
     if failures:
         print("\n실패 %d건" % len(failures))
         return 1
-    print("오늘의 카드 데이터 검증 통과 (카드 24장 · 덱 2개 · 테마 8개 · 21페이지 셸)")
+    print("오늘의 카드 데이터 검증 통과 (카드 24장 · 덱 2개 · 테마 8개 · 22페이지 셸)")
     return 0
 
 
