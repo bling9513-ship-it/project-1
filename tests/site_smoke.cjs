@@ -1203,7 +1203,7 @@ async function checkStudyHub(page, width, tag) {
   assert.notEqual(after.fill, before.fill, `${tag}: progress bar did not move`);
 
   // 북마크: 카드 표시 + localStorage 보관
-  await page.click('#questionsList .q-card .q-mark');
+  await page.click('#questionsList .q-card [data-action="toggle-bookmark"]');
   await page.waitForTimeout(120);
   const marked = await page.evaluate(() => ({
     on: document.querySelectorAll('#questionsList .q-mark.is-on').length,
@@ -1857,6 +1857,205 @@ async function checkIndexWatchlist(page, width) {
   console.log(`index watchlist ${width}px passed`);
 }
 
+// ---- 시험공부 복습 큐: 오답·북마크 자동 등록 · 간격 반복 갱신 · 기존 정답률 보존 · 새로고침 복원 ----
+async function checkStudyReviewQueue(page, width) {
+  const tag = `study review ${width}px`;
+  const readQueue = () => page.evaluate(() => {
+    const store = JSON.parse(localStorage.getItem('study_review_queue_v1') || 'null') || { items: {}, dismissed: {} };
+    return { ids: Object.keys(store.items || {}), items: store.items || {}, dismissed: store.dismissed || {} };
+  });
+
+  await page.evaluate(() => {
+    localStorage.removeItem('study_review_queue_v1');
+    localStorage.removeItem('study_user_answers_v4');
+    localStorage.removeItem('study_bookmarks_v1');
+  });
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#questionsList .q-card').first().waitFor({ state: 'attached' });
+  assert.equal(await page.evaluate(() => localStorage.getItem('study_review_queue_v1')), null,
+    `${tag}: review queue must start empty before any wrong answer or bookmark`);
+
+  // 1) 일반 퀴즈 1문항 오답 + 다른 1문항 북마크 → 둘 다 복습 큐에 한 번씩만 등록된다
+  const pick = await page.evaluate(() => {
+    const cards = Array.from(document.querySelectorAll('#questionsList .q-card'));
+    const card = cards[0];
+    const id = card.querySelector('[data-action="toggle-bookmark"]').getAttribute('data-id');
+    const q = (window.ALL_QUESTIONS || []).find((x) => x.id === id);
+    const other = cards[1].querySelector('[data-action="toggle-bookmark"]').getAttribute('data-id');
+    return { id, answer: q ? q.answer : null, bookmarkId: other };
+  });
+  assert.ok(pick.answer, `${tag}: question data missing for the first card`);
+  const wrongChoice = pick.answer === 1 ? 2 : 1;
+  await page.click(`.choice-row[data-id="${pick.id}"][data-choice="${wrongChoice}"]`);
+  await page.waitForTimeout(150);
+  await page.click(`#questionsList [data-action="toggle-bookmark"][data-id="${pick.bookmarkId}"]`);
+  await page.waitForTimeout(150);
+
+  const queued = await readQueue();
+  assert.deepEqual(queued.ids.slice().sort(), [pick.id, pick.bookmarkId].sort(),
+    `${tag}: wrong and bookmarked questions must both enter the queue`);
+  assert.equal(new Set(queued.ids).size, queued.ids.length, `${tag}: duplicate question in the queue`);
+  assert.equal(await page.evaluate(() => document.getElementById('modeReviewCount').textContent), '2',
+    `${tag}: review badge must show the due count`);
+
+  // 이미 오답인 문항을 북마크해도 같은 문항이 두 번 들어가지 않는다
+  const duplicated = await page.evaluate((id) => {
+    window.toggleBookmark(id);
+    const store = JSON.parse(localStorage.getItem('study_review_queue_v1'));
+    const ids = Object.keys(store.items);
+    return { ids: ids, unique: new Set(ids).size };
+  }, pick.id);
+  assert.equal(duplicated.ids.length, 2, `${tag}: bookmarking a wrong question added a second entry`);
+  assert.equal(duplicated.unique, 2, `${tag}: duplicated question id in the queue`);
+
+  // 2) 복습 모드: 정답 → 다음 간격이 늘어나고 일반 퀴즈 정답률은 그대로
+  await page.click('#modeReviewBtn');
+  await page.waitForTimeout(250);
+  const view = await page.evaluate(() => ({
+    section: getComputedStyle(document.getElementById('reviewSection')).display,
+    quiz: getComputedStyle(document.getElementById('questionsList')).display,
+    cards: Array.from(document.querySelectorAll('#reviewList .review-card')).map((c) => c.getAttribute('data-review-q')),
+    due: document.getElementById('reviewDueCount').textContent,
+    total: document.getElementById('reviewTotalCount').textContent,
+  }));
+  assert.notEqual(view.section, 'none', `${tag}: review view is hidden`);
+  assert.equal(view.quiz, 'none', `${tag}: quiz list must hide in review mode`);
+  assert.equal(view.cards.length, 2, `${tag}: review list shows ${view.cards.length} cards`);
+  assert.equal(view.due, '2', `${tag}: today's due count ${view.due}`);
+  assert.equal(view.total, '2', `${tag}: queue total ${view.total}`);
+
+  const answersBefore = await page.evaluate(() => localStorage.getItem('study_user_answers_v4'));
+  const solvedBefore = await page.evaluate(() => document.getElementById('topSolved').textContent);
+  const firstId = view.cards[0];
+  const firstAnswer = await page.evaluate((id) => {
+    const q = (window.ALL_QUESTIONS || []).find((x) => x.id === id);
+    return q ? q.answer : null;
+  }, firstId);
+  assert.ok(firstAnswer, `${tag}: answer data missing for ${firstId}`);
+  await page.click(`#reviewList .review-card[data-review-q="${firstId}"] .choice-row[data-choice="${firstAnswer}"]`);
+  await page.waitForTimeout(200);
+  const afterCorrect = await page.evaluate((id) => {
+    const item = JSON.parse(localStorage.getItem('study_review_queue_v1')).items[id];
+    const card = document.querySelector('#reviewList .review-card[data-review-q="' + id + '"]');
+    return {
+      result: item.last_result,
+      stage: item.stage,
+      count: item.review_count,
+      hours: (item.next_review_at - Date.now()) / 3600000,
+      answers: localStorage.getItem('study_user_answers_v4'),
+      solved: document.getElementById('topSolved').textContent,
+      due: document.getElementById('reviewDueCount').textContent,
+      explained: !!(card && card.querySelector('.exp-box.show')),
+    };
+  }, firstId);
+  assert.equal(afterCorrect.result, 'correct', `${tag}: first review result not stored`);
+  assert.equal(afterCorrect.stage, 1, `${tag}: stage after a correct review ${afterCorrect.stage}`);
+  assert.equal(afterCorrect.count, 1, `${tag}: review count ${afterCorrect.count}`);
+  assert.ok(afterCorrect.hours > 23 && afterCorrect.hours < 25,
+    `${tag}: first correct interval ${Math.round(afterCorrect.hours * 10) / 10}h`);
+  assert.equal(afterCorrect.answers, answersBefore, `${tag}: review mode must not touch study_user_answers_v4`);
+  assert.equal(afterCorrect.solved, solvedBefore, `${tag}: solved KPI changed in review mode`);
+  assert.equal(afterCorrect.due, '1', `${tag}: due badge after one correct review ${afterCorrect.due}`);
+  assert.equal(afterCorrect.explained, true, `${tag}: explanation not shown after a review answer`);
+
+  // 3) 복습 모드: 오답 → 짧은 간격(같은 날)으로 재예약
+  const secondId = await page.evaluate(() => {
+    const row = document.querySelector('#reviewList .review-card .choice-row[data-action="review-choice"]');
+    return row ? row.getAttribute('data-id') : null;
+  });
+  assert.ok(secondId, `${tag}: no answerable card left for the wrong-answer check`);
+  const secondAnswer = await page.evaluate((id) => {
+    const q = (window.ALL_QUESTIONS || []).find((x) => x.id === id);
+    return q ? q.answer : null;
+  }, secondId);
+  const secondWrong = secondAnswer === 1 ? 2 : 1;
+  await page.click(`#reviewList .review-card[data-review-q="${secondId}"] .choice-row[data-choice="${secondWrong}"]`);
+  await page.waitForTimeout(200);
+  const afterWrong = await page.evaluate((id) => {
+    const item = JSON.parse(localStorage.getItem('study_review_queue_v1')).items[id];
+    return {
+      result: item.last_result,
+      stage: item.stage,
+      hours: (item.next_review_at - Date.now()) / 3600000,
+      answers: localStorage.getItem('study_user_answers_v4'),
+      due: document.getElementById('reviewDueCount').textContent,
+    };
+  }, secondId);
+  assert.equal(afterWrong.result, 'wrong', `${tag}: wrong review result not stored`);
+  assert.equal(afterWrong.stage, 0, `${tag}: wrong review must reset the stage`);
+  assert.ok(afterWrong.hours > 3 && afterWrong.hours < 5,
+    `${tag}: wrong interval ${Math.round(afterWrong.hours * 10) / 10}h should be the same day`);
+  assert.equal(afterWrong.answers, answersBefore, `${tag}: wrong review rewrote study_user_answers_v4`);
+  assert.equal(afterWrong.due, '0', `${tag}: due badge after all reviews ${afterWrong.due}`);
+
+  // 4) 새로고침 후 복습 큐·일정·진행 상태가 그대로 복원된다
+  const stored = await page.evaluate(() => localStorage.getItem('study_review_queue_v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForTimeout(300);
+  const restored = await page.evaluate(() => ({
+    stored: localStorage.getItem('study_review_queue_v1'),
+    badge: document.getElementById('modeReviewCount').textContent,
+    total: document.getElementById('reviewTotalCount').textContent,
+    solved: document.getElementById('topSolved').textContent,
+  }));
+  assert.equal(restored.stored, stored, `${tag}: review queue not restored after reload`);
+  assert.equal(restored.total, '2', `${tag}: queue total after reload ${restored.total}`);
+  assert.equal(restored.badge, '0', `${tag}: due badge after reload ${restored.badge}`);
+  assert.equal(restored.solved, solvedBefore, `${tag}: solved KPI changed after a review reload`);
+
+  await page.click('#modeReviewBtn');
+  await page.waitForTimeout(200);
+  await page.click('#reviewAllTab');
+  await page.waitForTimeout(200);
+  const allTab = await page.evaluate(() => ({
+    cards: document.querySelectorAll('#reviewList .review-card').length,
+    stage: (document.querySelector('#reviewList .review-card .review-stage') || {}).textContent || '',
+    dueLabel: document.getElementById('reviewDueTabCount').textContent,
+    allLabel: document.getElementById('reviewAllTabCount').textContent,
+  }));
+  assert.equal(allTab.cards, 2, `${tag}: full queue shows ${allTab.cards} cards`);
+  assert.ok(allTab.stage.includes('다음'), `${tag}: scheduled card lost its next review time ("${allTab.stage}")`);
+  assert.equal(allTab.dueLabel, '0', `${tag}: due tab count ${allTab.dueLabel}`);
+  assert.equal(allTab.allLabel, '2', `${tag}: all tab count ${allTab.allLabel}`);
+
+  // 5) 수동 추가/제거: 퀴즈 카드의 복습 담기 → 한 번만, 다시 누르면 큐에서 빠진다
+  await page.click('#modeQuizBtn');
+  await page.waitForTimeout(200);
+  const manualId = await page.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('#questionsList [data-action="toggle-review"]'))
+      .find((b) => b.getAttribute('aria-pressed') === 'false');
+    return btn ? btn.getAttribute('data-id') : null;
+  });
+  assert.ok(manualId, `${tag}: no question left to add to the queue manually`);
+  await page.click(`#questionsList [data-action="toggle-review"][data-id="${manualId}"]`);
+  await page.waitForTimeout(150);
+  const manualAdded = await page.evaluate((id) => {
+    const store = JSON.parse(localStorage.getItem('study_review_queue_v1'));
+    const ids = Object.keys(store.items);
+    return { has: !!store.items[id], manual: !!(store.items[id] && store.items[id].manual), count: ids.length, unique: new Set(ids).size };
+  }, manualId);
+  assert.equal(manualAdded.has, true, `${tag}: manual add did not reach the queue`);
+  assert.equal(manualAdded.manual, true, `${tag}: manual entry not marked as manual`);
+  assert.equal(manualAdded.count, 3, `${tag}: queue size after manual add ${manualAdded.count}`);
+  assert.equal(manualAdded.unique, 3, `${tag}: manual add duplicated a question`);
+  await page.click(`#questionsList [data-action="toggle-review"][data-id="${manualId}"]`);
+  await page.waitForTimeout(150);
+  const manualRemoved = await page.evaluate((id) => {
+    const store = JSON.parse(localStorage.getItem('study_review_queue_v1'));
+    return { has: !!store.items[id], count: Object.keys(store.items).length, dismissed: !!store.dismissed[id] };
+  }, manualId);
+  assert.equal(manualRemoved.has, false, `${tag}: manual remove did not leave the queue`);
+  assert.equal(manualRemoved.count, 2, `${tag}: queue size after manual remove ${manualRemoved.count}`);
+  assert.equal(manualRemoved.dismissed, true, `${tag}: removed question is not held out of the auto queue`);
+
+  await page.evaluate(() => {
+    localStorage.removeItem('study_review_queue_v1');
+    localStorage.removeItem('study_user_answers_v4');
+    localStorage.removeItem('study_bookmarks_v1');
+  });
+  console.log(`study review ${width}px passed`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -1902,6 +2101,7 @@ async function checkPage(context, base, name, width) {
     if (name === 'cve') await checkCveFilters(page, width, `cve filter ${width}px`);
     if (name === 'ai') await checkAiFilters(page, width, `ai filter ${width}px`);
     if (name === 'study') await checkStudyHub(page, width, `study ${width}px`);
+    if (name === 'study' && (width === 390 || width === 1280)) await checkStudyReviewQueue(page, width);
     if (name === 'clue') await checkClueGame(page, base, width);
     if (name === 'clue') await checkClueLayout(page, width);
     if (name === 'wargame') await checkWargame(page, width);

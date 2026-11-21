@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-H9WD0UD94Dps8R2c5oyGak43PWtXcEKcyZF0xw6tX0Y=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-+YaM9hjj7U+pK8RnJMtPD4boGuVTbPpETpwNtxVGRPc=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>시험 공부 &amp; 맞춤 AI 스터디 허브 | Infosec Archive</title>
   <meta name="description" content="CPPG 실전 300제와 AI 개인정보보호 특강 30제, 정보보안기사(필기·실기), ISMS-P 인증심사원 기출 퀴즈와 전 과목 핵심 요약노트 및 파일/URL 맞춤 분석 학습 허브입니다.">
@@ -466,7 +466,7 @@
     /* Mode Segmented Control Bar */
     .mode-nav-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 16px;
       background: var(--bg-subtle);
@@ -488,7 +488,8 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.15s ease;
+      min-width: 0;
+      transition: background-color 0.15s ease, color 0.15s ease;
       white-space: nowrap;
     }
 
@@ -728,6 +729,152 @@
     .exp-header { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
     .exp-header.correct { color: #10b981; }
     .exp-header.wrong { color: #ef4444; }
+
+    /* Review Queue (오답·북마크 간격 반복) */
+    .mode-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      border-radius: 9px;
+      background: var(--urgent-bg);
+      border: 1px solid var(--urgent-border);
+      color: var(--urgent-text);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .mode-count.is-zero { display: none; }
+
+    .review-section {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .review-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .review-hero .hero-pill { margin-bottom: 8px; }
+    .review-hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.35;
+      color: var(--text-primary);
+    }
+    .review-hero-title strong { color: var(--accent-primary); font-weight: 700; }
+    .review-hero-desc {
+      margin-top: 6px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .review-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .review-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 12px;
+      background: var(--bg-subtle);
+      border-radius: 10px;
+      min-width: 0;
+    }
+    .review-metric span {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .review-metric strong {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .review-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .review-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .review-tab:hover { border-color: var(--text-muted); color: var(--text-primary); }
+    .review-tab.active {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--bg-page);
+    }
+    .review-tab-count {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+    .review-tab.active .review-tab-count {
+      background: rgba(148, 163, 184, 0.28);
+      color: inherit;
+    }
+    .review-stage {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .review-next {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-default);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .review-next strong { color: var(--text-primary); font-weight: 700; }
+    .review-card.is-done { border-color: var(--border-strong); }
+    .review-card.is-done .q-prompt { color: var(--text-primary); }
+    .review-empty {
+      padding: 36px 16px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+    }
+    .review-empty strong { color: var(--text-primary); font-weight: 700; }
 
     /* Summary Note Cards */
     .summary-section {
@@ -1137,6 +1284,7 @@
         gap: 4px;
         padding: 3px;
       }
+      /* 모드 4개(복습 큐 추가): 좁은 화면에서도 한 줄을 유지한다 */
       .mode-btn {
         padding: 7px 4px;
         font-size: 11.5px;
@@ -1163,6 +1311,14 @@
       .q-meta { gap: 6px; }
       .q-meta .q-badge:first-child { display: none; }
       .q-mark { font-size: 10.5px; padding: 2px 7px; }
+      .review-hero { padding: 16px 14px; gap: 12px; }
+      .review-hero-title { font-size: 17px; }
+      .review-hero-desc { font-size: 12px; }
+      .review-metrics { gap: 6px; }
+      .review-metric { padding: 8px 10px; }
+      .review-metric strong { font-size: 16px; }
+      .review-tab { padding: 6px 10px; font-size: 12px; }
+      .review-next { font-size: 11.5px; }
       .q-prompt {
         font-size: 14px;
         line-height: 1.55;
@@ -1260,8 +1416,13 @@
 
       .study-mobile-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
       .study-mobile-mode { flex: 1 1 auto; min-width: 0; }
-      .study-mobile-mode .mode-nav-grid { margin-bottom: 0; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 3px; }
-      .study-mobile-mode .mode-btn { justify-content: center; padding: 7px 3px; font-size: 11.5px; gap: 3px; }
+      .study-mobile-mode .mode-nav-grid { margin-bottom: 0; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; padding: 3px; }
+      .study-mobile-mode .mode-btn { justify-content: center; padding: 7px 3px; font-size: 11.5px; gap: 4px; }
+      @media (max-width: 380px) {
+        /* 320px 기준: 모드 4개는 라벨이 뭉개지지 않게 2줄로 나눈다 */
+        .study-mobile-mode .mode-nav-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .study-mobile-mode .mode-btn { padding: 7px 4px; font-size: 11.5px; gap: 4px; }
+      }
       .study-mobile-mode .btn-text-full { display: none !important; }
       .study-mobile-mode .btn-text-mobile { display: inline !important; }
       .study-mobile-subj { display: flex; margin-bottom: 10px; }
@@ -1841,6 +2002,11 @@
               <span class="btn-text-full" id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
               <span class="btn-text-mobile" id="modeCustomLabelMobile">맞춤 AI</span>
             </button>
+            <button class="mode-btn" data-mode="review" id="modeReviewBtn" title="오답·북마크 복습 큐">
+              <span class="btn-text-full" id="modeReviewLabel">오답·북마크 복습 큐</span>
+              <span class="btn-text-mobile" id="modeReviewLabelMobile">복습</span>
+              <span class="mode-count is-zero" id="modeReviewCount">0</span>
+            </button>
           </div>
         </div>
 
@@ -1936,6 +2102,28 @@
       <!-- Questions rendered dynamically -->
     </div>
 
+    <!-- REVIEW QUEUE VIEW -->
+    <section class="review-section" id="reviewSection" aria-label="오답·북마크 복습 큐">
+      <div class="review-hero">
+        <div>
+          <span class="hero-pill">간격 반복 복습</span>
+          <h2 class="review-hero-title">오늘 복습할 문항 <strong id="reviewDueTitle">0</strong>개</h2>
+          <p class="review-hero-desc">틀린 문제와 북마크한 문제가 자동으로 쌓입니다. 정답을 맞히면 1일 → 3일 → 7일 → 14일 → 30일로 간격이 늘고, 틀리면 같은 날 다시 나옵니다.</p>
+        </div>
+        <div class="review-metrics">
+          <div class="review-metric"><span>오늘 복습</span><strong id="reviewDueCount">0</strong></div>
+          <div class="review-metric"><span>전체 큐</span><strong id="reviewTotalCount">0</strong></div>
+          <div class="review-metric"><span>예정</span><strong id="reviewPlannedCount">0</strong></div>
+        </div>
+        <div class="review-tabs" role="tablist" aria-label="복습 범위">
+          <button type="button" class="review-tab active" id="reviewDueTab" role="tab" aria-selected="true" data-action="review-tab" data-tab="due">오늘 복습<span class="review-tab-count" id="reviewDueTabCount">0</span></button>
+          <button type="button" class="review-tab" id="reviewAllTab" role="tab" aria-selected="false" data-action="review-tab" data-tab="all">전체 복습 큐<span class="review-tab-count" id="reviewAllTabCount">0</span></button>
+        </div>
+      </div>
+      <div class="questions-list" id="reviewList"></div>
+      <div class="review-empty" id="reviewEmpty" hidden></div>
+    </section>
+
     <!-- SUMMARY VIEW -->
     <div class="summary-section" id="summarySection">
       <!-- Dynamic summary cards loaded here -->
@@ -1978,9 +2166,9 @@
 
   </div>
 
-  <script src="cppg_questions.js?v=202611211440"></script>
-  <script src="infosec_exam_data.js?v=202611211440"></script>
-  <script src="custom_study.js?v=202611211440"></script>
+  <script src="cppg_questions.js?v=202611211508"></script>
+  <script src="infosec_exam_data.js?v=202611211508"></script>
+  <script src="custom_study.js?v=202611211508"></script>
   <script>
     // Theme Engine (index.html과 100% 동일한 secjobs-theme 동기화)
     const themeToggle = document.getElementById('themeToggle');
@@ -2188,6 +2376,7 @@
     const questionsList = document.getElementById('questionsList');
     const summarySection = document.getElementById('summarySection');
     const customSection = document.getElementById('customSection');
+    const reviewSection = document.getElementById('reviewSection');
 
     // Add Resource Panel Toggle
     btnAddResource.addEventListener('click', (e) => {
@@ -2297,23 +2486,32 @@
         questionsList.style.display = 'flex';
         summarySection.style.display = 'none';
         customSection.style.display = 'none';
+        reviewSection.style.display = 'none';
         renderQuestions();
       } else if (mode === 'summary') {
         questionsList.style.display = 'none';
         summarySection.style.display = 'flex';
         customSection.style.display = 'none';
+        reviewSection.style.display = 'none';
         renderSummaries();
       } else if (mode === 'custom') {
         questionsList.style.display = 'none';
         summarySection.style.display = 'none';
         customSection.style.display = 'block';
+        reviewSection.style.display = 'none';
         renderCustomUnits();
+      } else if (mode === 'review') {
+        questionsList.style.display = 'none';
+        summarySection.style.display = 'none';
+        customSection.style.display = 'none';
+        reviewSection.style.display = 'flex';
+        renderReview();
       }
       syncRailVisibility();
       updateFilterBadge();
     }
 
-    // 요약·맞춤 모드에서는 회차/과목/보기 선택이 쓰이지 않으므로 레일에서 감춘다.
+    // 요약·맞춤·복습 모드에서는 회차/과목/보기 선택이 쓰이지 않으므로 레일에서 감춘다.
     // (모바일에서는 회차·과목이 본문 상단/칩으로 옮겨가므로 드로어에서 감춘다.)
     let railMobileMount = false;
 
@@ -2327,17 +2525,17 @@
       if (tools) tools.hidden = !quizMode;
     }
 
-    function getQuestionsForCurrentCategory() {
+    function getQuestionsForCategory(cat) {
       let raw = [];
-      if (currentCategory === 'cppg') {
+      if (cat === 'cppg') {
         raw = window.ALL_QUESTIONS || [];
-      } else if (currentCategory === 'infosec_written') {
+      } else if (cat === 'infosec_written') {
         raw = (window.INFOSEC_WRITTEN_DATA && window.INFOSEC_WRITTEN_DATA.questions) || [];
-      } else if (currentCategory === 'infosec_practical') {
+      } else if (cat === 'infosec_practical') {
         raw = (window.INFOSEC_PRACTICAL_DATA && window.INFOSEC_PRACTICAL_DATA.questions) || [];
-      } else if (currentCategory === 'ismsp_auditor') {
+      } else if (cat === 'ismsp_auditor') {
         raw = (window.ISMSP_AUDITOR_DATA && window.ISMSP_AUDITOR_DATA.questions) || [];
-      } else if (currentCategory === 'custom') {
+      } else if (cat === 'custom') {
         const customUnits = (window.CUSTOM_STUDY_DATA && window.CUSTOM_STUDY_DATA.units) || [];
         const flat = [];
         customUnits.forEach((u, uIdx) => {
@@ -2358,6 +2556,10 @@
         raw = flat;
       }
       return raw.map(normalizeQuestion).filter(Boolean);
+    }
+
+    function getQuestionsForCurrentCategory() {
+      return getQuestionsForCategory(currentCategory);
     }
 
     function getFilteredQuestions() {
@@ -2456,12 +2658,14 @@
         let expHeaderClass = isCorrect ? 'correct' : 'wrong';
         let expHeaderText = isCorrect ? '정답입니다' : '오답입니다';
         const marked = !!bookmarks[q.id];
+        const inReview = !!reviewStore.items[q.id];
 
         card.innerHTML = `
           <div class="q-meta">
             <span class="q-badge">${escapeHtml(q.exam_name || '')}</span>
             <span class="q-badge">${escapeHtml(q.subject_name || '')}</span>
             <span class="q-num">Q${idx + 1}</span>
+            <button type="button" class="q-mark q-review ${inReview ? 'is-on' : ''}" data-action="toggle-review" data-id="${escapeHtml(q.id)}" aria-pressed="${inReview ? 'true' : 'false'}">${inReview ? '복습 담김' : '복습 담기'}</button>
             <button type="button" class="q-mark ${marked ? 'is-on' : ''}" data-action="toggle-bookmark" data-id="${escapeHtml(q.id)}" aria-pressed="${marked ? 'true' : 'false'}">${marked ? '북마크됨' : '북마크'}</button>
           </div>
           <div class="q-prompt">${escapeHtml(q.question)}</div>
@@ -2493,6 +2697,12 @@
         timestamp: Date.now()
       };
       saveUserAnswers();
+      if (!isCorrect) {
+        // 오답은 복습 큐로 이어진다(직접 뺀 문항도 다시 틀리면 되살린다).
+        delete reviewStore.dismissed[qid];
+      }
+      syncReviewQueue();
+      refreshReviewArea();
       updateStats();
       renderQuestions();
     };
@@ -2852,8 +3062,13 @@
     window.toggleBookmark = function (qid) {
       if (!qid) return;
       if (bookmarks[qid]) delete bookmarks[qid];
-      else bookmarks[qid] = true;
+      else {
+        bookmarks[qid] = true;
+        delete reviewStore.dismissed[qid];
+      }
       saveBookmarks();
+      syncReviewQueue();
+      refreshReviewArea();
       renderQuestions();
       updateFilterBadge();
     };
@@ -2864,10 +3079,311 @@
         const qList = getQuestionsForCurrentCategory();
         qList.forEach(q => { delete userAnswers[q.id]; });
         saveUserAnswers();
+        syncReviewQueue();
+        refreshReviewArea();
         updateStats();
         renderQuestions();
       }
     });
+
+    // ---- 복습 큐(간격 반복): 오답·북마크에서 자동으로 시작한다 ----
+    // 복습 결과·일정은 일반 퀴즈 기록(study_user_answers_v4)과 분리해 study_review_queue_v1 에만 저장한다.
+    const REVIEW_STORAGE_KEY = 'study_review_queue_v1';
+    const REVIEW_STEPS_DAYS = [1, 3, 7, 14, 30];
+    const REVIEW_WRONG_DELAY_MS = 4 * 60 * 60 * 1000; // 틀리면 같은 날 다시
+    const REVIEW_DAY_MS = 24 * 60 * 60 * 1000;
+    let reviewStore = { version: 1, items: {}, dismissed: {} };
+    let reviewTab = 'due';
+    let reviewQuestionIndex = null;
+    const reviewAnsweredNow = {}; // 이번 화면 세션에서 방금 푼 문항(결과·해설 유지)
+
+    function loadReviewStore() {
+      try {
+        const raw = localStorage.getItem(REVIEW_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (parsed && typeof parsed === 'object') {
+          reviewStore.items = (parsed.items && typeof parsed.items === 'object') ? parsed.items : {};
+          reviewStore.dismissed = (parsed.dismissed && typeof parsed.dismissed === 'object') ? parsed.dismissed : {};
+        }
+      } catch (e) {
+        reviewStore = { version: 1, items: {}, dismissed: {} };
+      }
+      Object.keys(reviewStore.items).forEach(id => {
+        const item = reviewStore.items[id];
+        if (!item || typeof item !== 'object') { delete reviewStore.items[id]; return; }
+        item.stage = Number(item.stage) || 0;
+        item.review_count = Number(item.review_count) || 0;
+        item.correct_count = Number(item.correct_count) || 0;
+        item.wrong_count = Number(item.wrong_count) || 0;
+        item.added_at = Number(item.added_at) || Number(item.next_review_at) || Date.now();
+        item.next_review_at = Number(item.next_review_at) || item.added_at;
+        item.last_reviewed_at = Number(item.last_reviewed_at) || 0;
+        item.manual = !!item.manual;
+      });
+    }
+
+    function saveReviewStore() {
+      try {
+        localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(reviewStore));
+      } catch (e) {}
+    }
+
+    // 모든 종목의 문항을 ID 하나로 찾을 수 있게 모아 둔다(복습 큐는 종목을 넘나든다).
+    function getQuestionIndex() {
+      if (reviewQuestionIndex) return reviewQuestionIndex;
+      const index = {};
+      ['cppg', 'infosec_written', 'infosec_practical', 'ismsp_auditor', 'custom'].forEach(cat => {
+        getQuestionsForCategory(cat).forEach(q => {
+          if (q && q.id != null && !index[q.id]) index[q.id] = q;
+        });
+      });
+      reviewQuestionIndex = index;
+      return index;
+    }
+
+    function reviewItemIsDue(item) {
+      return !!item && item.next_review_at <= Date.now();
+    }
+
+    function reviewItemAnswerable(item) {
+      return !!item && (!item.last_reviewed_at || item.next_review_at <= Date.now());
+    }
+
+    function addReviewItem(qid, manual) {
+      if (!qid || reviewStore.items[qid]) return false;
+      const now = Date.now();
+      reviewStore.items[qid] = {
+        stage: 0,
+        next_review_at: now,
+        review_count: 0,
+        correct_count: 0,
+        wrong_count: 0,
+        last_result: null,
+        last_selected: null,
+        last_reviewed_at: 0,
+        added_at: now,
+        manual: !!manual
+      };
+      delete reviewStore.dismissed[qid];
+      return true;
+    }
+
+    // 오답·북마크를 큐에 반영한다(같은 문항은 한 번만, 사용자가 뺀 문항은 다시 틀리기 전까지 되살리지 않는다).
+    function syncReviewQueue() {
+      const index = getQuestionIndex();
+      const ids = Object.keys(index);
+      if (!ids.length) return false;
+      let changed = false;
+      ids.forEach(qid => {
+        const item = reviewStore.items[qid];
+        const ans = userAnswers[qid];
+        const auto = !!((ans && ans.isCorrect === false) || bookmarks[qid]);
+        if (auto && !reviewStore.dismissed[qid]) {
+          if (!item && addReviewItem(qid, false)) changed = true;
+        } else if (!auto && item && !item.manual && !item.review_count) {
+          delete reviewStore.items[qid];
+          changed = true;
+        }
+      });
+      // 데이터 재구성으로 사라진 문항은 큐에서 정리한다.
+      Object.keys(reviewStore.items).forEach(qid => {
+        if (!index[qid]) { delete reviewStore.items[qid]; changed = true; }
+      });
+      if (changed) saveReviewStore();
+      return changed;
+    }
+
+    function reviewSummary() {
+      const index = getQuestionIndex();
+      const now = Date.now();
+      const all = Object.keys(reviewStore.items)
+        .filter(id => !!index[id])
+        .sort((a, b) => reviewStore.items[a].next_review_at - reviewStore.items[b].next_review_at);
+      const due = all.filter(id => reviewStore.items[id].next_review_at <= now);
+      return { index: index, all: all, due: due, planned: all.length - due.length, now: now };
+    }
+
+    function formatReviewTime(ts) {
+      const d = new Date(ts);
+      const now = new Date();
+      const dayStart = t => new Date(t.getFullYear(), t.getMonth(), t.getDate()).getTime();
+      const days = Math.round((dayStart(d) - dayStart(now)) / REVIEW_DAY_MS);
+      const hhmm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      if (days <= 0) return '오늘 ' + hhmm;
+      if (days === 1) return '내일 ' + hhmm;
+      return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 (' + days + '일 뒤)';
+    }
+
+    function setReviewText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(value);
+    }
+
+    function updateReviewBadges() {
+      const s = reviewSummary();
+      setReviewText('reviewDueCount', s.due.length);
+      setReviewText('reviewTotalCount', s.all.length);
+      setReviewText('reviewPlannedCount', s.planned);
+      setReviewText('reviewDueTabCount', s.due.length);
+      setReviewText('reviewAllTabCount', s.all.length);
+      setReviewText('reviewDueTitle', s.due.length);
+      const badge = document.getElementById('modeReviewCount');
+      if (badge) {
+        badge.textContent = String(s.due.length);
+        badge.classList.toggle('is-zero', s.due.length === 0);
+      }
+    }
+
+    function refreshReviewArea() {
+      updateReviewBadges();
+      if (currentMode === 'review') renderReview();
+    }
+
+    function reviewCardHtml(q, item) {
+      const answerable = reviewItemAnswerable(item);
+      const answered = !!item.last_reviewed_at;
+      const correct = item.last_result === 'correct';
+      const showResult = answered && (!!reviewAnsweredNow[q.id] || !answerable || reviewTab === 'all');
+      const stageText = item.review_count > 0 ? ('복습 ' + item.review_count + '회') : '새 문항';
+      let choicesHtml = '';
+      (q.options || []).forEach((optText, cIdx) => {
+        const choiceNum = cIdx + 1;
+        let cls = '';
+        if (showResult) {
+          if (choiceNum === q.answer) cls = 'correct';
+          else if (choiceNum === item.last_selected && !correct) cls = 'wrong';
+        }
+        const actionAttr = answerable
+          ? ` data-action="review-choice" data-id="${escapeHtml(q.id)}" data-choice="${choiceNum}"`
+          : '';
+        choicesHtml += `
+          <div class="choice-row ${cls}"${actionAttr}>
+            <div class="choice-circle">${circles[cIdx] || (cIdx + 1)}</div>
+            <div class="choice-text">${escapeHtml(optText)}</div>
+          </div>
+        `;
+      });
+      return `
+        <div class="q-card review-card${showResult ? ' is-done' : ''}" data-review-q="${escapeHtml(q.id)}" tabindex="-1">
+          <div class="q-meta">
+            <span class="q-badge">${escapeHtml(q.exam_name || '')}</span>
+            <span class="q-badge">${escapeHtml(q.subject_name || '')}</span>
+            <span class="review-stage">${escapeHtml(stageText)} · ${answerable ? '지금 복습' : ('다음 ' + escapeHtml(formatReviewTime(item.next_review_at)))}</span>
+            <button type="button" class="q-mark" data-action="toggle-review" data-id="${escapeHtml(q.id)}" aria-pressed="true">큐에서 빼기</button>
+          </div>
+          <div class="q-prompt">${escapeHtml(q.question)}</div>
+          <div class="choices-list">${choicesHtml}</div>
+          <div class="exp-box${showResult ? ' show' : ''}">
+            <div class="exp-header ${correct ? 'correct' : 'wrong'}">
+              <span>정답: ${circles[q.answer - 1] || q.answer}</span>
+              <span>${correct ? '정답입니다' : '오답입니다'}</span>
+            </div>
+            <div>${escapeHtml(q.explanation)}</div>
+            <div class="review-next">
+              <span>복습 ${item.review_count}회 · ${item.stage}단계</span>
+              <span>다음 복습 <strong>${escapeHtml(formatReviewTime(item.next_review_at))}</strong></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReview() {
+      const s = reviewSummary();
+      updateReviewBadges();
+      const listEl = document.getElementById('reviewList');
+      const emptyEl = document.getElementById('reviewEmpty');
+      if (!listEl) return;
+      const list = reviewTab === 'all'
+        ? s.all
+        : s.all.filter(id => reviewStore.items[id].next_review_at <= s.now || !!reviewAnsweredNow[id]);
+      listEl.innerHTML = '';
+      if (!list.length) {
+        if (emptyEl) {
+          emptyEl.hidden = false;
+          if (s.all.length) {
+            const upcoming = s.all.map(id => reviewStore.items[id].next_review_at).filter(ts => ts > s.now).sort((a, b) => a - b)[0];
+            emptyEl.innerHTML = '<strong>오늘 복습할 문항이 없습니다.</strong><br>다음 복습은 '
+              + escapeHtml(upcoming ? formatReviewTime(upcoming) : '내일') + '입니다. 전체 복습 큐에서 예정 문항을 확인할 수 있어요.';
+          } else {
+            emptyEl.innerHTML = '<strong>복습 큐가 비어 있습니다.</strong><br>퀴즈에서 틀리거나 북마크한 문항이 자동으로 이곳에 쌓입니다.';
+          }
+        }
+        return;
+      }
+      if (emptyEl) emptyEl.hidden = true;
+      list.forEach((id) => {
+        listEl.insertAdjacentHTML('beforeend', reviewCardHtml(s.index[id], reviewStore.items[id]));
+      });
+    }
+
+    window.setReviewTab = function (tab) {
+      reviewTab = tab === 'all' ? 'all' : 'due';
+      const dueTab = document.getElementById('reviewDueTab');
+      const allTab = document.getElementById('reviewAllTab');
+      if (dueTab) {
+        dueTab.classList.toggle('active', reviewTab === 'due');
+        dueTab.setAttribute('aria-selected', reviewTab === 'due' ? 'true' : 'false');
+      }
+      if (allTab) {
+        allTab.classList.toggle('active', reviewTab === 'all');
+        allTab.setAttribute('aria-selected', reviewTab === 'all' ? 'true' : 'false');
+      }
+      renderReview();
+    };
+
+    // 복습 모드 채점: 일반 퀴즈 기록(userAnswers)은 건드리지 않고 복습 일정만 갱신한다.
+    window.handleReviewChoice = function (qid, choiceNum) {
+      const item = reviewStore.items[qid];
+      const q = getQuestionIndex()[qid];
+      if (!item || !q || !reviewItemAnswerable(item)) return;
+      const now = Date.now();
+      const isCorrect = (choiceNum === q.answer);
+      item.review_count += 1;
+      item.last_reviewed_at = now;
+      item.last_selected = choiceNum;
+      item.last_result = isCorrect ? 'correct' : 'wrong';
+      if (isCorrect) {
+        item.correct_count += 1;
+        const step = Math.min(item.stage, REVIEW_STEPS_DAYS.length - 1);
+        item.next_review_at = now + REVIEW_STEPS_DAYS[step] * REVIEW_DAY_MS;
+        item.stage = Math.min(item.stage + 1, REVIEW_STEPS_DAYS.length);
+      } else {
+        item.wrong_count += 1;
+        item.stage = 0;
+        item.next_review_at = now + REVIEW_WRONG_DELAY_MS;
+      }
+      reviewAnsweredNow[qid] = now;
+      saveReviewStore();
+      updateReviewBadges();
+      if (currentMode === 'review') {
+        // 푼 카드만 갱신해 목록 스크롤 위치를 지킨다.
+        const card = document.querySelector('#reviewList .review-card[data-review-q="' + qid + '"]');
+        if (card) {
+          card.outerHTML = reviewCardHtml(q, item);
+          const updated = document.querySelector('#reviewList .review-card[data-review-q="' + qid + '"]');
+          if (updated) {
+            try { updated.focus({ preventScroll: true }); } catch (e) {}
+          }
+        } else {
+          renderReview();
+        }
+      }
+    };
+
+    window.toggleReviewItem = function (qid) {
+      if (!qid) return;
+      if (reviewStore.items[qid]) {
+        delete reviewStore.items[qid];
+        reviewStore.dismissed[qid] = Date.now();
+        delete reviewAnsweredNow[qid];
+      } else {
+        addReviewItem(qid, true);
+      }
+      saveReviewStore();
+      refreshReviewArea();
+      if (currentMode === 'quiz') renderQuestions();
+    };
 
     // Helper functions
     function escapeHtml(str) {
@@ -2952,6 +3468,12 @@
         }
       } else if (action === 'toggle-bookmark') {
         if (window.toggleBookmark) window.toggleBookmark(el.getAttribute('data-id'));
+      } else if (action === 'toggle-review') {
+        if (window.toggleReviewItem) window.toggleReviewItem(el.getAttribute('data-id'));
+      } else if (action === 'review-choice') {
+        if (window.handleReviewChoice) window.handleReviewChoice(el.getAttribute('data-id'), parseInt(el.getAttribute('data-choice'), 10));
+      } else if (action === 'review-tab') {
+        if (window.setReviewTab) window.setReviewTab(el.getAttribute('data-tab'));
       } else if (action === 'summary-filter') {
         if (window.setSummaryFilter) window.setSummaryFilter(el.getAttribute('data-filter'));
       } else if (action === 'ismsp-filter') {
@@ -3097,6 +3619,9 @@
     });
 
     // Initial Load
+    loadReviewStore();
+    syncReviewQueue();
+    updateReviewBadges();
     switchCategory('cppg');
     mountStudyControls();
   </script>
