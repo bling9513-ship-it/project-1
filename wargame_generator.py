@@ -472,12 +472,27 @@ def validate_question(raw, allowed_refs, existing_titles, today_str):
 
 
 def rotate_answer(q, new_idx):
-    """정답 위치를 바꾸되 보기 내용은 그대로 유지한다."""
+    """정답 위치를 바꾸되 보기 내용은 그대로 유지한다.
+
+    보기 목록을 오른쪽으로 shift 칸 돌리면 i번째 보기는 (i + shift) % 4 위치로 간다.
+    정답이 있던 old 를 new_idx 로 옮기려면 old + shift ≡ new_idx 이므로
+    shift = (new_idx - old) % 4 이다(부호를 반대로 쓰면 정답이 아닌 보기가 정답이 된다).
+    """
     old = q["answer"]
     if new_idx == old:
         return q
-    shift = (old - new_idx) % 4
-    q["choices"] = q["choices"][-shift:] + q["choices"][:-shift]
+    if not isinstance(new_idx, int) or not (0 <= new_idx <= 3):
+        raise ValueError("new_idx 범위 밖: %r" % (new_idx,))
+    choices = q["choices"]
+    if len(choices) != 4:
+        raise ValueError("보기가 4개가 아님: %d개" % len(choices))
+    correct_text = choices[old]
+    shift = (new_idx - old) % 4
+    rotated = choices[-shift:] + choices[:-shift]
+    assert rotated[new_idx] == correct_text, (
+        "정답 회전 검증 실패: old=%d new=%d shift=%d, choices[new]=%r, 정답=%r"
+        % (old, new_idx, shift, rotated[new_idx], correct_text))
+    q["choices"] = rotated
     q["answer"] = new_idx
     return q
 
