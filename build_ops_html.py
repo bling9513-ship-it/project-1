@@ -344,6 +344,17 @@ CSS = """
 
     .ops-main { min-width: 0; }
     .ops-main-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+    .ops-main-goal {
+      display: none; align-items: center; gap: 5px; margin: 0 0 8px;
+      font-size: 10.5px; font-weight: 600; line-height: 1.4; color: var(--text-primary);
+    }
+    @media (min-width: 768px) {
+      .ops-guide { margin-bottom: 12px; }
+    }
+    .ops-main-goal .tag {
+      flex: 0 0 auto; font-size: 8.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border: 1px solid var(--border-default); border-radius: 4px; padding: 0 4px;
+    }
     .ops-main-title { font-size: 14px; font-weight: 700; letter-spacing: -0.02em; }
     .ops-main-sub { font-size: 11.5px; color: var(--text-muted); text-align: right; }
 
@@ -449,7 +460,8 @@ CSS = """
       .ops-hero p { display: none; }
       .ops-hint { display: none; }
       .ops-main-sub { display: none; }
-      .ops-main-head { justify-content: flex-start; gap: 8px; }
+      .ops-main-head { justify-content: flex-start; gap: 8px; margin-bottom: 5px; }
+      .ops-main-goal { display: flex; margin-bottom: 6px; }
       .ops-alert { min-height: 108px; }
       .ops-result-score strong { font-size: 28px; }
       .ops-clock-value { font-size: 22px; }
@@ -476,7 +488,7 @@ CSS = """
     }
 
     /* ----- 게임 방법 데모 (경보 탭 → 추천 담당 → 처리 완료) ----- */
-    .ops-guide { margin-bottom: 12px; max-width: 560px; }
+    .ops-guide { max-width: 560px; }
     .ops-demo { display: flex; flex-direction: column; gap: 6px; max-width: 520px; }
     .ops-guide .gg-steps { justify-content: flex-start; }
     .ops-demo-board { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -698,6 +710,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <span class="ops-main-count" id="boardCount" aria-live="polite">남은 6건</span>
           <span class="ops-main-sub" id="boardSub">두 담당에게 나눠 배치하세요</span>
         </div>
+        <p class="ops-main-goal"><span class="tag">목표</span>60초 안에 경보 6건을 전문 담당에게 배정해 다운타임 0초</p>
         <div class="ops-board" id="alertBoard" aria-label="경보 목록"></div>
 
         <section class="ops-result" id="resultBox" aria-labelledby="resultTitle" hidden>
