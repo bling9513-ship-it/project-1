@@ -636,6 +636,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       mode: 'live',
       phase: 'idle',          // idle | running | ended
       ticks: 0,
+      lastT: 0,
+      startedAt: 0,
       alerts: [],
       queues: { infra: [], sec: [] },
       active: 'infra',
@@ -691,7 +693,39 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       return null;
     }
 
-    function currentTime() { return round1(state.ticks * TICK); }
+    /* 경과 시간은 0.2초 콜백 횟수가 아니라 시작 시각(Date.now) 기준으로 계산한다.
+       탭이 백그라운드에서 스로틀된 뒤 돌아와도 남은 시간이 실제와 어긋나지 않는다. */
+    function currentTime() {
+      if (state.phase === 'ended') return LIVE_SECONDS;
+      if (state.phase !== 'running' || !state.startedAt) return 0;
+      return Math.min(LIVE_SECONDS, Math.max(0, (Date.now() - state.startedAt) / 1000));
+    }
+
+    /* 마지막으로 처리한 시점(lastT)에서 목표 시점까지 0.2초 간격 모델을 시간순으로 따라가며
+       경보 도착 → 처리 완료 → 60초 종료를 빠짐없이 일괄 반영한다. */
+    function advanceTo(target) {
+      var goal = Math.min(LIVE_SECONDS, Math.max(0, target));
+      var guard = 0;
+      while (state.lastT + 1e-9 < goal && guard < 600) {
+        guard += 1;
+        var next = Math.min(goal, round1(state.lastT + TICK));
+        state.lastT = next;
+        state.ticks = Math.round(next / TICK);
+        state.alerts.forEach(function (a) {
+          if (a.state === 'waiting' && next + 1e-9 >= a.arrival) a.state = 'ready';
+        });
+        RESPONDERS.forEach(function (r) { pump(r.id, next); });
+        if (next >= LIVE_SECONDS - 1e-9) { endLive(); return; }
+      }
+      if (goal >= LIVE_SECONDS - 1e-9) return;
+      render();
+    }
+
+    /* 탭 재개(visibilitychange·focus)나 다음 틱에서 밀린 시간을 한 번에 따라잡는다. */
+    function syncClock() {
+      if (state.mode !== 'live' || state.phase !== 'running') return;
+      advanceTo(currentTime());
+    }
 
     function setStatus(text) { el.opsStatus.textContent = text; }
 
@@ -950,6 +984,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       stopTimer();
       var ids = dailyIds(todayKey());
       state.ticks = 0;
+      state.lastT = 0;
+      state.startedAt = 0;
       state.points = 0;
       state.downtime = 0;
       state.result = null;
@@ -1038,6 +1074,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function startLive() {
       state.phase = 'running';
       state.ticks = 0;
+      state.lastT = 0;
+      state.startedAt = Date.now();
       state.points = 0;
       state.downtime = 0;
       state.alerts.forEach(function (a) {
@@ -1049,17 +1087,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function tick() {
-      state.ticks += 1;
-      var t = currentTime();
-
-      state.alerts.forEach(function (a) {
-        if (a.state === 'waiting' && t + 1e-9 >= a.arrival) a.state = 'ready';
-      });
-
-      RESPONDERS.forEach(function (r) { pump(r.id, t); });
-
-      if (t >= LIVE_SECONDS - 1e-9) { endLive(); return; }
-      render();
+      advanceTo(currentTime());
     }
 
     function workingAlert(rid) {
@@ -1110,6 +1138,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       stopTimer();
       var t = Math.min(currentTime(), LIVE_SECONDS);
       state.ticks = Math.round(t / TICK);
+      state.phase = 'ended';
       var completed = 0;
       var missed = 0;
       state.alerts.forEach(function (a) {
@@ -1398,6 +1427,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       if (state.phase === 'running') { endLive(); return; }
       startLive();
     });
+
+    // 탭이 돌아오면 스로틀 동안 놓친 경보 도착·처리 완료·종료를 즉시 따라잡는다.
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) syncClock();
+    });
+    window.addEventListener('focus', syncClock);
 
     el.resetPlanBtn.addEventListener('click', function () {
       state.queues = { infra: [], sec: [] };

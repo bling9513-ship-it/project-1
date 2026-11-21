@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-16개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+17개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
 - 게임 메뉴는 '챌린지 / 미니게임' 소제목으로 묶는다(데스크톱 드롭다운·모바일 시트 공통).
-- 시트: 카테고리별 16개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 시트: 카테고리별 17개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
+- 모바일 `게임` 탭은 wargame.html 로 이동하지 않고 시트의 게임 목록으로 스크롤·포커스한다.
 """
 import re
 
@@ -31,6 +32,7 @@ PAGES = [
     ("ops", "ops.html", "60초 관제실", "60초 관제실"),
     ("seat", "seat.html", "막차 자리 배치", "막차 자리 배치"),
     ("load", "load.html", "한 번 더 싣기", "한 번 더 싣기"),
+    ("arcade", "arcade.html", "아케이드", "아케이드"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
@@ -40,8 +42,12 @@ PAGE_SHORT = {key: short for key, _file, _label, short in PAGES}
 # 게임 메뉴의 소제목 묶음 — 데스크톱 드롭다운과 모바일 시트 모두 '챌린지 / 미니게임' 으로 통일한다.
 GAME_GROUPS = [
     ("챌린지", ["wargame", "clue", "mission", "chart"]),
-    ("미니게임", ["ops", "seat", "load"]),
+    ("미니게임", ["arcade", "ops", "seat", "load"]),
 ]
+
+# 모바일 시트에서 바로 열어 줄 묶음(하단 `게임` 탭) — 시트 안 그룹 제목에 id 를 붙인다.
+SHEET_GROUP_IDS = {"게임": "iaSheetGroupGame"}
+GAME_TAB_TARGET = SHEET_GROUP_IDS["게임"]
 
 # (그룹 이름, 항목 목록) — 항목은 페이지 키(str) 또는 (소제목, 페이지 키 목록).
 # 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
@@ -64,7 +70,8 @@ MOBILE_TABS = [
     ("jobs", "채용", "index.html", ["index"], "briefcase"),
     ("study", "학습", "study.html", ["study"], "book"),
     ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
-    ("game", "게임", "wargame.html", ["wargame", "clue", "mission", "chart", "ops", "seat", "load"], "game"),
+    # href 가 None 이면 이동 대신 전체 시트의 게임 목록을 열어 준다.
+    ("game", "게임", None, ["wargame", "clue", "mission", "chart", "ops", "seat", "load", "arcade"], "game"),
 ]
 
 ICONS = {
@@ -226,6 +233,17 @@ def _mobile_tabs(current):
     for tab_key, label, href, pages, icon in MOBILE_TABS:
         active = " is-active" if current in pages else ""
         cur = ' aria-current="page"' if current in pages else ""
+        if href is None:
+            parts.append(
+                '<button type="button" class="ia-tab{active}" id="iaGameBtn" '
+                'aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" '
+                'data-sheet-target="{target}">'
+                '<span class="ia-tab-icon">{icon}</span><span class="ia-tab-label">{label}</span>'
+                '</button>'.format(
+                    active=active, icon=ICONS[icon], label=label, target=GAME_TAB_TARGET
+                )
+            )
+            continue
         parts.append(
             '<a class="ia-tab{active}" href="{href}"{cur}>'
             '<span class="ia-tab-icon">{icon}</span><span class="ia-tab-label">{label}</span></a>'.format(
@@ -266,7 +284,13 @@ def _sheet(current):
         )
 
     for title, items in GROUPS:
-        parts.append('<p class="ia-sheet-group">{title}</p>'.format(title=title))
+        group_id = SHEET_GROUP_IDS.get(title)
+        if group_id:
+            parts.append('<p class="ia-sheet-group" id="{gid}" tabindex="-1">{title}</p>'.format(
+                gid=group_id, title=title
+            ))
+        else:
+            parts.append('<p class="ia-sheet-group">{title}</p>'.format(title=title))
         if not _has_subgroups(items):
             parts.append('<div class="ia-sheet-links">')
             for key in items:
@@ -835,7 +859,9 @@ NAV_JS = """
   var sheet = document.getElementById('iaSheet');
   var backdrop = document.getElementById('iaSheetBackdrop');
   var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
   var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
   var hideTimer = null;
   var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
   var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
@@ -852,14 +878,28 @@ NAV_JS = """
     }
   }
 
-  function openSheet() {
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
     if (!sheet || !backdrop || !allBtn) return;
     if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
     isOpen = true;
     sheet.hidden = false;
     backdrop.hidden = false;
     document.body.classList.add('ia-sheet-open');
     allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
     cancelOpenFrame();
     if (reduceMotion) {
       sheet.classList.add('is-open');
@@ -875,7 +915,11 @@ NAV_JS = """
         });
       });
     }
-    if (sheetClose) sheetClose.focus();
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
   }
 
   function closeSheet() {
@@ -886,18 +930,30 @@ NAV_JS = """
     backdrop.classList.remove('is-open');
     document.body.classList.remove('ia-sheet-open');
     allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
     hideTimer = window.setTimeout(function () {
       sheet.hidden = true;
       backdrop.hidden = true;
       hideTimer = null;
     }, reduceMotion ? 0 : 240);
-    allBtn.focus();
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
   }
 
   if (allBtn) {
     allBtn.addEventListener('click', function () {
       if (sheet && !sheet.hidden) closeSheet();
-      else openSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
     });
   }
   if (sheetClose) sheetClose.addEventListener('click', closeSheet);

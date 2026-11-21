@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html'];
+  'seat.html', 'load.html', 'arcade.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -3604,6 +3604,282 @@ async function checkLoadGame(page, width) {
   console.log(`${tag} passed`);
 }
 
+// ---- 아케이드: 첫 화면(캔버스·세그먼트·기록 카드) · PC 레일/보드 2단 · 모바일 방향키 패드 ----
+async function checkArcadeLayout(page, width) {
+  const tag = `arcade layout ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(150);
+  const geo = await page.evaluate(() => {
+    const box = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    const limit = bar && getComputedStyle(bar).display !== 'none'
+      ? bar.getBoundingClientRect().top : window.innerHeight;
+    const canvas = document.getElementById('gameCanvas');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      limit,
+      canvas: box('#gameCanvas'),
+      rail: box('.arc-rail'),
+      main: box('.arc-main'),
+      brick: box('#gameBrick'),
+      board: document.getElementById('stage').getAttribute('data-board'),
+      cards: document.querySelectorAll('.arc-rail .arc-card').length,
+      dpad: getComputedStyle(document.getElementById('dpad')).display,
+      backing: { w: canvas.width, h: canvas.height, css: canvas.getBoundingClientRect().width },
+    };
+  });
+  assert.equal(geo.overflow, 0, `${tag}: horizontal overflow ${geo.overflow}px`);
+  assert.ok(geo.canvas && geo.canvas.width > 200, `${tag}: canvas width ${geo.canvas && geo.canvas.width}`);
+  assert.ok(geo.canvas.height > geo.canvas.width, `${tag}: canvas is not portrait`);
+  if (width <= 390) {
+    assert.ok(geo.canvas.bottom <= geo.limit + 1, `${tag}: canvas cut by the first screen`);
+  } else {
+    assert.ok(geo.canvas.top < geo.limit, `${tag}: canvas does not start on the first screen`);
+  }
+  assert.equal(geo.cards, 3, `${tag}: rail cards ${geo.cards}`);
+  assert.equal(geo.board, 'brick:normal', `${tag}: initial board ${geo.board}`);
+  assert.ok(geo.backing.w >= Math.round(geo.backing.css), `${tag}: canvas backing store ${geo.backing.w} < ${geo.backing.css}`);
+  assert.ok(geo.brick && geo.brick.top >= 0 && geo.brick.bottom <= geo.limit, `${tag}: game segment outside the first screen`);
+  if (width <= 900) {
+    assert.equal(geo.dpad, 'grid', `${tag}: direction pad must be visible on mobile`);
+    assert.ok(geo.rail.top >= geo.main.bottom - 1, `${tag}: rail must stack below the stage`);
+  } else {
+    assert.equal(geo.dpad, 'none', `${tag}: direction pad must be hidden on desktop`);
+    assert.ok(geo.rail.right <= geo.main.left + 1, `${tag}: rail is not left of the stage`);
+  }
+  console.log(`${tag} passed`);
+}
+
+// ---- 아케이드: 두 게임 실행/점수 · 닉네임 등록(XSS 텍스트) · 티어 · 난이도별 점수판 분리 ----
+async function checkArcadeGame(page, width) {
+  const tag = `arcade game ${width}px`;
+  await page.evaluate(() => {
+    ['arcade_ranking_v1', 'arcade_last_nick', 'arcade_guide_seen_v1'].forEach((key) => localStorage.removeItem(key));
+  });
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#gameCanvas').waitFor({ state: 'attached' });
+
+  const data = await page.evaluate(() => JSON.parse(document.getElementById('arcadeData').textContent));
+  const brickBoard = data.boards.find((board) => board.key === 'brick:normal');
+  assert.ok(brickBoard && brickBoard.rivals.length >= 5 && brickBoard.rivals.length <= 8,
+    `${tag}: rival records ${brickBoard ? brickBoard.rivals.length : 0}`);
+  assert.equal(data.boards.length, 4, `${tag}: split boards ${data.boards.length}`);
+
+  // 게임 방법: 첫 방문에는 펼쳐진 Canvas 프리뷰 + 다시 보기
+  const guide = await page.evaluate(() => ({
+    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+    hidden: document.getElementById('guideBody').hidden,
+    label: document.getElementById('guideToggle').textContent.trim(),
+    replay: document.getElementById('guideReplay').textContent.trim(),
+    steps: document.querySelectorAll('.arc-step').length,
+    cap: document.getElementById('guideCaption').textContent.trim(),
+    canvasW: document.getElementById('guideCanvas').width,
+  }));
+  assert.equal(guide.expanded, 'true', `${tag}: guide should open on the first visit`);
+  assert.equal(guide.hidden, false, `${tag}: guide body hidden`);
+  assert.equal(guide.label, '접기', `${tag}: guide label ${guide.label}`);
+  assert.equal(guide.replay, '다시 보기', `${tag}: replay label ${guide.replay}`);
+  assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+  assert.ok(guide.cap.includes('미리보기'), `${tag}: guide caption ${guide.cap}`);
+  assert.ok(guide.canvasW > 100, `${tag}: guide preview canvas ${guide.canvasW}px`);
+
+  // 접었다가 '다시 보기'로 다시 펼쳐 프리뷰를 재생한다.
+  await page.click('#guideToggle');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('guideToggle').textContent.trim()), '게임 방법',
+    `${tag}: guide did not collapse`);
+  await page.click('#guideReplay');
+  await page.waitForTimeout(160);
+  const replayed = await page.evaluate(() => ({
+    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+    hidden: document.getElementById('guideBody').hidden,
+  }));
+  assert.equal(replayed.expanded, 'true', `${tag}: replay did not reopen the guide`);
+  assert.equal(replayed.hidden, false, `${tag}: replay kept the guide body hidden`);
+
+  // 1) 벽돌깨기: 시작 → 점수 → 일시정지/재개 → 판 포기
+  await page.click('#overlayBtn');
+  await page.waitForFunction(() => Number(document.getElementById('hudScore').textContent.replace(/,/g, '')) > 0,
+    null, { timeout: 20000 });
+  const brickRun = await page.evaluate(() => ({
+    score: Number(document.getElementById('hudScore').textContent.replace(/,/g, '')),
+    phase: document.getElementById('stage').getAttribute('data-phase'),
+    lives: document.getElementById('hudLives').textContent.trim(),
+    aux: document.getElementById('hudAux').textContent.trim(),
+    pauseDisabled: document.getElementById('pauseBtn').disabled,
+  }));
+  assert.ok(brickRun.score > 0, `${tag}: brick score ${brickRun.score}`);
+  assert.equal(brickRun.phase, 'playing', `${tag}: brick phase ${brickRun.phase}`);
+  assert.equal(brickRun.lives, '3', `${tag}: brick lives ${brickRun.lives}`);
+  assert.ok(brickRun.aux.includes('스테이지'), `${tag}: brick hud ${brickRun.aux}`);
+  assert.equal(brickRun.pauseDisabled, false, `${tag}: pause disabled while playing`);
+
+  await page.click('#pauseBtn');
+  await page.waitForTimeout(150);
+  const paused = await page.evaluate(() => ({
+    phase: document.getElementById('stage').getAttribute('data-phase'),
+    title: document.getElementById('overlayTitle').textContent.trim(),
+    hidden: document.getElementById('overlay').hidden,
+  }));
+  assert.equal(paused.phase, 'paused', `${tag}: pause phase ${paused.phase}`);
+  assert.equal(paused.hidden, false, `${tag}: pause overlay hidden`);
+  assert.equal(paused.title, '일시정지', `${tag}: pause title ${paused.title}`);
+  await page.click('#overlayBtn');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('stage').getAttribute('data-phase')), 'playing',
+    `${tag}: resume failed`);
+
+  const brickScore = await page.evaluate(() => Number(document.getElementById('hudScore').textContent.replace(/,/g, '')));
+  await page.click('#quitBtn');
+  await page.locator('#nickPanel:not([hidden])').waitFor({ timeout: 5000 });
+  const ended = await page.evaluate(() => ({
+    phase: document.getElementById('stage').getAttribute('data-phase'),
+    title: document.getElementById('overlayTitle').textContent.trim(),
+    detail: document.getElementById('overlayText').textContent.trim(),
+    statsHidden: document.getElementById('overlayStats').hidden,
+    nickScore: Number(document.getElementById('nickScore').textContent.replace(/,/g, '')),
+    tierText: document.getElementById('tierBadge').textContent.trim(),
+  }));
+  assert.equal(ended.phase, 'over', `${tag}: quit phase ${ended.phase}`);
+  assert.equal(ended.title, '기록 종료', `${tag}: end title ${ended.title}`);
+  assert.ok(ended.detail.length > 0, `${tag}: end detail missing`);
+  assert.equal(ended.statsHidden, true, `${tag}: duplicate stats shown above the nickname panel`);
+  assert.ok(ended.nickScore >= brickScore, `${tag}: nickname score ${ended.nickScore} < ${brickScore}`);
+
+  // 티어: 현재 점수가 들어가는 구간의 등급이 배지에 보인다.
+  const expectedTier = brickBoard.tiers.filter((tier) => brickScore >= tier.min).pop().name;
+  assert.equal(ended.tierText, expectedTier, `${tag}: best tier ${ended.tierText} (expected ${expectedTier})`);
+  const tierCard = await page.evaluate(() => ({
+    badge: document.getElementById('tierBadge').textContent.trim(),
+    next: document.getElementById('tierNext').textContent.trim(),
+  }));
+  assert.ok(tierCard.badge.length > 0, `${tag}: tier badge empty`);
+  assert.ok(tierCard.next.includes('다음 등급'), `${tag}: next tier hint ${tierCard.next}`);
+
+  // 2) 닉네임 등록: 마크업이 그대로 문자로만 렌더링된다(XSS 차단 · textContent).
+  const nick = '<b>x</b>';
+  await page.fill('#nickInput', nick);
+  await page.click('#nickSave');
+  await page.waitForFunction(() => document.querySelectorAll('#rankList .arc-rank-row').length > 0, null, { timeout: 5000 });
+  const saved = await page.evaluate(() => ({
+    names: Array.from(document.querySelectorAll('#rankList .arc-rank-name')).map((el) => el.textContent),
+    bold: document.querySelectorAll('#rankList b, #rankList img').length,
+    html: document.getElementById('rankList').innerHTML,
+    note: document.getElementById('nickNote').textContent.trim(),
+    saveLabel: document.getElementById('nickSave').textContent.trim(),
+    store: JSON.parse(localStorage.getItem('arcade_ranking_v1') || 'null'),
+  }));
+  assert.equal(saved.names[0], nick, `${tag}: nickname rendered as ${JSON.stringify(saved.names[0])}`);
+  assert.equal(saved.bold, 0, `${tag}: nickname markup was parsed as HTML`);
+  assert.ok(saved.html.includes('&lt;b&gt;'), `${tag}: nickname not escaped in innerHTML`);
+  assert.ok(saved.note.includes('검증'), `${tag}: local-only note missing (${saved.note})`);
+  assert.equal(saved.saveLabel, '등록됨', `${tag}: save label ${saved.saveLabel}`);
+  assert.ok(saved.store && saved.store.boards && saved.store.boards['brick:normal'],
+    `${tag}: local ranking store missing`);
+  const entry = saved.store.boards['brick:normal'][0];
+  assert.equal(entry.name, nick, `${tag}: stored nickname ${entry.name}`);
+  assert.equal(entry.verified, false, `${tag}: local record must stay unverified`);
+  assert.equal(entry.tier, expectedTier, `${tag}: stored tier ${entry.tier}`);
+
+  // 3) 기준 라이벌: 미리 세팅된 기록과 이 기기 기록을 구분해 보여 준다.
+  await page.click('#rankRival');
+  await page.waitForTimeout(120);
+  const rivals = await page.evaluate(() => ({
+    rows: document.querySelectorAll('#rankList .arc-rank-row').length,
+    badges: Array.from(document.querySelectorAll('#rankList .arc-rank-badge')).map((el) => el.textContent),
+    names: Array.from(document.querySelectorAll('#rankList .arc-rank-name')).map((el) => el.textContent),
+    note: document.getElementById('rankNote').textContent.trim(),
+  }));
+  assert.equal(rivals.rows, brickBoard.rivals.length, `${tag}: rival rows ${rivals.rows}`);
+  assert.ok(rivals.badges.every((badge) => badge === '기준'), `${tag}: rival badges ${rivals.badges}`);
+  assert.ok(rivals.note.includes('AI 기준'), `${tag}: rival note ${rivals.note}`);
+  assert.ok(!rivals.names.includes(nick), `${tag}: local record leaked into rivals`);
+  await page.click('#rankLocal');
+  await page.waitForTimeout(100);
+
+  // 4) 난이도 분리: 같은 게임의 어려움 점수판은 따로 비어 있다.
+  await page.click('#diffHard');
+  await page.waitForTimeout(150);
+  const hard = await page.evaluate(() => ({
+    board: document.getElementById('stage').getAttribute('data-board'),
+    label: document.getElementById('boardLabel').textContent.trim(),
+    rows: document.querySelectorAll('#rankList .arc-rank-row').length,
+    empty: document.querySelector('#rankList .arc-rank-empty') ? document.querySelector('#rankList .arc-rank-empty').textContent.trim() : '',
+    store: JSON.parse(localStorage.getItem('arcade_ranking_v1') || 'null'),
+  }));
+  assert.equal(hard.board, 'brick:hard', `${tag}: hard board ${hard.board}`);
+  assert.ok(hard.label.includes('어려움'), `${tag}: hard label ${hard.label}`);
+  assert.equal(hard.rows, 0, `${tag}: hard board shared the normal board`);
+  assert.ok(hard.empty.includes('없습니다'), `${tag}: hard empty state ${hard.empty}`);
+  assert.ok(!hard.store.boards['brick:hard'], `${tag}: hard board was written by normal play`);
+  await page.click('#diffNormal');
+  await page.waitForTimeout(120);
+
+  // 5) 지렁이: 시작 → 첫 먹이 점수 · 방향 전환 · 방향키 패드
+  await page.click('#gameSnake');
+  await page.waitForTimeout(150);
+  const snakeBoard = await page.evaluate(() => ({
+    board: document.getElementById('stage').getAttribute('data-board'),
+    rows: document.querySelectorAll('#rankList .arc-rank-row').length,
+    livesLabel: document.getElementById('hudLivesLabel').textContent.trim(),
+  }));
+  assert.equal(snakeBoard.board, 'snake:normal', `${tag}: snake board ${snakeBoard.board}`);
+  assert.equal(snakeBoard.rows, 0, `${tag}: snake board reused brick records`);
+  assert.equal(snakeBoard.livesLabel, '길이', `${tag}: snake hud label ${snakeBoard.livesLabel}`);
+
+  await page.click('#overlayBtn');
+  await page.waitForFunction(() => Number(document.getElementById('hudScore').textContent.replace(/,/g, '')) > 0,
+    null, { timeout: 10000 });
+  const snakeRun = await page.evaluate(() => ({
+    score: Number(document.getElementById('hudScore').textContent.replace(/,/g, '')),
+    length: document.getElementById('hudLives').textContent.trim(),
+    phase: document.getElementById('stage').getAttribute('data-phase'),
+  }));
+  assert.ok(snakeRun.score > 0, `${tag}: snake score ${snakeRun.score}`);
+  assert.ok(Number(snakeRun.length) >= 5, `${tag}: snake length ${snakeRun.length}`);
+  assert.equal(snakeRun.phase, 'playing', `${tag}: snake phase ${snakeRun.phase}`);
+
+  await page.keyboard.press('ArrowUp');
+  await page.waitForTimeout(80);
+  assert.equal(await page.evaluate(() => document.getElementById('stage').getAttribute('data-dir')), '0,-1',
+    `${tag}: keyboard direction not applied`);
+  if (width <= 900) {
+    await page.click('.arc-dpad-btn[data-dir="left"]');
+    await page.waitForTimeout(80);
+    assert.equal(await page.evaluate(() => document.getElementById('stage').getAttribute('data-dir')), '-1,0',
+      `${tag}: direction pad not applied`);
+  }
+  await page.click('#pauseBtn');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('stage').getAttribute('data-phase')), 'paused',
+    `${tag}: snake pause failed`);
+  await page.click('#overlayBtn');
+  await page.waitForTimeout(100);
+  assert.equal(await page.evaluate(() => document.getElementById('stage').getAttribute('data-phase')), 'playing',
+    `${tag}: snake resume failed`);
+  await page.click('#quitBtn');
+  await page.locator('#nickPanel:not([hidden])').waitFor({ timeout: 5000 });
+  await page.fill('#nickInput', '지렁이\u200b  왕');
+  await page.click('#nickSave');
+  await page.waitForTimeout(150);
+  const snakeSaved = await page.evaluate(() => ({
+    names: Array.from(document.querySelectorAll('#rankList .arc-rank-name')).map((el) => el.textContent),
+    store: JSON.parse(localStorage.getItem('arcade_ranking_v1') || 'null'),
+  }));
+  assert.equal(snakeSaved.names[0], '지렁이 왕',
+    `${tag}: snake nickname not sanitized (${JSON.stringify(snakeSaved.names[0])})`);
+  assert.ok(snakeSaved.names[0].length <= 12, `${tag}: nickname length ${snakeSaved.names[0].length}`);
+  assert.ok(snakeSaved.store.boards['snake:normal'], `${tag}: snake board not stored`);
+  assert.equal(snakeSaved.store.boards['brick:normal'].length, 1, `${tag}: brick board count changed`);
+
+  console.log(`${tag} passed (벽돌 ${brickScore}점 · 지렁이 ${snakeRun.score}점 · ${expectedTier})`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -3680,6 +3956,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'seat') await checkSeatGame(page, width);
     if (name === 'load') await checkLoadLayout(page, width);
     if (name === 'load') await checkLoadGame(page, width);
+    if (name === 'arcade') await checkArcadeLayout(page, width);
+    if (name === 'arcade') await checkArcadeGame(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -3702,6 +3980,122 @@ async function checkPage(context, base, name, width) {
     throw new Error(`${name} ${width}px: ${error.message}`, { cause: error });
   } finally {
     await page.close();
+  }
+}
+
+// ---- 60초 관제실: 탭 스로틀링으로 65초를 한 번에 건너뛰어도 즉시 0.0초 종료·결과 카드 ----
+async function checkOpsClockJump(browser, base) {
+  const tag = 'ops clock jump';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  try {
+    await page.clock.install();
+    await page.goto(`${base}/ops.html`, { waitUntil: 'load' });
+    await page.locator('#alertBoard .ops-alert').first().waitFor({ state: 'attached' });
+    await page.evaluate(() => localStorage.removeItem('ops_room_stats_v1'));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#alertBoard .ops-alert').first().waitFor({ state: 'attached' });
+    await page.click('#startBtn');
+    await page.clock.runFor(1000);
+    const ready = await page.evaluate(() => Array.from(document.querySelectorAll('#alertBoard .ops-alert'))
+      .filter((card) => card.dataset.state === 'ready')
+      .map((card) => ({ id: card.dataset.id, spec: card.dataset.spec })));
+    assert.ok(ready.length >= 3, `${tag}: ${ready.length} alerts arrived in the first second`);
+    for (const item of ready) {
+      await page.click(`#person-${item.spec}`);
+      await page.click(`.ops-alert[data-id="${item.id}"]`);
+    }
+    const running = await page.evaluate(() => ({
+      hidden: document.getElementById('resultBox').hidden,
+      clock: document.getElementById('clockValue').textContent.trim(),
+    }));
+    assert.equal(running.hidden, true, `${tag}: result shown before the jump`);
+    // 탭이 백그라운드에서 스로틀되어 0.2초 콜백이 한 번만 돌아온 상황을 만든다.
+    await page.clock.fastForward(65000);
+    const end = await page.evaluate(() => ({
+      clock: document.getElementById('clockValue').textContent.trim(),
+      hidden: document.getElementById('resultBox').hidden,
+      score: Number((document.getElementById('resultScore').textContent || '').replace(/[^0-9]/g, '')),
+      completed: document.getElementById('resultCompleted').textContent.trim(),
+      states: Array.from(document.querySelectorAll('#alertBoard .ops-alert')).map((card) => card.dataset.state),
+      store: JSON.parse(localStorage.getItem('ops_room_stats_v1') || 'null'),
+    }));
+    assert.equal(end.hidden, false, `${tag}: result card missing after the 65s jump`);
+    assert.equal(end.clock, '0.0', `${tag}: clock ${end.clock} after the 65s jump`);
+    assert.ok(end.states.every((state) => state === 'done' || state === 'missed'),
+      `${tag}: alerts left mid-run (${end.states})`);
+    assert.ok(end.score >= 0, `${tag}: score ${end.score}`);
+    assert.ok(end.completed.startsWith(String(ready.length)), `${tag}: completed summary ${end.completed}`);
+    assert.ok(end.states.some((state) => state === 'missed'), `${tag}: jump skipped the misses (${end.states})`);
+    assert.ok(end.store && end.store.history.length >= 1, `${tag}: jump run not stored`);
+    assert.deepEqual(errors, [], `${tag}: browser errors`);
+    console.log(`${tag} passed (${end.score}점 · ${end.completed})`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 모바일 하단 '게임' 탭: 이동하지 않고 전체 시트의 게임 목록으로 스크롤·포커스 ----
+async function checkGameTabSheet(browser, base, width) {
+  const tag = `game tab sheet ${width}px`;
+  const context = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/index.html`, { waitUntil: 'load' });
+    await page.click('#iaGameBtn');
+    await page.waitForFunction(() => !document.getElementById('iaSheet').hidden);
+    await page.waitForTimeout(320);
+    const state = await page.evaluate(() => {
+      const sheet = document.getElementById('iaSheet');
+      const group = document.getElementById('iaSheetGroupGame');
+      const sr = sheet.getBoundingClientRect();
+      const gr = group.getBoundingClientRect();
+      const links = Array.from(document.querySelectorAll('.ia-sheet-link')).map((anchor) => anchor.getAttribute('href'));
+      return {
+        path: location.pathname,
+        hidden: sheet.hidden,
+        open: sheet.classList.contains('is-open'),
+        focus: document.activeElement ? document.activeElement.id : null,
+        scrollTop: sheet.scrollTop,
+        groupTop: gr.top - sr.top,
+        groupBottom: gr.bottom - sr.top,
+        sheetHeight: sr.height,
+        lastGameBottom: (() => {
+          const hrefs = ['wargame.html', 'clue.html', 'mission.html', 'chart.html', 'arcade.html', 'ops.html', 'seat.html', 'load.html'];
+          const nodes = Array.from(document.querySelectorAll('.ia-sheet-link'))
+            .filter((anchor) => hrefs.includes(anchor.getAttribute('href')));
+          return nodes.length ? nodes[nodes.length - 1].getBoundingClientRect().bottom - sr.top : -1;
+        })(),
+        groupText: group.textContent.trim(),
+        arcade: links.includes('arcade.html'),
+        subs: Array.from(document.querySelectorAll('.ia-sheet-sub')).map((el) => el.textContent.trim()),
+        gameLinks: Array.from(document.querySelectorAll('.ia-sheet-link'))
+          .filter((anchor) => ['wargame.html', 'clue.html', 'mission.html', 'chart.html', 'arcade.html', 'ops.html', 'seat.html', 'load.html']
+            .includes(anchor.getAttribute('href'))).length,
+      };
+    });
+    assert.equal(state.path, '/index.html', `${tag}: game tab navigated to ${state.path}`);
+    assert.equal(state.hidden, false, `${tag}: sheet did not open`);
+    assert.equal(state.open, true, `${tag}: sheet has no open state`);
+    assert.equal(state.focus, 'iaSheetGroupGame', `${tag}: focus ${state.focus}`);
+    assert.equal(state.groupText, '게임', `${tag}: group title ${state.groupText}`);
+    assert.ok(state.scrollTop > 0, `${tag}: sheet did not scroll (${state.scrollTop})`);
+    assert.ok(state.groupTop >= 0 && state.groupBottom <= state.sheetHeight + 1,
+      `${tag}: game title outside the sheet viewport (${Math.round(state.groupTop)}~${Math.round(state.groupBottom)}/${Math.round(state.sheetHeight)})`);
+    assert.ok(state.lastGameBottom > 0 && state.lastGameBottom <= state.sheetHeight + 1,
+      `${tag}: last game link cut by the sheet (${Math.round(state.lastGameBottom)}/${Math.round(state.sheetHeight)})`);
+    assert.ok(state.arcade, `${tag}: arcade.html missing from the game group`);
+    assert.ok(state.subs.includes('미니게임'), `${tag}: mini games sub group missing`);
+    assert.equal(state.gameLinks, 8, `${tag}: game links ${state.gameLinks}`);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => document.getElementById('iaSheet').hidden);
+    const focusBack = await page.evaluate(() => (document.activeElement ? document.activeElement.id : null));
+    assert.equal(focusBack, 'iaGameBtn', `${tag}: focus did not return (${focusBack})`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
   }
 }
 
@@ -3749,6 +4143,7 @@ async function main() {
           if (name === 'ops') await checkOpsLayout(page, width);
           if (name === 'seat') await checkSeatLayout(page, width);
           if (name === 'load') await checkLoadLayout(page, width);
+          if (name === 'arcade') await checkArcadeLayout(page, width);
         } finally {
           await page.close();
         }
@@ -3764,6 +4159,9 @@ async function main() {
     await timelineContext.close();
     await checkTodayMidnight(browser, base);
     await checkTodayFocusKeep(browser, base);
+    await checkOpsClockJump(browser, base);
+    await checkGameTabSheet(browser, base, 320);
+    await checkGameTabSheet(browser, base, 390);
   } finally {
     try {
       await browser?.close();

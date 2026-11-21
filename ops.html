@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-ea6ZlrkVPLev9PyZVwsCESfMMRj0w6iypxQ+kOZJyJE=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-fZsglgpR/ng6kHmEv5QePVwpyelnj11lbC+RUxCHhBI=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 퇴근 전 60초 관제실</title>
   <meta name="description" content="서비스 경보 6건을 인프라·자동화 담당과 보안·분석 담당에게 배치해 다운타임과 미처리 경보를 줄이는 60초 관제 게임. 매일 KST 날짜 시드로 같은 경보가 나오고, 타이머 없는 연습 모드에서 최적 배치를 실험할 수 있습니다.">
@@ -776,7 +776,7 @@
 <body data-page="ops">
 
   <!-- Global Nav -->
-  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">60초 관제실</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link is-current" role="menuitem" href="ops.html" aria-current="page">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a></div></div></nav><div class="ia-actions"><span class="ia-meta">매일 KST 00:00 새 경보</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">60초 관제실</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link is-current" role="menuitem" href="ops.html" aria-current="page">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a></div></div></nav><div class="ia-actions"><span class="ia-meta">매일 KST 00:00 새 경보</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
 
   <main class="ops-wrap">
     <div class="ops-hero">
@@ -867,7 +867,7 @@
     </div>
   </main>
 
-  <script type="application/json" id="opsData">{"version":1,"built_date":"2026-11-21","built_at":"2026-11-21 20:12 KST","responders":[{"id":"infra","name":"인프라·자동화","short":"인프라","spec":"infra","desc":"서버·배포·수집"},{"id":"sec","name":"보안·분석","short":"보안","spec":"sec","desc":"탐지·계정·악성코드"}],"alerts":[{"id":"inf-01","title":"결제 API 5xx 급증","service":"결제 게이트웨이","spec":"infra","sev":3,"base":9},{"id":"inf-02","title":"수집 배치 잡 지연","service":"데이터 파이프라인","spec":"infra","sev":2,"base":8},{"id":"inf-03","title":"로그 파이프라인 적체","service":"로그 수집기","spec":"infra","sev":2,"base":7},{"id":"inf-04","title":"CDN 캐시 미스 폭증","service":"정적 자원 CDN","spec":"infra","sev":1,"base":6},{"id":"inf-05","title":"DB 커넥션 풀 고갈","service":"주문 DB","spec":"infra","sev":3,"base":11},{"id":"inf-06","title":"TLS 인증서 만료 임박","service":"API 게이트웨이","spec":"infra","sev":2,"base":5},{"id":"inf-07","title":"CI 러너 디스크 92%","service":"빌드 러너","spec":"infra","sev":1,"base":7},{"id":"inf-08","title":"오토스케일링 미동작","service":"웹 프런트","spec":"infra","sev":3,"base":10},{"id":"inf-09","title":"알림 큐 적체","service":"메시지 큐","spec":"infra","sev":2,"base":8},{"id":"inf-10","title":"이미지 워커 중단","service":"미디어 워커","spec":"infra","sev":1,"base":6},{"id":"inf-11","title":"사내 DNS 응답 지연","service":"DNS 서버","spec":"infra","sev":2,"base":6},{"id":"inf-12","title":"야간 백업 누락","service":"백업 서버","spec":"infra","sev":1,"base":5},{"id":"sec-01","title":"WAF 차단 급증(SQLi)","service":"웹 방화벽","spec":"sec","sev":3,"base":8},{"id":"sec-02","title":"비정상 로그인 성공","service":"계정 인증","spec":"sec","sev":3,"base":10},{"id":"sec-03","title":"악성 파일 업로드 의심","service":"파일 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-04","title":"취약점 스캐너 대량 요청","service":"외부 노출 API","spec":"sec","sev":2,"base":7},{"id":"sec-05","title":"권한 상승 시도 탐지","service":"관리자 콘솔","spec":"sec","sev":3,"base":11},{"id":"sec-06","title":"피싱 메일 대량 유입","service":"메일 게이트웨이","spec":"sec","sev":2,"base":8},{"id":"sec-07","title":"EDR 격리 요청 미처리","service":"단말 관제","spec":"sec","sev":2,"base":7},{"id":"sec-08","title":"비인가 크롤링 증가","service":"공개 API","spec":"sec","sev":1,"base":6},{"id":"sec-09","title":"시크릿 키 노출 의심","service":"소스 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-10","title":"IDS 이상 트래픽","service":"네트워크 센서","spec":"sec","sev":2,"base":8},{"id":"sec-11","title":"계정 잠금 폭주","service":"인증 서비스","spec":"sec","sev":1,"base":5},{"id":"sec-12","title":"감사 로그 누락","service":"감사 로그","spec":"sec","sev":1,"base":6}],"days":{"2026-11-21":["inf-03","sec-02","sec-06","sec-10","inf-09","inf-05"],"2026-11-22":["inf-09","inf-04","sec-07","sec-11","sec-10","inf-10"],"2026-11-23":["inf-08","sec-09","inf-11","sec-03","sec-12","inf-10"],"2026-11-24":["inf-01","inf-11","inf-03","sec-03","sec-01","sec-11"],"2026-11-25":["inf-01","sec-01","inf-08","inf-06","sec-09","sec-04"],"2026-11-26":["inf-08","sec-10","sec-11","inf-12","sec-02","inf-01"],"2026-11-27":["sec-09","sec-03","inf-01","sec-05","inf-05","inf-10"],"2026-11-28":["sec-11","inf-02","sec-07","inf-08","inf-11","sec-01"],"2026-11-29":["sec-03","inf-01","sec-07","sec-01","inf-07","inf-05"],"2026-11-30":["sec-12","sec-06","sec-05","inf-01","inf-10","inf-03"],"2026-12-01":["inf-12","sec-04","sec-12","inf-04","sec-03","inf-03"],"2026-12-02":["inf-05","sec-01","inf-03","sec-09","sec-03","inf-10"],"2026-12-03":["inf-01","sec-05","sec-11","inf-12","sec-12","inf-03"],"2026-12-04":["inf-01","sec-02","sec-06","sec-04","inf-12","inf-08"]},"settings":{"live_seconds":60,"arrivals":[0,0,0,2,4,6],"penalty_per_second":8,"match_speed":0.6,"match_bonus":1.15}}</script>
+  <script type="application/json" id="opsData">{"version":1,"built_date":"2026-11-21","built_at":"2026-11-21 20:47 KST","responders":[{"id":"infra","name":"인프라·자동화","short":"인프라","spec":"infra","desc":"서버·배포·수집"},{"id":"sec","name":"보안·분석","short":"보안","spec":"sec","desc":"탐지·계정·악성코드"}],"alerts":[{"id":"inf-01","title":"결제 API 5xx 급증","service":"결제 게이트웨이","spec":"infra","sev":3,"base":9},{"id":"inf-02","title":"수집 배치 잡 지연","service":"데이터 파이프라인","spec":"infra","sev":2,"base":8},{"id":"inf-03","title":"로그 파이프라인 적체","service":"로그 수집기","spec":"infra","sev":2,"base":7},{"id":"inf-04","title":"CDN 캐시 미스 폭증","service":"정적 자원 CDN","spec":"infra","sev":1,"base":6},{"id":"inf-05","title":"DB 커넥션 풀 고갈","service":"주문 DB","spec":"infra","sev":3,"base":11},{"id":"inf-06","title":"TLS 인증서 만료 임박","service":"API 게이트웨이","spec":"infra","sev":2,"base":5},{"id":"inf-07","title":"CI 러너 디스크 92%","service":"빌드 러너","spec":"infra","sev":1,"base":7},{"id":"inf-08","title":"오토스케일링 미동작","service":"웹 프런트","spec":"infra","sev":3,"base":10},{"id":"inf-09","title":"알림 큐 적체","service":"메시지 큐","spec":"infra","sev":2,"base":8},{"id":"inf-10","title":"이미지 워커 중단","service":"미디어 워커","spec":"infra","sev":1,"base":6},{"id":"inf-11","title":"사내 DNS 응답 지연","service":"DNS 서버","spec":"infra","sev":2,"base":6},{"id":"inf-12","title":"야간 백업 누락","service":"백업 서버","spec":"infra","sev":1,"base":5},{"id":"sec-01","title":"WAF 차단 급증(SQLi)","service":"웹 방화벽","spec":"sec","sev":3,"base":8},{"id":"sec-02","title":"비정상 로그인 성공","service":"계정 인증","spec":"sec","sev":3,"base":10},{"id":"sec-03","title":"악성 파일 업로드 의심","service":"파일 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-04","title":"취약점 스캐너 대량 요청","service":"외부 노출 API","spec":"sec","sev":2,"base":7},{"id":"sec-05","title":"권한 상승 시도 탐지","service":"관리자 콘솔","spec":"sec","sev":3,"base":11},{"id":"sec-06","title":"피싱 메일 대량 유입","service":"메일 게이트웨이","spec":"sec","sev":2,"base":8},{"id":"sec-07","title":"EDR 격리 요청 미처리","service":"단말 관제","spec":"sec","sev":2,"base":7},{"id":"sec-08","title":"비인가 크롤링 증가","service":"공개 API","spec":"sec","sev":1,"base":6},{"id":"sec-09","title":"시크릿 키 노출 의심","service":"소스 저장소","spec":"sec","sev":3,"base":9},{"id":"sec-10","title":"IDS 이상 트래픽","service":"네트워크 센서","spec":"sec","sev":2,"base":8},{"id":"sec-11","title":"계정 잠금 폭주","service":"인증 서비스","spec":"sec","sev":1,"base":5},{"id":"sec-12","title":"감사 로그 누락","service":"감사 로그","spec":"sec","sev":1,"base":6}],"days":{"2026-11-21":["inf-03","sec-02","sec-06","sec-10","inf-09","inf-05"],"2026-11-22":["inf-09","inf-04","sec-07","sec-11","sec-10","inf-10"],"2026-11-23":["inf-08","sec-09","inf-11","sec-03","sec-12","inf-10"],"2026-11-24":["inf-01","inf-11","inf-03","sec-03","sec-01","sec-11"],"2026-11-25":["inf-01","sec-01","inf-08","inf-06","sec-09","sec-04"],"2026-11-26":["inf-08","sec-10","sec-11","inf-12","sec-02","inf-01"],"2026-11-27":["sec-09","sec-03","inf-01","sec-05","inf-05","inf-10"],"2026-11-28":["sec-11","inf-02","sec-07","inf-08","inf-11","sec-01"],"2026-11-29":["sec-03","inf-01","sec-07","sec-01","inf-07","inf-05"],"2026-11-30":["sec-12","sec-06","sec-05","inf-01","inf-10","inf-03"],"2026-12-01":["inf-12","sec-04","sec-12","inf-04","sec-03","inf-03"],"2026-12-02":["inf-05","sec-01","inf-03","sec-09","sec-03","inf-10"],"2026-12-03":["inf-01","sec-05","sec-11","inf-12","sec-12","inf-03"],"2026-12-04":["inf-01","sec-02","sec-06","sec-04","inf-12","inf-08"]},"settings":{"live_seconds":60,"arrivals":[0,0,0,2,4,6],"penalty_per_second":8,"match_speed":0.6,"match_bonus":1.15}}</script>
 
   <script>
   (function () {
@@ -913,6 +913,8 @@
       mode: 'live',
       phase: 'idle',          // idle | running | ended
       ticks: 0,
+      lastT: 0,
+      startedAt: 0,
       alerts: [],
       queues: { infra: [], sec: [] },
       active: 'infra',
@@ -968,7 +970,39 @@
       return null;
     }
 
-    function currentTime() { return round1(state.ticks * TICK); }
+    /* 경과 시간은 0.2초 콜백 횟수가 아니라 시작 시각(Date.now) 기준으로 계산한다.
+       탭이 백그라운드에서 스로틀된 뒤 돌아와도 남은 시간이 실제와 어긋나지 않는다. */
+    function currentTime() {
+      if (state.phase === 'ended') return LIVE_SECONDS;
+      if (state.phase !== 'running' || !state.startedAt) return 0;
+      return Math.min(LIVE_SECONDS, Math.max(0, (Date.now() - state.startedAt) / 1000));
+    }
+
+    /* 마지막으로 처리한 시점(lastT)에서 목표 시점까지 0.2초 간격 모델을 시간순으로 따라가며
+       경보 도착 → 처리 완료 → 60초 종료를 빠짐없이 일괄 반영한다. */
+    function advanceTo(target) {
+      var goal = Math.min(LIVE_SECONDS, Math.max(0, target));
+      var guard = 0;
+      while (state.lastT + 1e-9 < goal && guard < 600) {
+        guard += 1;
+        var next = Math.min(goal, round1(state.lastT + TICK));
+        state.lastT = next;
+        state.ticks = Math.round(next / TICK);
+        state.alerts.forEach(function (a) {
+          if (a.state === 'waiting' && next + 1e-9 >= a.arrival) a.state = 'ready';
+        });
+        RESPONDERS.forEach(function (r) { pump(r.id, next); });
+        if (next >= LIVE_SECONDS - 1e-9) { endLive(); return; }
+      }
+      if (goal >= LIVE_SECONDS - 1e-9) return;
+      render();
+    }
+
+    /* 탭 재개(visibilitychange·focus)나 다음 틱에서 밀린 시간을 한 번에 따라잡는다. */
+    function syncClock() {
+      if (state.mode !== 'live' || state.phase !== 'running') return;
+      advanceTo(currentTime());
+    }
 
     function setStatus(text) { el.opsStatus.textContent = text; }
 
@@ -1227,6 +1261,8 @@
       stopTimer();
       var ids = dailyIds(todayKey());
       state.ticks = 0;
+      state.lastT = 0;
+      state.startedAt = 0;
       state.points = 0;
       state.downtime = 0;
       state.result = null;
@@ -1315,6 +1351,8 @@
     function startLive() {
       state.phase = 'running';
       state.ticks = 0;
+      state.lastT = 0;
+      state.startedAt = Date.now();
       state.points = 0;
       state.downtime = 0;
       state.alerts.forEach(function (a) {
@@ -1326,17 +1364,7 @@
     }
 
     function tick() {
-      state.ticks += 1;
-      var t = currentTime();
-
-      state.alerts.forEach(function (a) {
-        if (a.state === 'waiting' && t + 1e-9 >= a.arrival) a.state = 'ready';
-      });
-
-      RESPONDERS.forEach(function (r) { pump(r.id, t); });
-
-      if (t >= LIVE_SECONDS - 1e-9) { endLive(); return; }
-      render();
+      advanceTo(currentTime());
     }
 
     function workingAlert(rid) {
@@ -1387,6 +1415,7 @@
       stopTimer();
       var t = Math.min(currentTime(), LIVE_SECONDS);
       state.ticks = Math.round(t / TICK);
+      state.phase = 'ended';
       var completed = 0;
       var missed = 0;
       state.alerts.forEach(function (a) {
@@ -1676,6 +1705,12 @@
       startLive();
     });
 
+    // 탭이 돌아오면 스로틀 동안 놓친 경보 도착·처리 완료·종료를 즉시 따라잡는다.
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) syncClock();
+    });
+    window.addEventListener('focus', syncClock);
+
     el.resetPlanBtn.addEventListener('click', function () {
       state.queues = { infra: [], sec: [] };
       state.alerts.forEach(function (a) {
@@ -1733,7 +1768,7 @@
     setStatus('교대 시작을 누르면 경보가 들어옵니다.');
   })();
   </script>
-<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><a class="ia-tab is-active" href="wargame.html" aria-current="page"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></a><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a></div><p class="ia-sheet-group">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link is-current" href="ops.html" aria-current="page"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a></div></div></section><script id="ia-shell-script">
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab is-active" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link is-current" href="ops.html" aria-current="page"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a></div></div></section><script id="ia-shell-script">
 (function () {
   'use strict';
 
@@ -1809,7 +1844,9 @@
   var sheet = document.getElementById('iaSheet');
   var backdrop = document.getElementById('iaSheetBackdrop');
   var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
   var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
   var hideTimer = null;
   var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
   var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
@@ -1826,14 +1863,28 @@
     }
   }
 
-  function openSheet() {
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
     if (!sheet || !backdrop || !allBtn) return;
     if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
     isOpen = true;
     sheet.hidden = false;
     backdrop.hidden = false;
     document.body.classList.add('ia-sheet-open');
     allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
     cancelOpenFrame();
     if (reduceMotion) {
       sheet.classList.add('is-open');
@@ -1849,7 +1900,11 @@
         });
       });
     }
-    if (sheetClose) sheetClose.focus();
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
   }
 
   function closeSheet() {
@@ -1860,18 +1915,30 @@
     backdrop.classList.remove('is-open');
     document.body.classList.remove('ia-sheet-open');
     allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
     hideTimer = window.setTimeout(function () {
       sheet.hidden = true;
       backdrop.hidden = true;
       hideTimer = null;
     }, reduceMotion ? 0 : 240);
-    allBtn.focus();
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
   }
 
   if (allBtn) {
     allBtn.addEventListener('click', function () {
       if (sheet && !sheet.hidden) closeSheet();
-      else openSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
     });
   }
   if (sheetClose) sheetClose.addEventListener('click', closeSheet);
