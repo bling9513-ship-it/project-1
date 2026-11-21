@@ -742,10 +742,13 @@ TEMPLATE = r"""<!DOCTYPE html>
 
       // 일간 집계 기준일(빌드한 날)과 지금(KST) 날짜는 따로 본다.
       // 08:00 갱신 전에 자정을 넘기면 어제 집계가 오늘 값처럼 보이는 문제를 막는다.
+      // 두 값은 refreshDayDependentUI()가 다시 계산하므로, 탭을 열어 둔 채 자정을 넘겨도
+      // 새로고침 없이 날짜·기준일·갱신 대기 표시가 따라온다.
       var buildDateKst = TODAY.build_date_kst || TODAY.today || '';
       var buildLabel = shortDate(buildDateKst) || buildDateKst;
-      var todayKst = kstDate();
-      var dayStale = !!buildDateKst && todayKst !== buildDateKst;
+      var builtAtText = TODAY.built_at || '';
+      var dayStale = false;
+      var dayToday = kstDate();
 
       function setChip(id, state, label) {
         var el = byId(id);
@@ -819,9 +822,10 @@ TEMPLATE = r"""<!DOCTYPE html>
       }
 
       /* ---------- 1) 오늘 마감 공고 ---------- */
-      (function renderJobs() {
+      function renderJobsCard() {
         var jobs = TODAY.jobs || {};
         var list = byId('jobsList');
+        list.innerHTML = '';
         byId('jobsCount').textContent = String(jobs.count || 0);
         byId('jobsUnit').textContent = dayStale ? '건 · ' + buildLabel + ' 기준' : '건';
         var sub = '이번 주 마감 ' + (jobs.week || 0) + '건 · 전체 활성 ' + (jobs.total || 0) + '건';
@@ -839,12 +843,13 @@ TEMPLATE = r"""<!DOCTYPE html>
           : '오늘 마감으로 잡힌 공고가 없습니다.';
         empty.hidden = items.length > 0;
         markDated('jobsState', jobs.updated_ms, (jobs.total || 0) > 0);
-      })();
+      }
 
       /* ---------- 2) KEV 우선 조치 ---------- */
-      (function renderCve() {
+      function renderCveCard() {
         var cve = TODAY.cve || {};
         var list = byId('cveList');
+        list.innerHTML = '';
         byId('cveCount').textContent = String(cve.kev || 0);
         var cveSub = '이번 주 조치 기한 ' + (cve.urgent || 0) + '건 · 새 등재 ' + (cve.fresh || 0) + '건';
         byId('cveSub').textContent = dayStale ? buildLabel + ' 기준 · ' + cveSub : cveSub;
@@ -856,7 +861,7 @@ TEMPLATE = r"""<!DOCTYPE html>
         });
         byId('cveEmpty').hidden = items.length > 0;
         markDated('cveState', cve.updated_ms, (cve.kev || 0) > 0 || (cve.items || []).length > 0);
-      })();
+      }
 
       /* ---------- 3) 오늘 복습 큐 (이 브라우저) ---------- */
       function readJson(key, fallback) {
@@ -912,9 +917,10 @@ TEMPLATE = r"""<!DOCTYPE html>
       renderStudy();
 
       /* ---------- 4) AI 브리핑 ---------- */
-      (function renderAi() {
+      function renderAiCard() {
         var ai = TODAY.ai || {};
         var list = byId('aiList');
+        list.innerHTML = '';
         byId('aiCount').textContent = String(ai.total || 0);
         var brief = (ai.briefing || '').trim();
         byId('aiBrief').textContent = brief || '오늘 브리핑 요약이 아직 없습니다.';
@@ -925,7 +931,7 @@ TEMPLATE = r"""<!DOCTYPE html>
           addItem(list, item.title, item.category);
         });
         markDated('aiState', ai.updated_ms, (ai.total || 0) > 0);
-      })();
+      }
 
       /* ---------- 5) 날씨·옷차림 ---------- */
       function bandLine(temp) {
@@ -998,9 +1004,10 @@ TEMPLATE = r"""<!DOCTYPE html>
       })();
 
       /* ---------- 6) 오늘의 게임 ---------- */
-      (function renderGames() {
+      function renderGamesCard() {
         var games = TODAY.games || {};
         var list = byId('gameList');
+        list.innerHTML = '';
         var entries = [];
         if (games.wargame && games.wargame.title) {
           entries.push({ kind: '워게임', title: games.wargame.title, href: 'wargame.html' });
@@ -1033,29 +1040,94 @@ TEMPLATE = r"""<!DOCTYPE html>
         } else if ((games.wargame && games.wargame.date && games.wargame.date !== games.today)
           || (games.clue && games.clue.date && games.clue.date !== games.today)) {
           setChip('gameState', 'stale', '이전 문제');
+        } else {
+          setChip('gameState', 'ok', '정상');
         }
-      })();
+      }
 
       /* ---------- 집계 기준일 안내 (자정 경과 · 08:00 갱신 전) ---------- */
-      (function renderDayNotice() {
-        if (!dayStale) return;
-        var shownToday = longDate(todayKst) || todayKst;
+      function renderDayNotice() {
+        // 히어로 날짜는 '지금(KST) 날짜'다. 자정을 넘기면 새로고침 없이 다음 날로 바뀐다.
         var heroDate = byId('todayDate');
-        if (heroDate) heroDate.textContent = shownToday + ' · KST';
+        if (heroDate) heroDate.textContent = (longDate(dayToday) || dayToday) + ' · KST';
         var heroUpdated = byId('heroUpdated');
         if (heroUpdated) {
-          heroUpdated.textContent = buildLabel + ' 기준 · 갱신 대기';
-          var meta = heroUpdated.closest('.update-meta');
-          if (meta) meta.classList.add('is-waiting');
+          heroUpdated.textContent = dayStale
+            ? buildLabel + ' 기준 · 갱신 대기'
+            : (builtAtText ? builtAtText + ' 기준' : '기준 시각 없음');
+          var meta = heroUpdated.closest ? heroUpdated.closest('.update-meta') : null;
+          if (meta) {
+            if (dayStale) meta.classList.add('is-waiting');
+            else meta.classList.remove('is-waiting');
+          }
         }
         var notice = byId('dayNotice');
-        if (notice) {
-          notice.textContent = shownToday + ' 화면을 열었지만 마지막 집계는 ' + buildLabel + ' 08:00입니다. '
-            + '오늘 몫은 다음 갱신(08:00) 뒤에 채워지므로, 마감·KEV·AI 브리핑 카드는 '
-            + buildLabel + ' 기준 · 갱신 대기 상태입니다.';
-          notice.hidden = false;
+        if (!notice) return;
+        if (!dayStale) {
+          notice.textContent = '';
+          notice.hidden = true;
+          return;
         }
-      })();
+        var shownToday = longDate(dayToday) || dayToday;
+        notice.textContent = shownToday + ' 화면을 열었지만 마지막 집계는 ' + buildLabel + ' 08:00입니다. '
+          + '오늘 몫은 다음 갱신(08:00) 뒤에 채워지므로, 마감·KEV·AI 브리핑 카드는 '
+          + buildLabel + ' 기준 · 갱신 대기 상태입니다.';
+        notice.hidden = false;
+      }
+
+      // 날짜에 기대는 표시를 한 번에 다시 그린다.
+      // 카드 내용은 매번 TODAY 원본 데이터에서 새로 만들기 때문에, 이미 '11/21 마감'으로
+      // 바뀐 글자를 다시 바꾸는 일 없이 몇 번을 불러도 같은 결과(멱등)가 된다.
+      function refreshDayDependentUI() {
+        dayToday = kstDate();
+        dayStale = !!buildDateKst && dayToday !== buildDateKst;
+        renderJobsCard();
+        renderCveCard();
+        renderAiCard();
+        renderGamesCard();
+        renderDayNotice();
+      }
+
+      // 다음 KST 자정까지 남은 밀리초. 기기 시간대와 상관없이 UTC+9로만 계산한다.
+      function msUntilKstMidnight() {
+        var now = Date.now();
+        var shifted = now + 9 * 3600000;
+        var d = new Date(shifted);
+        var next = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1, 0, 0, 0, 0);
+        return next - shifted;
+      }
+
+      var midnightTimer = null;
+      function scheduleMidnightTick() {
+        if (midnightTimer) { clearTimeout(midnightTimer); midnightTimer = null; }
+        var delay = msUntilKstMidnight();
+        if (!isFinite(delay) || delay < 0) delay = 0;
+        // 백그라운드 탭이 타이머를 조금 늦게 깨워도 자정 직후 값이 되도록 여유를 조금 둔다.
+        midnightTimer = setTimeout(function () {
+          midnightTimer = null;
+          refreshDayDependentUI();
+          scheduleMidnightTick();
+        }, Math.min(delay + 300, 2147483000));
+      }
+
+      // 잠들었다 깨어난 탭(모바일 백그라운드·bfcache)은 자정 타이머가 밀렸을 수 있어 다시 계산한다.
+      function refreshOnWake() {
+        refreshDayDependentUI();
+        scheduleMidnightTick();
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') refreshOnWake();
+      });
+      window.addEventListener('focus', refreshOnWake);
+      window.addEventListener('pageshow', refreshOnWake);
+      // 타이머가 조용히 죽은 환경을 위한 보조 감지: 30초마다 날짜가 바뀌었는지만 본다.
+      setInterval(function () {
+        if (kstDate() !== dayToday) refreshOnWake();
+      }, 30000);
+
+      /* ---------- 날짜 의존 표시 첫 렌더 ---------- */
+      refreshOnWake();
 
       /* ---------- 테마 ---------- */
       var themeToggle = byId('themeToggle');
