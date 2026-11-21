@@ -40,6 +40,21 @@ async function assertCveJump(page, cid, label) {
   assert.ok(parseInt(state.visible, 10) === state.cards && state.cards > 1, `${label}: list not restored`);
 }
 
+// PC는 레일, 모바일은 바텀 시트에서 심각도·악용 신호 필터를 고른다.
+async function setCveFilter(page, filter, width) {
+  if (width >= 1024) {
+    await page.click(`.segment-btn[data-filter="${filter}"]`);
+    await page.waitForTimeout(80);
+    return;
+  }
+  await page.click('#cveFilterOpenBtn');
+  await page.waitForTimeout(300);
+  await page.click(`.segment-btn[data-filter="${filter}"]`);
+  await page.waitForTimeout(120);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
+}
+
 // '이번 주 우선 조치' 행 → CVE 카드 이동 (검색·필터로 카드를 숨긴 상태에서도 동작해야 한다)
 async function checkCvePriorityNav(page, width) {
   await page.locator('.priority-list a.priority-row[data-cve]').first().waitFor({ state: 'attached' });
@@ -85,12 +100,12 @@ async function checkCvePriorityNav(page, width) {
   });
   for (const row of rows) {
     const hideFilter = row.severity === 'CRITICAL' ? 'high' : 'critical';
-    await page.click(`.segment-btn[data-filter="${hideFilter}"]`);
+    await setCveFilter(page, hideFilter, width);
     if (await page.locator('#cve-' + row.cid).count() === 0) {
       filtered = row;
       break;
     }
-    await page.click('.segment-btn[data-filter="all"]');
+    await setCveFilter(page, 'all', width);
   }
   assert.ok(filtered, 'could not hide any priority row target with a severity filter');
   await page.click(`.priority-row[data-cve="${filtered.cid}"]`);
@@ -609,9 +624,71 @@ async function checkMobileSheet(page, width, tag) {
   assert.equal(btnClosed.focusId, 'iaAllBtn', `${tag}: focus lost after close button`);
 }
 
+// ---- 빠른 열기→닫기 회귀: 같은 틱/같은 프레임에 Escape 해도 시트가 다시 열리지 않는다 ----
+async function checkSheetFastToggle(page, width, tag) {
+  const read = () => page.evaluate(() => {
+    const sheet = document.getElementById('iaSheet');
+    return {
+      hidden: sheet.hidden,
+      open: sheet.classList.contains('is-open'),
+      expanded: document.getElementById('iaAllBtn').getAttribute('aria-expanded'),
+      locked: document.body.classList.contains('ia-sheet-open'),
+    };
+  });
+
+  // 1) 연 직후 같은 틱에 Escape
+  await page.evaluate(() => {
+    document.getElementById('iaAllBtn').click();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  });
+  await page.waitForTimeout(380);
+  const sameTick = await read();
+  assert.equal(sameTick.hidden, true, `${tag}: fast close left the sheet mounted`);
+  assert.equal(sameTick.open, false, `${tag}: reserved frame re-opened the sheet (same tick)`);
+  assert.equal(sameTick.expanded, 'false', `${tag}: aria-expanded not false after a fast close`);
+  assert.equal(sameTick.locked, false, `${tag}: scroll lock stuck after a fast close`);
+
+  // 2) 다음 프레임에 Escape (예약된 rAF 가 아직 실행되기 전)
+  await page.evaluate(() => new Promise((resolve) => {
+    document.getElementById('iaAllBtn').click();
+    requestAnimationFrame(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      resolve();
+    });
+  }));
+  await page.waitForTimeout(380);
+  const sameFrame = await read();
+  assert.equal(sameFrame.open, false, `${tag}: reserved frame re-opened the sheet (same frame)`);
+  assert.equal(sameFrame.hidden, true, `${tag}: fast close left the sheet mounted (same frame)`);
+  assert.equal(sameFrame.expanded, 'false', `${tag}: aria-expanded not false after a same-frame close`);
+
+  // 3) 이후에는 정상적으로 열고 닫힌다
+  await page.click('#iaAllBtn');
+  await page.waitForTimeout(320);
+  const reopened = await read();
+  assert.equal(reopened.open, true, `${tag}: sheet broken after a fast close`);
+  assert.equal(reopened.expanded, 'true', `${tag}: aria-expanded not restored`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+  const reclosed = await read();
+  assert.equal(reclosed.hidden, true, `${tag}: sheet did not close normally afterwards`);
+}
+
 // ---- 채용공고: PC 필터 레일 / 모바일 필터 시트 · 배지 ----
 async function checkIndexLayout(page, width, tag) {
   const count = async () => parseInt((await page.textContent('#matchCount')).trim(), 10);
+
+  // KPI 단위('건')는 카드마다 한 번만 보인다(숫자에 '건'이 중복되지 않음).
+  const kpi = await page.evaluate(() => Array.from(document.querySelectorAll('.ia-kpi')).map((card) => ({
+    value: card.querySelector('.ia-kpi-value').textContent.trim(),
+    text: card.textContent.replace(/\s+/g, ' ').trim(),
+  })));
+  assert.equal(kpi.length, 4, `${tag}: expected 4 KPI cards, found ${kpi.length}`);
+  for (const card of kpi) {
+    assert.ok(/^\d+$/.test(card.value), `${tag}: KPI value carries extra text (${card.value}) in "${card.text}"`);
+    assert.equal((card.text.match(/건/g) || []).length, 1, `${tag}: unit 건 repeated in "${card.text}"`);
+  }
+
   if (width >= 1024) {
     const rail = await page.evaluate(() => {
       const el = document.getElementById('filterRail');
@@ -673,6 +750,292 @@ async function checkIndexLayout(page, width, tag) {
 
   await page.selectOption('#sortSelectMobile', 'company');
   assert.equal(await page.inputValue('#sortSelect'), 'company', `${tag}: mobile sort not synced to the rail`);
+}
+
+// ---- CVE: PC 필터 레일 / 모바일 필터 시트 · 배지 · 적용 ----
+async function checkCveFilters(page, width, tag) {
+  const count = async () => parseInt((await page.textContent('#visibleCount')).trim(), 10);
+  if (width >= 1024) {
+    const rail = await page.evaluate(() => {
+      const el = document.getElementById('cveRail');
+      return {
+        visible: el.getBoundingClientRect().width > 0 && getComputedStyle(el).visibility !== 'hidden',
+        position: getComputedStyle(el).position,
+        aside: el.tagName === 'ASIDE',
+        searchInside: !!document.getElementById('searchInput').closest('#cveRail'),
+      };
+    });
+    assert.equal(rail.visible, true, `${tag}: filter rail missing`);
+    assert.equal(rail.aside, true, `${tag}: filter rail is not an aside`);
+    assert.equal(rail.position, 'sticky', `${tag}: filter rail is not a sticky side rail`);
+    assert.equal(rail.searchInside, true, `${tag}: desktop search must live in the rail`);
+
+    const total = await count();
+    await page.click('.segment-btn[data-filter="critical"]');
+    await page.waitForTimeout(100);
+    const critical = await count();
+    assert.ok(critical > 0 && critical < total, `${tag}: severity filter did not narrow (${critical}/${total})`);
+    await page.click('#sourceNav .filter-pill[data-src="cisa"]');
+    await page.waitForTimeout(100);
+    assert.ok(await count() <= critical, `${tag}: source filter widened the feed`);
+    assert.equal((await page.textContent('#cveFilterBadge')).trim(), '2', `${tag}: filter badge`);
+    await page.click('#sourceNav .filter-pill[data-src="all"]');
+    await page.click('.segment-btn[data-filter="all"]');
+    await page.waitForTimeout(100);
+    assert.equal(await count(), total, `${tag}: filters did not reset`);
+    assert.equal((await page.textContent('#cveFilterBadge')).trim(), '0', `${tag}: badge after reset`);
+
+    await page.fill('#searchInput', 'zzzz-no-such-cve');
+    await page.waitForFunction(() => document.getElementById('visibleCount').textContent.trim() === '0',
+      null, { timeout: 5000 });
+    await page.click('#resetFiltersMeta');
+    await page.waitForFunction((t) => Number(document.getElementById('visibleCount').textContent.trim()) === t,
+      total, { timeout: 5000 });
+    return;
+  }
+
+  const railState = () => page.evaluate(() => {
+    const rail = document.getElementById('cveRail');
+    const btn = document.getElementById('cveFilterOpenBtn');
+    return {
+      open: rail.classList.contains('is-open'),
+      focusInside: rail.contains(document.activeElement),
+      focusId: document.activeElement ? document.activeElement.id : null,
+      locked: document.body.classList.contains('cve-filter-open'),
+      expanded: btn.getAttribute('aria-expanded'),
+      badge: document.getElementById('cveFilterBadge').textContent.trim(),
+      searchOutside: !!document.getElementById('searchInput').closest('.cve-mobile-controls'),
+    };
+  });
+
+  assert.equal((await railState()).searchOutside, true, `${tag}: mobile search must sit above the list`);
+  const total = await count();
+  await page.click('#cveFilterOpenBtn');
+  await page.waitForTimeout(320);
+  const opened = await railState();
+  assert.equal(opened.open, true, `${tag}: filter sheet did not open`);
+  assert.equal(opened.focusInside, true, `${tag}: focus did not move into the filter sheet`);
+  assert.equal(opened.locked, true, `${tag}: filter sheet scroll lock`);
+  assert.equal(opened.expanded, 'true', `${tag}: 필터 button aria-expanded`);
+
+  await page.click('.segment-btn[data-filter="kev"]');
+  await page.waitForTimeout(120);
+  assert.equal((await railState()).badge, '1', `${tag}: filter badge after a severity pick`);
+  assert.ok(await count() < total, `${tag}: KEV filter did not narrow the feed`);
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+  const closed = await railState();
+  assert.equal(closed.open, false, `${tag}: Escape did not close the filter sheet`);
+  assert.equal(closed.focusId, 'cveFilterOpenBtn', `${tag}: focus did not return to 필터`);
+  assert.equal(closed.locked, false, `${tag}: filter scroll lock not released`);
+
+  // 시트를 열고 바로 같은 틱에 Escape 해도 다시 열리지 않는다(예약 rAF 경합)
+  await page.evaluate(() => {
+    document.getElementById('cveFilterOpenBtn').click();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  });
+  await page.waitForTimeout(320);
+  const fast = await railState();
+  assert.equal(fast.open, false, `${tag}: filter sheet reopened after a same-tick close`);
+  assert.equal(fast.locked, false, `${tag}: scroll lock stuck after a same-tick close`);
+
+  await page.click('#resetFiltersMeta');
+  await page.waitForTimeout(120);
+  assert.equal(await count(), total, `${tag}: reset did not restore the list`);
+}
+
+// ---- AI: PC 필터 레일 / 모바일 필터 시트 · 배지 ----
+async function checkAiFilters(page, width, tag) {
+  const count = async () => parseInt((await page.textContent('#visibleCount')).trim(), 10);
+  if (width >= 1024) {
+    const rail = await page.evaluate(() => {
+      const el = document.getElementById('aiRail');
+      return {
+        visible: el.getBoundingClientRect().width > 0 && getComputedStyle(el).visibility !== 'hidden',
+        position: getComputedStyle(el).position,
+        aside: el.tagName === 'ASIDE',
+        searchInside: !!document.getElementById('searchInput').closest('#aiRail'),
+        briefOpen: document.getElementById('aiBrief').open,
+      };
+    });
+    assert.equal(rail.visible, true, `${tag}: filter rail missing`);
+    assert.equal(rail.aside, true, `${tag}: filter rail is not an aside`);
+    assert.equal(rail.position, 'sticky', `${tag}: filter rail is not a sticky side rail`);
+    assert.equal(rail.searchInside, true, `${tag}: desktop search must live in the rail`);
+    assert.equal(rail.briefOpen, true, `${tag}: desktop briefing must start expanded`);
+
+    const total = await count();
+    await page.click('#categoryNav .segment-btn[data-cat="featured"]');
+    await page.waitForTimeout(120);
+    const featured = await count();
+    assert.ok(featured > 0 && featured < total, `${tag}: featured filter did not narrow (${featured}/${total})`);
+    assert.equal((await page.textContent('#aiFilterBadge')).trim(), '1', `${tag}: filter badge`);
+
+    const firstSource = await page.evaluate(() => {
+      const pill = Array.from(document.querySelectorAll('#sourceNav .filter-pill')).find(b => b.dataset.src !== 'all');
+      return pill ? pill.dataset.src : null;
+    });
+    assert.ok(firstSource, `${tag}: no source pills`);
+    await page.click(`#sourceNav .filter-pill[data-src="${firstSource}"]`);
+    await page.waitForTimeout(120);
+    assert.ok(await count() <= featured, `${tag}: source filter did not narrow`);
+
+    await page.click('#resetFiltersMeta');
+    await page.waitForTimeout(120);
+    assert.equal(await count(), total, `${tag}: reset did not restore the list`);
+    assert.equal((await page.textContent('#aiFilterBadge')).trim(), '0', `${tag}: badge after reset`);
+    return;
+  }
+
+  const railState = () => page.evaluate(() => {
+    const rail = document.getElementById('aiRail');
+    const btn = document.getElementById('aiFilterOpenBtn');
+    return {
+      open: rail.classList.contains('is-open'),
+      focusInside: rail.contains(document.activeElement),
+      focusId: document.activeElement ? document.activeElement.id : null,
+      locked: document.body.classList.contains('ai-filter-open'),
+      expanded: btn.getAttribute('aria-expanded'),
+      badge: document.getElementById('aiFilterBadge').textContent.trim(),
+      searchOutside: !!document.getElementById('searchInput').closest('.ai-mobile-controls'),
+      briefOpen: document.getElementById('aiBrief').open,
+    };
+  });
+
+  assert.equal((await railState()).searchOutside, true, `${tag}: mobile search must sit above the list`);
+  assert.equal((await railState()).briefOpen, false, `${tag}: mobile briefing must start collapsed`);
+  const total = await count();
+  await page.click('#aiFilterOpenBtn');
+  await page.waitForTimeout(320);
+  const opened = await railState();
+  assert.equal(opened.open, true, `${tag}: filter sheet did not open`);
+  assert.equal(opened.focusInside, true, `${tag}: focus did not move into the filter sheet`);
+  assert.equal(opened.locked, true, `${tag}: filter sheet scroll lock`);
+
+  await page.click('#categoryNav .segment-btn[data-cat="featured"]');
+  await page.waitForTimeout(120);
+  assert.equal((await railState()).badge, '1', `${tag}: filter badge`);
+  assert.ok(await count() < total, `${tag}: featured filter did not narrow`);
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+  const closed = await railState();
+  assert.equal(closed.open, false, `${tag}: Escape did not close the filter sheet`);
+  assert.equal(closed.focusId, 'aiFilterOpenBtn', `${tag}: focus did not return to 필터`);
+  assert.equal(closed.locked, false, `${tag}: filter scroll lock not released`);
+
+  await page.click('#resetFiltersMeta');
+  await page.waitForTimeout(120);
+  assert.equal(await count(), total, `${tag}: reset did not restore the list`);
+}
+
+// ---- 시험 공부: 좌측 탐색 레일 / 모바일 칩·드로어 · 풀이·북마크·진행률 ----
+async function checkStudyHub(page, width, tag) {
+  const placement = await page.evaluate(() => {
+    const mode = document.getElementById('modeNavGrid');
+    const subj = document.getElementById('subjPills');
+    const rail = document.getElementById('studyRail');
+    return {
+      railAside: rail.tagName === 'ASIDE',
+      railPosition: getComputedStyle(rail).position,
+      modeInRail: !!mode.closest('#studyRail'),
+      modeInMobile: !!mode.closest('#mobileModeSlot'),
+      subjInRail: !!subj.closest('#studyRail'),
+      subjInMobile: !!subj.closest('#mobileSubjSlot'),
+      examInRail: !!document.getElementById('examBtnGroup').closest('#studyRail'),
+    };
+  });
+  assert.equal(placement.railAside, true, `${tag}: learning rail is not an aside`);
+  assert.equal(placement.examInRail, true, `${tag}: exam picker must live in the rail`);
+  if (width >= 1024) {
+    assert.equal(placement.railPosition, 'sticky', `${tag}: learning rail is not sticky`);
+    assert.equal(placement.modeInRail, true, `${tag}: mode switch must live in the rail on desktop`);
+    assert.equal(placement.subjInRail, true, `${tag}: subject chips must live in the rail on desktop`);
+  } else {
+    assert.equal(placement.modeInMobile, true, `${tag}: mode chips must sit at the top on mobile`);
+    assert.equal(placement.subjInMobile, true, `${tag}: subject chips must sit at the top on mobile`);
+  }
+
+  // 문제 풀이: 선택 → 즉시 채점·해설·진행률 반영
+  const before = await page.evaluate(() => ({
+    solved: Number(document.getElementById('topSolved').textContent),
+    total: Number(document.getElementById('topTotal').textContent),
+    fill: document.getElementById('progressFill').style.width,
+    explained: document.querySelectorAll('#questionsList .exp-box.show').length,
+  }));
+  assert.ok(before.total > 0, `${tag}: no questions rendered`);
+  const target = await page.evaluate(() => {
+    const row = document.querySelector('#questionsList .q-card .choice-row[data-action="select-choice"]');
+    return { id: row.getAttribute('data-id'), choice: row.getAttribute('data-choice') };
+  });
+  await page.click(`.choice-row[data-id="${target.id}"][data-choice="${target.choice}"]`);
+  await page.waitForTimeout(150);
+  const after = await page.evaluate(() => ({
+    solved: Number(document.getElementById('topSolved').textContent),
+    explained: document.querySelectorAll('#questionsList .exp-box.show').length,
+    fill: document.getElementById('progressFill').style.width,
+    header: document.querySelectorAll('#questionsList .exp-header').length,
+  }));
+  assert.equal(after.solved, before.solved + 1, `${tag}: solved counter did not increase`);
+  assert.ok(after.explained >= before.explained + 1, `${tag}: explanation not revealed after answering`);
+  assert.notEqual(after.fill, before.fill, `${tag}: progress bar did not move`);
+
+  // 북마크: 카드 표시 + localStorage 보관
+  await page.click('#questionsList .q-card .q-mark');
+  await page.waitForTimeout(120);
+  const marked = await page.evaluate(() => ({
+    on: document.querySelectorAll('#questionsList .q-mark.is-on').length,
+    stored: Object.keys(JSON.parse(localStorage.getItem('study_bookmarks_v1') || '{}')).length,
+  }));
+  assert.ok(marked.on >= 1, `${tag}: bookmark state not shown on the card`);
+  assert.ok(marked.stored >= 1, `${tag}: bookmark not saved`);
+
+  if (width >= 1024) return;
+
+  const railState = () => page.evaluate(() => {
+    const rail = document.getElementById('studyRail');
+    const btn = document.getElementById('studyFilterOpenBtn');
+    return {
+      open: rail.classList.contains('is-open'),
+      locked: document.body.classList.contains('study-rail-open'),
+      expanded: btn.getAttribute('aria-expanded'),
+      focusInside: rail.contains(document.activeElement),
+      focusId: document.activeElement ? document.activeElement.id : null,
+      badge: document.getElementById('studyFilterBadge').textContent.trim(),
+    };
+  });
+
+  await page.click('#studyFilterOpenBtn');
+  await page.waitForTimeout(320);
+  const opened = await railState();
+  assert.equal(opened.open, true, `${tag}: drawer did not open`);
+  assert.equal(opened.locked, true, `${tag}: drawer scroll lock`);
+  assert.equal(opened.expanded, 'true', `${tag}: 탐색 button aria-expanded`);
+  assert.equal(opened.focusInside, true, `${tag}: focus did not move into the drawer`);
+
+  // 회차 선택 → 드로어가 닫히고 바로 문제가 바뀐다
+  const examCount = await page.evaluate(() => document.querySelectorAll('#examBtnGroup .exam-btn').length);
+  assert.ok(examCount >= 2, `${tag}: exam buttons missing`);
+  await page.click('#examBtnGroup .exam-btn:nth-child(2)');
+  await page.waitForTimeout(360);
+  const picked = await railState();
+  assert.equal(picked.open, false, `${tag}: picking an exam did not close the drawer`);
+  assert.equal(picked.locked, false, `${tag}: drawer scroll lock not released`);
+  assert.equal(picked.focusId, 'studyFilterOpenBtn', `${tag}: focus did not return to 탐색`);
+  assert.ok(Number(picked.badge) >= 1, `${tag}: filter badge ${picked.badge}`);
+
+  // 오답만 보기 → 배지 증가, Escape 로 닫기
+  await page.click('#studyFilterOpenBtn');
+  await page.waitForTimeout(320);
+  await page.click('#btnWrongOnly');
+  await page.waitForTimeout(120);
+  assert.ok(Number((await railState()).badge) >= 2, `${tag}: wrong-only did not count on the badge`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+  const closed = await railState();
+  assert.equal(closed.open, false, `${tag}: Escape did not close the drawer`);
+  assert.equal(closed.focusId, 'studyFilterOpenBtn', `${tag}: focus did not return to 탐색`);
 }
 
 // ---- 하단 탭 바가 페이지 마지막 콘텐츠를 가리지 않는지 ----
@@ -769,11 +1132,15 @@ async function checkPage(context, base, name, width) {
     await checkShellLayout(page, width, name);
     if (name === 'index') await checkIndexLayout(page, width, `index ${width}px`);
     if (name === 'ai' && width <= 768) await checkMobileSheet(page, width, `sheet ai ${width}px`);
+    if (name === 'ai' && width <= 768) await checkSheetFastToggle(page, width, `sheet fast ai ${width}px`);
 
     const cards = { index: '#jobsContainer .job-card, #jobsContainer .list-row', ai: '#aiGrid .ai-card', cve: '#cveList .cve-card' };
     if (cards[name]) await page.locator(cards[name]).first().waitFor({ state: 'attached' });
 
     if (name === 'cve') await checkCvePriorityNav(page, width);
+    if (name === 'cve') await checkCveFilters(page, width, `cve filter ${width}px`);
+    if (name === 'ai') await checkAiFilters(page, width, `ai filter ${width}px`);
+    if (name === 'study') await checkStudyHub(page, width, `study ${width}px`);
     if (name === 'clue') await checkClueGame(page, base, width);
     if (name === 'mission') await checkMissionGame(page, width);
     if (name === 'chart') await checkChartGame(page, base, width);
@@ -831,6 +1198,8 @@ async function main() {
           await checkBottomBar(page, width, name);
           if (name === 'index') await checkIndexLayout(page, width, `index ${width}px`);
           if (name === 'ai') await checkMobileSheet(page, width, `sheet ai ${width}px`);
+          if (width === 768 && name === 'ai') await checkSheetFastToggle(page, width, `sheet fast ai ${width}px`);
+          if (width === 768 && name === 'cve') await checkCveFilters(page, width, `cve filter ${width}px`);
         } finally {
           await page.close();
         }

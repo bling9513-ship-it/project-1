@@ -994,6 +994,175 @@ CSS = """
       line-height: 1.8;
     }
 
+    /* ===== 2차 UI/UX: PC 좌측 필터 레일 · 모바일 필터 바텀 시트 ===== */
+    .cve-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .cve-overview-copy { min-width: 0; }
+    .cve-overview .hero-pill { margin-bottom: 10px; }
+    .cve-overview .hero-title { margin-bottom: 6px; }
+    .cve-overview .hero-desc { margin-bottom: 0; }
+
+    .cve-kpis { display: flex; gap: 8px; flex: 0 0 auto; }
+    .cve-kpi {
+      min-width: 104px;
+      padding: 9px 12px 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .cve-kpi-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; }
+    .cve-kpi-value { font-size: 19px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .cve-kpi-unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-left: 2px; }
+    .cve-kpi.is-urgent .cve-kpi-value { color: #dc2626; }
+
+    .cve-layout {
+      display: grid;
+      grid-template-columns: 268px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .cve-main { min-width: 0; }
+
+    .cve-rail {
+      position: sticky;
+      top: 76px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+    }
+    .cve-rail-head { display: none; }
+    .cve-rail-section { display: flex; flex-direction: column; gap: 8px; }
+    .cve-rail-section[hidden] { display: none; }
+    .cve-rail-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; }
+    .cve-rail .segmented-control { flex-wrap: wrap; overflow: visible; gap: 4px; }
+    .cve-rail .segment-btn { padding: 6px 9px; font-size: 12px; border-radius: 8px; }
+    .cve-rail .segment-btn .count { font-size: 10px; padding: 1px 5px; }
+    .cve-rail .filter-pills-scroll { flex-wrap: wrap; overflow: visible; }
+    .cve-rail .filter-pill { padding: 5px 9px; font-size: 11.5px; }
+    .filter-pills-scroll {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .filter-pills-scroll::-webkit-scrollbar { display: none; }
+    .filter-pill {
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--bg-page);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+    .filter-pill .count { margin-left: 4px; font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
+    .filter-pill:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .filter-pill.active {
+      background: var(--accent-subtle);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+    .filter-pill.active .count { color: var(--accent-primary); }
+    .cve-rail .search-input { padding: 9px 32px 9px 34px; font-size: 13px; }
+    .cve-rail .search-icon { left: 11px; }
+    .cve-rail .clear-search-btn { right: 8px; }
+    .cve-rail .sort-select { width: 100%; }
+    .cve-rail-foot { display: flex; flex-direction: column; gap: 6px; padding-top: 2px; }
+
+    .cve-apply-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease;
+    }
+    .cve-apply-btn:active { transform: scale(0.98); }
+    .cve-reset-link {
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px;
+      cursor: pointer;
+    }
+    .cve-reset-link:hover { color: var(--text-primary); }
+
+    .cve-mobile-controls { display: none; }
+    .cve-mobile-search { flex: 1 1 auto; min-width: 0; }
+    .cve-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease;
+    }
+    .cve-filter-btn:active { transform: scale(0.98); }
+    .cve-filter-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .cve-filter-badge.is-zero { display: none; }
+    .cve-backdrop { display: none; }
+    .cve-rail-close { display: none; }
+    .briefing-more { display: none; }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1300px; }
+    }
+
     /* Mobile Responsive */
     @media (max-width: 640px) {
       .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
@@ -1069,6 +1238,105 @@ CSS = """
       .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
+    }
+
+    /* ===== 2차 UI/UX: 태블릿·모바일 — 필터는 바텀 시트로, 첫 화면은 우선 조치·목록 ===== */
+    @media (max-width: 1023px) {
+      .cve-overview { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 14px; }
+      .cve-overview .hero-desc { display: none; }
+      .cve-kpis { gap: 6px; overflow-x: auto; scrollbar-width: none; }
+      .cve-kpis::-webkit-scrollbar { display: none; }
+      .cve-kpi { flex: 1 1 0; min-width: 0; padding: 8px 10px; }
+      .cve-kpi-value { font-size: 16px; }
+      .cve-kpi-label { font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; }
+
+      .cve-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .cve-mobile-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+      .cve-mobile-controls .sort-select { flex: 0 0 auto; max-width: 112px; }
+
+      .cve-rail {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        z-index: 90;
+        max-height: 86vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+        padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+        box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 240ms;
+      }
+      .cve-rail.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+      }
+      .cve-rail-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 4px; }
+      .cve-rail-head strong { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+      .cve-rail-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        background: var(--bg-page);
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+      .cve-rail-close svg { width: 16px; height: 16px; }
+      .cve-rail .segmented-control { flex-wrap: nowrap; overflow-x: auto; }
+      .cve-rail .segment-btn { flex: 0 0 auto; }
+      .cve-rail .filter-pills-scroll { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+      .cve-rail .filter-pill { flex: 0 0 auto; }
+      .cve-rail .search-input { font-size: 14px; padding: 10px 36px 10px 36px; }
+      .cve-rail-foot { display: flex; }
+      .cve-apply-btn { display: inline-flex; }
+
+      .cve-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 89;
+        background: rgba(15, 23, 42, 0.44);
+        opacity: 0;
+        transition: opacity 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .cve-backdrop.is-open { opacity: 1; }
+      .cve-backdrop[hidden] { display: none; }
+      body.cve-filter-open { overflow: hidden; }
+
+      /* 우선 조치 행: CVE ID 와 마감 배지를 한 줄에, 제목은 그 아래 전체 폭으로 */
+      .priority-row { flex-wrap: wrap; gap: 4px 8px; }
+      .priority-row .row-title { order: 3; flex: 1 1 100%; }
+      .priority-row .due { order: 2; margin-left: auto; }
+      .priority-row .row-go { display: none; }
+      .briefing-text { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+      .briefing-text.is-expanded { display: block; -webkit-line-clamp: unset; overflow: visible; }
+      .briefing-more {
+        display: inline-flex;
+        align-items: center;
+        margin: -6px 0 10px;
+        padding: 2px 0;
+        border: 0;
+        background: transparent;
+        color: var(--accent-primary);
+        font-family: inherit;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+      }    }
+
+    @media (max-width: 380px) {
+      .briefing-head { flex-wrap: nowrap; gap: 8px; }
+      .briefing-title { white-space: nowrap; }
+      .briefing-time { display: none; }
     }
 """
 
@@ -1172,88 +1440,160 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <main class="container">
 
-    <!-- Hero -->
-    <section class="hero">
-      <span class="hero-pill">VULNERABILITY REPORT</span>
-      <h1 class="hero-title">CVE 취약점 리포트</h1>
-      <p class="hero-desc">CISA가 실제 공격 악용을 확인한 KEV 목록과 최신 CVE를 함께 모읍니다. CVSS·EPSS 위험도, 영향 제품과 버전, 한국어 원인 분석, 바로 적용할 수 있는 조치 방안, 공개 PoC 경로를 한 카드에서 확인하고 보고용 마크다운으로 복사할 수 있습니다.</p>
-      <div class="hero-stats">
-        <span class="stat-chip">수집 CVE <strong>__TOTAL__건</strong></span>
-        <span class="stat-chip">Critical <strong>__CRITICAL__건</strong></span>
-        <span class="stat-chip">High <strong>__HIGH__건</strong></span>
-        <span class="stat-chip">CISA KEV <strong>__KEV__건</strong></span>
-        <span class="stat-chip">공개 PoC <strong>__POC__건</strong></span>
+    <!-- Overview · KPI -->
+    <section class="cve-overview">
+      <div class="cve-overview-copy">
+        <span class="hero-pill">VULNERABILITY REPORT</span>
+        <h1 class="hero-title">CVE 취약점 리포트</h1>
+        <p class="hero-desc">CISA가 실제 공격 악용을 확인한 KEV 목록과 최신 CVE를 함께 모읍니다. CVSS·EPSS 위험도, 영향 제품, 한국어 원인 분석, 바로 적용할 수 있는 조치 방안, 공개 PoC 경로를 한 카드에서 확인하고 보고용 마크다운으로 복사할 수 있습니다.</p>
+      </div>
+      <div class="cve-kpis">
+        <div class="cve-kpi">
+          <span class="cve-kpi-label">전체 CVE</span>
+          <strong class="cve-kpi-value">__TOTAL__</strong><span class="cve-kpi-unit">건</span>
+        </div>
+        <div class="cve-kpi is-urgent">
+          <span class="cve-kpi-label">긴급 · KEV</span>
+          <strong class="cve-kpi-value">__KEV__</strong><span class="cve-kpi-unit">건</span>
+        </div>
+        <div class="cve-kpi">
+          <span class="cve-kpi-label">우선 조치</span>
+          <strong class="cve-kpi-value">__PRIORITY_COUNT__</strong><span class="cve-kpi-unit">건</span>
+        </div>
+        <div class="cve-kpi">
+          <span class="cve-kpi-label">공개 PoC</span>
+          <strong class="cve-kpi-value">__POC__</strong><span class="cve-kpi-unit">건</span>
+        </div>
       </div>
     </section>
 
-    <!-- KEV · EPSS 지표 안내 (접이식) -->
-    <section class="glossary" aria-label="KEV·EPSS 지표 안내">
-      <details class="glossary-box">
-        <summary class="glossary-summary">KEV · EPSS 지표 읽는 법<span class="glossary-hint">점수 해석 기준</span></summary>
-        <div class="glossary-body">
-          <div class="glossary-item">
-            <div class="glossary-term">CISA KEV<span>Known Exploited Vulnerabilities</span></div>
-            <p>미국 CISA가 <b>실제 공격에 악용된 것이 확인된</b> 취약점 목록입니다. KEV 배지는 이론적인 위험이 아니라 이미 공격에 쓰이고 있다는 뜻입니다. 등재 항목의 조치 기한은 <b>CISA BOD 22-01에 따른 미국 연방 민간 행정부 기관 대상 의무 기한</b>이며, 일반 기업·기관에는 법적 의무가 아니라 패치 우선순위를 정할 때 참고하는 지표입니다. 노출된 자산이 있다면 그 기한을 목표 시점으로 삼아 패치·완화 조치를 서두르는 것이 좋습니다.</p>
-          </div>
-          <div class="glossary-item">
-            <div class="glossary-term">EPSS<span>Exploit Prediction Scoring System · FIRST</span></div>
-            <p>공개된 취약점이 <b>향후 30일 안에 실제로 악용될 확률</b>을 0~100%로 추정한 점수입니다(매일 갱신). 점수는 확률일 뿐이라 “몇 %부터 위험하다”는 공통 임계값은 없습니다. FIRST도 각 조직이 자산 중요도·인터넷 노출·위험 허용도에 맞춰 조치 기준을 정하도록 안내합니다. 아래 10% 이상·1% 미만 같은 구간은 운영 예시일 뿐 절대 기준이 아니므로, KEV·CVSS·인터넷 노출 여부와 함께 판단하세요. ‘악용 위험 상위 N%’는 같은 날 전체 CVE 중 이 항목의 추정 순위를 뜻합니다.</p>
-          </div>
-          <div class="glossary-item">
-            <div class="glossary-term">CVSS<span>Common Vulnerability Scoring System</span></div>
-            <p>취약점 자체의 심각도를 0~10으로 나타낸 점수입니다. 9.0 이상이 Critical(치명적), 7.0~8.9가 High(높음)입니다. 악용 여부(KEV)나 악용 확률(EPSS)과는 다른 축이므로 두 지표와 함께 읽습니다.</p>
+    <div class="cve-layout">
+      <!-- 필터: PC 좌측 고정 레일 / 모바일 바텀 시트 -->
+      <aside class="cve-rail" id="cveRail" aria-label="CVE 필터">
+        <div class="cve-rail-head">
+          <strong>필터</strong>
+          <button type="button" class="cve-rail-close" id="cveRailClose" aria-label="필터 닫기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+
+        <div class="cve-rail-section" id="cveRailSearchSection">
+          <p class="cve-rail-label">검색</p>
+          <div class="search-box" id="cveSearchBox">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="CVE ID, 별칭, 제품명, 키워드 검색">
+            <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
           </div>
         </div>
-      </details>
-    </section>
 
-    <!-- 우선 조치 -->
-    <section class="briefing">
-      <div class="briefing-head">
-        <div class="briefing-title"><span class="bar"></span>이번 주 우선 조치</div>
-        <span class="briefing-time">__COLLECTED_AT__ 수집</span>
-      </div>
-      <p class="briefing-text">__BRIEFING__</p>
-      <p class="briefing-hint">항목을 누르거나 Tab으로 옮겨 Enter를 누르면 해당 CVE 카드로 이동합니다.</p>
-      <div class="priority-list">
-        __PRIORITY_ROWS__
-      </div>
-    </section>
+        <div class="cve-rail-section">
+          <p class="cve-rail-label">심각도</p>
+          <div class="segmented-control" id="filterNav">
+            <button class="segment-btn active" data-filter="all">전체 <span class="count">__TOTAL__</span></button>
+            <button class="segment-btn" data-filter="critical">Critical <span class="count">__CRITICAL__</span></button>
+            <button class="segment-btn" data-filter="high">High <span class="count">__HIGH__</span></button>
+            <button class="segment-btn" data-filter="medium">Medium <span class="count">__MEDIUM__</span></button>
+          </div>
+        </div>
 
-    <!-- Toolbar -->
-    <section class="toolbar">
-      <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="CVE ID, 별칭, 제품명, 키워드로 검색 (예: Java4Shell, CVE-2026-114938, PAN-OS)">
-        <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
-      </div>
+        <div class="cve-rail-section">
+          <p class="cve-rail-label">악용 신호</p>
+          <div class="segmented-control" id="signalNav">
+            <button class="segment-btn" data-filter="kev">KEV 실제 악용 <span class="count">__KEV__</span></button>
+            <button class="segment-btn" data-filter="poc">PoC 공개 <span class="count">__POC__</span></button>
+            <button class="segment-btn" data-filter="alert">경보·보도 <span class="count">__ALERT__</span></button>
+          </div>
+        </div>
 
-      <div class="segmented-control" id="filterNav">
-        <button class="segment-btn active" data-filter="all">전체 <span class="count">__TOTAL__</span></button>
-        <button class="segment-btn" data-filter="kev">KEV 실제 악용 <span class="count">__KEV__</span></button>
-        <button class="segment-btn" data-filter="poc">PoC 공개 <span class="count">__POC__</span></button>
-        <button class="segment-btn" data-filter="critical">Critical <span class="count">__CRITICAL__</span></button>
-        <button class="segment-btn" data-filter="high">High <span class="count">__HIGH__</span></button>
-      </div>
-    </section>
+        <div class="cve-rail-section">
+          <p class="cve-rail-label">출처</p>
+          <div class="filter-pills-scroll" id="sourceNav">
+            <button class="filter-pill active" data-src="all">전체</button>
+            <button class="filter-pill" data-src="cisa">CISA <span class="count">__SRC_CISA__</span></button>
+            <button class="filter-pill" data-src="kisa">KISA <span class="count">__SRC_KISA__</span></button>
+            <button class="filter-pill" data-src="vendor">보안기업 <span class="count">__SRC_VENDOR__</span></button>
+          </div>
+        </div>
 
-    <div class="result-meta">
-      <span class="result-count"><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
-      <div class="meta-tools">
-        <select class="sort-select" id="sortSelect" aria-label="정렬 기준">
-          <option value="published" selected>최신 공개순</option>
-          <option value="cvss">위험도 높은순</option>
-          <option value="kev">KEV 실제 악용순</option>
-        </select>
-        <button class="reset-btn" id="resetFilters">필터 초기화</button>
-      </div>
+        <div class="cve-rail-section">
+          <p class="cve-rail-label">정렬</p>
+          <select class="sort-select" id="sortSelect" aria-label="정렬 기준">
+            <option value="published" selected>최신 공개순</option>
+            <option value="cvss">위험도 높은순</option>
+            <option value="kev">KEV 실제 악용순</option>
+          </select>
+        </div>
+
+        <div class="cve-rail-foot">
+          <button type="button" class="cve-apply-btn" id="cveApplyBtn">결과 보기 <span id="cveApplyCount"></span></button>
+          <button type="button" class="cve-reset-link" id="resetFilters">필터 초기화</button>
+        </div>
+      </aside>
+
+      <section class="cve-main">
+        <div class="cve-mobile-controls">
+          <div class="cve-mobile-search" id="cveMobileSearchSlot"></div>
+          <select class="sort-select" id="cveSortMobile" aria-label="정렬 기준">
+            <option value="published" selected>최신 공개순</option>
+            <option value="cvss">위험도 높은순</option>
+            <option value="kev">KEV 실제 악용순</option>
+          </select>
+          <button type="button" class="cve-filter-btn" id="cveFilterOpenBtn" aria-expanded="false" aria-controls="cveRail">
+            필터<span class="cve-filter-badge is-zero" id="cveFilterBadge">0</span>
+          </button>
+        </div>
+
+        <!-- 우선 조치 -->
+        <section class="briefing">
+          <div class="briefing-head">
+            <div class="briefing-title"><span class="bar"></span>이번 주 우선 조치</div>
+            <span class="briefing-time">__COLLECTED_AT__ 수집</span>
+          </div>
+          <p class="briefing-text" id="briefingText">__BRIEFING__</p>
+          <button type="button" class="briefing-more" id="briefingMore" aria-expanded="false" aria-controls="briefingText">요약 더 보기</button>
+          <p class="briefing-hint">항목을 누르거나 Tab으로 옮겨 Enter를 누르면 해당 CVE 카드로 이동합니다.</p>
+          <div class="priority-list">
+            __PRIORITY_ROWS__
+          </div>
+        </section>
+
+        <!-- KEV · EPSS 지표 안내 (접이식) -->
+        <section class="glossary" aria-label="KEV·EPSS 지표 안내">
+          <details class="glossary-box">
+            <summary class="glossary-summary">KEV · EPSS 지표 읽는 법<span class="glossary-hint">점수 해석 기준</span></summary>
+            <div class="glossary-body">
+              <div class="glossary-item">
+                <div class="glossary-term">CISA KEV<span>Known Exploited Vulnerabilities</span></div>
+                <p>미국 CISA가 <b>실제 공격에 악용된 것이 확인된</b> 취약점 목록입니다. KEV 배지는 이론적인 위험이 아니라 이미 공격에 쓰이고 있다는 뜻입니다. 등재 항목의 조치 기한은 <b>CISA BOD 22-01에 따른 미국 연방 민간 행정부 기관 대상 의무 기한</b>이며, 일반 기업·기관에는 법적 의무가 아니라 패치 우선순위를 정할 때 참고하는 지표입니다. 노출된 자산이 있다면 그 기한을 목표 시점으로 삼아 패치·완화 조치를 서두르는 것이 좋습니다.</p>
+              </div>
+              <div class="glossary-item">
+                <div class="glossary-term">EPSS<span>Exploit Prediction Scoring System · FIRST</span></div>
+                <p>공개된 취약점이 <b>향후 30일 안에 실제로 악용될 확률</b>을 0~100%로 추정한 점수입니다(매일 갱신). 점수는 확률일 뿐이라 “몇 %부터 위험하다”는 공통 임계값은 없습니다. FIRST도 각 조직이 자산 중요도·인터넷 노출·위험 허용도에 맞춰 조치 기준을 정하도록 안내합니다. 아래 10% 이상·1% 미만 같은 구간은 운영 예시일 뿐 절대 기준이 아니므로, KEV·CVSS·인터넷 노출 여부와 함께 판단하세요. ‘악용 위험 상위 N%’는 같은 날 전체 CVE 중 이 항목의 추정 순위를 뜻합니다.</p>
+              </div>
+              <div class="glossary-item">
+                <div class="glossary-term">CVSS<span>Common Vulnerability Scoring System</span></div>
+                <p>취약점 자체의 심각도를 0~10으로 나타낸 점수입니다. 9.0 이상이 Critical(치명적), 7.0~8.9가 High(높음)입니다. 악용 여부(KEV)나 악용 확률(EPSS)과는 다른 축이므로 두 지표와 함께 읽습니다.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <div class="result-meta">
+          <span class="result-count"><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
+          <div class="meta-tools">
+            <button class="reset-btn" id="resetFiltersMeta">필터 초기화</button>
+          </div>
+        </div>
+
+        <section class="cve-list" id="cveList"></section>
+        <div class="empty-state" id="emptyState">조건에 맞는 CVE가 없습니다. 다른 키워드나 필터로 다시 찾아보세요.</div>
+      </section>
     </div>
 
-    <section class="cve-list" id="cveList"></section>
-    <div class="empty-state" id="emptyState">조건에 맞는 CVE가 없습니다. 다른 키워드나 필터로 다시 찾아보세요.</div>
+    <div class="cve-backdrop" id="cveBackdrop" hidden></div>
 
     <div class="toast" id="toast">리포트를 클립보드에 복사했습니다.</div>
 
@@ -1363,7 +1703,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     // ---- State ----
     let activeFilter = 'all';
+    let activeSource = 'all';
     let searchTerm = '';
+
+    // CISA·KISA·보안기업 피드로 출처를 묶는다(카드의 경보·보도 줄과 같은 기준).
+    const VENDOR_SOURCES = ['Microsoft MSRC', 'Google Cloud Threat Intelligence', 'Palo Alto Unit 42',
+      'Qualys Blog', 'Rapid7 Blog', 'Sophos News', 'Wiz Blog'];
+
+    function sourceMatches(it, src) {
+      if (src === 'all') return true;
+      const alerts = it.alerts || [];
+      if (src === 'cisa') return alerts.some(a => String(a.source || '').indexOf('CISA') === 0);
+      if (src === 'kisa') return alerts.some(a => String(a.source || '').indexOf('KISA') === 0);
+      if (src === 'vendor') return alerts.some(a => VENDOR_SOURCES.indexOf(a.source) !== -1);
+      return true;
+    }
 
     const list = document.getElementById('cveList');
     const emptyState = document.getElementById('emptyState');
@@ -1377,8 +1731,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function matches(it) {
       if (activeFilter === 'kev' && !it.is_kev) return false;
       if (activeFilter === 'poc' && !(it.poc_links && it.poc_links.length)) return false;
+      if (activeFilter === 'alert' && !(it.alerts && it.alerts.length)) return false;
       if (activeFilter === 'critical' && it.severity !== 'CRITICAL') return false;
       if (activeFilter === 'high' && it.severity !== 'HIGH') return false;
+      if (activeFilter === 'medium' && it.severity !== 'MEDIUM') return false;
+      if (!sourceMatches(it, activeSource)) return false;
       if (searchTerm) {
         const hay = [it.cve_id, it.title_ko, it.summary_ko, it.impact_ko, it.remediation_ko,
                      it.vendor, it.product, (it.affected_products || []).join(' '),
@@ -1424,7 +1781,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const pocs = (it.poc_links || []).map(p => {
         const label = escapeHtml(p.name || p.url);
         return '<div class="poc-item"><a href="' + safeUrl(p.url) + '" target="_blank" rel="noopener noreferrer" title="원문: ' + escapeHtml(p.url) + '">' + label + hostLabel(p.url) + '</a>'
-          + '<span class="poc-stars">★ ' + (p.stars || 0) + '</span></div>'
+          + '<span class="poc-stars">스타 ' + (p.stars || 0) + '</span></div>'
           + (p.description ? '<span class="poc-desc">' + escapeHtml(p.description) + '</span>' : '');
       }).join('');
 
@@ -1483,6 +1840,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       list.innerHTML = visible.map(renderCard).join('');
       visibleCount.textContent = visible.length;
       emptyState.classList.toggle('visible', visible.length === 0);
+      updateFilterBadge();
     }
 
     // ---- 우선 조치 행 → 해당 CVE 카드로 이동 ----
@@ -1493,8 +1851,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       searchTerm = '';
       clearSearchBtn.classList.remove('visible');
       activeFilter = 'all';
+      activeSource = 'all';
       document.querySelectorAll('.segment-btn').forEach(b => {
         b.classList.toggle('active', b.getAttribute('data-filter') === 'all');
+      });
+      document.querySelectorAll('#sourceNav .filter-pill').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-src') === 'all');
       });
       render();
     }
@@ -1504,6 +1866,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     function jumpToCard(cid) {
       const id = String(cid == null ? '' : cid).trim();
       if (!id) return;
+      if (railOpen || (rail && rail.classList.contains('is-open'))) closeRailSheet();
       resetFiltersForJump();
       const card = document.getElementById('cve-' + id);
       if (!card) {
@@ -1543,7 +1906,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       if (it.remediation_ko) { L.push(''); L.push('## 조치 방안'); L.push(it.remediation_ko); }
       if (it.poc_links && it.poc_links.length) {
         L.push(''); L.push('## 공개 PoC');
-        it.poc_links.forEach(p => L.push('- [' + (p.name || p.url) + '](' + p.url + ') — ★' + (p.stars || 0)));
+        it.poc_links.forEach(p => L.push('- [' + (p.name || p.url) + '](' + p.url + ') — 스타 ' + (p.stars || 0)));
       }
       L.push(''); L.push('## 참고 링크');
       L.push('- NVD: https://nvd.nist.gov/vuln/detail/' + it.cve_id);
@@ -1612,15 +1975,27 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       });
     }
 
-    // ---- Filters ----
-    document.getElementById('filterNav').addEventListener('click', (ev) => {
-      const btn = ev.target.closest('.segment-btn');
-      if (!btn) return;
-      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.getAttribute('data-filter');
-      render();
-    });
+    // ---- Filters (레일·시트 공통 이벤트 위임) ----
+    const rail = document.getElementById('cveRail');
+    if (rail) {
+      rail.addEventListener('click', (ev) => {
+        const segBtn = ev.target.closest('.segment-btn');
+        if (segBtn) {
+          document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+          segBtn.classList.add('active');
+          activeFilter = segBtn.getAttribute('data-filter');
+          render();
+          return;
+        }
+        const srcBtn = ev.target.closest('#sourceNav .filter-pill');
+        if (srcBtn) {
+          document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.remove('active'));
+          srcBtn.classList.add('active');
+          activeSource = srcBtn.getAttribute('data-src');
+          render();
+        }
+      });
+    }
 
     searchInput.addEventListener('input', () => {
       searchTerm = searchInput.value.trim().toLowerCase();
@@ -1636,21 +2011,155 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       searchInput.focus();
     });
 
-    document.getElementById('resetFilters').addEventListener('click', () => {
+    function resetAllFilters() {
       searchInput.value = '';
       searchTerm = '';
       clearSearchBtn.classList.remove('visible');
       activeFilter = 'all';
+      activeSource = 'all';
       currentSort = 'published';
       sortSelect.value = 'published';
+      if (cveSortMobile) cveSortMobile.value = 'published';
       document.querySelectorAll('.segment-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-filter') === 'all'));
+      document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.toggle('active', b.getAttribute('data-src') === 'all'));
       render();
-    });
+    }
+
+    document.getElementById('resetFilters').addEventListener('click', resetAllFilters);
+    const resetFiltersMeta = document.getElementById('resetFiltersMeta');
+    if (resetFiltersMeta) resetFiltersMeta.addEventListener('click', resetAllFilters);
 
     sortSelect.addEventListener('change', () => {
       currentSort = sortSelect.value;
+      if (cveSortMobile) cveSortMobile.value = currentSort;
       render();
     });
+
+    // ---- 모바일 필터 시트 · 적용 개수 배지 ----
+    const cveSortMobile = document.getElementById('cveSortMobile');
+    const railCloseBtn = document.getElementById('cveRailClose');
+    const filterOpenBtn = document.getElementById('cveFilterOpenBtn');
+    const backdrop = document.getElementById('cveBackdrop');
+    const applyBtn = document.getElementById('cveApplyBtn');
+    let railOpenRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+    let railOpen = false;
+
+    function activeFilterCount() {
+      let n = 0;
+      if (activeFilter !== 'all') n += 1;
+      if (activeSource !== 'all') n += 1;
+      if (searchTerm) n += 1;
+      return n;
+    }
+
+    function updateFilterBadge() {
+      const badge = document.getElementById('cveFilterBadge');
+      if (badge) {
+        const n = activeFilterCount();
+        badge.textContent = n;
+        badge.classList.toggle('is-zero', n === 0);
+      }
+      const applyCount = document.getElementById('cveApplyCount');
+      if (applyCount) {
+        const el = document.getElementById('visibleCount');
+        applyCount.textContent = el ? '(' + el.textContent + ')' : '';
+      }
+    }
+
+    function cancelRailFrame() {
+      if (railOpenRaf !== null) {
+        window.cancelAnimationFrame(railOpenRaf);
+        railOpenRaf = null;
+      }
+    }
+
+    function openRailSheet() {
+      if (!rail || !backdrop) return;
+      railOpen = true;
+      backdrop.hidden = false;
+      document.body.classList.add('cve-filter-open');
+      if (filterOpenBtn) filterOpenBtn.setAttribute('aria-expanded', 'true');
+      cancelRailFrame();
+      railOpenRaf = window.requestAnimationFrame(function () {
+        railOpenRaf = window.requestAnimationFrame(function () {
+          railOpenRaf = null;
+          if (!railOpen) return;
+          rail.classList.add('is-open');
+          backdrop.classList.add('is-open');
+          if (railCloseBtn) railCloseBtn.focus();
+        });
+      });
+    }
+
+    function closeRailSheet() {
+      if (!rail || !backdrop) return;
+      railOpen = false;
+      cancelRailFrame();
+      rail.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      document.body.classList.remove('cve-filter-open');
+      if (filterOpenBtn) {
+        filterOpenBtn.setAttribute('aria-expanded', 'false');
+        filterOpenBtn.focus();
+      }
+      window.setTimeout(function () { backdrop.hidden = true; }, 220);
+    }
+
+    if (filterOpenBtn) {
+      filterOpenBtn.addEventListener('click', function () {
+        if (railOpen || (rail && rail.classList.contains('is-open'))) closeRailSheet();
+        else openRailSheet();
+      });
+    }
+    if (railCloseBtn) railCloseBtn.addEventListener('click', closeRailSheet);
+    if (applyBtn) applyBtn.addEventListener('click', closeRailSheet);
+    if (backdrop) backdrop.addEventListener('click', closeRailSheet);
+
+    if (cveSortMobile) {
+      cveSortMobile.addEventListener('change', function () {
+        sortSelect.value = cveSortMobile.value;
+        currentSort = cveSortMobile.value;
+        render();
+      });
+    }
+
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && (railOpen || (rail && rail.classList.contains('is-open')))) closeRailSheet();
+    });
+
+    // 검색창은 PC에서는 좌측 레일, 모바일에서는 목록 상단에 놓인다(같은 입력 요소를 옮긴다).
+    const searchBox = document.getElementById('cveSearchBox');
+    const railSearchSection = document.getElementById('cveRailSearchSection');
+
+    function mountSearch() {
+      if (!searchBox || !railSearchSection) return;
+      const mobile = window.innerWidth < 1024;
+      const slot = document.getElementById(mobile ? 'cveMobileSearchSlot' : 'cveRailSearchSection');
+      if (slot && searchBox.parentNode !== slot) slot.appendChild(searchBox);
+      railSearchSection.hidden = mobile;
+    }
+
+    mountSearch();
+
+    let mountTimer = null;
+    window.addEventListener('resize', function () {
+      window.clearTimeout(mountTimer);
+      mountTimer = window.setTimeout(function () {
+        mountSearch();
+        if (window.innerWidth >= 1024 && rail && rail.classList.contains('is-open')) closeRailSheet();
+      }, 120);
+    });
+
+    // 모바일에서 긴 우선 조치 요약은 4줄까지만 보이고 펼쳐 볼 수 있다.
+    const briefingMore = document.getElementById('briefingMore');
+    const briefingText = document.getElementById('briefingText');
+    if (briefingMore && briefingText) {
+      briefingMore.addEventListener('click', function () {
+        const expanded = briefingText.classList.toggle('is-expanded');
+        briefingMore.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        briefingMore.textContent = expanded ? '요약 접기' : '요약 더 보기';
+      });
+    }
 
     render();
 
@@ -1958,6 +2467,21 @@ def build():
     if items:
         collected = max((i.get("updated_at") or "") for i in items) or updated_at
 
+    # 2차 UI: 레일·KPI에 쓰는 파생 지표(심각도 Medium, 경보·보도, 우선 조치 행 수, 출처별 건수)
+    medium = sum(1 for i in items if (i.get("severity") or "").upper() == "MEDIUM")
+    alert_count = sum(1 for i in items if i.get("alerts"))
+    priority_count = sum(1 for row in rows if "data-cve=" in row)
+
+    def _has_source(it, prefix):
+        return any(str(a.get("source") or "").startswith(prefix) for a in (it.get("alerts") or []))
+
+    src_cisa = sum(1 for i in items if _has_source(i, "CISA"))
+    src_kisa = sum(1 for i in items if _has_source(i, "KISA"))
+    src_vendor = sum(
+        1 for i in items
+        if any((a.get("source") or "") in VENDOR_ALERT_SOURCES for a in (i.get("alerts") or []))
+    )
+
     meta = {
         "total": stats["total"],
         "critical": stats["critical"],
@@ -1997,6 +2521,12 @@ def build():
     html = html.replace("__HIGH__", str(stats["high"]))
     html = html.replace("__KEV__", str(stats["kev"]))
     html = html.replace("__POC__", str(stats["poc"]))
+    html = html.replace("__MEDIUM__", str(medium))
+    html = html.replace("__ALERT__", str(alert_count))
+    html = html.replace("__PRIORITY_COUNT__", str(priority_count))
+    html = html.replace("__SRC_CISA__", str(src_cisa))
+    html = html.replace("__SRC_KISA__", str(src_kisa))
+    html = html.replace("__SRC_VENDOR__", str(src_vendor))
 
     with open(CVE_HTML, "w", encoding="utf-8") as f:
         f.write(harden_html(ui_shell.apply(html, 'cve')))

@@ -2341,7 +2341,8 @@ def generate_html(jobs, update_time_str):
     function updateLiveCounts(liveJobs) {{
       const live = liveJobs || getLiveJobs();
       const activeEl = document.getElementById('statActiveCount');
-      if (activeEl) activeEl.textContent = live.length + '건';
+      // 단위('건')는 KPI 카드의 .ia-kpi-unit 스팬이 그리므로 숫자만 넣는다(건건 중복 방지).
+      if (activeEl) activeEl.textContent = String(live.length);
       const dueTodayEl = document.getElementById('statDueToday');
       const dueWeekEl = document.getElementById('statDueWeek');
       if (dueTodayEl || dueWeekEl) {{
