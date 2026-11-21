@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-22 01:52 KST",
+  "generated": "2026-11-22 02:51 KST",
   "checkedOn": "2026-11-22",
   "rotation": {
     "condition": "winter",
@@ -23,9 +23,10 @@
               "action": "오늘 잠들 시간을 정해 알람 맞추기",
               "art": "sleep-bed",
               "source": {
-                "org": "질병관리청 국가건강정보포털",
+                "org": "국립정신건강센터",
                 "topic": "수면과 수면장애",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.mentalhealth.go.kr/portal/disease/diseaseDetail.do?dissId=32"
               }
             },
             {
@@ -35,9 +36,10 @@
               "action": "커튼 열고 창가에 5분 서 있기",
               "art": "sleep-sun",
               "source": {
-                "org": "질병관리청 국가건강정보포털",
+                "org": "국립정신건강센터",
                 "topic": "수면과 수면장애",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.mentalhealth.go.kr/portal/disease/diseaseDetail.do?dissId=32"
               }
             },
             {
@@ -47,9 +49,10 @@
               "action": "오늘 오후 커피 한 잔을 물로 바꾸기",
               "art": "sleep-cup",
               "source": {
-                "org": "질병관리청 국가건강정보포털",
+                "org": "국립정신건강센터",
                 "topic": "수면과 수면장애",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.mentalhealth.go.kr/portal/disease/diseaseDetail.do?dissId=32"
               }
             }
           ]
@@ -61,13 +64,14 @@
             {
               "id": "cond-eyes-1",
               "headline": "20분 보면 20초 쉬기",
-              "summary": "화면을 20분 보면 20초 동안 6m 밖을 바라봐요. 눈의 조절근이 풀리고 깜빡임이 돌아옵니다.",
+              "summary": "화면을 20분 보면 6m 밖을 20초 동안 바라봐요. 눈의 조절근이 풀리고 깜빡임이 돌아옵니다.",
               "action": "지금 창밖 먼 곳을 20초 보기",
               "art": "eyes-2020",
               "source": {
-                "org": "질병관리청 국가건강정보포털",
-                "topic": "굴절이상(근시·원시·난시)",
-                "checked": "2026-11-22"
+                "org": "미국안과학회(AAO)",
+                "topic": "디지털 눈 피로와 20-20-20 규칙",
+                "checked": "2026-11-22",
+                "url": "https://www.aao.org/eye-health/tips-prevention/what-is-eye-strain"
               }
             },
             {
@@ -79,7 +83,8 @@
               "source": {
                 "org": "대한안과학회",
                 "topic": "건성안 자주 묻는 질문",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.ophthalmology.org/content/reference/faq_list.html"
               }
             },
             {
@@ -91,7 +96,8 @@
               "source": {
                 "org": "서울아산병원 건강이야기",
                 "topic": "안구건조증",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.amc.seoul.kr/asan/healthtv/video/videoDetail.do?videoId=334"
               }
             }
           ]
@@ -109,7 +115,8 @@
               "source": {
                 "org": "질병관리청 국가건강정보포털",
                 "topic": "일자목(거북목)증후군",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5972"
               }
             },
             {
@@ -121,7 +128,8 @@
               "source": {
                 "org": "질병관리청 국가건강정보포털",
                 "topic": "일자목(거북목)증후군",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5972"
               }
             },
             {
@@ -133,7 +141,8 @@
               "source": {
                 "org": "질병관리청 국가건강정보포털",
                 "topic": "일자목(거북목)증후군",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5972"
               }
             }
           ]
@@ -145,13 +154,14 @@
             {
               "id": "cond-winter-1",
               "headline": "물은 나눠서 한 잔씩",
-              "summary": "건강한 성인은 하루 1.5~2L면 충분해요. 한 시간에 한 잔씩 나눠 마시면 놓치지 않습니다.",
+              "summary": "필요한 물의 양은 활동량·환경·건강 상태에 따라 달라져요. 건강한 성인은 하루 1.5~2L를 한 시간에 한 잔씩 나눠 마시면 놓치지 않습니다.",
               "action": "책상에 물컵 두고 지금 한 모금",
               "art": "winter-water",
               "source": {
                 "org": "질병관리청 국가건강정보포털",
                 "topic": "탈수",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6551"
               }
             },
             {
@@ -163,19 +173,21 @@
               "source": {
                 "org": "질병관리청 국가건강정보포털",
                 "topic": "겨울철 한파대비 건강수칙",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=2048"
               }
             },
             {
               "id": "cond-winter-3",
               "headline": "하루 세 번, 10분 환기",
-              "summary": "2~3시간 간격으로 창문을 열어 10~30분 환기해요. 맞바람이 나게 두 창을 함께 열면 좋아요.",
+              "summary": "2~3시간 간격으로 하루 세 번, 10~30분 창문을 열어 환기해요. 맞바람이 나게 두 창을 함께 열면 좋아요.",
               "action": "오늘 세 번, 창문 열어 두기",
               "art": "winter-air",
               "source": {
                 "org": "질병관리청 국가건강정보포털",
                 "topic": "겨울철 한파대비 건강수칙",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=2048"
               }
             }
           ]
@@ -199,9 +211,10 @@
               "action": "위치 권한이 항상인 앱 하나 바꾸기",
               "art": "perm-location",
               "source": {
-                "org": "개인정보보호위원회",
-                "topic": "스마트폰 앱 접근권한 안내",
-                "checked": "2026-11-22"
+                "org": "방송미디어통신위원회",
+                "topic": "스마트폰 앱 접근권한 개인정보보호 안내서",
+                "checked": "2026-11-22",
+                "url": "https://www.kmcc.go.kr/user.do?boardId=1099&boardSeq=44582&cp=1&dc=&mode=view&page=A02030700"
               }
             },
             {
@@ -213,7 +226,8 @@
               "source": {
                 "org": "방송미디어통신위원회",
                 "topic": "스마트폰 앱 접근권한 개인정보보호 안내서",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.kmcc.go.kr/user.do?boardId=1099&boardSeq=44582&cp=1&dc=&mode=view&page=A02030700"
               }
             },
             {
@@ -225,7 +239,8 @@
               "source": {
                 "org": "방송미디어통신위원회",
                 "topic": "스마트폰 앱 접근권한 개인정보보호 안내서",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://www.kmcc.go.kr/user.do?boardId=1099&boardSeq=44582&cp=1&dc=&mode=view&page=A02030700"
               }
             }
           ]
@@ -270,19 +285,21 @@
               "source": {
                 "org": "개인정보보호위원회",
                 "topic": "공용 와이파이, 얼마나 위험할까?",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://m.blog.naver.com/pipcpr/223924781140"
               }
             },
             {
               "id": "dig-wifi-2",
-              "headline": "주소창 자물쇠 확인",
-              "summary": "https 주소는 오가는 내용이 암호화돼요. 자물쇠가 없으면 로그인과 결제는 피하세요.",
-              "action": "지금 열린 탭 주소창 자물쇠 확인",
-              "art": "wifi-lock",
+              "headline": "연결 경고와 주소 확인",
+              "summary": "브라우저가 '안전하지 않음'으로 표시하면 그 화면에서 로그인·결제는 피하세요. 접속한 사이트 주소가 맞는지도 함께 보세요.",
+              "action": "지금 열린 탭의 주소 확인",
+              "art": "wifi-warn",
               "source": {
                 "org": "개인정보보호위원회",
                 "topic": "공용 와이파이, 얼마나 위험할까?",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://m.blog.naver.com/pipcpr/223924781140"
               }
             },
             {
@@ -294,7 +311,8 @@
               "source": {
                 "org": "개인정보보호위원회",
                 "topic": "공용 와이파이, 얼마나 위험할까?",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://m.blog.naver.com/pipcpr/223924781140"
               }
             }
           ]
@@ -312,7 +330,8 @@
               "source": {
                 "org": "Google 계정 고객센터",
                 "topic": "백업 코드로 로그인하기",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://support.google.com/accounts/answer/1187538?hl=ko"
               }
             },
             {
@@ -324,7 +343,8 @@
               "source": {
                 "org": "Google 계정 고객센터",
                 "topic": "백업 코드로 로그인하기",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://support.google.com/accounts/answer/1187538?hl=ko"
               }
             },
             {
@@ -336,7 +356,8 @@
               "source": {
                 "org": "Google 계정 고객센터",
                 "topic": "백업 코드로 로그인하기",
-                "checked": "2026-11-22"
+                "checked": "2026-11-22",
+                "url": "https://support.google.com/accounts/answer/1187538?hl=ko"
               }
             }
           ]

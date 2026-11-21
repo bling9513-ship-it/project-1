@@ -5056,6 +5056,9 @@ async function checkCardsFlow(page, width) {
     rows: document.querySelectorAll('.cd-savedrow').length,
     emptyText: document.querySelector('.cd-empty strong') ? document.querySelector('.cd-empty strong').textContent.trim() : '',
     firstRow: document.querySelector('.cd-savedrow h3') ? document.querySelector('.cd-savedrow h3').textContent.trim() : '',
+    allView: !document.getElementById('cdAllList').hidden,
+    allRows: document.querySelectorAll('.cd-allrow').length,
+    allGroups: document.querySelectorAll('.cd-allgroup').length,
   }));
 
   const first = await read();
@@ -5137,6 +5140,89 @@ async function checkCardsFlow(page, width) {
   assert.equal(state.index, '1 / 3', `${tag}: deck switch must start at the first card`);
   assert.notEqual(state.headline, first.headline, `${tag}: digital deck shows the same headline`);
   assert.ok(state.theme.indexOf('2단계 인증') >= 0 || state.theme.indexOf('알림') >= 0 || state.theme.indexOf('와이파이') >= 0 || state.theme.indexOf('앱 권한') >= 0, `${tag}: digital theme ${state.theme}`);
+
+  // 덱 전진 칩 4개(컨디션 · 디지털 · 전체 · 저장)와 칩 글자 넘침 없음
+  const chips = await page.evaluate(() => Array.from(document.querySelectorAll('.cd-deck')).map((b) => b.getAttribute('data-deck')));
+  assert.deepEqual(chips, ['condition', 'digital', 'all', 'saved'], `${tag}: deck chips ${chips.join(',')}`);
+  const chipFit = await page.evaluate(() => Array.from(document.querySelectorAll('.cd-deck')).map((b) => b.scrollWidth - b.clientWidth));
+  assert.ok(Math.max(...chipFit) <= 1, `${tag}: chip label clipped (${chipFit.join(',')})`);
+
+  // 출처 원문 링크: https·새 창·noopener
+  const sourceLink = await page.evaluate(() => {
+    const a = document.querySelector('#cdSource a.cd-source-link');
+    return a ? { href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), text: a.textContent.trim() } : null;
+  });
+  assert.ok(sourceLink, `${tag}: source original link missing`);
+  assert.ok(sourceLink.href.startsWith('https://'), `${tag}: source href ${sourceLink.href}`);
+  assert.equal(sourceLink.target, '_blank', `${tag}: source target ${sourceLink.target}`);
+  assert.match(sourceLink.rel, /noopener/, `${tag}: source rel ${sourceLink.rel}`);
+  assert.match(sourceLink.rel, /noreferrer/, `${tag}: source rel ${sourceLink.rel}`);
+
+  // 전체 카드: 날짜와 상관없이 24장·8테마 + 테마별 목록에서 다른 테마 카드 열기
+  await page.click('#cdDeckAll');
+  await page.waitForTimeout(150);
+  const allView = await page.evaluate(() => ({
+    open: !document.getElementById('cdAllList').hidden,
+    cardHidden: document.getElementById('cdCard').hidden,
+    controlsHidden: document.getElementById('cdControls').hidden,
+    rows: document.querySelectorAll('.cd-allrow').length,
+    groups: document.querySelectorAll('.cd-allgroup').length,
+    themes: Array.from(document.querySelectorAll('.cd-allgroup')).map((g) => g.getAttribute('data-theme')),
+    links: document.querySelectorAll('.cd-allrow a.cd-source-link').length,
+    hrefs: Array.from(document.querySelectorAll('.cd-allrow a.cd-source-link')).map((a) => a.getAttribute('href')),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  assert.equal(allView.open, true, `${tag}: all-cards view did not open`);
+  assert.equal(allView.cardHidden, true, `${tag}: card stage still visible in all-cards view`);
+  assert.equal(allView.controlsHidden, true, `${tag}: prev/next still visible in all-cards view`);
+  assert.equal(allView.rows, 24, `${tag}: all-cards rows ${allView.rows}`);
+  assert.equal(allView.groups, 8, `${tag}: all-cards theme groups ${allView.groups}`);
+  assert.equal(new Set(allView.themes).size, 8, `${tag}: theme groups ${allView.themes.join(',')}`);
+  assert.ok(allView.links >= 21, `${tag}: all-cards source links ${allView.links}`);
+  assert.ok(allView.hrefs.every((href) => href && href.startsWith('https://')), `${tag}: non-https source link in all-cards view`);
+  assert.equal(allView.overflow, 0, `${tag}: all-cards view horizontal overflow ${allView.overflow}`);
+
+  const pastRow = await page.evaluate(() => {
+    const rotation = (typeof CD_DATA !== 'undefined') ? CD_DATA.rotation : {};
+    const row = Array.from(document.querySelectorAll('.cd-allrow'))
+      .find((r) => r.getAttribute('data-theme') !== rotation[r.getAttribute('data-deck')]);
+    return row ? { id: row.getAttribute('data-card'), deck: row.getAttribute('data-deck'),
+      theme: row.getAttribute('data-theme'), headline: row.getAttribute('data-headline') } : null;
+  });
+  assert.ok(pastRow, `${tag}: no card from a past theme in all-cards view`);
+  await page.click(`.cd-allrow[data-card="${pastRow.id}"] .cd-allrow-open`);
+  await page.waitForTimeout(150);
+  const opened = await page.evaluate(() => ({
+    cardHidden: document.getElementById('cdCard').hidden,
+    allHidden: document.getElementById('cdAllList').hidden,
+    headline: document.getElementById('cdHeadline').textContent.trim(),
+    theme: document.getElementById('cdTheme').textContent.trim(),
+    index: document.getElementById('cdIndex').textContent.trim(),
+    activeDeck: document.querySelector('.cd-deck.is-active').getAttribute('data-deck'),
+    source: document.getElementById('cdSource').textContent.trim(),
+  }));
+  assert.equal(opened.cardHidden, false, `${tag}: past-theme card did not open`);
+  assert.equal(opened.allHidden, true, `${tag}: all-cards list still visible after opening a card`);
+  assert.equal(opened.headline, pastRow.headline, `${tag}: opened "${opened.headline}" instead of "${pastRow.headline}"`);
+  assert.equal(opened.activeDeck, pastRow.deck, `${tag}: active deck ${opened.activeDeck}`);
+  assert.ok(opened.theme.startsWith('테마'), `${tag}: past-theme label ${opened.theme}`);
+  assert.ok(opened.index.endsWith('/ 3'), `${tag}: past-theme progress ${opened.index}`);
+  assert.ok(opened.source.length >= 10, `${tag}: past-theme source line ${opened.source}`);
+
+  const pastTheme = opened.theme;
+  await page.click('#cdNext');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('cdTheme').textContent.trim()), pastTheme,
+    `${tag}: paging left the opened theme`);
+
+  await page.click(pastRow.deck === 'condition' ? '#cdDeckCondition' : '#cdDeckDigital');
+  await page.waitForTimeout(120);
+  const backToToday = await page.evaluate(() => ({
+    theme: document.getElementById('cdTheme').textContent.trim(),
+    index: document.getElementById('cdIndex').textContent.trim(),
+  }));
+  assert.ok(backToToday.theme.startsWith('오늘의 테마'), `${tag}: deck chip did not return to today's theme (${backToToday.theme})`);
+  assert.equal(backToToday.index, '1 / 3', `${tag}: today's theme progress ${backToToday.index}`);
 
   const pageErrors = await page.evaluate(() => window.smokeCspViolations || []);
   assert.deepEqual(pageErrors, [], `${tag}: CSP violations`);
