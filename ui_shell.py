@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-20개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+21개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
 - 게임 메뉴는 '챌린지 / 미니게임' 소제목으로 묶는다(데스크톱 드롭다운·모바일 시트 공통).
-- 시트: 카테고리별 20개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 시트: 카테고리별 21개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
 - 모바일 `게임` 탭은 wargame.html 로 이동하지 않고 시트의 게임 목록으로 스크롤·포커스한다.
 """
@@ -36,6 +36,7 @@ PAGES = [
     ("hangul", "hangul.html", "한글 한 칸", "한 칸 변신"),
     ("cards", "cards.html", "오늘의 카드", "오늘의 카드"),
     ("wash", "wash.html", "세탁 라벨 읽기", "세탁 라벨"),
+    ("recycle", "recycle.html", "분리배출 읽기", "분리배출"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
@@ -57,14 +58,14 @@ GAME_TAB_TARGET = SHEET_GROUP_IDS["게임"]
 GROUPS = [
     ("보안·채용", ["index", "study"]),
     ("브리핑·유틸", ["today", "ai", "cve", "tools", "radar"]),
-    ("데일리·생활", ["outfit", "pick", "cards", "wash"]),
+    ("데일리·생활", ["outfit", "pick", "cards", "wash", "recycle"]),
     ("게임", GAME_GROUPS),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
     ("브리핑·트렌드", ["today", "ai", "cve", "tools", "radar"]),
-    ("데일리·생활", ["outfit", "pick", "cards", "wash"]),
+    ("데일리·생활", ["outfit", "pick", "cards", "wash", "recycle"]),
     ("게임", GAME_GROUPS),
 ]
 

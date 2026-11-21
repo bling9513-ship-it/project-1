@@ -12,7 +12,7 @@
   · 금지 기호에는 X 선, 약한 세탁에는 밑줄, 물 온도 기호에는 숫자가 그려졌는지
   · 퀴즈 6벌: 옷 이름·소재·기호 조합·4지선다·정답 인덱스(0~3)·근거 기호(라벨 기호 안)
   · 이모지 0 · 그라데이션 0 · 입력 필드 0 · 인라인 이벤트 핸들러 0
-  · 공통 셸 20페이지 등록 · 하단 탭 바 · 출처(국가기술표준원 KS K 0021:2024) · ISO 3758:2023 대조 · 확인일 표기
+  · 공통 셸 21페이지 등록 · 하단 탭 바 · 출처(국가기술표준원 KS K 0021:2024) · ISO 3758:2023 대조 · 확인일 표기
   · wash_data.json 과 wash.html 에 심긴 데이터가 일치하는지
 
 실행: python3 tests/test_wash_data.py
@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WASH_HTML = os.path.join(BASE_DIR, "wash.html")
 WASH_JSON = os.path.join(BASE_DIR, "wash_data.json")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 20
+SHEET_PAGES = 21
 CHECKED_ON = "2026-11-22"
 CATEGORIES = ("물세탁", "표백", "건조", "다림질·드라이")
 REQUIRED_SYMBOLS = (

@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html'];
+  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -5474,6 +5474,274 @@ async function checkWashFlow(page, width) {
   assert.deepEqual(violations, [], `${tag}: CSP violations`);
 }
 
+
+// ---- 재질 표시·분리배출: 첫 화면(마크 도감 + 설명 카드) · 넘침 0 · 입력 필드 0 ----
+async function checkRecycleLayout(page, width) {
+  const tag = `recycle ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(60);
+  const state = await page.evaluate(() => {
+    const r = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      const b = el.getBoundingClientRect();
+      return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      hero: r('.rc-hero'),
+      tabs: r('.rc-tabs'),
+      board: r('#rcBoard'),
+      desc: r('#rcDesc'),
+      tabTop: bar ? bar.getBoundingClientRect().top : 0,
+      viewport: window.innerHeight,
+      marks: document.querySelectorAll('.rc-mark').length,
+      chips: document.querySelectorAll('.rc-chip').length,
+      rows: document.querySelectorAll('.rc-row').length,
+      active: document.querySelector('.rc-mark[aria-pressed="true"]')
+        ? document.querySelector('.rc-mark[aria-pressed="true"]').getAttribute('data-mark') : null,
+      activeCount: document.querySelectorAll('.rc-mark.is-active').length,
+      name: document.getElementById('rcDescName').textContent.trim(),
+      group: document.getElementById('rcDescGroup').textContent.trim(),
+      material: document.getElementById('rcDescMaterial').textContent.trim(),
+      meaning: document.getElementById('rcDescMeaning').textContent.trim(),
+      rule: document.getElementById('rcDescRule').textContent.trim(),
+      caution: document.getElementById('rcDescCaution').textContent.trim(),
+      hasSvg: !!document.querySelector('#rcDescArt svg'),
+      guideHidden: document.getElementById('rcPanelGuide').hidden,
+      fields: document.querySelectorAll('input, textarea').length,
+      sources: Array.from(document.querySelectorAll('.rc-foot a[href^="https://"]')).map((a) => a.getAttribute('href')),
+      checked: document.querySelector('.rc-foot') ? document.querySelector('.rc-foot').textContent.indexOf('2026-11-22') >= 0 : false,
+      meta: document.querySelector('.rc-meta') ? document.querySelector('.rc-meta').textContent.replace(/\s+/g, ' ') : '',
+      foot: document.querySelector('.rc-foot') ? document.querySelector('.rc-foot').textContent.replace(/\s+/g, ' ') : '',
+      split: Array.from(document.querySelectorAll('.rc-split-card')).length,
+      resins: document.querySelectorAll('.rc-resin-chip').length,
+    };
+  });
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.equal(state.marks, 9, `${tag}: mark buttons ${state.marks}`);
+  assert.equal(state.chips, 5, `${tag}: group chips ${state.chips}`);
+  assert.equal(state.rows, 4, `${tag}: mark rows ${state.rows}`);
+  assert.equal(state.resins, 6, `${tag}: plastic resin chips ${state.resins}`);
+  assert.equal(state.split, 2, `${tag}: mark/discharge explanation cards ${state.split}`);
+  assert.equal(state.guideHidden, false, `${tag}: guide panel must be open first`);
+  assert.equal(state.active, 'pet-clear', `${tag}: default mark ${state.active}`);
+  assert.equal(state.activeCount, 1, `${tag}: ${state.activeCount} highlighted marks`);
+  assert.equal(state.name, '무색페트 (무색 PET병)', `${tag}: description name ${state.name}`);
+  assert.equal(state.group, '플라스틱·비닐', `${tag}: description group ${state.group}`);
+  assert.ok(state.material.indexOf('공란') >= 0, `${tag}: material line ${state.material}`);
+  assert.ok(state.meaning.length >= 12, `${tag}: meaning missing`);
+  assert.ok(state.rule.length >= 15, `${tag}: discharge rule missing`);
+  assert.ok(state.caution.length >= 15, `${tag}: caution line missing`);
+  assert.equal(state.hasSvg, true, `${tag}: description mark missing`);
+  assert.equal(state.fields, 0, `${tag}: input fields are not allowed on this page`);
+  assert.ok(state.sources.length >= 4, `${tag}: source links ${state.sources.length}`);
+  assert.ok(state.sources.every((href) => href && href.includes('https://')), `${tag}: non-https source link`);
+  assert.equal(state.checked, true, `${tag}: checked date missing`);
+  assert.ok(state.meta.indexOf('기후에너지환경부') >= 0, `${tag}: authority missing (${state.meta})`);
+  assert.ok(state.foot.indexOf('지자체') >= 0, `${tag}: local-government notice missing`);
+  assert.ok(state.foot.indexOf('2027-01-01') >= 0, `${tag}: pending revision notice missing`);
+
+  // 첫 화면: 마크 도감과 설명 카드가 함께 보여야 한다.
+  const limit = width <= 768 ? state.tabTop - 2 : state.viewport;
+  for (const key of ['hero', 'tabs', 'board', 'desc']) {
+    const box = state[key];
+    assert.ok(box, `${tag}: ${key} missing`);
+    assert.ok(box.top >= 0, `${tag}: ${key} starts above the viewport (${Math.round(box.top)})`);
+    assert.ok(box.bottom <= limit, `${tag}: ${key} ends at ${Math.round(box.bottom)}, below ${Math.round(limit)}`);
+  }
+}
+
+// ---- 재질 표시·분리배출: 마크 클릭·키보드 · 계열 필터 · 재질 문자 · 분리배출 퀴즈 ----
+async function checkRecycleFlow(page, width) {
+  const tag = `recycle flow ${width}px`;
+  const read = () => page.evaluate(() => ({
+    name: document.getElementById('rcDescName').textContent.trim(),
+    rule: document.getElementById('rcDescRule').textContent.trim(),
+    pressed: Array.from(document.querySelectorAll('.rc-mark[aria-pressed="true"]')).map((b) => b.getAttribute('data-mark')),
+    activeCount: document.querySelectorAll('.rc-mark.is-active').length,
+  }));
+
+  const first = await read();
+  await page.click('.rc-mark[data-mark="vinyl"]');
+  let state = await read();
+  assert.notEqual(state.name, first.name, `${tag}: mark click did not change the description`);
+  assert.deepEqual(state.pressed, ['vinyl'], `${tag}: pressed marks ${state.pressed.join(',')}`);
+  assert.equal(state.activeCount, 1, `${tag}: ${state.activeCount} highlighted marks`);
+  assert.ok(state.name.indexOf('비닐류') >= 0, `${tag}: vinyl description ${state.name}`);
+
+  // 키보드: 마크 버튼에 포커스하고 Enter 로 설명을 연다.
+  await page.focus('.rc-mark[data-mark="composite"]');
+  await page.keyboard.press('Enter');
+  state = await read();
+  assert.deepEqual(state.pressed, ['composite'], `${tag}: Enter did not open the focused mark`);
+  assert.ok(state.name.indexOf('도포') >= 0, `${tag}: keyboard description ${state.name}`);
+  assert.ok(state.rule.indexOf('종량제') >= 0, `${tag}: composite rule ${state.rule}`);
+
+  // 계열 필터: 고른 계열의 줄만 남는다.
+  await page.click('.rc-chip[data-group="종이·종이팩"]');
+  const filtered = await page.evaluate(() => ({
+    rows: Array.from(document.querySelectorAll('.rc-row')).filter((row) => !row.hidden).map((row) => row.getAttribute('data-group')),
+    pressed: Array.from(document.querySelectorAll('.rc-chip[aria-pressed="true"]')).map((chip) => chip.getAttribute('data-group')),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  assert.deepEqual(filtered.rows, ['종이·종이팩'], `${tag}: filtered rows ${filtered.rows.join(',')}`);
+  assert.deepEqual(filtered.pressed, ['종이·종이팩'], `${tag}: pressed chips ${filtered.pressed.join(',')}`);
+  assert.equal(filtered.overflow, 0, `${tag}: filtered view overflows ${filtered.overflow}px`);
+  await page.click('.rc-chip[data-group="복합"]');
+  assert.deepEqual(await page.evaluate(() => Array.from(document.querySelectorAll('.rc-row')).filter((row) => !row.hidden).map((row) => row.getAttribute('data-group'))),
+    ['복합'], `${tag}: composite filter`);
+  await page.click('.rc-chip[data-group="전체"]');
+  assert.equal(await page.evaluate(() => document.querySelectorAll('.rc-row:not([hidden])').length), 4,
+    `${tag}: all rows were not restored`);
+
+  // 플라스틱 재질 문자: 고르면 플라스틱 마크 설명이 그 재질로 바뀐다.
+  await page.click('.rc-resin-chip[data-resin="HDPE"]');
+  const resin = await page.evaluate(() => ({
+    name: document.getElementById('rcDescName').textContent.trim(),
+    material: document.getElementById('rcDescMaterial').textContent.trim(),
+    pressed: Array.from(document.querySelectorAll('.rc-resin-chip[aria-pressed="true"]')).map((c) => c.getAttribute('data-resin')),
+    plasticActive: document.querySelector('.rc-mark[data-mark="plastic"]').getAttribute('aria-pressed'),
+  }));
+  assert.equal(resin.name, '플라스틱 · HDPE', `${tag}: resin name ${resin.name}`);
+  assert.ok(resin.material.indexOf('HDPE') >= 0, `${tag}: resin material ${resin.material}`);
+  assert.deepEqual(resin.pressed, ['HDPE'], `${tag}: pressed resin ${resin.pressed.join(',')}`);
+  assert.equal(resin.plasticActive, 'true', `${tag}: resin did not select the plastic mark`);
+
+  // 분리배출 퀴즈 탭
+  await page.click('#rcTabQuiz');
+  await page.waitForTimeout(160);
+  const quiz = await page.evaluate(() => ({
+    guideHidden: document.getElementById('rcPanelGuide').hidden,
+    quizHidden: document.getElementById('rcPanelQuiz').hidden,
+    guideSelected: document.getElementById('rcTabGuide').getAttribute('aria-selected'),
+    quizSelected: document.getElementById('rcTabQuiz').getAttribute('aria-selected'),
+    progress: document.getElementById('rcQuizProgress').textContent.trim(),
+    item: document.getElementById('rcItemName').textContent.trim(),
+    syms: document.querySelectorAll('#rcQuizLabel .rc-qsym').length,
+    wantSyms: RECYCLE.quizzes[0].symbols.length,
+    options: document.querySelectorAll('#rcOptions .rc-opt').length,
+    nextDisabled: document.getElementById('rcNext').disabled,
+    resultHidden: document.getElementById('rcResult').hidden,
+    answer: RECYCLE.quizzes[0].answer,
+    evidence: RECYCLE.quizzes[0].evidence.slice(),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  assert.equal(quiz.guideHidden, true, `${tag}: guide panel still visible`);
+  assert.equal(quiz.quizHidden, false, `${tag}: quiz panel not open`);
+  assert.equal(quiz.guideSelected, 'false', `${tag}: guide tab aria-selected`);
+  assert.equal(quiz.quizSelected, 'true', `${tag}: quiz tab aria-selected`);
+  assert.equal(quiz.progress, '1 / 7', `${tag}: quiz progress ${quiz.progress}`);
+  assert.equal(quiz.item, '무색 생수 페트병', `${tag}: first item ${quiz.item}`);
+  assert.equal(quiz.syms, quiz.wantSyms, `${tag}: item marks ${quiz.syms}`);
+  assert.equal(quiz.options, 4, `${tag}: options ${quiz.options}`);
+  assert.equal(quiz.nextDisabled, true, `${tag}: next button must start disabled`);
+  assert.equal(quiz.resultHidden, true, `${tag}: result must start hidden`);
+  assert.equal(quiz.overflow, 0, `${tag}: quiz view overflows ${quiz.overflow}px`);
+
+  // 정답 → 결과 · 근거 마크 강조
+  await page.click(`#rcOptions .rc-opt[data-idx="${quiz.answer}"]`);
+  await page.waitForTimeout(120);
+  const right = await page.evaluate(() => ({
+    hidden: document.getElementById('rcResult').hidden,
+    cls: document.getElementById('rcResult').className,
+    text: document.getElementById('rcResult').innerText,
+    evidence: Array.from(document.querySelectorAll('#rcQuizLabel .rc-qsym.is-evidence')).map((n) => n.getAttribute('data-sym')),
+    nextDisabled: document.getElementById('rcNext').disabled,
+    score: document.getElementById('rcQuizScore').textContent.trim(),
+    disabled: document.querySelectorAll('#rcOptions .rc-opt:disabled').length,
+    correct: document.querySelectorAll('#rcOptions .rc-opt.is-correct').length,
+  }));
+  assert.equal(right.hidden, false, `${tag}: result not shown`);
+  assert.equal(right.cls.indexOf('is-no'), -1, `${tag}: correct answer marked wrong`);
+  assert.ok(right.text.indexOf('정답') >= 0, `${tag}: result text ${right.text}`);
+  assert.ok(right.text.indexOf('근거 마크') >= 0, `${tag}: evidence list missing`);
+  assert.deepEqual(right.evidence.sort(), quiz.evidence.sort(), `${tag}: evidence marks ${right.evidence.join(',')}`);
+  assert.equal(right.nextDisabled, false, `${tag}: next button still disabled`);
+  assert.equal(right.disabled, 4, `${tag}: options not locked after answering`);
+  assert.equal(right.correct, 1, `${tag}: correct option highlight ${right.correct}`);
+  assert.equal(right.score, '1', `${tag}: score ${right.score}`);
+
+  // 다음 품목 → 오답 → 결과 · 맞는 답 표시
+  await page.click('#rcNext');
+  await page.waitForTimeout(120);
+  const second = await page.evaluate(() => ({
+    progress: document.getElementById('rcQuizProgress').textContent.trim(),
+    options: document.querySelectorAll('#rcOptions .rc-opt:not(:disabled)').length,
+    resultHidden: document.getElementById('rcResult').hidden,
+    evidence: document.querySelectorAll('#rcQuizLabel .rc-qsym.is-evidence').length,
+    answer: RECYCLE.quizzes[1].answer,
+  }));
+  assert.equal(second.progress, '2 / 7', `${tag}: second progress ${second.progress}`);
+  assert.equal(second.resultHidden, true, `${tag}: result leaked to the next item`);
+  assert.equal(second.evidence, 0, `${tag}: evidence highlight leaked`);
+  assert.equal(second.options, 4, `${tag}: next options not clickable`);
+  const wrongIdx = (second.answer + 1) % 4;
+  await page.click(`#rcOptions .rc-opt[data-idx="${wrongIdx}"]`);
+  await page.waitForTimeout(120);
+  const wrong = await page.evaluate(() => ({
+    cls: document.getElementById('rcResult').className,
+    text: document.getElementById('rcResult').innerText,
+    wrong: document.querySelectorAll('#rcOptions .rc-opt.is-wrong').length,
+    correct: document.querySelectorAll('#rcOptions .rc-opt.is-correct').length,
+    evidence: document.querySelectorAll('#rcQuizLabel .rc-qsym.is-evidence').length,
+    score: document.getElementById('rcQuizScore').textContent.trim(),
+  }));
+  assert.ok(wrong.cls.indexOf('is-no') >= 0, `${tag}: wrong answer not marked (${wrong.cls})`);
+  assert.ok(wrong.text.indexOf('맞는 답') >= 0, `${tag}: correct option not shown`);
+  assert.equal(wrong.wrong, 1, `${tag}: wrong option highlight ${wrong.wrong}`);
+  assert.equal(wrong.correct, 1, `${tag}: correct option highlight ${wrong.correct}`);
+  assert.equal(wrong.evidence, 2, `${tag}: evidence highlight ${wrong.evidence}`);
+  assert.equal(wrong.score, '1', `${tag}: score after a wrong answer ${wrong.score}`);
+
+  // 나머지 다섯 품목 → 요약 · 다시 풀기
+  for (let i = 0; i < 5; i += 1) {
+    await page.click('#rcNext');
+    await page.waitForTimeout(80);
+    const answer = await page.evaluate((n) => RECYCLE.quizzes[n].answer, i + 2);
+    await page.click(`#rcOptions .rc-opt[data-idx="${answer}"]`);
+    await page.waitForTimeout(60);
+  }
+  await page.click('#rcNext');
+  await page.waitForTimeout(120);
+  const done = await page.evaluate(() => ({
+    bodyHidden: document.getElementById('rcQuizBody').hidden,
+    summaryHidden: document.getElementById('rcSummary').hidden,
+    score: document.getElementById('rcSummaryNum').textContent.trim(),
+    total: document.getElementById('rcSummaryTotal').textContent.trim(),
+    progress: document.getElementById('rcQuizProgress').textContent.trim(),
+  }));
+  assert.equal(done.summaryHidden, false, `${tag}: summary not shown`);
+  assert.equal(done.bodyHidden, true, `${tag}: quiz body still visible at the end`);
+  assert.equal(done.score, '6', `${tag}: summary score ${done.score}`);
+  assert.equal(done.total, '/ 7', `${tag}: summary total ${done.total}`);
+  assert.equal(done.progress, '7 / 7', `${tag}: end progress ${done.progress}`);
+
+  // 요약에서 '재질 도감으로' → 도감으로 돌아갔다가 퀴즈로 다시 들어와 '다시 풀기'
+  await page.click('#rcBackGuide');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('rcPanelGuide').hidden), false,
+    `${tag}: 재질 도감으로 did not reopen the guide`);
+  await page.click('#rcTabQuiz');
+  await page.waitForTimeout(120);
+  await page.click('#rcRestart');
+  await page.waitForTimeout(100);
+  const restarted = await page.evaluate(() => ({
+    progress: document.getElementById('rcQuizProgress').textContent.trim(),
+    score: document.getElementById('rcQuizScore').textContent.trim(),
+    bodyHidden: document.getElementById('rcQuizBody').hidden,
+    summaryHidden: document.getElementById('rcSummary').hidden,
+  }));
+  assert.equal(restarted.progress, '1 / 7', `${tag}: restart progress ${restarted.progress}`);
+  assert.equal(restarted.score, '0', `${tag}: restart score ${restarted.score}`);
+  assert.equal(restarted.bodyHidden, false, `${tag}: quiz body not restored`);
+  assert.equal(restarted.summaryHidden, true, `${tag}: summary still visible after restart`);
+
+  const violations = await page.evaluate(() => window.smokeCspViolations || []);
+  assert.deepEqual(violations, [], `${tag}: CSP violations`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -5558,6 +5826,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'cards' && (width === 390 || width === 1280)) await checkCardsFlow(page, width);
     if (name === 'wash') await checkWashLayout(page, width);
     if (name === 'wash' && (width === 390 || width === 1280)) await checkWashFlow(page, width);
+    if (name === 'recycle') await checkRecycleLayout(page, width);
+    if (name === 'recycle' && (width === 390 || width === 1280)) await checkRecycleFlow(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -6024,6 +6294,7 @@ async function main() {
           if (name === 'hangul') await checkHangulLayout(page, width);
           if (name === 'cards') await checkCardsLayout(page, width);
           if (name === 'wash') await checkWashLayout(page, width);
+          if (name === 'recycle') await checkRecycleLayout(page, width);
         } finally {
           await page.close();
         }

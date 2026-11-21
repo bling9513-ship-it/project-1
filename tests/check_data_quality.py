@@ -6,6 +6,7 @@
   1) 퍼즐·워게임 회귀 테스트
        tests/test_mission_puzzles.py · tests/test_seat_puzzles.py · tests/test_load_puzzles.py
        · tests/test_hangul_puzzles.py · tests/test_cards_data.py · tests/test_wash_data.py
+       · tests/test_recycle_data.py
        · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
@@ -159,6 +160,7 @@ def count_articles(page, css_class):
 def run_unit_tests():
     scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
                "tests/test_hangul_puzzles.py", "tests/test_cards_data.py", "tests/test_wash_data.py",
+               "tests/test_recycle_data.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py"]
     for script in scripts:
@@ -490,6 +492,23 @@ def check_pages():
               and wash_json.get("quizzes") == wash_embedded.get("quizzes"))
     else:
         check("wash.html 데이터 블록", False, "id=washData 파싱 실패")
+
+    # 재질 표시·분리배출: recycle_data.json 과 recycle.html 에 심긴 데이터가 같은지
+    recycle_json = load_json("recycle_data.json")
+    recycle_embedded = embedded_json("recycle.html", 'id="recycleData">')
+    if isinstance(recycle_json, dict):
+        check("recycle_data.json 마크 9종 이상", len(recycle_json.get("marks") or []) >= 9,
+              len(recycle_json.get("marks") or []))
+        check("recycle_data.json 품목 6종 이상", len(recycle_json.get("quizzes") or []) >= 6,
+              len(recycle_json.get("quizzes") or []))
+        check("recycle_data.json 확인일", recycle_json.get("checkedOn") == "2026-11-22",
+              recycle_json.get("checkedOn"))
+    if isinstance(recycle_json, dict) and isinstance(recycle_embedded, dict):
+        check("recycle.html ↔ recycle_data.json 일치",
+              recycle_json.get("marks") == recycle_embedded.get("marks")
+              and recycle_json.get("quizzes") == recycle_embedded.get("quizzes"))
+    else:
+        check("recycle.html 데이터 블록", False, "id=recycleData 파싱 실패")
 
     menus = embedded_json("pick.html", "const MENUS = ")
     courses = embedded_json("pick.html", "const COURSES = ")
