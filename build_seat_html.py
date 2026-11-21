@@ -1,0 +1,1680 @@
+# -*- coding: utf-8 -*-
+"""
+막차 자리 배치 (seat.html) 빌더.
+
+- 4×4 좌석 16칸(1~4행, A~D열) 막차 한 칸에 승객을 조건에 맞게 앉힌다.
+  · 창가(A·D열) / 통로(B·C열) / 출입문 근접(1·4행) / 조용한 칸(2·3행) / 노약자석(1·4행 B·C열)
+  · 일행은 같은 행에 붙어 앉아야 한다(열이 연속).
+- 승객을 탭해 고르고 좌석을 탭하면 배치·교환(이동 1수). 앉은 승객을 탭하면 그 승객이 선택된다.
+- 오늘의 막차: KST 날짜 시드로 매일 다른 퍼즐(DAILY_COUNT 판을 날짜 순환).
+- 연습: 입문·중급·고급 각 4판(총 12판).
+- 모든 퍼즐은 빌드 시 검증한다 — 해답 배치가 조건을 만족하고, 시작 배치에서 par 수로 도달하며,
+  더 적은 수(0 ~ par-1)로 풀 수 있는 배치가 없음을 BFS로 확인한다(최소 이동 기준 par 보장).
+- 기록은 브라우저 localStorage(seat_puzzle_stats_v1)에만 남는다. 서버로 보내는 값은 없다.
+"""
+import json
+import os
+import random
+from datetime import datetime, timedelta, timezone
+
+from html_guard import harden_html, safe_json_for_script
+import ui_shell
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SEAT_HTML = os.path.join(BASE_DIR, "seat.html")
+DATA_PATH = os.path.join(BASE_DIR, "seat_data.json")
+KST = timezone(timedelta(hours=9))
+
+ROWS = 4
+COLS = 4
+SEAT_COUNT = ROWS * COLS
+DAILY_COUNT = 18
+MAX_PAR = 3
+
+TAG_ORDER = ("window", "aisle", "door", "quiet", "senior")
+TAG_LABEL = {
+    "window": "창가",
+    "aisle": "통로",
+    "door": "출입문 근접",
+    "quiet": "조용한 칸",
+    "senior": "노약자석",
+}
+LEVEL_LABEL = {"beginner": "입문", "mid": "중급", "adv": "고급", "daily": "오늘"}
+
+# (난이도, 인원, 일행 묶음 크기, 두 번째 조건 확률, 흔드는 횟수)
+LEVEL_BASE = {
+    "beginner": {"count": 6, "group": 0, "secondary": 0.15, "scramble": (0, 1, 2)},
+    "mid": {"count": 7, "group": 2, "secondary": 0.35, "scramble": (1, 2, 3)},
+    "adv": {"count": 8, "group": 2, "secondary": 0.5, "scramble": (1, 2, 3)},
+}
+PAR_TARGET = {"beginner": (2, 2), "mid": (2, 3), "adv": (3, 3)}
+
+DAILY_LEVELS = ("beginner", "mid", "mid", "adv", "mid", "adv")
+
+NAMES = [
+    ("김하늘", "하늘"), ("이서준", "서준"), ("박지윤", "지윤"), ("최민호", "민호"),
+    ("정다은", "다은"), ("강현우", "현우"), ("윤소미", "소미"), ("한지훈", "지훈"),
+    ("오세라", "세라"), ("배준영", "준영"), ("신유진", "유진"), ("문태호", "태호"),
+    ("장예린", "예린"), ("서동혁", "동혁"), ("임채원", "채원"), ("권도현", "도현"),
+    ("류지안", "지안"), ("남기택", "기택"), ("심가온", "가온"), ("홍시우", "시우"),
+    ("조은결", "은결"), ("백서아", "서아"), ("유하람", "하람"), ("노윤재", "윤재"),
+]
+
+DAILY_TITLES = [
+    "2호선 막차", "6호선 마지막 칸", "9호선 급행 막차", "1호선 심야 열차",
+    "분당선 막차", "4호선 마지막 칸", "7호선 심야", "3호선 막차",
+    "경의중앙선 막차", "5호선 마지막 칸", "8호선 심야", "신분당선 막차",
+    "수인분당선 막차", "2호선 지선 막차", "공항철도 막차", "우이신설선 막차",
+    "김포골드라인 막차", "서해선 막차",
+]
+
+
+# ---------------------------------------------------------------- 좌석 정의
+def build_seats():
+    seats = []
+    for r in range(ROWS):
+        for c in range(COLS):
+            tags = []
+            if c in (0, COLS - 1):
+                tags.append("window")
+            else:
+                tags.append("aisle")
+            if r in (0, ROWS - 1):
+                tags.append("door")
+            else:
+                tags.append("quiet")
+            if r in (0, ROWS - 1) and c in (1, 2):
+                tags.append("senior")
+            seats.append({
+                "i": r * COLS + c,
+                "row": r + 1,
+                "col": c + 1,
+                "label": "%d%s" % (r + 1, "ABCD"[c]),
+                "tags": tags,
+            })
+    return seats
+
+
+SEATS = build_seats()
+TAG_SEATS = {tag: tuple(s["i"] for s in SEATS if tag in s["tags"]) for tag in TAG_ORDER}
+
+
+def allowed_seats(conds):
+    allowed = set(range(SEAT_COUNT))
+    for tag in conds:
+        allowed &= set(TAG_SEATS[tag])
+    return sorted(allowed)
+
+
+def has_tag(seat, tag):
+    return tag in SEATS[seat]["tags"]
+
+
+# ---------------------------------------------------------------- 조건 판정
+def contiguous(seats):
+    """같은 행에서 열이 연속인지(일행 조건)."""
+    rows = {s // COLS for s in seats}
+    if len(rows) != 1:
+        return False
+    cols = sorted(s % COLS for s in seats)
+    return cols[-1] - cols[0] == len(cols) - 1
+
+
+def arrangement_valid(arr, passengers, groups):
+    seat_of = {}
+    for i, pid in enumerate(arr):
+        if pid:
+            seat_of[pid] = i
+    for p in passengers:
+        if p["id"] not in seat_of:
+            return False
+        for tag in p["conds"]:
+            if not has_tag(seat_of[p["id"]], tag):
+                return False
+    for group in groups:
+        seats = [seat_of.get(m) for m in group]
+        if any(s is None for s in seats):
+            return False
+        if not contiguous(seats):
+            return False
+    return True
+
+
+def distance(start, target):
+    """시작 배치 → 목표 배치 최소 이동 수(앉은 승객 자리 교환 1수 · 빈 칸 이동 1수 · 대기 승객 배치 1수)."""
+    pos_start = {p: i for i, p in enumerate(start) if p}
+    pos_target = {p: i for i, p in enumerate(target) if p}
+    cost = 0
+    visited = set()
+    for pid, seat in pos_start.items():
+        if seat in visited:
+            continue
+        if pos_target.get(pid) == seat:
+            visited.add(seat)
+            continue
+        chain = []
+        cur = seat
+        closed = False
+        while True:
+            visited.add(cur)
+            chain.append(cur)
+            nxt = pos_target.get(start[cur])
+            if nxt is None:          # 목표에 빈 자리로 끝나는 이동 사슬
+                break
+            if nxt == seat:          # 시작 자리로 돌아오는 순환
+                closed = True
+                break
+            if nxt not in pos_start:  # 시작에서 비어 있는 자리로 끝남
+                break
+            cur = nxt
+        cost += (len(chain) - 1) if closed else len(chain)
+    for pid in pos_target:
+        if pid not in pos_start:
+            cost += 1  # 처음부터 대기 중이던 승객은 한 번 놓아야 한다
+    return cost
+
+
+def neighbors(arr, passengers):
+    occupied = [i for i in range(SEAT_COUNT) if arr[i]]
+    empty = [i for i in range(SEAT_COUNT) if not arr[i]]
+    out = []
+    for i in occupied:
+        for j in empty:
+            nxt = list(arr)
+            nxt[j] = nxt[i]
+            nxt[i] = None
+            out.append(tuple(nxt))
+    for a in range(len(occupied)):
+        for b in range(a + 1, len(occupied)):
+            nxt = list(arr)
+            i, j = occupied[a], occupied[b]
+            nxt[i], nxt[j] = nxt[j], nxt[i]
+            out.append(tuple(nxt))
+    seated = {p for p in arr if p}
+    for p in passengers:
+        if p["id"] in seated:
+            continue
+        for j in empty:
+            nxt = list(arr)
+            nxt[j] = p["id"]
+            out.append(tuple(nxt))
+    return out
+
+
+def nearest_valid(start, passengers, groups, cap):
+    """시작 배치에서 cap 수 이내로 조건을 만족하는 배치가 있는지 BFS로 확인한다."""
+    origin = tuple(start)
+    seen = {origin}
+    frontier = [origin]
+    depth = 0
+    while True:
+        for arr in frontier:
+            if arrangement_valid(arr, passengers, groups):
+                return depth, list(arr)
+        if depth >= cap:
+            return None
+        nxt = []
+        for arr in frontier:
+            for cand in neighbors(arr, passengers):
+                if cand in seen:
+                    continue
+                seen.add(cand)
+                nxt.append(cand)
+        if not nxt:
+            return None
+        frontier = nxt
+        depth += 1
+
+
+# ---------------------------------------------------------------- 퍼즐 생성
+def _pick_primary(rng):
+    tags = ["window", "door", "quiet", "aisle", "senior"]
+    weights = [0.28, 0.23, 0.2, 0.17, 0.12]
+    return rng.choices(tags, weights=weights, k=1)[0]
+
+
+def _pick_secondary(rng, primary):
+    options = [t for t in TAG_ORDER if t != primary and set(TAG_SEATS[t]) & set(TAG_SEATS[primary])]
+    if not options:
+        return None
+    return rng.choice(options)
+
+
+def make_passengers(rng, level):
+    base = LEVEL_BASE[level]
+    count = base["count"]
+    picked = rng.sample(NAMES, count)
+    passengers = []
+    groups = []
+    index = 0
+    if base["group"]:
+        members = []
+        for _ in range(base["group"]):
+            full, short = picked[index]
+            index += 1
+            pid = "p%d" % index
+            passengers.append({"id": pid, "name": full, "short": short, "conds": [], "together": True})
+            members.append(pid)
+        groups.append(members)
+    while index < count:
+        full, short = picked[index]
+        index += 1
+        conds = [_pick_primary(rng)]
+        if rng.random() < base["secondary"]:
+            extra = _pick_secondary(rng, conds[0])
+            if extra:
+                conds.append(extra)
+        passengers.append({"id": "p%d" % index, "name": full, "short": short, "conds": conds})
+    return passengers, groups
+
+
+def find_solution(rng, passengers, groups, limit=20000):
+    order = sorted(passengers, key=lambda p: (len(allowed_seats(p["conds"])), p["id"]))
+    assign = {}
+    used = set()
+    steps = [0]
+
+    def group_partial_ok():
+        for group in groups:
+            seats = [assign[m] for m in group if m in assign]
+            if len(seats) < 2:
+                continue
+            rows = {s // COLS for s in seats}
+            if len(rows) != 1:
+                return False
+            cols = sorted(s % COLS for s in seats)
+            if cols[-1] - cols[0] != len(cols) - 1:
+                return False
+        return True
+
+    def backtrack(idx):
+        if idx == len(order):
+            return True
+        steps[0] += 1
+        if steps[0] > limit:
+            return False
+        p = order[idx]
+        options = allowed_seats(p["conds"])
+        rng.shuffle(options)
+        for seat in options:
+            if seat in used:
+                continue
+            assign[p["id"]] = seat
+            used.add(seat)
+            if group_partial_ok() and backtrack(idx + 1):
+                return True
+            used.discard(seat)
+            del assign[p["id"]]
+        return False
+
+    if not backtrack(0):
+        return None
+    return dict(assign)
+
+
+def scramble(rng, solution, steps):
+    arr = list(solution)
+    for _ in range(steps):
+        occupied = [i for i in range(SEAT_COUNT) if arr[i]]
+        empty = [i for i in range(SEAT_COUNT) if not arr[i]]
+        if not occupied:
+            break
+        if empty and rng.random() < 0.45:
+            src = rng.choice(occupied)
+            dst = rng.choice(empty)
+            arr[dst] = arr[src]
+            arr[src] = None
+        elif len(occupied) >= 2:
+            a, b = rng.sample(occupied, 2)
+            arr[a], arr[b] = arr[b], arr[a]
+    return arr
+
+
+def puzzle_note(passengers, groups):
+    counts = {}
+    for p in passengers:
+        for tag in p["conds"]:
+            counts[tag] = counts.get(tag, 0) + 1
+    parts = []
+    if groups:
+        parts.append("일행 %d명" % sum(len(g) for g in groups))
+    for tag in TAG_ORDER:
+        if counts.get(tag):
+            parts.append("%s %d명" % (TAG_LABEL[tag], counts[tag]))
+    return " · ".join(parts)
+
+
+def make_puzzle(seed, level, pid, title, tries=80):
+    wanted = PAR_TARGET[level]
+    for attempt in range(tries):
+        rng = random.Random(seed + attempt * 7919)
+        passengers, groups = make_passengers(rng, level)
+        assignment = find_solution(rng, passengers, groups)
+        if assignment is None:
+            continue
+        solution = [None] * SEAT_COUNT
+        for p in passengers:
+            solution[assignment[p["id"]]] = p["id"]
+
+        # 흔드는 횟수와 대기 승객 수를 바꿔 가며 목표 par 범위에 들어오는 시작 배치를 찾는다.
+        combos = [(steps, waiting)
+                  for steps in LEVEL_BASE[level]["scramble"]
+                  for waiting in (1, 2)]
+        rng.shuffle(combos)
+        made = None
+        for steps, waiting in combos:
+            start = scramble(rng, solution, steps)
+            seated = [x for x in start if x]
+            if len(seated) <= waiting + 1:
+                continue
+            for gone in rng.sample(seated, waiting):
+                start[start.index(gone)] = None
+            best = distance(start, solution)
+            if best < wanted[0] or best > MAX_PAR:
+                continue
+            made = (start, best)
+            if best <= wanted[1]:
+                break
+        if made is None:
+            continue
+        start, best = made
+        found = nearest_valid(start, passengers, groups, best - 1)
+        if found and found[0] == 0:
+            continue  # 시작 배치가 이미 정답이면 퍼즐이 아니다
+        if found:
+            par, solved = found
+        else:
+            par, solved = best, solution
+        if not (wanted[0] <= par <= wanted[1]):
+            continue
+        if not arrangement_valid(solved, passengers, groups):
+            continue
+        if distance(start, solved) != par:
+            continue
+        return {
+            "id": pid,
+            "level": level,
+            "title": title,
+            "note": puzzle_note(passengers, groups),
+            "par": par,
+            "passengers": passengers,
+            "groups": groups,
+            "start": start,
+            "solution": solved,
+        }
+    raise SystemExit("[중단] 퍼즐 %s(%s) 생성 실패 — 시드 %s" % (pid, level, seed))
+
+
+def build_data(now):
+    daily = []
+    signatures = set()
+    for i in range(DAILY_COUNT):
+        level = DAILY_LEVELS[i % len(DAILY_LEVELS)]
+        puzzle = make_puzzle(9000 + i * 37, level, "d%02d" % (i + 1), DAILY_TITLES[i % len(DAILY_TITLES)])
+        signature = (tuple(puzzle["start"]), tuple(puzzle["solution"]))
+        if signature in signatures:
+            raise SystemExit("[중단] 일일 퍼즐 %s 가 이전 판과 같습니다" % puzzle["id"])
+        signatures.add(signature)
+        daily.append(puzzle)
+
+    practice = []
+    for li, level in enumerate(("beginner", "mid", "adv")):
+        for k in range(4):
+            puzzle = make_puzzle(1000 + li * 131 + k * 13, level,
+                                 "p%s%d" % (level[0], k + 1),
+                                 "%s 연습 %d" % (LEVEL_LABEL[level], k + 1))
+            practice.append(puzzle)
+
+    return {
+        "version": 1,
+        "built_at": now.strftime("%Y-%m-%d %H:%M KST"),
+        "built_date": now.date().isoformat(),
+        "max_par": MAX_PAR,
+        "seats": SEATS,
+        "tags": [{"key": tag, "label": TAG_LABEL[tag]} for tag in TAG_ORDER],
+        "daily": daily,
+        "practice": practice,
+        "settings": {"stars": {"three": 0, "two": 2}},
+    }
+
+
+CSS = """
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
+      --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
+      --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+    }
+    .nav-container { max-width: 1360px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo-img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; display: block; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); flex-shrink: 0; }
+    .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; }
+    .update-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; flex-shrink: 0; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+    .icon-btn:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .seat-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 20px 72px; }
+
+    .seat-hero { margin-bottom: 14px; }
+    .seat-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin-bottom: 9px;
+    }
+    .seat-hero h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; }
+    .seat-hero p { margin-top: 5px; font-size: 13px; color: var(--text-secondary); max-width: 660px; }
+
+    .seat-shell { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
+    .seat-rail { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 76px; }
+
+    .seat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 13px 14px;
+      box-shadow: var(--card-shadow);
+    }
+    .seat-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+    .seat-card-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .seat-card-head span { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .seat-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 11px; }
+    .seat-seg-btn {
+      border: 0; background: transparent; border-radius: 8px; padding: 8px 4px;
+      font-family: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: -0.02em;
+      color: var(--text-secondary); cursor: pointer;
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+    .seat-seg-btn.is-active { background: var(--bg-surface); color: var(--text-primary); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1); }
+    .seat-seg-btn:active { transform: scale(0.98); }
+
+    .seat-meter { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; font-size: 11.5px; color: var(--text-secondary); }
+    .seat-meter strong { font-size: 15px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .seat-meter-par { margin-left: auto; color: var(--text-muted); white-space: nowrap; }
+    .seat-meter-par strong { font-size: 12.5px; }
+    .seat-stars { display: flex; gap: 3px; margin-top: 6px; min-height: 14px; }
+    .star { width: 14px; height: 14px; fill: var(--bg-muted); }
+    .star.is-on { fill: var(--accent-primary); }
+    .seat-status { margin-top: 6px; min-height: 16px; font-size: 11px; line-height: 1.45; color: var(--text-muted); }
+
+    .seat-primary {
+      width: 100%; margin-top: 10px; padding: 11px 12px; border: 0; border-radius: 11px;
+      background: var(--accent-primary); color: #ffffff;
+      font-family: inherit; font-size: 13.5px; font-weight: 700; letter-spacing: -0.02em;
+      cursor: pointer; transition: background-color 160ms ease, transform 160ms ease;
+    }
+    .seat-primary:hover { background: var(--accent-hover); }
+    .seat-primary:active { transform: scale(0.99); }
+    .seat-ghost {
+      width: 100%; margin-top: 7px; padding: 9px 12px; border-radius: 10px;
+      border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary);
+      font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .seat-ghost:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+    .cond-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .cond-row { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-secondary); min-width: 0; }
+    .cond-dot { position: relative; width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--border-strong); flex-shrink: 0; }
+    .cond-row.is-ok .cond-dot { background: var(--ok-text); border-color: var(--ok-text); }
+    .cond-row.is-ok .cond-dot::after {
+      content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 7px;
+      border-right: 1.6px solid #ffffff; border-bottom: 1.6px solid #ffffff; transform: rotate(42deg);
+    }
+    .cond-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cond-count { font-variant-numeric: tabular-nums; color: var(--text-muted); font-size: 11px; }
+    .cond-row.is-ok .cond-count { color: var(--ok-text); font-weight: 600; }
+
+    .wait-list { display: flex; flex-direction: column; gap: 7px; }
+    .wait-card {
+      display: flex; flex-direction: column; gap: 4px; width: 100%;
+      padding: 9px 10px; border: 1px solid var(--border-default); border-radius: 12px;
+      background: var(--bg-page); font-family: inherit; text-align: left; cursor: pointer;
+      transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+    }
+    .wait-card:hover { border-color: var(--border-strong); }
+    .wait-card:active { transform: scale(0.99); }
+    .wait-card.is-selected { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .wait-top { display: flex; align-items: baseline; gap: 6px; }
+    .wait-name { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .wait-mark { margin-left: auto; font-size: 10px; font-weight: 600; color: var(--accent-primary); }
+    .wait-conds { display: flex; flex-wrap: wrap; gap: 4px; }
+    .chip { font-size: 10.5px; padding: 2px 6px; border-radius: 6px; background: var(--bg-subtle); color: var(--text-secondary); white-space: nowrap; }
+    .chip-together { background: var(--accent-subtle); color: var(--accent-primary); }
+    .wait-empty { font-size: 11px; color: var(--text-muted); }
+    .seat-hint { margin-top: 9px; font-size: 10.5px; line-height: 1.45; color: var(--text-muted); }
+
+    .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .record-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
+    .record-grid dd { font-size: 14.5px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .record-history { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-top: 9px; }
+    .record-history li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--text-secondary); }
+    .record-history li span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .record-history li.is-empty { color: var(--text-muted); }
+
+    .seat-main { min-width: 0; }
+    .seat-main-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; max-width: 600px; }
+    .seat-main-title { font-size: 14px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+    .seat-main-sub { font-size: 11.5px; color: var(--text-muted); text-align: right; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .coach {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 18px;
+      padding: 10px 12px 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .coach, .seat-result, .practice { max-width: 600px; }
+    .coach-top, .coach-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--text-muted); }
+    .coach-top { padding: 0 2px 6px; }
+    .coach-bottom { padding: 7px 2px 0; }
+    .coach-door { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: var(--text-secondary); }
+    .coach-door::before { content: ""; width: 12px; height: 2px; border-radius: 2px; background: var(--border-strong); }
+    .coach-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; padding-bottom: 5px; font-size: 9.5px; color: var(--text-muted); text-align: center; }
+
+    .seat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+    .seat-cell {
+      display: flex; flex-direction: column; gap: 2px; min-height: 66px;
+      padding: 7px 8px; border: 1px solid var(--border-default); border-radius: 12px;
+      background: var(--bg-page); font-family: inherit; text-align: left; cursor: pointer; color: inherit;
+      transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+    }
+    .seat-cell:hover { border-color: var(--border-strong); }
+    .seat-cell:active { transform: scale(0.985); }
+    .seat-cell.is-occupied { background: var(--bg-surface); border-color: var(--border-strong); }
+    .seat-cell.is-target { border-color: var(--accent-primary); border-style: dashed; }
+    .seat-cell.is-selected { border-color: var(--accent-primary); border-style: solid; box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .seat-cell.is-senior { border-left-width: 3px; }
+    .sc-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .sc-label { font-size: 10px; font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .sc-tag { font-size: 9px; color: var(--text-muted); }
+    .sc-name { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .seat-cell:not(.is-occupied) .sc-name { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+    .sc-sub { font-size: 9px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .seat-result {
+      margin-top: 14px; padding: 16px;
+      border: 1px solid var(--border-default); border-radius: 16px;
+      background: var(--bg-surface); box-shadow: var(--card-shadow);
+    }
+    .result-badge { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--ok-bg); color: var(--ok-text); }
+    .result-title { margin-top: 8px; font-size: 15px; font-weight: 700; letter-spacing: -0.03em; }
+    .result-score { display: flex; align-items: baseline; gap: 6px; margin-top: 2px; }
+    .result-score strong { font-size: 32px; font-weight: 700; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+    .result-score .unit { font-size: 13px; color: var(--text-muted); }
+    .result-par { margin-left: auto; font-size: 11.5px; color: var(--text-muted); }
+    .result-stars { display: flex; gap: 4px; margin-top: 6px; }
+    .result-stars .star { width: 18px; height: 18px; }
+    .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+    .result-grid dt { font-size: 10.5px; color: var(--text-muted); }
+    .result-grid dd { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .result-hint { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: var(--bg-subtle); font-size: 12px; line-height: 1.55; color: var(--text-secondary); }
+    .result-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .result-actions .seat-primary, .result-actions .seat-ghost { margin-top: 0; flex: 1 1 0; }
+
+    .practice { grid-column: 2; padding-right: 0; }
+    .practice-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .practice-head h3 { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+    .practice-head span { font-size: 11px; color: var(--text-muted); }
+    .practice-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-width: 600px; }
+    .stage {
+      display: flex; flex-direction: column; gap: 2px; padding: 10px 11px;
+      border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-surface);
+      font-family: inherit; text-align: left; cursor: pointer;
+      transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+    }
+    .stage:hover { border-color: var(--border-strong); }
+    .stage:active { transform: scale(0.99); }
+    .stage.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .stage-level { font-size: 10px; font-weight: 700; color: var(--accent-primary); }
+    .stage-title { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .stage-meta { font-size: 10.5px; color: var(--text-muted); }
+    .stage.is-cleared .stage-meta { color: var(--ok-text); }
+
+    .seat-foot { margin-top: 10px; font-size: 10.5px; line-height: 1.45; color: var(--text-muted); }
+
+    @media (max-width: 1100px) {
+      .seat-shell { grid-template-columns: 280px minmax(0, 1fr); }
+    }
+
+    @media (max-width: 767px) {
+      .seat-shell { grid-template-columns: 1fr; gap: 10px; }
+      .seat-rail { display: contents; }
+      #statusCard { order: 1; }
+      #condCard { order: 2; }
+      .seat-card { padding: 11px 12px; }
+      .cond-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; }
+      .seat-main-head { margin-bottom: 7px; max-width: none; }
+      .wait-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+      .coach, .seat-result { max-width: none; }
+      .practice { grid-column: 1; order: 3; margin-top: 0; }
+      .seat-main { order: 4; }
+      #waitCard { order: 5; }
+      #recordCard { order: 6; }
+      .practice-head { margin-bottom: 6px; }
+      .practice-list {
+        display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 7px;
+        padding-bottom: 3px; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity;
+      }
+      .stage { flex: 0 0 auto; min-width: 108px; scroll-snap-align: start; }
+    }
+
+    @media (max-width: 620px) {
+      .seat-wrap { padding: 10px 14px 76px; }
+      .seat-hero { display: none; }
+      #statusCard { padding: 10px 12px; }
+      #statusCard .seat-card-head { display: none; }
+      .seat-seg-btn { padding: 7px 4px; }
+      .seat-meter { margin-top: 8px; }
+      .seat-stars { margin-top: 3px; }
+      .seat-status { margin-top: 4px; font-size: 10.5px; min-height: 15px; }
+      .seat-ghost { margin-top: 6px; padding: 7px 10px; font-size: 11.5px; }
+      .seat-cell { min-height: 54px; padding: 6px 7px; }
+      .seat-result { padding: 14px; }
+      .result-score strong { font-size: 28px; }
+    }
+
+    @media (max-width: 380px) {
+      .seat-wrap { padding: 10px 11px 76px; }
+      .seat-card { padding: 10px; border-radius: 14px; }
+      .seat-grid, .coach-cols { gap: 5px; }
+      .seat-cell { min-height: 54px; padding: 5px 6px; border-radius: 10px; }
+      .sc-name { font-size: 11.5px; }
+      .sc-sub { font-size: 8.5px; }
+      .stage { min-width: 100px; }
+      .practice-head h3 { font-size: 12.5px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .seat-seg-btn, .seat-cell, .wait-card, .stage { transition: none !important; }
+    }
+"""
+
+
+HTML_TEMPLATE = r"""<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 막차 자리 배치</title>
+  <meta name="description" content="4×4 막차 한 칸에 승객을 조건에 맞게 앉히는 퍼즐. 일행·출입문 근접·창가·조용한 칸·노약자석 조건을 모두 맞추면 클리어. 매일 KST 날짜로 새 퍼즐이 열리고, 입문·중급·고급 연습 12판의 해답은 빌드 시 검증됩니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>__CSS__</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Global Nav -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;">
+          <img src="logo.png" alt="Infosec Archive 로고" class="brand-logo-img">
+          <span class="brand-name">Infosec Archive</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <div class="update-meta">
+          <span class="live-dot"></span>
+          <span>매일 KST 00:00 새 퍼즐</span>
+        </div>
+        <button class="icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경">
+          <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sunIcon" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <a href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" class="icon-btn" title="GitHub 저장소 바로가기" aria-label="GitHub 저장소 바로가기">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="seat-wrap">
+    <div class="seat-hero">
+      <span class="seat-pill">일일 챌린지</span>
+      <h1>막차 자리 배치</h1>
+      <p>4×4 막차 한 칸, 승객마다 앉아야 할 자리가 있습니다. 승객을 탭해 고르고 좌석을 탭하면 배치·자리 교환이 한 번에 됩니다. 조건을 모두 맞추면 클리어.</p>
+    </div>
+
+    <div class="seat-shell">
+      <aside class="seat-rail" aria-label="퍼즐 진행">
+        <section class="seat-card" id="statusCard">
+          <div class="seat-card-head">
+            <h2>진행</h2>
+            <span id="modeNote">오늘의 막차</span>
+          </div>
+          <div class="seat-seg" role="group" aria-label="퍼즐 모드">
+            <button type="button" class="seat-seg-btn is-active" id="modeDaily" data-mode="daily" aria-pressed="true">오늘의 막차</button>
+            <button type="button" class="seat-seg-btn" id="modePractice" data-mode="practice" aria-pressed="false">연습</button>
+          </div>
+          <div class="seat-meter">
+            <span>이동 <strong id="moveValue">0</strong>수</span>
+            <span class="seat-meter-par">기준 <strong id="parValue">2</strong>수</span>
+          </div>
+          <div class="seat-stars" id="starRow" aria-label="예상 별점"></div>
+          <p class="seat-status" id="seatStatus" role="status" aria-live="polite">막차가 도착했습니다. 반대편 문 쪽부터 자리를 잡아 보세요.</p>
+          <button type="button" class="seat-ghost" id="resetBtn">처음부터</button>
+        </section>
+
+        <section class="seat-card" id="condCard">
+          <div class="seat-card-head">
+            <h2>진행 조건</h2>
+            <span id="condValue">0/0</span>
+          </div>
+          <ul class="cond-list" id="condList"></ul>
+        </section>
+
+        <section class="seat-card" id="waitCard">
+          <div class="seat-card-head">
+            <h2>대기 승객</h2>
+            <span id="waitValue">0명</span>
+          </div>
+          <div class="wait-list" id="waitList"></div>
+          <p class="wait-empty" id="waitEmpty" hidden>모두 앉았습니다. 조건을 확인하세요.</p>
+          <p class="seat-hint" id="selectHint">승객을 고르고 좌석을 누르면 배치·교환이 됩니다. 앉은 승객을 누르면 그 승객이 선택됩니다.</p>
+        </section>
+
+        <section class="seat-card" id="recordCard">
+          <div class="seat-card-head">
+            <h2>기록</h2>
+            <span id="recordDate">—</span>
+          </div>
+          <dl class="record-grid">
+            <div><dt>오늘 최소</dt><dd id="recToday">—</dd></div>
+            <div><dt>클리어</dt><dd id="recClears">0판</dd></div>
+            <div><dt>연속</dt><dd id="recStreak">0일</dd></div>
+          </dl>
+          <ul class="record-history" id="recHistory"></ul>
+          <p class="seat-foot">기록은 이 브라우저(localStorage)에만 저장됩니다. 서버로 보내지 않습니다.</p>
+        </section>
+      </aside>
+
+      <section class="seat-main" aria-label="막차 좌석">
+        <div class="seat-main-head">
+          <h2 class="seat-main-title" id="boardTitle">오늘의 막차</h2>
+          <span class="seat-main-sub" id="boardSub"></span>
+        </div>
+
+        <div class="coach">
+          <div class="coach-top">
+            <span class="coach-door">앞 출입문</span>
+            <span id="coachTag">4호차 막차</span>
+          </div>
+          <div class="coach-cols" aria-hidden="true">
+            <span>창가</span><span>통로</span><span>통로</span><span>창가</span>
+          </div>
+          <div class="seat-grid" id="seatGrid" role="group" aria-label="좌석 16칸"></div>
+          <div class="coach-bottom">
+            <span class="coach-door">뒤 출입문</span>
+            <span>1~4행 · A~D열</span>
+          </div>
+        </div>
+
+        <section class="seat-result" id="resultBox" aria-labelledby="resultTitle" hidden>
+          <span class="result-badge" id="resultBadge">클리어</span>
+          <h2 class="result-title" id="resultTitle">모든 조건을 만족했습니다</h2>
+          <div class="result-score">
+            <strong id="resultMoves">0</strong><span class="unit">수</span>
+            <span class="result-par" id="resultPar">기준 2수</span>
+          </div>
+          <div class="result-stars" id="resultStars" aria-label="별점"></div>
+          <dl class="result-grid">
+            <div><dt>기준 대비</dt><dd id="resultEff">100%</dd></div>
+            <div><dt>이 퍼즐 최고</dt><dd id="resultBest">—</dd></div>
+            <div><dt>오늘 클리어</dt><dd id="resultClears">1판</dd></div>
+          </dl>
+          <p class="result-hint" id="resultHint"></p>
+          <div class="result-actions">
+            <button type="button" class="seat-primary" id="retryBtn">다시 하기</button>
+            <button type="button" class="seat-ghost" id="nextBtn" hidden>다음 연습</button>
+          </div>
+        </section>
+
+      </section>
+
+      <section class="practice" id="practiceWrap" hidden aria-label="연습 스테이지">
+        <div class="practice-head">
+          <h3>연습 스테이지</h3>
+          <span id="practiceNote">12판 · 해답 검증</span>
+        </div>
+        <div class="practice-list" id="practiceList"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="application/json" id="seatData">__DATA_JSON__</script>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ---------------------------------------------------------------- 데이터 */
+    var dataEl = document.getElementById('seatData');
+    var DATA = {};
+    try { DATA = JSON.parse((dataEl && dataEl.textContent) || '{}'); } catch (e) { DATA = {}; }
+    var SEATS = Array.isArray(DATA.seats) ? DATA.seats : [];
+    var DAILY = Array.isArray(DATA.daily) ? DATA.daily : [];
+    var PRACTICE = Array.isArray(DATA.practice) ? DATA.practice : [];
+
+    var TAG_LABEL = { window: '창가', aisle: '통로', door: '출입문 근접', quiet: '조용한 칸', senior: '노약자석' };
+    var TAG_ORDER = ['window', 'door', 'quiet', 'senior', 'aisle'];
+    var LEVEL_LABEL = { beginner: '입문', mid: '중급', adv: '고급', daily: '오늘' };
+    var STORE_KEY = 'seat_puzzle_stats_v1';
+    var STAR_PATH = 'M12 3.4l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z';
+    var WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+    var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    /* ---------------------------------------------------------------- DOM */
+    var el = {};
+    ['modeDaily', 'modePractice', 'modeNote', 'moveValue', 'parValue', 'starRow', 'seatStatus',
+     'resetBtn', 'condValue', 'condList', 'waitValue', 'waitList', 'waitEmpty', 'selectHint',
+     'recordDate', 'recToday', 'recClears', 'recStreak', 'recHistory', 'boardTitle', 'boardSub',
+     'seatGrid', 'coachTag', 'resultBox', 'resultBadge', 'resultTitle', 'resultMoves', 'resultPar',
+     'resultStars', 'resultEff', 'resultBest', 'resultClears', 'resultHint', 'retryBtn', 'nextBtn',
+     'practiceWrap', 'practiceNote', 'practiceList', 'themeToggle', 'moonIcon', 'sunIcon'
+    ].forEach(function (id) { el[id] = document.getElementById(id); });
+
+    /* ---------------------------------------------------------------- 상태 */
+    var state = {
+      mode: 'daily',
+      puzzle: null,
+      seats: new Array(16).fill(null),
+      waiting: [],
+      selected: null,
+      moves: 0,
+      cleared: false,
+      counted: false,
+      store: null,
+      dayKey: ''
+    };
+
+    var cellEls = [];
+    var waitEls = {};
+    var passengerIndex = {};
+
+    /* ---------------------------------------------------------------- 유틸 */
+    function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+    function kstKey(offset) {
+      var t = new Date(Date.now() + 9 * 3600000 + (offset || 0) * 86400000);
+      return t.getUTCFullYear() + '-' + pad2(t.getUTCMonth() + 1) + '-' + pad2(t.getUTCDate());
+    }
+
+    function dayOrdinal(key) {
+      var p = String(key).split('-').map(Number);
+      return Math.floor(Date.UTC(p[0], p[1] - 1, p[2]) / 86400000);
+    }
+
+    function dayLabel(key) {
+      var p = String(key).split('-').map(Number);
+      var d = new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+      return (p[1]) + '/' + p[2] + ' (' + WEEKDAYS[d.getUTCDay()] + ')';
+    }
+
+    function passengerName(id) { var p = passengerIndex[id]; return p ? p.name : String(id); }
+    function passengerShort(id) { var p = passengerIndex[id]; return p ? p.short : String(id); }
+
+    function seatHasTag(i, tag) {
+      var s = SEATS[i];
+      return !!s && s.tags.indexOf(tag) !== -1;
+    }
+
+    function seatOf(id) {
+      for (var i = 0; i < state.seats.length; i += 1) {
+        if (state.seats[i] === id) return i;
+      }
+      return -1;
+    }
+
+    function isWaiting(id) { return state.waiting.indexOf(id) !== -1; }
+
+    function contiguous(list) {
+      if (list.length < 2) return false;
+      var rows = {};
+      var cols = [];
+      list.forEach(function (s) { rows[Math.floor(s / 4)] = true; cols.push(s % 4); });
+      var keys = Object.keys(rows);
+      if (keys.length !== 1) return false;
+      cols.sort(function (a, b) { return a - b; });
+      return cols[cols.length - 1] - cols[0] === cols.length - 1;
+    }
+
+    function setStatus(text) {
+      if (el.seatStatus) el.seatStatus.textContent = text;
+    }
+
+    function starMarkup(count) {
+      var out = '';
+      for (var i = 0; i < 3; i += 1) {
+        out += '<svg class="star' + (i < count ? ' is-on' : '') + '" viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_PATH + '"></path></svg>';
+      }
+      return out;
+    }
+
+    function starsFor(moves, par) {
+      if (moves <= par) return 3;
+      if (moves <= par + 2) return 2;
+      return 1;
+    }
+
+    /* ---------------------------------------------------------------- 퍼즐 */
+    function copyPuzzle(src) {
+      return {
+        id: src.id,
+        level: src.level,
+        title: src.title,
+        note: src.note,
+        par: src.par,
+        passengers: src.passengers || [],
+        groups: src.groups || [],
+        start: (src.start || []).slice(),
+        solution: (src.solution || []).slice()
+      };
+    }
+
+    function dailyPuzzle() {
+      if (!DAILY.length) return null;
+      var idx = ((dayOrdinal(kstKey(0)) % DAILY.length) + DAILY.length) % DAILY.length;
+      return DAILY[idx];
+    }
+
+    function findSource(id) {
+      var all = DAILY.concat(PRACTICE);
+      for (var i = 0; i < all.length; i += 1) {
+        if (all[i].id === id) return all[i];
+      }
+      return null;
+    }
+
+    function nextPracticeId(id) {
+      for (var i = 0; i < PRACTICE.length; i += 1) {
+        if (PRACTICE[i].id === id) {
+          return PRACTICE[(i + 1) % PRACTICE.length].id;
+        }
+      }
+      return PRACTICE.length ? PRACTICE[0].id : null;
+    }
+
+    /* ---------------------------------------------------------------- 기록 */
+    function emptyStore() {
+      return { version: 1, days: {}, best: {}, totals: { plays: 0, clears: 0 }, streak: { count: 0, last: '' } };
+    }
+
+    function loadStore() {
+      try {
+        var raw = localStorage.getItem(STORE_KEY);
+        var parsed = raw ? JSON.parse(raw) : null;
+        if (!parsed || typeof parsed !== 'object') return emptyStore();
+        if (!parsed.days || typeof parsed.days !== 'object') parsed.days = {};
+        if (!parsed.best || typeof parsed.best !== 'object') parsed.best = {};
+        if (!parsed.totals || typeof parsed.totals !== 'object') parsed.totals = { plays: 0, clears: 0 };
+        if (typeof parsed.totals.plays !== 'number') parsed.totals.plays = 0;
+        if (typeof parsed.totals.clears !== 'number') parsed.totals.clears = 0;
+        if (!parsed.streak || typeof parsed.streak !== 'object') parsed.streak = { count: 0, last: '' };
+        return parsed;
+      } catch (e) {
+        return emptyStore();
+      }
+    }
+
+    function saveStore(store) {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {}
+    }
+
+    function countPlay() {
+      state.store = loadStore();
+      state.store.totals.plays += 1;
+      state.counted = true;
+      saveStore(state.store);
+    }
+
+    function recordClear(stars) {
+      var store = loadStore();
+      var day = kstKey(0);
+      var pid = state.puzzle.id;
+      var prev = store.days[day];
+      if (!prev || !prev.cleared || state.moves <= prev.moves) {
+        store.days[day] = {
+          puzzle: pid, moves: state.moves, par: state.puzzle.par,
+          stars: stars, cleared: true, cleared_at: Date.now()
+        };
+      }
+      if (!store.best[pid] || state.moves < store.best[pid]) store.best[pid] = state.moves;
+      store.totals.clears += 1;
+      if (store.streak.last !== day) {
+        store.streak.count = (store.streak.last === kstKey(-1)) ? (store.streak.count + 1) : 1;
+        store.streak.last = day;
+      }
+      state.store = store;
+      saveStore(store);
+      return store.best[pid];
+    }
+
+    function renderRecord() {
+      var store = state.store || loadStore();
+      var day = store.days[kstKey(0)];
+      el.recordDate.textContent = dayLabel(kstKey(0));
+      el.recToday.textContent = day && typeof day.moves === 'number' ? day.moves + '수' : '—';
+      el.recClears.textContent = store.totals.clears + '판';
+      el.recStreak.textContent = (store.streak.count || 0) + '일';
+
+      el.recHistory.innerHTML = '';
+      var keys = Object.keys(store.days).sort().reverse().slice(0, 3);
+      if (!keys.length) {
+        var empty = document.createElement('li');
+        empty.className = 'is-empty';
+        empty.textContent = '아직 기록이 없습니다. 한 판 풀어 보세요.';
+        el.recHistory.appendChild(empty);
+        return;
+      }
+      keys.forEach(function (key) {
+        var item = store.days[key];
+        var li = document.createElement('li');
+        var left = document.createElement('span');
+        left.textContent = dayLabel(key);
+        var right = document.createElement('span');
+        right.textContent = item.moves + '수 · 별 ' + item.stars;
+        li.appendChild(left);
+        li.appendChild(right);
+        el.recHistory.appendChild(li);
+      });
+    }
+
+    /* ---------------------------------------------------------------- 조건 */
+    function condRows() {
+      var p = state.puzzle;
+      if (!p) return [];
+      var seatOfP = {};
+      state.seats.forEach(function (pid, i) { if (pid) seatOfP[pid] = i; });
+      var byTag = {};
+      p.passengers.forEach(function (pass) {
+        (pass.conds || []).forEach(function (tag) {
+          if (!byTag[tag]) byTag[tag] = { label: TAG_LABEL[tag] || tag, total: 0, ok: 0 };
+          byTag[tag].total += 1;
+          if (seatOfP[pass.id] !== undefined && seatHasTag(seatOfP[pass.id], tag)) byTag[tag].ok += 1;
+        });
+      });
+      var rows = [];
+      TAG_ORDER.forEach(function (tag) {
+        if (!byTag[tag]) return;
+        var row = byTag[tag];
+        rows.push({ label: row.label, total: row.total, ok: row.ok, done: row.ok === row.total });
+      });
+      (p.groups || []).forEach(function (group) {
+        var seats = [];
+        group.forEach(function (id) { if (seatOfP[id] !== undefined) seats.push(seatOfP[id]); });
+        var done = seats.length === group.length && contiguous(seats);
+        rows.push({ label: '일행 ' + group.length + '명 붙어 앉기', total: group.length, ok: seats.length, done: done });
+      });
+      return rows;
+    }
+
+    function evaluate() {
+      var rows = condRows();
+      var remaining = 0;
+      rows.forEach(function (row) { if (!row.done) remaining += 1; });
+      var seatedAll = state.puzzle.passengers.every(function (p) { return seatOf(p.id) !== -1; });
+      return { ok: seatedAll && remaining === 0, rows: rows, remaining: remaining + (seatedAll ? 0 : 1) };
+    }
+
+    function renderConds(rows) {
+      var list = rows || condRows();
+      el.condList.innerHTML = '';
+      var done = 0;
+      list.forEach(function (row) {
+        var li = document.createElement('li');
+        li.className = 'cond-row' + (row.done ? ' is-ok' : '');
+        var dot = document.createElement('span');
+        dot.className = 'cond-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        var name = document.createElement('span');
+        name.className = 'cond-name';
+        name.textContent = row.label;
+        var count = document.createElement('span');
+        count.className = 'cond-count';
+        count.textContent = row.ok + '/' + row.total;
+        li.appendChild(dot);
+        li.appendChild(name);
+        li.appendChild(count);
+        el.condList.appendChild(li);
+        if (row.done) done += 1;
+      });
+      el.condValue.textContent = done + '/' + list.length;
+    }
+
+    /* ---------------------------------------------------------------- 보드 */
+    function buildGrid() {
+      el.seatGrid.innerHTML = '';
+      cellEls = [];
+      for (var i = 0; i < 16; i += 1) {
+        var cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'seat-cell';
+        cell.setAttribute('data-seat', String(i));
+        var top = document.createElement('span');
+        top.className = 'sc-top';
+        var label = document.createElement('span');
+        label.className = 'sc-label';
+        var tag = document.createElement('span');
+        tag.className = 'sc-tag';
+        top.appendChild(label);
+        top.appendChild(tag);
+        var name = document.createElement('span');
+        name.className = 'sc-name';
+        var sub = document.createElement('span');
+        sub.className = 'sc-sub';
+        cell.appendChild(top);
+        cell.appendChild(name);
+        cell.appendChild(sub);
+        cell.__label = label;
+        cell.__tag = tag;
+        cell.__name = name;
+        cell.__sub = sub;
+        cell.addEventListener('click', (function (index) {
+          return function () { onSeatClick(index); };
+        })(i));
+        el.seatGrid.appendChild(cell);
+        cellEls.push(cell);
+      }
+    }
+
+    function canTake(id, seat) {
+      var pass = passengerIndex[id];
+      if (!pass) return false;
+      var conds = pass.conds || [];
+      for (var i = 0; i < conds.length; i += 1) {
+        if (!seatHasTag(seat, conds[i])) return false;
+      }
+      return true;
+    }
+
+    function renderGrid() {
+      for (var i = 0; i < 16; i += 1) {
+        var cell = cellEls[i];
+        var seat = SEATS[i];
+        if (!cell || !seat) continue;
+        var pid = state.seats[i];
+        var selected = state.selected;
+        cell.__label.textContent = seat.label;
+        cell.__tag.textContent = seatHasTag(i, 'window') ? '창가' : '통로';
+        cell.__name.textContent = pid ? passengerShort(pid) : '빈 자리';
+        cell.__sub.textContent = seatHasTag(i, 'senior') ? '노약자석'
+          : (seatHasTag(i, 'door') ? '출입문 근접' : '조용한 칸');
+        cell.classList.toggle('is-occupied', !!pid);
+        cell.classList.toggle('is-senior', seatHasTag(i, 'senior'));
+        cell.classList.toggle('is-selected', !!pid && pid === selected);
+        cell.classList.toggle('is-target', !!selected && !state.cleared && canTake(selected, i));
+        var text = seat.label + ' ' + (seatHasTag(i, 'window') ? '창가' : '통로') + ' · ' + cell.__sub.textContent;
+        text += pid ? ' · ' + passengerName(pid) : ' · 빈 자리';
+        cell.setAttribute('aria-label', text);
+        cell.setAttribute('aria-pressed', (!!pid && pid === selected) ? 'true' : 'false');
+      }
+    }
+
+    function buildWaiting() {
+      el.waitList.innerHTML = '';
+      waitEls = {};
+      state.puzzle.passengers.forEach(function (pass) {
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'wait-card';
+        card.setAttribute('data-pid', pass.id);
+        var top = document.createElement('span');
+        top.className = 'wait-top';
+        var name = document.createElement('span');
+        name.className = 'wait-name';
+        name.textContent = pass.name;
+        var mark = document.createElement('span');
+        mark.className = 'wait-mark';
+        if (pass.together) mark.textContent = '일행';
+        top.appendChild(name);
+        top.appendChild(mark);
+        var chips = document.createElement('span');
+        chips.className = 'wait-conds';
+        (pass.conds || []).forEach(function (tag) {
+          var chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.textContent = TAG_LABEL[tag] || tag;
+          chips.appendChild(chip);
+        });
+        if (pass.together) {
+          var chipT = document.createElement('span');
+          chipT.className = 'chip chip-together';
+          chipT.textContent = '붙어 앉기';
+          chips.appendChild(chipT);
+        }
+        if (!(pass.conds || []).length && !pass.together) {
+          var chipNone = document.createElement('span');
+          chipNone.className = 'chip';
+          chipNone.textContent = '조건 없음';
+          chips.appendChild(chipNone);
+        }
+        card.appendChild(top);
+        card.appendChild(chips);
+        card.addEventListener('click', function () { onWaitClick(pass.id); });
+        waitEls[pass.id] = card;
+        el.waitList.appendChild(card);
+      });
+    }
+
+    function renderWaiting() {
+      var shown = 0;
+      state.puzzle.passengers.forEach(function (pass) {
+        var card = waitEls[pass.id];
+        if (!card) return;
+        var waiting = isWaiting(pass.id);
+        card.hidden = !waiting;
+        if (!waiting) return;
+        shown += 1;
+        var selected = state.selected === pass.id;
+        card.classList.toggle('is-selected', selected);
+        card.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+      el.waitValue.textContent = shown + '명';
+      el.waitEmpty.hidden = shown > 0;
+      el.waitList.hidden = shown === 0;
+    }
+
+    function renderMeter() {
+      el.moveValue.textContent = String(state.moves);
+      el.parValue.textContent = String(state.puzzle ? state.puzzle.par : 0);
+      var stars = state.puzzle ? starsFor(state.moves, state.puzzle.par) : 0;
+      el.starRow.innerHTML = starMarkup(stars);
+      el.starRow.setAttribute('aria-label', '현재 별 ' + stars + '개');
+    }
+
+    function renderHead() {
+      var p = state.puzzle;
+      if (!p) return;
+      el.boardTitle.textContent = state.mode === 'daily' ? '오늘의 막차 · ' + p.title : p.title;
+      el.boardSub.textContent = p.note || '';
+      el.modeNote.textContent = state.mode === 'daily' ? '오늘의 막차' : (LEVEL_LABEL[p.level] || '연습');
+    }
+
+    function renderAll() {
+      renderHead();
+      renderGrid();
+      renderWaiting();
+      renderConds();
+      renderMeter();
+      renderRecord();
+    }
+
+    /* ---------------------------------------------------------------- 동작 */
+    function loadPuzzle(src, mode) {
+      if (!src) return;
+      state.puzzle = copyPuzzle(src);
+      passengerIndex = {};
+      state.puzzle.passengers.forEach(function (p) { passengerIndex[p.id] = p; });
+      state.seats = state.puzzle.start.slice();
+      state.waiting = [];
+      state.puzzle.passengers.forEach(function (p) {
+        if (state.seats.indexOf(p.id) === -1) state.waiting.push(p.id);
+      });
+      state.selected = null;
+      state.moves = 0;
+      state.cleared = false;
+      state.counted = false;
+      state.mode = mode || 'daily';
+      el.resultBox.hidden = true;
+      el.nextBtn.hidden = state.mode !== 'practice';
+      el.practiceWrap.hidden = state.mode !== 'practice';
+      el.modeDaily.classList.toggle('is-active', state.mode === 'daily');
+      el.modePractice.classList.toggle('is-active', state.mode === 'practice');
+      el.modeDaily.setAttribute('aria-pressed', state.mode === 'daily' ? 'true' : 'false');
+      el.modePractice.setAttribute('aria-pressed', state.mode === 'practice' ? 'true' : 'false');
+      buildWaiting();
+      renderAll();
+      if (state.mode === 'practice') renderPracticeList();
+      setStatus(state.mode === 'daily'
+        ? '오늘의 막차입니다. 조건에 맞게 자리를 잡아 보세요.'
+        : '연습 퍼즐입니다. 기준 ' + state.puzzle.par + '수 안에 끝내면 별 3개입니다.');
+    }
+
+    function afterMove(message) {
+      var check = evaluate();
+      if (check.ok) state.cleared = true;
+      renderGrid();
+      renderWaiting();
+      renderConds(check.rows);
+      renderMeter();
+      if (check.ok) { onClear(); return; }
+      setStatus(message + ' · 남은 조건 ' + check.remaining + '개');
+    }
+
+    function onWaitClick(id) {
+      if (!state.puzzle || state.cleared) return;
+      if (state.selected === id) {
+        state.selected = null;
+        setStatus('선택을 해제했습니다.');
+        renderGrid();
+        renderWaiting();
+        return;
+      }
+      state.selected = id;
+      setStatus(passengerName(id) + ' 선택 · 앉힐 좌석을 누르세요.');
+      renderGrid();
+      renderWaiting();
+    }
+
+    function onSeatClick(index) {
+      if (!state.puzzle || state.cleared) return;
+      var occupant = state.seats[index];
+      var selected = state.selected;
+      if (!selected) {
+        if (occupant) {
+          state.selected = occupant;
+          setStatus(passengerName(occupant) + ' 선택 · 옮길 좌석을 누르세요.');
+          renderGrid();
+          renderWaiting();
+        } else {
+          setStatus('대기 승객이나 앉은 승객을 먼저 고르세요.');
+        }
+        return;
+      }
+      if (selected === occupant) {
+        state.selected = null;
+        setStatus('선택을 해제했습니다.');
+        renderGrid();
+        renderWaiting();
+        return;
+      }
+      var from = seatOf(selected);
+      if (from === index) return;
+      if (!state.counted) countPlay();
+      if (from === -1) {
+        state.waiting = state.waiting.filter(function (x) { return x !== selected; });
+        state.seats[index] = selected;
+        if (occupant) state.waiting.push(occupant);
+      } else {
+        state.seats[from] = occupant || null;
+        state.seats[index] = selected;
+      }
+      state.moves += 1;
+      state.selected = null;
+      var message = occupant
+        ? passengerShort(selected) + ' ↔ ' + passengerShort(occupant) + ' 자리 교환'
+        : passengerShort(selected) + ' 님을 ' + SEATS[index].label + '에 앉혔습니다';
+      afterMove(message);
+    }
+
+    function onClear() {
+      var puzzle = state.puzzle;
+      var stars = starsFor(state.moves, puzzle.par);
+      var best = recordClear(stars);
+      el.resultBadge.textContent = '클리어';
+      el.resultTitle.textContent = '모든 조건을 만족했습니다';
+      el.resultMoves.textContent = String(state.moves);
+      el.resultPar.textContent = '기준 ' + puzzle.par + '수';
+      el.resultStars.innerHTML = starMarkup(stars);
+      el.resultStars.setAttribute('aria-label', '별 ' + stars + '개');
+      el.resultEff.textContent = Math.round((puzzle.par / Math.max(1, state.moves)) * 100) + '%';
+      el.resultBest.textContent = best + '수';
+      el.resultClears.textContent = state.store.totals.clears + '판';
+      el.resultHint.textContent = stars === 3
+        ? '기준 이동 수 안에 끝냈습니다. 남은 자리 교환도 같은 방식으로 풀 수 있습니다.'
+        : (stars === 2
+          ? '기준보다 ' + (state.moves - puzzle.par) + '수 더 움직였습니다. 두 승객의 자리를 맞바꾸면 한 번에 두 명이 맞습니다.'
+          : '기준보다 많이 움직였습니다. 대기 승객은 조건이 맞는 좌석부터 앉히면 빨라집니다.');
+      el.nextBtn.hidden = state.mode !== 'practice';
+      el.resultBox.hidden = false;
+      setStatus('모든 조건을 만족했습니다. ' + state.moves + '수 · 별 ' + stars + '개');
+      renderMeter();
+      renderRecord();
+      renderPracticeList();
+      if (el.resultBox.scrollIntoView) {
+        el.resultBox.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+      }
+    }
+
+    function renderPracticeList() {
+      el.practiceList.innerHTML = '';
+      var store = state.store || loadStore();
+      PRACTICE.forEach(function (src) {
+        var best = store.best[src.id];
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'stage';
+        if (state.puzzle && state.puzzle.id === src.id) button.classList.add('is-current');
+        if (best) button.classList.add('is-cleared');
+        button.setAttribute('data-pid', src.id);
+        var level = document.createElement('span');
+        level.className = 'stage-level';
+        level.textContent = LEVEL_LABEL[src.level] || '연습';
+        var title = document.createElement('span');
+        title.className = 'stage-title';
+        title.textContent = src.title;
+        var meta = document.createElement('span');
+        meta.className = 'stage-meta';
+        meta.textContent = '기준 ' + src.par + '수' + (best ? ' · 최고 ' + best + '수' : '');
+        button.appendChild(level);
+        button.appendChild(title);
+        button.appendChild(meta);
+        button.addEventListener('click', function () { loadPractice(src.id); });
+        el.practiceList.appendChild(button);
+      });
+    }
+
+    function loadPractice(id) {
+      var src = findSource(id);
+      if (src) loadPuzzle(src, 'practice');
+    }
+
+    function setMode(mode) {
+      if (mode === 'daily') {
+        loadPuzzle(dailyPuzzle(), 'daily');
+        el.practiceWrap.hidden = true;
+        return;
+      }
+      el.practiceWrap.hidden = false;
+      var currentPractice = state.puzzle && PRACTICE.some(function (p) { return p.id === state.puzzle.id; });
+      if (currentPractice && state.mode === 'practice') {
+        state.mode = 'practice';
+        renderHead();
+        renderPracticeList();
+        return;
+      }
+      var store = loadStore();
+      var pending = PRACTICE.filter(function (p) { return !store.best[p.id]; });
+      loadPuzzle(pending.length ? pending[0] : PRACTICE[0], 'practice');
+    }
+
+    /* ---------------------------------------------------------------- 이벤트 */
+    el.modeDaily.addEventListener('click', function () { setMode('daily'); });
+    el.modePractice.addEventListener('click', function () { setMode('practice'); });
+
+    el.resetBtn.addEventListener('click', function () {
+      if (!state.puzzle) return;
+      var src = findSource(state.puzzle.id);
+      if (src) loadPuzzle(src, state.mode);
+    });
+
+    el.retryBtn.addEventListener('click', function () {
+      if (!state.puzzle) return;
+      var src = findSource(state.puzzle.id);
+      if (src) loadPuzzle(src, state.mode);
+    });
+
+    el.nextBtn.addEventListener('click', function () {
+      if (!state.puzzle) return;
+      loadPractice(nextPracticeId(state.puzzle.id));
+    });
+
+    /* ---------------------------------------------------------------- 테마 */
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (el.moonIcon) el.moonIcon.style.display = 'none';
+        if (el.sunIcon) el.sunIcon.style.display = 'block';
+        try { localStorage.setItem('secjobs-theme', 'dark'); } catch (e) {}
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (el.moonIcon) el.moonIcon.style.display = 'block';
+        if (el.sunIcon) el.sunIcon.style.display = 'none';
+        try { localStorage.setItem('secjobs-theme', 'light'); } catch (e) {}
+      }
+    }
+
+    (function initTheme() {
+      var saved = null;
+      try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) setTheme('dark');
+      else setTheme('light');
+    })();
+
+    if (el.themeToggle) {
+      el.themeToggle.addEventListener('click', function () {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setTheme(isDark ? 'light' : 'dark');
+      });
+    }
+
+    /* ---------------------------------------------------------------- 시작 */
+    state.store = loadStore();
+    state.dayKey = kstKey(0);
+    buildGrid();
+    loadPuzzle(dailyPuzzle(), 'daily');
+    renderPracticeList();
+    setStatus('막차가 도착했습니다. 대기 승객부터 조건에 맞는 좌석에 앉혀 보세요.');
+
+    // 탭을 열어 둔 채 자정을 넘기면 '오늘의 막차'를 새 퍼즐로 바꾼다(연습 중이면 그대로).
+    setInterval(function () {
+      var key = kstKey(0);
+      if (key === state.dayKey) return;
+      state.dayKey = key;
+      if (state.mode === 'daily') loadPuzzle(dailyPuzzle(), 'daily');
+    }, 60000);
+  })();
+  </script>
+</body>
+</html>
+"""
+
+
+def build():
+    kst_now = datetime.now(KST)
+    data = build_data(kst_now)
+    payload = safe_json_for_script(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+
+    html = HTML_TEMPLATE.replace("__CSS__", CSS).replace("__DATA_JSON__", payload)
+
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+    with open(SEAT_HTML, "w", encoding="utf-8") as f:
+        f.write(harden_html(ui_shell.apply(html, "seat")))
+
+    today = kst_now.date().isoformat()
+    # 브라우저(JS)와 같은 기준: 1970-01-01 부터 지난 일수 % 일일 퍼즐 수
+    index = (kst_now.date() - datetime(1970, 1, 1).date()).days % DAILY_COUNT
+    print("-> 'seat_data.json' 저장 완료 (일일 %d판 · 연습 %d판 · 좌석 %d칸)"
+          % (len(data["daily"]), len(data["practice"]), len(data["seats"])))
+    print("-> 'seat.html' 생성 완료 (오늘 %s · %s · 기준 %d수)"
+          % (today, data["daily"][index]["title"], data["daily"][index]["par"]))
+    return {"daily": len(data["daily"]), "practice": len(data["practice"]),
+            "today": data["daily"][index]["id"]}
+
+
+if __name__ == "__main__":
+    build()

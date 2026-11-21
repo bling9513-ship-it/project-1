@@ -1,6 +1,6 @@
 """chart.html 실제 동작 검증 (Python Playwright).
 
-- 390px·1280px: 가로 넘침 0, 상단 13탭과 우측 버튼이 겹치지 않음, 현재 탭 표시
+- 390px·1280px: 가로 넘침 0, 상단 15탭과 우측 버튼이 겹치지 않음, 현재 탭 표시
 - 단서 보기 → 이동평균선 표시 → 정답 선택 → 실제 기간·종목·출처 공개
 - 새로고침해도 공개 상태·기록 유지, ?id= 공유 링크로 다른 차트 열기
 - 오답·정답 보기(포기) 흐름, 콘솔 오류 0
@@ -95,7 +95,7 @@ async def check_width(browser, base, width):
       };
     }""")
     assert layout["overflow"] == 0, "%dpx 가로 넘침 %dpx" % (width, layout["overflow"])
-    assert layout["sheetLinks"] == 13, "%dpx 전체 메뉴가 13개가 아닙니다: %s" % (width, layout["sheetLinks"])
+    assert layout["sheetLinks"] == 15, "%dpx 전체 메뉴가 15개가 아닙니다: %s" % (width, layout["sheetLinks"])
     if width <= 768:
         assert layout["tabbar"] and not layout["menu"], "%dpx 모바일 내비 구성이 다릅니다" % width
         assert layout["current"].strip() == "차트 추리실", "%dpx 현재 페이지 표시: %s" % (width, layout["current"])
