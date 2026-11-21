@@ -1118,7 +1118,7 @@ JS = r"""
       el.source.textContent = '출처 ' + item.source.org + ' · ' + item.source.topic + ' · ' + item.source.checked + ' 확인';
     } else {
       el.source.hidden = true;
-      el.source.textContent = '직접 확인한 생활 팁 · ' + CD_DATA.checkedOn + ' 정리';
+      el.source.textContent = '생활 팁 · ' + CD_DATA.checkedOn + ' 정리';
     }
 
     const saved = readSaved().indexOf(item.id) >= 0;
