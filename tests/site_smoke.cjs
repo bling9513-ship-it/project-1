@@ -1636,6 +1636,227 @@ async function checkTools(page, width) {
   console.log(`tools interactions ${width}px passed`);
 }
 
+
+// ---- 채용공고: 관심 목록(상태·메모) · 보관된 관심 공고 · 저장 검색 ----
+async function openIndexRail(page, width) {
+  if (width >= 1024) return;
+  const open = await page.evaluate(() => document.getElementById('filterRail').classList.contains('is-open'));
+  if (!open) {
+    await page.click('#filterOpenBtn');
+    await page.waitForTimeout(320);
+  }
+}
+
+async function closeIndexRail(page, width) {
+  if (width >= 1024) return;
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+}
+
+async function checkIndexWatchlist(page, width) {
+  const tag = `index watchlist ${width}px`;
+  const reset = async () => {
+    await page.evaluate(() => {
+      localStorage.removeItem('secjobs-watchlist-v1');
+      localStorage.removeItem('secjobs-saved-searches-v1');
+    });
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#jobsContainer .job-card').first().waitFor({ state: 'attached' });
+  };
+  const cardState = (key) => page.evaluate((k) => {
+    const card = document.querySelector('[data-key="' + k + '"]');
+    if (!card) return null;
+    const star = card.querySelector('[data-watch-toggle]');
+    const select = card.querySelector('[data-watch-status]');
+    const memo = card.querySelector('[data-watch-memo]');
+    return {
+      pressed: star ? star.getAttribute('aria-pressed') : null,
+      status: select ? select.value : null,
+      memo: memo ? memo.value : null,
+      images: card.querySelectorAll('img').length,
+    };
+  }, key);
+
+  await reset();
+  assert.equal(await page.evaluate(() => window.__xss), undefined, `${tag}: window.__xss already set`);
+
+  // 카드마다 관심 토글·상태 선택·한 줄 메모가 붙는다
+  const controls = await page.evaluate(() => ({
+    cards: document.querySelectorAll('#jobsContainer .job-card').length,
+    stars: document.querySelectorAll('#jobsContainer .job-card .watch-btn').length,
+    selects: document.querySelectorAll('#jobsContainer .job-card .status-select').length,
+    memos: document.querySelectorAll('#jobsContainer .job-card .memo-input').length,
+    uniqueKeys: new Set(JOBS.map((job) => job.job_key)).size,
+    jobs: JOBS.length,
+    sharedUrlBroken: (() => {
+      const byUrl = {};
+      JOBS.forEach((job) => { (byUrl[job.url] = byUrl[job.url] || []).push(job.job_key); });
+      return Object.values(byUrl).some((keys) => new Set(keys).size !== keys.length);
+    })(),
+  }));
+  assert.ok(controls.cards > 0, `${tag}: no cards rendered`);
+  assert.equal(controls.stars, controls.cards, `${tag}: star toggle missing on some cards`);
+  assert.equal(controls.selects, controls.cards, `${tag}: status select missing on some cards`);
+  assert.equal(controls.memos, controls.cards, `${tag}: memo input missing on some cards`);
+  assert.equal(controls.uniqueKeys, controls.jobs, `${tag}: job_key is not unique`);
+  assert.equal(controls.sharedUrlBroken, false, `${tag}: two postings share one job_key`);
+
+  // 1) 같은 통합 URL을 쓰는 서로 다른 공고는 별도 키로 분리되고, 한쪽 메모가 다른 쪽에 섞이지 않는다
+  const pair = await page.evaluate(() => {
+    const now = new Date().toISOString();
+    const base = {
+      url: 'https://example.test/shared-posting-url',
+      platforms: ['사람인'], keywords: ['정보보안'], tags: [], location: '', summary: '',
+      deadline: '상시채용', deadline_label: '상시채용', deadline_status: 'ALWAYS',
+      last_seen_at: now, first_seen_at: now,
+    };
+    const a = Object.assign({}, base, { job_key: 'test:shared:aaa', company: '테스트회사', title: '동일 URL 공고 A' });
+    const b = Object.assign({}, base, { job_key: 'test:shared:bbb', company: '테스트회사', title: '동일 URL 공고 B' });
+    JOBS.unshift(a, b);
+    jobByKey[a.job_key] = a;
+    jobByKey[b.job_key] = b;
+    renderFeed();
+    return { a: a.job_key, b: b.job_key };
+  });
+  await page.locator(`[data-key="${pair.a}"] .watch-btn`).waitFor({ state: 'attached' });
+  await page.selectOption(`[data-key="${pair.a}"] .status-select`, '지원예정');
+  await page.fill(`[data-key="${pair.a}"] .memo-input`, 'A에만 남는 메모');
+  const sameUrl = { a: await cardState(pair.a), b: await cardState(pair.b) };
+  assert.equal(sameUrl.a.status, '지원예정', `${tag}: status not saved on the first posting`);
+  assert.equal(sameUrl.a.memo, 'A에만 남는 메모', `${tag}: memo not saved on the first posting`);
+  assert.equal(sameUrl.b.pressed, 'false', `${tag}: second posting of the same URL got watched`);
+  assert.equal(sameUrl.b.memo, '', `${tag}: memo leaked to the other posting on the same URL`);
+  assert.equal(await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('secjobs-watchlist-v1'))).length), 1,
+    `${tag}: one posting must create exactly one watch entry`);
+
+  // 2) XSS 문자열은 마크업이 아니라 글자로만 남는다
+  const realKey = await page.evaluate(() => JOBS.filter((job) => job.job_key.indexOf('test:') !== 0)[0].job_key);
+  const payload = '<img src=x onerror="window.__xss=1">';
+  await page.fill(`[data-key="${realKey}"] .memo-input`, payload);
+  await page.waitForTimeout(120);
+  const xss = await cardState(realKey);
+  assert.equal(xss.memo, payload, `${tag}: memo text was mangled`);
+  assert.equal(xss.images, 0, `${tag}: memo was rendered as markup`);
+  assert.equal(await page.evaluate(() => window.__xss), undefined, `${tag}: memo script executed`);
+
+  // 3) 새로고침해도 관심·상태·메모가 그대로 복원된다
+  await page.click(`[data-key="${realKey}"] .watch-btn`);
+  await page.selectOption(`[data-key="${realKey}"] .status-select`, '지원예정');
+  await page.fill(`[data-key="${realKey}"] .memo-input`, '새로고침 후에도 남는 메모');
+  await page.reload({ waitUntil: 'load' });
+  await page.locator(`[data-key="${realKey}"] .watch-btn`).waitFor({ state: 'attached' });
+  const restored = await cardState(realKey);
+  assert.equal(restored.pressed, 'true', `${tag}: watch state lost on reload`);
+  assert.equal(restored.status, '지원예정', `${tag}: status lost on reload`);
+  assert.equal(restored.memo, '새로고침 후에도 남는 메모', `${tag}: memo lost on reload`);
+
+  // 4) 공고가 현재 목록에서 빠져도 보관된 관심 공고에서 상태·메모를 계속 고칠 수 있다
+  const removed = await page.evaluate((key) => {
+    const index = JOBS.findIndex((job) => job.job_key === key);
+    const job = JOBS[index];
+    JOBS.splice(index, 1);
+    renderFeed();
+    return { company: job.company, title: job.title };
+  }, realKey);
+  await page.locator('#watchArchive:not([hidden])').waitFor({ timeout: 5000 });
+  const archived = await page.evaluate((key) => {
+    const item = document.querySelector('#watchArchiveList [data-watch-for="' + key + '"]');
+    if (!item) return null;
+    return {
+      title: item.querySelector('.watch-arch-title').textContent,
+      company: item.querySelector('.watch-arch-company').textContent,
+      status: item.querySelector('.status-select').value,
+      memo: item.querySelector('.memo-input').value,
+      link: item.querySelector('.watch-arch-link').getAttribute('href'),
+    };
+  }, realKey);
+  assert.ok(archived, `${tag}: archived watch item missing`);
+  assert.equal(archived.title, removed.title, `${tag}: archived title mismatch`);
+  assert.equal(archived.company, removed.company, `${tag}: archived company mismatch`);
+  assert.equal(archived.status, '지원예정', `${tag}: archived status lost`);
+  assert.equal(archived.memo, '새로고침 후에도 남는 메모', `${tag}: archived memo lost`);
+  assert.ok(/^https?:/.test(archived.link), `${tag}: archived original link missing`);
+
+  await page.selectOption(`#watchArchiveList [data-watch-for="${realKey}"] .status-select`, '면접');
+  await page.fill(`#watchArchiveList [data-watch-for="${realKey}"] .memo-input`, '보관함에서 고친 메모');
+  const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem('secjobs-watchlist-v1'))[key], realKey);
+  assert.equal(stored.status, '면접', `${tag}: archived status edit not saved`);
+  assert.equal(stored.memo, '보관함에서 고친 메모', `${tag}: archived memo edit not saved`);
+
+  // 5) 저장 검색: 저장 → 초기화(새로고침) → 칩 클릭으로 검색어·필터·정렬 복원
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#jobsContainer .job-card').first().waitFor({ state: 'attached' });
+  await openIndexRail(page, width);
+  await page.fill('#searchInput', '보안');
+  await page.click('#keywordNav .segment-btn[data-kw="정보보안"]');
+  await page.click('.filter-pill[data-filter="platform"][data-val="원티드"]');
+  await page.selectOption(width >= 1024 ? '#sortSelect' : '#sortSelectMobile', 'company');
+  await page.click('#saveSearchBtn');
+  const chip = await page.evaluate(() => {
+    const el = document.querySelector('#savedSearchList .saved-chip-apply');
+    return el ? { label: el.textContent, count: document.querySelectorAll('#savedSearchList .saved-chip').length } : null;
+  });
+  assert.ok(chip && chip.label.includes('보안') && chip.label.includes('원티드'), `${tag}: saved search label "${chip && chip.label}"`);
+  assert.equal(chip.count, 1, `${tag}: saved search chip missing`);
+
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#jobsContainer .job-card').first().waitFor({ state: 'attached' });
+  const cleared = await page.evaluate(() => ({
+    term: document.getElementById('searchInput').value,
+    sort: document.getElementById('sortSelect').value,
+    platform: (document.querySelector('.filter-pill[data-filter="platform"].active') || {}).getAttribute
+      ? document.querySelector('.filter-pill[data-filter="platform"].active').getAttribute('data-val') : null,
+  }));
+  assert.equal(cleared.term, '', `${tag}: search term survived reload`);
+  assert.equal(cleared.sort, 'deadline', `${tag}: sort survived reload`);
+
+  await openIndexRail(page, width);
+  await page.click('#savedSearchList .saved-chip-apply');
+  await page.waitForTimeout(200);
+  const restoredSearch = await page.evaluate(() => ({
+    term: document.getElementById('searchInput').value,
+    keyword: (document.querySelector('#keywordNav .segment-btn.active') || {}).getAttribute
+      ? document.querySelector('#keywordNav .segment-btn.active').getAttribute('data-kw') : null,
+    platform: (document.querySelector('.filter-pill[data-filter="platform"].active') || {}).getAttribute
+      ? document.querySelector('.filter-pill[data-filter="platform"].active').getAttribute('data-val') : null,
+    sort: document.getElementById('sortSelect').value,
+    count: Number(document.getElementById('matchCount').textContent.trim()),
+  }));
+  assert.equal(restoredSearch.term, '보안', `${tag}: saved search did not restore the query`);
+  assert.equal(restoredSearch.keyword, '정보보안', `${tag}: saved search did not restore the keyword`);
+  assert.equal(restoredSearch.platform, '원티드', `${tag}: saved search did not restore the platform`);
+  assert.equal(restoredSearch.sort, 'company', `${tag}: saved search did not restore the sort`);
+  assert.ok(restoredSearch.count > 0, `${tag}: saved search restored an empty result`);
+
+  // 저장 검색 삭제 → 칩이 사라진다
+  await openIndexRail(page, width);
+  await page.click('#savedSearchList .saved-chip-del');
+  assert.equal(await page.evaluate(() => document.querySelectorAll('#savedSearchList .saved-chip').length), 0,
+    `${tag}: saved search chip not deleted`);
+
+  // 6) 관심만 필터로 좁히면 저장된 관심 공고만 남는다
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#jobsContainer .job-card').first().waitFor({ state: 'attached' });
+  await openIndexRail(page, width);
+  await page.click('.filter-pill[data-filter="watch"][data-val="watch"]');
+  await page.waitForTimeout(150);
+  const watchOnly = await page.evaluate(() => {
+    const cards = Array.from(document.querySelectorAll('#jobsContainer .job-card'));
+    return {
+      count: cards.length,
+      allWatched: cards.every((card) => card.getAttribute('data-watch-for') in JSON.parse(localStorage.getItem('secjobs-watchlist-v1'))),
+      badge: document.getElementById('filterBadge').textContent.trim(),
+    };
+  });
+  assert.equal(watchOnly.count, 1, `${tag}: watch-only filter shows ${watchOnly.count} cards`);
+  assert.equal(watchOnly.allWatched, true, `${tag}: watch-only filter shows an unwatched card`);
+  assert.equal(watchOnly.badge, '1', `${tag}: watch-only filter badge`);
+
+  await closeIndexRail(page, width);
+  await reset();
+  console.log(`index watchlist ${width}px passed`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -1670,6 +1891,7 @@ async function checkPage(context, base, name, width) {
 
     await checkShellLayout(page, width, name);
     if (name === 'index') await checkIndexLayout(page, width, `index ${width}px`);
+    if (name === 'index' && (width === 390 || width === 1280)) await checkIndexWatchlist(page, width);
     if (name === 'ai' && width <= 768) await checkMobileSheet(page, width, `sheet ai ${width}px`);
     if (name === 'ai' && width <= 768) await checkSheetFastToggle(page, width, `sheet fast ai ${width}px`);
 
