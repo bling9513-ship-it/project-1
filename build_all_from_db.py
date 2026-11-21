@@ -102,6 +102,10 @@ def build_all():
     from build_mission_html import build as build_mission
     daily_total, practice_total = build_mission()
 
+    # 16. chart.html 재생성 (차트 추리실: 과거 시세 블라인드 차트 + 단서 3단계 + 정답 공개)
+    from build_chart_html import build as build_chart
+    chart_total = build_chart()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -113,9 +117,10 @@ def build_all():
     print(f"  - 보안 워게임 문제: {wargame_total}개 (카테고리 4종)")
     print(f"  - 보안 실무 유틸: {tool_total}종 · 치트시트 명령어 {cmd_total}개")
     print(f"  - 피싱·스미싱 판별: {radar_total}문항 (정상 안내 4문항 · 트렌드 6종 · 긴급 대응 5단계)")
-    print(f"  - 오늘 뭐 먹지: 메뉴 {pick_total}종 · 나들이 코스 16곳 (날씨 모드 3종 + 자동 · 10탭 내비게이션)")
+    print(f"  - 오늘 뭐 먹지: 메뉴 {pick_total}종 · 나들이 코스 16곳 (날씨 모드 3종 + 자동)")
     print(f"  - 하루 한 판 3단서 추리: 문제 {clue_total}개 (단서 3단계 · 4지선다 · 분야 6종)")
-    print(f"  - 퇴근길 미션: 오늘의 지도 {daily_total}개 풀 · 연습 {practice_total}개 (최단 경로 BFS 검증 · 11탭 내비게이션)")
+    print(f"  - 퇴근길 미션: 오늘의 지도 {daily_total}개 풀 · 연습 {practice_total}개 (최단 경로 BFS 검증)")
+    print(f"  - 차트 추리실: 과거 차트 {chart_total}개 (단서 3단계 · 4지선다 · 12탭 내비게이션)")
 
 if __name__ == "__main__":
     build_all()

@@ -3,7 +3,7 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission'];
+const pages = ['index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart'];
 const root = path.join(__dirname, '..');
 
 async function assertCveJump(page, cid, label) {
@@ -390,6 +390,108 @@ async function checkMissionMobile(browser, base) {
   }
 }
 
+// ---- 차트 추리실: 단서 열기 → 정답 선택 → 실제 기간·종목·출처 공개 ----
+async function checkChartGame(page, base, width) {
+  const tag = `chart ${width}px`;
+  const readState = () => page.evaluate(() => {
+    const ep = byId[currentId];
+    return {
+      id: currentId,
+      total: DATA.length,
+      solved: document.getElementById('solvedStat').textContent.trim(),
+      streak: document.getElementById('statStreak').textContent.trim(),
+      open: document.querySelectorAll('#clueList .clue.open').length,
+      dots: document.querySelectorAll('#cDots .dot.on').length,
+      nextLabel: document.getElementById('nextClue').textContent.trim(),
+      futureBars: document.querySelectorAll('#chartSvg .candle-up.is-future, #chartSvg .candle-down.is-future').length,
+      maLine: document.querySelectorAll('#chartSvg .ma-line').length,
+      resultHidden: document.getElementById('resultBox').hidden,
+      badge: document.getElementById('resultBadge').textContent.trim(),
+      period: document.getElementById('revealPeriod').textContent.trim(),
+      name: document.getElementById('revealName').textContent.trim(),
+      future: document.getElementById('revealFuture').textContent.trim(),
+      href: document.getElementById('revealSource').getAttribute('href'),
+      answer: ep.quiz.answer,
+      answerText: ep.quiz.choices[ep.quiz.answer],
+      share: document.getElementById('sharePreview').textContent,
+      todayHidden: document.getElementById('pToday').hidden,
+      locked: document.querySelectorAll('#options .opt:disabled').length,
+      correctMarks: document.querySelectorAll('#options .opt.is-correct').length,
+      wrongMarks: document.querySelectorAll('#options .opt.is-wrong').length,
+    };
+  });
+
+  await page.waitForFunction(() => typeof currentId !== 'undefined' && !!currentId, null, { timeout: 5000 });
+  const start = await readState();
+  assert.ok(start.total >= 14, `${tag}: fewer than 14 charts`);
+  assert.equal(start.open, 0, `${tag}: clues must start closed`);
+  assert.equal(start.futureBars, 0, `${tag}: hidden segment drawn before the answer`);
+  assert.equal(start.maLine, 0, `${tag}: moving averages drawn before the clues`);
+  assert.equal(start.resultHidden, true, `${tag}: result box visible before answering`);
+  assert.equal(start.todayHidden, false, `${tag}: today's chart must open by default`);
+
+  // 단서 1 → 이동평균선 표시
+  await page.click('#nextClue');
+  await page.waitForFunction(() => document.querySelectorAll('#clueList .clue.open').length === 1,
+    null, { timeout: 5000 });
+  const one = await readState();
+  assert.equal(one.dots, 1, `${tag}: clue dots`);
+  assert.equal(one.maLine, 2, `${tag}: opening a clue must reveal the moving averages`);
+
+  await page.click('#nextClue');
+  await page.click('#nextClue');
+  await page.waitForFunction(() => document.querySelectorAll('#clueList .clue.open').length === 3,
+    null, { timeout: 5000 });
+  const three = await readState();
+  assert.equal(three.nextLabel, '단서 모두 열림', `${tag}: clue button label "${three.nextLabel}"`);
+
+  // 정답 선택 → 실제 기간·종목·출처 공개
+  await page.click(`#options .opt[data-idx="${start.answer}"]`);
+  await page.locator('#resultBox:not([hidden])').waitFor({ timeout: 5000 });
+  const won = await readState();
+  assert.equal(won.badge, '정답', `${tag}: result badge`);
+  assert.ok(won.name.length > 0 && won.period.length > 0 && won.future.length > 0,
+    `${tag}: revealed period/name/future missing`);
+  assert.ok(won.href && won.href.startsWith('https://'), `${tag}: source link missing`);
+  assert.ok(won.futureBars > 0, `${tag}: hidden bars not drawn after the answer`);
+  assert.equal(won.correctMarks, 1, `${tag}: correct option not highlighted`);
+  assert.equal(won.locked, 4, `${tag}: options not locked after the answer`);
+  assert.equal(won.solved, `1 / ${won.total}`, `${tag}: solved counter "${won.solved}"`);
+  assert.ok(won.share.includes(`/chart.html?id=${encodeURIComponent(won.id)}`),
+    `${tag}: share link has no chart id`);
+  assert.ok(!won.share.includes(won.answerText) && !won.share.includes(won.name),
+    `${tag}: share text leaks the answer`);
+
+  // 새로고침해도 공개 상태·기록 유지
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => typeof currentId !== 'undefined' && !!currentId, null, { timeout: 5000 });
+  const kept = await readState();
+  assert.equal(kept.id, won.id, `${tag}: reload opened another chart`);
+  assert.equal(kept.resultHidden, false, `${tag}: reveal lost on reload`);
+  assert.equal(kept.open, 3, `${tag}: clue progress lost on reload`);
+  assert.ok(kept.futureBars > 0, `${tag}: hidden bars lost on reload`);
+  assert.equal(kept.solved, `1 / ${kept.total}`, `${tag}: solved record lost on reload`);
+
+  // ?id= 딥링크로 다른 차트를 열고 일부러 틀린 답 선택
+  const other = await page.evaluate(() => Array.from(document.querySelectorAll('#arcGrid .arc-card'))
+    .map(card => card.dataset.id).find(id => id !== currentId));
+  assert.ok(other, `${tag}: no other chart to deep link`);
+  await page.goto(`${base}/chart.html?id=${encodeURIComponent(other)}`, { waitUntil: 'load' });
+  await page.waitForFunction((id) => typeof currentId !== 'undefined' && currentId === id, other, { timeout: 5000 });
+  const fresh = await readState();
+  assert.equal(fresh.resultHidden, true, `${tag}: deep linked chart already revealed`);
+  await page.click(`#options .opt[data-idx="${(fresh.answer + 1) % 4}"]`);
+  await page.locator('#resultBox:not([hidden])').waitFor({ timeout: 5000 });
+  const lost = await readState();
+  assert.equal(lost.badge, '아쉬움', `${tag}: wrong answer badge "${lost.badge}"`);
+  assert.equal(lost.wrongMarks, 1, `${tag}: wrong option not highlighted`);
+  assert.equal(lost.correctMarks, 1, `${tag}: correct option not highlighted after a wrong pick`);
+  assert.equal(lost.solved, `1 / ${lost.total}`, `${tag}: wrong answer counted as solved`);
+  assert.equal(lost.streak, '0', `${tag}: streak not reset after a wrong answer`);
+  assert.ok(lost.name.length > 0 && lost.futureBars > 0, `${tag}: wrong answer must still reveal the chart`);
+  console.log(`chart game ${width}px passed (${won.name} · 가려진 ${won.future})`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -428,6 +530,7 @@ async function checkPage(context, base, name, width) {
     if (name === 'cve') await checkCvePriorityNav(page, width);
     if (name === 'clue') await checkClueGame(page, base, width);
     if (name === 'mission') await checkMissionGame(page, width);
+    if (name === 'chart') await checkChartGame(page, base, width);
 
     const blocked = await page.evaluate(() => ({
       csp: window.smokeCspViolations,
