@@ -5,12 +5,14 @@
 빌더와 독립된 판정기로 다음을 확인한다.
   · 기호 사전: 카테고리 4종(물세탁·표백·건조·다림질·드라이)에 대표 기호가 모두 있는지
     (물세탁 30℃·약·손세탁·금지, 표백 염소/산소·금지, 건조 옷걸이/그늘/기계건조 금지,
-     다림질 110℃·금지, 드라이 석유계·금지)
+     다림질 120℃·금지, 드라이 석유계·금지)
+  · 기준 판본: KS K 0021:2024(2024-12-31 개정) · ISO 3758:2023 대조 표기
+  · 다림질 점 1개 = 최대 120℃, 손세탁은 30℃·40℃(KS) / 상온 20~30℃(무숫자 국제 기호)
   · 모든 기호에 인라인 SVG(48×48 뷰박스) · 이름 · 한 줄 뜻 · 주의할 점이 있는지
   · 금지 기호에는 X 선, 약한 세탁에는 밑줄, 물 온도 기호에는 숫자가 그려졌는지
   · 퀴즈 6벌: 옷 이름·소재·기호 조합·4지선다·정답 인덱스(0~3)·근거 기호(라벨 기호 안)
   · 이모지 0 · 그라데이션 0 · 입력 필드 0 · 인라인 이벤트 핸들러 0
-  · 공통 셸 20페이지 등록 · 하단 탭 바 · 출처(국가기술표준원 KS K 0021)·확인일 표기
+  · 공통 셸 20페이지 등록 · 하단 탭 바 · 출처(국가기술표준원 KS K 0021:2024) · ISO 3758:2023 대조 · 확인일 표기
   · wash_data.json 과 wash.html 에 심긴 데이터가 일치하는지
 
 실행: python3 tests/test_wash_data.py
@@ -55,9 +57,13 @@ def load_html():
 
 def check_standard(data):
     std = data.get("standard") or {}
-    check("표준 번호", std.get("code") == "KS K 0021", std.get("code"))
+    check("표준 번호", std.get("code") == "KS K 0021:2024", std.get("code"))
     check("표준 기관", std.get("org") == "국가기술표준원", std.get("org"))
     check("표준 제목", "섬유 제품의 취급" in (std.get("title") or ""), std.get("title"))
+    check("표준 판본", "2024-12-31" in (std.get("edition") or ""), std.get("edition"))
+    check("표준 판본 고시번호", "2024-0699" in (std.get("edition") or ""), std.get("edition"))
+    check("국제 표준 판본", std.get("intl") == "ISO 3758:2023", std.get("intl"))
+    check("국제 표준 대조 문구", "ISO 3758:2023" in (std.get("intlNote") or ""), std.get("intlNote"))
     check("표준 원문 링크", (std.get("url") or "").startswith("https://"), std.get("url"))
     check("확인일", data.get("checkedOn") == CHECKED_ON, data.get("checkedOn"))
     check("카테고리 4종", tuple(data.get("categories") or ()) == CATEGORIES, data.get("categories"))
@@ -90,6 +96,21 @@ def check_symbols(data):
         check("%s 금지 X" % sid, "l37 37" in by_id[sid]["svg"], by_id[sid]["svg"][-90:])
     check("손세탁 손 그림", "M19.4 32.8" in by_id["wash-hand"]["svg"], by_id["wash-hand"]["svg"][-120:])
     check("산소계 사선", "stroke-width=\"1.6\"" in by_id["bleach-oxygen"]["svg"])
+
+    # 다림질 점 1개: KS K 0021:2024 · ISO 3758:2023 은 최대 120℃ (110℃ 아님)
+    iron = by_id["iron-low"]
+    check("다림질 120℃ 이름", "120℃" in iron["name"], iron["name"])
+    check("다림질 120℃ 뜻", "120℃" in iron["meaning"], iron["meaning"])
+    check("다림질 이름에 110℃ 없음", "110℃" not in iron["name"], iron["name"])
+    check("다림질 뜻에 110℃ 단정 없음", "110℃ 이하" not in iron["meaning"], iron["meaning"])
+    check("다림질 옛 판본 안내", "110℃" in iron["caution"], iron["caution"])
+
+    # 손세탁: KS K 0021:2024 는 30℃·40℃ 로 나뉘고, 숫자 없는 국제 기호는 상온(20~30℃)
+    hand = by_id["wash-hand"]
+    check("손세탁 이름에 세탁기 금지", "세탁기" in hand["name"], hand["name"])
+    check("손세탁 KS 30℃·40℃ 안내", "30℃" in hand["caution"] and "40℃" in hand["caution"], hand["caution"])
+    check("손세탁 상온 안내", "상온" in hand["caution"] and "20~30℃" in hand["caution"], hand["caution"])
+    check("손세탁 ISO 판본 표기", "ISO 3758:2023" in hand["caution"], hand["caution"])
     check("염소계·산소계 빈 세모", "l37 37" not in by_id["bleach-any"]["svg"]
           and 'stroke-width="1.6"' not in by_id["bleach-any"]["svg"])
 
@@ -128,6 +149,15 @@ def check_quizzes(data):
     labels = [tuple(q.get("symbols") or []) for q in quizzes]
     check("라벨 조합 서로 다름", len(set(labels)) == len(labels), labels)
 
+    # 판본 정정이 퀴즈 보기·해설에도 반영됐는지
+    shirt = next((q for q in quizzes if q.get("id") == "white-shirt"), {})
+    shirt_answer = (shirt.get("options") or [""])[shirt.get("answer") or 0]
+    check("흰 셔츠 정답 120℃", "120℃" in shirt_answer, shirt_answer)
+    check("흰 셔츠 해설 120℃", "120℃" in (shirt.get("explain") or ""), shirt.get("explain"))
+    knit = next((q for q in quizzes if q.get("id") == "wool-knit"), {})
+    knit_answer = (knit.get("options") or [""])[knit.get("answer") or 0]
+    check("울 니트 정답 상온 손세탁", "상온" in knit_answer and "20~30℃" in knit_answer, knit_answer)
+
 
 def check_html(src, data):
     check("이모지 0개", not EMOJI_RE.search(src))
@@ -162,8 +192,11 @@ def check_html(src, data):
     check("근거 기호 표시", "근거 기호" in src and "is-evidence" in src)
     check("감속 모션 대응", "prefers-reduced-motion" in src)
     check("다크 테마 변수", '[data-theme="dark"]' in src)
-    check("출처 링크", "standard.go.kr" in src and "KS K 0021" in src)
+    check("출처 링크", "standard.go.kr" in src and "KS K 0021:2024" in src)
+    check("출처에 개정 판본", "2024-12-31" in src and "2024-0699" in src)
+    check("출처에 ISO 3758:2023", "ISO 3758:2023" in src)
     check("확인일 표기", CHECKED_ON in src)
+    check("110℃ 오표기 없음", "110℃ 이하 다림질" not in src)
     check("출처 링크 새 창 보호", re.search(r'href="https://www\.standard\.go\.kr[^"]*"[^>]*rel="noopener noreferrer"', src) is not None)
 
     # 심긴 데이터와 JSON 일치

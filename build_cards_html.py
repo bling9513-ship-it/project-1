@@ -129,8 +129,8 @@ THEMES = {
             "id": "winter",
             "title": "겨울 수분·습도",
             "cards": [
-                card("cond-winter-1", "물은 나눠서 한 잔씩",
-                     "필요한 물의 양은 활동량·환경·건강 상태에 따라 달라져요. 건강한 성인은 하루 1.5~2L를 한 시간에 한 잔씩 나눠 마시면 놓치지 않습니다.",
+                card("cond-winter-1", "물은 조금씩 나눠서",
+                     "필요한 물의 양은 활동량·환경·건강 상태에 따라 달라져요. 건강한 성인은 하루 1.5~2L 정도가 기준이고, 운동이나 야외활동 중에는 갈증이 느껴지기 전에 조금씩 마셔요.",
                      "책상에 물컵 두고 지금 한 모금", "winter-water",
                      _source(KDCA, "탈수", URL_DEHYDRATION)),
                 card("cond-winter-2", "실내 습도 40~50%",
@@ -366,10 +366,10 @@ ART = {
         + '<circle cx="118" cy="88" r="10" fill="var(--art-blue)"/>'
         + '<circle cx="70" cy="116" r="10" fill="none" stroke="var(--art-blue)" stroke-width="2.5"/>'
         + '<circle cx="94" cy="116" r="10" fill="var(--art-blue)"/>'
-        + _t(248, 76, "한 잔씩", 16, "var(--art-ink)", "700")
-        + _t(248, 96, "한 시간마다", 11)
+        + _t(248, 76, "1.5~2L", 16, "var(--art-ink)", "700")
+        + _t(248, 96, "하루 기준", 11)
         + '<path d="M228 108h40" stroke="var(--art-line)" stroke-width="2" stroke-dasharray="4 4"/>'
-        + _t(248, 126, "필요한 만큼", 11)
+        + _t(248, 126, "조금씩", 11)
     ),
     "winter-humid": _svg(
         '<circle cx="112" cy="82" r="46" fill="var(--art-paper)" stroke="var(--art-line)" stroke-width="3"/>'

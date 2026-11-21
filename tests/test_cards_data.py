@@ -8,6 +8,7 @@
   · 컨디션(건강) 카드 전부에 공신력 있는 기관명·페이지 주제·확인일(2026-11-22) 표기
   · 출처가 있는 카드(건강 12장 + 디지털 9장) 전부에 https 원문 링크(source.url) · 허용 호스트
   · cond-winter-2/3 는 확인된 질병관리청 원문(cntnts_sn=2047/2048) · cond-winter-1 은 개인차 반영 문구
+  · cond-winter-1 은 질병관리청 「탈수」 원문(cntnts_sn=6551)에 없는 섭취 주기('한 시간에 한 잔씩')를 쓰지 않는다
   · dig-wifi-2 는 '자물쇠' 대신 연결 경고·도메인 확인 문구(그림 키 wifi-warn)
   · 이모지 0 · 그라데이션 0 · 입력 필드(input/textarea) 0 · 인라인 이벤트 핸들러 0
   · KST 날짜 기준 4개 테마가 하루씩 순환하는지(연속 4일이면 네 테마 전부)
@@ -149,6 +150,13 @@ def check_fact_fixes(data):
     check("cond-winter-1 개인차 요인",
           any(x in water["summary"] for x in ("활동량", "환경", "건강 상태")), water["summary"])
     check("cond-winter-1 원문 링크", "cntnts_sn=6551" in source_url(water), source_url(water))
+    # 원문에 없는 섭취 주기('한 시간에 한 잔씩' · '한 시간마다')는 카드 어디에도 남기지 않는다.
+    for field in ("headline", "summary", "action"):
+        check("cond-winter-1 %s 미확인 주기 없음" % field,
+              "한 시간" not in (water.get(field) or "") and "한 잔씩" not in (water.get(field) or ""),
+              water.get(field))
+    check("cond-winter-1 원문 수치 유지", "1.5~2L" in water["summary"], water["summary"])
+    check("cond-winter-1 갈증 전 섭취 안내", "갈증" in water["summary"], water["summary"])
 
     # 공용 와이파이: 브라우저 자물쇠 대신 연결 경고·도메인 확인.
     wifi = by_id["dig-wifi-2"]
@@ -164,6 +172,9 @@ def check_html(src, data):
     check("그라데이션 0개", "gradient" not in src.lower())
     check("입력 필드 없음", "<input" not in src.lower() and "<textarea" not in src.lower())
     check("인라인 이벤트 핸들러 없음", not re.search(r"<[^>]+\son[a-z]+=", src, re.I))
+    # 그림 라벨에도 원문에 없는 섭취 주기를 남기지 않는다.('한 잔씩'/'한 시간마다')
+    check("수분 그림 라벨 미확인 주기 없음", "한 잔씩" not in src and "한 시간마다" not in src,
+          src[src.find("winter-water"):src.find("winter-humid")][-400:])
     check("공통 셸 하단 탭 바", src.count('class="ia-tabbar"') == 1, src.count('class="ia-tabbar"'))
     sheet_links = src.count('class="ia-sheet-link') - src.count('class="ia-sheet-links"')
     check("전체 메뉴 %d개" % SHEET_PAGES, sheet_links == SHEET_PAGES, sheet_links)
