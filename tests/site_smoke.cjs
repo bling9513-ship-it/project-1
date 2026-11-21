@@ -1803,7 +1803,13 @@ async function checkIndexWatchlist(page, width) {
     `${tag}: one posting must create exactly one watch entry`);
 
   // 2) XSS 문자열은 마크업이 아니라 글자로만 남는다
-  const realKey = await page.evaluate(() => JOBS.filter((job) => job.job_key.indexOf('test:') !== 0)[0].job_key);
+  // 실제 공고 중 '지금 화면에 카드가 있는' 첫 공고를 고른다(자정 직후 마감 처리된 공고는 피한다).
+  const realKey = await page.evaluate(() => {
+    const keys = new Set(Array.from(document.querySelectorAll('#jobsContainer .job-card')).map((card) => card.dataset.key));
+    const job = JOBS.find((item) => item.job_key.indexOf('test:') !== 0 && keys.has(item.job_key));
+    return job ? job.job_key : null;
+  });
+  assert.ok(realKey, `${tag}: no real job card to test the memo`);
   const payload = '<img src=x onerror="window.__xss=1">';
   await page.fill(`[data-key="${realKey}"] .memo-input`, payload);
   await page.waitForTimeout(120);
