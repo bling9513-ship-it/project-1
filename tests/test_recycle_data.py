@@ -8,6 +8,7 @@
   · 플라스틱 표시재질이 PET·HDPE·LDPE·PP·PS·OTHER 이고, 2021년 개정으로 빠진 PVC 를
     표시재질로 다시 넣지 않았는지(대신 안내 문구로 설명하는지)
   · 무색페트(라벨 제거·압착·뚜껑 닫기), 종량제 예외(영수증 감열지·칫솔·깨진 유리),
+    깨진 유리의 지자체별 차이(서울 소량 종량제·다량 특수규격마대 / 부평구 전용 PP마대),
     고철과 캔의 구분, 도포·첩합(재질 분리 불가 → 종량제) 설명이 들어 있는지
   · 모든 마크에 인라인 SVG(48×48 뷰박스) · 표시문자 · 이름 · 뜻 · 배출 원칙 · 주의
   · 퀴즈 7종: 품목·표시 조합·4지선다·정답 인덱스(0~3)·근거 마크(라벨 안)·해설,
@@ -123,11 +124,14 @@ def check_marks(data):
     check("종이 감열지", "감열지" in (paper.get("caution") or ""), paper.get("caution"))
     check("종이 종량제", "종량제" in (paper.get("caution") or ""), paper.get("caution"))
 
-    # 유리: 깨진 유리 종량제 예외
+    # 유리: 깨진 유리 종량제 예외 · 지자체별 차이(서울 특수규격마대 / 부평구 PP마대)
     glass = by_id.get("glass") or {}
     check("유리 깨짐 예외", "깨진" in (glass.get("caution") or ""), glass.get("caution"))
+    check("유리 수거함 제외", "유리병 수거함에서" in (glass.get("caution") or ""), glass.get("caution"))
     check("유리 종량제", "종량제" in (glass.get("caution") or ""), glass.get("caution"))
     check("유리 특수규격마대", "특수규격마대" in (glass.get("caution") or ""), glass.get("caution"))
+    check("유리 지자체 안내", "지자체" in (glass.get("caution") or ""), glass.get("caution"))
+    check("유리 전용 PP마대", "PP마대" in (glass.get("caution") or ""), glass.get("caution"))
     check("유리 대형폐기물", "대형폐기물" in (glass.get("caution") or ""), glass.get("caution"))
     check("유리 보증금 반납", "보증금" in (glass.get("rule") or ""), glass.get("rule"))
 
@@ -201,7 +205,18 @@ def check_quizzes(data):
     check("칫솔 정답 종량제", "칫솔은 종량제" in brush_answer, brush_answer)
     broken = next((q for q in quizzes if q.get("id") == "broken-glass"), {})
     broken_answer = (broken.get("options") or [""])[broken.get("answer") or 0]
-    check("깨진 유리 정답 신문지", "신문지" in broken_answer, broken_answer)
+    check("깨진 유리 정답 수거함 제외", "유리병 수거함에서" in broken_answer, broken_answer)
+    check("깨진 유리 정답 지자체 안내", "지자체" in broken_answer, broken_answer)
+    check("깨진 유리 정답 맥주병 반납", "보증금" in broken_answer, broken_answer)
+    broken_explain = broken.get("explain") or ""
+    check("깨진 유리 해설 서울 소량 종량제", "서울시" in broken_explain and "신문지" in broken_explain, broken_explain)
+    check("깨진 유리 해설 부평구 PP마대", "부평구" in broken_explain and "PP마대" in broken_explain, broken_explain)
+    check("깨진 유리 해설 다량 특수규격마대", "다량은 특수규격마대" in broken_explain, broken_explain)
+    # 깨진 유리컵은 지자체에 따라 종량제로도 가므로, '깨진 유리컵은 종량제'만으로 정답이 되면 안 된다
+    check("깨진 유리 보기 종량제 단정 없음",
+          all(not ("깨진 유리컵은" in opt and "종량제" in opt and "맥주병" not in opt)
+              for i, opt in enumerate(broken.get("options") or []) if i != (broken.get("answer") or 0)),
+          broken.get("options"))
     can = next((q for q in quizzes if q.get("id") == "can-pot"), {})
     can_answer = (can.get("options") or [""])[can.get("answer") or 0]
     check("캔·냄비 정답 고철", "고철" in can_answer, can_answer)
