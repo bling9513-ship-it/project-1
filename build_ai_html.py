@@ -1549,12 +1549,71 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       } catch (e) {}
     }
 
+    // ---- 재렌더 뒤 키보드 포커스 복원 ----
+    // 저장·읽음 토글이 그리드를 다시 그리면 포커스가 body 로 떨어져 키보드로 연속 조작할 수 없다.
+    // 토글 직전의 항목 ID·동작 종류·목록 위치를 기억했다가 같은 위치의 같은 버튼으로 되돌린다.
+    function markButtonFor(key, kind) {
+      if (!key) return null;
+      return grid.querySelector('.ai-card[data-key="' + key + '"] [data-mark="' + kind + '"]');
+    }
+
+    function captureMarkFocus() {
+      const active = document.activeElement;
+      const btn = active && active.closest ? active.closest('[data-mark]') : null;
+      if (!btn || !grid.contains(btn)) return null;
+      const card = btn.closest('.ai-card');
+      const keys = sorted(AI_ITEMS.filter(matches)).map(function (it) { return it.item_key; });
+      const key = card ? card.getAttribute('data-key') : null;
+      const index = key ? keys.indexOf(key) : -1;
+      return {
+        kind: btn.getAttribute('data-mark'),
+        id: btn.getAttribute('data-id'),
+        index: index >= 0 ? index : 0,
+      };
+    }
+
+    function restoreMarkFocus(pending) {
+      if (!pending) return;
+      const keys = sorted(AI_ITEMS.filter(matches)).map(function (it) { return it.item_key; });
+      let target = keys.indexOf(pending.id) !== -1 ? markButtonFor(pending.id, pending.kind) : null;
+      if (!target && keys.length) {
+        // 카드가 필터로 빠졌으면 같은 자리(다음 카드)로, 마지막 카드였으면 이전 카드로 간다.
+        const at = Math.min(pending.index, keys.length - 1);
+        target = markButtonFor(keys[at], pending.kind) || markButtonFor(keys[keys.length - 1], pending.kind);
+      }
+      if (!target) {
+        // 남은 카드가 0건이면 켜져 있는 필터 칩(모바일 시트처럼 숨김 상태면 보이는 '필터 초기화')으로 보낸다.
+        focusFirstAvailable([
+          document.querySelector('#collectionNav .filter-pill[aria-pressed="true"]'),
+          document.getElementById('resetFilters'),
+          document.getElementById('resetFiltersMeta'),
+          document.getElementById('aiFilterOpenBtn'),
+        ]);
+        return;
+      }
+      target.focus({ preventScroll: true });
+    }
+
+    // 숨김(visibility:hidden · 시트 닫힘 · inert) 요소는 focus() 가 무시되므로,
+    // 실제로 포커스가 옮겨간 첫 요소에서 멈춘다.
+    function focusFirstAvailable(elements) {
+      for (let i = 0; i < elements.length; i += 1) {
+        const el = elements[i];
+        if (!el) continue;
+        el.focus({ preventScroll: true });
+        if (document.activeElement === el) return el;
+      }
+      return null;
+    }
+
     function toggleMark(kind, id) {
       if (!id || !MARK_ID_RE.test(id) || !markStore[kind]) return;
+      const pending = captureMarkFocus();
       if (markStore[kind][id]) delete markStore[kind][id];
       else markStore[kind][id] = 1;
       persistMark(kind);
       render();
+      restoreMarkFocus(pending);
     }
 
     function savedCount() {

@@ -249,6 +249,7 @@ def build():
 
     data = {
         "today": today_str,
+        "build_date_kst": today_str,
         "date_label": date_label,
         "built_at": built_at,
         "built_ms": int(now.timestamp() * 1000),
@@ -404,6 +405,18 @@ TEMPLATE = r"""<!DOCTYPE html>
       width: 7px; height: 7px; border-radius: 50%; background: #10b981;
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
     }
+    /* 집계가 갱신 대기 중이면 초록 점 대신 경고색으로 바꾼다. */
+    .update-meta.is-waiting .live-dot {
+      background: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+    }
+
+    /* 자정을 넘겨 열었을 때: 마지막 집계일과 지금 날짜가 다르면 카드 위에 한 줄로 알린다. */
+    .day-notice {
+      margin: 0 0 14px; padding: 11px 14px;
+      border: 1px solid var(--warn-border); background: var(--warn-bg); color: var(--warn-text);
+      border-radius: 12px; font-size: 12.5px; line-height: 1.55;
+    }
+    .day-notice[hidden] { display: none; }
 
     /* ---- 카드 그리드 ---- */
     .day-grid {
@@ -590,6 +603,8 @@ TEMPLATE = r"""<!DOCTYPE html>
       <span class="update-meta"><span class="live-dot"></span><span id="heroUpdated">__BUILT_AT__ 기준</span></span>
     </section>
 
+    <p class="day-notice" id="dayNotice" role="status" hidden></p>
+
     <section class="day-grid" aria-label="오늘 핵심 4카드">
       <!-- 1. 오늘 마감 공고 -->
       <article class="day-card" data-card="jobs">
@@ -597,7 +612,7 @@ TEMPLATE = r"""<!DOCTYPE html>
           <span class="day-label">오늘 마감 공고</span>
           <span class="day-chip" id="jobsState" data-state="ok">정상</span>
         </div>
-        <p class="day-value"><strong id="jobsCount">__JOBS_COUNT__</strong><span>건</span></p>
+        <p class="day-value"><strong id="jobsCount">__JOBS_COUNT__</strong><span id="jobsUnit">건</span></p>
         <p class="day-sub" id="jobsSub">이번 주 마감 __JOBS_WEEK__건 · 전체 활성 __JOBS_TOTAL__건</p>
         <ul class="day-list" id="jobsList"></ul>
         <p class="day-empty" id="jobsEmpty" hidden>오늘 마감으로 잡힌 공고가 없습니다.</p>
@@ -695,16 +710,68 @@ TEMPLATE = r"""<!DOCTYPE html>
       'use strict';
 
       var DAY_MS = 86400000;
+      var WEEKDAY = ['일', '월', '화', '수', '목', '금', '토'];
 
       function byId(id) { return document.getElementById(id); }
 
       function esc(text) { return String(text == null ? '' : text); }
+
+      function two(n) { return (n < 10 ? '0' : '') + n; }
+
+      // 브라우저 시계를 KST(UTC+9)로 옮겨 날짜만 뽑는다 — 기기 시간대와 상관없이 같은 값이 나온다.
+      function kstDate(ms) {
+        var d = new Date((ms == null ? Date.now() : ms) + 9 * 3600000);
+        return d.getUTCFullYear() + '-' + two(d.getUTCMonth() + 1) + '-' + two(d.getUTCDate());
+      }
+
+      function shortDate(dateStr) {
+        var parts = String(dateStr || '').split('-');
+        if (parts.length !== 3) return '';
+        return parseInt(parts[1], 10) + '/' + parseInt(parts[2], 10);
+      }
+
+      function longDate(dateStr) {
+        var parts = String(dateStr || '').split('-');
+        if (parts.length !== 3) return '';
+        var y = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10);
+        var d = parseInt(parts[2], 10);
+        var wd = WEEKDAY[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+        return y + '년 ' + m + '월 ' + d + '일 (' + wd + ')';
+      }
+
+      // 일간 집계 기준일(빌드한 날)과 지금(KST) 날짜는 따로 본다.
+      // 08:00 갱신 전에 자정을 넘기면 어제 집계가 오늘 값처럼 보이는 문제를 막는다.
+      var buildDateKst = TODAY.build_date_kst || TODAY.today || '';
+      var buildLabel = shortDate(buildDateKst) || buildDateKst;
+      var todayKst = kstDate();
+      var dayStale = !!buildDateKst && todayKst !== buildDateKst;
 
       function setChip(id, state, label) {
         var el = byId(id);
         if (!el) return;
         el.setAttribute('data-state', state);
         el.textContent = label;
+        el.setAttribute('aria-label', label);
+      }
+
+      // 집계 기준일이 지났으면 카운트 자체가 오늘 값이 아니라는 것을 칩에서 먼저 알린다.
+      function markDated(chipId, updatedMs, hasData) {
+        if (!hasData) {
+          setChip(chipId, 'none', '데이터 없음');
+          return;
+        }
+        if (dayStale) {
+          setChip(chipId, 'stale', buildLabel + ' 기준 · 갱신 대기');
+          return;
+        }
+        markFresh(chipId, updatedMs, hasData);
+      }
+
+      // 'D-Day (오늘 마감)' 처럼 빌드한 날 기준으로 쓰인 라벨을 기준일 라벨로 바꾼다.
+      function retagDay(text, fromLabel, toLabel) {
+        if (!dayStale) return text;
+        return String(text == null ? '' : text).split(fromLabel).join(toLabel);
       }
 
       // 갱신 지연: 수집 시각이 26시간을 넘겼는지 본다(페이지를 며칠 뒤에 열어도 바로 드러나게).
@@ -756,13 +823,22 @@ TEMPLATE = r"""<!DOCTYPE html>
         var jobs = TODAY.jobs || {};
         var list = byId('jobsList');
         byId('jobsCount').textContent = String(jobs.count || 0);
-        byId('jobsSub').textContent = '이번 주 마감 ' + (jobs.week || 0) + '건 · 전체 활성 ' + (jobs.total || 0) + '건';
+        byId('jobsUnit').textContent = dayStale ? '건 · ' + buildLabel + ' 기준' : '건';
+        var sub = '이번 주 마감 ' + (jobs.week || 0) + '건 · 전체 활성 ' + (jobs.total || 0) + '건';
+        byId('jobsSub').textContent = dayStale
+          ? buildLabel + ' 08:00 갱신 전 집계입니다 · ' + sub
+          : sub;
         var items = jobs.items || [];
         items.forEach(function (job) {
-          addItem(list, job.company, job.title + (job.deadline ? ' · ' + job.deadline : ''));
+          var deadline = retagDay(job.deadline, '오늘 마감', buildLabel + ' 마감');
+          addItem(list, job.company, job.title + (deadline ? ' · ' + deadline : ''));
         });
-        byId('jobsEmpty').hidden = items.length > 0;
-        markFresh('jobsState', jobs.updated_ms, (jobs.total || 0) > 0);
+        var empty = byId('jobsEmpty');
+        empty.textContent = dayStale
+          ? buildLabel + ' 마감으로 잡힌 공고가 없습니다.'
+          : '오늘 마감으로 잡힌 공고가 없습니다.';
+        empty.hidden = items.length > 0;
+        markDated('jobsState', jobs.updated_ms, (jobs.total || 0) > 0);
       })();
 
       /* ---------- 2) KEV 우선 조치 ---------- */
@@ -770,14 +846,16 @@ TEMPLATE = r"""<!DOCTYPE html>
         var cve = TODAY.cve || {};
         var list = byId('cveList');
         byId('cveCount').textContent = String(cve.kev || 0);
-        byId('cveSub').textContent = '이번 주 조치 기한 ' + (cve.urgent || 0) + '건 · 새 등재 ' + (cve.fresh || 0) + '건';
+        var cveSub = '이번 주 조치 기한 ' + (cve.urgent || 0) + '건 · 새 등재 ' + (cve.fresh || 0) + '건';
+        byId('cveSub').textContent = dayStale ? buildLabel + ' 기준 · ' + cveSub : cveSub;
         var items = cve.items || [];
         items.forEach(function (item) {
+          var due = retagDay(item.due, '오늘 기한', buildLabel + ' 기한');
           addItem(list, item.cve_id + (item.severity ? ' · ' + item.severity : ''),
-            item.title + (item.due ? ' · ' + item.due : ''));
+            item.title + (due ? ' · ' + due : ''));
         });
         byId('cveEmpty').hidden = items.length > 0;
-        markFresh('cveState', cve.updated_ms, (cve.kev || 0) > 0 || (cve.items || []).length > 0);
+        markDated('cveState', cve.updated_ms, (cve.kev || 0) > 0 || (cve.items || []).length > 0);
       })();
 
       /* ---------- 3) 오늘 복습 큐 (이 브라우저) ---------- */
@@ -840,10 +918,13 @@ TEMPLATE = r"""<!DOCTYPE html>
         byId('aiCount').textContent = String(ai.total || 0);
         var brief = (ai.briefing || '').trim();
         byId('aiBrief').textContent = brief || '오늘 브리핑 요약이 아직 없습니다.';
+        byId('aiSub').textContent = dayStale
+          ? buildLabel + ' 브리핑 기준 · ' + '오늘의 흐름 한 줄 요약'
+          : '오늘의 흐름 한 줄 요약';
         (ai.items || []).forEach(function (item) {
           addItem(list, item.title, item.category);
         });
-        markFresh('aiState', ai.updated_ms, (ai.total || 0) > 0);
+        markDated('aiState', ai.updated_ms, (ai.total || 0) > 0);
       })();
 
       /* ---------- 5) 날씨·옷차림 ---------- */
@@ -947,9 +1028,32 @@ TEMPLATE = r"""<!DOCTYPE html>
         byId('gameEmpty').hidden = true;
         if (!(games.wargame && games.wargame.title) && !(games.clue && games.clue.title)) {
           setChip('gameState', 'none', '일부 없음');
+        } else if (dayStale) {
+          setChip('gameState', 'stale', buildLabel + ' 기준 · 갱신 대기');
         } else if ((games.wargame && games.wargame.date && games.wargame.date !== games.today)
           || (games.clue && games.clue.date && games.clue.date !== games.today)) {
           setChip('gameState', 'stale', '이전 문제');
+        }
+      })();
+
+      /* ---------- 집계 기준일 안내 (자정 경과 · 08:00 갱신 전) ---------- */
+      (function renderDayNotice() {
+        if (!dayStale) return;
+        var shownToday = longDate(todayKst) || todayKst;
+        var heroDate = byId('todayDate');
+        if (heroDate) heroDate.textContent = shownToday + ' · KST';
+        var heroUpdated = byId('heroUpdated');
+        if (heroUpdated) {
+          heroUpdated.textContent = buildLabel + ' 기준 · 갱신 대기';
+          var meta = heroUpdated.closest('.update-meta');
+          if (meta) meta.classList.add('is-waiting');
+        }
+        var notice = byId('dayNotice');
+        if (notice) {
+          notice.textContent = shownToday + ' 화면을 열었지만 마지막 집계는 ' + buildLabel + ' 08:00입니다. '
+            + '오늘 몫은 다음 갱신(08:00) 뒤에 채워지므로, 마감·KEV·AI 브리핑 카드는 '
+            + buildLabel + ' 기준 · 갱신 대기 상태입니다.';
+          notice.hidden = false;
         }
       })();
 
