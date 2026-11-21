@@ -5,7 +5,7 @@
 한 번의 실행으로 아래를 묶어 확인한다.
   1) 퍼즐·워게임 회귀 테스트
        tests/test_mission_puzzles.py · tests/test_seat_puzzles.py · tests/test_load_puzzles.py
-       · tests/test_hangul_puzzles.py · tests/test_cards_data.py
+       · tests/test_hangul_puzzles.py · tests/test_cards_data.py · tests/test_wash_data.py
        · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
@@ -158,7 +158,7 @@ def count_articles(page, css_class):
 # ---------------------------------------------------------------- 1) 회귀 테스트
 def run_unit_tests():
     scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
-               "tests/test_hangul_puzzles.py", "tests/test_cards_data.py",
+               "tests/test_hangul_puzzles.py", "tests/test_cards_data.py", "tests/test_wash_data.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py"]
     for script in scripts:
@@ -474,6 +474,22 @@ def check_pages():
         check("cards.html ↔ cards_data.json 일치", cards_json.get("decks") == cards_embedded.get("decks"))
     else:
         check("cards.html 데이터 블록", False, "id=cardsData 파싱 실패")
+
+    # 세탁 라벨 읽기: wash_data.json 과 wash.html 에 심긴 데이터가 같은지
+    wash_json = load_json("wash_data.json")
+    wash_embedded = embedded_json("wash.html", 'id="washData">')
+    if isinstance(wash_json, dict):
+        check("wash_data.json 기호 15개 이상", len(wash_json.get("symbols") or []) >= 15,
+              len(wash_json.get("symbols") or []))
+        check("wash_data.json 퀴즈 5벌 이상", len(wash_json.get("quizzes") or []) >= 5,
+              len(wash_json.get("quizzes") or []))
+        check("wash_data.json 확인일", wash_json.get("checkedOn") == "2026-11-22", wash_json.get("checkedOn"))
+    if isinstance(wash_json, dict) and isinstance(wash_embedded, dict):
+        check("wash.html ↔ wash_data.json 일치",
+              wash_json.get("symbols") == wash_embedded.get("symbols")
+              and wash_json.get("quizzes") == wash_embedded.get("quizzes"))
+    else:
+        check("wash.html 데이터 블록", False, "id=washData 파싱 실패")
 
     menus = embedded_json("pick.html", "const MENUS = ")
     courses = embedded_json("pick.html", "const COURSES = ")

@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html'];
+  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -5228,6 +5228,244 @@ async function checkCardsFlow(page, width) {
   assert.deepEqual(pageErrors, [], `${tag}: CSP violations`);
 }
 
+
+// ---- 세탁 라벨 읽기: 첫 화면(가상 라벨 + 기호 설명) · 넘침 0 · 입력 필드 0 ----
+async function checkWashLayout(page, width) {
+  const tag = `wash ${width}px`;
+  const state = await page.evaluate(() => {
+    const r = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      const b = el.getBoundingClientRect();
+      return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      hero: r('.ws-hero'),
+      tabs: r('.ws-tabs'),
+      label: r('#wsLabel'),
+      desc: r('#wsDesc'),
+      tabTop: bar ? bar.getBoundingClientRect().top : 0,
+      viewport: window.innerHeight,
+      symbols: document.querySelectorAll('.ws-sym').length,
+      chips: document.querySelectorAll('.ws-chip').length,
+      rows: document.querySelectorAll('.ws-row').length,
+      active: document.querySelector('.ws-sym[aria-pressed="true"]')
+        ? document.querySelector('.ws-sym[aria-pressed="true"]').getAttribute('data-sym') : null,
+      activeCount: document.querySelectorAll('.ws-sym.is-active').length,
+      name: document.getElementById('wsDescName').textContent.trim(),
+      cat: document.getElementById('wsDescCat').textContent.trim(),
+      meaning: document.getElementById('wsDescMeaning').textContent.trim(),
+      caution: document.getElementById('wsDescCaution').textContent.trim(),
+      hasSvg: !!document.querySelector('#wsDescArt svg'),
+      guideHidden: document.getElementById('wsPanelGuide').hidden,
+      fields: document.querySelectorAll('input, textarea, select').length,
+      source: !!document.querySelector('.ws-foot a[href^="https://"]'),
+      checked: document.querySelector('.ws-foot') ? document.querySelector('.ws-foot').textContent.indexOf('2026-11-22') >= 0 : false,
+    };
+  });
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.equal(state.symbols, 17, `${tag}: symbol buttons ${state.symbols}`);
+  assert.equal(state.chips, 5, `${tag}: category chips ${state.chips}`);
+  assert.equal(state.rows, 5, `${tag}: label rows ${state.rows}`);
+  assert.equal(state.guideHidden, false, `${tag}: guide panel must be open first`);
+  assert.equal(state.active, 'wash-30', `${tag}: default symbol ${state.active}`);
+  assert.equal(state.activeCount, 1, `${tag}: ${state.activeCount} highlighted symbols`);
+  assert.equal(state.name, '30℃ 이하 일반 세탁', `${tag}: description name ${state.name}`);
+  assert.equal(state.cat, '물세탁', `${tag}: description category ${state.cat}`);
+  assert.ok(state.meaning.length >= 12, `${tag}: one-line meaning missing`);
+  assert.ok(state.caution.length >= 12, `${tag}: caution line missing`);
+  assert.equal(state.hasSvg, true, `${tag}: description symbol missing`);
+  assert.equal(state.fields, 0, `${tag}: input fields are not allowed on this page`);
+  assert.equal(state.source, true, `${tag}: source link missing`);
+  assert.equal(state.checked, true, `${tag}: checked date missing`);
+
+  // 첫 화면: 가상 라벨과 기호 설명이 함께 보여야 한다.
+  const limit = width <= 768 ? state.tabTop - 2 : state.viewport;
+  for (const key of ['hero', 'tabs', 'label', 'desc']) {
+    const box = state[key];
+    assert.ok(box, `${tag}: ${key} missing`);
+    assert.ok(box.top >= 0, `${tag}: ${key} starts above the viewport (${Math.round(box.top)})`);
+    assert.ok(box.bottom <= limit, `${tag}: ${key} ends at ${Math.round(box.bottom)}, below ${Math.round(limit)}`);
+  }
+}
+
+// ---- 세탁 라벨 읽기: 기호 클릭·키보드 설명 · 카테고리 필터 · 라벨 읽기 퀴즈 ----
+async function checkWashFlow(page, width) {
+  const tag = `wash flow ${width}px`;
+  const read = () => page.evaluate(() => ({
+    name: document.getElementById('wsDescName').textContent.trim(),
+    pressed: Array.from(document.querySelectorAll('.ws-sym[aria-pressed="true"]')).map((b) => b.getAttribute('data-sym')),
+    activeCount: document.querySelectorAll('.ws-sym.is-active').length,
+  }));
+
+  const first = await read();
+  await page.click('.ws-sym[data-sym="wash-hand"]');
+  let state = await read();
+  assert.notEqual(state.name, first.name, `${tag}: symbol click did not change the description`);
+  assert.deepEqual(state.pressed, ['wash-hand'], `${tag}: pressed symbols ${state.pressed.join(',')}`);
+  assert.equal(state.activeCount, 1, `${tag}: ${state.activeCount} highlighted symbols`);
+  assert.ok(state.name.indexOf('손세탁') >= 0, `${tag}: hand-wash description ${state.name}`);
+
+  // 키보드: 기호 버튼에 포커스하고 Enter 로 설명을 연다.
+  await page.focus('.ws-sym[data-sym="clean-f"]');
+  await page.keyboard.press('Enter');
+  state = await read();
+  assert.deepEqual(state.pressed, ['clean-f'], `${tag}: Enter did not open the focused symbol`);
+  assert.ok(state.name.indexOf('석유계') >= 0, `${tag}: keyboard description ${state.name}`);
+
+  // 카테고리 필터: 고른 분류의 줄만 남는다.
+  await page.click('.ws-chip[data-cat="표백"]');
+  const filtered = await page.evaluate(() => ({
+    rows: Array.from(document.querySelectorAll('.ws-row')).filter((row) => !row.hidden).map((row) => row.getAttribute('data-row')),
+    pressed: Array.from(document.querySelectorAll('.ws-chip[aria-pressed="true"]')).map((chip) => chip.getAttribute('data-cat')),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  assert.deepEqual(filtered.rows, ['표백'], `${tag}: filtered rows ${filtered.rows.join(',')}`);
+  assert.deepEqual(filtered.pressed, ['표백'], `${tag}: pressed chips ${filtered.pressed.join(',')}`);
+  assert.equal(filtered.overflow, 0, `${tag}: filtered view overflows ${filtered.overflow}px`);
+  await page.click('.ws-chip[data-cat="다림질·드라이"]');
+  const care = await page.evaluate(() => Array.from(document.querySelectorAll('.ws-row')).filter((row) => !row.hidden).map((row) => row.getAttribute('data-row')));
+  assert.deepEqual(care, ['다림질', '드라이'], `${tag}: care rows ${care.join(',')}`);
+  await page.click('.ws-chip[data-cat="전체"]');
+  assert.equal(await page.evaluate(() => document.querySelectorAll('.ws-row:not([hidden])').length), 5,
+    `${tag}: all rows were not restored`);
+
+  // 라벨 읽기 퀴즈 탭
+  await page.click('#wsTabQuiz');
+  await page.waitForTimeout(160);
+  const quiz = await page.evaluate(() => ({
+    guideHidden: document.getElementById('wsPanelGuide').hidden,
+    quizHidden: document.getElementById('wsPanelQuiz').hidden,
+    guideSelected: document.getElementById('wsTabGuide').getAttribute('aria-selected'),
+    quizSelected: document.getElementById('wsTabQuiz').getAttribute('aria-selected'),
+    progress: document.getElementById('wsQuizProgress').textContent.trim(),
+    garment: document.getElementById('wsGarmentName').textContent.trim(),
+    syms: document.querySelectorAll('#wsQuizLabel .ws-qsym').length,
+    wantSyms: WASH.quizzes[0].symbols.length,
+    options: document.querySelectorAll('#wsOptions .ws-opt').length,
+    nextDisabled: document.getElementById('wsNext').disabled,
+    resultHidden: document.getElementById('wsResult').hidden,
+    answer: WASH.quizzes[0].answer,
+    evidence: WASH.quizzes[0].evidence.slice(),
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  assert.equal(quiz.guideHidden, true, `${tag}: guide panel still visible`);
+  assert.equal(quiz.quizHidden, false, `${tag}: quiz panel not open`);
+  assert.equal(quiz.guideSelected, 'false', `${tag}: guide tab aria-selected`);
+  assert.equal(quiz.quizSelected, 'true', `${tag}: quiz tab aria-selected`);
+  assert.equal(quiz.progress, '1 / 6', `${tag}: quiz progress ${quiz.progress}`);
+  assert.equal(quiz.garment, '울 니트', `${tag}: first garment ${quiz.garment}`);
+  assert.equal(quiz.syms, quiz.wantSyms, `${tag}: garment label symbols ${quiz.syms}`);
+  assert.equal(quiz.options, 4, `${tag}: options ${quiz.options}`);
+  assert.equal(quiz.nextDisabled, true, `${tag}: next button must start disabled`);
+  assert.equal(quiz.resultHidden, true, `${tag}: result must start hidden`);
+  assert.equal(quiz.overflow, 0, `${tag}: quiz view overflows ${quiz.overflow}px`);
+
+  // 정답 → 결과 · 근거 기호 하이라이트
+  await page.click(`#wsOptions .ws-opt[data-idx="${quiz.answer}"]`);
+  await page.waitForTimeout(120);
+  const right = await page.evaluate(() => ({
+    hidden: document.getElementById('wsResult').hidden,
+    cls: document.getElementById('wsResult').className,
+    text: document.getElementById('wsResult').innerText,
+    evidence: Array.from(document.querySelectorAll('#wsQuizLabel .ws-qsym.is-evidence')).map((n) => n.getAttribute('data-sym')),
+    nextDisabled: document.getElementById('wsNext').disabled,
+    score: document.getElementById('wsQuizScore').textContent.trim(),
+    disabled: document.querySelectorAll('#wsOptions .ws-opt:disabled').length,
+    correct: document.querySelectorAll('#wsOptions .ws-opt.is-correct').length,
+    pressedEvid: Array.from(document.querySelectorAll('#wsQuizLabel .ws-qsym.is-evidence'))
+      .map((n) => getComputedStyle(n).borderColor),
+  }));
+  assert.equal(right.hidden, false, `${tag}: result not shown`);
+  assert.equal(right.cls.indexOf('is-no'), -1, `${tag}: correct answer marked wrong`);
+  assert.ok(right.text.indexOf('정답') >= 0, `${tag}: result text ${right.text}`);
+  assert.ok(right.text.indexOf('근거 기호') >= 0, `${tag}: evidence list missing`);
+  assert.deepEqual(right.evidence.sort(), quiz.evidence.sort(), `${tag}: evidence symbols ${right.evidence.join(',')}`);
+  assert.equal(right.pressedEvid.length, quiz.evidence.length, `${tag}: evidence highlight count`);
+  assert.equal(right.nextDisabled, false, `${tag}: next button still disabled`);
+  assert.equal(right.disabled, 4, `${tag}: options not locked after answering`);
+  assert.equal(right.correct, 1, `${tag}: correct option highlight ${right.correct}`);
+  assert.equal(right.score, '1', `${tag}: score ${right.score}`);
+
+  // 다음 옷 → 오답 → 결과 · 맞는 답 표시
+  await page.click('#wsNext');
+  await page.waitForTimeout(120);
+  const second = await page.evaluate(() => ({
+    progress: document.getElementById('wsQuizProgress').textContent.trim(),
+    options: document.querySelectorAll('#wsOptions .ws-opt:not(:disabled)').length,
+    resultHidden: document.getElementById('wsResult').hidden,
+    evidence: document.querySelectorAll('#wsQuizLabel .ws-qsym.is-evidence').length,
+    answer: WASH.quizzes[1].answer,
+  }));
+  assert.equal(second.progress, '2 / 6', `${tag}: second progress ${second.progress}`);
+  assert.equal(second.resultHidden, true, `${tag}: result leaked to the next garment`);
+  assert.equal(second.evidence, 0, `${tag}: evidence highlight leaked`);
+  assert.equal(second.options, 4, `${tag}: next options not clickable`);
+  const wrongIdx = (second.answer + 1) % 4;
+  await page.click(`#wsOptions .ws-opt[data-idx="${wrongIdx}"]`);
+  await page.waitForTimeout(120);
+  const wrong = await page.evaluate(() => ({
+    cls: document.getElementById('wsResult').className,
+    text: document.getElementById('wsResult').innerText,
+    wrong: document.querySelectorAll('#wsOptions .ws-opt.is-wrong').length,
+    correct: document.querySelectorAll('#wsOptions .ws-opt.is-correct').length,
+    evidence: document.querySelectorAll('#wsQuizLabel .ws-qsym.is-evidence').length,
+    score: document.getElementById('wsQuizScore').textContent.trim(),
+  }));
+  assert.ok(wrong.cls.indexOf('is-no') >= 0, `${tag}: wrong answer not marked (${wrong.cls})`);
+  assert.ok(wrong.text.indexOf('맞는 답') >= 0, `${tag}: correct option not shown`);
+  assert.equal(wrong.wrong, 1, `${tag}: wrong option highlight ${wrong.wrong}`);
+  assert.equal(wrong.correct, 1, `${tag}: correct option highlight ${wrong.correct}`);
+  assert.equal(wrong.evidence, 2, `${tag}: evidence highlight ${wrong.evidence}`);
+  assert.equal(wrong.score, '1', `${tag}: score after a wrong answer ${wrong.score}`);
+
+  // 나머지 네 벌 → 요약 · 다시 풀기
+  for (let i = 0; i < 4; i += 1) {
+    await page.click('#wsNext');
+    await page.waitForTimeout(80);
+    const answer = await page.evaluate((n) => WASH.quizzes[n].answer, i + 2);
+    await page.click(`#wsOptions .ws-opt[data-idx="${answer}"]`);
+    await page.waitForTimeout(60);
+  }
+  await page.click('#wsNext');
+  await page.waitForTimeout(120);
+  const done = await page.evaluate(() => ({
+    bodyHidden: document.getElementById('wsQuizBody').hidden,
+    summaryHidden: document.getElementById('wsSummary').hidden,
+    score: document.getElementById('wsSummaryNum').textContent.trim(),
+    progress: document.getElementById('wsQuizProgress').textContent.trim(),
+  }));
+  assert.equal(done.summaryHidden, false, `${tag}: summary not shown`);
+  assert.equal(done.bodyHidden, true, `${tag}: quiz body still visible at the end`);
+  assert.equal(done.score, '5', `${tag}: summary score ${done.score}`);
+  assert.equal(done.progress, '6 / 6', `${tag}: end progress ${done.progress}`);
+
+  // 요약에서 '기호 도감으로' → 도감으로 돌아갔다가 퀴즈로 다시 들어와 '다시 풀기'
+  await page.click('#wsBackGuide');
+  await page.waitForTimeout(120);
+  assert.equal(await page.evaluate(() => document.getElementById('wsPanelGuide').hidden), false,
+    `${tag}: 기호 도감으로 did not reopen the guide`);
+  await page.click('#wsTabQuiz');
+  await page.waitForTimeout(120);
+  await page.click('#wsRestart');
+  await page.waitForTimeout(100);
+  const restarted = await page.evaluate(() => ({
+    progress: document.getElementById('wsQuizProgress').textContent.trim(),
+    score: document.getElementById('wsQuizScore').textContent.trim(),
+    bodyHidden: document.getElementById('wsQuizBody').hidden,
+    summaryHidden: document.getElementById('wsSummary').hidden,
+  }));
+  assert.equal(restarted.progress, '1 / 6', `${tag}: restart progress ${restarted.progress}`);
+  assert.equal(restarted.score, '0', `${tag}: restart score ${restarted.score}`);
+  assert.equal(restarted.bodyHidden, false, `${tag}: quiz body not restored`);
+  assert.equal(restarted.summaryHidden, true, `${tag}: summary still visible after restart`);
+
+  const violations = await page.evaluate(() => window.smokeCspViolations || []);
+  assert.deepEqual(violations, [], `${tag}: CSP violations`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -5310,6 +5548,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'hangul' && (width === 390 || width === 1280)) await checkHangulGame(page, width);
     if (name === 'cards') await checkCardsLayout(page, width);
     if (name === 'cards' && (width === 390 || width === 1280)) await checkCardsFlow(page, width);
+    if (name === 'wash') await checkWashLayout(page, width);
+    if (name === 'wash' && (width === 390 || width === 1280)) await checkWashFlow(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -5775,6 +6015,7 @@ async function main() {
           if (name === 'arcade') await checkArcadeLayout(page, width);
           if (name === 'hangul') await checkHangulLayout(page, width);
           if (name === 'cards') await checkCardsLayout(page, width);
+          if (name === 'wash') await checkWashLayout(page, width);
         } finally {
           await page.close();
         }
