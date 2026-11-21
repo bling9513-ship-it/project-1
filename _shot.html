@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><title>shot</title>
+<style>html,body{margin:0;padding:0;background:#ffffff}iframe{border:0;display:block}</style></head>
+<body>
+<div id="wrap"></div>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var w = Number(params.get('w') || 1280);
+  var page = params.get('p') || 'today.html';
+  var f = document.createElement('iframe');
+  f.id = 'shotFrame';
+  f.width = String(w);
+  f.height = '900';
+  f.src = page;
+  document.getElementById('wrap').appendChild(f);
+  f.addEventListener('load', function () {
+    try {
+      var d = f.contentDocument;
+      var h = Math.max(d.documentElement.scrollHeight, d.body ? d.body.scrollHeight : 0);
+      f.height = String(h + 1);
+    } catch (e) {}
+  });
+})();
+</script>
+</body></html>
