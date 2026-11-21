@@ -1315,6 +1315,24 @@ async function checkReducedMotion(browser, base) {
     assert.ok(state.sheetMs <= 0.02, `reduced motion: sheet transition ${state.sheetMs}ms`);
     assert.ok(state.tabMs <= 0.02, `reduced motion: tab transition ${state.tabMs}ms`);
     assert.ok(state.cardMs <= 0.02, `reduced motion: card transition ${state.cardMs}ms`);
+
+    await page.goto(`${base}/seat.html`, { waitUntil: 'load' });
+    await page.waitForTimeout(200);
+    const demo = await page.evaluate(() => {
+      const style = (sel) => getComputedStyle(document.querySelector(sel));
+      return {
+        chip: style('.gd-chip').opacity,
+        seat: style('.gd-in').opacity,
+        check: style('.gd-check').opacity,
+        caption: style('.gc-3').opacity,
+        anim: style('.gd-in').animationName,
+      };
+    });
+    assert.equal(demo.anim, 'none', `reduced motion: guide demo still animating (${demo.anim})`);
+    assert.equal(demo.chip, '0', `reduced motion: guide chip should be seated (${demo.chip})`);
+    assert.equal(demo.seat, '1', `reduced motion: guide seat name hidden (${demo.seat})`);
+    assert.equal(demo.check, '1', `reduced motion: guide check hidden (${demo.check})`);
+    assert.equal(demo.caption, '1', `reduced motion: guide final caption hidden (${demo.caption})`);
     console.log('prefers-reduced-motion passed');
   } finally {
     await context.close();
@@ -2985,6 +3003,47 @@ async function checkSeatLayout(page, width) {
   const tag = `seat layout ${width}px`;
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(120);
+
+  // 게임 방법: 첫 방문에는 펼쳐지고, 데모는 CSS 애니메이션으로 움직인다.
+  const guide = await page.evaluate(() => {
+    const anim = (sel) => {
+      const el = document.querySelector(sel);
+      return el ? getComputedStyle(el).animationName : null;
+    };
+    return {
+      exists: !!document.getElementById('guideCard'),
+      expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+      bodyHidden: document.getElementById('guideBody').hidden,
+      label: document.getElementById('guideToggle').textContent.trim(),
+      chip: anim('.gd-chip'),
+      seat: anim('.gd-in'),
+      check: anim('.gd-check'),
+      caption: anim('.gc-3'),
+      steps: document.querySelectorAll('.gc-step').length,
+    };
+  });
+  assert.ok(guide.exists, `${tag}: game guide missing`);
+  assert.equal(guide.expanded, 'true', `${tag}: guide should be open on the first visit`);
+  assert.equal(guide.bodyHidden, false, `${tag}: guide body hidden on the first visit`);
+  assert.equal(guide.label, '접기', `${tag}: guide toggle label ${guide.label}`);
+  assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+  for (const [name, value] of Object.entries({ chip: guide.chip, seat: guide.seat, check: guide.check, caption: guide.caption })) {
+    assert.ok(value && value !== 'none', `${tag}: guide demo ${name} animation missing (${value})`);
+  }
+
+  // 첫 화면 검사는 재방문 기본값(접힌 상태)에서 한다 — 펼친 상태는 안내용이다.
+  if (guide.expanded === 'true') {
+    await page.click('#guideToggle');
+    await page.waitForTimeout(150);
+    const collapsed = await page.evaluate(() => ({
+      hidden: document.getElementById('guideBody').hidden,
+      expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+      label: document.getElementById('guideToggle').textContent.trim(),
+    }));
+    assert.equal(collapsed.hidden, true, `${tag}: guide did not collapse`);
+    assert.equal(collapsed.expanded, 'false', `${tag}: guide aria-expanded after collapse`);
+    assert.equal(collapsed.label, '게임 방법', `${tag}: collapsed label ${collapsed.label}`);
+  }
   const geo = await page.evaluate(() => {
     const box = (el) => {
       if (!el) return null;
@@ -3099,6 +3158,35 @@ async function checkSeatGame(page, width) {
   assert.equal(done.store.totals.plays, 1, `${tag}: plays ${done.store.totals.plays}`);
   assert.equal(done.store.streak.count, 1, `${tag}: streak ${done.store.streak.count}`);
   assert.equal(done.recToday, puzzle.par + '수', `${tag}: today's record ${done.recToday}`);
+
+  // 조건 달성 초록 체크 · 착석 팝 · 선택 펄스 · 클리어 축하 연출이 살아 있는지
+  const motion = await page.evaluate(() => {
+    const probe = (cls) => {
+      const cell = document.querySelector('#seatGrid .seat-cell');
+      cell.classList.add(cls);
+      const name = getComputedStyle(cell).animationName;
+      cell.classList.remove(cls);
+      return name;
+    };
+    return {
+      pulse: probe('is-selected'),
+      landing: probe('is-landing'),
+      okSeats: document.querySelectorAll('#seatGrid .seat-cell.is-ok').length,
+      checks: document.querySelectorAll('#seatGrid .seat-cell.is-ok .sc-check').length,
+      resultNew: document.getElementById('resultBox').classList.contains('is-new'),
+      coachGlow: document.querySelector('.coach').classList.contains('is-cleared'),
+      starsPop: document.querySelectorAll('#resultStars .star.is-pop').length,
+      condOk: document.querySelectorAll('#condList .cond-row.is-ok').length,
+    };
+  });
+  assert.ok(motion.pulse !== 'none', `${tag}: selected pulse animation missing (${motion.pulse})`);
+  assert.ok(motion.landing !== 'none', `${tag}: seat landing animation missing (${motion.landing})`);
+  assert.equal(motion.okSeats, puzzle.passengers.length, `${tag}: satisfied seats ${motion.okSeats}`);
+  assert.equal(motion.checks, motion.okSeats, `${tag}: seat check marks ${motion.checks}`);
+  assert.equal(motion.resultNew, true, `${tag}: clear celebration not triggered`);
+  assert.equal(motion.coachGlow, true, `${tag}: board glow not triggered`);
+  assert.equal(motion.starsPop, 3, `${tag}: star pop ${motion.starsPop}`);
+  assert.ok(motion.condOk > 0, `${tag}: no condition marked complete`);
 
   // 다시 하기: 보드·이동 초기화, 기록 유지
   await page.click('#retryBtn');

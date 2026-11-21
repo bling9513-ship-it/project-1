@@ -592,6 +592,7 @@ CSS = """
     .cond-row { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-secondary); min-width: 0; }
     .cond-dot { position: relative; width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--border-strong); flex-shrink: 0; }
     .cond-row.is-ok .cond-dot { background: var(--ok-text); border-color: var(--ok-text); }
+    .cond-row.is-new-ok .cond-dot { animation: checkPop 380ms cubic-bezier(0.2, 0.9, 0.3, 1.4); }
     .cond-row.is-ok .cond-dot::after {
       content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 7px;
       border-right: 1.6px solid #ffffff; border-bottom: 1.6px solid #ffffff; transform: rotate(42deg);
@@ -619,6 +620,133 @@ CSS = """
     .wait-empty { font-size: 11px; color: var(--text-muted); }
     .seat-hint { margin-top: 9px; font-size: 10.5px; line-height: 1.45; color: var(--text-muted); }
 
+    /* ----- 게임 방법(애니메이션 데모) ----- */
+    .guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .guide-toggle {
+      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
+      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
+    }
+    .guide-body { margin-top: 9px; }
+    .guide-demo {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 9px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-page);
+    }
+    .gd-wait { position: relative; display: inline-flex; flex: 0 0 auto; }
+    .gd-chip {
+      display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 22px;
+      padding: 0 7px; border: 1px solid var(--accent-primary); border-radius: 7px;
+      background: var(--accent-subtle); color: var(--accent-primary);
+      font-size: 10px; font-weight: 700;
+      animation: gdChip 7.2s ease-in-out infinite;
+    }
+    .gd-tap {
+      position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px;
+      border-radius: 50%; border: 1.5px solid var(--accent-primary); opacity: 0;
+      animation: gdTap 7.2s ease-out infinite;
+    }
+    .gd-arrow { flex: 0 0 auto; font-size: 10px; color: var(--text-muted); }
+    .gd-seats { display: grid; grid-template-columns: repeat(2, 26px); grid-template-rows: repeat(2, 21px); gap: 3px; flex: 0 0 auto; }
+    .gd-seat {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border-default); border-radius: 5px; background: var(--bg-surface);
+    }
+    .gd-tag { font-size: 6.5px; color: var(--text-muted); white-space: nowrap; }
+    .gd-in {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      border-radius: 4px; background: var(--bg-surface);
+      font-size: 8px; font-weight: 700; color: var(--text-primary);
+      opacity: 0; animation: gdIn 7.2s ease-in-out infinite;
+    }
+    .gd-check {
+      position: absolute; right: -4px; top: -4px; width: 11px; height: 11px; border-radius: 50%;
+      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
+      opacity: 0; animation: gdCheckAnim 7.2s ease-in-out infinite;
+    }
+    .gd-check svg { width: 7px; height: 7px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .gd-cond {
+      margin-left: auto; display: flex; align-items: center; gap: 4px; flex: 0 0 auto;
+      padding: 3px 6px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 9.5px; color: var(--text-secondary);
+    }
+    .gd-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--border-strong); animation: gdDot 7.2s ease-in-out infinite; }
+    .gd-counts { position: relative; width: 19px; height: 12px; font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .gd-counts b { position: absolute; left: 0; top: 0; font-weight: 700; }
+    .gd-bad { color: var(--text-muted); animation: gdBad 7.2s steps(1, end) infinite; }
+    .gd-ok { color: var(--ok-text); opacity: 0; animation: gdOk 7.2s steps(1, end) infinite; }
+    .guide-caption { position: relative; height: 18px; margin-top: 8px; }
+    .gc-step {
+      position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10.5px; font-weight: 600; color: var(--text-secondary); opacity: 0; white-space: nowrap;
+    }
+    .gc-num {
+      display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px;
+      border-radius: 50%; background: var(--bg-muted); color: var(--text-secondary);
+      font-size: 8.5px; font-weight: 700; flex-shrink: 0;
+    }
+    .gc-3 .gc-num { background: var(--ok-text); color: #ffffff; }
+    .gc-1 { animation: gc1 7.2s ease infinite; }
+    .gc-2 { animation: gc2 7.2s ease infinite; }
+    .gc-3 { animation: gc3 7.2s ease infinite; }
+    .guide-note { margin-top: 6px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
+
+    @keyframes gdChip {
+      0% { transform: none; opacity: 1; box-shadow: 0 0 0 0 var(--accent-subtle); }
+      8% { transform: scale(1.05); }
+      14% { transform: scale(1.05); box-shadow: 0 0 0 5px var(--accent-subtle); }
+      20% { transform: none; box-shadow: 0 0 0 0 var(--accent-subtle); }
+      32% { transform: translateX(58px) scale(0.86); opacity: 1; }
+      36% { transform: translateX(58px) scale(0.72); opacity: 0; }
+      92% { transform: none; opacity: 0; }
+      98%, 100% { transform: none; opacity: 1; }
+    }
+    @keyframes gdTap {
+      0%, 8% { opacity: 0; transform: scale(0.6); }
+      14% { opacity: 0.75; transform: scale(1); }
+      26%, 100% { opacity: 0; transform: scale(1.5); }
+    }
+    @keyframes gdIn {
+      0%, 30% { opacity: 0; transform: scale(0.4); }
+      36% { opacity: 1; transform: scale(1.14); }
+      42%, 92% { opacity: 1; transform: scale(1); }
+      97%, 100% { opacity: 0; transform: scale(0.4); }
+    }
+    @keyframes gdCheckAnim {
+      0%, 42% { opacity: 0; transform: scale(0.3); }
+      48% { opacity: 1; transform: scale(1.2); }
+      54%, 92% { opacity: 1; transform: scale(1); }
+      97%, 100% { opacity: 0; transform: scale(0.3); }
+    }
+    @keyframes gdDot {
+      0%, 46% { background: transparent; border-color: var(--border-strong); }
+      52%, 92% { background: var(--ok-text); border-color: var(--ok-text); }
+      97%, 100% { background: transparent; border-color: var(--border-strong); }
+    }
+    @keyframes gdBad {
+      0% { opacity: 1; }
+      52%, 92% { opacity: 0; }
+      97%, 100% { opacity: 1; }
+    }
+    @keyframes gdOk {
+      0% { opacity: 0; }
+      52%, 92% { opacity: 1; }
+      97%, 100% { opacity: 0; }
+    }
+    @keyframes gc1 {
+      0%, 26% { opacity: 1; }
+      32%, 100% { opacity: 0; }
+    }
+    @keyframes gc2 {
+      0%, 30% { opacity: 0; }
+      34%, 52% { opacity: 1; }
+      58%, 100% { opacity: 0; }
+    }
+    @keyframes gc3 {
+      0%, 54% { opacity: 0; }
+      60%, 92% { opacity: 1; }
+      97%, 100% { opacity: 0; }
+    }
+
     .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
     .record-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
     .record-grid dd { font-size: 14.5px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -642,6 +770,12 @@ CSS = """
     .coach, .seat-result, .practice { max-width: 600px; }
     .coach-top, .coach-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--text-muted); }
     .coach-top { padding: 0 2px 6px; }
+    .coach-top-right { display: inline-flex; align-items: center; gap: 8px; }
+    .coach-reset {
+      border: 0; background: transparent; font-family: inherit; font-size: 10.5px; font-weight: 600;
+      color: var(--accent-primary); cursor: pointer; padding: 2px 0;
+    }
+    .coach-reset:hover { text-decoration: underline; }
     .coach-bottom { padding: 7px 2px 0; }
     .coach-door { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: var(--text-secondary); }
     .coach-door::before { content: ""; width: 12px; height: 2px; border-radius: 2px; background: var(--border-strong); }
@@ -649,6 +783,7 @@ CSS = """
 
     .seat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
     .seat-cell {
+      position: relative;
       display: flex; flex-direction: column; gap: 2px; min-height: 66px;
       padding: 7px 8px; border: 1px solid var(--border-default); border-radius: 12px;
       background: var(--bg-page); font-family: inherit; text-align: left; cursor: pointer; color: inherit;
@@ -656,6 +791,20 @@ CSS = """
     }
     .seat-cell:hover { border-color: var(--border-strong); }
     .seat-cell:active { transform: scale(0.985); }
+    .sc-check {
+      position: absolute; right: -5px; top: -5px; width: 13px; height: 13px; border-radius: 50%;
+      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 2px var(--bg-surface);
+      opacity: 0; transform: scale(0.4);
+      transition: opacity 160ms ease, transform 240ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+    }
+    .sc-check svg { width: 8px; height: 8px; stroke: #ffffff; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .seat-cell.is-ok { border-color: var(--ok-border); background: var(--ok-bg); }
+    .seat-cell.is-ok .sc-check { opacity: 1; transform: scale(1); }
+    .seat-cell.is-landing { animation: seatLand 360ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .seat-cell.is-landing .sc-name { animation: namePop 360ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .seat-cell.is-selected, .wait-card.is-selected { animation: seatPulse 1.8s ease-in-out infinite; }
+    .coach.is-cleared { animation: coachGlow 900ms ease-out; }
     .seat-cell.is-occupied { background: var(--bg-surface); border-color: var(--border-strong); }
     .seat-cell.is-target { border-color: var(--accent-primary); border-style: dashed; }
     .seat-cell.is-selected { border-color: var(--accent-primary); border-style: solid; box-shadow: 0 0 0 2px var(--accent-subtle); }
@@ -666,6 +815,22 @@ CSS = """
     .sc-name { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .seat-cell:not(.is-occupied) .sc-name { font-size: 11px; font-weight: 500; color: var(--text-muted); }
     .sc-sub { font-size: 9px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .seat-result.is-new { animation: resultIn 380ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .result-head { display: flex; align-items: center; gap: 6px; position: relative; }
+    .result-burst { position: relative; width: 0; height: 0; }
+    .result-burst span {
+      position: absolute; left: 0; top: 0; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--ok-text); opacity: 0;
+    }
+    .seat-result.is-new .result-burst span { animation: burst 620ms ease-out forwards; }
+    .seat-result.is-new .result-burst span:nth-child(1) { --dx: 14px; --dy: -12px; animation-delay: 60ms; background: var(--accent-primary); }
+    .seat-result.is-new .result-burst span:nth-child(2) { --dx: 22px; --dy: 2px; animation-delay: 100ms; }
+    .seat-result.is-new .result-burst span:nth-child(3) { --dx: 16px; --dy: 12px; animation-delay: 140ms; background: var(--accent-primary); }
+    .seat-result.is-new .result-burst span:nth-child(4) { --dx: 4px; --dy: -16px; animation-delay: 80ms; }
+    .seat-result.is-new .result-burst span:nth-child(5) { --dx: 26px; --dy: -8px; animation-delay: 160ms; background: var(--accent-primary); }
+    .seat-result.is-new .result-burst span:nth-child(6) { --dx: 8px; --dy: 16px; animation-delay: 120ms; }
+    .result-stars .star.is-pop { animation: starPop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.4) backwards; }
 
     .seat-result {
       margin-top: 14px; padding: 16px;
@@ -716,16 +881,17 @@ CSS = """
       .seat-shell { grid-template-columns: 1fr; gap: 10px; }
       .seat-rail { display: contents; }
       #statusCard { order: 1; }
-      #condCard { order: 2; }
+      #guideCard { order: 2; }
+      #condCard { order: 3; }
       .seat-card { padding: 11px 12px; }
       .cond-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; }
       .seat-main-head { margin-bottom: 7px; max-width: none; }
       .wait-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
       .coach, .seat-result { max-width: none; }
-      .practice { grid-column: 1; order: 3; margin-top: 0; }
-      .seat-main { order: 4; }
-      #waitCard { order: 5; }
-      #recordCard { order: 6; }
+      .practice { grid-column: 1; order: 4; margin-top: 0; }
+      .seat-main { order: 5; }
+      #waitCard { order: 6; }
+      #recordCard { order: 7; }
       .practice-head { margin-bottom: 6px; }
       .practice-list {
         display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 7px;
@@ -760,8 +926,58 @@ CSS = """
       .practice-head h3 { font-size: 12.5px; }
     }
 
+    @keyframes checkPop {
+      0% { transform: scale(0.4); box-shadow: 0 0 0 0 var(--bg-muted); }
+      60% { transform: scale(1.3); box-shadow: 0 0 0 4px var(--ok-bg); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 var(--ok-bg); }
+    }
+    @keyframes seatPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+      50% { box-shadow: 0 0 0 4px var(--accent-subtle); }
+    }
+    @keyframes seatLand {
+      0% { transform: scale(0.94); background-color: var(--accent-subtle); }
+      55% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    @keyframes namePop {
+      0% { transform: scale(0.7); opacity: 0.4; }
+      60% { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    @keyframes coachGlow {
+      0% { box-shadow: 0 0 0 0 rgba(4, 120, 87, 0); }
+      35% { box-shadow: 0 0 0 6px var(--ok-bg); }
+      100% { box-shadow: 0 0 0 0 rgba(4, 120, 87, 0); }
+    }
+    @keyframes resultIn {
+      0% { opacity: 0; transform: translateY(10px) scale(0.985); }
+      100% { opacity: 1; transform: none; }
+    }
+    @keyframes starPop {
+      0% { opacity: 0; transform: scale(0.2); }
+      70% { opacity: 1; transform: scale(1.25); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes burst {
+      0% { opacity: 1; transform: translate(0, 0) scale(0.6); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .seat-seg-btn, .seat-cell, .wait-card, .stage { transition: none !important; }
+      .seat-cell.is-selected, .wait-card.is-selected, .coach.is-cleared,
+      .seat-cell.is-landing, .seat-cell.is-landing .sc-name,
+      .seat-result.is-new, .result-stars .star.is-pop { animation: none !important; }
+      .seat-result.is-new .result-burst span { animation: none !important; opacity: 0 !important; }
+      /* 데모는 움직이지 않고 '완료된 한 장면'으로 보여 준다. */
+      .gd-chip, .gd-tap { animation: none !important; opacity: 0 !important; }
+      .gd-in, .gd-check { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .gd-dot { animation: none !important; background: var(--ok-text) !important; border-color: var(--ok-text) !important; }
+      .gd-bad { animation: none !important; opacity: 0 !important; }
+      .gd-ok { animation: none !important; opacity: 1 !important; }
+      .gc-step { animation: none !important; opacity: 0 !important; }
+      .gc-3 { animation: none !important; opacity: 1 !important; }
     }
 """
 
@@ -853,7 +1069,39 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
           <div class="seat-stars" id="starRow" aria-label="예상 별점"></div>
           <p class="seat-status" id="seatStatus" role="status" aria-live="polite">막차가 도착했습니다. 반대편 문 쪽부터 자리를 잡아 보세요.</p>
-          <button type="button" class="seat-ghost" id="resetBtn">처음부터</button>
+        </section>
+
+        <section class="seat-card guide" id="guideCard" aria-labelledby="guideTitle">
+          <div class="guide-head">
+            <h2 id="guideTitle">게임 방법</h2>
+            <button type="button" class="guide-toggle" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
+          </div>
+          <div class="guide-body" id="guideBody">
+            <div class="guide-demo" aria-hidden="true">
+              <span class="gd-wait">
+                <span class="gd-chip">하늘</span>
+                <span class="gd-tap"></span>
+              </span>
+              <span class="gd-arrow">→</span>
+              <span class="gd-seats">
+                <span class="gd-seat"><span class="gd-tag">창가</span><span class="gd-in">하늘</span><span class="gd-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg></span></span>
+                <span class="gd-seat"><span class="gd-tag">통로</span></span>
+                <span class="gd-seat"><span class="gd-tag">창가</span></span>
+                <span class="gd-seat"><span class="gd-tag">통로</span></span>
+              </span>
+              <span class="gd-cond">
+                <span class="gd-dot"></span>
+                <span class="gd-cond-label">창가</span>
+                <span class="gd-counts"><b class="gd-bad">0/1</b><b class="gd-ok">1/1</b></span>
+              </span>
+            </div>
+            <div class="guide-caption" aria-hidden="true">
+              <span class="gc-step gc-1"><span class="gc-num">1</span>대기 승객을 탭해 고르기</span>
+              <span class="gc-step gc-2"><span class="gc-num">2</span>점선으로 표시된 좌석을 탭</span>
+              <span class="gc-step gc-3"><span class="gc-num">3</span>조건을 모두 맞추면 클리어</span>
+            </div>
+            <p class="guide-note">승객을 고르면 조건에 맞는 좌석이 점선으로 표시됩니다. 앉은 승객을 누르면 그 승객이 선택됩니다.</p>
+          </div>
         </section>
 
         <section class="seat-card" id="condCard">
@@ -898,7 +1146,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <div class="coach">
           <div class="coach-top">
             <span class="coach-door">앞 출입문</span>
-            <span id="coachTag">4호차 막차</span>
+            <span class="coach-top-right"><span id="coachTag">4호차 막차</span><button type="button" class="coach-reset" id="resetBtn">처음부터</button></span>
           </div>
           <div class="coach-cols" aria-hidden="true">
             <span>창가</span><span>통로</span><span>통로</span><span>창가</span>
@@ -911,7 +1159,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         </div>
 
         <section class="seat-result" id="resultBox" aria-labelledby="resultTitle" hidden>
-          <span class="result-badge" id="resultBadge">클리어</span>
+          <div class="result-head">
+            <span class="result-badge" id="resultBadge">클리어</span>
+            <span class="result-burst" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></span>
+          </div>
           <h2 class="result-title" id="resultTitle">모든 조건을 만족했습니다</h2>
           <div class="result-score">
             <strong id="resultMoves">0</strong><span class="unit">수</span>
@@ -967,7 +1218,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     /* ---------------------------------------------------------------- DOM */
     var el = {};
     ['modeDaily', 'modePractice', 'modeNote', 'moveValue', 'parValue', 'starRow', 'seatStatus',
-     'resetBtn', 'condValue', 'condList', 'waitValue', 'waitList', 'waitEmpty', 'selectHint',
+     'resetBtn', 'guideCard', 'guideToggle', 'guideBody',
+     'condValue', 'condList', 'waitValue', 'waitList', 'waitEmpty', 'selectHint',
      'recordDate', 'recToday', 'recClears', 'recStreak', 'recHistory', 'boardTitle', 'boardSub',
      'seatGrid', 'coachTag', 'resultBox', 'resultBadge', 'resultTitle', 'resultMoves', 'resultPar',
      'resultStars', 'resultEff', 'resultBest', 'resultClears', 'resultHint', 'retryBtn', 'nextBtn',
@@ -991,6 +1243,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     var cellEls = [];
     var waitEls = {};
     var passengerIndex = {};
+    var prevCondDone = {};
+    var GUIDE_KEY = 'seat_guide_seen_v1';
 
     /* ---------------------------------------------------------------- 유틸 */
     function pad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -1221,9 +1475,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       var list = rows || condRows();
       el.condList.innerHTML = '';
       var done = 0;
+      var nextDone = {};
       list.forEach(function (row) {
         var li = document.createElement('li');
-        li.className = 'cond-row' + (row.done ? ' is-ok' : '');
+        nextDone[row.label] = row.done;
+        var justOk = row.done && prevCondDone[row.label] === false;
+        li.className = 'cond-row' + (row.done ? ' is-ok' : '') + (justOk ? ' is-new-ok' : '');
         var dot = document.createElement('span');
         dot.className = 'cond-dot';
         dot.setAttribute('aria-hidden', 'true');
@@ -1240,6 +1497,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         if (row.done) done += 1;
       });
       el.condValue.textContent = done + '/' + list.length;
+      prevCondDone = nextDone;
     }
 
     /* ---------------------------------------------------------------- 보드 */
@@ -1263,9 +1521,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         name.className = 'sc-name';
         var sub = document.createElement('span');
         sub.className = 'sc-sub';
+        var check = document.createElement('span');
+        check.className = 'sc-check';
+        check.setAttribute('aria-hidden', 'true');
+        check.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>';
         cell.appendChild(top);
         cell.appendChild(name);
         cell.appendChild(sub);
+        cell.appendChild(check);
         cell.__label = label;
         cell.__tag = tag;
         cell.__name = name;
@@ -1288,7 +1551,29 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       return true;
     }
 
+    function groupOf(id) {
+      var groups = (state.puzzle && state.puzzle.groups) || [];
+      for (var i = 0; i < groups.length; i += 1) {
+        if (groups[i].indexOf(id) !== -1) return groups[i];
+      }
+      return null;
+    }
+
+    // 이 승객이 지금 조건을 모두 만족하는 자리에 앉아 있는지(좌석 위 초록 체크).
+    function passengerOk(pid, seatOfP) {
+      var pass = passengerIndex[pid];
+      if (!pass || seatOfP[pid] === undefined) return false;
+      var condOk = (pass.conds || []).every(function (tag) { return seatHasTag(seatOfP[pid], tag); });
+      if (!condOk) return false;
+      var group = groupOf(pid);
+      if (!group) return true;
+      var placed = group.map(function (id) { return seatOfP[id]; });
+      return placed.every(function (seat) { return seat !== undefined; }) && contiguous(placed);
+    }
+
     function renderGrid() {
+      var seatOfP = {};
+      state.seats.forEach(function (pid, index) { if (pid) seatOfP[pid] = index; });
       for (var i = 0; i < 16; i += 1) {
         var cell = cellEls[i];
         var seat = SEATS[i];
@@ -1303,6 +1588,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         cell.classList.toggle('is-occupied', !!pid);
         cell.classList.toggle('is-senior', seatHasTag(i, 'senior'));
         cell.classList.toggle('is-selected', !!pid && pid === selected);
+        cell.classList.toggle('is-ok', !!pid && passengerOk(pid, seatOfP));
         cell.classList.toggle('is-target', !!selected && !state.cleared && canTake(selected, i));
         var text = seat.label + ' ' + (seatHasTag(i, 'window') ? '창가' : '통로') + ' · ' + cell.__sub.textContent;
         text += pid ? ' · ' + passengerName(pid) : ' · 빈 자리';
@@ -1416,7 +1702,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       state.cleared = false;
       state.counted = false;
       state.mode = mode || 'daily';
+      prevCondDone = {};
       el.resultBox.hidden = true;
+      el.resultBox.classList.remove('is-new');
+      var coachEl = document.querySelector('.coach');
+      if (coachEl) coachEl.classList.remove('is-cleared');
       el.nextBtn.hidden = state.mode !== 'practice';
       el.practiceWrap.hidden = state.mode !== 'practice';
       el.modeDaily.classList.toggle('is-active', state.mode === 'daily');
@@ -1431,13 +1721,23 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         : '연습 퍼즐입니다. 기준 ' + state.puzzle.par + '수 안에 끝내면 별 3개입니다.');
     }
 
-    function afterMove(message) {
+    function playLanding(index) {
+      var cell = cellEls[index];
+      if (!cell) return;
+      cell.classList.remove('is-landing');
+      void cell.offsetWidth;   // 애니메이션 재시작
+      cell.classList.add('is-landing');
+      window.setTimeout(function () { cell.classList.remove('is-landing'); }, 420);
+    }
+
+    function afterMove(message, landingIndex) {
       var check = evaluate();
       if (check.ok) state.cleared = true;
       renderGrid();
       renderWaiting();
       renderConds(check.rows);
       renderMeter();
+      if (landingIndex !== undefined && landingIndex >= 0) playLanding(landingIndex);
       if (check.ok) { onClear(); return; }
       setStatus(message + ' · 남은 조건 ' + check.remaining + '개');
     }
@@ -1495,7 +1795,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       var message = occupant
         ? passengerShort(selected) + ' ↔ ' + passengerShort(occupant) + ' 자리 교환'
         : passengerShort(selected) + ' 님을 ' + SEATS[index].label + '에 앉혔습니다';
-      afterMove(message);
+      afterMove(message, index);
     }
 
     function onClear() {
@@ -1518,6 +1818,19 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           : '기준보다 많이 움직였습니다. 대기 승객은 조건이 맞는 좌석부터 앉히면 빨라집니다.');
       el.nextBtn.hidden = state.mode !== 'practice';
       el.resultBox.hidden = false;
+      el.resultBox.classList.remove('is-new');
+      void el.resultBox.offsetWidth;
+      el.resultBox.classList.add('is-new');
+      Array.prototype.forEach.call(el.resultStars.querySelectorAll('.star'), function (star, i) {
+        star.classList.add('is-pop');
+        star.style.animationDelay = (60 + i * 90) + 'ms';
+      });
+      var coach = document.querySelector('.coach');
+      if (coach) {
+        coach.classList.remove('is-cleared');
+        void coach.offsetWidth;
+        coach.classList.add('is-cleared');
+      }
       setStatus('모든 조건을 만족했습니다. ' + state.moves + '수 · 별 ' + stars + '개');
       renderMeter();
       renderRecord();
@@ -1579,6 +1892,23 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       loadPuzzle(pending.length ? pending[0] : PRACTICE[0], 'practice');
     }
 
+    /* ---------------------------------------------------------------- 게임 방법 */
+    function setGuide(open, persist) {
+      if (!el.guideBody || !el.guideToggle) return;
+      el.guideBody.hidden = !open;
+      el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      el.guideToggle.textContent = open ? '접기' : '게임 방법';
+      if (persist && open) {
+        try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
+      }
+    }
+
+    if (el.guideToggle) {
+      el.guideToggle.addEventListener('click', function () {
+        setGuide(el.guideBody.hidden, true);
+      });
+    }
+
     /* ---------------------------------------------------------------- 이벤트 */
     el.modeDaily.addEventListener('click', function () { setMode('daily'); });
     el.modePractice.addEventListener('click', function () { setMode('practice'); });
@@ -1633,6 +1963,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     state.store = loadStore();
     state.dayKey = kstKey(0);
     buildGrid();
+    (function initGuide() {
+      var seen = false;
+      try { seen = localStorage.getItem(GUIDE_KEY) === '1'; } catch (e) {}
+      // 첫 방문에는 펼쳐서 보여 주고(본 것으로 기록), 다음부터는 접힌 채로 시작한다.
+      setGuide(!seen, !seen);
+    })();
     loadPuzzle(dailyPuzzle(), 'daily');
     renderPracticeList();
     setStatus('막차가 도착했습니다. 대기 승객부터 조건에 맞는 좌석에 앉혀 보세요.');
