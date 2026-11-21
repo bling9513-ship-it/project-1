@@ -802,6 +802,7 @@ async function checkMobileSheet(page, width, tag) {
       expanded: bar.getAttribute('aria-expanded'),
       links: Array.from(document.querySelectorAll('#iaSheet .ia-sheet-link')).map((a) => a.getAttribute('href')),
       groups: Array.from(document.querySelectorAll('#iaSheet .ia-sheet-group')).map((g) => g.textContent.trim()),
+      subs: Array.from(document.querySelectorAll('#iaSheet .ia-sheet-sub')).map((g) => g.textContent.trim()),
       top: Math.round(sheet.getBoundingClientRect().top),
       vh: window.innerHeight,
     };
@@ -818,7 +819,8 @@ async function checkMobileSheet(page, width, tag) {
   assert.equal(opened.expanded, 'true', `${tag}: 전체 button aria-expanded`);
   assert.equal(opened.links.length, SHELL_HREFS.length, `${tag}: sheet lists ${opened.links.length} pages`);
   for (const href of SHELL_HREFS) assert.ok(opened.links.includes(href), `${tag}: sheet missing ${href}`);
-  assert.deepEqual(opened.groups, ['보안·채용', '브리핑·유틸', '데일리·생활', '게임·챌린지'], `${tag}: sheet groups`);
+  assert.deepEqual(opened.groups, ['보안·채용', '브리핑·유틸', '데일리·생활', '게임'], `${tag}: sheet groups`);
+  assert.deepEqual(opened.subs, ['챌린지', '미니게임'], `${tag}: game sub groups`);
   assert.ok(opened.top >= 0 && opened.top < opened.vh, `${tag}: sheet off-screen (top ${opened.top})`);
 
   await page.keyboard.press('Escape');
