@@ -4,7 +4,7 @@
 
 한 번의 실행으로 아래를 묶어 확인한다.
   1) 퍼즐·워게임 회귀 테스트 4종
-       tests/test_mission_puzzles.py · tests/test_seat_puzzles.py · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
+       tests/test_mission_puzzles.py · tests/test_seat_puzzles.py · tests/test_load_puzzles.py · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
        - meta.total 과 실제 건수 불일치
@@ -155,7 +155,7 @@ def count_articles(page, css_class):
 
 # ---------------------------------------------------------------- 1) 회귀 테스트
 def run_unit_tests():
-    scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py",
+    scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py", "tests/test_job_dedup.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)

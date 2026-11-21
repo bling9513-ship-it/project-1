@@ -152,7 +152,7 @@ async def check_width(browser, base, width):
       };
     }""")
     assert layout["overflow"] == 0, "%dpx 가로 넘침 %dpx" % (width, layout["overflow"])
-    assert layout["sheetLinks"] == 15, "전체 메뉴가 15개가 아닙니다: %s" % layout["sheetLinks"]
+    assert layout["sheetLinks"] == 16, "전체 메뉴가 16개가 아닙니다: %s" % layout["sheetLinks"]
     if width <= 768:
         assert layout["tabbar"] and not layout["menu"], "%dpx 모바일 내비 구성이 다릅니다" % width
         assert layout["current"].strip() == "퇴근길 미션", "%dpx 현재 페이지 표시: %s" % (width, layout["current"])

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-15개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+16개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
 - 게임 메뉴는 '챌린지 / 미니게임' 소제목으로 묶는다(데스크톱 드롭다운·모바일 시트 공통).
-- 시트: 카테고리별 15개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 시트: 카테고리별 16개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
 """
 import re
@@ -30,6 +30,7 @@ PAGES = [
     ("chart", "chart.html", "차트 추리실", "차트 추리실"),
     ("ops", "ops.html", "60초 관제실", "60초 관제실"),
     ("seat", "seat.html", "막차 자리 배치", "막차 자리 배치"),
+    ("load", "load.html", "한 번 더 싣기", "한 번 더 싣기"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
@@ -39,7 +40,7 @@ PAGE_SHORT = {key: short for key, _file, _label, short in PAGES}
 # 게임 메뉴의 소제목 묶음 — 데스크톱 드롭다운과 모바일 시트 모두 '챌린지 / 미니게임' 으로 통일한다.
 GAME_GROUPS = [
     ("챌린지", ["wargame", "clue", "mission", "chart"]),
-    ("미니게임", ["ops", "seat"]),
+    ("미니게임", ["ops", "seat", "load"]),
 ]
 
 # (그룹 이름, 항목 목록) — 항목은 페이지 키(str) 또는 (소제목, 페이지 키 목록).
@@ -63,7 +64,7 @@ MOBILE_TABS = [
     ("jobs", "채용", "index.html", ["index"], "briefcase"),
     ("study", "학습", "study.html", ["study"], "book"),
     ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
-    ("game", "게임", "wargame.html", ["wargame", "clue", "mission", "chart", "ops", "seat"], "game"),
+    ("game", "게임", "wargame.html", ["wargame", "clue", "mission", "chart", "ops", "seat", "load"], "game"),
 ]
 
 ICONS = {
