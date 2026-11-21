@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MISSION_HTML = os.path.join(BASE_DIR, "mission.html")
@@ -880,6 +881,18 @@ CSS = """
 
     .game-msg { font-size: 12px; color: var(--text-muted); min-height: 18px; }
 
+    @keyframes plyPop {
+      0% { transform: scale(0.78); }
+      60% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+    .cell.step-pop .ply { animation: plyPop 180ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    @keyframes resultIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .result.just-won { animation: resultIn 220ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
     .result {
       margin-top: 16px;
       padding: 16px;
@@ -936,6 +949,18 @@ CSS = """
     }
 
     .share-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+    /* 우측 칸에 들어온 연습 스테이지·결과 카드 */
+    .board-side .practice {
+      margin-bottom: 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: var(--bg-page);
+      box-shadow: none;
+    }
+    .board-side .practice-head { margin-bottom: 10px; }
+    .board-side .result { margin-top: 0; }
+    .board-side .result + .practice { margin-top: 2px; }
 
     .practice-head {
       display: flex;
@@ -1039,7 +1064,9 @@ CSS = """
       .pad { order: 5; }
       .game-actions { order: 6; flex-direction: row; }
       .game-msg { order: 7; }
-      .keys { order: 8; }
+      .result { order: 8; }
+      .practice { order: 9; grid-column: 1 / -1; }
+      .keys { order: 10; }
       #missionList { order: 1; }
       .board { max-width: 460px; margin: 0 auto; }
 
@@ -1107,7 +1134,7 @@ CSS = """
       .game-kicker { font-size: 10.5px; margin-bottom: 2px; }
       .game-title { font-size: 16px; }
       .game-scene { font-size: 11.5px; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .board { padding: 6px; gap: 3px; border-radius: 10px; max-width: 340px; }
+      .board { padding: 6px; gap: 3px; border-radius: 10px; max-width: min(340px, 34vh); }
       .board-wrap { column-gap: 10px; row-gap: 6px; }
       .legend { gap: 8px; flex-wrap: nowrap; overflow: hidden; font-size: 10px; margin-top: 2px; }
       .game-msg { font-size: 11px; min-height: 16px; }
@@ -1115,6 +1142,8 @@ CSS = """
       .share .btn-primary { width: 100%; }
       .chips { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
       .keys { display: none; }
+      .board-side .practice { padding: 0; border: 0; background: transparent; margin-top: 4px; }
+      .board-side .practice-head { margin-bottom: 6px; }
 
       /* 지도 아래는 [지도 왼쪽: 십자 버튼] [오른쪽: 이동 수·되돌리기] 2칼럼으로 묶어 세로 길이를 줄인다. */
       .board-wrap { grid-template-columns: 140px minmax(0, 1fr); }
@@ -1142,20 +1171,21 @@ CSS = """
       .game-msg { grid-column: 1 / -1; grid-row: 6; }
     }
 
-    /* 짧은 모바일 화면(≈700px 높이)에서도 지도와 조작부가 한 화면에 남도록 지도만 줄인다. */
+    /* 짧은 모바일 화면에서도 하단 탭 바 위로 지도·조작부가 한 화면에 남도록 지도를 화면 높이에 맞춘다. */
     @media (max-width: 640px) and (max-height: 800px) {
-      .board { max-width: 312px; }
+      .board { max-width: min(312px, 31vh); }
     }
 
     @media (max-width: 640px) and (max-height: 720px) {
       .container { padding-top: 6px; }
       .hero { margin-bottom: 6px; }
+      .hero-stats { display: none; }
       .hero-title { font-size: 17px; margin-bottom: 4px; }
       .panel { padding: 8px; }
       .game-kicker { display: none; }
       .game-head { margin-bottom: 2px; }
       .game-scene { margin-bottom: 6px; }
-      .board { max-width: 272px; }
+      .board { max-width: 31vh; }
     }
 
     @media (max-width: 430px) {
@@ -1180,6 +1210,9 @@ CSS = """
 
     @media (max-width: 380px) {
       .brand-name { display: none; }
+      .meters { flex-direction: column; align-items: stretch; gap: 3px; font-size: 11px; }
+      .meter-row { font-size: 11px; white-space: nowrap; }
+      .meters .bar { min-width: 0; }
     }
 """
 
@@ -1396,36 +1429,38 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           </div>
           </div>
           <p class="game-msg" id="gameMsg" role="status" aria-live="polite"></p>
+
+        <div class="result" id="resultBox" hidden>
+          <div class="result-head">
+            <span class="result-badge" id="resultBadge">도착</span>
+            <span class="result-title" id="resultTitle"></span>
+          </div>
+          <div class="result-facts">
+            <span class="fact"><small>이동</small><strong id="rMoves">-</strong></span>
+            <span class="fact"><small>시간</small><strong id="rTime">-</strong></span>
+            <span class="fact"><small>최소 이동</small><strong id="rOpt">-</strong></span>
+          </div>
+          <div class="share">
+            <div class="share-preview" id="sharePreview"></div>
+            <button type="button" class="btn btn-primary" id="copyBtn">결과 복사</button>
+          </div>
+          <p class="share-note">결과 문구에는 지도와 경로가 들어가지 않습니다. 기록은 이 브라우저에만 저장됩니다.</p>
+        </div>
+
+        <section class="panel practice" id="practicePanel" aria-label="연습 스테이지">
+          <div class="practice-head">
+            <div class="panel-title"><span class="bar-mark"></span>연습 스테이지</div>
+            <span class="panel-meta">난이도를 골라 다시 풀 수 있습니다</span>
+          </div>
+          <div class="seg" id="levelSeg"></div>
+          <div class="chips" id="stageChips"></div>
+          <p class="practice-note" id="practiceNote">모든 스테이지는 최단 경로로 도달할 수 있고, 제한 이동 수 안에 클리어할 수 있도록 검증했습니다.</p>
+        </section>
         </div>
       </div>
 
-      <div class="result" id="resultBox" hidden>
-        <div class="result-head">
-          <span class="result-badge" id="resultBadge">도착</span>
-          <span class="result-title" id="resultTitle"></span>
-        </div>
-        <div class="result-facts">
-          <span class="fact"><small>이동</small><strong id="rMoves">-</strong></span>
-          <span class="fact"><small>시간</small><strong id="rTime">-</strong></span>
-          <span class="fact"><small>최소 이동</small><strong id="rOpt">-</strong></span>
-        </div>
-        <div class="share">
-          <div class="share-preview" id="sharePreview"></div>
-          <button type="button" class="btn btn-primary" id="copyBtn">결과 복사</button>
-        </div>
-        <p class="share-note">결과 문구에는 지도와 경로가 들어가지 않습니다. 기록은 이 브라우저에만 저장됩니다.</p>
-      </div>
     </section>
 
-    <section class="panel practice" id="practicePanel" aria-label="연습 스테이지">
-      <div class="practice-head">
-        <div class="panel-title"><span class="bar-mark"></span>연습 스테이지</div>
-        <span class="panel-meta">난이도를 골라 다시 풀 수 있습니다</span>
-      </div>
-      <div class="seg" id="levelSeg"></div>
-      <div class="chips" id="stageChips"></div>
-      <p class="practice-note" id="practiceNote">모든 스테이지는 최단 경로로 도달할 수 있고, 제한 이동 수 안에 클리어할 수 있도록 검증했습니다.</p>
-    </section>
 
     <footer class="footer">
       Infosec Archive · 퇴근길 미션<br>
@@ -1588,6 +1623,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       }
 
       function flash(text) { gameMsg.textContent = text; }
+
+      function reduceMotion() {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      }
 
       // ---- 렌더 ----
       function renderBoard() {
@@ -1818,6 +1857,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         game.moves += 1;
         paint();
         updateMeters();
+        if (!reduceMotion()) {
+          const curEl = cellEls[nr * puz.size + nc];
+          curEl.classList.remove('step-pop');
+          void curEl.offsetWidth;
+          curEl.classList.add('step-pop');
+          window.setTimeout(function () { curEl.classList.remove('step-pop'); }, 200);
+        }
         checkEnd();
       }
 
@@ -1915,6 +1961,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         sharePreview.textContent = shareText(seconds);
         copyBtn.textContent = '결과 복사';
         resultBox.hidden = false;
+        resultBox.classList.remove('just-won');
+        void resultBox.offsetWidth;
+        resultBox.classList.add('just-won');
         flash(improved ? '이전 기록보다 좋은 기록입니다. 이 브라우저에 저장했습니다.' : '기록을 이 브라우저에 저장했습니다.');
       }
 
@@ -2073,7 +2122,7 @@ def build():
     html = html.replace("__BUILT_AT__", esc(built_at))
 
     with open(MISSION_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'mission')))
 
     print("-> 'mission.html' 생성 완료 (오늘의 지도 %d개 풀 · 연습 %d개 · 최단/제한 BFS 검증 완료)"
           % (len(daily), practice_count))

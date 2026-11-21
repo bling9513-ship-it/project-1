@@ -13,6 +13,7 @@ import subprocess
 from datetime import datetime, timezone, timedelta
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTFIT_HTML = os.path.join(BASE_DIR, "outfit.html")
@@ -2003,7 +2004,7 @@ def build():
     html = html.replace("__WX_JSON__", safe_json_for_script(json.dumps(wx, ensure_ascii=False)))
 
     with open(OUTFIT_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'outfit')))
 
     print("-> 'outfit.html' 생성 완료 (기온 구간 8단계 · 코디 %d개, 오늘 %s %s, %s~%s)"
           % (total_cards, tt(wx.get("now_temp")), today_band["name"],

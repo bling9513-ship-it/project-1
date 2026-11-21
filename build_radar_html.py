@@ -19,6 +19,7 @@ import hashlib
 from datetime import datetime, timezone, timedelta
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -2612,7 +2613,7 @@ def build():
 
     out = os.path.join(BASE, "radar.html")
     with open(out, "w", encoding="utf-8") as f:
-        f.write(harden_html(page))
+        f.write(harden_html(ui_shell.apply(page, 'radar')))
     print(f"-> 'radar.html' 생성 완료 (판별 {len(quiz)}문항 · 정상 안내 "
           f"{sum(1 for q in quiz if q['answer'] == 'legit')}문항 · 트렌드 {len(TRENDS)}종 · 대응 {len(CHECKLIST)}단계)")
     return len(quiz)

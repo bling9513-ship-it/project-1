@@ -6,6 +6,9 @@ const { chromium } = require('playwright');
 const pages = ['index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart'];
 const root = path.join(__dirname, '..');
 
+const SHELL_HREFS = ['index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
+  'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html'];
+
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
     const el = document.getElementById('cve-' + id);
@@ -334,6 +337,7 @@ async function checkMissionMobile(browser, base) {
           reset: box('#resetBtn'),
           chipRows: new Set(chips.map((el) => Math.round(el.getBoundingClientRect().top / 8))).size,
           padBtn: { w: padBtn.width, h: padBtn.height },
+          tabbarTop: document.querySelector('.ia-tabbar').getBoundingClientRect().top,
         };
       });
       assert.equal(layout.overflow, 0, `${tag}: horizontal overflow ${layout.overflow}px`);
@@ -346,6 +350,8 @@ async function checkMissionMobile(browser, base) {
       for (const key of ['pad', 'undo', 'reset']) {
         assert.ok(layout[key].bottom <= layout.viewport + 0.5,
           `${tag}: ${key} below the first screen (${Math.round(layout[key].bottom)} > ${layout.viewport})`);
+        assert.ok(layout[key].bottom <= layout.tabbarTop + 0.5,
+          `${tag}: ${key} hidden behind the bottom tab bar (${Math.round(layout[key].bottom)} > ${Math.round(layout.tabbarTop)})`);
       }
 
       // 지도 스와이프로 한 칸 이동하고 페이지는 움직이지 않는다
@@ -492,6 +498,242 @@ async function checkChartGame(page, base, width) {
   console.log(`chart game ${width}px passed (${won.name} · 가려진 ${won.future})`);
 }
 
+// ---- 공통 셸: PC 드롭다운 내비 · 모바일 하단 탭 바 ----
+async function checkShellLayout(page, width, name) {
+  const tag = `shell ${name} ${width}px`;
+  const state = await page.evaluate(() => {
+    const visible = (el) => {
+      if (!el) return false;
+      const cs = getComputedStyle(el);
+      const box = el.getBoundingClientRect();
+      return cs.display !== 'none' && cs.visibility !== 'hidden' && box.width > 0 && box.height > 0;
+    };
+    const items = Array.from(document.querySelectorAll(
+      '.ia-header-inner > .ia-menu > .ia-menu-link, .ia-header-inner .ia-menu-group'));
+    const rects = items.map((el) => el.getBoundingClientRect());
+    let overlap = false;
+    for (let i = 1; i < rects.length; i += 1) {
+      if (rects[i - 1].right > rects[i].left + 1) overlap = true;
+    }
+    const actions = document.querySelector('.ia-actions');
+    if (actions && rects.length && rects[rects.length - 1].right > actions.getBoundingClientRect().left + 1) {
+      overlap = true;
+    }
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      header: visible(document.querySelector('.ia-header')),
+      menu: visible(document.querySelector('.ia-menu')),
+      tabbar: visible(document.querySelector('.ia-tabbar')),
+      current: document.querySelector('.ia-current') ? document.querySelector('.ia-current').textContent.trim() : '',
+      headerLinks: Array.from(new Set(Array.from(document.querySelectorAll('.ia-header a[href]'))
+        .map((a) => a.getAttribute('href')).filter((href) => href && href.endsWith('.html')))),
+      topEntries: items.length,
+      overlap,
+      bottomPad: parseFloat(getComputedStyle(document.body).paddingBottom) || 0,
+    };
+  });
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.equal(state.header, true, `${tag}: shell header missing`);
+  if (width <= 768) {
+    assert.equal(state.menu, false, `${tag}: desktop menu must be hidden`);
+    assert.equal(state.tabbar, true, `${tag}: bottom tab bar missing`);
+    assert.ok(state.current.length > 0, `${tag}: current page label missing`);
+    assert.ok(state.bottomPad >= 64, `${tag}: body padding-bottom ${state.bottomPad}px is too small for the tab bar`);
+  } else {
+    assert.equal(state.menu, true, `${tag}: desktop menu missing`);
+    assert.equal(state.tabbar, false, `${tag}: bottom tab bar must be hidden on desktop`);
+    assert.equal(state.overlap, false, `${tag}: header items overlap`);
+    assert.equal(state.topEntries, 5, `${tag}: desktop nav has ${state.topEntries} top-level entries`);
+    for (const href of SHELL_HREFS.filter((h) => h !== 'index.html')) {
+      assert.ok(state.headerLinks.includes(href), `${tag}: ${href} not reachable from the header`);
+    }
+  }
+}
+
+// ---- 모바일 전체 메뉴 시트: 열기/닫기(버튼·딤·Escape) · 포커스 이동·복귀 · 스크롤 잠금 ----
+async function checkMobileSheet(page, width, tag) {
+  const readSheet = () => page.evaluate(() => {
+    const sheet = document.getElementById('iaSheet');
+    const bar = document.getElementById('iaAllBtn');
+    return {
+      hidden: sheet.hidden,
+      open: sheet.classList.contains('is-open'),
+      focusInside: sheet.contains(document.activeElement),
+      focusId: document.activeElement ? document.activeElement.id : null,
+      locked: document.body.classList.contains('ia-sheet-open'),
+      bodyOverflow: getComputedStyle(document.body).overflow,
+      expanded: bar.getAttribute('aria-expanded'),
+      links: Array.from(document.querySelectorAll('#iaSheet .ia-sheet-link')).map((a) => a.getAttribute('href')),
+      groups: Array.from(document.querySelectorAll('#iaSheet .ia-sheet-group')).map((g) => g.textContent.trim()),
+      top: Math.round(sheet.getBoundingClientRect().top),
+      vh: window.innerHeight,
+    };
+  });
+
+  await page.click('#iaAllBtn');
+  await page.waitForTimeout(320);
+  const opened = await readSheet();
+  assert.equal(opened.hidden, false, `${tag}: sheet did not open`);
+  assert.equal(opened.open, true, `${tag}: sheet has no open state`);
+  assert.equal(opened.focusInside, true, `${tag}: focus did not move into the sheet`);
+  assert.equal(opened.locked, true, `${tag}: background scroll not locked`);
+  assert.equal(opened.bodyOverflow, 'hidden', `${tag}: body overflow not hidden`);
+  assert.equal(opened.expanded, 'true', `${tag}: 전체 button aria-expanded`);
+  assert.equal(opened.links.length, 12, `${tag}: sheet lists ${opened.links.length} pages`);
+  for (const href of SHELL_HREFS) assert.ok(opened.links.includes(href), `${tag}: sheet missing ${href}`);
+  assert.deepEqual(opened.groups, ['보안·채용', '브리핑·유틸', '데일리·생활', '게임·챌린지'], `${tag}: sheet groups`);
+  assert.ok(opened.top >= 0 && opened.top < opened.vh, `${tag}: sheet off-screen (top ${opened.top})`);
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+  const closed = await readSheet();
+  assert.equal(closed.hidden, true, `${tag}: Escape did not close the sheet`);
+  assert.equal(closed.focusId, 'iaAllBtn', `${tag}: focus did not return to 전체`);
+  assert.equal(closed.locked, false, `${tag}: scroll lock not released`);
+  assert.equal(closed.expanded, 'false', `${tag}: aria-expanded not reset`);
+
+  await page.click('#iaAllBtn');
+  await page.waitForTimeout(320);
+  await page.mouse.click(Math.round(width / 2), 12);
+  await page.waitForTimeout(320);
+  const dimClosed = await readSheet();
+  assert.equal(dimClosed.hidden, true, `${tag}: backdrop click did not close the sheet`);
+  assert.equal(dimClosed.focusId, 'iaAllBtn', `${tag}: focus lost after backdrop close`);
+
+  await page.click('#iaAllBtn');
+  await page.waitForTimeout(320);
+  await page.click('#iaSheetClose');
+  await page.waitForTimeout(320);
+  const btnClosed = await readSheet();
+  assert.equal(btnClosed.hidden, true, `${tag}: close button did not close the sheet`);
+  assert.equal(btnClosed.focusId, 'iaAllBtn', `${tag}: focus lost after close button`);
+}
+
+// ---- 채용공고: PC 필터 레일 / 모바일 필터 시트 · 배지 ----
+async function checkIndexLayout(page, width, tag) {
+  const count = async () => parseInt((await page.textContent('#matchCount')).trim(), 10);
+  if (width >= 1024) {
+    const rail = await page.evaluate(() => {
+      const el = document.getElementById('filterRail');
+      return {
+        visible: el.getBoundingClientRect().width > 0 && getComputedStyle(el).visibility !== 'hidden',
+        position: getComputedStyle(el).position,
+        aside: el.tagName === 'ASIDE',
+      };
+    });
+    assert.equal(rail.visible, true, `${tag}: filter rail missing`);
+    assert.equal(rail.aside, true, `${tag}: filter rail is not an aside`);
+    assert.equal(rail.position, 'sticky', `${tag}: filter rail is not a sticky side rail`);
+    const before = await count();
+    await page.click('.filter-pill[data-filter="platform"][data-val="원티드"]');
+    assert.ok(await count() < before, `${tag}: platform filter did not narrow the feed`);
+    await page.click('.filter-pill[data-filter="platform"][data-val="all"]');
+    await page.fill('#searchInput', 'zzzz-no-such-job');
+    await page.waitForFunction(() => document.getElementById('matchCount').textContent.trim() === '0',
+      null, { timeout: 5000 });
+    await page.click('[data-action="reset-filters"]');
+    await page.waitForFunction(() => Number(document.getElementById('matchCount').textContent.trim()) > 0,
+      null, { timeout: 5000 });
+    return;
+  }
+
+  const railState = () => page.evaluate(() => {
+    const rail = document.getElementById('filterRail');
+    const btn = document.getElementById('filterOpenBtn');
+    return {
+      open: rail.classList.contains('is-open'),
+      focusInside: rail.contains(document.activeElement),
+      focusId: document.activeElement ? document.activeElement.id : null,
+      locked: document.body.classList.contains('ia-filter-open'),
+      expanded: btn.getAttribute('aria-expanded'),
+      badge: document.getElementById('filterBadge').textContent.trim(),
+    };
+  });
+
+  await page.click('#filterOpenBtn');
+  await page.waitForTimeout(320);
+  const opened = await railState();
+  assert.equal(opened.open, true, `${tag}: filter sheet did not open`);
+  assert.equal(opened.focusInside, true, `${tag}: focus did not move into the filter sheet`);
+  assert.equal(opened.locked, true, `${tag}: filter sheet scroll lock`);
+  assert.equal(opened.expanded, 'true', `${tag}: 필터 button aria-expanded`);
+
+  const before = await count();
+  await page.click('.filter-pill[data-filter="deadline"][data-val="urgent"]');
+  await page.waitForTimeout(150);
+  assert.ok(await count() <= before, `${tag}: deadline filter widened the feed`);
+  assert.equal((await railState()).badge, '1', `${tag}: filter badge`);
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+  const closed = await railState();
+  assert.equal(closed.open, false, `${tag}: Escape did not close the filter sheet`);
+  assert.equal(closed.focusId, 'filterOpenBtn', `${tag}: focus did not return to 필터`);
+  assert.equal(closed.locked, false, `${tag}: filter scroll lock not released`);
+
+  await page.selectOption('#sortSelectMobile', 'company');
+  assert.equal(await page.inputValue('#sortSelect'), 'company', `${tag}: mobile sort not synced to the rail`);
+}
+
+// ---- 하단 탭 바가 페이지 마지막 콘텐츠를 가리지 않는지 ----
+async function checkBottomBar(page, width, name) {
+  const tag = `bottom bar ${name} ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(150);
+  const gap = await page.evaluate(() => {
+    const bar = document.querySelector('.ia-tabbar');
+    const main = document.querySelector('main') || document.querySelector('.container');
+    const foot = document.querySelector('footer, .footer');
+    const last = foot || (main ? main.lastElementChild : null);
+    return {
+      barTop: bar.getBoundingClientRect().top,
+      lastBottom: last ? last.getBoundingClientRect().bottom : null,
+      lastTag: last ? last.tagName.toLowerCase() : null,
+      pad: parseFloat(getComputedStyle(document.body).paddingBottom) || 0,
+      innerHeight: window.innerHeight,
+    };
+  });
+  assert.ok(gap.barTop > 0 && gap.barTop < gap.innerHeight, `${tag}: tab bar not fixed on screen`);
+  assert.ok(gap.lastBottom !== null, `${tag}: page has no main content`);
+  assert.ok(gap.lastBottom <= gap.barTop + 0.5,
+    `${tag}: last <${gap.lastTag}> ends at ${Math.round(gap.lastBottom)}, under the tab bar (${Math.round(gap.barTop)})`);
+  assert.ok(gap.pad >= 64, `${tag}: body padding-bottom ${gap.pad}px`);
+}
+
+// ---- prefers-reduced-motion: 전환·애니메이션 비활성 ----
+async function checkReducedMotion(browser, base) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 }, reducedMotion: 'reduce',
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/ai.html`, { waitUntil: 'load' });
+    await page.click('#iaAllBtn');
+    const state = await page.evaluate(() => {
+      const ms = (value) => (value.endsWith('ms') ? parseFloat(value) : parseFloat(value) * 1000);
+      const sheet = document.getElementById('iaSheet');
+      const tab = document.querySelector('.ia-tab');
+      const card = document.querySelector('.ai-card') || document.querySelector('button');
+      return {
+        hidden: sheet.hidden,
+        open: sheet.classList.contains('is-open'),
+        sheetMs: ms(getComputedStyle(sheet).transitionDuration.split(',')[0].trim()),
+        tabMs: ms(getComputedStyle(tab).transitionDuration.split(',')[0].trim()),
+        cardMs: card ? ms(getComputedStyle(card).transitionDuration.split(',')[0].trim()) : 0,
+        sheetTransform: getComputedStyle(sheet).transform,
+      };
+    });
+    assert.equal(state.hidden, false, 'reduced motion: sheet did not open');
+    assert.equal(state.open, true, 'reduced motion: sheet has no open state');
+    assert.ok(state.sheetMs <= 0.02, `reduced motion: sheet transition ${state.sheetMs}ms`);
+    assert.ok(state.tabMs <= 0.02, `reduced motion: tab transition ${state.tabMs}ms`);
+    assert.ok(state.cardMs <= 0.02, `reduced motion: card transition ${state.cardMs}ms`);
+    console.log('prefers-reduced-motion passed');
+  } finally {
+    await context.close();
+  }
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -523,6 +765,10 @@ async function checkPage(context, base, name, width) {
     const initialTheme = await page.locator('html').getAttribute('data-theme');
     await theme.click();
     assert.notEqual(await page.locator('html').getAttribute('data-theme'), initialTheme);
+
+    await checkShellLayout(page, width, name);
+    if (name === 'index') await checkIndexLayout(page, width, `index ${width}px`);
+    if (name === 'ai' && width <= 768) await checkMobileSheet(page, width, `sheet ai ${width}px`);
 
     const cards = { index: '#jobsContainer .job-card, #jobsContainer .list-row', ai: '#aiGrid .ai-card', cve: '#cveList .cve-card' };
     if (cards[name]) await page.locator(cards[name]).first().waitFor({ state: 'attached' });
@@ -573,7 +819,28 @@ async function main() {
       for (const name of pages) await checkPage(context, base, name, width);
       await context.close();
     }
+    // 320px·768px: 넘침 0, 하단 바 가림 0, 시트/필터 시트 동작(대표 페이지)
+    for (const width of [320, 768]) {
+      const context = await browser.newContext({ viewport: { width, height: 900 } });
+      for (const name of pages) {
+        const page = await context.newPage();
+        try {
+          const response = await page.goto(`${base}/${name}.html`, { waitUntil: 'load' });
+          assert.equal(response?.status(), 200, `${name} ${width}px: page must load`);
+          await checkShellLayout(page, width, name);
+          await checkBottomBar(page, width, name);
+          if (name === 'index') await checkIndexLayout(page, width, `index ${width}px`);
+          if (name === 'ai') await checkMobileSheet(page, width, `sheet ai ${width}px`);
+        } finally {
+          await page.close();
+        }
+        console.log(`${name} ${width}px layout passed`);
+      }
+      await context.close();
+    }
+
     await checkMissionMobile(browser, base);
+    await checkReducedMotion(browser, base);
   } finally {
     try {
       await browser?.close();

@@ -11,6 +11,7 @@ from datetime import datetime, timezone, timedelta
 
 from db_manager import init_db, get_ai_insights, get_ai_insight_count
 from html_guard import harden_html, safe_json_for_script, safe_url
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 AI_DATA_JSON = os.path.join(BASE_DIR, "ai_data.json")
@@ -1441,7 +1442,7 @@ def build():
                 .replace("__CAT_CLASS_JSON__", json.dumps(CAT_CLASS, ensure_ascii=False)))
 
     with open(AI_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html_out))
+        f.write(harden_html(ui_shell.apply(html_out, 'ai')))
     print(f"-> 'ai.html' 생성 완료 ({total}건, 주목할 기술 {featured}건)")
     return total
 

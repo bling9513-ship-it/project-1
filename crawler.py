@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta, date
 from concurrent.futures import ThreadPoolExecutor
 
 from html_guard import harden_html, safe_json_for_script, safe_url
+import ui_shell
 from net_guard import read_limited
 
 KEYWORDS = ["정보보안", "정보보호", "취약점 진단", "모의해킹"]
@@ -611,7 +612,23 @@ def generate_html(jobs, update_time_str):
         kw_counts[kw] = sum(1 for j in jobs if kw in j.get("keywords", []))
         
     urgent_count = count_urgent_jobs(jobs)
-        
+
+    # 상단 KPI: 오늘 마감 / 이번 주 마감 / 오늘 새로 수집된 공고
+    from db_manager import compute_remaining_days
+    _today = datetime.now(timezone(timedelta(hours=9))).date()
+    due_today = 0
+    due_week = 0
+    new_today = 0
+    for _job in jobs:
+        _days = compute_remaining_days(_job.get("deadline"), _today, _job.get("last_seen_at"))
+        if _days is not None and _days >= 0:
+            if _days == 0:
+                due_today += 1
+            if _days <= 7:
+                due_week += 1
+        if (_job.get("first_seen_at") or "")[:10] == _today.isoformat():
+            new_today += 1
+
     html_content = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -1743,6 +1760,187 @@ def generate_html(jobs, update_time_str):
       .nav-actions {{ gap: 4px; }}
       .nav-actions .icon-btn {{ width: 28px; height: 28px; }}
     }}
+
+    /* ===== 채용공고 PC/모바일 분리 레이아웃 (1차 UI/UX 개편) ===== */
+    .ia-overview {{
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+    }}
+    .ia-overview-copy {{ min-width: 0; }}
+    .ia-overview .hero-title {{ margin-bottom: 6px; }}
+    .ia-overview .hero-desc {{ margin-bottom: 0; }}
+    .ia-kpis {{ display: flex; gap: 8px; flex: 0 0 auto; }}
+    .ia-kpi {{
+      min-width: 98px;
+      padding: 9px 12px 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }}
+    .ia-kpi-label {{ display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; }}
+    .ia-kpi-value {{ font-size: 19px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }}
+    .ia-kpi-unit {{ font-size: 11px; font-weight: 600; color: var(--text-muted); margin-left: 2px; }}
+    .ia-kpi.is-urgent .ia-kpi-value {{ color: #dc2626; }}
+
+    .ia-jobs-layout {{ display: grid; grid-template-columns: 278px minmax(0, 1fr); gap: 26px; align-items: start; }}
+    .ia-results {{ min-width: 0; }}
+
+    .ia-rail {{
+      position: sticky;
+      top: 76px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+    }}
+    .ia-rail-head {{ display: none; }}
+    .ia-rail-section {{ display: flex; flex-direction: column; gap: 8px; }}
+    .ia-rail-label {{ font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; }}
+    .ia-rail .search-input {{ padding: 9px 32px 9px 34px; font-size: 13px; }}
+    .ia-rail .search-icon {{ left: 11px; }}
+    .ia-rail .clear-search-btn {{ right: 8px; }}
+    .ia-rail .segmented-control {{ flex-wrap: wrap; overflow: visible; gap: 4px; }}
+    .ia-rail .segment-btn {{ padding: 6px 9px; font-size: 12px; border-radius: 8px; }}
+    .ia-rail .segment-btn .count {{ font-size: 10px; padding: 1px 5px; }}
+    .ia-rail .filter-pills-scroll {{ flex-wrap: wrap; overflow: visible; }}
+    .ia-rail .filter-pill {{ padding: 5px 9px; font-size: 11.5px; }}
+    .ia-rail .sort-select {{ width: 100%; }}
+    .ia-rail .view-toggle {{ align-self: flex-start; }}
+    .ia-rail-foot {{ display: none; }}
+
+    .ia-mobile-controls {{ display: none; }}
+    .ia-filter-btn {{
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms;
+    }}
+    .ia-filter-btn:active {{ transform: scale(0.98); }}
+    .ia-filter-badge {{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+    }}
+    .ia-filter-badge.is-zero {{ display: none; }}
+    .ia-apply-btn {{
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }}
+    .ia-apply-btn:active {{ transform: scale(0.98); }}
+    .ia-rail-backdrop {{ display: none; }}
+
+    @media (min-width: 1024px) {{
+      .container {{ max-width: 1300px; }}
+    }}
+
+    @media (max-width: 1023px) {{
+      .ia-overview {{ flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 14px; }}
+      .ia-overview .hero-desc {{ display: none; }}
+      .ia-kpis {{ gap: 6px; overflow-x: auto; scrollbar-width: none; }}
+      .ia-kpis::-webkit-scrollbar {{ display: none; }}
+      .ia-kpi {{ flex: 1 1 0; min-width: 0; padding: 8px 10px; }}
+      .ia-kpi-value {{ font-size: 16px; }}
+      .ia-kpi-label {{ font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; }}
+      .ia-jobs-layout {{ grid-template-columns: minmax(0, 1fr); gap: 0; }}
+      .ia-mobile-controls {{ display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }}
+      .ia-mobile-controls .sort-select {{ flex: 1 1 auto; min-width: 0; }}
+      .ia-rail {{
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        z-index: 90;
+        max-height: 86vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+        padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+        box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 240ms;
+      }}
+      .ia-rail.is-open {{
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+      }}
+      .ia-rail-head {{ display: flex; align-items: center; justify-content: space-between; padding: 8px 0 4px; }}
+      .ia-rail-head strong {{ font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }}
+      .ia-rail-close {{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        background: var(--bg-page);
+        color: var(--text-secondary);
+        cursor: pointer;
+      }}
+      .ia-rail .segmented-control {{ flex-wrap: nowrap; overflow-x: auto; }}
+      .ia-rail .segment-btn {{ flex: 0 0 auto; }}
+      .ia-rail .filter-pills-scroll {{ flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }}
+      .ia-rail .filter-pill {{ flex: 0 0 auto; }}
+      .ia-rail .search-input {{ font-size: 14px; padding: 10px 36px 10px 36px; }}
+      .ia-rail-foot {{ display: block; padding-top: 4px; }}
+      .ia-rail-backdrop {{
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 89;
+        background: rgba(15, 23, 42, 0.44);
+        opacity: 0;
+        transition: opacity 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }}
+      .ia-rail-backdrop.is-open {{ opacity: 1; }}
+      .ia-rail-backdrop[hidden] {{ display: none; }}
+      body.ia-filter-open {{ overflow: hidden; }}
+      .feed-info {{ font-size: 12.5px; margin-bottom: 12px; }}
+      /* 320px 폭에서 카드 상단 배지가 카드 밖으로 밀리지 않게 줄바꿈을 허용한다 */
+      .card-top {{ flex-wrap: wrap; gap: 4px 8px; }}
+      .company-name {{ min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+      .badges-row {{ flex-shrink: 1; flex-wrap: wrap; }}
+      .ia-rail {{ overflow-x: hidden; }}
+    }}
+
   </style>
 </head>
 <body>
@@ -1823,72 +2021,98 @@ def generate_html(jobs, update_time_str):
   <!-- Main Content -->
   <main class="container">
     
-    <!-- Hero Header -->
-    <section class="hero">
-      <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
-      <p class="hero-desc">원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
-      <div class="hero-stats">
-        <span class="stat-chip">활성 보안 공고 <strong id="statActiveCount">{len(jobs)}건</strong></span>
-        <span class="stat-chip">D-Day 마감 임박 <strong id="statUrgentCount">{urgent_count}건</strong></span>
-        <span class="stat-chip">SQLite DB 기반 마감 자동 정리</span>
-        <span class="stat-chip">매일 <strong>08:00</strong> 자동 갱신</span>
+    <!-- Summary / KPI -->
+    <section class="ia-overview">
+      <div class="ia-overview-copy">
+        <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
+        <p class="hero-desc">원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
+      </div>
+      <div class="ia-kpis">
+        <div class="ia-kpi">
+          <span class="ia-kpi-label">총 활성 공고</span>
+          <strong class="ia-kpi-value" id="statActiveCount">{len(jobs)}</strong><span class="ia-kpi-unit">건</span>
+        </div>
+        <div class="ia-kpi is-urgent">
+          <span class="ia-kpi-label">오늘 마감</span>
+          <strong class="ia-kpi-value" id="statDueToday">{due_today}</strong><span class="ia-kpi-unit">건</span>
+        </div>
+        <div class="ia-kpi">
+          <span class="ia-kpi-label">이번 주 마감</span>
+          <strong class="ia-kpi-value" id="statDueWeek">{due_week}</strong><span class="ia-kpi-unit">건</span>
+        </div>
+        <div class="ia-kpi">
+          <span class="ia-kpi-label">새 공고</span>
+          <strong class="ia-kpi-value" id="statNewToday">{new_today}</strong><span class="ia-kpi-unit">건</span>
+        </div>
       </div>
     </section>
 
-    <!-- Toolbar -->
-    <section class="toolbar">
-      <!-- Search Input -->
-      <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="회사명, 포지션명, 기술 키워드로 검색 (예: 금융, 모의해킹, 신입)">
-        <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
-      </div>
+    <div class="ia-jobs-layout">
+      <!-- 필터: PC 좌측 고정 레일 / 모바일 바텀 시트 -->
+      <aside class="ia-rail" id="filterRail" aria-label="공고 필터">
+        <div class="ia-rail-head">
+          <strong>필터</strong>
+          <button type="button" class="ia-rail-close" id="filterCloseBtn" aria-label="필터 닫기">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
 
-      <!-- Keyword Tabs -->
-      <div class="segmented-control" id="keywordNav">
-        <button class="segment-btn active" data-kw="all">전체 <span class="count">{len(jobs)}</span></button>
-        <button class="segment-btn" data-kw="정보보안">정보보안 <span class="count">{kw_counts.get("정보보안", 0)}</span></button>
-        <button class="segment-btn" data-kw="정보보호">정보보호 <span class="count">{kw_counts.get("정보보호", 0)}</span></button>
-        <button class="segment-btn" data-kw="취약점 진단">취약점 진단 <span class="count">{kw_counts.get("취약점 진단", 0)}</span></button>
-        <button class="segment-btn" data-kw="모의해킹">모의해킹 <span class="count">{kw_counts.get("모의해킹", 0)}</span></button>
-      </div>
-
-      <!-- Sub Filters & View Options -->
-      <div class="sub-toolbar">
-        <div class="filter-controls-wrap">
-          <div class="filter-row">
-            <span class="filter-label">플랫폼</span>
-            <div class="filter-pills-scroll">
-              <button class="filter-pill active" data-filter="platform" data-val="all">전체</button>
-              <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
-              <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
-              <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
-              <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
-              <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
-              <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
-            </div>
-          </div>
-          
-          <div class="filter-row">
-            <span class="filter-label">마감</span>
-            <div class="filter-pills-scroll">
-              <button class="filter-pill active" data-filter="deadline" data-val="all">전체</button>
-              <button class="filter-pill" data-filter="deadline" data-val="urgent">마감 임박</button>
-              <button class="filter-pill" data-filter="deadline" data-val="always">상시</button>
-            </div>
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">검색</p>
+          <div class="search-box">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="회사명, 포지션명, 키워드 검색">
+            <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
           </div>
         </div>
 
-        <div class="view-actions">
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">키워드</p>
+          <div class="segmented-control" id="keywordNav">
+            <button class="segment-btn active" data-kw="all">전체 <span class="count">{len(jobs)}</span></button>
+            <button class="segment-btn" data-kw="정보보안">정보보안 <span class="count">{kw_counts.get("정보보안", 0)}</span></button>
+            <button class="segment-btn" data-kw="정보보호">정보보호 <span class="count">{kw_counts.get("정보보호", 0)}</span></button>
+            <button class="segment-btn" data-kw="취약점 진단">취약점 진단 <span class="count">{kw_counts.get("취약점 진단", 0)}</span></button>
+            <button class="segment-btn" data-kw="모의해킹">모의해킹 <span class="count">{kw_counts.get("모의해킹", 0)}</span></button>
+          </div>
+        </div>
+
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">플랫폼</p>
+          <div class="filter-pills-scroll">
+            <button class="filter-pill active" data-filter="platform" data-val="all">전체</button>
+            <button class="filter-pill" data-filter="platform" data-val="원티드">원티드</button>
+            <button class="filter-pill" data-filter="platform" data-val="점핏">점핏</button>
+            <button class="filter-pill" data-filter="platform" data-val="사람인">사람인</button>
+            <button class="filter-pill" data-filter="platform" data-val="리멤버">리멤버</button>
+            <button class="filter-pill" data-filter="platform" data-val="잡코리아">잡코리아</button>
+            <button class="filter-pill" data-filter="platform" data-val="인크루트">인크루트</button>
+          </div>
+        </div>
+
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">마감</p>
+          <div class="filter-pills-scroll">
+            <button class="filter-pill active" data-filter="deadline" data-val="all">전체</button>
+            <button class="filter-pill" data-filter="deadline" data-val="urgent">마감 임박</button>
+            <button class="filter-pill" data-filter="deadline" data-val="always">상시</button>
+          </div>
+        </div>
+
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">정렬</p>
           <select id="sortSelect" class="sort-select" aria-label="정렬">
             <option value="deadline" selected>마감 임박 순</option>
             <option value="default">등록 순</option>
             <option value="company">회사명 순</option>
           </select>
+        </div>
 
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">보기</p>
           <div class="view-toggle">
             <button class="view-toggle-btn active" id="btnGrid" title="카드 그리드 뷰" aria-label="그리드 뷰">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1910,17 +2134,34 @@ def generate_html(jobs, update_time_str):
             </button>
           </div>
         </div>
+
+        <div class="ia-rail-foot">
+          <button type="button" class="ia-apply-btn" id="filterApplyBtn">결과 보기 <span id="filterApplyCount"></span></button>
+        </div>
+      </aside>
+
+      <div class="ia-results">
+        <div class="ia-mobile-controls">
+          <select id="sortSelectMobile" class="sort-select" aria-label="정렬">
+            <option value="deadline" selected>마감 임박 순</option>
+            <option value="default">등록 순</option>
+            <option value="company">회사명 순</option>
+          </select>
+          <button type="button" class="ia-filter-btn" id="filterOpenBtn" aria-expanded="false" aria-controls="filterRail">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+            필터<span class="ia-filter-badge is-zero" id="filterBadge">0</span>
+          </button>
+        </div>
+
+        <div class="feed-info">
+          <div>현재 <strong id="matchCount">{len(jobs)}</strong>개의 포지션 표시 중</div>
+          <div id="filterSummary"></div>
+        </div>
+
+        <div id="jobsContainer"></div>
       </div>
-    </section>
-
-    <!-- Status Bar -->
-    <div class="feed-info">
-      <div>현재 <strong id="matchCount">{len(jobs)}</strong>개의 포지션 표시 중</div>
-      <div id="filterSummary"></div>
     </div>
-
-    <!-- Job Cards Container -->
-    <div id="jobsContainer"></div>
+    <div class="ia-rail-backdrop" id="filterBackdrop" hidden></div>
 
     <!-- Footer -->
     <footer>
@@ -2101,10 +2342,19 @@ def generate_html(jobs, update_time_str):
       const live = liveJobs || getLiveJobs();
       const activeEl = document.getElementById('statActiveCount');
       if (activeEl) activeEl.textContent = live.length + '건';
-      const urgentEl = document.getElementById('statUrgentCount');
-      if (urgentEl) {{
-        const urgent = live.filter(job => getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label).isUrgent).length;
-        urgentEl.textContent = urgent + '건';
+      const dueTodayEl = document.getElementById('statDueToday');
+      const dueWeekEl = document.getElementById('statDueWeek');
+      if (dueTodayEl || dueWeekEl) {{
+        let dueToday = 0;
+        let dueWeek = 0;
+        live.forEach(job => {{
+          const meta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
+          if (meta.expired || meta.daysLeft === null || meta.daysLeft === undefined || meta.daysLeft < 0) return;
+          if (meta.daysLeft === 0) dueToday += 1;
+          if (meta.daysLeft <= 7) dueWeek += 1;
+        }});
+        if (dueTodayEl) dueTodayEl.textContent = dueToday;
+        if (dueWeekEl) dueWeekEl.textContent = dueWeek;
       }}
       const kwCounts = {{}};
       live.forEach(job => (job.keywords || []).forEach(k => {{ kwCounts[k] = (kwCounts[k] || 0) + 1; }}));
@@ -2146,6 +2396,7 @@ def generate_html(jobs, update_time_str):
     function renderFeed() {{
       // 0. 상단 통계·탭 카운트를 현재 시각 기준 실시간 마감 반영값으로 먼저 갱신
       updateLiveCounts();
+      updateFilterBadge();
 
       // 1. Filter
       let filtered = JOBS.filter(job => {{
@@ -2182,6 +2433,7 @@ def generate_html(jobs, update_time_str):
       }}
 
       matchCount.textContent = filtered.length;
+      updateFilterBadge();
 
       // 3. Render
       if (filtered.length === 0) {{
@@ -2380,11 +2632,98 @@ def generate_html(jobs, update_time_str):
         renderFeed();
       }}
     }}, 60000);
+
+    // ---- 모바일 필터 시트 · 필터 배지 ----
+    const filterRail = document.getElementById('filterRail');
+    const filterBackdrop = document.getElementById('filterBackdrop');
+    const filterOpenBtn = document.getElementById('filterOpenBtn');
+    const filterCloseBtn = document.getElementById('filterCloseBtn');
+    const filterApplyBtn = document.getElementById('filterApplyBtn');
+    const sortSelectMobile = document.getElementById('sortSelectMobile');
+
+    function activeFilterCount() {{
+      let n = 0;
+      if (selectedPlatform !== 'all') n += 1;
+      if (selectedDeadline !== 'all') n += 1;
+      if (selectedKeyword !== 'all') n += 1;
+      if (searchTerm) n += 1;
+      return n;
+    }}
+
+    function updateFilterBadge() {{
+      const badge = document.getElementById('filterBadge');
+      if (badge) {{
+        const n = activeFilterCount();
+        badge.textContent = n;
+        badge.classList.toggle('is-zero', n === 0);
+      }}
+      const applyCount = document.getElementById('filterApplyCount');
+      if (applyCount) {{
+        const el = document.getElementById('matchCount');
+        applyCount.textContent = el ? '(' + el.textContent + ')' : '';
+      }}
+    }}
+
+    function openFilterSheet() {{
+      if (!filterRail || !filterBackdrop) return;
+      filterBackdrop.hidden = false;
+      document.body.classList.add('ia-filter-open');
+      if (filterOpenBtn) filterOpenBtn.setAttribute('aria-expanded', 'true');
+      window.requestAnimationFrame(function () {{
+        window.requestAnimationFrame(function () {{
+          filterRail.classList.add('is-open');
+          filterBackdrop.classList.add('is-open');
+          if (filterCloseBtn) filterCloseBtn.focus();
+        }});
+      }});
+    }}
+
+    function closeFilterSheet() {{
+      if (!filterRail || !filterBackdrop) return;
+      filterRail.classList.remove('is-open');
+      filterBackdrop.classList.remove('is-open');
+      document.body.classList.remove('ia-filter-open');
+      if (filterOpenBtn) {{
+        filterOpenBtn.setAttribute('aria-expanded', 'false');
+        filterOpenBtn.focus();
+      }}
+      window.setTimeout(function () {{ filterBackdrop.hidden = true; }}, 220);
+    }}
+
+    if (filterOpenBtn) {{
+      filterOpenBtn.addEventListener('click', function () {{
+        if (filterRail && filterRail.classList.contains('is-open')) closeFilterSheet();
+        else openFilterSheet();
+      }});
+    }}
+    if (filterCloseBtn) filterCloseBtn.addEventListener('click', closeFilterSheet);
+    if (filterApplyBtn) filterApplyBtn.addEventListener('click', closeFilterSheet);
+    if (filterBackdrop) filterBackdrop.addEventListener('click', closeFilterSheet);
+
+    if (sortSelectMobile) {{
+      sortSelectMobile.addEventListener('change', function (event) {{
+        sortSelect.value = event.target.value;
+        sortBy = event.target.value;
+        renderFeed();
+      }});
+      sortSelect.addEventListener('change', function (event) {{
+        sortSelectMobile.value = event.target.value;
+      }});
+    }}
+
+    window.addEventListener('keydown', function (event) {{
+      if (event.key === 'Escape' && filterRail && filterRail.classList.contains('is-open')) {{
+        closeFilterSheet();
+      }}
+    }});
+
   </script>
 </body>
 </html>
 """
-    return harden_html(html_content)
+    import ui_shell
+
+    return harden_html(ui_shell.apply(html_content, 'index'))
 
 def generate_readme(jobs, update_time_str):
     """GitHub 저장소 메인에 노출될 마크다운"""

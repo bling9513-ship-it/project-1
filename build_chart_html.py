@@ -16,6 +16,7 @@ from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "chart_data.json")
@@ -396,6 +397,8 @@ CSS = """
 
     .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
 
+    @media (min-width: 900px) { .container { max-width: 1180px; } }
+
     .hero { margin-bottom: 18px; }
 
     .hero-pill {
@@ -515,6 +518,20 @@ CSS = """
     .player-title { font-size: 19px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 4px; }
 
     .player-sub { font-size: 12.5px; color: var(--text-muted); margin-bottom: 4px; }
+
+    /* PC 2단(차트 | 단서·선택·해설) / 모바일 세로 배치 */
+    .player-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    .player-main { position: sticky; top: 76px; min-width: 0; }
+    .player-side { min-width: 0; display: flex; flex-direction: column; }
+    .player-grid .chart-card { margin: 0; }
+    .player-grid .ask { margin-top: 14px; }
+    .player-grid .result { margin-top: 12px; }
 
     .chart-card {
       border: 1px solid var(--border-default);
@@ -788,6 +805,13 @@ CSS = """
 
     .result.gave-up { border-color: var(--border-strong); background: var(--bg-page); }
 
+    @keyframes chartResultIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .result:not([hidden]) { animation: chartResultIn 220ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .clue { transition: background-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
     .result-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
 
     .result-badge {
@@ -954,6 +978,11 @@ CSS = """
       font-size: 11.5px;
       line-height: 1.7;
       color: var(--text-muted);
+    }
+
+    @media (max-width: 899px) {
+      .player-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 10px; }
+      .player-main { position: static; }
     }
 
     @media (max-width: 640px) {
@@ -1150,6 +1179,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <h2 class="player-title" id="pTitle">차트를 불러오는 중입니다</h2>
       <p class="player-sub" id="pSub">날짜와 종목명은 정답을 확인할 때 공개됩니다.</p>
 
+      <div class="player-grid">
+        <div class="player-main">
       <div class="chart-card">
         <div class="chart-toolbar">
           <div class="chart-legend" id="legend"></div>
@@ -1161,7 +1192,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
         <div class="axis-note" id="axisNote">세로축 가격은 정답 확인 뒤에 표시됩니다</div>
       </div>
+        </div>
 
+        <div class="player-side">
       <div class="clues" id="clueList"></div>
 
       <div class="clue-foot">
@@ -1200,6 +1233,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <button class="btn btn-primary" id="copyBtn" type="button">결과 복사</button>
         </div>
         <p class="share-note">결과 문구에는 정답과 종목명이 들어가지 않습니다. 링크에 이 차트 ID가 들어가, 받은 사람이 같은 차트를 바로 열 수 있습니다.</p>
+      </div>
+        </div>
       </div>
     </section>
 
@@ -1878,6 +1913,10 @@ __ARC_CARDS__      </div>
 
     chartSvg.addEventListener('pointermove', handlePointer);
     chartSvg.addEventListener('pointerdown', handlePointer);
+    // 터치로 짚은 봉의 툴팁은 잠시 뒤 스스로 닫는다(손을 떼도 남아 있지 않게).
+    chartSvg.addEventListener('pointerup', (event) => {
+      if (event.pointerType === 'touch') window.setTimeout(hideTip, 2200);
+    });
 
     chartSvg.addEventListener('pointerleave', () => {
       hoverIndex = -1;
@@ -1954,7 +1993,7 @@ def build():
     html = html.replace("__BUILT_AT__", esc(built_at))
 
     with open(CHART_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'chart')))
 
     print("-> 'chart.html' 생성 완료 (차트 %d개 · 오늘의 차트 %s · 오늘 #%d)"
           % (len(episodes), today_id, today_index + 1))

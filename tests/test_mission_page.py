@@ -131,24 +131,35 @@ async def check_width(browser, base, width):
 
     layout = await page.evaluate("""() => {
       const de = document.documentElement;
-      const nav = document.querySelector('.nav-tabs');
-      const actions = document.querySelector('.nav-actions');
-      const act = document.querySelector('.nav-tabs .nav-tab-item.active');
+      const visible = (el) => {
+        if (!el) return false;
+        const cs = getComputedStyle(el);
+        const box = el.getBoundingClientRect();
+        return cs.display !== 'none' && cs.visibility !== 'hidden' && box.width > 0;
+      };
+      const board = document.querySelector('#board').getBoundingClientRect();
       return {
         overflow: de.scrollWidth - de.clientWidth,
-        tabs: document.querySelectorAll('.nav-tab-item').length,
-        navScroll: nav.scrollWidth, navClient: nav.clientWidth,
-        navRight: Math.round(nav.getBoundingClientRect().right),
-        actionsLeft: Math.round(actions.getBoundingClientRect().left),
-        activeVisible: act ? act.getBoundingClientRect().left >= nav.getBoundingClientRect().left - 1 : false,
-        boardRight: Math.round(document.querySelector('#board').getBoundingClientRect().right),
+        menu: visible(document.querySelector('.ia-menu')),
+        tabbar: visible(document.querySelector('.ia-tabbar')),
+        current: (document.querySelector('.ia-current') || {}).textContent || '',
+        activeNav: !!document.querySelector('.ia-menu-link.is-active, .ia-menu-btn.is-active'),
+        sheetLinks: document.querySelectorAll('#iaSheet .ia-sheet-link').length,
+        boardRight: Math.round(board.right),
+        boardBottom: Math.round(board.bottom),
+        tabbarTop: Math.round(document.querySelector('.ia-tabbar').getBoundingClientRect().top),
         bodyRight: Math.round(de.getBoundingClientRect().right),
       };
     }""")
-    assert layout["tabs"] == 12, "탭이 12개가 아닙니다: %s" % layout["tabs"]
     assert layout["overflow"] == 0, "%dpx 가로 넘침 %dpx" % (width, layout["overflow"])
-    assert layout["navRight"] <= layout["actionsLeft"], "%dpx 에서 탭과 우측 버튼이 겹칩니다" % width
-    assert layout["activeVisible"], "%dpx 에서 현재 탭이 보이지 않습니다" % width
+    assert layout["sheetLinks"] == 12, "전체 메뉴가 12개가 아닙니다: %s" % layout["sheetLinks"]
+    if width <= 768:
+        assert layout["tabbar"] and not layout["menu"], "%dpx 모바일 내비 구성이 다릅니다" % width
+        assert layout["current"].strip() == "퇴근길 미션", "%dpx 현재 페이지 표시: %s" % (width, layout["current"])
+        assert layout["boardBottom"] <= layout["tabbarTop"], "%dpx 지도가 하단 탭 바에 가립니다" % width
+    else:
+        assert layout["menu"] and not layout["tabbar"], "%dpx PC 내비 구성이 다릅니다" % width
+        assert layout["activeNav"], "%dpx 현재 메뉴가 활성 표시되지 않았습니다" % width
     assert layout["boardRight"] <= layout["bodyRight"], "%dpx 에서 지도가 화면을 넘칩니다" % width
 
     # 1) 실제 클리어
@@ -248,7 +259,7 @@ async def check_width(browser, base, width):
 
     assert errors == [], "%dpx 브라우저 오류: %s" % (width, errors)
     await context.close()
-    print("mission %dpx 통과 (최단 %d수 · 제한 %d수 · 탭 %d개)" % (width, moves, limit, layout["tabs"]))
+    print("mission %dpx 통과 (최단 %d수 · 제한 %d수 · 메뉴 %d개)" % (width, moves, limit, layout["sheetLinks"]))
 
 
 async def main():
