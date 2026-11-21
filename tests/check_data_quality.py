@@ -155,7 +155,8 @@ def count_articles(page, css_class):
 
 # ---------------------------------------------------------------- 1) 회귀 테스트
 def run_unit_tests():
-    scripts = ["tests/test_mission_puzzles.py", "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py"]
+    scripts = ["tests/test_mission_puzzles.py", "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
+               "tests/test_job_dedup.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)
         if not os.path.exists(path):
@@ -468,6 +469,61 @@ def check_pages():
         check("pick.html 나들이 카드", course_cards == len(courses), "%s vs %d" % (course_cards, len(courses)))
 
 
+# ---------------------------------------------------------------- 3-b) 오늘 허브(today.html)
+def check_today():
+    data = embedded_json("today.html", "const TODAY = ")
+    if data is None:
+        check("today.html 데이터 블록", False, "const TODAY 파싱 실패")
+        return
+    check("today.html 오늘 날짜", is_date(data.get("today")), data.get("today"))
+    built = parse_stamp(data.get("built_at"))
+    check("today.html 빌드 시각", built is not None, data.get("built_at"))
+    if built:
+        check("today.html 미래 빌드 시각", not_future(built), data.get("built_at"))
+        stale_note("today.html 빌드", built)
+
+    jobs = data.get("jobs") or {}
+    cve = data.get("cve") or {}
+    ai = data.get("ai") or {}
+    check("today.html 마감 공고 수", isinstance(jobs.get("count"), int) and jobs.get("count") >= 0,
+          jobs.get("count"))
+    check("today.html 공고 갱신 시각", bool(jobs.get("updated")), jobs.get("updated"))
+    check("today.html KEV 수", isinstance(cve.get("kev"), int), cve.get("kev"))
+
+    cve_data = load_json("cve_data.json")
+    if isinstance(cve_data, dict):
+        kev = sum(1 for item in cve_data.get("items") or [] if item.get("is_kev"))
+        check("today.html KEV 일치", cve.get("kev") == kev, "%s vs %d" % (cve.get("kev"), kev))
+        check("today.html CVE 갱신 일치",
+              cve.get("updated") == (cve_data.get("meta") or {}).get("collected_at"),
+              "%s vs %s" % (cve.get("updated"), (cve_data.get("meta") or {}).get("collected_at")))
+    ai_data = load_json("ai_data.json")
+    if isinstance(ai_data, dict):
+        check("today.html AI 건수 일치", ai.get("total") == ai_data.get("total"),
+              "%s vs %s" % (ai.get("total"), ai_data.get("total")))
+        check("today.html AI 브리핑", bool(str(ai.get("briefing") or "").strip()), "브리핑 비어 있음")
+
+    weather = data.get("weather") or {}
+    check("today.html 날씨 상태값", isinstance(weather.get("ok"), bool), weather.get("ok"))
+    if weather.get("ok"):
+        check("today.html 기온", isinstance(weather.get("temp"), (int, float)), weather.get("temp"))
+        check("today.html 옷차림 한 줄", bool(str(weather.get("line") or "").strip()), weather.get("line"))
+
+    games = data.get("games") or {}
+    check("today.html 오늘의 게임", bool((games.get("wargame") or {}).get("title")) or bool((games.get("clue") or {}).get("title")),
+          "게임 문제 없음")
+
+    path = os.path.join(BASE_DIR, "today.html")
+    with open(path, encoding="utf-8") as f:
+        src = f.read()
+    for chip in ("jobsState", "cveState", "studyState", "aiState", "weatherState", "gameState"):
+        check("today.html 상태 칩 %s" % chip, chip in src, "없음")
+    for href in ("index.html", "cve.html", "study.html", "ai.html", "outfit.html", "wargame.html", "clue.html"):
+        check("today.html 링크 %s" % href, 'href="%s"' % href in src, "없음")
+    for key in ("study_review_queue_v1", "study_user_answers_v4", "study_bookmarks_v1"):
+        check("today.html 복습 저장소 %s" % key, key in src, "없음")
+
+
 # ---------------------------------------------------------------- 4) DB
 def check_db():
     path = os.path.join(BASE_DIR, "archive.db")
@@ -589,6 +645,8 @@ def main(argv=None):
 
     print("[3/4] HTML ↔ 데이터 정합성(빌드 누락)")
     check_pages()
+
+    check_today()
 
     print("[4/4] archive.db")
     check_db()

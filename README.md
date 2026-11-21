@@ -1,9 +1,10 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-21 15:05:19 KST` (매일 08:00 KST 자동 수집)
-> **아카이빙된 보안 공고**: 총 **561**개 (직무 검증 및 중복 제거 완료)
+> **마지막 업데이트**: `2026-11-21 15:53:22 KST` (매일 08:00 KST 자동 수집)
+> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)
 > **마감 임박 공고**: 총 **90**개 (D-Day 및 마감 기한 순 정렬)
+> **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
 > **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)
 > **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)

@@ -110,6 +110,10 @@ def build_all():
     from build_chart_html import build as build_chart
     chart_total = build_chart()
 
+    # 17. today.html 재생성 (얇은 데일리 허브: 오늘 마감 · KEV · 복습 큐 · AI 브리핑 · 날씨 · 게임)
+    from build_today_html import build as build_today
+    today_total = build_today()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -124,7 +128,9 @@ def build_all():
     print(f"  - 오늘 뭐 먹지: 메뉴 {pick_total}종 · 나들이 코스 16곳 (날씨 모드 3종 + 자동)")
     print(f"  - 하루 한 판 3단서 추리: 문제 {clue_total}개 (단서 3단계 · 4지선다 · 분야 6종)")
     print(f"  - 퇴근길 미션: 오늘의 지도 {daily_total}개 풀 · 연습 {practice_total}개 (최단 경로 BFS 검증)")
-    print(f"  - 차트 추리실: 과거 차트 {chart_total}개 (단서 3단계 · 4지선다 · 12탭 내비게이션)")
+    print(f"  - 차트 추리실: 과거 차트 {chart_total}개 (단서 3단계 · 4지선다 · 13탭 내비게이션)")
+    print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
+          f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 
 if __name__ == "__main__":
     build_all()

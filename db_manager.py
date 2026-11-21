@@ -73,6 +73,74 @@ def is_platform_job_key(job_key):
     return bool(JOB_KEY_PREFIX_RE.match(str(job_key or "")))
 
 
+def build_job_identity_index(rows):
+    """기존 DB 행을 'platform+external_id' 색인과 '짧은 제목 키' 후보 색인으로 나눈다.
+
+    rows: company/title/url/platforms/job_key 를 가진 매핑(또는 sqlite3.Row) 목록.
+    반환: (identity_index, title_index)
+      identity_index[(platform, external_id)] = job_key
+      title_index[짧은 제목 키] = [ {"job_key", "platform", "external_id", "title"} ]
+    """
+    identity_index = {}
+    title_index = {}
+    for row in rows:
+        platforms = row["platforms"] if not isinstance(row, dict) else row.get("platforms")
+        if isinstance(platforms, str):
+            try:
+                platforms = json.loads(platforms) if platforms else []
+            except (TypeError, ValueError):
+                platforms = []
+        if not isinstance(platforms, list):
+            platforms = []
+        url = row["url"] if not isinstance(row, dict) else row.get("url")
+        company = row["company"] if not isinstance(row, dict) else row.get("company")
+        title = row["title"] if not isinstance(row, dict) else row.get("title")
+        job_key = row["job_key"] if not isinstance(row, dict) else row.get("job_key")
+        platform = platforms[0] if platforms else ""
+        ext = extract_external_id(url)
+        if platform and ext:
+            identity_index[(platform, ext)] = job_key
+        short = normalize_key(company or "", title or "")
+        title_index.setdefault(short, []).append({
+            "job_key": job_key,
+            "platform": platform,
+            "external_id": ext,
+            "title": title or "",
+        })
+    return identity_index, title_index
+
+
+def resolve_existing_job_key(company, title, platform, external_id, url,
+                             identity_index, title_index):
+    """수집한 공고를 기존 DB 행에 이어붙일 job_key를 고른다(없으면 None).
+
+    · 같은 platform+external_id 행이 있으면 그 키를 그대 쓴다(최우선).
+    · 짧은 제목 키 후보가 **정확하 1건**이고 외부 ID가 충돌하지 않을 때만 이어받는다.
+      - 같은 플랫폼인데 공고 ID가 서로 다르면 → 서로 다른 공고이므로 이어받지 않는다.
+      - 플랫폼이 다르면 ID 네임스페이스가 달라 '충돌'이 아니지만, 같은 공고가
+        교차 게시된 경우에만 이어받도록 회사·전체 제목까지 같을 때로 제한한다.
+    · 후보가 둘 이상이면(제목 12자만 같은 다른 공고) 이어받지 않는다.
+    """
+    platform = str(platform or "").strip()
+    ext = str(external_id or "").strip() or extract_external_id(url)
+    if platform and ext:
+        hit = identity_index.get((platform, ext))
+        if hit:
+            return hit
+
+    candidates = title_index.get(normalize_key(company or "", title or "")) or []
+    if len(candidates) != 1:
+        return None
+    candidate = candidates[0]
+    if ext and candidate["external_id"]:
+        if candidate["platform"] == platform:
+            # 같은 플랫폼의 다른 공고 ID → 절대 합치지 않는다.
+            return None
+        if job_title_fingerprint(candidate["title"]) != job_title_fingerprint(title):
+            return None
+    return candidate["job_key"]
+
+
 def migrate_job_keys(db_path=DB_PATH):
     """예전 '회사명_제목12자' 키를 플랫폼 ID 기반 키로 한 번에 옮긴다.
 
