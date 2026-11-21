@@ -5840,16 +5840,40 @@ async function checkFoodFlow(page, width) {
   await page.click('#fnBasisTotal');
   await page.waitForTimeout(90);
   let state = await read();
-  assert.deepEqual(state.vals, ['750kcal', '1,350mg', '96g', '54g', '30g', '0g', '15g', '45mg', '24g'],
+  assert.deepEqual(state.vals, ['750kcal', '1,350mg', '96g', '54g', '30g', '표시값만으로 계산 불가', '15g', '45mg', '24g'],
     `${tag}: total values ${state.vals}`);
   assert.deepEqual(state.pcts, ['–', '68%', '30%', '54%', '56%', '–', '100%', '15%', '44%'],
     `${tag}: total percents ${state.pcts}`);
   assert.equal(state.basis, '총 내용량당', `${tag}: basis header after toggle ${state.basis}`);
   assert.deepEqual(state.pressed, ['total'], `${tag}: pressed basis ${state.pressed}`);
   assert.ok(state.note.indexOf('한 봉지') >= 0, `${tag}: basis note ${state.note}`);
+
+  // 회귀: 트랜스지방 100g당 '0g'은 0.2g 미만 문턱 표시라 총 내용량으로 환산해 0g이라 할 수 없다.
+  const transfatTotal = await page.evaluate(() => {
+    const row = document.querySelector('.fn-nrow[data-item="transfat"]');
+    const val = row.querySelector('.fn-nval');
+    return {
+      text: val.textContent.trim(),
+      cls: val.className,
+      inner: row.scrollWidth - row.clientWidth,
+      note: document.getElementById('fnBasisNote').textContent.trim(),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  assert.notEqual(transfatTotal.text, '0g', `${tag}: transfat total still says 0g`);
+  assert.ok(transfatTotal.text.indexOf('표시값만으로 계산 불가') >= 0,
+    `${tag}: transfat total cell ${transfatTotal.text}`);
+  assert.ok(transfatTotal.cls.indexOf('is-na') >= 0, `${tag}: transfat total cell class ${transfatTotal.cls}`);
+  assert.ok(transfatTotal.note.indexOf('표시값만으로 계산 불가') >= 0,
+    `${tag}: basis note must explain the transfat cell (${transfatTotal.note})`);
+  assert.ok(transfatTotal.inner <= 0, `${tag}: transfat cell overflows its row by ${transfatTotal.inner}px`);
+  assert.equal(transfatTotal.overflow, 0, `${tag}: transfat total view overflows ${transfatTotal.overflow}px`);
+
   await page.click('#fnBasis100');
   await page.waitForTimeout(60);
-  assert.equal((await read()).vals[0], '250kcal', `${tag}: 100g당으로 되돌리기 실패`);
+  const back = await read();
+  assert.equal(back.vals[0], '250kcal', `${tag}: 100g당으로 되돌리기 실패`);
+  assert.equal(back.vals[5], '0g', `${tag}: transfat 100g당 값 복귀 실패 (${back.vals[5]})`);
 
   // 라벨 구역 클릭 → 설명 카드
   await page.click('.fn-nrow[data-zone="sodium"]');

@@ -11,7 +11,11 @@
     확인 요령이 즉시 열린다. 카테고리 칩(전체 | 영양성분 | 소비기한·보관 | 원재료·알레르기)으로
     항목을 좁힌다.
   · '100g당 ↔ 총 내용량 300g' 전환 버튼으로 같은 표의 수치가 3배로 뛰는 것을 한눈에 본다
-    (입력 필드 없이 버튼 토글만 쓴다).
+    (입력 필드 없이 버튼 토글만 쓴다). 트랜스지방만은 예외로, 100g당 '0g'은 0.2g 미만이라는
+    문턱 표시라 총 내용량으로 환산할 수 없어 총 내용량 보기에서 '표시값만으로 계산 불가'로 둔다.
+  · 출처는 현행 「식품등의 표시기준」 고시 제2025-60호(2025-08-29 시행)이고, 일부개정 고시
+    제2026-37호(2026-05-12 고시 · 2028-01-01 시행) 전문을 직접 대조해 개정 내역과 시행일을
+    하단 출처에 적는다. 제2026-37호는 영양성분·트랜스지방 표시 조항을 바꾸지 않았다.
   · 식품 라벨 퀴즈 7문항: 100g당 수치의 포장 전체 환산, 소비기한 옆 보관방법, 소비기한과
     유통기한의 차이, 원재료명 표기 순서, 알레르기 표시 위치, 트랜스지방 0g 표기 기준,
     1일 영양성분 기준치(%) 해석. 답을 고르면 근거가 된 라벨 구역이 라벨 발췌에서 강조되고
@@ -37,8 +41,14 @@ CHECKED_ON = "2026-11-22"
 SOURCES = [
     {
         "label": "식품의약품안전처 「식품등의 표시기준」",
-        "detail": "식약처 고시 제2025-60호 · 2025-08-29 시행 · 별지 1 표시사항별 세부표시기준",
+        "detail": "현행 식약처 고시 제2025-60호 · 2025-08-29 시행 · 별지 1 표시사항별 세부표시기준",
         "url": "https://www.mfds.go.kr/brd/m_207/view.do?seq=15093",
+    },
+    {
+        "label": "식약처 「식품등의 표시기준」 일부개정고시 고시전문",
+        "detail": "고시 제2026-37호 · 2026-05-12 고시 · 시행일 2028-01-01 · "
+                  "영양성분·트랜스지방 표시 조항은 개정 없음(개정 4건은 하단 설명 참조)",
+        "url": "https://www.mfds.go.kr/brd/m_211/view.do?seq=14968",
     },
     {
         "label": "「식품 등의 표시·광고에 관한 법률 시행규칙」 별표 5",
@@ -101,13 +111,19 @@ PRODUCT = {
 }
 
 # 열량은 4×32 + 4×8 + 9×10 = 250kcal 로 계산이 맞는다.
+# 트랜스지방의 100g당 '0g'은 0.2g 미만이라는 문턱 표시라서 총 내용량으로 곱셈 환산을 할 수 없다.
+# 그래서 이 행만 총 내용량 칸에 수치 대신 문구를 둔다.
+TRANSFAT_TOTAL_TEXT = "표시값만으로 계산 불가"
 NUTRIENTS = [
     {"id": "calorie", "key": "calorie", "name": "열량", "per100": "250kcal", "total": "750kcal", "pct100": "–", "pctTotal": "–"},
     {"id": "sodium", "key": "sodium", "name": "나트륨", "per100": "450mg", "total": "1,350mg", "pct100": "23%", "pctTotal": "68%"},
     {"id": "carbs", "key": "carbs", "name": "탄수화물", "per100": "32g", "total": "96g", "pct100": "10%", "pctTotal": "30%"},
     {"id": "sugar", "key": "sugar", "name": "당류", "per100": "18g", "total": "54g", "pct100": "18%", "pctTotal": "54%", "sub": True},
     {"id": "fat", "key": "fat", "name": "지방", "per100": "10g", "total": "30g", "pct100": "19%", "pctTotal": "56%"},
-    {"id": "transfat", "key": "transfat", "name": "트랜스지방", "per100": "0g", "total": "0g", "pct100": "–", "pctTotal": "–", "sub": True},
+    # 트랜스지방: 100g당 '0g'은 0.2g 미만이라는 문턱 표시다. 3배로 곱해 총량을 만들 수 없으므로
+    # 총 내용량 값은 수치 대신 totalText 문구로 둔다(표에서 '표시값만으로 계산 불가'로 보인다).
+    {"id": "transfat", "key": "transfat", "name": "트랜스지방", "per100": "0g", "total": None,
+     "totalText": TRANSFAT_TOTAL_TEXT, "pct100": "–", "pctTotal": "–", "sub": True},
     {"id": "fat", "key": "satfat", "name": "포화지방", "per100": "5g", "total": "15g", "pct100": "33%", "pctTotal": "100%", "sub": True},
     {"id": "cholesterol", "key": "cholesterol", "name": "콜레스테롤", "per100": "15mg", "total": "45mg", "pct100": "5%", "pctTotal": "15%"},
     {"id": "cholesterol", "key": "protein", "name": "단백질", "per100": "8g", "total": "24g", "pct100": "15%", "pctTotal": "44%"},
@@ -207,14 +223,19 @@ ITEMS = [
         "cat": "영양성분",
         "short": "트랜스지방",
         "title": "트랜스지방 0g, 정말 하나도 없을까",
-        "value": "트랜스지방 0g",
-        "meaning": "트랜스지방은 0.5g 미만이면 '0.5g 미만', 0.2g 미만이면 '0'으로 적을 수 있어요. 식용유지류는 "
-                   "100g당 2g 미만일 때 '0'으로 적을 수 있어요. 그래서 '0g'은 '아주 적어서 0으로 적었다'는 "
-                   "뜻이지 무함유를 뜻하지 않아요.",
-        "trap": "'0g'을 믿고 여러 봉지 먹으면 0.2g 미만씩 쌓여요. 그리고 트랜스지방은 % 기준치를 적지 않는 "
-                "항목이라 옆 칸이 비어 있는 게 정상이에요.",
-        "check": "'0g'과 '0.5g 미만'을 구분해 읽고, 부분경화유·경화유가 원재료명에 있는지 함께 확인하세요. "
-                 "원재료명에 경화유가 있는데 트랜스지방 0g이면 표시 단위를 의심해 볼 수 있어요.",
+        "value": "트랜스지방 0g (100g당)",
+        "meaning": "트랜스지방은 100g 기준으로 0.5g 미만이면 '0.5g 미만', 0.2g 미만이면 '0'으로 적을 수 "
+                   "있어요(1회 섭취참고량당으로 적은 라벨은 그 양에서 0.2g 미만일 때 '0'). 식용유지류는 "
+                   "100g당 2g 미만일 때 '0'으로 적을 수 있어요(별지 1 1. 아. 2) 나) (4) (다)). 그래서 "
+                   "'0g'은 '아주 적어서 0으로 적었다'는 뜻이지 무함유를 뜻하지 않아요. 이 라벨은 100g당 "
+                   "0g이므로 한 봉지 300g을 다 먹으면 실제 트랜스지방 총량이 0g이 아닐 수 있고, 표시값만으로는 "
+                   "총량을 계산할 수 없어요(0에 3을 곱해 '한 봉지 0g'으로 읽으면 안 됩니다).",
+        "trap": "'0g'을 믿고 여러 봉지 먹으면 100g당 0.2g 미만씩 쌓여요. 0g은 문턱 표시라 3배로 늘려도 0g이 "
+                "아니고, 한 봉지 300g이면 0.6g 미만까지 들어 있을 수 있어요. 그리고 트랜스지방은 % 기준치를 "
+                "적지 않는 항목이라 옆 칸이 비어 있는 게 정상이에요.",
+        "check": "'0g'과 '0.5g 미만'을 구분해 읽고, 트랜스지방이 100g당 표시임을 확인한 뒤 봉지 전체 양으로 "
+                 "단정하지 마세요. 부분경화유·경화유가 원재료명에 있는지 함께 확인하세요. 원재료명에 경화유가 "
+                 "있는데 트랜스지방 0g이면 표시 단위를 의심해 볼 수 있어요.",
     },
     {
         "id": "cholesterol",
@@ -419,8 +440,9 @@ QUIZZES = [
     ),
     _quiz(
         "trans-fat-zero", "트랜스지방 0g",
-        "지방 10g(19%) · 포화지방 5g(33%) · 트랜스지방 0g",
+        "표 머리 100g당 · 지방 10g(19%) · 포화지방 5g(33%) · 트랜스지방 0g",
         [
+            _ex("표 머리", "100g당", "serving"),
             _ex("지방", "10g (19%)", "fat"),
             _ex("포화지방", "5g (33%)", "fat"),
             _ex("트랜스지방", "0g", "transfat"),
@@ -428,13 +450,14 @@ QUIZZES = [
         [
             "0g이므로 트랜스지방이 전혀 없다.",
             "0g이면 1일 영양성분 기준치의 0%라고 적어야 한다.",
-            "0.2g 미만이면 0으로 적을 수 있어, 아주 적은 양은 들어 있을 수 있다.",
+            "100g당 0.2g 미만이면 0으로 적을 수 있어, 한 봉지 전체가 0g이라는 뜻은 아니다.",
             "트랜스지방은 어떤 경우에도 0으로 적을 수 없다.",
         ],
         2, ["transfat", "fat"],
-        "트랜스지방은 0.5g 미만이면 '0.5g 미만', 0.2g 미만이면 '0'으로 적을 수 있어요(식용유지류는 100g당 2g "
-        "미만). 그래서 '0g'은 무함유가 아니라 표시 문턱 아래라는 뜻이고, 여러 봉지 먹으면 조금씩 쌓여요. "
-        "트랜스지방은 % 기준치를 적지 않는 항목이라 옆 칸이 비어 있는 것이 정상이에요.",
+        "트랜스지방은 100g 기준으로 0.5g 미만이면 '0.5g 미만', 0.2g 미만이면 '0'으로 적을 수 있어요"
+        "(식용유지류는 100g당 2g 미만). 그래서 '0g'은 무함유가 아니라 표시 문턱 아래라는 뜻이고, 이 라벨의 "
+        "0g도 100g당 값이라서 한 봉지 300g을 다 먹으면 총량이 0g이 아닐 수 있어 표시값만으로는 계산할 수 "
+        "없어요. 트랜스지방은 % 기준치를 적지 않는 항목이라 옆 칸이 비어 있는 것이 정상이에요.",
     ),
     _quiz(
         "percent-basis", "나트륨 450mg (23%)",
@@ -486,20 +509,45 @@ def build_data(now=None):
             if len(item[field]) < 30:
                 raise ValueError("항목 %s 의 %s 가 너무 짧습니다" % (item["id"], field))
 
+    # 트랜스지방 설명은 '100g 기준'과 '표시값만으로 총량을 계산할 수 없다'를 함께 적어야 한다.
+    transfat_item = next(item for item in ITEMS if item["id"] == "transfat")
+    if "100g" not in transfat_item["meaning"]:
+        raise ValueError("트랜스지방 설명에 100g 기준이 빠졌습니다")
+    if "계산할 수 없" not in transfat_item["meaning"]:
+        raise ValueError("트랜스지방 설명에 총량 계산 불가 주의가 빠졌습니다")
+
     # 영양성분 검산: 총 내용량 = 3 × 100g당, % = 함량 ÷ 기준치(반올림), 열량 = 4·4·9
     ratio = _num(PRODUCT["total"]) / 100.0
     if abs(ratio - 3.0) > 1e-9:
         raise ValueError("예시 제품의 100g당 대비 배율이 3배가 아닙니다")
     for nutrient in NUTRIENTS:
-        per100, total = _num(nutrient["per100"]), _num(nutrient["total"])
-        if per100 is None or total is None:
-            raise ValueError("%s 함량을 읽지 못했습니다" % nutrient["name"])
-        if abs(per100 * ratio - total) > 1e-6:
-            raise ValueError("%s 총 내용량 값이 3배가 아닙니다: %s → %s"
-                             % (nutrient["name"], nutrient["per100"], nutrient["total"]))
+        per100 = _num(nutrient["per100"])
+        total_text = nutrient.get("totalText")
+        if per100 is None:
+            raise ValueError("%s 100g당 함량을 읽지 못했습니다" % nutrient["name"])
+        if total_text:
+            # '0g'처럼 문턱 아래로 적힌 값은 총 내용량으로 환산할 수 없다 → 수치 대신 문구만 둔다.
+            if nutrient.get("key") != "transfat":
+                raise ValueError("%s 는 총량 환산 불가 표기를 쓸 수 없습니다" % nutrient["name"])
+            if total_text != TRANSFAT_TOTAL_TEXT:
+                raise ValueError("트랜스지방 총 내용량 표기가 '%s'가 아닙니다: %s"
+                                 % (TRANSFAT_TOTAL_TEXT, total_text))
+            if _num(nutrient.get("total")) is not None:
+                raise ValueError("트랜스지방은 총 내용량 수치를 함께 적지 않습니다")
+            total = None
+        else:
+            total = _num(nutrient.get("total"))
+            if total is None:
+                raise ValueError("%s 함량을 읽지 못했습니다" % nutrient["name"])
+            if abs(per100 * ratio - total) > 1e-6:
+                raise ValueError("%s 총 내용량 값이 3배가 아닙니다: %s → %s"
+                                 % (nutrient["name"], nutrient["per100"], nutrient["total"]))
         baseline = BASELINE.get(nutrient.get("key") or nutrient["id"])
         if baseline:
-            for value, label in ((per100, "pct100"), (total, "pctTotal")):
+            pairs = [(per100, "pct100")]
+            if total is not None:
+                pairs.append((total, "pctTotal"))
+            for value, label in pairs:
                 expect = int(math.floor(value / baseline * 100 + 0.5))
                 got = _pct(nutrient[label])
                 if got is not None and got != expect:
@@ -538,6 +586,13 @@ def build_data(now=None):
         if len(quiz["explain"]) < 60:
             raise ValueError("%s 해설이 너무 짧습니다" % quiz["id"])
 
+    # 트랜스지방 문항도 100g 기준과 총량 계산 불가를 해설에 남긴다.
+    transfat_quiz = next(quiz for quiz in QUIZZES if quiz["id"] == "trans-fat-zero")
+    if "100g" not in transfat_quiz["explain"]:
+        raise ValueError("트랜스지방 퀴즈 해설에 100g 기준이 빠졌습니다")
+    if "계산할 수 없" not in transfat_quiz["explain"]:
+        raise ValueError("트랜스지방 퀴즈 해설에 총량 계산 불가 주의가 빠졌습니다")
+
     return {
         "generated": kst_now.strftime("%Y-%m-%d %H:%M KST"),
         "checkedOn": CHECKED_ON,
@@ -559,15 +614,18 @@ def _nutri_rows():
     for nutrient in NUTRIENTS:
         zone = nutrient["id"]
         cls = "fn-nrow" + (" is-sub" if nutrient.get("sub") else "")
+        # totalText 가 있으면 총 내용량 칸에 수치 대신 문구를 넣는다(트랜스지방 0g → 표시값만으로 계산 불가).
+        total_value = nutrient.get("totalText") or nutrient.get("total") or "–"
+        na_attr = ' data-na="1"' if nutrient.get("totalText") else ""
         parts.append(
             '<button type="button" class="%s" data-zone="%s" data-item="%s" aria-pressed="false" '
             'aria-label="%s 설명 보기">'
             '<span class="fn-nname">%s</span>'
-            '<span class="fn-nval" data-v100="%s" data-vtotal="%s">%s</span>'
+            '<span class="fn-nval"%s data-v100="%s" data-vtotal="%s">%s</span>'
             '<span class="fn-npct" data-p100="%s" data-ptotal="%s">%s</span>'
             '</button>'
-            % (cls, zone, zone, nutrient["name"], nutrient["name"],
-               nutrient["per100"], nutrient["total"], nutrient["per100"],
+            % (cls, zone, zone, nutrient["name"], nutrient["name"], na_attr,
+               nutrient["per100"], total_value, nutrient["per100"],
                nutrient["pct100"], nutrient["pctTotal"], nutrient["pct100"])
         )
     return "".join(parts)
@@ -797,6 +855,7 @@ CSS = """
     .fn-nrow.is-sub .fn-nname { padding-left: 8px; color: var(--text-secondary); }
     .fn-nname { font-weight: 600; }
     .fn-nval { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .fn-nval.is-na { font-size: 8.5px; font-weight: 600; line-height: 1.18; letter-spacing: -0.03em; }
     .fn-npct { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
     .fn-nrow.is-active, .fn-nrow.is-evidence {
       background: var(--accent-subtle); box-shadow: inset 2px 0 0 var(--accent-primary);
@@ -981,7 +1040,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 식품 라벨·영양성분표 읽기</title>
-  <meta name="description" content="가상 식품 포장 라벨을 눌러 영양성분표의 총 내용량과 100g당 기준, 소비기한과 보관방법, 원재료명·알레르기 표시를 한 장으로 익히는 생활 도식. 식약처 「식품등의 표시기준」(고시 제2025-60호)과 「식품 등의 표시·광고에 관한 법률 시행규칙」 별표 5 기준, 2026-11-22 확인.">
+  <meta name="description" content="가상 식품 포장 라벨을 눌러 영양성분표의 총 내용량과 100g당 기준, 소비기한과 보관방법, 원재료명·알레르기 표시를 한 장으로 익히는 생활 도식. 식약처 「식품등의 표시기준」(현행 고시 제2025-60호, 제2026-37호 전문 대조)과 「식품 등의 표시·광고에 관한 법률 시행규칙」 별표 5 기준, 2026-11-22 확인.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
@@ -1131,7 +1190,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <p class="fn-foot">
         출처: __SOURCES__ · 확인일 2026-11-22.
         <br>이 라벨은 실제 제품 포장이 아니라 표시기준에 맞춰 만든 예시입니다. 수치는 계산 예시이며 특정 제품의 영양성분이 아닙니다.
-        <br>소비기한 표시제는 2023-01-01 시행, 냉장 보관 우유류는 2031-01-01부터 적용됩니다. 표시기준은 고시 제2025-60호(2025-08-29 시행)를 따랐고, 제2026-37호(2026-05-12 발령)는 2028-01-01 시행 예정입니다.
+        <br>소비기한 표시제는 2023-01-01 시행, 냉장 보관 우유류는 2031-01-01부터 적용됩니다. 표시기준은 현행 고시 제2025-60호(2025-08-29 시행)를 따랐고, 일부개정 고시 제2026-37호(2026-05-12 고시) 전문을 대조했습니다. 제2026-37호 개정 사항은 탈카페인 표시기준 개선, 주류협업제품 표시 신설(Ⅲ.1.거.2)하)(16)), Ⅱ.1.너.8) 인용 정정, 표 5 '말티톨시럽'→'말티톨액' 네 가지뿐이고 영양성분·트랜스지방 표시 조항은 바뀌지 않았습니다. 시행일은 2028-01-01이며 Ⅱ.1.너.8)과 표 5만 고시한 날(2026-05-12)부터 시행됩니다.
+        <br>트랜스지방 '0' 표시는 별지 1 1. 아. 2) 나) (4) (다)(0.2g 미만 '0' · 식용유지류 100g당 2g 미만 '0'), 100g당 기준은 별지 1 1. 아. 1) 가)에 따른 것이고, 100g당 0g은 0.2g 미만이라는 문턱 표시라서 봉지 전체 트랜스지방 총량은 표시값만으로 계산할 수 없습니다.
         <br>알레르기 표시 대상은 19개 항목(조개류의 굴·전복·홍합을 따로 세면 22종)이고, 함유량과 관계없이 원재료로 쓴 모든 대상 물질을 적어야 합니다.
       </p>
     </section>
@@ -1250,6 +1310,7 @@ JS = r"""
     const isTotal = basis === 'total';
     Array.from(document.querySelectorAll('[data-v100]')).forEach(function (el) {
       el.textContent = isTotal ? el.getAttribute('data-vtotal') : el.getAttribute('data-v100');
+      if (el.hasAttribute('data-na')) el.classList.toggle('is-na', isTotal);
     });
     Array.from(document.querySelectorAll('[data-p100]')).forEach(function (el) {
       el.textContent = isTotal ? el.getAttribute('data-ptotal') : el.getAttribute('data-p100');
@@ -1262,8 +1323,8 @@ JS = r"""
     if (colBasis) colBasis.textContent = isTotal ? '총 내용량당' : '100g당';
     if (basisNote) {
       basisNote.textContent = isTotal
-        ? '한 봉지 ' + PRODUCT.total + '를 다 먹으면 이 값이에요. 100g당으로 되돌려 비교해 보세요.'
-        : '한 봉지 ' + PRODUCT.total + '은 100g의 3배예요. 버튼을 누르면 봉지 전체 값으로 바뀝니다.';
+        ? "한 봉지 " + PRODUCT.total + "를 다 먹으면 이 값이에요. 트랜스지방처럼 100g당 0g은 0.2g 미만이라는 문턱 표시라 봉지 전체로 환산할 수 없어 '표시값만으로 계산 불가'로 둡니다."
+        : "한 봉지 " + PRODUCT.total + "은 100g의 3배예요. 버튼을 누르면 봉지 전체 값으로 바뀝니다.";
     }
   }
   basisBtns.forEach(function (btn) {

@@ -7,16 +7,20 @@
     '총 내용량 300g(750kcal) · 100g당' 기준. 100g당 값 × 3 = 총 내용량 값이고,
     %는 1일 영양성분 기준치(나트륨 2,000mg · 탄수화물 324g · 당류 100g · 지방 54g ·
     포화지방 15g · 콜레스테롤 300mg · 단백질 55g)로 다시 계산해 맞춘다.
+    트랜스지방만은 100g당 '0g'이 0.2g 미만 문턱 표시라서 totalText('표시값만으로 계산 불가')를
+    쓰고 총 내용량 수치를 두지 않는다(3배 환산 대상에서 뺀다).
   · 열량은 4·4·9 계산(탄수화물 32g·단백질 8g·지방 10g → 250kcal)과 맞는지,
     열량·트랜스지방에는 % 기준치를 적지 않았는지, 트랜스지방은 0g(0.2g 미만) 표기인지.
   · 항목 13개(영양성분 8 · 소비기한·보관 2 · 원재료·알레르기 3)의 뜻·함정·확인 요령과
     근거 문구(1회 섭취참고량 3배, 소비기한 2023-01-01·유통기한, 냉장 0~10℃·개봉,
     원재료명 많이 사용한 순서·2% 미만, 알레르기 19개 항목·굴·전복·홍합·혼입 가능성,
-    트랜스지방 0.2g/0.5g).
+    트랜스지방 100g 기준·0.2g/0.5g·총량 계산 불가).
   · 퀴즈 7문항: 앞부분 두 문제가 '100g당 → 봉지 전체 환산'과 '소비기한 옆 보관방법'인지,
-    4지선다·정답 인덱스 분산·근거 라벨 구역(발췌 안)·해설.
+    4지선다·정답 인덱스 분산·근거 라벨 구역(발췌 안)·해설. 트랜스지방 문항은 100g 기준과
+    '한 봉지 전체가 0g은 아니다'를 고른다.
   · 이모지 0 · 그라데이션 0 · 입력 필드 0 · 인라인 이벤트 핸들러 0.
-  · 공통 셸 22페이지 등록 · 하단 탭 바 · 100g당/총 내용량 전환 버튼 · 출처 5건 · 확인일(2026-11-22).
+  · 공통 셸 22페이지 등록 · 하단 탭 바 · 100g당/총 내용량 전환 버튼 · 출처 6건(제2025-60호 +
+    제2026-37호 전문 대조) · 확인일(2026-11-22).
   · food_data.json 과 food.html 에 심긴 데이터가 일치하는지.
 
 실행: python3 tests/test_food_data.py
@@ -73,7 +77,7 @@ def check_sources(data):
     check("확인일", data.get("checkedOn") == CHECKED_ON, data.get("checkedOn"))
     check("카테고리 4종", tuple(data.get("categories") or ()) == CATEGORIES, data.get("categories"))
     sources = data.get("sources") or []
-    check("출처 5건", len(sources) == 5, len(sources))
+    check("출처 6건", len(sources) == 6, len(sources))
     urls = [item.get("url") or "" for item in sources]
     check("출처 https", all(url.startswith("https://") for url in urls), urls)
     check("식약처 고시 출처", any("mfds.go.kr" in url for url in urls), urls)
@@ -86,6 +90,17 @@ def check_sources(data):
     check("출처에 고시 판본", "제2025-60호" in details, details[:80])
     check("출처에 1일 기준치", "2,000mg" in details and "324g" in details, details[:80])
     check("출처에 계도기간", "23.1.1" in details, details[:80])
+    # 제2026-37호 전문(m_211 seq=14968)을 직접 대조한 출처가 실려야 한다.
+    notice = next((item for item in sources if "제2026-37호" in (item.get("detail") or "")), None)
+    check("제2026-37호 출처", notice is not None,
+          [item.get("label") for item in sources])
+    if notice:
+        check("제2026-37호 출처 주소", "m_211" in (notice.get("url") or "")
+              and "seq=14968" in (notice.get("url") or ""), notice.get("url"))
+        detail = notice.get("detail") or ""
+        check("제2026-37호 시행일", "2028-01-01" in detail, detail)
+        check("제2026-37호 고시일", "2026-05-12" in detail, detail)
+        check("제2026-37호 개정 범위", "영양성분" in detail and "개정 없음" in detail, detail)
 
 
 def check_product(data):
@@ -112,14 +127,26 @@ def check_nutrients(data):
         name = nutrient.get("name")
         per100 = number(nutrient.get("per100"))
         total = number(nutrient.get("total"))
-        check("%s 함량" % name, per100 is not None and total is not None, nutrient)
-        if per100 is None or total is None:
+        total_text = nutrient.get("totalText")
+        check("%s 100g당 함량" % name, per100 is not None, nutrient.get("per100"))
+        if per100 is None:
             continue
-        check("%s 3배 환산" % name, abs(per100 * 3 - total) < 1e-6,
-              (nutrient.get("per100"), nutrient.get("total")))
+        if total_text:
+            check("%s 총량 환산 불가" % name,
+                  name == "트랜스지방" and total_text == "표시값만으로 계산 불가", (name, total_text))
+            check("%s 총 내용량 수치 없음" % name, nutrient.get("total") is None, nutrient.get("total"))
+        else:
+            check("%s 총 내용량 함량" % name, total is not None, nutrient.get("total"))
+            if total is None:
+                continue
+            check("%s 3배 환산" % name, abs(per100 * 3 - total) < 1e-6,
+                  (nutrient.get("per100"), nutrient.get("total")))
         baseline = BASELINE.get(nutrient.get("key") or "")
         if baseline:
-            for field, value in (("pct100", per100), ("pctTotal", total)):
+            pairs = [("pct100", per100)]
+            if total is not None:
+                pairs.append(("pctTotal", total))
+            for field, value in pairs:
                 expect = int((value / baseline * 100) + 0.5)
                 check("%s %s 계산" % (name, field), percent(nutrient.get(field)) == expect,
                       (nutrient.get(field), expect))
@@ -127,7 +154,7 @@ def check_nutrients(data):
             check("%s %% 없음" % name,
                   percent(nutrient.get("pct100")) is None and percent(nutrient.get("pctTotal")) is None)
         if name == "트랜스지방":
-            check("트랜스지방 0g", nutrient.get("per100") == "0g" and nutrient.get("total") == "0g", nutrient)
+            check("트랜스지방 100g당 0g", nutrient.get("per100") == "0g", nutrient.get("per100"))
 
     by_value = {item.get("name"): item for item in nutrients}
     check("열량 250kcal", by_value["열량"].get("per100") == "250kcal", by_value["열량"])
@@ -203,6 +230,15 @@ def check_items(data):
     check("트랜스지방 0.5g 미만", "0.5g 미만" in transfat["meaning"], transfat["meaning"][:60])
     check("트랜스지방 식용유지 예외", "식용유지" in transfat["meaning"], transfat["meaning"][:60])
     check("경화유 확인", "경화유" in transfat["check"], transfat["check"][:60])
+    # 100g 기준과 '표시값만으로 총량을 계산할 수 없다'는 주의가 설명에 있어야 한다.
+    check("트랜스지방 100g 기준", "100g 기준" in transfat["meaning"], transfat["meaning"][:80])
+    check("트랜스지방 1회 섭취참고량 기준", "1회 섭취참고량당" in transfat["meaning"],
+          transfat["meaning"][:80])
+    check("트랜스지방 총량 계산 불가", "표시값만으로는 총량을 계산할 수 없" in transfat["meaning"],
+          transfat["meaning"][-90:])
+    check("트랜스지방 3배 오해", "3배" in transfat["trap"] and "0.6g" in transfat["trap"],
+          transfat["trap"][:90])
+    check("트랜스지방 값 100g당 표기", "100g" in transfat["value"], transfat["value"])
 
     chol = by_id["cholesterol"]
     check("콜레스테롤 300mg", "300mg" in chol["meaning"], chol["meaning"][:60])
@@ -294,6 +330,19 @@ def check_quizzes(data):
     for word in ("300g", "냉장보관", "유통기한", "원재료명", "알레르기", "트랜스지방", "나트륨"):
         check("퀴즈 소재 %s" % word, word in items_text, items_text)
 
+    # 트랜스지방 문항: 100g 기준과 '한 봉지 전체가 0g은 아니다'를 고른다.
+    tf = next((q for q in quizzes if q.get("id") == "trans-fat-zero"), None)
+    check("트랜스지방 문항", tf is not None, [q.get("id") for q in quizzes])
+    if tf:
+        tf_answer = tf["options"][tf["answer"]]
+        check("트랜스지방 정답 100g", "100g" in tf_answer, tf_answer)
+        check("트랜스지방 정답 0.2g", "0.2g 미만" in tf_answer, tf_answer)
+        check("트랜스지방 정답 봉지 전체 아님", "한 봉지 전체가 0g" in tf_answer, tf_answer)
+        check("트랜스지방 발췌 100g당", any(line.get("val") == "100g당" for line in tf["excerpt"]),
+              [line.get("val") for line in tf["excerpt"]])
+        check("트랜스지방 해설 100g 기준", "100g 기준" in tf["explain"], tf["explain"][:60])
+        check("트랜스지방 해설 계산 불가", "계산할 수 없" in tf["explain"], tf["explain"][-80:])
+
 
 def check_html(src, data):
     check("이모지 0개", not EMOJI_RE.search(src))
@@ -324,6 +373,16 @@ def check_html(src, data):
     check("100g당 버튼", 'id="fnBasis100"' in src and 'data-basis="100"' in src)
     check("총 내용량 버튼", 'id="fnBasisTotal"' in src and 'data-basis="total"' in src)
     check("기준 머리글", 'id="fnColBasis"' in src)
+    # 트랜스지방은 총 내용량 보기로 전환하면 0g 대신 '표시값만으로 계산 불가'가 나와야 한다.
+    check("트랜스지방 총량 계산 불가 표기", 'data-vtotal="표시값만으로 계산 불가"' in src)
+    tf_row = re.search(r'data-item="transfat"[^>]*>.*?</button>', src, re.S)
+    check("트랜스지방 행 존재", tf_row is not None)
+    if tf_row:
+        check("트랜스지방 행 100g당 0g", 'data-v100="0g"' in tf_row.group(0), tf_row.group(0)[:120])
+        check("트랜스지방 행 총량 0g 아님", 'data-vtotal="0g"' not in tf_row.group(0), tf_row.group(0)[:120])
+        check("트랜스지방 행 계산 불가 문구", "표시값만으로 계산 불가" in tf_row.group(0),
+              tf_row.group(0)[:120])
+    check("총량 계산 불가 안내", "환산할 수 없어" in src)
     check("총 내용량 300g 표기", "300g" in src and "750kcal" in src)
     check("소비기한 표기", "2026.12.15까지" in src)
     check("보관방법 표기", "냉장보관(0~10℃)" in src)
@@ -339,10 +398,17 @@ def check_html(src, data):
     check("감속 모션 대응", "prefers-reduced-motion" in src)
     check("다크 테마 변수", '[data-theme="dark"]' in src)
     check("출처 링크", "mfds.go.kr" in src and "law.go.kr" in src and "foodsafetykorea.go.kr" in src)
+    source_links = re.findall(r'<a href="https://[^"]+" target="_blank" rel="noopener noreferrer">', src)
+    check("출처 링크 6건", len(source_links) >= 6, len(source_links))
     check("확인일 표기", CHECKED_ON in src and src.count(CHECKED_ON) >= 3, src.count(CHECKED_ON))
     check("소비기한 시행일 안내", "2023-01-01" in src)
     check("우유류 유예 안내", "2031-01-01" in src)
     check("고시 판본 안내", "제2025-60호" in src and "제2026-37호" in src)
+    # 제2026-37호 대조 결과: 개정 네 가지·시행일 2028-01-01·영양성분 조항 개정 없음
+    check("제2026-37호 시행일 안내", "2028-01-01" in src)
+    check("제2026-37호 개정 내역", "탈카페인" in src and "말티톨" in src)
+    check("제2026-37호 영양성분 개정 없음", "영양성분·트랜스지방 표시 조항은 바뀌지 않았" in src)
+    check("별지 1 트랜스지방 조항 인용", "별지 1 1. 아. 2) 나) (4) (다)" in src, src.count("별지 1 1. 아."))
     check("알레르기 22종 안내", "22종" in src)
     check("예시 라벨 안내", "가상" in src and "예시" in src)
     check("출처 링크 새 창 보호",
