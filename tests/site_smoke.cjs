@@ -1857,6 +1857,162 @@ async function checkIndexWatchlist(page, width) {
   console.log(`index watchlist ${width}px passed`);
 }
 
+// ---- AI·CVE 저장(북마크) · 읽음 표시 · 내 목록 필터 · 새로고침 복원 ----
+async function pickCollectionChip(page, width, filterButton, kind) {
+  if (width >= 1024) {
+    await page.click(`#collectionNav .filter-pill[data-collection="${kind}"]`);
+    await page.waitForTimeout(100);
+    return;
+  }
+  await page.click(filterButton);
+  await page.waitForTimeout(320);
+  await page.click(`#collectionNav .filter-pill[data-collection="${kind}"]`);
+  await page.waitForTimeout(120);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(320);
+}
+
+async function checkMarkedFeed(page, width, config) {
+  const tag = `${config.name} saved ${width}px`;
+  const { cardSel, keys, summaryId, badgeId, filterButton } = config;
+  const visible = async () => parseInt((await page.textContent('#visibleCount')).trim(), 10);
+  const readStore = (key) => page.evaluate((k) => {
+    const raw = localStorage.getItem(k);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return 'invalid'; }
+  }, key);
+  const chipCount = (kind) => page.evaluate((sel) => document.querySelector(sel).textContent.trim(),
+    `#collectionNav [data-collection="${kind}"] .count`);
+  const chipPressed = (kind) => page.evaluate((sel) => document.querySelector(sel).getAttribute('aria-pressed'),
+    `#collectionNav [data-collection="${kind}"]`);
+
+  await page.evaluate((ks) => ks.forEach((k) => localStorage.removeItem(k)), Object.values(keys));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator(`${cardSel} [data-mark="saved"]`).first().waitFor({ state: 'attached' });
+
+  const initial = await page.evaluate((sel) => ({
+    total: parseInt(document.getElementById('visibleCount').textContent.trim(), 10),
+    cards: document.querySelectorAll(sel).length,
+    saved: document.querySelector('#collectionNav [data-collection="saved"] .count').textContent.trim(),
+    unread: document.querySelector('#collectionNav [data-collection="unread"] .count').textContent.trim(),
+    pressed: Array.from(document.querySelectorAll('#collectionNav .filter-pill')).map((b) => b.getAttribute('aria-pressed')),
+  }), cardSel);
+  assert.equal(initial.cards, initial.total, `${tag}: card count must match the visible count`);
+  assert.equal(initial.saved, '0', `${tag}: saved count must start at 0`);
+  assert.equal(initial.unread, String(initial.total), `${tag}: every item must start unread`);
+  assert.deepEqual(initial.pressed, ['false', 'false'], `${tag}: collection chips must start off`);
+  assert.equal((await page.textContent(`#${summaryId}`)).trim(), `저장 0 · 안 읽음 ${initial.total}`,
+    `${tag}: result summary`);
+
+  // 1) 카드에서 저장 · 읽음 토글 → 저장소·버튼 상태·카드 표시가 함께 바뀐다
+  const firstKey = await page.evaluate((sel) => document.querySelector(sel).getAttribute('data-key'), cardSel);
+  assert.ok(firstKey, `${tag}: card has no data-key`);
+  await page.locator(`${cardSel} [data-mark="saved"]`).first().click();
+  await page.locator(`${cardSel} [data-mark="read"]`).first().click();
+  await page.waitForTimeout(80);
+  const marked = await page.evaluate((sel) => {
+    const card = document.querySelector(sel);
+    return {
+      savedClass: card.classList.contains('is-saved'),
+      readClass: card.classList.contains('is-read'),
+      badge: (card.querySelector('.read-badge') || {}).textContent || '',
+      savedPressed: card.querySelector('[data-mark="saved"]').getAttribute('aria-pressed'),
+      readPressed: card.querySelector('[data-mark="read"]').getAttribute('aria-pressed'),
+      savedLabel: card.querySelector('[data-mark="saved"]').textContent.trim(),
+      readLabel: card.querySelector('[data-mark="read"]').textContent.trim(),
+    };
+  }, cardSel);
+  assert.equal(marked.savedClass, true, `${tag}: saved card not highlighted`);
+  assert.equal(marked.readClass, true, `${tag}: read card not dimmed`);
+  assert.equal(marked.badge, '읽음', `${tag}: read badge missing`);
+  assert.equal(marked.savedPressed, 'true', `${tag}: save button aria-pressed`);
+  assert.equal(marked.readPressed, 'true', `${tag}: read button aria-pressed`);
+  assert.equal(marked.savedLabel, '저장됨', `${tag}: save button label`);
+  assert.equal(marked.readLabel, '읽음', `${tag}: read button label`);
+  assert.equal((await readStore(keys.saved))[firstKey], 1, `${tag}: saved id not persisted with ${keys.saved}`);
+  assert.equal((await readStore(keys.read))[firstKey], 1, `${tag}: read id not persisted with ${keys.read}`);
+  assert.equal(await chipCount('saved'), '1', `${tag}: saved badge count`);
+  assert.equal(await chipCount('unread'), String(initial.total - 1), `${tag}: unread badge count`);
+  assert.equal((await page.textContent(`#${summaryId}`)).trim(), `저장 1 · 안 읽음 ${initial.total - 1}`,
+    `${tag}: result summary after marking`);
+
+  // 2) '저장한 항목만' → 저장한 한 건만 남는다 (배지·필터 표시 함께)
+  await pickCollectionChip(page, width, filterButton, 'saved');
+  assert.equal(await chipPressed('saved'), 'true', `${tag}: saved chip aria-pressed`);
+  assert.equal(await visible(), 1, `${tag}: saved filter must leave one card`);
+  assert.equal(await page.locator(cardSel).count(), 1, `${tag}: saved filter rendered extra cards`);
+  assert.equal(await page.evaluate((sel) => document.querySelector(sel).getAttribute('data-key'), cardSel),
+    firstKey, `${tag}: saved filter showed another card`);
+  assert.equal((await page.textContent(`#${badgeId}`)).trim(), '1', `${tag}: active filter badge`);
+  await pickCollectionChip(page, width, filterButton, 'saved');
+  assert.equal(await chipPressed('saved'), 'false', `${tag}: saved chip did not toggle off`);
+  assert.equal(await visible(), initial.total, `${tag}: saved filter did not restore the feed`);
+
+  // 3) '안 읽은 항목만' → 읽음 처리한 카드는 빠진다
+  await pickCollectionChip(page, width, filterButton, 'unread');
+  assert.equal(await visible(), initial.total - 1, `${tag}: unread filter count`);
+  assert.equal(await page.locator(`${cardSel}.is-read`).count(), 0, `${tag}: read card leaked into the unread filter`);
+  assert.equal(await chipPressed('unread'), 'true', `${tag}: unread chip aria-pressed`);
+  // 두 칩을 함께 켜면 (저장했고 + 안 읽은) 카드 = 0건 → 빈 상태 안내
+  await pickCollectionChip(page, width, filterButton, 'saved');
+  assert.equal(await visible(), 0, `${tag}: saved+unread must be empty`);
+  assert.equal(await page.evaluate(() => document.getElementById('emptyState').classList.contains('visible')), true,
+    `${tag}: empty state not shown`);
+
+  // 4) 초기화 → 두 칩 모두 꺼지고 전체가 돌아온다
+  await page.click('#resetFiltersMeta');
+  await page.waitForTimeout(120);
+  assert.equal(await visible(), initial.total, `${tag}: reset did not restore the feed`);
+  assert.equal(await chipPressed('saved'), 'false', `${tag}: reset left the saved chip on`);
+  assert.equal(await chipPressed('unread'), 'false', `${tag}: reset left the unread chip on`);
+
+  // 5) 새로고침해도 저장·읽음 표시가 그대로 복원된다
+  await page.reload({ waitUntil: 'load' });
+  await page.locator(`${cardSel} [data-mark="saved"]`).first().waitFor({ state: 'attached' });
+  const restored = await page.evaluate((sel) => {
+    const card = document.querySelector(sel);
+    return {
+      saved: card.classList.contains('is-saved'),
+      read: card.classList.contains('is-read'),
+      label: card.querySelector('[data-mark="saved"]').textContent.trim(),
+    };
+  }, cardSel);
+  assert.equal(restored.saved, true, `${tag}: saved state lost after reload`);
+  assert.equal(restored.read, true, `${tag}: read state lost after reload`);
+  assert.equal(restored.label, '저장됨', `${tag}: saved label lost after reload`);
+  assert.equal(await chipCount('saved'), '1', `${tag}: saved count lost after reload`);
+
+  // 6) 저장 데이터에 마크업이 섞여 들어와도 화면에 그려지지 않는다(텍스트 처리)
+  const injected = await page.evaluate((ks) => {
+    localStorage.setItem(ks.saved, JSON.stringify({ 'x"><img src=x onerror=window.__xss=1>': 1, '<script>window.__xss=2</script>': 1 }));
+    localStorage.setItem(ks.read, '["not-an-object"]');
+    return true;
+  }, keys);
+  assert.equal(injected, true, `${tag}: could not seed storage`);
+  await page.reload({ waitUntil: 'load' });
+  await page.locator(`${cardSel} [data-mark="saved"]`).first().waitFor({ state: 'attached' });
+  const afterInjection = await page.evaluate((sel) => ({
+    xss: typeof window.__xss === 'undefined' ? 0 : window.__xss,
+    injectedNodes: document.querySelectorAll(`${sel} img, ${sel} script`).length,
+    savedCount: document.querySelector('#collectionNav [data-collection="saved"] .count').textContent.trim(),
+  }), cardSel);
+  assert.equal(afterInjection.xss, 0, `${tag}: stored markup executed`);
+  assert.equal(afterInjection.injectedNodes, 0, `${tag}: stored markup rendered as DOM`);
+  assert.equal(afterInjection.savedCount, '0', `${tag}: unrelated stored ids must not be counted`);
+
+  // 7) 저장 → 다시 누르면 해제된다(배지 건수도 함께 돌아온다)
+  await page.locator(`${cardSel} [data-mark="saved"]`).first().click();
+  await page.waitForTimeout(80);
+  assert.equal(await chipCount('saved'), '1', `${tag}: save did not count`);
+  await page.locator(`${cardSel} [data-mark="saved"]`).first().click();
+  await page.waitForTimeout(80);
+  assert.equal(await chipCount('saved'), '0', `${tag}: unsave did not clear the count`);
+
+  await page.evaluate((ks) => ks.forEach((k) => localStorage.removeItem(k)), Object.values(keys));
+  await page.reload({ waitUntil: 'load' });
+  console.log(tag + ' passed');
+}
+
 // ---- 시험공부 복습 큐: 오답·북마크 자동 등록 · 간격 반복 갱신 · 기존 정답률 보존 · 새로고침 복원 ----
 async function checkStudyReviewQueue(page, width) {
   const tag = `study review ${width}px`;
@@ -2284,7 +2440,21 @@ async function checkPage(context, base, name, width) {
 
     if (name === 'cve') await checkCvePriorityNav(page, width);
     if (name === 'cve') await checkCveFilters(page, width, `cve filter ${width}px`);
+    if (name === 'cve' && (width === 390 || width === 1280)) {
+      await checkMarkedFeed(page, width, {
+        name: 'cve', cardSel: '#cveList .cve-card', filterButton: '#cveFilterOpenBtn',
+        summaryId: 'cveCollectionSummary', badgeId: 'cveFilterBadge',
+        keys: { saved: 'cve_saved_v1', read: 'cve_read_v1' },
+      });
+    }
     if (name === 'ai') await checkAiFilters(page, width, `ai filter ${width}px`);
+    if (name === 'ai' && (width === 390 || width === 1280)) {
+      await checkMarkedFeed(page, width, {
+        name: 'ai', cardSel: '#aiGrid .ai-card', filterButton: '#aiFilterOpenBtn',
+        summaryId: 'aiCollectionSummary', badgeId: 'aiFilterBadge',
+        keys: { saved: 'ai_saved_v1', read: 'ai_read_v1' },
+      });
+    }
     if (name === 'study') await checkStudyHub(page, width, `study ${width}px`);
     if (name === 'study' && (width === 390 || width === 1280)) await checkStudyReviewQueue(page, width);
     if (name === 'clue') await checkClueGame(page, base, width);

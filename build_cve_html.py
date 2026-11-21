@@ -594,6 +594,8 @@ CSS = """
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      row-gap: 4px;
       gap: 10px;
       font-size: 12.5px;
       color: var(--text-muted);
@@ -945,6 +947,58 @@ CSS = """
       color: var(--accent-primary);
       border-color: var(--accent-primary);
       background: var(--accent-subtle);
+    }
+
+    /* ===== 저장(북마크) · 읽음(확인 완료) 표시 — 브라우저 localStorage 개인화 ===== */
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 11px;
+    }
+
+    .mark-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      border-radius: 7px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+    }
+
+    .mark-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .mark-btn.is-on { color: var(--accent-primary); border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .mark-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .mark-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    .cve-card.is-saved { border-color: var(--accent-primary); }
+    .cve-card.is-read .cve-title { color: var(--text-secondary); }
+    .cve-card.is-read .cve-summary { color: var(--text-muted); }
+
+    .read-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      padding: 3px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .collection-summary {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     /* Empty state */
@@ -1509,6 +1563,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <div class="cve-rail-section">
+          <p class="cve-rail-label">내 목록</p>
+          <div class="filter-pills-scroll" id="collectionNav">
+            <button type="button" class="filter-pill" data-collection="saved" aria-pressed="false">저장한 항목만<span class="count" id="cveSavedCount">0</span></button>
+            <button type="button" class="filter-pill" data-collection="unread" aria-pressed="false">안 읽은 항목만<span class="count" id="cveUnreadCount">0</span></button>
+          </div>
+        </div>
+
+        <div class="cve-rail-section">
           <p class="cve-rail-label">출처</p>
           <div class="filter-pills-scroll" id="sourceNav">
             <button class="filter-pill active" data-src="all">전체</button>
@@ -1583,6 +1645,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         <div class="result-meta">
           <span class="result-count"><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
+          <span class="collection-summary" id="cveCollectionSummary">저장 0 · 안 읽음 __TOTAL__</span>
           <div class="meta-tools">
             <button class="reset-btn" id="resetFiltersMeta">필터 초기화</button>
           </div>
@@ -1705,6 +1768,65 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     let activeFilter = 'all';
     let activeSource = 'all';
     let searchTerm = '';
+    let onlySaved = false;
+    let onlyUnread = false;
+
+    // ===== 저장(북마크) · 읽음(확인 완료) 표시 =====
+    // 저장 위치는 이 브라우저의 localStorage 뿐이고 서버로는 아무것도 보내지 않는다.
+    // 저장한 CVE ID는 화면을 그릴 때 다시 마크업으로 해석되지 않고, 정해진 버튼 상태로만 쓴다.
+    const SAVED_KEY = 'cve_saved_v1';
+    const READ_KEY = 'cve_read_v1';
+    const MARK_ID_RE = /^[A-Za-z0-9_.:-]{1,80}$/;
+    const markStore = { saved: readMarkStore(SAVED_KEY), read: readMarkStore(READ_KEY) };
+
+    function readMarkStore(key) {
+      const clean = {};
+      try {
+        const raw = localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return clean;
+        Object.keys(parsed).forEach(function (id) {
+          if (MARK_ID_RE.test(id)) clean[id] = 1;
+        });
+      } catch (e) {}
+      return clean;
+    }
+
+    function persistMark(kind) {
+      try {
+        localStorage.setItem(kind === 'saved' ? SAVED_KEY : READ_KEY, JSON.stringify(markStore[kind]));
+      } catch (e) {}
+    }
+
+    function toggleMark(kind, id) {
+      if (!id || !MARK_ID_RE.test(id) || !markStore[kind]) return;
+      if (markStore[kind][id]) delete markStore[kind][id];
+      else markStore[kind][id] = 1;
+      persistMark(kind);
+      render();
+    }
+
+    function savedCount() {
+      return CVE_ITEMS.filter(function (it) { return !!markStore.saved[it.cve_id]; }).length;
+    }
+
+    function unreadCount() {
+      return CVE_ITEMS.filter(function (it) { return !markStore.read[it.cve_id]; }).length;
+    }
+
+    function updateMarkCounts() {
+      const savedEl = document.getElementById('cveSavedCount');
+      if (savedEl) savedEl.textContent = String(savedCount());
+      const unreadEl = document.getElementById('cveUnreadCount');
+      if (unreadEl) unreadEl.textContent = String(unreadCount());
+      const summary = document.getElementById('cveCollectionSummary');
+      if (summary) summary.textContent = '저장 ' + savedCount() + ' · 안 읽음 ' + unreadCount();
+    }
+
+    const MARK_ICONS = {
+      saved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4.5h11a1 1 0 0 1 1 1v14l-6.5-4.2-6.5 4.2v-14a1 1 0 0 1 1-1z"></path></svg>',
+      read: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l4.5 4.5 10-10"></path></svg>'
+    };
 
     // CISA·KISA·보안기업 피드로 출처를 묶는다(카드의 경보·보도 줄과 같은 기준).
     const VENDOR_SOURCES = ['Microsoft MSRC', 'Google Cloud Threat Intelligence', 'Palo Alto Unit 42',
@@ -1729,6 +1851,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     let toastTimer = null;
 
     function matches(it) {
+      if (onlySaved && !markStore.saved[it.cve_id]) return false;
+      if (onlyUnread && markStore.read[it.cve_id]) return false;
       if (activeFilter === 'kev' && !it.is_kev) return false;
       if (activeFilter === 'poc' && !(it.poc_links && it.poc_links.length)) return false;
       if (activeFilter === 'alert' && !(it.alerts && it.alerts.length)) return false;
@@ -1792,8 +1916,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         return '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener noreferrer" title="원문: ' + escapeHtml(url) + '">' + escapeHtml(host) + '</a>';
       }).join('');
 
-      return '<article class="cve-card" id="cve-' + escapeHtml(it.cve_id) + '" tabindex="-1">'
-        + '<div class="cve-top">' + top.join('') + '</div>'
+      const markKey = escapeHtml(it.cve_id);
+      const isSaved = !!markStore.saved[it.cve_id];
+      const isRead = !!markStore.read[it.cve_id];
+      const actions = '<div class="card-actions">'
+        + '<button type="button" class="mark-btn ' + (isSaved ? 'is-on' : '') + '" data-mark="saved" data-id="' + markKey + '" aria-pressed="' + (isSaved ? 'true' : 'false') + '" title="' + (isSaved ? '저장 해제' : '저장') + '">' + MARK_ICONS.saved + (isSaved ? '저장됨' : '저장') + '</button>'
+        + '<button type="button" class="mark-btn ' + (isRead ? 'is-on' : '') + '" data-mark="read" data-id="' + markKey + '" aria-pressed="' + (isRead ? 'true' : 'false') + '" title="' + (isRead ? '읽음 취소' : '읽음 표시') + '">' + MARK_ICONS.read + (isRead ? '읽음' : '읽음 표시') + '</button>'
+        + '</div>';
+
+      return '<article class="cve-card' + (isSaved ? ' is-saved' : '') + (isRead ? ' is-read' : '') + '" id="cve-' + escapeHtml(it.cve_id) + '" data-key="' + markKey + '" tabindex="-1">'
+        + '<div class="cve-top">' + top.join('') + (isRead ? '<span class="read-badge">읽음</span>' : '') + '</div>'
         + '<h2 class="cve-title">' + escapeHtml(it.title_ko) + '</h2>'
         + (metrics.length ? '<div class="cve-metrics">' + metrics.join('') + '</div>' : '')
         + alertRow
@@ -1802,6 +1934,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         + (it.impact_ko ? '<div class="detail-box impact-box"><span class="box-label">원인 및 영향 범위</span><p>' + escapeHtml(it.impact_ko) + '</p></div>' : '')
         + (it.remediation_ko ? '<div class="detail-box remed-box"><span class="box-label">조치 방안</span><p>' + escapeHtml(it.remediation_ko) + '</p></div>' : '')
         + (pocs ? '<div class="poc-block"><span class="box-label">공개 PoC 경로</span>' + pocs + '</div>' : '')
+        + actions
         + '<div class="cve-foot">'
         +   '<div class="ref-links">' + (refs || '<a href="https://nvd.nist.gov/vuln/detail/' + escapeHtml(it.cve_id) + '" target="_blank" rel="noopener noreferrer">NVD 상세</a>') + '</div>'
         +   '<button class="copy-btn" data-cve="' + escapeHtml(it.cve_id) + '">리포트 복사</button>'
@@ -1841,7 +1974,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       visibleCount.textContent = visible.length;
       emptyState.classList.toggle('visible', visible.length === 0);
       updateFilterBadge();
+      updateMarkCounts();
     }
+
+    // 카드의 저장·읽음 버튼 (목록을 다시 그리므로 이벤트는 위임으로 받는다)
+    list.addEventListener('click', (ev) => {
+      const markBtn = ev.target.closest('[data-mark]');
+      if (!markBtn) return;
+      ev.preventDefault();
+      toggleMark(markBtn.getAttribute('data-mark'), markBtn.getAttribute('data-id'));
+    });
 
     // ---- 우선 조치 행 → 해당 CVE 카드로 이동 ----
     let jumpTimer = null;
@@ -1852,11 +1994,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       clearSearchBtn.classList.remove('visible');
       activeFilter = 'all';
       activeSource = 'all';
+      onlySaved = false;
+      onlyUnread = false;
       document.querySelectorAll('.segment-btn').forEach(b => {
         b.classList.toggle('active', b.getAttribute('data-filter') === 'all');
       });
       document.querySelectorAll('#sourceNav .filter-pill').forEach(b => {
         b.classList.toggle('active', b.getAttribute('data-src') === 'all');
+      });
+      document.querySelectorAll('#collectionNav .filter-pill').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
       });
       render();
     }
@@ -1987,6 +2135,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           render();
           return;
         }
+        const colBtn = ev.target.closest('#collectionNav .filter-pill');
+        if (colBtn) {
+          const kind = colBtn.getAttribute('data-collection');
+          const on = kind === 'saved' ? !onlySaved : !onlyUnread;
+          if (kind === 'saved') onlySaved = on;
+          else if (kind === 'unread') onlyUnread = on;
+          colBtn.classList.toggle('active', on);
+          colBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          render();
+          return;
+        }
         const srcBtn = ev.target.closest('#sourceNav .filter-pill');
         if (srcBtn) {
           document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.remove('active'));
@@ -2017,11 +2176,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       clearSearchBtn.classList.remove('visible');
       activeFilter = 'all';
       activeSource = 'all';
+      onlySaved = false;
+      onlyUnread = false;
       currentSort = 'published';
       sortSelect.value = 'published';
       if (cveSortMobile) cveSortMobile.value = 'published';
       document.querySelectorAll('.segment-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-filter') === 'all'));
       document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.toggle('active', b.getAttribute('data-src') === 'all'));
+      document.querySelectorAll('#collectionNav .filter-pill').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       render();
     }
 
@@ -2048,6 +2213,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       let n = 0;
       if (activeFilter !== 'all') n += 1;
       if (activeSource !== 'all') n += 1;
+      if (onlySaved) n += 1;
+      if (onlyUnread) n += 1;
       if (searchTerm) n += 1;
       return n;
     }
