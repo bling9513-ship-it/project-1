@@ -458,6 +458,15 @@ TEMPLATE = r"""<!DOCTYPE html>
 
     .day-empty { font-size: 12.5px; color: var(--text-muted); }
 
+    /* AI 브리핑은 카드 높이를 맞추기 위해 4줄까지만 보여 주고, 전체는 ai.html 에서 읽는다. */
+    #aiBrief {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.6;
+    }
+
     .day-more {
       margin-top: auto; padding-top: 8px;
       display: inline-flex; align-items: center; gap: 5px;
