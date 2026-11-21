@@ -1312,6 +1312,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="pick.html" class="nav-tab-item active">오늘 뭐 먹지</a>
           <a href="clue.html" class="nav-tab-item">3단서 추리</a>
           <a href="mission.html" class="nav-tab-item">퇴근길 미션</a>
+          <a href="chart.html" class="nav-tab-item">차트 추리실</a>
         </div>
       </div>
 

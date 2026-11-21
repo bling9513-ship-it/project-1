@@ -145,7 +145,7 @@ async def check_width(browser, base, width):
         bodyRight: Math.round(de.getBoundingClientRect().right),
       };
     }""")
-    assert layout["tabs"] == 11, "탭이 11개가 아닙니다: %s" % layout["tabs"]
+    assert layout["tabs"] == 12, "탭이 12개가 아닙니다: %s" % layout["tabs"]
     assert layout["overflow"] == 0, "%dpx 가로 넘침 %dpx" % (width, layout["overflow"])
     assert layout["navRight"] <= layout["actionsLeft"], "%dpx 에서 탭과 우측 버튼이 겹칩니다" % width
     assert layout["activeVisible"], "%dpx 에서 현재 탭이 보이지 않습니다" % width
