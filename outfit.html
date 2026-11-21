@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-L5vXMI9zsBA2FRZEa89u08qeo3OAn9YbSMCNzTSZYuk=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-m+AZMJL6EGfyKG4gZgoaXelahoIrxDclk43rWuKyvfE=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 계절별 옷차림</title>
   <meta name="description" content="서울의 오늘·내일 날씨와 기온 구간별로 아우터·상의·하의·신발·소품 조합을 정리한 옷차림 가이드. 기온 슬라이더와 계절·스타일 필터로 지금 입을 옷을 바로 고릅니다.">
@@ -1303,7 +1303,7 @@
     <section class="wx-card" id="wxCard">
       <div class="wx-head">
         <div class="wx-title"><span class="bar"></span>오늘 · 내일 서울 날씨와 추천 코디</div>
-        <span class="wx-time"><span class="live-dot"></span><span id="wxUpdated">12:42 기준 · 실시간 확인</span></span>
+        <span class="wx-time"><span class="live-dot"></span><span id="wxUpdated">13:03 기준 · 실시간 확인</span></span>
       </div>
       <div class="wx-body">
         <div class="wx-now">
@@ -1384,13 +1384,13 @@
     <footer class="footer">
       Infosec Archive · 계절별 옷차림 가이드<br>
       오늘·내일 기본값은 빌드 시점 Apple Weather, 방문 시 Open-Meteo 실시간 예보로 갱신됩니다.<br>
-      체감 온도와 개인차가 있으니 야외 활동 시간과 실내 냉난방에 맞춰 한 겹씩 조절하세요. 최종 갱신 2026-11-21 12:42 KST
+      체감 온도와 개인차가 있으니 야외 활동 시간과 실내 냉난방에 맞춰 한 겹씩 조절하세요. 최종 갱신 2026-11-21 13:03 KST
     </footer>
   </main>
 
   <script>
     const BANDS = [{"key": "b1", "min": -30, "max": 4, "range": "4°C 이하", "name": "한파", "line": "롱패딩·헤비 다운 + 메리노 니트 + 기모 슬랙스, 목도리와 장갑까지."}, {"key": "b2", "min": 5, "max": 8, "range": "5~8°C", "name": "초겨울", "line": "울 코트 + 얇은 니트 + 슬랙스, 머플러 하나면 충분합니다."}, {"key": "b3", "min": 9, "max": 11, "range": "9~11°C", "name": "늦가을·초봄", "line": "트렌치코트 + 셔츠·니트 + 슬랙스, 낮에는 벗어 드세요."}, {"key": "b4", "min": 12, "max": 16, "range": "12~16°C", "name": "쌀쌀", "line": "블레이저 + 셔츠 + 슬랙스, 얇은 니트 베스트가 있으면 더 좋습니다."}, {"key": "b5", "min": 17, "max": 19, "range": "17~19°C", "name": "선선", "line": "셔츠 + 얇은 블레이저 또는 가디건, 반팔 단독은 아직 이릅니다."}, {"key": "b6", "min": 20, "max": 22, "range": "20~22°C", "name": "포근", "line": "셔츠 단독 + 얇은 가디건, 실내 냉방에 대비하세요."}, {"key": "b7", "min": 23, "max": 27, "range": "23~27°C", "name": "초여름", "line": "냉감 반팔 셔츠 + 린넨 팬츠, 얇은 겉옷을 하나 챙기세요."}, {"key": "b8", "min": 28, "max": 60, "range": "28°C 이상", "name": "한여름", "line": "아이스 셔츠·민소매 + 린넨 팬츠, 모자와 수분이 필수입니다."}];
-    const WX_BUILD = {"source": "apple", "updated": "12:42", "now_temp": 2, "now_feels": 2, "now_cond": "맑음", "now_wind": 11, "today_date": "2026-11-21", "today_low": -5, "today_high": 3, "today_pop": 0, "today_cond": "맑음", "today_wind": 9, "tomorrow_date": "2026-11-22", "tomorrow_low": -6, "tomorrow_high": 4, "tomorrow_pop": 0, "tomorrow_cond": "맑음"};
+    const WX_BUILD = {"source": "apple", "updated": "13:03", "now_temp": 2, "now_feels": 2, "now_cond": "맑음", "now_wind": 11, "today_date": "2026-11-21", "today_low": -5, "today_high": 3, "today_pop": 0, "today_cond": "맑음", "today_wind": 9, "tomorrow_date": "2026-11-22", "tomorrow_low": -6, "tomorrow_high": 4, "tomorrow_pop": 0, "tomorrow_cond": "맑음"};
 
     // ---- Theme (index.html / study.html / ai.html / cve.html 과 동일한 secjobs-theme 동기화) ----
     const themeToggle = document.getElementById('themeToggle');

@@ -1097,6 +1097,324 @@ async function checkReducedMotion(browser, base) {
   }
 }
 
+// ---- 워게임: 한 번에 한 문제 · PC 좌측 탐색 레일 · 모바일 문제 목록 시트 · 채점 KPI ----
+async function checkWargame(page, width) {
+  const tag = `wargame ${width}px`;
+  const readCard = () => page.evaluate(() => ({
+    visible: Array.from(document.querySelectorAll('.q-card')).filter((c) => !c.hidden).length,
+    active: document.querySelector('.wg-item.is-active') ? document.querySelector('.wg-item.is-active').dataset.id : null,
+    shown: document.querySelector('.q-card:not([hidden])') ? document.querySelector('.q-card:not([hidden])').dataset.id : null,
+    solved: document.getElementById('kpiSolved').textContent,
+    focus: document.activeElement ? document.activeElement.id : null,
+  }));
+
+  let state = await readCard();
+  assert.equal(state.visible, 1, `${tag}: exactly one problem must be shown`);
+  assert.ok(state.shown, `${tag}: no problem selected`);
+  assert.equal(state.active, state.shown, `${tag}: rail selection differs from the shown card`);
+
+  // 정답을 고를 수 있는 문제로 이동해 채점이 KPI·레일에 반영되는지
+  const choiceId = await page.evaluate(() => (DATA.find((q) => q.type === 'choice') || {}).id);
+  assert.ok(choiceId, `${tag}: no choice question`);
+  if (width < 1024) {
+    await page.click('#wgListOpen');
+    await page.waitForTimeout(320);
+  }
+  await page.click(`.wg-item[data-id="${choiceId}"]`);
+  await page.waitForTimeout(360);
+  const solved = await page.evaluate((id) => {
+    const card = document.getElementById('q-' + id);
+    const q = DATA.find((x) => x.id === id);
+    card.querySelector('.opt[data-idx="' + q.answer + '"]').click();
+    return {
+      state: card.classList.contains('is-solved'),
+      kpi: document.getElementById('kpiSolved').textContent,
+      rail: document.querySelector('.wg-item[data-id="' + id + '"]').className,
+      hash: location.hash,
+    };
+  }, choiceId);
+  assert.equal(solved.state, true, `${tag}: answer did not solve the card`);
+  assert.equal(solved.kpi, '1', `${tag}: KPI solved ${solved.kpi}`);
+  assert.ok(solved.rail.includes('is-done'), `${tag}: rail item not marked solved`);
+  assert.equal(solved.hash, '#q-' + choiceId, `${tag}: deep link hash not synced`);
+
+  if (width < 1024) {
+    await page.click('#wgListOpen');
+    await page.waitForTimeout(340);
+    let sheet = await page.evaluate(() => ({
+      open: document.getElementById('wgRail').classList.contains('is-open'),
+      locked: document.body.classList.contains('wg-sheet-open'),
+      expanded: document.getElementById('wgListOpen').getAttribute('aria-expanded'),
+      focus: document.activeElement.id,
+      railTop: Math.round(document.getElementById('wgRail').getBoundingClientRect().top),
+      vh: window.innerHeight,
+    }));
+    assert.equal(sheet.open, true, `${tag}: problem list sheet did not open`);
+    assert.equal(sheet.locked, true, `${tag}: sheet did not lock scrolling`);
+    assert.equal(sheet.expanded, 'true', `${tag}: aria-expanded not set`);
+    assert.equal(sheet.focus, 'wgRailClose', `${tag}: focus not moved into the sheet`);
+    assert.ok(sheet.railTop < sheet.vh - 40, `${tag}: sheet is off screen`);
+
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(340);
+    sheet = await page.evaluate(() => ({
+      open: document.getElementById('wgRail').classList.contains('is-open'),
+      locked: document.body.classList.contains('wg-sheet-open'),
+      focus: document.activeElement.id,
+    }));
+    assert.equal(sheet.open, false, `${tag}: Escape did not close the sheet`);
+    assert.equal(sheet.locked, false, `${tag}: scroll lock not released`);
+    assert.equal(sheet.focus, 'wgListOpen', `${tag}: focus did not return to 문제 목록`);
+
+    // 목록에서 다른 문제를 고르면 시트가 닫힌다.
+    await page.click('#wgListOpen');
+    await page.waitForTimeout(340);
+    const other = await page.evaluate((cur) => {
+      const items = Array.from(document.querySelectorAll('.wg-item'));
+      const pick = items.find((b) => b.dataset.id !== cur);
+      return pick ? pick.dataset.id : null;
+    }, choiceId);
+    assert.ok(other, `${tag}: no second problem in the list`);
+    await page.click(`.wg-item[data-id="${other}"]`);
+    await page.waitForTimeout(420);
+    const after = await page.evaluate(() => ({
+      open: document.getElementById('wgRail').classList.contains('is-open'),
+      shown: document.querySelector('.q-card:not([hidden])').dataset.id,
+      locked: document.body.classList.contains('wg-sheet-open'),
+    }));
+    assert.equal(after.open, false, `${tag}: sheet did not close after picking a problem`);
+    assert.equal(after.locked, false, `${tag}: scroll lock left on after picking`);
+    assert.equal(after.shown, other, `${tag}: picked problem not shown`);
+  } else {
+    const geo = await page.evaluate(() => {
+      const rail = document.getElementById('wgRail').getBoundingClientRect();
+      const main = document.querySelector('.wg-main').getBoundingClientRect();
+      return { railRight: rail.right, mainLeft: main.left, railTop: rail.top, sticky: getComputedStyle(document.getElementById('wgRail')).position };
+    });
+    assert.ok(geo.railRight <= geo.mainLeft + 1, `${tag}: rail is not left of the problem`);
+    assert.equal(geo.sticky, 'sticky', `${tag}: rail is not sticky`);
+
+    await page.click('.chip[data-group="status"][data-value="done"]');
+    await page.waitForTimeout(150);
+    const filtered = await page.evaluate(() => ({
+      items: document.querySelectorAll('.wg-item').length,
+      shown: document.querySelectorAll('.q-card:not([hidden])').length,
+      empty: document.getElementById('emptyState').classList.contains('show'),
+      active: document.querySelector('.wg-item.is-active').dataset.id,
+    }));
+    assert.equal(filtered.items, 1, `${tag}: solved filter shows ${filtered.items} items`);
+    assert.equal(filtered.shown, 1, `${tag}: solved filter must keep one card`);
+    assert.equal(filtered.active, choiceId, `${tag}: filter dropped the solved problem`);
+
+    await page.click('.chip[data-group="status"][data-value="todo"]');
+    await page.waitForTimeout(150);
+    const todo = await page.evaluate(() => ({
+      items: document.querySelectorAll('.wg-item').length,
+      shown: document.querySelectorAll('.q-card:not([hidden])').length,
+      activeDone: document.querySelector('.wg-item.is-active').classList.contains('is-done'),
+    }));
+    assert.equal(todo.items, 23, `${tag}: todo filter shows ${todo.items} items`);
+    assert.equal(todo.shown, 1, `${tag}: todo filter must keep one card`);
+    assert.equal(todo.activeDone, false, `${tag}: todo filter kept the solved problem`);
+
+    await page.click('#resetFilters');
+    await page.waitForTimeout(120);
+    const reset = await page.evaluate(() => document.querySelectorAll('.wg-item').length);
+    assert.equal(reset, 24, `${tag}: filters did not reset (${reset})`);
+  }
+  console.log(`wargame interactions ${width}px passed`);
+}
+
+// ---- 3단서 추리: PC 2단(플레이어 ↔ 아카이브 레일) · 모바일 1줄 요약 + 첫 화면 단서 ----
+async function checkClueLayout(page, width) {
+  const tag = `clue layout ${width}px`;
+  const geo = await page.evaluate(() => {
+    const player = document.getElementById('playPanel').getBoundingClientRect();
+    const rail = document.querySelector('.clue-rail').getBoundingClientRect();
+    const clue = document.querySelector('#clueList .clue').getBoundingClientRect();
+    const next = document.getElementById('nextClue').getBoundingClientRect();
+    const opt = document.querySelector('#options .opt').getBoundingClientRect();
+    const kpis = document.querySelector('.clue-kpis');
+    const archiveCards = document.querySelectorAll('#arcGrid .arc-card').length;
+    return {
+      playerLeft: player.left, playerRight: player.right, playerTop: player.top,
+      railLeft: rail.left, railTop: rail.top,
+      clueTop: clue.top, nextTop: next.top, optTop: opt.top, vh: window.innerHeight,
+      kpiVisible: kpis && getComputedStyle(kpis).display !== 'none',
+      archiveCards,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  assert.equal(geo.overflow, 0, `${tag}: horizontal overflow`);
+  assert.ok(geo.kpiVisible, `${tag}: streak/solved summary missing`);
+  assert.ok(geo.archiveCards > 1, `${tag}: archive cards missing`);
+  if (width >= 1024) {
+    assert.ok(geo.railLeft >= geo.playerRight - 1, `${tag}: archive is not a right rail`);
+  } else {
+    assert.ok(geo.railTop > geo.playerTop, `${tag}: archive rail is not below the puzzle`);
+    assert.ok(geo.clueTop < geo.vh - 40, `${tag}: first clue below the fold`);
+    assert.ok(geo.optTop < geo.vh + 40, `${tag}: answer choices start below the first screen`);
+  }
+  console.log(`clue layout ${width}px passed`);
+}
+
+// ---- 피싱 레이더: 모바일 세그먼트 전환 · PC 2단(퀴즈·검사기 ↔ 수법·대응) ----
+async function checkRadar(page, width) {
+  const tag = `radar ${width}px`;
+  const views = () => page.evaluate(() => ({
+    quiz: !document.getElementById('rdViewQuiz').hidden,
+    scan: !document.getElementById('rdViewScan').hidden,
+    trends: !document.getElementById('rdViewTrends').hidden,
+    segs: getComputedStyle(document.querySelector('.rd-segments')).display,
+  }));
+
+  let state = await views();
+  if (width < 1024) {
+    assert.equal(state.quiz, true, `${tag}: quiz view must be the default`);
+    assert.equal(state.scan, false, `${tag}: scan view must start hidden`);
+    assert.equal(state.trends, false, `${tag}: trends view must start hidden`);
+
+    await page.click('.rd-seg[data-view="scan"]');
+    await page.waitForTimeout(380);
+    const scan = await page.evaluate(() => {
+      const input = document.getElementById('scanInput').getBoundingClientRect();
+      const btn = document.getElementById('scanBtn').getBoundingClientRect();
+      return {
+        view: !document.getElementById('rdViewScan').hidden,
+        inputTop: input.top, inputBottom: input.bottom, btnTop: btn.top, btnBottom: btn.bottom,
+        vh: window.innerHeight,
+      };
+    });
+    assert.equal(scan.view, true, `${tag}: URL 검사기 segment did not switch`);
+    assert.ok(scan.inputTop < scan.vh - 40, `${tag}: scan input below the fold`);
+    assert.ok(scan.btnBottom < scan.vh, `${tag}: 검사 button below the first screen`);
+
+    await page.click('#scanSamples .sample');
+    await page.click('#scanBtn');
+    const result = await page.evaluate(() => ({
+      hidden: document.getElementById('scanResult').hidden,
+      text: document.getElementById('scanResult').textContent.length,
+    }));
+    assert.equal(result.hidden, false, `${tag}: scan produced no result`);
+    assert.ok(result.text > 20, `${tag}: scan result is empty`);
+
+    await page.click('.rd-seg[data-view="trends"]');
+    await page.waitForTimeout(320);
+    const trends = await page.evaluate(() => ({
+      view: !document.getElementById('rdViewTrends').hidden,
+      cards: document.querySelectorAll('.trend-card').length,
+      checks: document.querySelectorAll('.check-item').length,
+      quiz: !document.getElementById('rdViewQuiz').hidden,
+    }));
+    assert.equal(trends.view, true, `${tag}: 유행 수법 segment did not switch`);
+    assert.equal(trends.quiz, false, `${tag}: quiz still visible in trends view`);
+    assert.ok(trends.cards >= 6, `${tag}: trend cards ${trends.cards}`);
+    assert.ok(trends.checks >= 5, `${tag}: checklist items ${trends.checks}`);
+    await page.click('.rd-seg[data-view="quiz"]');
+    await page.waitForTimeout(320);
+  } else {
+    assert.equal(state.quiz && state.scan && state.trends, true, `${tag}: PC must show all three sections`);
+    assert.equal(state.segs, 'none', `${tag}: segments must be hidden on PC`);
+    const geo = await page.evaluate(() => {
+      const main = document.querySelector('.rd-main').getBoundingClientRect();
+      const rail = document.querySelector('.rd-rail').getBoundingClientRect();
+      const scan = document.getElementById('rdViewScan').getBoundingClientRect();
+      const quiz = document.getElementById('rdViewQuiz').getBoundingClientRect();
+      return { mainRight: main.right, railLeft: rail.left, scanTop: scan.top, quizTop: quiz.top };
+    });
+    assert.ok(geo.railLeft >= geo.mainRight - 1, `${tag}: right rail is not beside the quiz`);
+    assert.ok(geo.scanTop <= geo.quizTop, `${tag}: scanner must sit above the quiz on PC`);
+  }
+
+  const answered = await page.evaluate(() => {
+    const card = document.querySelector('.qcard');
+    const q = QUIZ.find((x) => x.id === card.dataset.qid);
+    card.querySelector('.ans-btn[data-pick="' + q.answer + '"]').click();
+    return { solved: document.getElementById('solvedNum').textContent, mobile: document.getElementById('mAnswered').textContent };
+  });
+  assert.equal(answered.solved, '1', `${tag}: summary did not count the answer`);
+  assert.equal(answered.mobile, '1', `${tag}: mobile progress did not count the answer`);
+
+  const checks = await page.evaluate(() => {
+    document.querySelector('.check-item input').click();
+    return document.getElementById('checkDone').textContent;
+  });
+  assert.equal(checks, '1', `${tag}: checklist not saved`);
+  console.log(`radar interactions ${width}px passed`);
+}
+
+// ---- 실무 유틸: 모바일 세그먼트(실무 유틸·치트시트) · PC 좌측 도구/치트 필터 레일 ----
+async function checkTools(page, width) {
+  const tag = `tools ${width}px`;
+  const state = await page.evaluate(() => ({
+    tools: !document.getElementById('tlViewTools').hidden,
+    cheat: !document.getElementById('tlViewCheat').hidden,
+    segs: getComputedStyle(document.querySelector('.tl-segments')).display,
+    controlsParent: document.getElementById('cheatControls').parentNode.id || '',
+    tabs: document.querySelectorAll('.tool-tab').length,
+  }));
+  assert.equal(state.tabs, 5, `${tag}: tool tabs ${state.tabs}`);
+
+  if (width < 1024) {
+    assert.equal(state.tools, true, `${tag}: tools view must be the default`);
+    assert.equal(state.cheat, false, `${tag}: cheat view must start hidden`);
+    assert.equal(state.controlsParent, 'tlViewCheat', `${tag}: cheat filter must stay in the cheat view`);
+    const first = await page.evaluate(() => {
+      const input = document.getElementById('encInput').getBoundingClientRect();
+      const btn = document.getElementById('encRun').getBoundingClientRect();
+      return { inputTop: input.top, btnBottom: btn.bottom, vh: window.innerHeight };
+    });
+    assert.ok(first.inputTop < first.vh - 60, `${tag}: tool input below the fold`);
+    assert.ok(first.btnBottom < first.vh, `${tag}: run/copy buttons below the first screen`);
+
+    await page.click('.tl-seg[data-view="cheat"]');
+    await page.waitForTimeout(380);
+    const cheat = await page.evaluate(() => ({
+      view: !document.getElementById('tlViewCheat').hidden,
+      tools: !document.getElementById('tlViewTools').hidden,
+      searchTop: document.getElementById('cheatSearch').getBoundingClientRect().top,
+      rail: getComputedStyle(document.querySelector('.tl-rail')).display,
+      vh: window.innerHeight,
+    }));
+    assert.equal(cheat.view, true, `${tag}: 치트시트 segment did not switch`);
+    assert.equal(cheat.tools, false, `${tag}: tools view still visible`);
+    assert.equal(cheat.rail, 'none', `${tag}: tool chips still shown in cheat view`);
+    assert.ok(cheat.searchTop < cheat.vh - 40, `${tag}: cheat search below the fold`);
+    await page.fill('#cheatSearch', 'tcpdump');
+    await page.waitForTimeout(150);
+    const filtered = await page.evaluate(() => document.querySelectorAll('.cheat-card:not(.hide)').length);
+    assert.ok(filtered > 0 && filtered < 38, `${tag}: cheat search shows ${filtered}`);
+    await page.click('#resetCheat');
+    await page.click('.tl-seg[data-view="tools"]');
+    await page.waitForTimeout(320);
+  } else {
+    assert.equal(state.tools && state.cheat, true, `${tag}: PC must show tools and cheat sheet`);
+    assert.equal(state.segs, 'none', `${tag}: segments must be hidden on PC`);
+    assert.equal(state.controlsParent, 'tlRailCheat', `${tag}: cheat filter must sit in the left rail`);
+    const geo = await page.evaluate(() => {
+      const rail = document.querySelector('.tl-rail').getBoundingClientRect();
+      const main = document.querySelector('.tl-main').getBoundingClientRect();
+      const input = document.getElementById('encInput').getBoundingClientRect();
+      const out = document.getElementById('encOutput').getBoundingClientRect();
+      return { railRight: rail.right, mainLeft: main.left, inRight: input.right, outLeft: out.left };
+    });
+    assert.ok(geo.railRight <= geo.mainLeft + 1, `${tag}: tool rail is not left of the workspace`);
+    assert.ok(geo.inRight <= geo.outLeft + 1, `${tag}: encoder input/output are not 2 columns`);
+  }
+
+  const enc = await page.evaluate(() => {
+    const input = document.getElementById('encInput');
+    input.value = 'hello';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    return new Promise((resolve) => setTimeout(() => resolve(document.getElementById('encOutput').value), 300));
+  });
+  assert.equal(enc, 'aGVsbG8=', `${tag}: base64 encode failed (${enc})`);
+  await page.evaluate(() => document.querySelector('.tool-tab[data-tool="jwt"]').click());
+  const activePanel = await page.evaluate(() => document.querySelector('.panel.active').id);
+  assert.equal(activePanel, 'panel-jwt', `${tag}: tool tab switch failed`);
+  console.log(`tools interactions ${width}px passed`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -1142,6 +1460,10 @@ async function checkPage(context, base, name, width) {
     if (name === 'ai') await checkAiFilters(page, width, `ai filter ${width}px`);
     if (name === 'study') await checkStudyHub(page, width, `study ${width}px`);
     if (name === 'clue') await checkClueGame(page, base, width);
+    if (name === 'clue') await checkClueLayout(page, width);
+    if (name === 'wargame') await checkWargame(page, width);
+    if (name === 'radar') await checkRadar(page, width);
+    if (name === 'tools') await checkTools(page, width);
     if (name === 'mission') await checkMissionGame(page, width);
     if (name === 'chart') await checkChartGame(page, base, width);
 
@@ -1200,6 +1522,10 @@ async function main() {
           if (name === 'ai') await checkMobileSheet(page, width, `sheet ai ${width}px`);
           if (width === 768 && name === 'ai') await checkSheetFastToggle(page, width, `sheet fast ai ${width}px`);
           if (width === 768 && name === 'cve') await checkCveFilters(page, width, `cve filter ${width}px`);
+          if (width === 768 && name === 'wargame') await checkWargame(page, width);
+          if (width === 768 && name === 'clue') await checkClueLayout(page, width);
+          if (width === 768 && name === 'radar') await checkRadar(page, width);
+          if (width === 768 && name === 'tools') await checkTools(page, width);
         } finally {
           await page.close();
         }

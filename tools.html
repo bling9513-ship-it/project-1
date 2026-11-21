@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-jFm5hdrfxscyGMIhouq3V0TVhgtlx90esah5hi2BxJg=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-ZFg926v9TpTzMJHTygCybwjsuUkduUDdu1ycIr7TTtE=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 보안 실무 유틸 · 치트시트</title>
   <meta name="description" content="Base64·URL·Hex·HTML 인코더, JWT 디코더, SHA-256/384/512 해시, 정규식 테스터, chmod 권한·CIDR 계산기와 실무 모의해킹 명령어 38선. 모든 입력은 브라우저 안에서만 처리됩니다.">
@@ -966,6 +966,186 @@
       .seg button { padding: 5px 9px; font-size: 11px; }
     }
 
+    /* ===== 2차 UI/UX: PC 좌측 도구 레일+치트 필터 ↔ 우 작업 공간·치트시트 · 모바일 세그먼트 ===== */
+    .tl-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .tl-overview-copy { min-width: 0; }
+    .tl-overview .hero-pill { margin-bottom: 10px; }
+    .tl-overview .hero-title { margin-bottom: 6px; }
+    .tl-overview .hero-desc { margin-bottom: 0; }
+    .tl-overview-tags { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; align-items: flex-end; }
+
+    .tl-segments { display: none; }
+
+    .tl-layout {
+      display: grid;
+      grid-template-columns: 252px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .tl-main { min-width: 0; }
+    .tl-view { min-width: 0; }
+
+    .tl-rail {
+      position: sticky;
+      top: 78px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 13px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      max-height: calc(100vh - 98px);
+      overflow-y: auto;
+      min-width: 0;
+    }
+    .tl-rail-head { font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; }
+    .tl-rail .tool-tabs {
+      flex-direction: column;
+      overflow: visible;
+      gap: 3px;
+      margin-bottom: 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .tl-rail .tool-tab {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 9px 10px;
+      font-size: 13px;
+      border-radius: 9px;
+      border-color: transparent;
+      background: transparent;
+    }
+    .tl-rail .tool-tab:hover { background: var(--bg-subtle); }
+    .tl-rail .tool-tab.active {
+      background: var(--accent-subtle);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+    .tl-rail-cheat { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .tl-rail-cheat .controls {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+    .tl-rail-cheat .search-wrap input { font-size: 12px; padding: 8px 10px 8px 30px; }
+    .tl-rail-cheat .search-wrap svg { left: 9px; width: 13px; height: 13px; }
+    .tl-rail-cheat .filter-row { flex-direction: column; align-items: stretch; gap: 6px; margin-top: 8px; }
+    .tl-rail-cheat .filter-label { flex: none; }
+    .tl-rail-cheat .chips { gap: 4px; }
+    .tl-rail-cheat .chip { padding: 4px 8px; font-size: 11px; border-radius: 7px; }
+    .tl-rail-cheat .controls-foot { margin-top: 8px; padding-top: 8px; }
+    .tl-rail-cheat .visible-count { font-size: 11px; }
+    .tl-rail-cheat .btn { font-size: 11px; padding: 5px 9px; }
+    .tl-rail-note { font-size: 10.5px; color: var(--text-muted); line-height: 1.6; padding-top: 8px; border-top: 1px solid var(--border-subtle); }
+
+    .tl-tools-head { margin: 0 0 10px; }
+    .tl-io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+    .tl-io .field + .field { margin-top: 0; }
+    .tl-io textarea { min-height: 168px; }
+    .tl-view[hidden] { display: none !important; }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1320px; }
+    }
+
+    @media (max-width: 1023px) {
+      .tl-overview-copy { display: none; }
+      .tl-overview-tags { display: none; }
+      .tl-overview { margin-bottom: 10px; }
+
+      .tl-segments {
+        position: sticky;
+        top: 54px;
+        z-index: 40;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        margin: 0 -12px 10px;
+        padding: 8px 12px;
+        background: var(--bg-page);
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .tl-seg {
+        min-width: 0;
+        padding: 9px 8px;
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        background: var(--bg-surface);
+        color: var(--text-secondary);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        cursor: pointer;
+        transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
+      }
+      .tl-seg:active { transform: scale(0.98); }
+      .tl-seg.is-active {
+        background: var(--text-primary);
+        border-color: var(--text-primary);
+        color: var(--bg-surface);
+      }
+
+      .tl-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .tl-rail {
+        position: static;
+        max-height: none;
+        overflow: visible;
+        margin-bottom: 10px;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+        background: transparent;
+        gap: 0;
+      }
+      .tl-rail-head, .tl-rail-cheat, .tl-rail-note { display: none; }
+      .tl-rail .tool-tabs {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 6px;
+        padding-bottom: 2px;
+        border-bottom: 0;
+      }
+      .tl-rail .tool-tab {
+        width: auto;
+        flex: 0 0 auto;
+        padding: 7px 12px;
+        font-size: 12px;
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        background: var(--bg-surface);
+        color: var(--text-secondary);
+      }
+      .tl-rail .tool-tab.active {
+        background: var(--text-primary);
+        border-color: var(--text-primary);
+        color: var(--bg-surface);
+      }
+      .tl-layout[data-view="cheat"] .tl-rail { display: none; }
+      .tl-tools-head { display: none; }
+      .tl-io { grid-template-columns: minmax(0, 1fr); }
+      .tl-io .field + .field { margin-top: 14px; }
+      .tl-io textarea { min-height: 104px; }
+      .tl-main .section-head { margin: 4px 0 10px; }
+      .tl-main .section-sub { display: none; }
+      .cheat-card { scroll-margin-top: 120px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tl-seg, .tl-rail .tool-tab { transition: none !important; }
+    }
+
     [hidden] { display: none !important; }
   </style>
   <script>
@@ -1433,29 +1613,27 @@
 
   <main class="container">
 
-    <section class="hero">
-      <span class="hero-pill">SECURITY TOOLKIT</span>
-      <h1 class="hero-title">보안 실무 유틸 · 치트시트</h1>
-      <p class="hero-desc">인코딩·JWT·해시·정규식·권한 계산은 붙여넣는 즉시 브라우저에서 처리하고, 현장에서 쓰는 nmap·점검·curl·tcpdump·openssl·ssh 명령은 복사해서 바로 씁니다. 입력한 토큰과 로그는 서버로 전송되지 않으며 이 탭을 닫으면 사라집니다.</p>
-      <div class="hero-stats">
+    <section class="tl-overview">
+      <div class="tl-overview-copy">
+        <span class="hero-pill">SECURITY TOOLKIT</span>
+        <h1 class="hero-title">보안 실무 유틸 · 치트시트</h1>
+        <p class="hero-desc">인코딩·JWT·해시·정규식·권한 계산은 붙여넣는 즉시 브라우저에서 처리하고, 현장에서 쓰는 nmap·점검·curl·tcpdump·openssl·ssh 명령은 복사해서 바로 씁니다. 입력한 토큰과 로그는 서버로 전송되지 않으며 이 탭을 닫으면 사라집니다.</p>
+      </div>
+      <div class="tl-overview-tags">
         <span class="stat-chip">유틸리티 <strong>5종</strong></span>
         <span class="stat-chip">실무 명령어 <strong>38</strong></span>
         <span class="stat-chip">계산 <strong>100% 로컬</strong></span>
-        <span class="stat-chip">외부 전송 <strong>없음</strong></span>
       </div>
     </section>
 
-    <div class="section-head">
-      <span class="section-icon" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14.7 6.3a4.5 4.5 0 0 0 5.9 5.9l-8.5 8.5a2.1 2.1 0 0 1-3-3l8.5-8.5a4.5 4.5 0 0 0-5.9-5.9l2.9 2.9-2.1 2.1-2.9-2.9a4.5 4.5 0 0 0 5.1 0z"></path>
-        </svg>
-      </span>
-      <div class="section-text">
-        <div class="section-title">인터랙티브 유틸리티</div>
-        <div class="section-sub">입력값은 이 브라우저 안에서만 계산됩니다 · 결과는 원클릭 복사</div>
-      </div>
+    <div class="tl-segments" role="tablist" aria-label="실무 유틸과 치트시트 전환">
+      <button class="tl-seg is-active" type="button" data-view="tools" role="tab" aria-selected="true">실무 유틸</button>
+      <button class="tl-seg" type="button" data-view="cheat" role="tab" aria-selected="false">치트시트</button>
     </div>
+
+    <div class="tl-layout" id="tlLayout" data-view="tools">
+      <aside class="tl-rail" aria-label="도구와 치트시트 필터">
+        <div class="tl-rail-head">도구</div>
 
     <div class="tool-tabs" role="tablist" aria-label="보안 유틸리티 선택">
       <button class="tool-tab active" type="button" data-tool="enc" role="tab" aria-controls="panel-enc">
@@ -1479,6 +1657,22 @@
         권한·CIDR
       </button>
     </div>
+
+        <div class="tl-rail-cheat" id="tlRailCheat">
+          <div class="tl-rail-head">치트시트 필터</div>
+        </div>
+        <p class="tl-rail-note">모든 입력은 이 브라우저 안에서만 처리됩니다.</p>
+      </aside>
+
+      <div class="tl-main">
+        <div class="tl-view" data-view="tools" id="tlViewTools">
+
+        <div class="tl-tools-head">
+          <div class="section-text">
+            <div class="section-title">인터랙티브 유틸리티</div>
+            <div class="section-sub">입력값은 이 브라우저 안에서만 계산됩니다 · 결과는 원클릭 복사</div>
+          </div>
+        </div>
 
     <div class="card">
 
@@ -1506,6 +1700,7 @@
             <button type="button" data-dir="dec">디코딩</button>
           </div>
         </div>
+        <div class="tl-io">
         <div class="field">
           <div class="field-label">
             <span>입력</span>
@@ -1519,6 +1714,7 @@
             <span class="hint">읽기 전용</span>
           </div>
           <textarea id="encOutput" readonly spellcheck="false" placeholder="변환 결과가 여기에 표시됩니다."></textarea>
+        </div>
         </div>
         <div class="btn-row">
           <button class="btn btn-primary" type="button" id="encRun">변환</button>
@@ -1693,6 +1889,10 @@
 
     </div>
 
+        </div>
+
+        <div class="tl-view" data-view="cheat" id="tlViewCheat">
+
     <div class="section-head">
       <span class="section-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
@@ -1703,7 +1903,7 @@
       </div>
     </div>
 
-    <section class="controls" aria-label="치트시트 필터">
+    <section class="controls" aria-label="치트시트 필터" id="cheatControls">
       <div class="search-wrap">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="cheatSearch" placeholder="명령·도구·용도로 검색 (예: suid, kerberoast, tcpdump)" autocomplete="off">
@@ -2180,10 +2380,14 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
 
     <div class="empty-state" id="emptyState">조건에 맞는 명령이 없습니다. 검색어를 줄이거나 필터를 초기화해 보세요.</div>
 
+        </div>
+      </div>
+    </div>
+
     <footer class="footer">
       Infosec Archive · 보안 실무 유틸 · 치트시트<br>
       모든 변환·계산은 브라우저에서만 수행되며 서버로 전송되지 않습니다. 명령은 점검 권한이 있는 대상에만 사용하세요.<br>
-      2026-11-21 12:42 KST 기준
+      2026-11-21 13:03 KST 기준
     </footer>
   </main>
 
@@ -3146,6 +3350,72 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
       if (known.indexOf(h) >= 0 && h !== 'enc') {
         setTimeout(function () { openTool(h, false); }, 0);
       }
+    })();
+
+    // ---- 2차 UI: 모바일 세그먼트(실무 유틸 · 치트시트) · PC는 치트 필터를 레일로 ----
+    (function initToolsLayout() {
+      const layout = document.getElementById('tlLayout');
+      const segs = Array.prototype.slice.call(document.querySelectorAll('.tl-seg'));
+      const views = { tools: document.getElementById('tlViewTools'), cheat: document.getElementById('tlViewCheat') };
+      const railSlot = document.getElementById('tlRailCheat');
+      const controls = document.getElementById('cheatControls');
+      if (!layout || !views.tools || !views.cheat) return;
+
+      function placeControls(wide) {
+        if (!controls || !railSlot) return;
+        if (wide) {
+          if (controls.parentNode !== railSlot) railSlot.appendChild(controls);
+        } else if (controls.parentNode !== views.cheat) {
+          views.cheat.insertBefore(controls, views.cheat.firstChild);
+        }
+      }
+
+      function show(view, focus, scroll) {
+        Object.keys(views).forEach(function (key) {
+          if (views[key]) views[key].hidden = key !== view;
+        });
+        layout.setAttribute('data-view', view);
+        segs.forEach(function (btn) {
+          const on = btn.dataset.view === view;
+          btn.classList.toggle('is-active', on);
+          btn.setAttribute('aria-selected', on ? 'true' : 'false');
+          btn.setAttribute('tabindex', on ? '0' : '-1');
+          if (on && focus) btn.focus();
+        });
+        if (scroll !== false && window.innerWidth <= 1023) {
+          const seg = document.querySelector('.tl-segments');
+          const top = (seg ? seg.getBoundingClientRect().top : 54) + window.scrollY - 58;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+      }
+
+      function apply(initial) {
+        const wide = window.innerWidth >= 1024;
+        placeControls(wide);
+        if (wide) {
+          Object.keys(views).forEach(function (key) {
+            if (views[key]) views[key].hidden = false;
+          });
+          layout.setAttribute('data-view', 'tools');
+          return;
+        }
+        const active = document.querySelector('.tl-seg.is-active');
+        show(active ? active.dataset.view : 'tools', false, !initial);
+      }
+
+      segs.forEach(function (btn) {
+        btn.addEventListener('click', function () { show(btn.dataset.view, true, true); });
+        btn.addEventListener('keydown', function (event) {
+          if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+          event.preventDefault();
+          const idx = segs.indexOf(btn);
+          const next = (idx + (event.key === 'ArrowRight' ? 1 : -1) + segs.length) % segs.length;
+          show(segs[next].dataset.view, true, true);
+        });
+      });
+
+      window.addEventListener('resize', function () { apply(false); });
+      apply(true);
     })();
 
   </script>

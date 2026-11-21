@@ -1486,6 +1486,147 @@ CSS = """
       .samples { gap: 5px; }
       .sample { font-size: 10.6px; padding: 3px 7px; }
     }
+
+    /* ===== 2차 UI/UX: PC 2단(좌 퀴즈·검사기 ↔ 우 수법·대응·기록) · 모바일 세그먼트 ===== */
+    .rd-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .rd-overview-copy { min-width: 0; }
+    .rd-overview .hero-pill { margin-bottom: 10px; }
+    .rd-overview .hero-title { margin-bottom: 6px; }
+    .rd-overview .hero-desc { margin-bottom: 0; }
+    .rd-overview-tags { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; align-items: flex-end; }
+
+    .rd-segments { display: none; }
+
+    .rd-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 344px;
+      gap: 24px;
+      align-items: start;
+    }
+    .rd-main { min-width: 0; }
+    .rd-main .rd-view { min-width: 0; }
+    @media (min-width: 1024px) {
+      .rd-main { display: flex; flex-direction: column; }
+      /* PC: 검사기를 먼저 두어 첫 화면에서 퀴즈·검사기 두 상호작용에 모두 닿게 한다. */
+      .rd-main .rd-view[data-view="scan"] { order: -1; }
+    }
+    .rd-rail { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .rd-rail .summary { margin-bottom: 0; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 15px; }
+    .rd-rail .sum-num strong { font-size: 26px; }
+    .rd-rail .sum-rows { gap: 10px; }
+    .rd-rail .trend-grid { grid-template-columns: minmax(0, 1fr); }
+    .rd-rail .section-head { margin: 4px 0 10px; }
+    .rd-rail .check { margin-bottom: 0; }
+    .rd-main .section-head:first-of-type { margin-top: 0; }
+    .rd-main .scan { margin-bottom: 6px; }
+    .rd-mobile-progress { display: none; }
+    .rd-muted { color: var(--text-muted); }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1320px; }
+    }
+
+    /* 모바일·태블릿: 세그먼트로 화면을 나누고 첫 화면에 퀴즈 선택·검사 버튼이 바로 온다. */
+    @media (max-width: 1023px) {
+      .rd-overview-copy { display: none; }
+      .rd-overview-tags { display: none; }
+      .rd-overview { margin-bottom: 10px; }
+
+      .rd-segments {
+        position: sticky;
+        top: 54px;
+        z-index: 40;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        margin: 0 -12px 12px;
+        padding: 8px 12px;
+        background: var(--bg-page);
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .rd-seg {
+        min-width: 0;
+        padding: 9px 6px;
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        background: var(--bg-surface);
+        color: var(--text-secondary);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
+      }
+      .rd-seg:active { transform: scale(0.98); }
+      .rd-seg.is-active {
+        background: var(--text-primary);
+        border-color: var(--text-primary);
+        color: var(--bg-surface);
+      }
+
+      .rd-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .rd-main { display: block; }
+      .rd-main .rd-view[data-view="scan"] { order: 0; }
+      .rd-view .section-head { margin: 0 0 10px; }
+      .rd-view .section-sub { display: none; }
+      .rd-view[data-view="quiz"] .section-head { display: none; }
+      .rd-view[data-view="scan"] .section-head { margin: 0 0 8px; }
+      .rd-main .controls { padding: 10px 12px; margin-bottom: 12px; }
+      .rd-main .filter-row { gap: 6px; margin-bottom: 0; }
+      .rd-main .filter-label { flex: 0 0 auto; padding-top: 6px; }
+      .rd-main .chips {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+      }
+      .rd-main .chips::-webkit-scrollbar { display: none; }
+      .rd-main .chip { flex-shrink: 0; }
+      .rd-main .controls-foot { margin-top: 8px; padding-top: 8px; }
+      .rd-mobile-progress {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        font-size: 11.5px;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+      .rd-mobile-progress b { color: var(--text-primary); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .rd-main .section-head:first-of-type,
+      .rd-view .section-head:first-of-type { margin-top: 0; }
+      .rd-view[hidden] { display: none !important; }
+      .rd-rail { position: static; }
+      .rd-rail .summary { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .rd-rail .trend-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .qcard { scroll-margin-top: 120px; }
+    }
+
+    @media (max-width: 640px) {
+      .rd-rail .trend-grid { grid-template-columns: minmax(0, 1fr); }
+      .rd-rail .summary { grid-template-columns: minmax(0, 1fr); }
+      .rd-segments { margin-left: -12px; margin-right: -12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rd-seg { transition: none !important; }
+    }
 """
 
 # ---------------------------------------------------------------- HTML
@@ -1590,17 +1731,34 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <main class="container">
 
-    <section class="hero">
-      <span class="hero-pill">PHISHING RADAR</span>
-      <h1 class="hero-title">피싱 · 스미싱 판별 레이더</h1>
-      <p class="hero-desc">문자·업무 메일·메신저·QR로 오는 사칭을 실제 화면 모양 그대로 모았습니다. 정상 안내와 피싱을 구분해 보세요. 판정하면 즉시 채점되고, 의심 포인트 3가지와 도메인·발신자 해설이 붙습니다. 의심스러운 링크는 아래 검사기에 붙여 넣으면 브라우저 안에서만 분석됩니다.</p>
-      <div class="hero-stats">
+    <section class="rd-overview">
+      <div class="rd-overview-copy">
+        <span class="hero-pill">PHISHING RADAR</span>
+        <h1 class="hero-title">피싱 · 스미싱 판별 레이더</h1>
+        <p class="hero-desc">문자·업무 메일·메신저·QR로 오는 사칭을 실제 화면 모양 그대로 모았습니다. 정상 안내와 피싱을 구분해 보세요. 판정하면 즉시 채점되고, 의심 포인트 3가지와 도메인·발신자 해설이 붙습니다. 의심스러운 링크는 아래 검사기에 붙여 넣으면 브라우저 안에서만 분석됩니다.</p>
+      </div>
+      <div class="rd-overview-tags">
         <span class="stat-chip">판별 문항 <strong>__TOTAL__</strong></span>
         <span class="stat-chip">정상 안내 함정 <strong>__NORM__</strong></span>
         <span class="stat-chip">유행 수법 <strong>__TREND__</strong></span>
-        <span class="stat-chip">외부 전송 <strong>없음</strong></span>
       </div>
     </section>
+
+    <div class="rd-segments" role="tablist" aria-label="레이더 화면 전환">
+      <button class="rd-seg is-active" type="button" data-view="quiz" role="tab" aria-selected="true">판별 퀴즈</button>
+      <button class="rd-seg" type="button" data-view="scan" role="tab" aria-selected="false">URL 검사기</button>
+      <button class="rd-seg" type="button" data-view="trends" role="tab" aria-selected="false">유행 수법·대응</button>
+    </div>
+
+    <div class="rd-layout">
+      <div class="rd-main">
+        <div class="rd-view" data-view="quiz" id="rdViewQuiz">
+
+    <div class="rd-mobile-progress">
+      <span>판정 <b id="mAnswered">0</b><span class="rd-muted">/ __TOTAL__</span></span>
+      <span class="rd-muted">·</span>
+      <span>정답률 <b id="mAcc">—</b></span>
+    </div>
 
     <div class="section-head">
       <span class="section-icon" aria-hidden="true">
@@ -1614,22 +1772,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <div class="section-sub">__TOTAL__문항 · 선택 즉시 채점 · 정상 안내 __NORM__문항 포함 · 진행은 이 브라우저에 저장</div>
       </div>
     </div>
-
-    <section class="summary" aria-label="판별 진행 현황">
-      <div class="sum-main">
-        <div class="sum-num"><strong id="solvedNum">0</strong><span>/ __TOTAL__</span></div>
-        <div class="sum-label">판정한 문항</div>
-        <div class="sum-bar"><i id="solvedBar"></i></div>
-      </div>
-      <div class="sum-side">
-        <div class="sum-rows">
-          <span>정답률 <strong id="accNum">—</strong></span>
-          <span>정답 <strong id="okNum">0</strong>문항</span>
-          <span>정상 안내 판별 <strong id="normNum">0</strong> / __NORM__</span>
-        </div>
-        <div class="cat-progress" id="catProgress"></div>
-      </div>
-    </section>
 
     <section class="controls" aria-label="문항 필터">
       <div class="filter-row">
@@ -1649,6 +1791,10 @@ __CARDS__
     </div>
 
     <div class="empty-state" id="emptyState">이 카테고리에 문항이 없습니다. 필터를 전체로 바꿔 보세요.</div>
+
+        </div>
+
+        <div class="rd-view" data-view="scan" id="rdViewScan">
 
     <div class="section-head">
       <span class="section-icon" aria-hidden="true">
@@ -1681,6 +1827,28 @@ __CARDS__
       </div>
       <div class="scan-result" id="scanResult" hidden></div>
       <div class="scan-empty" id="scanEmpty">검사기는 링크 구조(호스트·경로·확장자)와 브랜드 사칭 패턴만 봅니다. 링크를 여는 것이 아니라 문자열을 분석하는 도구이므로, 실제 클릭 전 판단에 쓰세요.</div>
+    </section>
+
+        </div>
+      </div>
+
+      <aside class="rd-rail" aria-label="기록 요약과 대응 자료">
+        <div class="rd-view rd-rail-view" data-view="trends" id="rdViewTrends">
+
+    <section class="summary" aria-label="판별 진행 현황">
+      <div class="sum-main">
+        <div class="sum-num"><strong id="solvedNum">0</strong><span>/ __TOTAL__</span></div>
+        <div class="sum-label">판정한 문항</div>
+        <div class="sum-bar"><i id="solvedBar"></i></div>
+      </div>
+      <div class="sum-side">
+        <div class="sum-rows">
+          <span>정답률 <strong id="accNum">—</strong></span>
+          <span>정답 <strong id="okNum">0</strong>문항</span>
+          <span>정상 안내 판별 <strong id="normNum">0</strong> / __NORM__</span>
+        </div>
+        <div class="cat-progress" id="catProgress"></div>
+      </div>
     </section>
 
     <div class="section-head">
@@ -1723,6 +1891,10 @@ __TRENDS__
 __CHECKLIST__
       </div>
     </section>
+
+        </div>
+      </aside>
+    </div>
 
     <footer class="footer">
       Infosec Archive · 피싱·스미싱 판별 레이더<br>
@@ -1829,9 +2001,14 @@ __CHECKLIST__
 
       document.getElementById('solvedNum').textContent = answered.length;
       document.getElementById('solvedBar').style.width = (QUIZ.length ? (answered.length / QUIZ.length) * 100 : 0) + '%';
-      document.getElementById('accNum').textContent = answered.length ? Math.round((correct.length / answered.length) * 100) + '%' : '—';
+      const accText = answered.length ? Math.round((correct.length / answered.length) * 100) + '%' : '—';
+      document.getElementById('accNum').textContent = accText;
       document.getElementById('okNum').textContent = correct.length;
       document.getElementById('normNum').textContent = normRight;
+      const mAnswered = document.getElementById('mAnswered');
+      if (mAnswered) mAnswered.textContent = answered.length;
+      const mAcc = document.getElementById('mAcc');
+      if (mAcc) mAcc.textContent = accText;
 
       const box = document.getElementById('catProgress');
       const rows = CATS.map(function (c) {
@@ -1972,7 +2149,59 @@ __CHECKLIST__
     buildChips();
     applyFilters();
 
-    // ---- 체크리스트 ----
+    // ---- 모바일 세그먼트(판별 퀴즈 · URL 검사기 · 유행 수법·대응) ----
+    (function initRadarSegments() {
+      const segs = Array.prototype.slice.call(document.querySelectorAll('.rd-seg'));
+      const views = {
+        quiz: document.getElementById('rdViewQuiz'),
+        scan: document.getElementById('rdViewScan'),
+        trends: document.getElementById('rdViewTrends')
+      };
+      if (!segs.length) return;
+
+      function show(name, focus, scroll) {
+        Object.keys(views).forEach(function (key) {
+          if (views[key]) views[key].hidden = key !== name;
+        });
+        segs.forEach(function (btn) {
+          const on = btn.dataset.view === name;
+          btn.classList.toggle('is-active', on);
+          btn.setAttribute('aria-selected', on ? 'true' : 'false');
+          btn.setAttribute('tabindex', on ? '0' : '-1');
+          if (on && focus) btn.focus();
+        });
+        if (scroll !== false && window.innerWidth <= 1023) {
+          const seg = document.querySelector('.rd-segments');
+          const top = (seg ? seg.getBoundingClientRect().top : 54) + window.scrollY - 58;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+      }
+
+      segs.forEach(function (btn) {
+        btn.addEventListener('click', function () { show(btn.dataset.view, true); });
+        btn.addEventListener('keydown', function (event) {
+          if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+          event.preventDefault();
+          const idx = segs.indexOf(btn);
+          const next = (idx + (event.key === 'ArrowRight' ? 1 : -1) + segs.length) % segs.length;
+          show(segs[next].dataset.view, true);
+        });
+      });
+
+      // 데스크톱에서는 세 뷰가 모두 보이므로 숨김 상태를 되돌린다.
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 1023) {
+          Object.keys(views).forEach(function (key) {
+            if (views[key]) views[key].hidden = false;
+          });
+        } else {
+          const active = document.querySelector('.rd-seg.is-active');
+          show(active ? active.dataset.view : 'quiz', false, false);
+        }
+      });
+
+      if (window.innerWidth <= 1023) show('quiz', false, false);
+    })();
     const checkList = document.getElementById('checkList');
     const checkBoxes = Array.prototype.slice.call(checkList.querySelectorAll('input[type="checkbox"]'));
 
