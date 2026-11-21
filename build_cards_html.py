@@ -27,16 +27,33 @@ CHECKED_ON = "2026-11-22"
 EPOCH = date(1970, 1, 1)
 
 
-def _source(org, topic):
-    return {"org": org, "topic": topic, "checked": CHECKED_ON}
+def _source(org, topic, url):
+    return {"org": org, "topic": topic, "checked": CHECKED_ON, "url": url}
 
 
 KDCA = "질병관리청 국가건강정보포털"
 ASAN = "서울아산병원 건강이야기"
 OPHTH = "대한안과학회"
+AAO = "미국안과학회(AAO)"
+NCMH = "국립정신건강센터"
 PIPC = "개인정보보호위원회"
 KMCC = "방송미디어통신위원회"
 GOOGLE = "Google 계정 고객센터"
+
+# 카드별 원문 주소. 모두 실제로 열리는 페이지이며, 카드 문구의 근거 문장이 그 안에 있다.
+KDCA_URL = ("https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/"
+            "gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=")
+URL_SLEEP = "https://www.mentalhealth.go.kr/portal/disease/diseaseDetail.do?dissId=32"
+URL_20_20_20 = "https://www.aao.org/eye-health/tips-prevention/what-is-eye-strain"
+URL_DRY_EYE_FAQ = "https://www.ophthalmology.org/content/reference/faq_list.html"
+URL_DRY_EYE_ASAN = "https://www.amc.seoul.kr/asan/healthtv/video/videoDetail.do?videoId=334"
+URL_FORWARD_HEAD = KDCA_URL + "5972"
+URL_DEHYDRATION = KDCA_URL + "6551"
+URL_COLD_WAVE = KDCA_URL + "2048"
+URL_APP_PERMISSION = ("https://www.kmcc.go.kr/user.do?boardId=1099&boardSeq=44582&cp=1&dc=&mode=view"
+                      "&page=A02030700")
+URL_PUBLIC_WIFI = "https://m.blog.naver.com/pipcpr/223924781140"
+URL_BACKUP_CODES = "https://support.google.com/accounts/answer/1187538?hl=ko"
 
 
 def card(cid, headline, summary, action, art, source=None):
@@ -61,15 +78,15 @@ THEMES = {
                 card("cond-sleep-1", "잠은 같은 시간에 시작",
                      "성인은 하루 7~8시간이 기준이에요. 주말에도 기상 시간을 크게 흔들지 않으면 리듬이 덜 깨집니다.",
                      "오늘 잠들 시간을 정해 알람 맞추기", "sleep-bed",
-                     _source(KDCA, "수면과 수면장애")),
+                     _source(NCMH, "수면과 수면장애", URL_SLEEP)),
                 card("cond-sleep-2", "아침 햇빛 5분",
                      "일어난 뒤 창가에서 빛을 쬐면 몸의 시계가 낮을 알아차려요. 밤잠이 조금 더 규칙적으로 옵니다.",
                      "커튼 열고 창가에 5분 서 있기", "sleep-sun",
-                     _source(KDCA, "수면과 수면장애")),
+                     _source(NCMH, "수면과 수면장애", URL_SLEEP)),
                 card("cond-sleep-3", "오후 커피는 한 잔 미루기",
                      "카페인은 몸에 오래 남아 잠드는 시간을 밀어내요. 늦은 오후 한 잔을 물이나 보리차로 바꿔 보세요.",
                      "오늘 오후 커피 한 잔을 물로 바꾸기", "sleep-cup",
-                     _source(KDCA, "수면과 수면장애")),
+                     _source(NCMH, "수면과 수면장애", URL_SLEEP)),
             ],
         },
         {
@@ -77,17 +94,17 @@ THEMES = {
             "title": "20-20-20 눈 휴식",
             "cards": [
                 card("cond-eyes-1", "20분 보면 20초 쉬기",
-                     "화면을 20분 보면 20초 동안 6m 밖을 바라봐요. 눈의 조절근이 풀리고 깜빡임이 돌아옵니다.",
+                     "화면을 20분 보면 6m 밖을 20초 동안 바라봐요. 눈의 조절근이 풀리고 깜빡임이 돌아옵니다.",
                      "지금 창밖 먼 곳을 20초 보기", "eyes-2020",
-                     _source(KDCA, "굴절이상(근시·원시·난시)")),
+                     _source(AAO, "디지털 눈 피로와 20-20-20 규칙", URL_20_20_20)),
                 card("cond-eyes-2", "1시간에 5~10분은 자리 비우기",
                      "컴퓨터 작업은 1시간에 5~10분 쉬는 편이 좋아요. 화면을 끄고 일어나면 눈과 목이 같이 쉽니다.",
                      "다음 정각에 일어나 5분 걷기", "eyes-break",
-                     _source(OPHTH, "건성안 자주 묻는 질문")),
+                     _source(OPHTH, "건성안 자주 묻는 질문", URL_DRY_EYE_FAQ)),
                 card("cond-eyes-3", "눈 깜빡임 한 번 더",
                      "화면에 집중하면 깜빡임이 절반 이하로 줄어요. 의식적으로 한 번 더 깜빡이면 건조함이 덜해집니다.",
                      "지금부터 천천히 10번 깜빡이기", "eyes-blink",
-                     _source(ASAN, "안구건조증")),
+                     _source(ASAN, "안구건조증", URL_DRY_EYE_ASAN)),
             ],
         },
         {
@@ -97,15 +114,15 @@ THEMES = {
                 card("cond-neck-1", "화면을 눈높이로",
                      "고개를 15도만 숙여도 목에 걸리는 무게가 12kg으로 늘어요. 모니터와 폰을 눈높이까지 올려 보세요.",
                      "모니터를 받침으로 5cm 올리기", "neck-height",
-                     _source(KDCA, "일자목(거북목)증후군")),
+                     _source(KDCA, "일자목(거북목)증후군", URL_FORWARD_HEAD)),
                 card("cond-neck-2", "30~40분마다 목 돌리기",
                      "같은 자세로 오래 있으면 목 뒤 근육이 굳어요. 30~40분마다 천천히 10회 돌려 주세요.",
                      "지금 목을 좌우로 10회 돌리기", "neck-turn",
-                     _source(KDCA, "일자목(거북목)증후군")),
+                     _source(KDCA, "일자목(거북목)증후군", URL_FORWARD_HEAD)),
                 card("cond-neck-3", "턱 당기기 20초",
                      "턱을 살짝 당겨 20~30초 유지하면 목 앞쪽 속근육이 깨어나요. 어깨 힘은 빼고 해요.",
                      "턱 당기기 20초를 세 번", "neck-chin",
-                     _source(KDCA, "일자목(거북목)증후군")),
+                     _source(KDCA, "일자목(거북목)증후군", URL_FORWARD_HEAD)),
             ],
         },
         {
@@ -113,17 +130,17 @@ THEMES = {
             "title": "겨울 수분·습도",
             "cards": [
                 card("cond-winter-1", "물은 나눠서 한 잔씩",
-                     "건강한 성인은 하루 1.5~2L면 충분해요. 한 시간에 한 잔씩 나눠 마시면 놓치지 않습니다.",
+                     "필요한 물의 양은 활동량·환경·건강 상태에 따라 달라져요. 건강한 성인은 하루 1.5~2L를 한 시간에 한 잔씩 나눠 마시면 놓치지 않습니다.",
                      "책상에 물컵 두고 지금 한 모금", "winter-water",
-                     _source(KDCA, "탈수")),
+                     _source(KDCA, "탈수", URL_DEHYDRATION)),
                 card("cond-winter-2", "실내 습도 40~50%",
                      "난방을 켜면 실내가 금세 건조해져요. 습도 40~50%를 지키면 코와 목 점막이 덜 마릅니다.",
                      "가습기나 젖은 수건으로 습도 맞추기", "winter-humid",
-                     _source(KDCA, "겨울철 한파대비 건강수칙")),
+                     _source(KDCA, "겨울철 한파대비 건강수칙", URL_COLD_WAVE)),
                 card("cond-winter-3", "하루 세 번, 10분 환기",
-                     "2~3시간 간격으로 창문을 열어 10~30분 환기해요. 맞바람이 나게 두 창을 함께 열면 좋아요.",
+                     "2~3시간 간격으로 하루 세 번, 10~30분 창문을 열어 환기해요. 맞바람이 나게 두 창을 함께 열면 좋아요.",
                      "오늘 세 번, 창문 열어 두기", "winter-air",
-                     _source(KDCA, "겨울철 한파대비 건강수칙")),
+                     _source(KDCA, "겨울철 한파대비 건강수칙", URL_COLD_WAVE)),
             ],
         },
     ],
@@ -135,15 +152,15 @@ THEMES = {
                 card("dig-perm-1", "위치는 쓸 때만",
                      "날씨나 지도가 아니면 늘 켜 둘 이유가 없어요. 앱별로 사용 중에만으로 바꾸면 동선이 덜 남습니다.",
                      "위치 권한이 항상인 앱 하나 바꾸기", "perm-location",
-                     _source(PIPC, "스마트폰 앱 접근권한 안내")),
+                     _source(KMCC, "스마트폰 앱 접근권한 개인정보보호 안내서", URL_APP_PERMISSION)),
                 card("dig-perm-2", "사진은 고른 것만",
                      "사진첩 전체를 넘겨줄 필요는 없어요. 선택한 사진만 허용으로 바꾸면 필요한 것만 보입니다.",
                      "사진 권한이 모든 사진인 앱 점검", "perm-photo",
-                     _source(KMCC, "스마트폰 앱 접근권한 개인정보보호 안내서")),
+                     _source(KMCC, "스마트폰 앱 접근권한 개인정보보호 안내서", URL_APP_PERMISSION)),
                 card("dig-perm-3", "마이크·카메라는 필요할 때만",
                      "권한이 켜져 있으면 앱이 뒤에서도 접근할 수 있어요. 안 쓰는 앱은 꺼 두면 마음이 놓입니다.",
                      "제어 센터에서 마이크·카메라 표시 확인", "perm-mic",
-                     _source(KMCC, "스마트폰 앱 접근권한 개인정보보호 안내서")),
+                     _source(KMCC, "스마트폰 앱 접근권한 개인정보보호 안내서", URL_APP_PERMISSION)),
             ],
         },
         {
@@ -168,15 +185,15 @@ THEMES = {
                 card("dig-wifi-1", "자동 연결은 꺼 두기",
                      "이름이 같은 가짜 와이파이에 저절로 붙을 수 있어요. 자동 연결을 끄면 내가 고른 곳에만 붙습니다.",
                      "와이파이 설정에서 자동 연결 끄기", "wifi-auto",
-                     _source(PIPC, "공용 와이파이, 얼마나 위험할까?")),
-                card("dig-wifi-2", "주소창 자물쇠 확인",
-                     "https 주소는 오가는 내용이 암호화돼요. 자물쇠가 없으면 로그인과 결제는 피하세요.",
-                     "지금 열린 탭 주소창 자물쇠 확인", "wifi-lock",
-                     _source(PIPC, "공용 와이파이, 얼마나 위험할까?")),
+                     _source(PIPC, "공용 와이파이, 얼마나 위험할까?", URL_PUBLIC_WIFI)),
+                card("dig-wifi-2", "연결 경고와 주소 확인",
+                     "브라우저가 '안전하지 않음'으로 표시하면 그 화면에서 로그인·결제는 피하세요. 접속한 사이트 주소가 맞는지도 함께 보세요.",
+                     "지금 열린 탭의 주소 확인", "wifi-warn",
+                     _source(PIPC, "공용 와이파이, 얼마나 위험할까?", URL_PUBLIC_WIFI)),
                 card("dig-wifi-3", "결제는 통신사 망으로",
                      "카페 와이파이로 결제하면 중간에서 보일 수 있어요. 금융 작업만큼은 LTE나 5G로 바꿔 주세요.",
                      "결제 전 와이파이 잠시 끄기", "wifi-pay",
-                     _source(PIPC, "공용 와이파이, 얼마나 위험할까?")),
+                     _source(PIPC, "공용 와이파이, 얼마나 위험할까?", URL_PUBLIC_WIFI)),
             ],
         },
         {
@@ -186,15 +203,15 @@ THEMES = {
                 card("dig-backup-1", "백업 코드 10개 받아 두기",
                      "휴대폰을 잃어버려도 백업 코드가 있으면 로그인할 수 있어요. 구글은 10개짜리 세트를 발급합니다.",
                      "계정 보안 설정에서 백업 코드 받기", "backup-code",
-                     _source(GOOGLE, "백업 코드로 로그인하기")),
+                     _source(GOOGLE, "백업 코드로 로그인하기", URL_BACKUP_CODES)),
                 card("dig-backup-2", "종이에 인쇄해 따로 보관",
                      "코드는 비밀번호처럼 다뤄요. 화면 캡처나 메모 앱보다 인쇄해 서류와 함께 두는 편이 안전합니다.",
                      "백업 코드를 인쇄해 서랍에 넣기", "backup-print",
-                     _source(GOOGLE, "백업 코드로 로그인하기")),
+                     _source(GOOGLE, "백업 코드로 로그인하기", URL_BACKUP_CODES)),
                 card("dig-backup-3", "한 코드는 한 번만",
                      "한 번 쓴 코드는 바로 꺼져요. 다 썼다면 새 세트를 만들면 이전 코드는 자동으로 무효가 됩니다.",
                      "남은 코드 수 확인하고 새로 발급", "backup-once",
-                     _source(GOOGLE, "백업 코드로 로그인하기")),
+                     _source(GOOGLE, "백업 코드로 로그인하기", URL_BACKUP_CODES)),
             ],
         },
     ],
@@ -349,10 +366,10 @@ ART = {
         + '<circle cx="118" cy="88" r="10" fill="var(--art-blue)"/>'
         + '<circle cx="70" cy="116" r="10" fill="none" stroke="var(--art-blue)" stroke-width="2.5"/>'
         + '<circle cx="94" cy="116" r="10" fill="var(--art-blue)"/>'
-        + _t(248, 76, "1.5~2L", 16, "var(--art-ink)", "700")
-        + _t(248, 96, "하루", 11)
+        + _t(248, 76, "한 잔씩", 16, "var(--art-ink)", "700")
+        + _t(248, 96, "한 시간마다", 11)
         + '<path d="M228 108h40" stroke="var(--art-line)" stroke-width="2" stroke-dasharray="4 4"/>'
-        + _t(248, 126, "한 잔씩", 11)
+        + _t(248, 126, "필요한 만큼", 11)
     ),
     "winter-humid": _svg(
         '<circle cx="112" cy="82" r="46" fill="var(--art-paper)" stroke="var(--art-line)" stroke-width="3"/>'
@@ -459,17 +476,23 @@ ART = {
         + _t(112, 140, "자동 연결 끄기", 11)
         + _t(230, 122, "내가 고른 곳에만", 9, "var(--art-coral)")
     ),
-    "wifi-lock": _svg(
-        '<path d="M42 58h96" stroke="var(--art-line)" stroke-width="2.5" stroke-dasharray="5 4"/>'
-        + '<rect x="138" y="42" width="46" height="32" rx="8" fill="var(--art-blue)"/>'
-        + '<path d="M148 42v-8a13 13 0 0 1 26 0v8" fill="none" stroke="var(--art-ink)" stroke-width="3.5"/>'
-        + '<circle cx="161" cy="56" r="4.5" fill="var(--art-paper)"/>'
-        + '<path d="M42 58v-14M42 58v14M42 44l10 10M42 72l10-10" stroke="var(--art-line)" stroke-width="2" stroke-linecap="round"/>'
-        + '<rect x="52" y="90" width="90" height="34" rx="8" fill="var(--art-paper)" stroke="var(--art-line)" stroke-width="2"/>'
-        + '<path d="M60 100h60M60 110h40" stroke="var(--art-mist)" stroke-width="3" stroke-linecap="round"/>'
-        + '<path d="M196 52l26 12v22c0 18-26 28-26 28s-26-10-26-28V64z" fill="var(--art-paper)" stroke="var(--art-blue)" stroke-width="2.5"/>'
-        + '<path d="M184 88l9 9 17-18" fill="none" stroke="var(--art-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'
-        + _t(160, 150, "https · VPN", 11)
+    "wifi-warn": _svg(
+        '<rect x="24" y="26" width="272" height="34" rx="17" fill="var(--art-paper)" stroke="var(--art-line)" stroke-width="2"/>'
+        + '<path d="M44 38l9 15H35z" fill="var(--art-coral)"/>'
+        + '<path d="M44 43v5" stroke="var(--art-paper)" stroke-width="2" stroke-linecap="round"/>'
+        + '<circle cx="44" cy="51" r="1.2" fill="var(--art-paper)"/>'
+        + '<text x="62" y="49" font-size="10" font-weight="600" fill="var(--art-ink)">shop.example.com</text>'
+        + '<rect x="196" y="35" width="88" height="16" rx="8" fill="var(--art-coral)"/>'
+        + '<text x="240" y="46.5" font-size="8.5" font-weight="700" fill="var(--art-paper)" text-anchor="middle">안전하지 않음</text>'
+        + '<rect x="30" y="84" width="118" height="30" rx="8" fill="var(--art-paper)" stroke="var(--art-blue)" stroke-width="2"/>'
+        + '<text x="89" y="103" font-size="9" font-weight="700" fill="var(--art-ink)" text-anchor="middle">bank.example.com</text>'
+        + '<rect x="172" y="84" width="118" height="30" rx="8" fill="var(--art-paper)" stroke="var(--art-coral)" stroke-width="2"/>'
+        + '<text x="231" y="103" font-size="9" font-weight="700" fill="var(--art-coral)" text-anchor="middle">bank-example.com</text>'
+        + '<path d="M152 99h14" stroke="var(--art-muted)" stroke-width="2" stroke-dasharray="4 3"/>'
+        + _t(89, 128, "원래 주소", 9)
+        + _t(231, 128, "비슷한 다른 주소", 9, "var(--art-coral)")
+        + '<path d="M96 134h128" stroke="var(--art-line)" stroke-width="2" stroke-dasharray="5 4"/>'
+        + _t(160, 152, "경고가 뜨면 로그인·결제 멈추기", 10, "var(--art-ink)", "600")
     ),
     "wifi-pay": _svg(
         '<rect x="38" y="26" width="72" height="116" rx="12" fill="var(--art-paper)" stroke="var(--art-ink)" stroke-width="2.5"/>'
@@ -640,11 +663,11 @@ CSS = """
     .cd-meta strong { font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
     .cd-meta .cd-dot-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); }
 
-    .cd-decks { display: grid; grid-template-columns: 1fr 1fr 1.05fr; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 12px; margin-bottom: 12px; }
+    .cd-decks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 12px; margin-bottom: 12px; }
     .cd-deck {
-      border: 0; background: transparent; border-radius: 9px; padding: 9px 4px;
+      border: 0; background: transparent; border-radius: 9px; padding: 9px 3px; min-width: 0;
       font-family: inherit; font-size: 12px; font-weight: 600; letter-spacing: -0.02em;
-      color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+      color: var(--text-secondary); cursor: pointer; white-space: nowrap; overflow: hidden;
       display: inline-flex; align-items: center; justify-content: center; gap: 5px;
       transition: background-color 160ms ease, color 160ms ease;
     }
@@ -697,7 +720,9 @@ CSS = """
     .cd-check.is-done { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
 
     .cd-foot { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-top: 10px; }
-    .cd-source { flex: 1; min-width: 0; font-size: 9.5px; line-height: 1.5; color: var(--text-muted); }
+    .cd-source { flex: 1; min-width: 0; font-size: 9.5px; line-height: 1.6; color: var(--text-muted); }
+    .cd-source a.cd-source-link { color: var(--accent-primary); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+    .cd-source a.cd-source-link:hover { color: var(--accent-hover); }
     .cd-save {
       flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
       border: 1px solid var(--border-default); background: var(--bg-surface);
@@ -729,6 +754,32 @@ CSS = """
     .cd-hint kbd { font-family: inherit; font-weight: 600; color: var(--text-secondary); }
 
     .cd-savedlist { display: flex; flex-direction: column; gap: 9px; }
+    .cd-alllist { display: flex; flex-direction: column; gap: 16px; }
+    .cd-allgroup { display: flex; flex-direction: column; gap: 7px; }
+    .cd-allgroup-head { display: flex; align-items: baseline; gap: 7px; padding: 0 2px; }
+    .cd-allgroup-deck { font-size: 12px; font-weight: 800; letter-spacing: -0.03em; }
+    .cd-allgroup-theme { font-size: 10.5px; font-weight: 700; color: var(--accent-primary); }
+    .cd-allgroup-count { margin-left: auto; font-size: 9.5px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .cd-allrow {
+      display: flex; flex-direction: column;
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 150ms ease, background-color 150ms ease;
+    }
+    .cd-allrow:hover { border-color: var(--border-strong); }
+    .cd-allrow-open {
+      display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left;
+      background: transparent; border: 0; padding: 9px 10px 0; cursor: pointer;
+      font-family: inherit; color: inherit;
+    }
+    .cd-allrow-open:hover .cd-allrow-title { color: var(--accent-primary); }
+    .cd-allrow-art { display: block; flex: 0 0 56px; height: 42px; border-radius: 8px; overflow: hidden; background: var(--art-plate); }
+    .cd-allrow-art svg { display: block; width: 100%; height: 100%; }
+    .cd-allrow-body { display: block; flex: 1; min-width: 0; }
+    .cd-allrow-title { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: -0.03em; }
+    .cd-allrow-summary { display: block; margin-top: 2px; font-size: 10.5px; line-height: 1.45; color: var(--text-secondary); }
+    .cd-allrow-src { display: block; margin: 4px 0 0; padding: 0 10px 9px; font-size: 9px; line-height: 1.55; color: var(--text-muted); }
+    .cd-allrow-src a.cd-source-link { color: var(--accent-primary); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
     .cd-savedrow {
       display: flex; gap: 10px; align-items: flex-start;
       background: var(--bg-surface); border: 1px solid var(--border-default);
@@ -766,6 +817,10 @@ CSS = """
       .cd-art { height: 168px; }
     }
 
+    @media (max-width: 560px) {
+      .cd-decks { grid-template-columns: 1fr 1fr; }
+    }
+
     @media (max-width: 420px) {
       .cd-wrap { padding: 12px 12px 84px; }
       .cd-hero { margin-bottom: 10px; }
@@ -774,7 +829,7 @@ CSS = """
       .cd-hero p { margin-top: 4px; font-size: 11.5px; line-height: 1.45; }
       .cd-meta { margin-top: 6px; font-size: 10.5px; }
       .cd-decks { margin-bottom: 10px; }
-      .cd-deck { font-size: 11.5px; padding: 8px 3px; }
+      .cd-deck { font-size: 11.5px; padding: 8px 2px; }
       .cd-card { padding: 11px; border-radius: 16px; }
       .cd-art { height: 150px; margin-top: 8px; }
       .cd-headline { margin-top: 10px; font-size: 18px; }
@@ -870,7 +925,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <section class="cd-hero">
       <span class="cd-pill">오늘의 카드 · 데일리</span>
       <h1>하루 3장, 한 가지만 해보세요</h1>
-      <p>넘겨 보며 읽고, 마음에 드는 장은 저장해 두세요. 내일은 새 테마가 열립니다.</p>
+      <p>넘겨 보며 읽고, 마음에 드는 장은 저장해 두세요. '전체 카드'에서 24장을 테마별로 모두 볼 수 있습니다.</p>
       <div class="cd-meta">
         <span id="cdDate">오늘</span>
         <span class="cd-dot-sep"></span>
@@ -881,6 +936,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <div class="cd-decks" role="tablist" aria-label="카드 묶음">
       <button type="button" class="cd-deck is-active" id="cdDeckCondition" role="tab" aria-selected="true" data-deck="condition">컨디션 키워드</button>
       <button type="button" class="cd-deck" id="cdDeckDigital" role="tab" aria-selected="false" data-deck="digital">1분 디지털 생활</button>
+      <button type="button" class="cd-deck" id="cdDeckAll" role="tab" aria-selected="false" data-deck="all">전체 카드</button>
       <button type="button" class="cd-deck" id="cdDeckSaved" role="tab" aria-selected="false" data-deck="saved">저장한 카드 <span class="cd-count" id="cdSavedCount">0</span></button>
     </div>
 
@@ -912,6 +968,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         </div>
       </article>
       <div class="cd-savedlist" id="cdSavedList" hidden></div>
+      <div class="cd-alllist" id="cdAllList" hidden></div>
     </section>
 
     <div class="cd-controls" id="cdControls">
@@ -987,6 +1044,7 @@ JS = r"""
     doneBtn: document.getElementById('cdDoneBtn'),
     doneLabel: document.getElementById('cdDoneLabel'),
     savedList: document.getElementById('cdSavedList'),
+    allList: document.getElementById('cdAllList'),
     controls: document.getElementById('cdControls'),
     dots: document.getElementById('cdDots')
   };
@@ -1016,7 +1074,7 @@ JS = r"""
     applyTheme(dark, false);
   })();
 
-  const state = { deck: CD_DATA.decks[0].id, index: 0, drag: null, dayKey: '' };
+  const state = { deck: CD_DATA.decks[0].id, index: 0, themeId: null, drag: null, dayKey: '' };
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function kstNow() { return new Date(Date.now() + 9 * 3600 * 1000); }
@@ -1036,7 +1094,19 @@ JS = r"""
     return deck.themes[i];
   }
   function currentDeck() { return deckById(state.deck); }
+  function currentChosenDeck() { return deckById(state.deck) || CD_DATA.decks[0]; }
   function isSavedView() { return state.deck === 'saved'; }
+  function isAllView() { return state.deck === 'all'; }
+  function isListView() { return isSavedView() || isAllView(); }
+  function themeById(deck, id) {
+    return deck.themes.filter(function (t) { return t.id === id; })[0] || null;
+  }
+  function shownTheme(deck) {
+    return (state.themeId && themeById(deck, state.themeId)) || todayTheme(deck);
+  }
+  function themeCards(theme) {
+    return theme.cards.map(function (c) { return BY_ID[c.id]; });
+  }
 
   function readSaved() {
     let raw;
@@ -1066,8 +1136,8 @@ JS = r"""
   state.done = readDone();
 
   function visibleItems() {
-    if (isSavedView()) return readSaved().map(function (id) { return BY_ID[id]; });
-    return todayTheme(currentDeck()).cards.map(function (c) { return BY_ID[c.id]; });
+    if (isListView()) return [];
+    return themeCards(shownTheme(currentDeck()));
   }
 
   function updateCount() {
@@ -1080,7 +1150,11 @@ JS = r"""
     const d = kstNow();
     const label = (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 (' + WEEK[d.getUTCDay()] + ')';
     el.date.textContent = label;
-    const items = isSavedView() ? [] : todayTheme(currentDeck()).cards;
+    if (isAllView()) {
+      el.doneMeter.innerHTML = '카드 <strong>' + ITEMS.length + '장</strong>';
+      return;
+    }
+    const items = isSavedView() ? [] : themeCards(shownTheme(currentDeck()));
     const done = items.filter(function (c) { return state.done.ids.indexOf(c.id) >= 0; }).length;
     el.doneMeter.innerHTML = '오늘 실천 <strong>' + done + '/' + items.length + '</strong>';
   }
@@ -1099,6 +1173,37 @@ JS = r"""
     }
   }
 
+  function safeSourceUrl(url) {
+    return (typeof url === 'string' && url.indexOf('https://') === 0 && url.indexOf(' ') < 0) ? url : '';
+  }
+
+  function sourceLine(item, compact) {
+    const box = document.createElement('span');
+    if (item.source) {
+      const org = item.source.org || '';
+      const topic = item.source.topic || '';
+      const checked = item.source.checked || CD_DATA.checkedOn;
+      box.appendChild(document.createTextNode(
+        (compact ? org : '출처 ' + org) + ' · ' + topic + ' · ' + checked + ' 확인'
+      ));
+      const href = safeSourceUrl(item.source.url);
+      if (href) {
+        const link = document.createElement('a');
+        link.className = 'cd-source-link';
+        link.setAttribute('href', href);
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+        link.setAttribute('aria-label', org + ' ' + topic + ' 원문 열기(새 창)');
+        link.textContent = '원문 보기';
+        box.appendChild(document.createTextNode(' · '));
+        box.appendChild(link);
+      }
+    } else {
+      box.appendChild(document.createTextNode('생활 팁 · ' + CD_DATA.checkedOn + ' 정리'));
+    }
+    return box;
+  }
+
   function renderCard(animate) {
     const items = visibleItems();
     if (!items.length) return;
@@ -1106,20 +1211,18 @@ JS = r"""
     if (state.index < 0) state.index = items.length - 1;
     const item = items[state.index];
 
-    el.theme.textContent = (isSavedView() ? item.deckTitle + ' · ' : '오늘의 테마 · ') + item.themeTitle;
+    const deck = currentChosenDeck();
+    const isToday = shownTheme(deck).id === todayTheme(deck).id;
+    el.theme.textContent = (isToday ? '오늘의 테마 · ' : '테마 · ') + item.themeTitle;
     el.index.textContent = (state.index + 1) + ' / ' + items.length;
     el.art.innerHTML = CD_ART[item.art] || '';
     el.headline.textContent = item.headline;
     el.summary.textContent = item.summary;
     el.action.textContent = item.action;
 
-    if (item.source) {
-      el.source.hidden = false;
-      el.source.textContent = '출처 ' + item.source.org + ' · ' + item.source.topic + ' · ' + item.source.checked + ' 확인';
-    } else {
-      el.source.hidden = true;
-      el.source.textContent = '생활 팁 · ' + CD_DATA.checkedOn + ' 정리';
-    }
+    el.source.hidden = false;
+    el.source.textContent = '';
+    el.source.appendChild(sourceLine(item, false));
 
     const saved = readSaved().indexOf(item.id) >= 0;
     el.saveBtn.classList.toggle('is-saved', saved);
@@ -1164,10 +1267,14 @@ JS = r"""
     const action = document.createElement('p');
     action.className = 'cd-savedrow-action';
     action.textContent = '오늘 해볼 한 가지 · ' + item.action;
+    const src = document.createElement('p');
+    src.className = 'cd-allrow-src';
+    src.appendChild(sourceLine(item, true));
     body.appendChild(meta);
     body.appendChild(title);
     body.appendChild(summary);
     body.appendChild(action);
+    body.appendChild(src);
 
     const remove = document.createElement('button');
     remove.type = 'button';
@@ -1210,11 +1317,17 @@ JS = r"""
       btn.setAttribute('aria-selected', active ? 'true' : 'false');
     });
     const saved = isSavedView();
-    el.card.hidden = saved;
-    el.controls.hidden = saved;
+    const all = isAllView();
+    el.card.hidden = saved || all;
+    el.controls.hidden = saved || all;
     el.savedList.hidden = !saved;
+    el.allList.hidden = !all;
     if (saved) {
       renderSavedList();
+      updateCount();
+      updateMeta();
+    } else if (all) {
+      renderAllList();
       updateCount();
       updateMeta();
     } else {
@@ -1222,15 +1335,98 @@ JS = r"""
     }
   }
 
+  // ---- 전체 카드: 덱 → 테마 → 카드 24장 목록. 날짜와 상관없이 언제나 모두 열린다.
+  function allRow(item) {
+    const row = document.createElement('div');
+    row.className = 'cd-allrow';
+    row.setAttribute('data-card', item.id);
+    row.setAttribute('data-deck', item.deckId);
+    row.setAttribute('data-theme', item.themeId);
+    row.setAttribute('data-headline', item.headline);
+
+    const open = document.createElement('button');
+    open.type = 'button';
+    open.className = 'cd-allrow-open';
+    open.setAttribute('aria-label', item.deckTitle + ' ' + item.themeTitle + ' ' + item.headline + ' 열기');
+
+    const thumb = document.createElement('span');
+    thumb.className = 'cd-allrow-art';
+    thumb.setAttribute('aria-hidden', 'true');
+    thumb.innerHTML = CD_ART[item.art] || '';
+
+    const body = document.createElement('span');
+    body.className = 'cd-allrow-body';
+    const title = document.createElement('span');
+    title.className = 'cd-allrow-title';
+    title.textContent = item.headline;
+    const summary = document.createElement('span');
+    summary.className = 'cd-allrow-summary';
+    summary.textContent = item.summary;
+    body.appendChild(title);
+    body.appendChild(summary);
+    open.appendChild(thumb);
+    open.appendChild(body);
+    open.addEventListener('click', function () { openCard(item.id); });
+
+    const src = document.createElement('p');
+    src.className = 'cd-allrow-src';
+    src.appendChild(sourceLine(item, true));
+
+    row.appendChild(open);
+    row.appendChild(src);
+    return row;
+  }
+
+  function renderAllList() {
+    el.allList.textContent = '';
+    CD_DATA.decks.forEach(function (deck) {
+      deck.themes.forEach(function (theme) {
+        const group = document.createElement('section');
+        group.className = 'cd-allgroup';
+        group.setAttribute('data-theme', theme.id);
+        const head = document.createElement('div');
+        head.className = 'cd-allgroup-head';
+        const deckName = document.createElement('span');
+        deckName.className = 'cd-allgroup-deck';
+        deckName.textContent = deck.title;
+        const themeName = document.createElement('span');
+        themeName.className = 'cd-allgroup-theme';
+        themeName.textContent = theme.title;
+        const count = document.createElement('span');
+        count.className = 'cd-allgroup-count';
+        count.textContent = theme.cards.length + '장';
+        head.appendChild(deckName);
+        head.appendChild(themeName);
+        head.appendChild(count);
+        group.appendChild(head);
+        theme.cards.forEach(function (c) { group.appendChild(allRow(BY_ID[c.id])); });
+        el.allList.appendChild(group);
+      });
+    });
+  }
+
+  function openCard(id) {
+    const item = BY_ID[id];
+    if (!item) return;
+    const deck = deckById(item.deckId);
+    const theme = deck ? themeById(deck, item.themeId) : null;
+    if (!deck || !theme) return;
+    const at = theme.cards.map(function (c) { return c.id; }).indexOf(id);
+    state.deck = deck.id;
+    state.themeId = theme.id;
+    state.index = at < 0 ? 0 : at;
+    render();
+  }
+
   function go(step) {
-    if (isSavedView()) return;
+    if (isListView()) return;
     const items = visibleItems();
     if (!items.length) return;
     state.index = ((state.index + step) % items.length + items.length) % items.length;
     renderCard(true);
   }
   function goTo(index) {
-    if (isSavedView()) return;
+    if (isListView()) return;
     const items = visibleItems();
     if (index < 0 || index >= items.length) return;
     state.index = index;
@@ -1240,9 +1436,18 @@ JS = r"""
   el.decks.forEach(function (btn) {
     btn.addEventListener('click', function () {
       const next = btn.getAttribute('data-deck');
-      if (next === state.deck) return;
+      if (next === state.deck) {
+        // 같은 칩을 다시 누르면 오늘 테마로 돌아온다(전체 카드에서 연 다른 테마를 넣어 둔 경우).
+        if (!isListView() && state.themeId) {
+          state.themeId = null;
+          state.index = 0;
+          render();
+        }
+        return;
+      }
       state.deck = next;
       state.index = 0;
+      state.themeId = null;
       render();
     });
   });
@@ -1277,14 +1482,14 @@ JS = r"""
     if (event.altKey || event.ctrlKey || event.metaKey) return;
     const tag = (event.target && event.target.tagName) ? event.target.tagName.toLowerCase() : '';
     if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-    if (isSavedView()) return;
+    if (isListView()) return;
     if (event.key === 'ArrowLeft') { event.preventDefault(); go(-1); }
     if (event.key === 'ArrowRight') { event.preventDefault(); go(1); }
   });
 
   el.card.addEventListener('pointerdown', function (event) {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
-    if (event.target.closest && event.target.closest('button')) return;
+    if (event.target.closest && event.target.closest('button, a')) return;
     state.drag = { x: event.clientX, y: event.clientY, dx: 0, id: event.pointerId, active: false };
   });
   el.card.addEventListener('pointermove', function (event) {
@@ -1322,7 +1527,7 @@ JS = r"""
     if (key === state.dayKey) return;
     state.dayKey = key;
     state.done = readDone();
-    if (!isSavedView()) state.index = 0;
+    if (!state.themeId) state.index = 0;
     render();
   }
   window.setInterval(checkDay, 60000);
