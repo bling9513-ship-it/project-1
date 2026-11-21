@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-ui2RpXiYPzIzf+99AJ0VIfCphSWdvT6cNh50xgxxTm4=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 재질 표시·분리배출</title>
+  <meta name="description" content="포장재에 인쇄된 분리배출 표시(마크)를 눌러 재질과 배출 원칙, 헷갈리는 점을 바로 보고 실제 생활 품목 7종으로 풀어 보는 한 장 생활 도식. 기후에너지환경부 「분리배출 표시에 관한 지침」(제2026-189호) · 「재활용가능자원의 분리수거 등에 관한 지침」(제18호) 기준, 2026-11-22 확인.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
+      --warn-bg: #fffbeb; --warn-text: #b45309; --warn-border: #fde68a;
+      --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+
+      --mk-yellow: #b8860b;
+      --mk-blue: #2563eb;
+      --mk-purple: #7c3aed;
+      --mk-black: #0f172a;
+      --mk-green: #15803d;
+      --mk-teal: #0f766e;
+      --mk-gray: #64748b;
+      --mk-orange: #c2410c;
+      --mk-red: #dc2626;
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
+      --warn-bg: rgba(245, 158, 11, 0.12); --warn-text: #fcd34d; --warn-border: rgba(245, 158, 11, 0.32);
+      --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+
+      --mk-yellow: #eab308;
+      --mk-blue: #60a5fa;
+      --mk-purple: #a78bfa;
+      --mk-black: #e4e4e7;
+      --mk-green: #4ade80;
+      --mk-teal: #2dd4bf;
+      --mk-gray: #94a3b8;
+      --mk-orange: #fb923c;
+      --mk-red: #f87171;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    .navbar { position: sticky; top: 0; z-index: 50; background: var(--bg-surface); border-bottom: 1px solid var(--border-default); }
+    .nav-container { max-width: 1360px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo-img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; display: block; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); flex-shrink: 0; }
+    .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; }
+    .update-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; flex-shrink: 0; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+    .icon-btn:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .rc-wrap { max-width: 900px; margin: 0 auto; padding: 16px 16px 88px; }
+
+    .rc-hero h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.045em; margin-top: 6px; }
+    .rc-hero p { margin-top: 3px; font-size: 12px; color: var(--text-secondary); }
+    .rc-pill {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 6px; padding: 3px 8px;
+    }
+    .rc-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 7px; margin-top: 5px; font-size: 10.5px; color: var(--text-muted); }
+    .rc-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); }
+
+    .rc-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 12px; margin: 10px 0; }
+    .rc-tab {
+      border: 0; background: transparent; border-radius: 9px; padding: 7px 4px;
+      font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);
+      cursor: pointer; transition: background-color 160ms ease, color 160ms ease;
+    }
+    .rc-tab:hover { color: var(--text-primary); }
+    .rc-tab.is-active { background: var(--bg-surface); color: var(--text-primary); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); }
+    .rc-tab:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    .rc-chips { display: flex; gap: 6px; overflow-x: auto; padding: 1px 0 6px; scrollbar-width: none; }
+    .rc-chips::-webkit-scrollbar { display: none; }
+    .rc-chip {
+      flex: 0 0 auto; border: 1px solid var(--border-default); background: var(--bg-surface);
+      color: var(--text-secondary); border-radius: 999px; padding: 4px 10px;
+      font-family: inherit; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+    }
+    .rc-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .rc-chip.is-active { background: var(--text-primary); border-color: var(--text-primary); color: var(--bg-surface); }
+    .rc-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    .rc-guide-grid { display: grid; gap: 9px; align-items: start; }
+    .rc-side { display: grid; gap: 9px; align-content: start; min-width: 0; }
+
+    .rc-board {
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 14px; padding: 8px 10px 6px; box-shadow: var(--card-shadow);
+    }
+    .rc-board-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-subtle); }
+    .rc-board-title { font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; color: var(--text-secondary); }
+    .rc-board-note { font-size: 9.5px; color: var(--text-muted); white-space: nowrap; }
+    .rc-row { display: flex; align-items: center; gap: 4px; padding: 3px 0; border-bottom: 1px dashed var(--border-default); }
+    .rc-row:last-child { border-bottom: 0; }
+    .rc-row-name { flex: 0 0 42px; font-size: 10px; font-weight: 600; line-height: 1.25; color: var(--text-muted); word-break: keep-all; }
+    .rc-row-marks { flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; min-width: 0; }
+    .rc-mark {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 4px 2px 3px; border: 1px solid transparent; border-radius: 10px;
+      background: transparent; font-family: inherit; cursor: pointer;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+    .rc-mark:hover { background: var(--bg-subtle); }
+    .rc-mark:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+    .rc-mark.is-active { background: var(--accent-subtle); border-color: var(--accent-primary); }
+    .rc-mark-art { display: block; width: 34px; height: 34px; }
+    .rc-svg { width: 100%; height: 100%; display: block; }
+    .rc-mark-name { font-size: 9.5px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+    .rc-mark.is-active .rc-mark-name { color: var(--accent-primary); }
+    .rc-mark-art[data-color="yellow"] { color: var(--mk-yellow); }
+    .rc-mark-art[data-color="blue"] { color: var(--mk-blue); }
+    .rc-mark-art[data-color="purple"] { color: var(--mk-purple); }
+    .rc-mark-art[data-color="black"] { color: var(--mk-black); }
+    .rc-mark-art[data-color="green"] { color: var(--mk-green); }
+    .rc-mark-art[data-color="teal"] { color: var(--mk-teal); }
+    .rc-mark-art[data-color="gray"] { color: var(--mk-gray); }
+    .rc-mark-art[data-color="orange"] { color: var(--mk-orange); }
+    .rc-mark-art[data-color="red"] { color: var(--mk-red); }
+
+    .rc-desc {
+      display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 9px;
+      padding: 10px; background: var(--bg-surface);
+      border: 1px solid var(--border-default); border-radius: 14px; box-shadow: var(--card-shadow);
+    }
+    .rc-desc-art { width: 48px; height: 48px; padding: 5px; border-radius: 11px; background: var(--bg-subtle); }
+    .rc-desc-art[data-color="yellow"] { color: var(--mk-yellow); }
+    .rc-desc-art[data-color="blue"] { color: var(--mk-blue); }
+    .rc-desc-art[data-color="purple"] { color: var(--mk-purple); }
+    .rc-desc-art[data-color="black"] { color: var(--mk-black); }
+    .rc-desc-art[data-color="green"] { color: var(--mk-green); }
+    .rc-desc-art[data-color="teal"] { color: var(--mk-teal); }
+    .rc-desc-art[data-color="gray"] { color: var(--mk-gray); }
+    .rc-desc-art[data-color="orange"] { color: var(--mk-orange); }
+    .rc-desc-art[data-color="red"] { color: var(--mk-red); }
+    .rc-desc-group { font-size: 9.5px; font-weight: 700; color: var(--accent-primary); }
+    .rc-desc-name { font-size: 14.5px; font-weight: 800; letter-spacing: -0.035em; margin-top: 1px; }
+    .rc-desc-material { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-top: 1px; }
+    .rc-desc-meaning { font-size: 11.5px; color: var(--text-secondary); margin-top: 2px; }
+    .rc-desc-rule { display: flex; align-items: flex-start; gap: 4px; margin-top: 4px; font-size: 10.5px; line-height: 1.45; color: var(--text-secondary); }
+    .rc-tag { flex: 0 0 auto; font-size: 9px; font-weight: 700; border-radius: 4px; padding: 0 4px; }
+    .rc-tag-rule { color: var(--accent-primary); background: var(--accent-subtle); border: 1px solid var(--border-default); }
+    .rc-desc-caution { display: flex; align-items: flex-start; gap: 4px; margin-top: 4px; font-size: 10.5px; line-height: 1.45; color: var(--text-secondary); }
+    .rc-tag-warn { color: var(--warn-text); background: var(--warn-bg); border: 1px solid var(--warn-border); }
+
+    .rc-split { display: grid; gap: 8px; margin-top: 10px; }
+    .rc-split-card { padding: 10px 11px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-surface); }
+    .rc-split-tag { font-size: 9.5px; font-weight: 700; color: var(--text-muted); }
+    .rc-split-card h3 { font-size: 12.5px; font-weight: 800; letter-spacing: -0.03em; margin-top: 1px; }
+    .rc-split-card p { font-size: 10.5px; line-height: 1.5; color: var(--text-secondary); margin-top: 3px; }
+    .rc-split-src { display: block; margin-top: 4px; font-size: 9.5px; color: var(--text-muted); }
+    .rc-note { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: var(--bg-subtle); font-size: 10.5px; line-height: 1.5; color: var(--text-secondary); }
+
+    .rc-resin { padding: 9px 11px 10px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-surface); }
+    .rc-resin-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .rc-resin-head h3 { font-size: 12px; font-weight: 800; letter-spacing: -0.03em; }
+    .rc-resin-head span { font-size: 9.5px; color: var(--text-muted); }
+    .rc-resin-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+    .rc-resin-chip {
+      border: 1px solid var(--border-default); background: var(--bg-page); color: var(--text-secondary);
+      border-radius: 7px; padding: 3px 8px; font-family: inherit; font-size: 10.5px; font-weight: 700;
+      letter-spacing: 0.01em; cursor: pointer;
+    }
+    .rc-resin-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .rc-resin-chip.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    .rc-resin-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+    .rc-resin-note { margin-top: 6px; font-size: 10px; line-height: 1.5; color: var(--text-muted); }
+
+    .rc-foot { margin-top: 10px; font-size: 10px; line-height: 1.6; color: var(--text-muted); }
+    .rc-foot a { color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; }
+
+    .rc-quiz-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 2px 7px; font-size: 11px; color: var(--text-muted); }
+    .rc-quiz-head strong { color: var(--text-secondary); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .rc-item { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 14px; padding: 11px; box-shadow: var(--card-shadow); }
+    .rc-item-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .rc-item-head h2 { font-size: 15px; font-weight: 800; letter-spacing: -0.04em; }
+    .rc-item-head span { font-size: 9.5px; color: var(--text-muted); text-align: right; max-width: 52%; }
+    .rc-ghint { margin-top: 6px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
+    .rc-qlabel { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 7px; padding: 7px 6px; background: var(--bg-subtle); border-radius: 11px; min-height: 62px; }
+    .rc-qsym { display: inline-flex; flex-direction: column; align-items: center; gap: 0; width: 58px; padding: 4px 2px 3px; border: 1px solid transparent; border-radius: 9px; }
+    .rc-qsym-art { width: 34px; height: 34px; color: var(--text-primary); }
+    .rc-qsym-mark { font-size: 9px; font-weight: 700; color: var(--text-primary); white-space: nowrap; line-height: 1.35; }
+    .rc-qsym-cap { font-size: 8.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap; line-height: 1.35; }
+    .rc-qsym.is-evidence { background: var(--accent-subtle); border-color: var(--accent-primary); }
+    .rc-qsym.is-evidence .rc-qsym-art { color: var(--accent-primary); }
+    .rc-qsym.is-evidence .rc-qsym-mark { color: var(--accent-primary); }
+    .rc-qsym.is-evidence .rc-qsym-cap { color: var(--accent-primary); }
+    .rc-question { margin: 10px 2px 7px; font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+    .rc-quiz-grid { display: grid; gap: 9px; align-items: start; }
+    .rc-quiz-main { min-width: 0; }
+    .rc-options { display: grid; gap: 5px; }
+    .rc-opt {
+      display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+      padding: 9px 10px; border: 1px solid var(--border-default); border-radius: 11px;
+      background: var(--bg-surface); color: var(--text-primary); font-family: inherit;
+      font-size: 12px; line-height: 1.4; letter-spacing: -0.02em; cursor: pointer;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+    .rc-opt:hover:not(:disabled) { background: var(--bg-subtle); }
+    .rc-opt:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+    .rc-opt-num { flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; background: var(--bg-subtle); color: var(--text-secondary); font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+    .rc-opt.is-correct { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
+    .rc-opt.is-correct .rc-opt-num { background: var(--ok-border); color: var(--ok-bg); }
+    .rc-opt.is-wrong { background: var(--no-bg); border-color: var(--no-border); color: var(--no-text); }
+    .rc-opt.is-wrong .rc-opt-num { background: var(--no-border); color: var(--no-bg); }
+    .rc-opt.is-muted { opacity: 0.5; }
+    .rc-opt:disabled { cursor: default; }
+
+    .rc-result { margin-top: 8px; padding: 10px 11px; border-radius: 11px; border: 1px solid var(--ok-border); background: var(--ok-bg); }
+    .rc-result.is-no { border-color: var(--no-border); background: var(--no-bg); }
+    .rc-result h3 { font-size: 12.5px; font-weight: 800; color: var(--ok-text); }
+    .rc-result.is-no h3 { color: var(--no-text); }
+    .rc-result p { margin-top: 3px; font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
+    .rc-result b { color: var(--text-primary); font-weight: 700; }
+    .rc-evidence { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px; }
+    .rc-evidence-tag { font-size: 9px; font-weight: 700; color: var(--text-muted); }
+    .rc-evidence-item { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--accent-primary); color: var(--accent-primary); }
+
+    .rc-actions { display: flex; gap: 7px; margin-top: 9px; }
+    .rc-primary { flex: 1; min-height: 42px; border: 0; border-radius: 11px; background: var(--accent-primary); color: #ffffff; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background-color 140ms ease; }
+    .rc-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .rc-primary:disabled { background: var(--bg-muted); color: var(--text-muted); cursor: default; }
+    .rc-primary:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 2px; }
+    .rc-ghost { min-height: 42px; padding: 0 14px; border-radius: 11px; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary); font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .rc-ghost:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+    .rc-summary { margin-top: 9px; padding: 15px 13px; border: 1px solid var(--border-default); border-radius: 13px; background: var(--bg-surface); text-align: center; box-shadow: var(--card-shadow); }
+    .rc-summary h2 { font-size: 15px; font-weight: 800; letter-spacing: -0.035em; }
+    .rc-summary p { margin-top: 4px; font-size: 11.5px; color: var(--text-secondary); }
+    .rc-summary-score { font-size: 26px; font-weight: 800; letter-spacing: -0.04em; margin-top: 7px; font-variant-numeric: tabular-nums; }
+    .rc-summary-score span { font-size: 12.5px; color: var(--text-muted); font-weight: 700; margin-left: 3px; }
+
+    @media (min-width: 900px) {
+      .rc-wrap { padding: 22px 22px 96px; }
+      .rc-hero h1 { font-size: 24px; }
+      .rc-hero p { font-size: 13px; }
+      .rc-meta { font-size: 11.5px; }
+      .rc-tabs { max-width: 380px; }
+      .rc-guide-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+      .rc-board { padding: 11px 13px 8px; }
+      .rc-row { padding: 5px 0; }
+      .rc-row-name { flex-basis: 50px; font-size: 10.5px; }
+      .rc-mark { padding: 6px 3px 4px; }
+      .rc-mark-art { width: 42px; height: 42px; }
+      .rc-mark-name { font-size: 10px; }
+      .rc-desc { grid-template-columns: 60px minmax(0, 1fr); padding: 13px; gap: 12px; }
+      .rc-desc-art { width: 60px; height: 60px; padding: 6px; }
+      .rc-desc-name { font-size: 16px; }
+      .rc-desc-meaning { font-size: 12px; }
+      .rc-desc-rule { font-size: 11px; }
+      .rc-desc-caution { font-size: 11px; }
+      .rc-split { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+      .rc-quiz-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr); gap: 13px; }
+      .rc-question { margin-top: 0; }
+      .rc-qlabel { padding: 10px 8px; }
+      .rc-qsym { width: 60px; }
+      .rc-qsym-art { width: 40px; height: 40px; }
+      .rc-item-head h2 { font-size: 16px; }
+    }
+
+    @media (max-width: 430px) {
+      .rc-wrap { padding: 12px 12px 84px; }
+      .rc-hero h1 { font-size: 18.5px; }
+      .rc-hero p { font-size: 11.5px; }
+      .rc-meta { font-size: 10px; }
+      .rc-row-name { flex: 0 0 40px; font-size: 9.5px; }
+      .rc-mark-art { width: 36px; height: 36px; }
+      .rc-mark-name { font-size: 9px; }
+      .rc-desc { grid-template-columns: 44px minmax(0, 1fr); gap: 8px; padding: 9px; }
+      .rc-desc-art { width: 44px; height: 44px; padding: 4px; }
+      .rc-desc-name { font-size: 13.5px; }
+      .rc-item-head h2 { font-size: 14.5px; }
+      .rc-opt { font-size: 11.5px; padding: 8px 9px; }
+    }
+
+    @media (max-width: 340px) {
+      .rc-row-name { flex: 0 0 36px; font-size: 9px; }
+      .rc-mark-art { width: 29px; height: 29px; }
+      .rc-mark-name { font-size: 8.5px; }
+      .rc-desc { grid-template-columns: 38px minmax(0, 1fr); }
+      .rc-desc-art { width: 38px; height: 38px; padding: 3px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="recycle">
+
+  <!-- Global Nav -->
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">분리배출</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link is-current" role="menuitem" href="recycle.html" aria-current="page">분리배출 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">분리배출 표시 지침 확인 2026-11-22</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="rc-wrap">
+    <section class="rc-hero">
+      <span class="rc-pill">생활 도식 · 분리배출</span>
+      <h1>재질 표시, 한 장으로 읽기</h1>
+      <p>포장재의 마크를 누르면 배출 원칙과 헷갈리는 점이 열립니다. 마지막엔 실제 생활 품목으로 풀어 보세요.</p>
+      <div class="rc-meta">
+        <span>기후에너지환경부 표시·분리수거 지침</span>
+        <span class="rc-sep"></span>
+        <span>확인 2026-11-22</span>
+      </div>
+    </section>
+
+    <div class="rc-tabs" role="tablist" aria-label="보기 전환">
+      <button type="button" class="rc-tab is-active" id="rcTabGuide" role="tab" aria-selected="true" aria-controls="rcPanelGuide" data-tab="guide">재질 도감</button>
+      <button type="button" class="rc-tab" id="rcTabQuiz" role="tab" aria-selected="false" aria-controls="rcPanelQuiz" data-tab="quiz" tabindex="-1">분리배출 퀴즈</button>
+    </div>
+
+    <section id="rcPanelGuide" role="tabpanel" aria-labelledby="rcTabGuide">
+      <div class="rc-chips" role="group" aria-label="마크 계열">
+        <button type="button" class="rc-chip is-active" data-group="전체" aria-pressed="true">전체</button>
+        <button type="button" class="rc-chip" data-group="플라스틱·비닐" aria-pressed="false">플라스틱·비닐</button>
+        <button type="button" class="rc-chip" data-group="종이·종이팩" aria-pressed="false">종이·종이팩</button>
+        <button type="button" class="rc-chip" data-group="금속·유리" aria-pressed="false">금속·유리</button>
+        <button type="button" class="rc-chip" data-group="복합" aria-pressed="false">복합</button>
+      </div>
+
+      <div class="rc-guide-grid">
+        <div class="rc-board" id="rcBoard" aria-label="재질 표시 마크 도감">
+          <div class="rc-board-head">
+            <span class="rc-board-title">RECYCLING MARK · 분리배출 표시</span>
+            <span class="rc-board-note">마크는 재질 · 수거함은 지자체</span>
+          </div>
+          <div class="rc-row" data-group="플라스틱·비닐"><span class="rc-row-name">플라스틱·비닐</span><div class="rc-row-marks"><button type="button" class="rc-mark" data-mark="pet-clear" aria-pressed="false" aria-label="무색페트 (무색 PET병)"><span class="rc-mark-art" data-color="yellow"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="6.2" font-weight="700" fill="currentColor" stroke="none">무색페트</text></svg></span><span class="rc-mark-name">무색페트</span></button><button type="button" class="rc-mark" data-mark="plastic" aria-pressed="false" aria-label="플라스틱 용기·트레이"><span class="rc-mark-art" data-color="blue"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="6.2" font-weight="700" fill="currentColor" stroke="none">플라스틱</text></svg></span><span class="rc-mark-name">플라스틱</span></button><button type="button" class="rc-mark" data-mark="vinyl" aria-pressed="false" aria-label="비닐류 (필름·시트)"><span class="rc-mark-art" data-color="purple"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="7.8" font-weight="700" fill="currentColor" stroke="none">비닐류</text></svg></span><span class="rc-mark-name">비닐류</span></button></div></div><div class="rc-row" data-group="종이·종이팩"><span class="rc-row-name">종이·종이팩</span><div class="rc-row-marks"><button type="button" class="rc-mark" data-mark="paper" aria-pressed="false" aria-label="종이 (고지류)"><span class="rc-mark-art" data-color="black"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="10.0" font-weight="700" fill="currentColor" stroke="none">종이</text></svg></span><span class="rc-mark-name">종이</span></button><button type="button" class="rc-mark" data-mark="soft-pack" aria-pressed="false" aria-label="일반팩 (살균팩)"><span class="rc-mark-art" data-color="green"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="7.8" font-weight="700" fill="currentColor" stroke="none">일반팩</text></svg></span><span class="rc-mark-name">일반팩</span></button><button type="button" class="rc-mark" data-mark="sterile-pack" aria-pressed="false" aria-label="멸균팩"><span class="rc-mark-art" data-color="teal"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="7.8" font-weight="700" fill="currentColor" stroke="none">멸균팩</text></svg></span><span class="rc-mark-name">멸균팩</span></button></div></div><div class="rc-row" data-group="금속·유리"><span class="rc-row-name">금속·유리</span><div class="rc-row-marks"><button type="button" class="rc-mark" data-mark="can" aria-pressed="false" aria-label="캔류 (금속캔)"><span class="rc-mark-art" data-color="gray"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="10.0" font-weight="700" fill="currentColor" stroke="none">캔류</text></svg></span><span class="rc-mark-name">캔류</span></button><button type="button" class="rc-mark" data-mark="glass" aria-pressed="false" aria-label="유리병"><span class="rc-mark-art" data-color="orange"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="10.0" font-weight="700" fill="currentColor" stroke="none">유리</text></svg></span><span class="rc-mark-name">유리병</span></button></div></div><div class="rc-row" data-group="복합"><span class="rc-row-name">복합</span><div class="rc-row-marks"><button type="button" class="rc-mark" data-mark="composite" aria-pressed="false" aria-label="도포·첩합 등"><span class="rc-mark-art" data-color="red"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><path d="M7 5.6L41 42.4" stroke-width="3"/></svg></span><span class="rc-mark-name">도포·첩합</span></button></div></div>
+        </div>
+
+        <div class="rc-side">
+          <div class="rc-desc" id="rcDesc" aria-live="polite">
+            <div class="rc-desc-art" id="rcDescArt" data-color="yellow" aria-hidden="true"><svg class="rc-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.4 36.6L37.6 36.6"/><path d="M40.0 36.6L36.2 40.9L36.2 32.3Z" fill="currentColor" stroke="none"/><path d="M39.3 33.7L25.7 10.5"/><path d="M24.5 8.5L30.1 9.6L22.7 13.9Z" fill="currentColor" stroke="none"/><path d="M22.3 10.5L8.7 33.7"/><path d="M7.5 35.7L5.7 30.3L13.1 34.6Z" fill="currentColor" stroke="none"/><text x="24" y="30.6" text-anchor="middle" font-size="6.2" font-weight="700" fill="currentColor" stroke="none">무색페트</text></svg></div>
+            <div class="rc-desc-body">
+              <span class="rc-desc-group" id="rcDescGroup">플라스틱·비닐</span>
+              <h2 class="rc-desc-name" id="rcDescName">무색페트 (무색 PET병)</h2>
+              <p class="rc-desc-material" id="rcDescMaterial">표시재질 –</p>
+              <p class="rc-desc-meaning" id="rcDescMeaning">무색 투명한 먹는샘물·음료 페트병</p>
+              <p class="rc-desc-rule"><span class="rc-tag rc-tag-rule">배출</span><span id="rcDescRule">라벨을 떼고 내용물을 비운 뒤 압착해 뚜껑을 닫아, 무색페트로 따로 모아요.</span></p>
+              <p class="rc-desc-caution"><span class="rc-tag rc-tag-warn">주의</span><span id="rcDescCaution">유색 페트병과 화장품·세제 병은 여기로 오지 않아요. 식용이 아닌 화학제품 병은 무색 투명 PET라도 '플라스틱·PET'으로 표시돼요.</span></p>
+            </div>
+          </div>
+
+          <section class="rc-resin" aria-label="플라스틱 재질 문자">
+            <div class="rc-resin-head">
+              <h3>플라스틱 재질 문자</h3>
+              <span>라벨에 이 글자가 있으면 눌러 보세요</span>
+            </div>
+            <div class="rc-resin-chips" role="group" aria-label="플라스틱 재질 문자">
+              <button type="button" class="rc-resin-chip" data-resin="PET" aria-pressed="false">PET</button><button type="button" class="rc-resin-chip" data-resin="HDPE" aria-pressed="false">HDPE</button><button type="button" class="rc-resin-chip" data-resin="LDPE" aria-pressed="false">LDPE</button><button type="button" class="rc-resin-chip" data-resin="PP" aria-pressed="false">PP</button><button type="button" class="rc-resin-chip" data-resin="PS" aria-pressed="false">PS</button><button type="button" class="rc-resin-chip" data-resin="OTHER" aria-pressed="false">OTHER</button>
+            </div>
+            <p class="rc-resin-note">표시 재질 목록에는 PVC가 없지만, 배출 지침의 용기 재질 목록에는 PVC·PSP가 남아 있어요. 같은 플라스틱이라도 표시와 배출 안내가 조금 다를 수 있어요.</p>
+          </section>
+        </div>
+      </div>
+
+      <section class="rc-split" aria-label="마크와 배출 방법의 차이">
+        <article class="rc-split-card"><span class="rc-split-tag">① 재질 표시</span><h3>무엇으로 만들었나</h3><p>포장재에 인쇄된 삼각 화살표예요. 안쪽 글자(종이·캔류·플라스틱)와 아래 재질 문자(철·PET)가 재질을 알려 줘요. 「분리배출 표시에 관한 지침」으로 전국이 같은 기준을 써요.</p><span class="rc-split-src">전국 공통 · 제조사가 표시</span></article><article class="rc-split-card"><span class="rc-split-tag">② 배출 방법</span><h3>어디에 내놓나</h3><p>수거함인지 종량제 봉투인지, 언제 내놓는지는 지자체 조례가 정해요. 같은 마크라도 동네마다 수거함과 요일이 다를 수 있어요.</p><span class="rc-split-src">지자체별 · 조례가 다름</span></article>
+      </section>
+      <p class="rc-note">그래서 이 페이지는 마크를 읽는 법(전국 공통)과 지침 기준 배출 원칙까지 알려 주고, 마지막 확인은 우리 동네 기준으로 하도록 안내해요.</p>
+
+      <p class="rc-foot">
+        출처: <a href="https://www.law.go.kr/admRulLsInfoP.do?admRulId=25829" target="_blank" rel="noopener noreferrer">기후에너지환경부 「재활용가능자원의 분리수거 등에 관한 지침」</a> (기후에너지환경부훈령 제18호 · 2026-01-01 시행 · 별표 1 품목별 배출요령) · <a href="https://www.law.go.kr/LSW/admRulInfoR.do?admRulSeq=2100000283152&chrClsCd=010201" target="_blank" rel="noopener noreferrer">기후에너지환경부 「분리배출 표시에 관한 지침」</a> (기후에너지환경부고시 제2026-189호 · 2026-07-23 시행 · 별표 표시 도안) · <a href="https://www.wasteguide.or.kr" target="_blank" rel="noopener noreferrer">생활폐기물 분리배출 누리집</a> (기후에너지환경부 운영 · 품목 730종 우리 동네 배출 방법) · <a href="https://portal.budamgum.or.kr/cmb/portal/epr/system/eprSstmGdce.do?tp=02" target="_blank" rel="noopener noreferrer">한국환경공단 분리배출표시 도안</a> (재질별 표시 도안 원본 내려받기) · 확인일 2026-11-22.
+        <br>지자체별 수거 기준이 다를 수 있어요. 수거함 위치·배출 요일·종량제 여부는 우리 동네 조례와 안내를 확인하세요.
+        <br>마크 그림은 법정 도안을 그대로 옮기지 않고 뜻을 살려 단순하게 다시 그린 것이에요. 색은 권장 색이라 실제 인쇄는 흑백일 수 있고, 표시가 없는 포장재가 '아무거나 괜찮다'는 뜻은 아니에요.
+        <br>분리수거 지침은 2026-11-17 일부개정(제63호)되어 2027-01-01 시행을 앞두고 있어요. 이 도식은 2026-11-22 현재 시행 중인 제18호를 따랐어요.
+      </p>
+    </section>
+
+    <section id="rcPanelQuiz" role="tabpanel" aria-labelledby="rcTabQuiz" hidden>
+      <div class="rc-quiz-head">
+        <span id="rcQuizProgress">1 / 7</span>
+        <span>정답 <strong id="rcQuizScore">0</strong></span>
+      </div>
+      <div id="rcQuizBody">
+        <div class="rc-quiz-grid">
+          <article class="rc-item">
+            <div class="rc-item-head">
+              <h2 id="rcItemName"></h2>
+              <span id="rcItemMeta"></span>
+            </div>
+            <div class="rc-qlabel" id="rcQuizLabel" aria-label="이 품목의 재질 표시"></div>
+            <p class="rc-ghint">표시를 읽고 답을 골라 보세요. 답을 고르면 근거가 된 마크가 파랗게 표시됩니다.</p>
+          </article>
+          <div class="rc-quiz-main">
+            <p class="rc-question" id="rcQuestion"></p>
+            <div class="rc-options" id="rcOptions" role="group" aria-label="보기"></div>
+            <div class="rc-result" id="rcResult" hidden></div>
+            <div class="rc-actions">
+              <button type="button" class="rc-primary" id="rcNext" disabled>다음 품목</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rc-summary" id="rcSummary" hidden>
+        <h2>일곱 가지를 모두 봤어요</h2>
+        <p>고른 답의 근거가 된 마크는 라벨에서 파랗게 표시됐어요. 재질 도감에서 다시 확인해 보세요.</p>
+        <div class="rc-summary-score"><b id="rcSummaryNum">0</b><span id="rcSummaryTotal">/ 7</span></div>
+        <div class="rc-actions">
+          <button type="button" class="rc-primary" id="rcRestart">다시 풀기</button>
+          <button type="button" class="rc-ghost" id="rcBackGuide">재질 도감으로</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/json" id="recycleData">{"generated":"2026-11-22 05:27 KST","checkedOn":"2026-11-22","sources":[{"label":"기후에너지환경부 「재활용가능자원의 분리수거 등에 관한 지침」","detail":"기후에너지환경부훈령 제18호 · 2026-01-01 시행 · 별표 1 품목별 배출요령","url":"https://www.law.go.kr/admRulLsInfoP.do?admRulId=25829"},{"label":"기후에너지환경부 「분리배출 표시에 관한 지침」","detail":"기후에너지환경부고시 제2026-189호 · 2026-07-23 시행 · 별표 표시 도안","url":"https://www.law.go.kr/LSW/admRulInfoR.do?admRulSeq=2100000283152&chrClsCd=010201"},{"label":"생활폐기물 분리배출 누리집","detail":"기후에너지환경부 운영 · 품목 730종 우리 동네 배출 방법","url":"https://www.wasteguide.or.kr"},{"label":"한국환경공단 분리배출표시 도안","detail":"재질별 표시 도안 원본 내려받기","url":"https://portal.budamgum.or.kr/cmb/portal/epr/system/eprSstmGdce.do?tp=02"}],"groups":["플라스틱·비닐","종이·종이팩","금속·유리","복합"],"marks":[{"id":"pet-clear","group":"플라스틱·비닐","inner":"무색페트","short":"무색페트","material":"–","name":"무색페트 (무색 PET병)","meaning":"무색 투명한 먹는샘물·음료 페트병","rule":"라벨을 떼고 내용물을 비운 뒤 압착해 뚜껑을 닫아, 무색페트로 따로 모아요.","caution":"유색 페트병과 화장품·세제 병은 여기로 오지 않아요. 식용이 아닌 화학제품 병은 무색 투명 PET라도 '플라스틱·PET'으로 표시돼요.","color":"yellow","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"6.2\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">무색페트<\/text><\/svg>"},{"id":"plastic","group":"플라스틱·비닐","inner":"플라스틱","short":"플라스틱","material":"PET · HDPE · LDPE · PP · PS · OTHER","name":"플라스틱 용기·트레이","meaning":"용기·트레이 모양의 합성수지 포장재","rule":"내용물을 비우고 물로 헹군 뒤 라벨·부속품을 떼어요. 펌프는 안쪽 철제 스프링을 빼요.","caution":"물로 헹굴 수 없는 치약 용기는 내용물만 비워요. 칫솔·옷걸이처럼 다른 재질이 붙어 분리되지 않으면 종량제(큰 것은 대형폐기물)로 가요. PVC는 2021년 개정으로 표시재질 목록에서 빠졌어요.","color":"blue","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"6.2\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">플라스틱<\/text><\/svg>"},{"id":"vinyl","group":"플라스틱·비닐","inner":"비닐류","short":"비닐류","material":"플라스틱과 같은 문자","name":"비닐류 (필름·시트)","meaning":"과자·라면 봉지, 1회용 봉투 같은 얇은 막 포장재","rule":"내용물을 비우고 헹궈 이물질을 뺀 뒤, 흩날리지 않게 투명·반투명 봉투에 담아요.","caution":"두께 0.25mm 미만이 필름형, 그 이상은 시트형이에요. 이물질이 안 지워진 랩필름, 식탁보·고무장갑·장판은 종량제나 대형폐기물이에요.","color":"purple","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">비닐류<\/text><\/svg>"},{"id":"paper","group":"종이·종이팩","inner":"종이","short":"종이","material":"–","name":"종이 (고지류)","meaning":"신문·책자·전단지·골판지 상자","rule":"테이프·철핀·비닐코팅을 떼고 반듯하게 펴서 끈으로 묶어요.","caution":"영수증(감열지), 금박·은박지, 비닐 코팅 전단지, 벽지, 양면 코팅 종이컵은 종량제예요. 종이 마크는 지정승인을 받은 포장재에만 붙어요.","color":"black","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">종이<\/text><\/svg>"},{"id":"soft-pack","group":"종이·종이팩","inner":"일반팩","short":"일반팩","material":"–","name":"일반팩 (살균팩)","meaning":"합성수지가 붙은 종이팩 — 우유팩","rule":"내용물을 비우고 물로 헹궈 말린 뒤 빨대·비닐을 떼고 종이팩 전용수거함에 넣어요.","caution":"알루미늄박이 붙은 두유·주스팩은 멸균팩이에요. 구분 없이 종이팩으로 내도 되지만, 따로 모으면 재활용이 더 쉬워요.","color":"green","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">일반팩<\/text><\/svg>"},{"id":"sterile-pack","group":"종이·종이팩","inner":"멸균팩","short":"멸균팩","material":"–","name":"멸균팩","meaning":"알루미늄박이 붙은 종이팩 — 두유·주스팩","rule":"일반팩과 같이 헹궈 말린 뒤 종이팩 전용수거함에 넣어요. 되도록 일반팩과 따로 모아요.","caution":"종이컵은 종이팩이 아니라 종이류예요(양면 코팅이면 종량제). 전용수거함이 없으면 종이류와 구분되게 묶어 종이류 수거함에 내요.","color":"teal","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">멸균팩<\/text><\/svg>"},{"id":"can","group":"금속·유리","inner":"캔류","short":"캔류","material":"철 · 알루미늄","name":"캔류 (금속캔)","meaning":"음료·주류캔, 통조림캔","rule":"내용물을 비우고 헹군 뒤 플라스틱 뚜껑을 떼고, 가능하면 압착해요.","caution":"부탄가스·살충제 용기는 내용물을 완전히 빼야 해요. 알루미늄 호일은 종량제, 냄비·공구 같은 고철은 캔이 아니라 '고철류'로 나눠요.","color":"gray","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">캔류<\/text><\/svg>"},{"id":"glass","group":"금속·유리","inner":"유리","short":"유리병","material":"–","name":"유리병","meaning":"음료수병·기타 병류","rule":"내용물을 비우고 헹궈 깨지지 않게 내요. 소주·맥주병은 소매점에 반납하면 보증금을 돌려받아요.","caution":"깨진 유리컵, 내열유리, 크리스탈, 판유리, 도자기는 유리병이 아니에요. 신문지에 싸서 종량제로(많으면 특수규격마대) 내요.","color":"orange","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">유리<\/text><\/svg>"},{"id":"composite","group":"복합","inner":"","short":"도포·첩합","material":"–","name":"도포·첩합 등","meaning":"다른 재질을 붙이거나 코팅해 떼어낼 수 없는 포장재","rule":"재질을 나눌 수 없으니 종량제 봉투로 내요.","caution":"종이팩 마개가 무게의 10%를 넘거나, 페트병·PSP·용기·트레이에 금속·생분해 수지가 붙어 분리되지 않는 경우예요. '재활용 어려움' 등급 표시와는 다른 제도예요.","color":"red","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M7 5.6L41 42.4\" stroke-width=\"3\"/><\/svg>"}],"resins":[{"code":"PET","name":"폴리에틸렌테레프탈레이트","use":"투명 음료·생수병"},{"code":"HDPE","name":"고밀도 폴리에틸렌","use":"세제·샴푸·우유 용기"},{"code":"LDPE","name":"저밀도 폴리에틸렌","use":"비닐봉투·필름"},{"code":"PP","name":"폴리프로필렌","use":"요구르트·배달 용기, 뚜껑"},{"code":"PS","name":"폴리스티렌","use":"컵라면 용기, 스티로폼(EPS)"},{"code":"OTHER","name":"기타·복합 수지","use":"여러 수지가 섞인 용기"}],"quizzes":[{"id":"water-bottle","item":"무색 생수 페트병","meta":"500mL · 몸체 무색페트 · 뚜껑 HDPE · 라벨 PP","symbols":[{"id":"b1","mark":"pet-clear","inner":"무색페트","caption":"몸체","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"6.2\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">무색페트<\/text><\/svg>"},{"id":"b2","mark":"plastic","inner":"HDPE","caption":"뚜껑","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"6.2\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">HDPE<\/text><\/svg>"},{"id":"b3","mark":"plastic","inner":"PP","caption":"라벨","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">PP<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["라벨을 떼고 내용물을 비운 뒤 압착해 뚜껑을 닫아, 무색페트로 따로 내요.","라벨과 뚜껑을 붙인 채 그대로 플라스틱 용기 수거함에 넣어요.","라벨은 종이류로, 병은 종량제 봉투에 넣어요.","유리병 수거함에 넣고 소매점에서 보증금을 돌려받아요."],"answer":0,"evidence":["b1"],"explain":"몸체에 무색페트 표시가 있으니 무색페트로 따로 모아요. 라벨은 떼어 필름이면 비닐류로, 뚜껑은 닫아 함께 내요. 설탕·유기물이 든 음료는 물로 헹군 뒤 말려요."},{"id":"milk-soy","item":"우유팩과 두유팩","meta":"우유팩 = 일반팩(살균팩) · 두유팩 = 멸균팩(알루미늄박)","symbols":[{"id":"m1","mark":"soft-pack","inner":"일반팩","caption":"우유팩","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">일반팩<\/text><\/svg>"},{"id":"m2","mark":"sterile-pack","inner":"멸균팩","caption":"두유팩","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">멸균팩<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["우유팩은 종이류, 두유팩은 종량제 봉투에 넣어요.","둘 다 종이팩 전용수거함에 넣되, 되도록 따로 모아요.","물로 헹구지 말고 그대로 종량제 봉투에 넣어요.","우유팩은 플라스틱, 두유팩은 유리로 나눠 버려요."],"answer":1,"evidence":["m1","m2"],"explain":"일반팩과 멸균팩은 모두 종이팩이에요. 내용물을 비우고 헹궈 말린 뒤 빨대·비닐을 떼고 전용수거함에 넣어요. 알루미늄박이 붙은 멸균팩은 따로 모으면 재활용이 더 쉬워요."},{"id":"snack-bag","item":"과자봉지와 라면봉지","meta":"얇은 막 포장재 · 표면적이 작으면 표시가 없을 수 있어요","symbols":[{"id":"s1","mark":"vinyl","inner":"비닐류","caption":"과자봉지","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">비닐류<\/text><\/svg>"},{"id":"s2","mark":"vinyl","inner":"비닐류","caption":"라면봉지","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"7.8\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">비닐류<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["종이류로 반듯하게 펴서 묶어 내요.","플라스틱 용기 수거함에 넣어요.","부스러기를 털어내고 투명 봉투에 담아 비닐류로 내요.","음식물이 묻었으니 무조건 종량제 봉투에 넣어요."],"answer":2,"evidence":["s1","s2"],"explain":"과자·라면 봉지는 비닐류예요. 부스러기를 털어내고 흩날리지 않게 투명·반투명 봉투에 담아 내요. 기름때가 심해 이물질이 지워지지 않으면 종량제로 가요."},{"id":"receipt-flyer","item":"광택 전단지와 편의점 영수증","meta":"전단지에는 종이 표시 · 영수증(감열지)에는 표시가 없어요","symbols":[{"id":"p1","mark":"paper","inner":"종이","caption":"광택 전단지","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">종이<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["둘 다 종이류로 펴서 묶어 내요.","영수증은 종이류, 전단지는 비닐류로 나눠요.","영수증은 종량제, 전단지는 종이류로 내요.","비닐 코팅된 전단지와 영수증은 둘 다 종량제 봉투에 넣어요."],"answer":3,"evidence":["p1"],"explain":"영수증은 열을 받으면 색이 바뀌는 감열지라 재활용이 안 되고, 비닐 코팅된 광택 전단지도 종이류가 아니에요. 코팅이 없거나 한 면만 코팅된 전단지는 종이류로 낼 수 있어요."},{"id":"broken-glass","item":"깨진 유리컵과 빈 맥주병","meta":"같은 유리지만 깨지면 재활용이 안 돼요","symbols":[{"id":"g1","mark":"glass","inner":"유리","caption":"맥주병","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">유리<\/text><\/svg>"},{"id":"g2","mark":"glass","inner":"유리","caption":"깨진 유리컵","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">유리<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["깨진 유리컵은 신문지에 싸서 종량제, 맥주병은 유리병으로 내요.","둘 다 유리병 수거함에 넣어요.","둘 다 종량제 봉투에 넣어요.","깨진 유리컵은 유리병, 맥주병은 종량제로 버려요."],"answer":0,"evidence":["g1","g2"],"explain":"깨진 유리는 재활용이 안 돼 신문지에 싸서 종량제로 내요(많으면 특수규격마대). 온전한 맥주·소주병은 유리병으로, 빈용기보증금 대상이면 소매점에 반납해 보증금을 받아요."},{"id":"toothbrush-tube","item":"칫솔과 튜브형 치약","meta":"치약 용기에만 플라스틱 표시가 있어요","symbols":[{"id":"t1","mark":"plastic","inner":"플라스틱","caption":"치약 튜브","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"6.2\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">플라스틱<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["둘 다 플라스틱 용기 수거함에 넣어요.","둘 다 종량제 봉투에 넣어요.","칫솔은 종량제, 치약 튜브는 내용물만 비워 플라스틱으로 내요.","칫솔은 비닐류, 치약 튜브는 유리로 나눠 버려요."],"answer":2,"evidence":["t1"],"explain":"치약 용기는 플라스틱 표시가 있고 물로 헹굴 수 없으니 내용물만 비워 플라스틱으로 내요. 칫솔은 손잡이와 모가 다른 재질로 붙어 있어 지침상 플라스틱 비해당 품목이라 종량제로 가요."},{"id":"can-pot","item":"참치캔과 플라스틱 손잡이 냄비","meta":"캔과 고철은 같은 금속이어도 모으는 곳이 달라요","symbols":[{"id":"c1","mark":"can","inner":"캔류","caption":"참치캔","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"10.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">캔류<\/text><\/svg>"},{"id":"c2","mark":"can","inner":"철","caption":"냄비","svg":"<svg class=\"rc-svg\" viewBox=\"0 0 48 48\" aria-hidden=\"true\" focusable=\"false\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.4 36.6L37.6 36.6\"/><path d=\"M40.0 36.6L36.2 40.9L36.2 32.3Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M39.3 33.7L25.7 10.5\"/><path d=\"M24.5 8.5L30.1 9.6L22.7 13.9Z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M22.3 10.5L8.7 33.7\"/><path d=\"M7.5 35.7L5.7 30.3L13.1 34.6Z\" fill=\"currentColor\" stroke=\"none\"/><text x=\"24\" y=\"30.6\" text-anchor=\"middle\" font-size=\"11.0\" font-weight=\"700\" fill=\"currentColor\" stroke=\"none\">철<\/text><\/svg>"}],"question":"어디에 어떻게 버릴까요?","options":["둘 다 종량제 봉투에 넣어요.","참치캔은 캔류, 냄비는 손잡이를 떼고 고철류로 내요.","둘 다 플라스틱 용기 수거함에 넣어요.","참치캔은 고철류, 냄비는 캔류로 바꿔 내요."],"answer":1,"evidence":["c1","c2"],"explain":"캔류 마크는 철·알루미늄 캔이에요. 냄비처럼 캔이 아닌 금속은 '고철류'로 따로 모아요. 플라스틱 손잡이 같은 다른 재질은 떼어내고 이물질을 닦아 내요."}],"split":[{"tag":"① 재질 표시","title":"무엇으로 만들었나","body":"포장재에 인쇄된 삼각 화살표예요. 안쪽 글자(종이·캔류·플라스틱)와 아래 재질 문자(철·PET)가 재질을 알려 줘요. 「분리배출 표시에 관한 지침」으로 전국이 같은 기준을 써요.","source":"전국 공통 · 제조사가 표시"},{"tag":"② 배출 방법","title":"어디에 내놓나","body":"수거함인지 종량제 봉투인지, 언제 내놓는지는 지자체 조례가 정해요. 같은 마크라도 동네마다 수거함과 요일이 다를 수 있어요.","source":"지자체별 · 조례가 다름"}]}</script>
+  <script>
+const RECYCLE = JSON.parse(document.getElementById('recycleData').textContent);
+
+(function () {
+  // ---------- 화면 테마 (공통 셸 헤더의 토글) ----------
+  const themeBtn = document.getElementById('themeToggle');
+  const moonIcon = document.getElementById('moonIcon');
+  const sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) {
+      try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
+  const MARKS = {};
+  RECYCLE.marks.forEach(function (item) { MARKS[item.id] = item; });
+  const RESINS = {};
+  RECYCLE.resins.forEach(function (item) { RESINS[item.code] = item; });
+  const QUIZ = RECYCLE.quizzes;
+  const TOTAL = QUIZ.length;
+
+  // ---------- 탭 ----------
+  const tabs = Array.from(document.querySelectorAll('.rc-tab'));
+  const panels = {
+    guide: document.getElementById('rcPanelGuide'),
+    quiz: document.getElementById('rcPanelQuiz'),
+  };
+  function selectTab(key, focus) {
+    tabs.forEach(function (tab) {
+      const on = tab.getAttribute('data-tab') === key;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.setAttribute('tabindex', on ? '0' : '-1');
+      if (on && focus) tab.focus();
+    });
+    Object.keys(panels).forEach(function (name) {
+      panels[name].hidden = name !== key;
+    });
+  }
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { selectTab(tab.getAttribute('data-tab')); });
+    tab.addEventListener('keydown', function (event) {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      selectTab(tab.getAttribute('data-tab') === 'guide' ? 'quiz' : 'guide', true);
+    });
+  });
+
+  // ---------- 마크 도감 ----------
+  const markButtons = Array.from(document.querySelectorAll('.rc-mark'));
+  const resinChips = Array.from(document.querySelectorAll('.rc-resin-chip'));
+  const desc = {
+    art: document.getElementById('rcDescArt'),
+    group: document.getElementById('rcDescGroup'),
+    name: document.getElementById('rcDescName'),
+    material: document.getElementById('rcDescMaterial'),
+    meaning: document.getElementById('rcDescMeaning'),
+    rule: document.getElementById('rcDescRule'),
+    caution: document.getElementById('rcDescCaution'),
+  };
+  let currentMark = null;
+
+  function clearResin() {
+    resinChips.forEach(function (chip) {
+      chip.classList.remove('is-active');
+      chip.setAttribute('aria-pressed', 'false');
+    });
+  }
+
+  function showMark(id) {
+    const item = MARKS[id];
+    if (!item) return;
+    currentMark = id;
+    clearResin();
+    markButtons.forEach(function (btn) {
+      const on = btn.getAttribute('data-mark') === id;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    desc.art.innerHTML = item.svg;
+    desc.art.setAttribute('data-color', item.color);
+    desc.group.textContent = item.group;
+    desc.name.textContent = item.name;
+    desc.material.textContent = '표시재질 ' + (item.material === '–' ? '공란(–)' : item.material);
+    desc.meaning.textContent = item.meaning;
+    desc.rule.textContent = item.rule;
+    desc.caution.textContent = item.caution;
+  }
+
+  function showResin(code) {
+    const resin = RESINS[code];
+    if (!resin) return;
+    showMark('plastic');
+    resinChips.forEach(function (chip) {
+      const on = chip.getAttribute('data-resin') === code;
+      chip.classList.toggle('is-active', on);
+      chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    desc.name.textContent = '플라스틱 · ' + resin.code;
+    desc.material.textContent = '표시재질 ' + resin.code + ' · ' + resin.name;
+    desc.meaning.textContent = resin.use + '에 주로 쓰는 재질이에요.';
+    desc.rule.textContent = MARKS.plastic.rule;
+    desc.caution.textContent = MARKS.plastic.caution;
+  }
+
+  markButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () { showMark(btn.getAttribute('data-mark')); });
+  });
+  resinChips.forEach(function (chip) {
+    chip.addEventListener('click', function () { showResin(chip.getAttribute('data-resin')); });
+  });
+  if (markButtons.length) showMark(markButtons[0].getAttribute('data-mark'));
+
+  // 계열 칩: 고른 계열의 줄만 남긴다.
+  const chips = Array.from(document.querySelectorAll('.rc-chip'));
+  const rows = Array.from(document.querySelectorAll('.rc-row'));
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      const group = chip.getAttribute('data-group');
+      chips.forEach(function (other) {
+        const on = other === chip;
+        other.classList.toggle('is-active', on);
+        other.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      rows.forEach(function (row) {
+        row.hidden = group !== '전체' && row.getAttribute('data-group') !== group;
+      });
+    });
+  });
+
+  // ---------- 분리배출 퀴즈 ----------
+  const els = {
+    progress: document.getElementById('rcQuizProgress'),
+    score: document.getElementById('rcQuizScore'),
+    body: document.getElementById('rcQuizBody'),
+    name: document.getElementById('rcItemName'),
+    meta: document.getElementById('rcItemMeta'),
+    label: document.getElementById('rcQuizLabel'),
+    question: document.getElementById('rcQuestion'),
+    options: document.getElementById('rcOptions'),
+    result: document.getElementById('rcResult'),
+    next: document.getElementById('rcNext'),
+    summary: document.getElementById('rcSummary'),
+    summaryNum: document.getElementById('rcSummaryNum'),
+    summaryTotal: document.getElementById('rcSummaryTotal'),
+    restart: document.getElementById('rcRestart'),
+    back: document.getElementById('rcBackGuide'),
+  };
+
+  let index = 0;
+  let answered = false;
+  let correctCount = 0;
+
+  function symName(quiz, id) {
+    const sym = quiz.symbols.filter(function (item) { return item.id === id; })[0];
+    if (!sym) return id;
+    const mark = MARKS[sym.mark];
+    return (mark ? mark.short : sym.mark) + ' · ' + sym.caption;
+  }
+
+  function renderQuiz() {
+    const quiz = QUIZ[index];
+    answered = false;
+    els.body.hidden = false;
+    els.summary.hidden = true;
+    els.progress.textContent = (index + 1) + ' / ' + TOTAL;
+    els.score.textContent = String(correctCount);
+    els.name.textContent = quiz.item;
+    els.meta.textContent = quiz.meta;
+    els.label.innerHTML = quiz.symbols.map(function (sym) {
+      const mark = MARKS[sym.mark];
+      return '<span class="rc-qsym" data-sym="' + sym.id + '" aria-hidden="true">'
+        + '<span class="rc-qsym-art">' + (sym.svg || (mark ? mark.svg : '')) + '</span>'
+        + '<span class="rc-qsym-mark">' + sym.inner + '</span>'
+        + '<span class="rc-qsym-cap">' + sym.caption + '</span></span>';
+    }).join('');
+    els.label.setAttribute('aria-label', quiz.item + ' 재질 표시: '
+      + quiz.symbols.map(function (sym) { return sym.caption + ' ' + sym.inner; }).join(', '));
+    els.question.textContent = quiz.question;
+    els.options.innerHTML = quiz.options.map(function (text, idx) {
+      return '<button type="button" class="rc-opt" data-idx="' + idx + '">'
+        + '<span class="rc-opt-num">' + (idx + 1) + '</span>'
+        + '<span class="rc-opt-text">' + text + '</span></button>';
+    }).join('');
+    els.result.hidden = true;
+    els.result.className = 'rc-result';
+    els.result.innerHTML = '';
+    els.next.disabled = true;
+    els.next.textContent = index === TOTAL - 1 ? '결과 보기' : '다음 품목';
+  }
+
+  function markEvidence(quiz) {
+    Array.from(els.label.querySelectorAll('.rc-qsym')).forEach(function (node) {
+      const id = node.getAttribute('data-sym');
+      node.classList.toggle('is-evidence', quiz.evidence.indexOf(id) >= 0);
+    });
+  }
+
+  function showResult(quiz, ok) {
+    els.result.className = 'rc-result' + (ok ? '' : ' is-no');
+    els.result.innerHTML = ''
+      + '<h3>' + (ok ? '정답이에요' : '표시를 다시 보세요') + '</h3>'
+      + '<p>' + quiz.explain + '</p>'
+      + (ok ? '' : '<p>맞는 답: <b>' + quiz.options[quiz.answer] + '</b></p>')
+      + '<div class="rc-evidence"><span class="rc-evidence-tag">근거 마크</span>'
+      + quiz.evidence.map(function (id) {
+        return '<span class="rc-evidence-item">' + symName(quiz, id) + '</span>';
+      }).join('')
+      + '</div>';
+    els.result.hidden = false;
+    markEvidence(quiz);
+    els.next.disabled = false;
+  }
+
+  els.options.addEventListener('click', function (event) {
+    const btn = event.target.closest('.rc-opt');
+    if (!btn || answered) return;
+    const quiz = QUIZ[index];
+    const picked = Number(btn.getAttribute('data-idx'));
+    const ok = picked === quiz.answer;
+    answered = true;
+    if (ok) correctCount += 1;
+    els.score.textContent = String(correctCount);
+    Array.from(els.options.querySelectorAll('.rc-opt')).forEach(function (node) {
+      const idx = Number(node.getAttribute('data-idx'));
+      node.disabled = true;
+      if (idx === quiz.answer) node.classList.add('is-correct');
+      else if (idx === picked) node.classList.add('is-wrong');
+      else node.classList.add('is-muted');
+    });
+    showResult(quiz, ok);
+  });
+
+  els.next.addEventListener('click', function () {
+    if (index === TOTAL - 1) {
+      els.body.hidden = true;
+      els.summary.hidden = false;
+      els.summaryNum.textContent = String(correctCount);
+      els.summaryTotal.textContent = '/ ' + TOTAL;
+      els.progress.textContent = TOTAL + ' / ' + TOTAL;
+      return;
+    }
+    index += 1;
+    renderQuiz();
+  });
+
+  els.restart.addEventListener('click', function () {
+    index = 0;
+    correctCount = 0;
+    renderQuiz();
+  });
+
+  els.back.addEventListener('click', function () {
+    selectTab('guide', true);
+  });
+
+  renderQuiz();
+  selectTab('guide');
+})();
+
+  </script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab is-active" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link is-current" href="recycle.html" aria-current="page"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>
