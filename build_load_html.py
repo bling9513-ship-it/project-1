@@ -528,6 +528,9 @@ CSS = """
     .load-main-sub { flex: 1 1 auto; min-width: 0; font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .load-reset { border: 0; background: transparent; font-family: inherit; font-size: 10.5px; font-weight: 600; color: var(--accent-primary); cursor: pointer; padding: 2px 0; white-space: nowrap; }
     .load-reset:hover { text-decoration: underline; }
+    /* 진행 중인 판이 자정을 넘겼을 때만 뜨는 가벼운 안내 배지 */
+    .day-badge { display: none; margin: 0 0 9px; padding: 6px 9px; border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface); font-size: 11px; line-height: 1.4; color: var(--text-secondary); }
+    .day-badge:not([hidden]) { display: block; }
 
     .cart-card {
       background: var(--bg-surface);
@@ -1099,6 +1102,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <span class="load-main-sub" id="boardSub"></span>
           <button type="button" class="load-reset" id="resetBtn">처음부터</button>
         </div>
+        <p class="day-badge" id="dayBadge" hidden>새 날짜 판이 열렸습니다 · 지금 판은 시작한 날 기록으로 마칩니다</p>
 
         <div class="cart-card" id="cartCard">
           <div class="cart-head">
@@ -1202,7 +1206,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <dl class="result-grid">
             <div><dt>배송 성공</dt><dd id="resultDeliveries">0/5</dd></div>
             <div><dt>최고 연속</dt><dd id="resultStreak">0회</dd></div>
-            <div><dt>오늘 최고</dt><dd id="resultToday">0점</dd></div>
+            <div><dt id="resultTodayLabel">오늘 최고</dt><dd id="resultToday">0점</dd></div>
           </dl>
           <p class="result-hint" id="resultHint"></p>
           <div class="result-actions">
@@ -1257,14 +1261,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
      'guideCard', 'guideToggle', 'guideBody',
      'goalList', 'goalNote', 'goalFill', 'goalHint',
      'recBest', 'recPlays', 'recStreak', 'recordDate', 'recHistory',
-     'boardTitle', 'boardSub', 'resetBtn', 'cartCard', 'cartCap', 'cartTotal', 'cartRig',
+     'boardTitle', 'boardSub', 'resetBtn', 'dayBadge', 'cartCard', 'cartCap', 'cartTotal', 'cartRig',
      'stackLeft', 'stackRight', 'headLeft', 'headRight', 'deckEmpty', 'leftValue', 'rightValue', 'tiltNote',
      'gaugeValue', 'gaugeFill', 'tiltValue', 'tiltFill',
      'boxCard', 'boxCount', 'boxName', 'boxKg', 'boxScore', 'nextCard', 'nextName', 'nextRange', 'nextScore',
      'loadLeft', 'loadRight', 'riskLeft', 'riskRight', 'shipBtn', 'shipPreview', 'boxNote',
      'tripPanel', 'tripBadge', 'tripTitle', 'tripScore', 'bonusPop', 'tripSum', 'tripBal', 'tripStreak', 'tripNote', 'nextTripBtn',
      'resultBox', 'resultBadge', 'resultTitle', 'resultTotal', 'resultBest', 'resultStars',
-     'resultDeliveries', 'resultStreak', 'resultToday', 'resultHint', 'retryBtn', 'practiceBtn',
+     'resultDeliveries', 'resultStreak', 'resultToday', 'resultTodayLabel', 'resultHint', 'retryBtn', 'practiceBtn',
      'practiceWrap', 'practiceNote', 'practiceList', 'themeToggle', 'moonIcon', 'sunIcon'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
@@ -1288,7 +1292,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       tripDone: false,
       finished: false,
       store: null,
-      dayKey: ''
+      dayKey: '',      /* 지금 판이 귀속된 날짜(판 시작일) */
+      todayKey: ''     /* 지금 KST 날짜 */
     };
 
     /* ---------------------------------------------------------------- 유틸 */
@@ -1358,6 +1363,28 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
     function setStatus(text) { if (el.loadStatus) el.loadStatus.textContent = text; }
 
+    /* 자정을 넘긴 판에서 띄우는 가벼운 안내 배지 */
+    function showDayBadge(on) {
+      if (!el.dayBadge) return;
+      el.dayBadge.hidden = !on;
+    }
+
+    /* 새 일일판을 오늘 날짜로 시작한다. 이전 날짜 판은 이 함수로만 넘어간다. */
+    function startDaily() {
+      state.todayKey = kstKey();
+      state.dayKey = state.todayKey;
+      showDayBadge(false);
+      loadChallenge(dailyChallenge(), 'daily');
+    }
+
+    /* 한 번이라도 실었거나 배송한, 아직 끝나지 않은 일일판인지 */
+    function runInProgress() {
+      if (state.mode !== 'daily' || state.finished) return false;
+      return state.tripBoxes > 0 || state.deliveries > 0 || state.overloads > 0
+        || state.tripIndex > 0 || state.tripScoreSum > 0
+        || state.placed.left.length > 0 || state.placed.right.length > 0;
+    }
+
     /* ---------------------------------------------------------------- 챌린지 */
     function dailyChallenge() {
       if (!DAILY.length) return FALLBACK;
@@ -1392,6 +1419,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       state.placed = { left: [], right: [] };
       state.tripDone = false;
       state.finished = false;
+      showDayBadge(false);
       el.tripPanel.hidden = true;
       el.resultBox.hidden = true;
       el.boxCard.hidden = false;
@@ -1428,7 +1456,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       }
       state.mode = 'daily';
       state.practiceId = null;
-      loadChallenge(dailyChallenge(), 'daily');
+      startDaily();
     }
 
     /* ---------------------------------------------------------------- 위험도 */
@@ -1650,11 +1678,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
     function renderRecord() {
       state.store = state.store || readStore();
-      var day = state.store.days[state.dayKey] || null;
+      var day = state.store.days[state.todayKey] || null;
       el.recBest.textContent = day && day.best ? day.best + '점' : '—';
       el.recPlays.textContent = (day && day.plays ? day.plays : 0) + '판';
       el.recStreak.textContent = (state.store.streak.best || 0) + '회';
-      el.recordDate.textContent = dayLabel(state.dayKey);
+      el.recordDate.textContent = dayLabel(state.todayKey);
       el.recHistory.textContent = '';
       var keys = Object.keys(state.store.days).sort().reverse().slice(0, 3);
       if (!keys.length) {
@@ -1884,27 +1912,32 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       state.finished = true;
       var challenge = state.challenge;
       var stars = starsOf(challenge, state.total);
-      var day = state.store.days[state.dayKey] || { best: 0, plays: 0, streak: 0, stars: 0, last: 0 };
-      var prevBest = day.best || 0;
-      day.plays = (day.plays || 0) + 1;
-      day.last = state.total;
-      day.stars = Math.max(day.stars || 0, stars);
-      day.best = Math.max(prevBest, state.total);
-      day.streak = Math.max(day.streak || 0, state.bestStreak);
-      state.store.days[state.dayKey] = day;
+      var isDaily = state.mode === 'daily';
       var record = state.store.best[challenge.id] || 0;
       var personalBest = state.total > record;
       if (personalBest) state.store.best[challenge.id] = state.total;
-      state.store.totals.plays = (state.store.totals.plays || 0) + 1;
-      state.store.totals.deliveries = (state.store.totals.deliveries || 0) + state.deliveries;
-      state.store.totals.overloads = (state.store.totals.overloads || 0) + state.overloads;
-      state.store.streak.best = Math.max(state.store.streak.best || 0, state.bestStreak);
+      var day = null;
+      /* 연습판은 스테이지 최고 기록만 남긴다(연습 점수가 오늘의 최고점·완주·연속에 섞이지 않게).
+         날짜별 통계는 시작일 기준 일일판에서만 쌓는다. */
+      if (isDaily) {
+        day = state.store.days[state.dayKey] || { best: 0, plays: 0, streak: 0, stars: 0, last: 0 };
+        day.plays = (day.plays || 0) + 1;
+        day.last = state.total;
+        day.stars = Math.max(day.stars || 0, stars);
+        day.best = Math.max(day.best || 0, state.total);
+        day.streak = Math.max(day.streak || 0, state.bestStreak);
+        state.store.days[state.dayKey] = day;
+        state.store.totals.plays = (state.store.totals.plays || 0) + 1;
+        state.store.totals.deliveries = (state.store.totals.deliveries || 0) + state.deliveries;
+        state.store.totals.overloads = (state.store.totals.overloads || 0) + state.overloads;
+        state.store.streak.best = Math.max(state.store.streak.best || 0, state.bestStreak);
+      }
       writeStore();
 
       el.resultBox.hidden = false;
       el.boxCard.hidden = true;
-      el.resultBox.classList.toggle('is-new', personalBest || state.total >= day.best);
-      el.resultBadge.textContent = state.mode === 'practice' ? '연습 완료' : '완주';
+      el.resultBox.classList.toggle('is-new', personalBest || (isDaily && !!day && state.total >= day.best));
+      el.resultBadge.textContent = isDaily ? '완주' : '연습 완료';
       el.resultTitle.textContent = (personalBest ? '신기록입니다. ' : '') + TRIPS + '회차 배송을 마쳤습니다';
       el.resultTotal.setAttribute('data-value', String(state.total));
       countUp(el.resultTotal, state.total);
@@ -1913,7 +1946,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       for (var i = 0; i < 3; i += 1) el.resultStars.appendChild(starSvg(i < stars, i < stars));
       el.resultDeliveries.textContent = state.deliveries + '/' + TRIPS;
       el.resultStreak.textContent = state.bestStreak + '회';
-      el.resultToday.textContent = (day.best || 0) + '점';
+      if (el.resultTodayLabel) {
+        el.resultTodayLabel.textContent = isDaily
+          ? (state.dayKey === state.todayKey ? '오늘 최고' : dayLabel(state.dayKey) + ' 최고')
+          : '스테이지 최고';
+      }
+      el.resultToday.textContent = isDaily ? ((day && day.best) || 0) + '점' : Math.max(record, state.total) + '점';
       var top = challenge.stars[challenge.stars.length - 1] || 1;
       if (stars >= 3) {
         el.resultHint.textContent = '최고 별점입니다. 같은 상자 순서로 다른 선택을 시험해 더 높은 점수에 도전해 보세요.';
@@ -1950,11 +1988,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     }
 
     /* ---------------------------------------------------------------- 초기화 */
-    state.dayKey = kstKey();
+    state.todayKey = kstKey();
     state.store = readStore();
     initTheme();
     initGuide();
-    loadChallenge(dailyChallenge(), 'daily');
+    startDaily();
 
     el.modeDaily.addEventListener('click', function () { setMode('daily'); });
     el.modePractice.addEventListener('click', function () { setMode('practice'); });
@@ -1964,14 +2002,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     el.nextTripBtn.addEventListener('click', nextTrip);
     el.retryBtn.addEventListener('click', function () {
       if (state.mode === 'practice') loadChallenge(state.challenge, 'practice', state.practiceId);
-      else loadChallenge(dailyChallenge(), 'daily');
+      else startDaily();
     });
     el.practiceBtn.addEventListener('click', function () { setMode('practice'); });
     el.resetBtn.addEventListener('click', function () {
-      var mode = state.mode;
-      var practiceId = state.practiceId;
-      var challenge = state.challenge;
-      loadChallenge(challenge, mode, practiceId);
+      if (state.mode === 'practice') loadChallenge(state.challenge, 'practice', state.practiceId);
+      else startDaily();
       setStatus('이번 판을 처음부터 다시 시작합니다. 기록은 그대로입니다.');
     });
     el.guideToggle.addEventListener('click', function () {
@@ -1986,17 +2022,26 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       initTheme();
     });
 
-    /* 자정이 지나면 새 상자 순서가 열린다(탭을 열어 둔 경우 포함). */
+    /* 자정이 지나면 새 상자 순서가 열린다(탭을 열어 둔 경우 포함).
+       단, 이미 시작한 일일판은 시작일에 귀속해 그대로 마칠 수 있게 두고 배지만 띄운다. */
     function checkDay() {
       var key = kstKey();
-      if (key === state.dayKey) return;
-      state.dayKey = key;
-      if (state.mode === 'daily') {
-        loadChallenge(dailyChallenge(), 'daily');
-        setStatus('날짜가 바뀌어 오늘의 새 상자 순서가 열렸습니다.');
-      } else {
+      if (key === state.todayKey) return;
+      state.todayKey = key;
+      if (state.mode !== 'daily') {
         renderRecord();
+        return;
       }
+      if (state.finished || runInProgress()) {
+        showDayBadge(true);
+        renderRecord();
+        setStatus(dayLabel(state.dayKey) + ' 판으로 시작했으니 이 판은 그날 기록으로 마칩니다. 새 날짜 판은 다음 시작(다시 하기 · 처음부터) 때 열립니다.');
+        return;
+      }
+      state.dayKey = key;
+      loadChallenge(dailyChallenge(), 'daily');
+      showDayBadge(false);
+      setStatus('날짜가 바뀌어 오늘의 새 상자 순서가 열렸습니다.');
     }
     window.setInterval(checkDay, 60000);
     document.addEventListener('visibilitychange', function () {

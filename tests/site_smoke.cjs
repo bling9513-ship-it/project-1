@@ -3284,6 +3284,57 @@ async function checkSeatGame(page, width) {
 
 
 // ---- 한 번 더 싣기: 게임 방법 3단계 데모 · 손수레 보드 · 첫 화면 ---- 
+// 각 회차에서 '표기 상한(hi)까지 실어도 안전한' 좌/우 배치를 고른다.
+function loadPlan(ch) {
+  return ch.batches.map((tripBoxes) => {
+    let L = 0;
+    let R = 0;
+    const sides = [];
+    for (const box of tripBoxes) {
+      const options = ['left', 'right'].map((side) => {
+        const nl = L + (side === 'left' ? box.hi : 0);
+        const nr = R + (side === 'right' ? box.hi : 0);
+        return { side, nl, nr, ok: nl + nr <= ch.limit && Math.abs(nl - nr) <= ch.tilt };
+      }).filter((option) => option.ok);
+      if (!options.length) break;
+      options.sort((a, b) => Math.abs(a.nl - a.nr) - Math.abs(b.nl - b.nr));
+      L = options[0].nl; R = options[0].nr;
+      sides.push(options[0].side);
+    }
+    return sides;
+  });
+}
+
+async function readLoadState(page) {
+  return page.evaluate(() => {
+    const dayBadge = document.getElementById('dayBadge');
+    return {
+      title: document.getElementById('boardTitle').textContent.trim(),
+      trip: document.getElementById('tripValue').textContent.trim(),
+      total: document.getElementById('totalValue').textContent.trim(),
+      boxName: document.getElementById('boxName').textContent.trim(),
+      cart: Number(document.getElementById('cartTotal').textContent),
+      crates: document.querySelectorAll('.crate').length,
+      preview: document.getElementById('shipPreview').textContent.trim(),
+      tripScore: document.getElementById('tripScore').getAttribute('data-value'),
+      tripHidden: document.getElementById('tripPanel').hidden,
+      resultHidden: document.getElementById('resultBox').hidden,
+      resultTotal: document.getElementById('resultTotal').getAttribute('data-value'),
+      resultBadge: document.getElementById('resultBadge').textContent.trim(),
+      resultToday: document.getElementById('resultToday').textContent.trim(),
+      resultTodayLabel: document.getElementById('resultTodayLabel').textContent.trim(),
+      dayBadge: dayBadge ? { hidden: dayBadge.hidden, text: dayBadge.textContent.trim() } : null,
+      recBest: document.getElementById('recBest').textContent.trim(),
+      recPlays: document.getElementById('recPlays').textContent.trim(),
+      recordDate: document.getElementById('recordDate').textContent.trim(),
+      practiceHidden: document.getElementById('practiceWrap').hidden,
+      store: JSON.parse(localStorage.getItem('load_cart_stats_v1') || 'null'),
+    };
+  });
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
 async function checkLoadLayout(page, width) {
   const tag = `load layout ${width}px`;
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -3501,25 +3552,7 @@ async function checkLoadGame(page, width) {
   await page.waitForTimeout(180);
   assert.equal((await read()).total, '0', `${tag}: reset did not clear the score`);
 
-  const plan = (ch) => ch.batches.map((tripBoxes) => {
-    let L = 0;
-    let R = 0;
-    const sides = [];
-    for (const box of tripBoxes) {
-      const options = ['left', 'right'].map((side) => {
-        const nl = L + (side === 'left' ? box.hi : 0);
-        const nr = R + (side === 'right' ? box.hi : 0);
-        return { side, nl, nr, ok: nl + nr <= ch.limit && Math.abs(nl - nr) <= ch.tilt };
-      }).filter((option) => option.ok);
-      if (!options.length) break;
-      options.sort((a, b) => Math.abs(a.nl - a.nr) - Math.abs(b.nl - b.nr));
-      L = options[0].nl; R = options[0].nr;
-      sides.push(options[0].side);
-    }
-    return sides;
-  });
-
-  const sidesPerTrip = plan(challenge);
+  const sidesPerTrip = loadPlan(challenge);
   let expected = 0;
   for (let t = 0; t < sidesPerTrip.length; t += 1) {
     for (const side of sidesPerTrip[t]) {
@@ -3602,6 +3635,170 @@ async function checkLoadGame(page, width) {
     `${tag}: guide did not collapse again`);
 
   console.log(`${tag} passed`);
+}
+
+// ---- 회귀: 연습판 점수는 '오늘 기록'에 섞이지 않고 스테이지 최고 기록에만 남는다 ----
+async function checkLoadPracticeRecord(browser, base) {
+  const tag = 'load practice record';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/load.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.removeItem('load_cart_stats_v1'));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#modePractice').waitFor({ state: 'attached' });
+
+    const data = await page.evaluate(() => JSON.parse(document.getElementById('loadData').textContent));
+    const todayKey = await page.evaluate(() => {
+      const t = new Date(Date.now() + 9 * 3600000);
+      const p = (n) => String(n).padStart(2, '0');
+      return `${t.getUTCFullYear()}-${p(t.getUTCMonth() + 1)}-${p(t.getUTCDate())}`;
+    });
+
+    await page.click('#modePractice');
+    await page.locator('#practiceWrap:not([hidden])').waitFor({ timeout: 5000 });
+    const stage = data.practice[0];
+    const opened = await readLoadState(page);
+    assert.equal(opened.title, stage.title, `${tag}: practice stage title ${opened.title}`);
+
+    const sides = loadPlan(stage);
+    let expected = 0;
+    for (let t = 0; t < sides.length; t += 1) {
+      for (const side of sides[t]) {
+        await page.click(side === 'left' ? '#loadLeft' : '#loadRight');
+        await page.waitForTimeout(35);
+      }
+      const before = await readLoadState(page);
+      const gained = Number(before.preview.replace(/[^0-9]/g, ''));
+      await page.click('#shipBtn');
+      await page.waitForFunction(() => document.getElementById('tripScore').hasAttribute('data-value'));
+      const after = await readLoadState(page);
+      assert.equal(Number(after.tripScore), gained, `${tag}: trip ${t + 1} score ${after.tripScore} vs ${gained}`);
+      expected += gained;
+      await page.click('#nextTripBtn');
+      await page.waitForTimeout(140);
+    }
+    await page.waitForTimeout(600);
+    const done = await readLoadState(page);
+    assert.equal(done.resultHidden, false, `${tag}: practice result missing`);
+    assert.equal(done.resultBadge, '연습 완료', `${tag}: result badge ${done.resultBadge}`);
+    assert.equal(done.resultTodayLabel, '스테이지 최고', `${tag}: today stat label ${done.resultTodayLabel}`);
+    assert.equal(Number(done.resultTotal), expected, `${tag}: practice total ${done.resultTotal} vs ${expected}`);
+    assert.ok(done.store, `${tag}: practice run was not stored at all`);
+    assert.ok(!done.store.days || !done.store.days[todayKey],
+      `${tag}: practice score leaked into the daily record (${JSON.stringify(done.store.days)})`);
+    assert.equal(done.store.totals.plays, 0, `${tag}: practice run counted as a daily play (${done.store.totals.plays})`);
+    assert.equal(done.store.best[stage.id], expected, `${tag}: practice stage best ${done.store.best[stage.id]}`);
+
+    // 오늘의 챌린지로 돌아오면 오늘 기록은 비어 있어야 한다.
+    await page.click('#modeDaily');
+    await page.waitForTimeout(220);
+    const daily = await readLoadState(page);
+    assert.equal(daily.practiceHidden, true, `${tag}: practice list still open in daily mode`);
+    assert.equal(daily.recBest, '—', `${tag}: 오늘 최고에 연습 점수가 남음 (${daily.recBest})`);
+    assert.equal(daily.recPlays, '0판', `${tag}: 오늘 완주에 연습판이 남음 (${daily.recPlays})`);
+    console.log(`${tag} passed (연습 ${expected}점 · 오늘 기록 비어 있음)`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
+}
+
+// ---- 회귀: 진행 중인 일일판은 자정을 넘겨도 시작일에 귀속해 그대로 마칠 수 있다 ----
+async function checkLoadMidnightRun(browser, base) {
+  const tag = 'load midnight run';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/load.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.removeItem('load_cart_stats_v1'));
+
+    const data = await page.evaluate(() => JSON.parse(document.getElementById('loadData').textContent));
+    const parts = await page.evaluate(() => {
+      const t = new Date(Date.now() + 9 * 3600000);
+      return [t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate()];
+    });
+    const [y, m, d] = parts;
+    const todayKey = `${y}-${pad2(m)}-${pad2(d)}`;
+    const next = new Date(Date.UTC(y, m - 1, d + 1));
+    const nextKey = `${next.getUTCFullYear()}-${pad2(next.getUTCMonth() + 1)}-${pad2(next.getUTCDate())}`;
+    const ordinal = Math.floor(Date.UTC(y, m - 1, d) / 86400000);
+    const challenge = data.daily[ordinal % data.daily.length];
+    const nextChallenge = data.daily[(ordinal + 1) % data.daily.length];
+
+    // KST 23:55에 탭을 열어 둔 상태
+    await page.clock.setFixedTime(new Date(Date.UTC(y, m - 1, d, 14, 55)));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#loadLeft').waitFor({ state: 'attached' });
+
+    let state = await readLoadState(page);
+    assert.equal(state.title, challenge.title, `${tag}: board ${state.title}`);
+    assert.ok(state.dayBadge && state.dayBadge.hidden, `${tag}: day badge shown before midnight`);
+
+    const sides = loadPlan(challenge);
+    await page.click(sides[0][0] === 'left' ? '#loadLeft' : '#loadRight');
+    await page.waitForTimeout(150);
+    const loaded = await readLoadState(page);
+    assert.equal(loaded.trip, '1', `${tag}: trip ${loaded.trip}`);
+    assert.equal(loaded.crates, 1, `${tag}: crates ${loaded.crates}`);
+    assert.ok(loaded.cart > 0, `${tag}: cart ${loaded.cart}`);
+
+    // 새로고침 없이 시계만 KST 00:05로 넘기고 탭을 다시 보이게 한다.
+    await page.clock.setFixedTime(new Date(Date.UTC(y, m - 1, d, 15, 5)));
+    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await page.waitForTimeout(200);
+
+    const kept = await readLoadState(page);
+    assert.equal(kept.title, challenge.title, `${tag}: 진행 중인 판이 자정에 초기화됨`);
+    assert.equal(kept.trip, '1', `${tag}: trip reset at midnight (${kept.trip})`);
+    assert.equal(kept.cart, loaded.cart, `${tag}: cart reset at midnight (${kept.cart})`);
+    assert.equal(kept.crates, loaded.crates, `${tag}: crates reset at midnight (${kept.crates})`);
+    assert.equal(kept.boxName, loaded.boxName, `${tag}: box card changed at midnight`);
+    assert.ok(kept.dayBadge && !kept.dayBadge.hidden, `${tag}: 새 날짜 판 안내 배지가 없음`);
+    assert.ok(kept.dayBadge.text.includes('새 날짜 판이 열렸습니다'), `${tag}: badge text ${kept.dayBadge.text}`);
+    assert.ok(kept.recordDate.includes(`${next.getUTCMonth() + 1}/${next.getUTCDate()}`),
+      `${tag}: 오늘 기록 날짜가 새 날짜가 아님 (${kept.recordDate})`);
+
+    // 남은 회차를 마저 실어 완주한다 — 판 시작일 기록으로 저장되어야 한다.
+    let expected = 0;
+    for (let t = 0; t < sides.length; t += 1) {
+      const rest = t === 0 ? sides[0].slice(1) : sides[t];
+      for (const side of rest) {
+        await page.click(side === 'left' ? '#loadLeft' : '#loadRight');
+        await page.waitForTimeout(35);
+      }
+      const before = await readLoadState(page);
+      const gained = Number(before.preview.replace(/[^0-9]/g, ''));
+      await page.click('#shipBtn');
+      await page.waitForFunction(() => document.getElementById('tripScore').hasAttribute('data-value'));
+      const after = await readLoadState(page);
+      assert.equal(Number(after.tripScore), gained, `${tag}: trip ${t + 1} score ${after.tripScore} vs ${gained}`);
+      expected += gained;
+      await page.click('#nextTripBtn');
+      await page.waitForTimeout(140);
+    }
+    await page.waitForTimeout(700);
+    const done = await readLoadState(page);
+    assert.equal(done.resultHidden, false, `${tag}: 자정을 넘긴 판을 마치지 못함`);
+    assert.equal(Number(done.resultTotal), expected, `${tag}: final total ${done.resultTotal} vs ${expected}`);
+    assert.ok(done.store && done.store.days && done.store.days[todayKey],
+      `${tag}: 판 시작일 기록이 없음 (${JSON.stringify(done.store && done.store.days)})`);
+    assert.equal(done.store.days[todayKey].plays, 1, `${tag}: 판 시작일 완주 ${done.store.days[todayKey].plays}`);
+    assert.equal(done.store.days[todayKey].best, expected, `${tag}: 판 시작일 최고 ${done.store.days[todayKey].best}`);
+    assert.ok(!done.store.days[nextKey], `${tag}: 자정을 넘긴 판이 새 날짜 기록으로 저장됨`);
+
+    // 새 날짜 판은 다음 시작(다시 하기) 때 열린다.
+    await page.click('#retryBtn');
+    await page.waitForTimeout(250);
+    const restarted = await readLoadState(page);
+    assert.equal(restarted.title, nextChallenge.title, `${tag}: 새 날짜 판 제목 ${restarted.title}`);
+    assert.equal(restarted.total, '0', `${tag}: 새 판 누적 ${restarted.total}`);
+    assert.ok(restarted.dayBadge && restarted.dayBadge.hidden, `${tag}: 새 판을 열었는데 배지가 남음`);
+    console.log(`${tag} passed (${challenge.title} → ${nextChallenge.title} · ${expected}점)`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
 }
 
 // ---- 아케이드: 첫 화면(캔버스·세그먼트·기록 카드) · PC 레일/보드 2단 · 모바일 방향키 패드 ----
@@ -3878,6 +4075,70 @@ async function checkArcadeGame(page, width) {
   assert.equal(snakeSaved.store.boards['brick:normal'].length, 1, `${tag}: brick board count changed`);
 
   console.log(`${tag} passed (벽돌 ${brickScore}점 · 지렁이 ${snakeRun.score}점 · ${expectedTier})`);
+}
+
+// ---- 회귀: 단축키가 포커스된 버튼의 기본 키보드 동작(Space·Enter)을 가로채지 않는다 ----
+async function checkArcadeKeyboard(browser, base, width) {
+  const tag = `arcade keyboard ${width}px`;
+  const context = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await context.newPage();
+  const read = () => page.evaluate(() => ({
+    phase: document.getElementById('stage').getAttribute('data-phase'),
+    game: document.getElementById('stage').getAttribute('data-game'),
+    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
+    hidden: document.getElementById('guideBody').hidden,
+    label: document.getElementById('guideToggle').textContent.trim(),
+    focus: document.activeElement ? (document.activeElement.id || document.activeElement.tagName) : null,
+  }));
+  try {
+    await page.goto(`${base}/arcade.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.removeItem('arcade_guide_seen_v1'));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#guideToggle').waitFor({ state: 'attached' });
+
+    // 1) '게임 방법' 토글 버튼에 포커스를 두고 Space — 안내 패널만 토글되어야 한다.
+    await page.focus('#guideToggle');
+    const opened = await read();
+    assert.equal(opened.focus, 'guideToggle', `${tag}: focus ${opened.focus}`);
+    assert.equal(opened.expanded, 'true', `${tag}: guide not open on the first visit`);
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(160);
+    const collapsed = await read();
+    assert.equal(collapsed.phase, 'idle', `${tag}: Space on the guide button started the game (${collapsed.phase})`);
+    assert.equal(collapsed.expanded, 'false', `${tag}: guide did not toggle with Space`);
+    assert.equal(collapsed.hidden, true, `${tag}: guide body still open`);
+    assert.equal(collapsed.label, '게임 방법', `${tag}: toggle label ${collapsed.label}`);
+
+    // 2) Enter도 같은 규칙(버튼의 기본 클릭 동작 우선)
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(160);
+    const reopened = await read();
+    assert.equal(reopened.phase, 'idle', `${tag}: Enter on the guide button started the game (${reopened.phase})`);
+    assert.equal(reopened.expanded, 'true', `${tag}: guide did not reopen with Enter`);
+
+    // 3) 다른 대화형 요소(게임 전환 탭)에 포커스가 있어도 게임이 시작되지 않는다.
+    await page.focus('#gameSnake');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(200);
+    const switched = await read();
+    assert.equal(switched.phase, 'idle', `${tag}: Space on the game switch started a run (${switched.phase})`);
+    assert.equal(switched.game, 'snake', `${tag}: Space did not activate the focused game switch`);
+    await page.focus('#gameBrick');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(160);
+
+    // 4) 게임 영역(비대화형) 포커스에서는 단축키가 그대로 동작한다.
+    await page.focus('#stage');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(300);
+    const started = await read();
+    assert.equal(started.phase, 'playing', `${tag}: Space in the game area did not start (${started.phase})`);
+    await page.click('#quitBtn');
+    console.log(`${tag} passed`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
 }
 
 async function checkPage(context, base, name, width) {
@@ -4160,6 +4421,10 @@ async function main() {
     await checkTodayMidnight(browser, base);
     await checkTodayFocusKeep(browser, base);
     await checkOpsClockJump(browser, base);
+    await checkLoadPracticeRecord(browser, base);
+    await checkLoadMidnightRun(browser, base);
+    await checkArcadeKeyboard(browser, base, 390);
+    await checkArcadeKeyboard(browser, base, 1280);
     await checkGameTabSheet(browser, base, 320);
     await checkGameTabSheet(browser, base, 390);
   } finally {
