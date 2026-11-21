@@ -1890,6 +1890,7 @@ __ARC_CARDS__      </div>
 
     function load(id, opts) {
       currentId = id;
+      practiceMode = false;
       const ep = byId[id];
       resetStateFor(ep);
       pCat.textContent = catLabel[ep.category];
@@ -1927,9 +1928,12 @@ __ARC_CARDS__      </div>
       if (openClues >= ep.clues.length) return;
       openClues += 1;
       if (!indicator) indicator = true;
-      const r = recordFor(ep.id);
-      r.clues = Math.max(r.clues, openClues);
-      saveStore();
+      /* 연습('다시 풀기')은 기록 저장소를 읽지도 쓰지도 않는다. 화면 상태만 바꾼다. */
+      if (!practiceMode) {
+        const r = recordFor(ep.id);
+        r.clues = Math.max(r.clues, openClues);
+        saveStore();
+      }
       renderClues(ep);
       drawChart();
       indicatorBtn.textContent = indicator ? '보조 지표 숨기기' : '보조 지표 보기';
@@ -2017,14 +2021,19 @@ __ARC_CARDS__      </div>
       if (answered || gaveUp) return;
       gaveUp = true;
       answered = true;
-      const r = recordFor(ep.id);
-      r.gaveUp = true;
-      r.revealed = true;
-      r.clues = Math.max(r.clues || 0, openClues);
-      saveStore();
+      /* 연습 모드의 '정답 보기'도 기록 저장소를 건드리지 않는다. */
+      if (practiceMode) {
+        renderOptions(ep, { solved: false, revealed: true, clues: openClues, gaveUp: true, pick: -1 });
+      } else {
+        const r = recordFor(ep.id);
+        r.gaveUp = true;
+        r.revealed = true;
+        r.clues = Math.max(r.clues || 0, openClues);
+        saveStore();
+        renderOptions(ep, r);
+      }
       showPrices = true;
       drawChart();
-      renderOptions(ep, r);
       renderResult(ep, false);
       pSub.textContent = '정답 확인 완료 · 가려졌던 구간까지 표시됩니다';
     });
