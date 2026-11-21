@@ -935,9 +935,161 @@ html_content = """<!DOCTYPE html>
       gap: 12px;
       align-items: flex-start;
     }
-    .custom-guide-icon { font-size: 20px; line-height: 1; }
+    .custom-guide-icon { font-size: 10.5px; font-weight: 700; color: var(--accent-primary); background: var(--accent-subtle); border-radius: 6px; padding: 3px 7px; line-height: 1.3; flex-shrink: 0; }
     .custom-guide-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
     .custom-guide-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ===== 2차 UI/UX: PC 좌측 학습 탐색 레일 · 모바일 콤팩트 드로어 ===== */
+    .study-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .study-overview-copy { min-width: 0; }
+    .study-overview .hero-pill { margin-bottom: 10px; }
+    .study-overview .hero-title { margin-bottom: 6px; }
+    .study-overview .hero-desc { margin-bottom: 0; }
+
+    .study-progress {
+      flex: 0 0 auto;
+      width: 372px;
+      max-width: 100%;
+      padding: 12px 14px 13px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+    }
+    .study-progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+    .study-progress-title { font-size: 11.5px; font-weight: 600; color: var(--text-muted); }
+    .study-progress-pct { font-size: 15px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent-primary); font-variant-numeric: tabular-nums; }
+    .study-progress-track { height: 6px; border-radius: 999px; background: var(--bg-subtle); overflow: hidden; }
+    .study-progress-fill {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent-primary);
+      transition: width 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .study-kpis { display: flex; gap: 12px; margin-top: 11px; }
+    .study-kpi { flex: 1 1 0; min-width: 0; }
+    .study-kpi-label { display: block; font-size: 10.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .study-kpi-value { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+
+    .study-layout {
+      display: grid;
+      grid-template-columns: 272px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .study-main { min-width: 0; }
+
+    .study-rail {
+      position: sticky;
+      top: 76px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+    }
+    .study-rail-head { display: none; }
+    .study-rail-section { display: flex; flex-direction: column; gap: 8px; }
+    .study-rail-section[hidden] { display: none; }
+    .study-rail-label { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; }
+    .study-rail-badge { font-size: 10.5px; font-weight: 600; color: var(--accent-primary); background: var(--accent-subtle); border-radius: 5px; padding: 1px 5px; }
+    .study-rail .category-bar { flex-wrap: wrap; overflow: visible; }
+    .study-rail .cat-chip { font-size: 12px; padding: 6px 9px; }
+    .study-rail .mode-nav-grid { grid-template-columns: 1fr; gap: 4px; }
+    .study-rail .mode-btn { justify-content: flex-start; white-space: normal; text-align: left; padding: 8px 10px; font-size: 12.5px; }
+    .study-rail .exam-btn-group { grid-template-columns: 1fr; }
+    .study-rail .exam-btn { text-align: left; white-space: normal; font-size: 12.5px; padding: 7px 9px; }
+    .study-rail .subj-chips-scroll { flex-wrap: wrap; overflow: visible; }
+    .study-rail .filter-pill { font-size: 12px; padding: 5px 9px; }
+    .study-rail .tools-wrap { flex-wrap: wrap; gap: 6px; }
+    .study-rail .tool-btn { font-size: 12px; padding: 6px 10px; }
+
+    .study-apply-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: auto;
+    }
+    .study-apply-btn:active { transform: scale(0.98); }
+
+    .study-mobile-bar { display: none; }
+    .study-mobile-subj { display: none; }
+    .study-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .study-filter-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .study-filter-badge.is-zero { display: none; }
+    .study-backdrop { display: none; }
+    .study-rail-close { display: none; }
+
+    /* 문제 카드 북마크 */
+    .q-mark {
+      margin-left: auto;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .q-mark:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .q-mark.is-on { color: var(--accent-primary); border-color: var(--accent-primary); background: var(--accent-subtle); }
+
+    @media (min-width: 1024px) {
+      .main-wrap { max-width: 1300px; }
+    }
 
     /* Footer */
     footer {
@@ -1034,6 +1186,10 @@ html_content = """<!DOCTYPE html>
       .q-card {
         padding: 16px 14px;
       }
+      /* 좁은 화면에서는 회차 배지를 접어 제목·북마크가 한 줄에 남게 한다(회차는 상단 칩에 표시). */
+      .q-meta { gap: 6px; }
+      .q-meta .q-badge:first-child { display: none; }
+      .q-mark { font-size: 10.5px; padding: 2px 7px; }
       .q-prompt {
         font-size: 14px;
         line-height: 1.55;
@@ -1120,6 +1276,81 @@ html_content = """<!DOCTYPE html>
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
     }
+
+    /* ===== 2차 UI/UX: 태블릿·모바일 — 과목·모드 칩은 상단, 회차·보기는 드로어 ===== */
+    @media (max-width: 1023px) {
+      .main-wrap { padding: 18px 14px 84px; }
+      .study-overview { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 14px; }
+      .study-overview .hero-desc { display: none; }
+      .study-progress { width: 100%; padding: 11px 12px 12px; }
+      .study-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+      .study-mobile-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+      .study-mobile-mode { flex: 1 1 auto; min-width: 0; }
+      .study-mobile-mode .mode-nav-grid { margin-bottom: 0; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 3px; }
+      .study-mobile-mode .mode-btn { justify-content: center; padding: 7px 3px; font-size: 11.5px; gap: 3px; }
+      .study-mobile-mode .btn-text-full { display: none !important; }
+      .study-mobile-mode .btn-text-mobile { display: inline !important; }
+      .study-mobile-subj { display: flex; margin-bottom: 10px; }
+      .study-mobile-subj .subj-chips-scroll { flex: 1 1 auto; min-width: 0; }
+
+      .study-rail {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        z-index: 90;
+        max-height: 86vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+        padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+        box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 240ms;
+      }
+      .study-rail.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+      }
+      .study-rail-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 4px; }
+      .study-rail-head strong { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+      .study-rail-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        background: var(--bg-page);
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+      .study-rail-close svg { width: 16px; height: 16px; }
+      .study-rail .category-bar { flex-wrap: wrap; overflow: visible; }
+      .study-rail .cat-chip { flex: 0 0 auto; font-size: 11.5px; padding: 6px 8px; }
+      .study-rail .exam-btn-group { grid-template-columns: repeat(2, 1fr); }
+      .study-rail .subj-chips-scroll { flex-wrap: nowrap; overflow-x: auto; }
+      .study-rail .filter-pill { flex: 0 0 auto; }
+      .study-apply-btn { display: inline-flex; }
+
+      .study-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 89;
+        background: rgba(15, 23, 42, 0.44);
+        opacity: 0;
+        transition: opacity 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .study-backdrop.is-open { opacity: 1; }
+      .study-backdrop[hidden] { display: none; }
+      body.study-rail-open { overflow: hidden; }
+    }
   </style>
 </head>
 <body>
@@ -1181,28 +1412,105 @@ html_content = """<!DOCTYPE html>
   </script>
 
   <div class="main-wrap">
-    <!-- Hero -->
-    <div class="hero">
-      <div class="hero-pill">자격증 시험 대비 · 핵심 문제 풀이</div>
-      <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; AI 특강 30제 · 핵심 요약집 125선</h1>
-      <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 + AI 개인정보보호 특강 30문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + AI 특강 12선 + 용어·조문 사전 63선 검색 및 파일/URL 맞춤 분석</p>
-    </div>
 
-    <!-- Exam Category Selector -->
-    <div class="category-section">
-      <div class="category-label">
-        <span>시험 종목 / 학습 카테고리</span>
-        <span id="activeExamBadge" style="color:var(--accent-primary);font-weight:600;">개인정보관리사 (CPPG)</span>
+    <!-- Overview · 진행률 KPI -->
+    <section class="study-overview">
+      <div class="study-overview-copy">
+        <span class="hero-pill">자격증 시험 대비 · 핵심 문제 풀이</span>
+        <h1 class="hero-title" id="pageMainTitle">CPPG 실전 300제 &amp; AI 특강 30제 · 핵심 요약집 125선</h1>
+        <p class="hero-desc" id="pageMainDesc">실전 모의고사 1·2·3회 300문항 + AI 개인정보보호 특강 30문항 즉시 채점, 5과목 핵심정리 35선 + 공식 가이드라인 15선 + AI 특강 12선 + 용어·조문 사전 63선 검색 및 파일/URL 맞춤 분석</p>
       </div>
-      <div class="category-bar" id="categoryBar">
-        <button class="cat-chip active" data-cat="cppg">개인정보관리사 (CPPG)</button>
-        <button class="cat-chip" data-cat="infosec_written">정보보안기사 (필기)</button>
-        <button class="cat-chip" data-cat="infosec_practical">정보보안기사 (실기)</button>
-        <button class="cat-chip" data-cat="ismsp_auditor">ISMS-P 인증심사원</button>
-        <button class="cat-chip" data-cat="custom">맞춤 분석 (파일·URL)</button>
-        <button class="cat-chip add-chip" id="btnAddResource" data-cat="add_new">+ 새 자료 등록</button>
+      <div class="study-progress" id="studyProgress">
+        <div class="study-progress-head">
+          <span class="study-progress-title">학습 진행률</span>
+          <span class="study-progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="study-progress-track" role="progressbar" aria-label="학습 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+          <span class="study-progress-fill" id="progressFill"></span>
+        </div>
+        <div class="study-kpis">
+          <div class="study-kpi"><span class="study-kpi-label">회차 문항</span><strong class="study-kpi-value" id="topTotal">0</strong></div>
+          <div class="study-kpi"><span class="study-kpi-label">푼 문제</span><strong class="study-kpi-value" id="topSolved">0</strong></div>
+          <div class="study-kpi"><span class="study-kpi-label">정답</span><strong class="study-kpi-value" id="topCorrect">0</strong></div>
+          <div class="study-kpi"><span class="study-kpi-label">정답률</span><strong class="study-kpi-value" id="topRate">0%</strong></div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <div class="study-layout">
+      <!-- 학습 탐색: PC 좌측 고정 레일 / 모바일 바텀 시트 -->
+      <aside class="study-rail" id="studyRail" aria-label="학습 탐색">
+        <div class="study-rail-head">
+          <strong>학습 탐색</strong>
+          <button type="button" class="study-rail-close" id="studyRailClose" aria-label="학습 탐색 닫기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+
+        <div class="study-rail-section">
+          <p class="study-rail-label">시험 종목<span class="study-rail-badge" id="activeExamBadge">개인정보관리사 (CPPG)</span></p>
+          <div class="category-bar" id="categoryBar">
+            <button class="cat-chip active" data-cat="cppg">개인정보관리사 (CPPG)</button>
+            <button class="cat-chip" data-cat="infosec_written">정보보안기사 (필기)</button>
+            <button class="cat-chip" data-cat="infosec_practical">정보보안기사 (실기)</button>
+            <button class="cat-chip" data-cat="ismsp_auditor">ISMS-P 인증심사원</button>
+            <button class="cat-chip" data-cat="custom">맞춤 분석 (파일·URL)</button>
+            <button class="cat-chip add-chip" id="btnAddResource" data-cat="add_new">+ 새 자료 등록</button>
+          </div>
+        </div>
+
+        <div class="study-rail-section" id="railModeSection">
+          <p class="study-rail-label">모드</p>
+          <div class="mode-nav-grid" id="modeNavGrid">
+            <button class="mode-btn active" data-mode="quiz" id="modeQuizBtn">
+              <span class="btn-text-full" id="modeQuizLabel">실전 모의고사 + AI 특강 (330제)</span>
+              <span class="btn-text-mobile" id="modeQuizLabelMobile">실전 330제</span>
+            </button>
+            <button class="mode-btn" data-mode="summary" id="modeSummaryBtn">
+              <span class="btn-text-full" id="modeSummaryLabel">전 과목 핵심 요약노트</span>
+              <span class="btn-text-mobile" id="modeSummaryLabelMobile">핵심 요약집</span>
+            </button>
+            <button class="mode-btn" data-mode="custom" id="modeCustomBtn">
+              <span class="btn-text-full" id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
+              <span class="btn-text-mobile" id="modeCustomLabelMobile">맞춤 AI</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="study-rail-section" id="railExamSection">
+          <p class="study-rail-label">회차</p>
+          <div class="exam-btn-group" id="examBtnGroup">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div class="study-rail-section" id="railSubjSection">
+          <p class="study-rail-label">과목</p>
+          <div class="subj-chips-scroll" id="subjPills">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div class="study-rail-section" id="railToolsSection">
+          <p class="study-rail-label">보기</p>
+          <div class="tools-wrap">
+            <button class="tool-btn" id="btnWrongOnly">오답만 보기</button>
+            <button class="tool-btn" id="btnBookmarkOnly">북마크만</button>
+            <button class="tool-btn" id="btnReset">풀이 초기화</button>
+          </div>
+        </div>
+
+        <button type="button" class="study-apply-btn" id="studyApplyBtn">결과 보기 <span id="studyApplyCount"></span></button>
+      </aside>
+
+      <section class="study-main">
+        <div class="study-mobile-bar">
+          <button type="button" class="study-filter-btn" id="studyFilterOpenBtn" aria-expanded="false" aria-controls="studyRail">
+            탐색<span class="study-filter-badge is-zero" id="studyFilterBadge">0</span>
+          </button>
+          <div class="study-mobile-mode" id="mobileModeSlot"></div>
+        </div>
+        <div class="study-mobile-subj" id="mobileSubjSlot"></div>
 
     <!-- Add Resource Panel -->
     <div class="add-resource-panel" id="addResourcePanel">
@@ -1256,58 +1564,6 @@ html_content = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- Top Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">현재 회차 문항</div>
-        <div class="stat-val" id="topTotal">100</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">푼 문제</div>
-        <div class="stat-val" id="topSolved">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">정답 수</div>
-        <div class="stat-val accent" id="topCorrect">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">정답률 / 합격진단</div>
-        <div class="stat-val" id="topRate">0%</div>
-      </div>
-    </div>
-
-    <!-- Mode Selector -->
-    <div class="mode-nav-grid" id="modeNavGrid">
-      <button class="mode-btn active" data-mode="quiz" id="modeQuizBtn">
-        <span class="btn-text-full" id="modeQuizLabel">실전 모의고사 + AI 특강 (330제)</span>
-        <span class="btn-text-mobile" id="modeQuizLabelMobile">실전 330제</span>
-      </button>
-      <button class="mode-btn" data-mode="summary" id="modeSummaryBtn">
-        <span class="btn-text-full" id="modeSummaryLabel">전 과목 핵심 요약노트</span>
-        <span class="btn-text-mobile" id="modeSummaryLabelMobile">핵심 요약집</span>
-      </button>
-      <button class="mode-btn" data-mode="custom" id="modeCustomBtn">
-        <span class="btn-text-full" id="modeCustomLabel">맞춤 AI 분석 &amp; 퀴즈</span>
-        <span class="btn-text-mobile" id="modeCustomLabelMobile">맞춤 AI</span>
-      </button>
-    </div>
-
-    <!-- Controls Bar -->
-    <div class="controls-bar" id="controlsBar">
-      <div class="exam-btn-group" id="examBtnGroup">
-        <!-- Rendered dynamically -->
-      </div>
-      <div class="filter-and-tools">
-        <div class="subj-chips-scroll" id="subjPills">
-          <!-- Rendered dynamically -->
-        </div>
-        <div class="tools-wrap">
-          <button class="tool-btn" id="btnWrongOnly">오답만 보기</button>
-          <button class="tool-btn" id="btnReset">풀이 초기화</button>
-        </div>
-      </div>
-    </div>
-
     <!-- QUIZ VIEW -->
     <div class="questions-list" id="questionsList">
       <!-- Questions rendered dynamically -->
@@ -1330,17 +1586,22 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <div class="custom-guide-card">
-        <div class="custom-guide-icon">💡</div>
+        <div class="custom-guide-icon">안내</div>
         <div>
           <div class="custom-guide-title">새로운 시험 파일이나 웹 URL을 분석하고 싶으신가요?</div>
           <div class="custom-guide-text">
-            상단 <strong>[➕ 새 학습자료 등록]</strong>을 누르시거나 피클 채팅창에 PDF 수험서, 웹 링크를 전달해 주시면 즉시 엑사원 AI가 이 화면에 새로운 시험 카테고리로 퀴즈를 탑재해 드립니다.
+            학습 탐색의 <strong>[+ 새 자료 등록]</strong>을 누르시거나 피클 채팅창에 PDF 수험서, 웹 링크를 전달해 주시면 즉시 엑사원 AI가 이 화면에 새로운 시험 카테고리로 퀴즈를 탑재해 드립니다.
           </div>
         </div>
       </div>
 
       <div id="customUnitsList"></div>
     </div>
+
+      </section>
+    </div>
+
+    <div class="study-backdrop" id="studyBackdrop" hidden></div>
 
     <!-- Footer -->
     <footer>
@@ -1412,12 +1673,25 @@ html_content = """<!DOCTYPE html>
     let currentExam = 1;
     let currentSubj = 0;
     let wrongOnly = false;
+    let bookmarksOnly = false;
+    let bookmarks = {};
     let userAnswers = {};
 
     try {
       const saved = localStorage.getItem('study_user_answers_v4');
       if (saved) userAnswers = JSON.parse(saved);
     } catch(e) {}
+
+    try {
+      const savedMarks = localStorage.getItem('study_bookmarks_v1');
+      if (savedMarks) bookmarks = JSON.parse(savedMarks) || {};
+    } catch(e) {}
+
+    function saveBookmarks() {
+      try {
+        localStorage.setItem('study_bookmarks_v1', JSON.stringify(bookmarks));
+      } catch(e) {}
+    }
 
     function saveUserAnswers() {
       try {
@@ -1542,7 +1816,6 @@ html_content = """<!DOCTYPE html>
     const modeQuizLabel = document.getElementById('modeQuizLabel');
     const modeQuizLabelMobile = document.getElementById('modeQuizLabelMobile');
 
-    const controlsBar = document.getElementById('controlsBar');
     const examBtnGroup = document.getElementById('examBtnGroup');
     const subjPills = document.getElementById('subjPills');
     const questionsList = document.getElementById('questionsList');
@@ -1598,6 +1871,8 @@ html_content = """<!DOCTYPE html>
         if (currentMode === 'custom') currentMode = 'quiz';
         switchMode(currentMode);
       }
+      updateFilterBadge();
+      maybeCloseStudyRail();
     }
 
     function renderControls() {
@@ -1614,6 +1889,8 @@ html_content = """<!DOCTYPE html>
           renderControls();
           updateStats();
           renderQuestions();
+          updateFilterBadge();
+          maybeCloseStudyRail();
         });
         examBtnGroup.appendChild(btn);
       });
@@ -1628,6 +1905,8 @@ html_content = """<!DOCTYPE html>
           currentSubj = sub.id;
           renderControls();
           renderQuestions();
+          updateFilterBadge();
+          maybeCloseStudyRail();
         });
         subjPills.appendChild(pill);
       });
@@ -1648,24 +1927,37 @@ html_content = """<!DOCTYPE html>
       });
 
       if (mode === 'quiz') {
-        controlsBar.style.display = 'flex';
         questionsList.style.display = 'flex';
         summarySection.style.display = 'none';
         customSection.style.display = 'none';
         renderQuestions();
       } else if (mode === 'summary') {
-        controlsBar.style.display = 'none';
         questionsList.style.display = 'none';
         summarySection.style.display = 'flex';
         customSection.style.display = 'none';
         renderSummaries();
       } else if (mode === 'custom') {
-        controlsBar.style.display = 'none';
         questionsList.style.display = 'none';
         summarySection.style.display = 'none';
         customSection.style.display = 'block';
         renderCustomUnits();
       }
+      syncRailVisibility();
+      updateFilterBadge();
+    }
+
+    // 요약·맞춤 모드에서는 회차/과목/보기 선택이 쓰이지 않으므로 레일에서 감춘다.
+    // (모바일에서는 회차·과목이 본문 상단/칩으로 옮겨가므로 드로어에서 감춘다.)
+    let railMobileMount = false;
+
+    function syncRailVisibility() {
+      const quizMode = currentMode === 'quiz';
+      const exam = document.getElementById('railExamSection');
+      const subj = document.getElementById('railSubjSection');
+      const tools = document.getElementById('railToolsSection');
+      if (exam) exam.hidden = !quizMode;
+      if (subj) subj.hidden = !quizMode || railMobileMount;
+      if (tools) tools.hidden = !quizMode;
     }
 
     function getQuestionsForCurrentCategory() {
@@ -1734,6 +2026,15 @@ html_content = """<!DOCTYPE html>
         rateText += acc >= 60 ? ' (합격권)' : ' (보강필요)';
       }
       document.getElementById('topRate').textContent = rateText;
+
+      // 실시간 진행률 바(푼 문제 / 회차 문항)
+      const pct = totalCount > 0 ? Math.round((solved / totalCount) * 100) : 0;
+      const pctEl = document.getElementById('progressPct');
+      if (pctEl) pctEl.textContent = pct + '%';
+      const fillEl = document.getElementById('progressFill');
+      if (fillEl) fillEl.style.width = pct + '%';
+      const barEl = document.getElementById('progressBar');
+      if (barEl) barEl.setAttribute('aria-valuenow', String(pct));
     }
 
     const circles = ['①', '②', '③', '④', '⑤'];
@@ -1743,14 +2044,16 @@ html_content = """<!DOCTYPE html>
       if (wrongOnly) {
         list = list.filter(q => userAnswers[q.id] && !userAnswers[q.id].isCorrect);
       }
+      if (bookmarksOnly) {
+        list = list.filter(q => !!bookmarks[q.id]);
+      }
 
       questionsList.innerHTML = '';
       if (list.length === 0) {
         questionsList.innerHTML = `
           <div style="text-align:center; padding: 48px 16px; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 12px;">
-            <div style="font-size:24px; margin-bottom:8px;">🔍</div>
             <div style="font-size:14px; font-weight:600;">조건에 해당하는 문제가 없습니다.</div>
-            <div style="font-size:12px; margin-top:4px;">오답만 보기 필터나 과목 선택을 변경해 보세요.</div>
+            <div style="font-size:12px; margin-top:4px;">오답만 보기·북마크만 보기 필터나 과목 선택을 변경해 보세요.</div>
           </div>
         `;
         return;
@@ -1784,13 +2087,15 @@ html_content = """<!DOCTYPE html>
         let expShowClass = uAns ? 'show' : '';
         let isCorrect = uAns && uAns.isCorrect;
         let expHeaderClass = isCorrect ? 'correct' : 'wrong';
-        let expHeaderText = isCorrect ? '✅ 정답입니다!' : '❌ 오답입니다';
+        let expHeaderText = isCorrect ? '정답입니다' : '오답입니다';
+        const marked = !!bookmarks[q.id];
 
         card.innerHTML = `
           <div class="q-meta">
             <span class="q-badge">${escapeHtml(q.exam_name || '')}</span>
             <span class="q-badge">${escapeHtml(q.subject_name || '')}</span>
             <span class="q-num">Q${idx + 1}</span>
+            <button type="button" class="q-mark ${marked ? 'is-on' : ''}" data-action="toggle-bookmark" data-id="${escapeHtml(q.id)}" aria-pressed="${marked ? 'true' : 'false'}">${marked ? '북마크됨' : '북마크'}</button>
           </div>
           <div class="q-prompt">${escapeHtml(q.question)}</div>
           <div class="choices-list">${choicesHtml}</div>
@@ -2111,7 +2416,7 @@ html_content = """<!DOCTYPE html>
       if (!data || !data.units || data.units.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding: 40px; color:var(--text-muted); background:var(--bg-surface); border:1px solid var(--border-default); border-radius:12px;">
-            등록된 맞춤 분석 단원이 없습니다. 상단 [➕ 새 학습자료 등록]을 이용해 보세요.
+            등록된 맞춤 분석 단원이 없습니다. 학습 탐색의 [+ 새 자료 등록]을 이용해 보세요.
           </div>
         `;
         return;
@@ -2162,7 +2467,29 @@ html_content = """<!DOCTYPE html>
       btnWrongOnly.classList.toggle('active', wrongOnly);
       btnWrongOnly.textContent = wrongOnly ? '전체 보기' : '오답만 보기';
       renderQuestions();
+      updateFilterBadge();
     });
+
+    // 오답노트 보조: 북마크한 문제만 모아 본다(기기 localStorage 보관).
+    const btnBookmarkOnly = document.getElementById('btnBookmarkOnly');
+    if (btnBookmarkOnly) {
+      btnBookmarkOnly.addEventListener('click', () => {
+        bookmarksOnly = !bookmarksOnly;
+        btnBookmarkOnly.classList.toggle('active', bookmarksOnly);
+        btnBookmarkOnly.textContent = bookmarksOnly ? '전체 보기' : '북마크만';
+        renderQuestions();
+        updateFilterBadge();
+      });
+    }
+
+    window.toggleBookmark = function (qid) {
+      if (!qid) return;
+      if (bookmarks[qid]) delete bookmarks[qid];
+      else bookmarks[qid] = true;
+      saveBookmarks();
+      renderQuestions();
+      updateFilterBadge();
+    };
 
     const btnReset = document.getElementById('btnReset');
     btnReset.addEventListener('click', () => {
@@ -2256,6 +2583,8 @@ html_content = """<!DOCTYPE html>
         if (window.handleSelectChoice) {
           window.handleSelectChoice(el.getAttribute('data-id'), parseInt(el.getAttribute('data-choice'), 10));
         }
+      } else if (action === 'toggle-bookmark') {
+        if (window.toggleBookmark) window.toggleBookmark(el.getAttribute('data-id'));
       } else if (action === 'summary-filter') {
         if (window.setSummaryFilter) window.setSummaryFilter(el.getAttribute('data-filter'));
       } else if (action === 'ismsp-filter') {
@@ -2286,8 +2615,123 @@ html_content = """<!DOCTYPE html>
       el.click();
     });
 
+    // ---- 모바일 학습 탐색 드로어 · 모드/과목 칩 이동 · 적용 개수 배지 ----
+    const studyRail = document.getElementById('studyRail');
+    const studyBackdrop = document.getElementById('studyBackdrop');
+    const studyRailClose = document.getElementById('studyRailClose');
+    const studyFilterOpenBtn = document.getElementById('studyFilterOpenBtn');
+    const studyApplyBtn = document.getElementById('studyApplyBtn');
+    const mobileModeSlot = document.getElementById('mobileModeSlot');
+    const mobileSubjSlot = document.getElementById('mobileSubjSlot');
+    const railModeSection = document.getElementById('railModeSection');
+    let railRaf = null;   // is-open 을 붙이려는 프레임(열기→같은 프레임 닫기 경합 차단)
+    let railOpen = false;
+
+    function studyFilterCount() {
+      let n = 0;
+      if (currentCategory !== 'cppg') n += 1;
+      if (currentExam !== 1) n += 1;
+      if (currentSubj !== 0) n += 1;
+      if (wrongOnly) n += 1;
+      if (bookmarksOnly) n += 1;
+      return n;
+    }
+
+    function updateFilterBadge() {
+      const badge = document.getElementById('studyFilterBadge');
+      if (badge) {
+        const n = studyFilterCount();
+        badge.textContent = n;
+        badge.classList.toggle('is-zero', n === 0);
+      }
+      const applyCount = document.getElementById('studyApplyCount');
+      if (applyCount) applyCount.textContent = '(' + getFilteredQuestions().length + '문항)';
+    }
+
+    function cancelRailRaf() {
+      if (railRaf !== null) {
+        window.cancelAnimationFrame(railRaf);
+        railRaf = null;
+      }
+    }
+
+    function openStudyRail() {
+      if (!studyRail || !studyBackdrop) return;
+      railOpen = true;
+      studyBackdrop.hidden = false;
+      document.body.classList.add('study-rail-open');
+      if (studyFilterOpenBtn) studyFilterOpenBtn.setAttribute('aria-expanded', 'true');
+      cancelRailRaf();
+      railRaf = window.requestAnimationFrame(function () {
+        railRaf = window.requestAnimationFrame(function () {
+          railRaf = null;
+          if (!railOpen) return;
+          studyRail.classList.add('is-open');
+          studyBackdrop.classList.add('is-open');
+          if (studyRailClose) studyRailClose.focus();
+        });
+      });
+    }
+
+    function closeStudyRail() {
+      if (!studyRail || !studyBackdrop) return;
+      railOpen = false;
+      cancelRailRaf();
+      studyRail.classList.remove('is-open');
+      studyBackdrop.classList.remove('is-open');
+      document.body.classList.remove('study-rail-open');
+      if (studyFilterOpenBtn) {
+        studyFilterOpenBtn.setAttribute('aria-expanded', 'false');
+        studyFilterOpenBtn.focus();
+      }
+      window.setTimeout(function () { studyBackdrop.hidden = true; }, 220);
+    }
+
+    // 회차·과목을 고르면 바로 문제로 돌아온다(모바일에서 긴 목록 없이 풀이 지속).
+    function maybeCloseStudyRail() {
+      if (window.innerWidth < 1024 && studyRail && studyRail.classList.contains('is-open')) closeStudyRail();
+    }
+
+    if (studyFilterOpenBtn) {
+      studyFilterOpenBtn.addEventListener('click', function () {
+        if (railOpen || (studyRail && studyRail.classList.contains('is-open'))) closeStudyRail();
+        else openStudyRail();
+      });
+    }
+    if (studyRailClose) studyRailClose.addEventListener('click', closeStudyRail);
+    if (studyApplyBtn) studyApplyBtn.addEventListener('click', closeStudyRail);
+    if (studyBackdrop) studyBackdrop.addEventListener('click', closeStudyRail);
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && (railOpen || (studyRail && studyRail.classList.contains('is-open')))) closeStudyRail();
+    });
+
+    function mountStudyControls() {
+      railMobileMount = window.innerWidth < 1024;
+      if (railMobileMount) {
+        if (mobileModeSlot && modeNavGrid.parentNode !== mobileModeSlot) mobileModeSlot.appendChild(modeNavGrid);
+        if (mobileSubjSlot && subjPills.parentNode !== mobileSubjSlot) mobileSubjSlot.appendChild(subjPills);
+      } else {
+        if (railModeSection && modeNavGrid.parentNode !== railModeSection) railModeSection.appendChild(modeNavGrid);
+        const railSubj = document.getElementById('railSubjSection');
+        if (railSubj && subjPills.parentNode !== railSubj) railSubj.appendChild(subjPills);
+      }
+      if (railModeSection) railModeSection.hidden = railMobileMount;
+      syncRailVisibility();
+      updateFilterBadge();
+    }
+
+    let studyMountTimer = null;
+    window.addEventListener('resize', function () {
+      window.clearTimeout(studyMountTimer);
+      studyMountTimer = window.setTimeout(function () {
+        mountStudyControls();
+        if (window.innerWidth >= 1024 && studyRail && studyRail.classList.contains('is-open')) closeStudyRail();
+      }, 120);
+    });
+
     // Initial Load
     switchCategory('cppg');
+    mountStudyControls();
   </script>
 </body>
 </html>

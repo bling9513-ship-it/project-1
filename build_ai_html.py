@@ -837,6 +837,189 @@ CSS = """
       line-height: 1.8;
     }
 
+    /* ===== 2차 UI/UX: PC 좌측 필터 레일 · 모바일 필터 바텀 시트 ===== */
+    .ai-overview {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .ai-overview-copy { min-width: 0; }
+    .ai-overview .hero-pill { margin-bottom: 10px; }
+    .ai-overview .hero-title { margin-bottom: 6px; }
+    .ai-overview .hero-desc { margin-bottom: 0; }
+
+    .ai-kpis { display: flex; gap: 8px; flex: 0 0 auto; }
+    .ai-kpi {
+      min-width: 100px;
+      padding: 9px 12px 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .ai-kpi-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; }
+    .ai-kpi-value { font-size: 19px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .ai-kpi-unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-left: 2px; }
+
+    .ai-layout {
+      display: grid;
+      grid-template-columns: 268px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .ai-main { min-width: 0; }
+
+    .ai-rail {
+      position: sticky;
+      top: 76px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+    }
+    .ai-rail-head { display: none; }
+    .ai-rail-section { display: flex; flex-direction: column; gap: 8px; }
+    .ai-rail-section[hidden] { display: none; }
+    .ai-rail-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.01em; }
+    .ai-rail .segmented-control { flex-wrap: wrap; overflow: visible; gap: 4px; }
+    .ai-rail .segment-btn { padding: 6px 9px; font-size: 12px; border-radius: 8px; }
+    .ai-rail .segment-btn .count { font-size: 10px; padding: 1px 5px; }
+    .ai-rail .filter-pills-scroll { flex-wrap: wrap; overflow: visible; }
+    .ai-rail .filter-pill { padding: 5px 9px; font-size: 11.5px; }
+    .ai-rail .search-input { padding: 9px 32px 9px 34px; font-size: 13px; }
+    .ai-rail .search-icon { left: 11px; }
+    .ai-rail .clear-search-btn { right: 8px; }
+    .ai-rail .sort-select { width: 100%; }
+    .ai-rail-foot { display: flex; flex-direction: column; gap: 6px; padding-top: 2px; }
+
+    .sort-select {
+      font-family: inherit;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 7px 8px;
+      cursor: pointer;
+    }
+    .sort-select:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    .ai-apply-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease;
+    }
+    .ai-apply-btn:active { transform: scale(0.98); }
+    .ai-reset-link {
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px;
+      cursor: pointer;
+    }
+    .ai-reset-link:hover { color: var(--text-primary); }
+
+    .ai-mobile-controls { display: none; }
+    .ai-mobile-search { flex: 1 1 auto; min-width: 0; }
+    .ai-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease;
+    }
+    .ai-filter-btn:active { transform: scale(0.98); }
+    .ai-filter-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .ai-filter-badge.is-zero { display: none; }
+    .ai-backdrop { display: none; }
+    .ai-rail-close { display: none; }
+
+    /* 오늘의 브리핑: PC는 펼침, 모바일은 접혀 첫 화면에 카드가 바로 보인다 */
+    .ai-brief {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: var(--card-shadow);
+    }
+    .ai-brief-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      border-radius: 14px;
+    }
+    .ai-brief-summary::-webkit-details-marker { display: none; }
+    .ai-brief-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .ai-brief-chevron { width: 16px; height: 16px; color: var(--text-muted); transition: transform 160ms ease; flex-shrink: 0; }
+    .ai-brief-right { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .ai-brief[open] .ai-brief-chevron { transform: rotate(180deg); }
+    .ai-brief-time { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+    .ai-brief-body { padding: 0 20px 18px; }
+    .ai-brief-body .briefing-text { margin-bottom: 16px; }
+    .ai-brief[open] .ai-brief-body .briefing-grid { padding-top: 16px; }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1300px; }
+    }
+
     /* Mobile Responsive */
     @media (max-width: 640px) {
       .nav-container { padding: 0 12px; height: 54px; gap: 6px; }
@@ -900,6 +1083,91 @@ CSS = """
       .nav-tab-item { padding: 4px 5px; font-size: 10px; border-radius: 11px; letter-spacing: -0.045em; }
       .nav-actions { gap: 4px; }
       .nav-actions .icon-btn { width: 28px; height: 28px; }
+    }
+
+    /* ===== 2차 UI/UX: 태블릿·모바일 — 필터는 바텀 시트, 첫 화면은 바로 트렌드 카드 ===== */
+    @media (max-width: 1023px) {
+      .ai-overview { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 14px; }
+      .ai-overview .hero-desc { display: none; }
+      .ai-kpis { gap: 6px; overflow-x: auto; scrollbar-width: none; }
+      .ai-kpis::-webkit-scrollbar { display: none; }
+      .ai-kpi { flex: 1 1 0; min-width: 0; padding: 8px 10px; }
+      .ai-kpi-value { font-size: 16px; }
+      .ai-kpi-label { font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; }
+
+      .ai-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .ai-mobile-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+      .ai-mobile-controls .sort-select { flex: 0 0 auto; max-width: 126px; }
+
+      .ai-rail {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        z-index: 90;
+        max-height: 86vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        border-bottom: 0;
+        padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+        box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 240ms;
+      }
+      .ai-rail.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+      }
+      .ai-rail-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 4px; }
+      .ai-rail-head strong { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+      .ai-rail-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border-default);
+        border-radius: 10px;
+        background: var(--bg-page);
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+      .ai-rail-close svg { width: 16px; height: 16px; }
+      .ai-rail .segmented-control { flex-wrap: nowrap; overflow-x: auto; }
+      .ai-rail .segment-btn { flex: 0 0 auto; }
+      .ai-rail .filter-pills-scroll { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+      .ai-rail .filter-pill { flex: 0 0 auto; }
+      .ai-rail .search-input { font-size: 14px; padding: 10px 36px 10px 36px; }
+      .ai-rail-foot { display: flex; }
+      .ai-apply-btn { display: inline-flex; }
+
+      .ai-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 89;
+        background: rgba(15, 23, 42, 0.44);
+        opacity: 0;
+        transition: opacity 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .ai-backdrop.is-open { opacity: 1; }
+      .ai-backdrop[hidden] { display: none; }
+      body.ai-filter-open { overflow: hidden; }
+
+      .ai-brief-summary { padding: 13px 15px; }
+      .ai-brief-title { font-size: 14px; }
+      .ai-brief-body { padding: 0 15px 15px; }
+      .ai-brief-body .briefing-text { font-size: 13px; line-height: 1.7; }
+      .ai-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 380px) {
+      .ai-brief-summary { gap: 6px; }
+      .ai-brief-title { white-space: nowrap; }
+      .ai-brief-time { display: none; }
     }
 """
 
@@ -1003,85 +1271,134 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <main class="container">
 
-    <!-- Hero -->
-    <section class="hero">
-      <span class="hero-pill">DAILY AI BRIEFING</span>
-      <h1 class="hero-title">AI 기술·트렌드 브리핑</h1>
-      <p class="hero-desc">AI 보안과 AI 툴까지 함께 모읍니다. arXiv·Hugging Face의 최신 논문, The Hacker News·Dark Reading·Embrace the Red의 AI 보안 소식, GitHub에서 주목받는 AI/LLM/에이전트/MCP 오픈소스 도구, Hacker News·Show HN·GeekNews의 실무 담론을 매일 수집해 한국어 요약과 기술·보안 시사점으로 정리합니다.</p>
-      <div class="hero-stats">
-        <span class="stat-chip">수집·분석 <strong>__TOTAL__건</strong></span>
-        <span class="stat-chip">주목할 기술 <strong>__FEATURED__건</strong></span>
-        <span class="stat-chip">출처 <strong>__ACTIVE_SOURCES__곳</strong></span>
-        <span class="stat-chip">매일 <strong>08:00</strong> 자동 갱신</span>
+    <!-- Overview · KPI -->
+    <section class="ai-overview">
+      <div class="ai-overview-copy">
+        <span class="hero-pill">DAILY AI BRIEFING</span>
+        <h1 class="hero-title">AI 기술·트렌드 브리핑</h1>
+        <p class="hero-desc">AI 보안과 AI 툴까지 함께 모읍니다. arXiv·Hugging Face의 최신 논문, The Hacker News·Dark Reading·Embrace the Red의 AI 보안 소식, GitHub에서 주목받는 AI/LLM/에이전트/MCP 오픈소스 도구, Hacker News·Show HN·GeekNews의 실무 담론을 매일 수집해 한국어 요약과 기술·보안 시사점으로 정리합니다.</p>
       </div>
-    </section>
-
-    <!-- Today's Briefing -->
-    <section class="briefing">
-      <div class="briefing-head">
-        <div class="briefing-title"><span class="bar"></span>오늘의 AI 기술 동향</div>
-        <span class="briefing-time">__UPDATED_AT__ 기준</span>
-      </div>
-      <p class="briefing-text">__BRIEFING__</p>
-
-      <div class="briefing-grid">
-        <div>
-          <div class="block-label">핵심 기술 키워드 Top 5</div>
-          <div class="kw-list">
-            __KEYWORD_CHIPS__
-          </div>
+      <div class="ai-kpis">
+        <div class="ai-kpi">
+          <span class="ai-kpi-label">수집·분석</span>
+          <strong class="ai-kpi-value">__TOTAL__</strong><span class="ai-kpi-unit">건</span>
         </div>
-        <div>
-          <div class="block-label">카테고리 분포</div>
-          <div class="dist-list">
-            __DIST_ROWS__
-          </div>
+        <div class="ai-kpi">
+          <span class="ai-kpi-label">주목할 기술</span>
+          <strong class="ai-kpi-value">__FEATURED__</strong><span class="ai-kpi-unit">건</span>
+        </div>
+        <div class="ai-kpi">
+          <span class="ai-kpi-label">출처</span>
+          <strong class="ai-kpi-value">__ACTIVE_SOURCES__</strong><span class="ai-kpi-unit">곳</span>
         </div>
       </div>
     </section>
 
-    <!-- Toolbar -->
-    <section class="toolbar">
-      <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="제목, 요약, 키워드로 검색 (예: 프롬프트 인젝션, 에이전트 보안, MCP, 오픈소스 툴)">
-        <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
-      </div>
+    <div class="ai-layout">
+      <!-- 필터: PC 좌측 고정 레일 / 모바일 바텀 시트 -->
+      <aside class="ai-rail" id="aiRail" aria-label="AI 자료 필터">
+        <div class="ai-rail-head">
+          <strong>필터</strong>
+          <button type="button" class="ai-rail-close" id="aiRailClose" aria-label="필터 닫기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
 
-      <div class="segmented-control" id="categoryNav">
-        <button class="segment-btn active" data-cat="all">전체 <span class="count">__TOTAL__</span></button>
-        <button class="segment-btn" data-cat="featured">주목할 기술 <span class="count">__FEATURED__</span></button>
-        __CATEGORY_BUTTONS__
-      </div>
+        <div class="ai-rail-section" id="aiRailSearchSection">
+          <p class="ai-rail-label">검색</p>
+          <div class="search-box" id="aiSearchBox">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="제목, 요약, 키워드 검색">
+            <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
+          </div>
+        </div>
 
-      <div class="sub-toolbar">
-        <div class="filter-row">
-          <span class="filter-label">출처</span>
+        <div class="ai-rail-section">
+          <p class="ai-rail-label">카테고리</p>
+          <div class="segmented-control" id="categoryNav">
+            <button class="segment-btn active" data-cat="all">전체 <span class="count">__TOTAL__</span></button>
+            <button class="segment-btn" data-cat="featured">주목할 기술 <span class="count">__FEATURED__</span></button>
+            __CATEGORY_BUTTONS__
+          </div>
+        </div>
+
+        <div class="ai-rail-section">
+          <p class="ai-rail-label">출처</p>
           <div class="filter-pills-scroll" id="sourceNav">
             <button class="filter-pill active" data-src="all">전체</button>
             __SOURCE_PILLS__
           </div>
         </div>
-        <div class="filter-row filter-row-sort">
-          <span class="filter-label">정렬</span>
-          <div class="filter-pills-scroll" id="sortNav">
-            <button class="filter-pill active" data-sort="featured">주목할 기술 우선</button>
-            <button class="filter-pill" data-sort="latest">최신순</button>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <div class="result-meta">
-      <span><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
-      <button class="reset-btn" id="resetFilters">필터 초기화</button>
+        <div class="ai-rail-section">
+          <p class="ai-rail-label">정렬</p>
+          <select class="sort-select" id="aiSort" aria-label="정렬 기준">
+            <option value="featured" selected>주목할 기술 우선</option>
+            <option value="latest">최신순</option>
+          </select>
+        </div>
+
+        <div class="ai-rail-foot">
+          <button type="button" class="ai-apply-btn" id="aiApplyBtn">결과 보기 <span id="aiApplyCount"></span></button>
+          <button type="button" class="ai-reset-link" id="resetFilters">필터 초기화</button>
+        </div>
+      </aside>
+
+      <section class="ai-main">
+        <div class="ai-mobile-controls">
+          <div class="ai-mobile-search" id="aiMobileSearchSlot"></div>
+          <select class="sort-select" id="aiSortMobile" aria-label="정렬 기준">
+            <option value="featured" selected>주목할 기술 우선</option>
+            <option value="latest">최신순</option>
+          </select>
+          <button type="button" class="ai-filter-btn" id="aiFilterOpenBtn" aria-expanded="false" aria-controls="aiRail">
+            필터<span class="ai-filter-badge is-zero" id="aiFilterBadge">0</span>
+          </button>
+        </div>
+
+        <!-- Today's Briefing (PC 펼침 · 모바일 접힘) -->
+        <details class="ai-brief" id="aiBrief">
+          <summary class="ai-brief-summary">
+            <span class="ai-brief-title"><span class="bar"></span>오늘의 AI 기술 동향</span>
+            <span class="ai-brief-right">
+              <span class="ai-brief-time">__UPDATED_AT__ 기준</span>
+              <svg class="ai-brief-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+          </summary>
+          <div class="ai-brief-body">
+            <p class="briefing-text">__BRIEFING__</p>
+
+            <div class="briefing-grid">
+              <div>
+                <div class="block-label">핵심 기술 키워드 Top 5</div>
+                <div class="kw-list">
+                  __KEYWORD_CHIPS__
+                </div>
+              </div>
+              <div>
+                <div class="block-label">카테고리 분포</div>
+                <div class="dist-list">
+                  __DIST_ROWS__
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div class="result-meta">
+          <span><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
+          <button class="reset-btn" id="resetFiltersMeta">필터 초기화</button>
+        </div>
+
+        <section class="ai-grid" id="aiGrid"></section>
+        <div class="empty-state" id="emptyState">조건에 맞는 자료가 없습니다. 다른 키워드나 필터로 다시 찾아보세요.</div>
+      </section>
     </div>
 
-    <section class="ai-grid" id="aiGrid"></section>
-    <div class="empty-state" id="emptyState">조건에 맞는 자료가 없습니다. 다른 키워드나 필터로 다시 찾아보세요.</div>
+    <div class="ai-backdrop" id="aiBackdrop" hidden></div>
 
     <footer class="footer">
       Infosec Archive · AI 기술·트렌드 브리핑<br>
@@ -1246,37 +1563,30 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       visibleCount.textContent = list.length;
       emptyState.classList.toggle('visible', list.length === 0);
       clearSearchBtn.classList.toggle('visible', searchTerm.length > 0);
+      updateFilterBadge();
     }
 
-    // Category segments
-    document.querySelectorAll('#categoryNav .segment-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#categoryNav .segment-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeCat = btn.dataset.cat;
-        render();
+    // ---- Filters (레일·시트 공통 이벤트 위임) ----
+    const rail = document.getElementById('aiRail');
+    if (rail) {
+      rail.addEventListener('click', (ev) => {
+        const catBtn = ev.target.closest('#categoryNav .segment-btn');
+        if (catBtn) {
+          document.querySelectorAll('#categoryNav .segment-btn').forEach(b => b.classList.remove('active'));
+          catBtn.classList.add('active');
+          activeCat = catBtn.dataset.cat;
+          render();
+          return;
+        }
+        const srcBtn = ev.target.closest('#sourceNav .filter-pill');
+        if (srcBtn) {
+          document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.remove('active'));
+          srcBtn.classList.add('active');
+          activeSrc = srcBtn.dataset.src;
+          render();
+        }
       });
-    });
-
-    // Source pills
-    document.querySelectorAll('#sourceNav .filter-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeSrc = btn.dataset.src;
-        render();
-      });
-    });
-
-    // Sort pills
-    document.querySelectorAll('#sortNav .filter-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#sortNav .filter-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeSort = btn.dataset.sort;
-        render();
-      });
-    });
+    }
 
     // Search
     let debounce = null;
@@ -1296,16 +1606,151 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       searchInput.focus();
     });
 
-    document.getElementById('resetFilters').addEventListener('click', () => {
+    function resetAllFilters() {
       activeCat = 'all';
       activeSrc = 'all';
       activeSort = 'featured';
       searchTerm = '';
       searchInput.value = '';
+      aiSort.value = 'featured';
+      if (aiSortMobile) aiSortMobile.value = 'featured';
       document.querySelectorAll('#categoryNav .segment-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
       document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.toggle('active', b.dataset.src === 'all'));
-      document.querySelectorAll('#sortNav .filter-pill').forEach(b => b.classList.toggle('active', b.dataset.sort === 'featured'));
       render();
+    }
+
+    document.getElementById('resetFilters').addEventListener('click', resetAllFilters);
+    const resetFiltersMeta = document.getElementById('resetFiltersMeta');
+    if (resetFiltersMeta) resetFiltersMeta.addEventListener('click', resetAllFilters);
+
+    // ---- 정렬 · 모바일 필터 시트 · 적용 개수 배지 ----
+    const aiSort = document.getElementById('aiSort');
+    const aiSortMobile = document.getElementById('aiSortMobile');
+    const railCloseBtn = document.getElementById('aiRailClose');
+    const filterOpenBtn = document.getElementById('aiFilterOpenBtn');
+    const backdrop = document.getElementById('aiBackdrop');
+    const applyBtn = document.getElementById('aiApplyBtn');
+    let railOpenRaf = null;   // is-open 을 붙이려는 프레임(열기→같은 프레임 닫기 경합 차단)
+    let railOpen = false;
+
+    aiSort.addEventListener('change', () => {
+      activeSort = aiSort.value;
+      if (aiSortMobile) aiSortMobile.value = activeSort;
+      render();
+    });
+
+    if (aiSortMobile) {
+      aiSortMobile.addEventListener('change', () => {
+        aiSort.value = aiSortMobile.value;
+        activeSort = aiSortMobile.value;
+        render();
+      });
+    }
+
+    function activeFilterCount() {
+      let n = 0;
+      if (activeCat !== 'all') n += 1;
+      if (activeSrc !== 'all') n += 1;
+      if (searchTerm) n += 1;
+      return n;
+    }
+
+    function updateFilterBadge() {
+      const badge = document.getElementById('aiFilterBadge');
+      if (badge) {
+        const n = activeFilterCount();
+        badge.textContent = n;
+        badge.classList.toggle('is-zero', n === 0);
+      }
+      const applyCount = document.getElementById('aiApplyCount');
+      if (applyCount) {
+        const el = document.getElementById('visibleCount');
+        applyCount.textContent = el ? '(' + el.textContent + ')' : '';
+      }
+    }
+
+    function cancelRailFrame() {
+      if (railOpenRaf !== null) {
+        window.cancelAnimationFrame(railOpenRaf);
+        railOpenRaf = null;
+      }
+    }
+
+    function openRailSheet() {
+      if (!rail || !backdrop) return;
+      railOpen = true;
+      backdrop.hidden = false;
+      document.body.classList.add('ai-filter-open');
+      if (filterOpenBtn) filterOpenBtn.setAttribute('aria-expanded', 'true');
+      cancelRailFrame();
+      railOpenRaf = window.requestAnimationFrame(function () {
+        railOpenRaf = window.requestAnimationFrame(function () {
+          railOpenRaf = null;
+          if (!railOpen) return;
+          rail.classList.add('is-open');
+          backdrop.classList.add('is-open');
+          if (railCloseBtn) railCloseBtn.focus();
+        });
+      });
+    }
+
+    function closeRailSheet() {
+      if (!rail || !backdrop) return;
+      railOpen = false;
+      cancelRailFrame();
+      rail.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      document.body.classList.remove('ai-filter-open');
+      if (filterOpenBtn) {
+        filterOpenBtn.setAttribute('aria-expanded', 'false');
+        filterOpenBtn.focus();
+      }
+      window.setTimeout(function () { backdrop.hidden = true; }, 220);
+    }
+
+    if (filterOpenBtn) {
+      filterOpenBtn.addEventListener('click', function () {
+        if (railOpen || (rail && rail.classList.contains('is-open'))) closeRailSheet();
+        else openRailSheet();
+      });
+    }
+    if (railCloseBtn) railCloseBtn.addEventListener('click', closeRailSheet);
+    if (applyBtn) applyBtn.addEventListener('click', closeRailSheet);
+    if (backdrop) backdrop.addEventListener('click', closeRailSheet);
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && (railOpen || (rail && rail.classList.contains('is-open')))) closeRailSheet();
+    });
+
+    // 검색창은 PC에서는 좌측 레일, 모바일에서는 목록 상단에 놓인다(같은 입력 요소를 옮긴다).
+    const searchBox = document.getElementById('aiSearchBox');
+    const railSearchSection = document.getElementById('aiRailSearchSection');
+
+    function mountSearch() {
+      if (!searchBox || !railSearchSection) return;
+      const mobile = window.innerWidth < 1024;
+      const slot = document.getElementById(mobile ? 'aiMobileSearchSlot' : 'aiRailSearchSection');
+      if (slot && searchBox.parentNode !== slot) slot.appendChild(searchBox);
+      railSearchSection.hidden = mobile;
+    }
+
+    // 오늘의 브리핑은 PC에서 펼치고 모바일에서는 접어 카드가 먼저 보이게 한다.
+    const brief = document.getElementById('aiBrief');
+    function syncBrief() {
+      if (!brief) return;
+      brief.open = window.innerWidth >= 1024;
+    }
+
+    mountSearch();
+    syncBrief();
+
+    let mountTimer = null;
+    window.addEventListener('resize', function () {
+      window.clearTimeout(mountTimer);
+      mountTimer = window.setTimeout(function () {
+        mountSearch();
+        syncBrief();
+        if (window.innerWidth >= 1024 && rail && rail.classList.contains('is-open')) closeRailSheet();
+      }, 120);
     });
 
     initTheme();

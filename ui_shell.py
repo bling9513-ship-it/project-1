@@ -754,25 +754,39 @@ NAV_JS = """
   var allBtn = document.getElementById('iaAllBtn');
   var sheetClose = document.getElementById('iaSheetClose');
   var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
 
   function sheetItems() {
     if (!sheet) return [];
     return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
   }
 
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
   function openSheet() {
     if (!sheet || !backdrop || !allBtn) return;
     if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    isOpen = true;
     sheet.hidden = false;
     backdrop.hidden = false;
     document.body.classList.add('ia-sheet-open');
     allBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
     if (reduceMotion) {
       sheet.classList.add('is-open');
       backdrop.classList.add('is-open');
     } else {
-      window.requestAnimationFrame(function () {
-        window.requestAnimationFrame(function () {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
           sheet.classList.add('is-open');
           backdrop.classList.add('is-open');
         });
@@ -783,6 +797,8 @@ NAV_JS = """
 
   function closeSheet() {
     if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
     sheet.classList.remove('is-open');
     backdrop.classList.remove('is-open');
     document.body.classList.remove('ia-sheet-open');

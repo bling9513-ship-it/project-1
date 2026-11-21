@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-oUQWmGXThXiBtcToC1cY/NdO93auffT24RVJrsElpZ0=' 'sha256-jBHIhXgKV8ZHQrj7M30AJ4CoCtyLfLuT9j51Cq3PpTw='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-oUQWmGXThXiBtcToC1cY/NdO93auffT24RVJrsElpZ0=' 'sha256-q9LRjCT8OF1gSF2KV2zYkNPaBOL+EN/o2Tvjzwi6hyU='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 차트 추리실</title>
   <meta name="description" content="날짜와 종목명을 가린 과거 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 어떤 시장 국면이었는지 맞히는 4지선다 게임. 실제 과거 일별·주별 시세를 쓰고, 정답을 고르면 가려져 있던 기간·종목·출처와 해설이 공개됩니다.">
@@ -1512,7 +1512,7 @@
     <footer class="footer">
       Infosec Archive · 차트 추리실<br>
       차트는 Yahoo Finance가 공개한 과거 일별·주별 시세(시가·고가·저가·종가·거래량)를 그대로 쓴 것이며, 주가는 액면분할·배당을 반영해 조정된 값입니다. 정답과 해설은 학습·오락용으로, 투자 판단의 근거로 쓰라고 만든 것이 아닙니다. 풀이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-21 11:18 KST 기준 · 매일 08:00 새 차트
+      2026-11-21 12:42 KST 기준 · 매일 08:00 새 차트
     </footer>
   </main>
 
@@ -2293,25 +2293,39 @@
   var allBtn = document.getElementById('iaAllBtn');
   var sheetClose = document.getElementById('iaSheetClose');
   var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
 
   function sheetItems() {
     if (!sheet) return [];
     return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
   }
 
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
   function openSheet() {
     if (!sheet || !backdrop || !allBtn) return;
     if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    isOpen = true;
     sheet.hidden = false;
     backdrop.hidden = false;
     document.body.classList.add('ia-sheet-open');
     allBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
     if (reduceMotion) {
       sheet.classList.add('is-open');
       backdrop.classList.add('is-open');
     } else {
-      window.requestAnimationFrame(function () {
-        window.requestAnimationFrame(function () {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
           sheet.classList.add('is-open');
           backdrop.classList.add('is-open');
         });
@@ -2322,6 +2336,8 @@
 
   function closeSheet() {
     if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
     sheet.classList.remove('is-open');
     backdrop.classList.remove('is-open');
     document.body.classList.remove('ia-sheet-open');
