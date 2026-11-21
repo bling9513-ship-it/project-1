@@ -2013,6 +2013,109 @@ async function checkMarkedFeed(page, width, config) {
   console.log(tag + ' passed');
 }
 
+// ---- ai·cve: 키보드 Enter 로 저장·읽음 토글해도 포커스가 body 로 떨어지지 않는다 ----
+// (재렌더 후 같은 항목의 같은 버튼 → 필터로 카드가 사라지면 다음 카드 → 남은 카드가 없으면 필터 칩)
+async function readMarkFocus(page) {
+  return page.evaluate(() => {
+    const el = document.activeElement;
+    if (!el || el === document.body) return { body: true };
+    const mark = el.closest ? el.closest('[data-mark]') : null;
+    const card = el.closest ? el.closest('.ai-card, .cve-card') : null;
+    const chip = el.closest ? el.closest('#collectionNav .filter-pill') : null;
+    return {
+      body: false,
+      tag: el.tagName,
+      id: el.id || null,
+      mark: mark ? mark.getAttribute('data-mark') : null,
+      key: card ? card.getAttribute('data-key') : null,
+      chip: chip ? chip.getAttribute('data-collection') : null,
+      pressed: chip ? chip.getAttribute('aria-pressed') : null,
+    };
+  });
+}
+
+async function checkMarkFocus(page, width, name) {
+  const tag = `${name} mark focus ${width}px`;
+  const cfg = name === 'ai'
+    ? { card: '#aiGrid .ai-card', filterButton: '#aiFilterOpenBtn', open: 'aiFilterOpenBtn', saved: 'ai_saved_v1', read: 'ai_read_v1' }
+    : { card: '#cveList .cve-card', filterButton: '#cveFilterOpenBtn', open: 'cveFilterOpenBtn', saved: 'cve_saved_v1', read: 'cve_read_v1' };
+  const clear = () => page.evaluate((keys) => keys.forEach((k) => localStorage.removeItem(k)), [cfg.saved, cfg.read]);
+
+  await clear();
+  await page.reload({ waitUntil: 'load' });
+  await page.locator(cfg.card).first().waitFor({ state: 'attached' });
+  const keys = await page.evaluate((sel) => Array.from(document.querySelectorAll(sel))
+    .map((card) => card.getAttribute('data-key')), cfg.card);
+  assert.ok(keys.length >= 4, `${tag}: need at least 4 cards (${keys.length})`);
+
+  // 1) Enter 로 저장 → 같은 카드의 저장 버튼에 포커스가 남는다
+  await page.locator(`${cfg.card} [data-mark="saved"]`).first().focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(80);
+  let focus = await readMarkFocus(page);
+  assert.equal(focus.body, false, `${tag}: focus fell back to body after saving with Enter`);
+  assert.equal(focus.mark, 'saved', `${tag}: focus left the save button (${JSON.stringify(focus)})`);
+  assert.equal(focus.key, keys[0], `${tag}: focus jumped to another card after saving`);
+  assert.equal(await page.evaluate(({ k, key }) => JSON.parse(localStorage.getItem(k) || '{}')[key],
+    { k: cfg.saved, key: keys[0] }), 1, `${tag}: save did not persist`);
+
+  // 2) Enter 로 읽음 표시 → 같은 카드의 읽음 버튼에 포커스가 남는다
+  await page.locator(`${cfg.card} [data-mark="read"]`).first().focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(80);
+  focus = await readMarkFocus(page);
+  assert.equal(focus.body, false, `${tag}: focus fell back to body after marking read`);
+  assert.equal(focus.mark, 'read', `${tag}: focus left the read button (${JSON.stringify(focus)})`);
+  assert.equal(focus.key, keys[0], `${tag}: focus jumped to another card after marking read`);
+  assert.equal(await page.evaluate(({ k, key }) => JSON.parse(localStorage.getItem(k) || '{}')[key],
+    { k: cfg.read, key: keys[0] }), 1, `${tag}: read mark did not persist`);
+
+  // 3) '저장한 항목만' 필터에서 해제 → 사라진 카드 대신 다음 카드의 같은 버튼으로 이동
+  await page.locator(`${cfg.card} [data-mark="saved"]`).nth(1).click();
+  await page.waitForTimeout(80);
+  assert.equal(await page.evaluate(({ k }) => Object.keys(JSON.parse(localStorage.getItem(k) || '{}')).length,
+    { k: cfg.saved }), 2, `${tag}: second card not saved`);
+  await pickCollectionChip(page, width, cfg.filterButton, 'saved');
+  assert.equal(await page.locator(cfg.card).count(), 2, `${tag}: saved filter must show the two saved cards`);
+  await page.locator(`${cfg.card} [data-mark="saved"]`).first().focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator(cfg.card).count(), 1, `${tag}: card did not leave the saved filter`);
+  focus = await readMarkFocus(page);
+  assert.equal(focus.body, false, `${tag}: focus fell to body when the card left the filter`);
+  assert.equal(focus.mark, 'saved', `${tag}: focus is not on a save button after the card left`);
+  assert.equal(focus.key, keys[1], `${tag}: focus did not move to the next card`);
+
+  // 4) 마지막 카드까지 해제 → 활성 필터 칩(모바일은 보이는 필터 초기화 버튼)으로 이동
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator(cfg.card).count(), 0, `${tag}: filtered list should be empty`);
+  focus = await readMarkFocus(page);
+  assert.equal(focus.body, false, `${tag}: focus fell to body when the filtered list emptied`);
+  assert.ok(focus.chip === 'saved' || ['resetFilters', 'resetFiltersMeta', cfg.open].includes(focus.id),
+    `${tag}: focus went to ${JSON.stringify(focus)} instead of the filter chip or reset button`);
+
+  // 5) '안 읽은 항목만' 필터에서 읽음 표시 → 다음 카드의 읽음 버튼으로 이동
+  await clear();
+  await page.reload({ waitUntil: 'load' });
+  await page.locator(cfg.card).first().waitFor({ state: 'attached' });
+  await pickCollectionChip(page, width, cfg.filterButton, 'unread');
+  const unreadTotal = await page.locator(cfg.card).count();
+  assert.equal(unreadTotal, keys.length, `${tag}: unread filter count ${unreadTotal}`);
+  await page.locator(`${cfg.card} [data-mark="read"]`).first().focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator(cfg.card).count(), unreadTotal - 1, `${tag}: read card stayed in the unread filter`);
+  focus = await readMarkFocus(page);
+  assert.equal(focus.body, false, `${tag}: focus fell to body in the unread filter`);
+  assert.equal(focus.mark, 'read', `${tag}: focus is not on a read button in the unread filter`);
+  assert.equal(focus.key, keys[1], `${tag}: focus did not move to the next card in the unread filter`);
+
+  await clear();
+  await page.reload({ waitUntil: 'load' });
+  console.log(tag + ' passed');
+}
+
 // ---- 시험공부 복습 큐: 오답·북마크 자동 등록 · 간격 반복 갱신 · 기존 정답률 보존 · 새로고침 복원 ----
 async function checkStudyReviewQueue(page, width) {
   const tag = `study review ${width}px`;
@@ -2296,6 +2399,81 @@ async function checkTodayStudyQueue(page, tag) {
   });
 }
 
+// ---- 오늘 허브: 자정을 넘겨 열면 집계 기준일과 '갱신 대기'를 카드마다 밝힌다 ----
+async function checkTodayMidnight(browser, base) {
+  const tag = 'today midnight';
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  const read = () => page.evaluate(() => {
+    const chip = (id) => {
+      const el = document.getElementById(id);
+      return el ? { state: el.getAttribute('data-state'), text: el.textContent.trim() } : null;
+    };
+    const notice = document.getElementById('dayNotice');
+    return {
+      build: typeof TODAY === 'undefined' ? null : (TODAY.build_date_kst || TODAY.today),
+      notice: notice ? { hidden: notice.hidden, text: notice.textContent.trim() } : null,
+      date: document.getElementById('todayDate').textContent.trim(),
+      hero: document.getElementById('heroUpdated').textContent.trim(),
+      unit: document.getElementById('jobsUnit').textContent.trim(),
+      jobsSub: document.getElementById('jobsSub').textContent.trim(),
+      jobsCount: document.getElementById('jobsCount').textContent.trim(),
+      jobsData: typeof TODAY === 'undefined' ? null : String(TODAY.jobs.count),
+      jobsList: document.getElementById('jobsList').textContent,
+      chips: ['jobsState', 'cveState', 'aiState'].map(chip),
+    };
+  });
+  try {
+    await page.goto(`${base}/today.html`, { waitUntil: 'load' });
+    const build = await page.evaluate(() => (typeof TODAY === 'undefined' ? null : (TODAY.build_date_kst || TODAY.today)));
+    assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(String(build)), `${tag}: build date missing (${build})`);
+    const parts = build.split('-').map(Number);
+    const short = `${parts[1]}/${parts[2]}`;
+
+    // 1) 자정 전(23:55 KST): 집계일이 오늘이므로 카운트를 그대로 보여 준다
+    await page.clock.install({ time: new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], 14, 55)) });
+    await page.reload({ waitUntil: 'load' });
+    let state = await read();
+    assert.equal(state.build, build, `${tag}: build date lost on reload`);
+    assert.ok(state.notice && state.notice.hidden, `${tag}: day notice shown before midnight`);
+    assert.equal(state.unit, '건', `${tag}: jobs unit marked before midnight (${state.unit})`);
+    assert.ok(!state.jobsSub.includes('갱신 전'), `${tag}: jobs note shown before midnight (${state.jobsSub})`);
+    assert.ok(!state.hero.includes('갱신 대기'), `${tag}: hero marked waiting before midnight`);
+    const hadTodayDeadline = state.jobsList.includes('(오늘 마감)');
+    for (const chip of state.chips) {
+      assert.ok(chip, `${tag}: missing state chip`);
+      assert.ok(!chip.text.includes('갱신 대기'), `${tag}: chip marked waiting before midnight (${chip.text})`);
+    }
+
+    // 2) 자정 후(00:05 KST): 어제 집계임을 카드마다 밝히고, '오늘 마감' 표기를 기준일로 바꾼다
+    await page.clock.fastForward(10 * 60 * 1000);
+    await page.reload({ waitUntil: 'load' });
+    state = await read();
+    assert.ok(state.notice && !state.notice.hidden, `${tag}: day notice missing after midnight`);
+    assert.ok(state.notice.text.includes(short + ' 기준'), `${tag}: notice has no basis date (${state.notice.text})`);
+    assert.ok(state.notice.text.includes('갱신 대기'), `${tag}: notice has no waiting label`);
+    assert.ok(state.hero.includes(short + ' 기준') && state.hero.includes('갱신 대기'),
+      `${tag}: hero meta not marked (${state.hero})`);
+    for (const chip of state.chips) {
+      assert.equal(chip.state, 'stale', `${tag}: chip not marked waiting (${chip.text})`);
+      assert.ok(chip.text.includes(short + ' 기준'), `${tag}: chip has no basis date (${chip.text})`);
+      assert.ok(chip.text.includes('갱신 대기'), `${tag}: chip has no waiting label (${chip.text})`);
+    }
+    assert.equal(state.jobsCount, state.jobsData, `${tag}: count changed instead of being labelled`);
+    assert.ok(state.unit.includes(short + ' 기준'), `${tag}: jobs unit has no basis date (${state.unit})`);
+    assert.ok(state.jobsSub.includes('갱신 전'), `${tag}: jobs note missing after midnight (${state.jobsSub})`);
+    assert.ok(!state.jobsList.includes('(오늘 마감)'), `${tag}: yesterday's deadline still reads today`);
+    if (hadTodayDeadline) {
+      assert.ok(state.jobsList.includes('(' + short + ' 마감)'), `${tag}: deadline not retagged to ${short}`);
+    }
+
+    console.log(`${tag} passed`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
+}
+
 // ---- 복습 정답 사전 노출 회귀: 오답 5시간 뒤 같은 탭에서 다시 열어도 이전 정답·해설이 숨겨진다 ----
 async function checkStudyReviewTimeline(context, base) {
   const tag = 'study review timeline';
@@ -2455,6 +2633,9 @@ async function checkPage(context, base, name, width) {
         keys: { saved: 'ai_saved_v1', read: 'ai_read_v1' },
       });
     }
+    if ((name === 'ai' || name === 'cve') && (width === 390 || width === 1280)) {
+      await checkMarkFocus(page, width, name);
+    }
     if (name === 'study') await checkStudyHub(page, width, `study ${width}px`);
     if (name === 'study' && (width === 390 || width === 1280)) await checkStudyReviewQueue(page, width);
     if (name === 'clue') await checkClueGame(page, base, width);
@@ -2543,6 +2724,7 @@ async function main() {
     const timelineContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     await checkStudyReviewTimeline(timelineContext, base);
     await timelineContext.close();
+    await checkTodayMidnight(browser, base);
   } finally {
     try {
       await browser?.close();
