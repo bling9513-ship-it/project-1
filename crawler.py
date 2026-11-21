@@ -147,7 +147,11 @@ def assign_keywords(title):
     return tags
 
 def normalize_key(company, title):
-    """중복 제거를 위한 정규화 키 생성"""
+    """짧은 제목 키(회사+제목12자). 같은 공고인지 '후보'를 좁히는 용도로만 쓴다.
+
+    제목 앞 12자가 같아도 플랫폼 공고 ID가 다르면 서로 다른 공고이므로,
+    이 키만으로 합치지 않는다(합치기 판정은 collect_all_jobs / db_manager 참고).
+    """
     c = clean_text(company)
     c = re.sub(r"[\(주\)|㈜|주식회사|\s]", "", c).lower()
     
@@ -155,6 +159,32 @@ def normalize_key(company, title):
     t = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", t)
     t = re.sub(r"[\s\-_/|·]", "", t).lower()
     return f"{c}_{t[:12]}"
+
+
+def job_external_identity(job):
+    """플랫폼 + 공고 ID. 같은 값이면 같은 공고이므로 중복 제거의 최우선 기준이다."""
+    platform = str(job.get("platform") or "").strip()
+    ext = str(job.get("external_id") or "").strip()
+    if not ext and platform:
+        try:
+            from db_manager import extract_external_id
+            ext = extract_external_id(job.get("url", ""))
+        except Exception:  # noqa: BLE001 - ID 추출 실패는 'ID 없음'과 같게 다룬다
+            ext = ""
+        job["external_id"] = ext
+    return (platform, ext) if ext else None
+
+
+def _merge_same_posting(target, job):
+    """같은 공고를 한 목록에서 두 번 만났을 때(플랫폼 내 중복) 필드만 보강한다."""
+    if job["platform"] not in target["platforms"]:
+        target["platforms"].append(job["platform"])
+    if not target["location"] and job["location"]:
+        target["location"] = job["location"]
+    curr_dl = target.get("deadline", "상시채용")
+    new_dl = job.get("deadline", "상시채용")
+    if ("상시" in curr_dl or "채용시" in curr_dl) and ("D-" in new_dl or "D-Day" in new_dl):
+        target["deadline"] = new_dl
 
 def parse_saramin_deadline(text, today_date):
     t = text.strip()
@@ -553,12 +583,22 @@ def collect_all_jobs():
     print(f"-> 유효 보안 공고 총합: {len(raw_jobs)}건")
     
     # 중복 제거 및 직무 기반 정확한 카테고리 태깅
+    #  ① 최우선: 플랫폼 + 공고 ID가 같으면 같은 공고(한 목록 안에서 두 번 나온 경우만 합친다).
+    #  ② 제목 12자만 같은 다른 공고는 절대 합치지 않는다(플랫폼 ID가 다르면 다른 공고).
+    #  ③ 서로 다른 플랫폼에 '완전히 같은 제목'으로 교차 게시된 공고만 1건으로 합쳐 플랫폼 배지를 붙인다.
     deduped = {}
+    order = []
     for job in raw_jobs:
         if not job["company"] or not job["title"]:
             continue
-            
-        key = normalize_key(job["company"], job["title"])
+
+        identity = job_external_identity(job)
+        if identity:
+            key = ("pid",) + identity
+        else:
+            # ID를 못 얻은 공고는 같은 플랫폼 안에서만 같은 제목으로 합친다.
+            key = ("title", normalize_key(job["company"], job["title"]), job["platform"])
+
         if key not in deduped:
             deduped[key] = {
                 "company": job["company"],
@@ -568,19 +608,56 @@ def collect_all_jobs():
                 "external_id": job.get("external_id", ""),
                 "keywords": assign_keywords(job["title"]),
                 "location": job["location"],
-                "deadline": job.get("deadline", "상시채용")
+                "deadline": job.get("deadline", "상시채용"),
             }
+            order.append(key)
         else:
-            if job["platform"] not in deduped[key]["platforms"]:
-                deduped[key]["platforms"].append(job["platform"])
-            if not deduped[key]["location"] and job["location"]:
-                deduped[key]["location"] = job["location"]
-            # 구체적인 D-day 일정이 있는 마감일을 '상시채용'이나 '채용시 마감'보다 우선 반영
-            curr_dl = deduped[key].get("deadline", "상시채용")
-            new_dl = job.get("deadline", "상시채용")
+            _merge_same_posting(deduped[key], job)
+
+    # ③ 플랫폼 교차 게시 병합 — 짧은 제목 키 후보가 '플랫폼마다 정확히 1건'이고
+    #    회사·전체 제목이 완전히 같으며 같은 플랫폼에 다른 공고 ID가 섞여 있지 않을 때만.
+    from db_manager import job_title_fingerprint, _dedup_company_key
+    groups = {}
+    for key in order:
+        entry = deduped[key]
+        groups.setdefault(normalize_key(entry["company"], entry["title"]), []).append(key)
+
+    merged_into = {}
+    for _short_key, keys in groups.items():
+        if len(keys) < 2:
+            continue
+        seen_platforms = set()
+        titles = set()
+        companies = set()
+        ambiguous = False
+        for key in keys:
+            entry = deduped[key]
+            platform = entry["platforms"][0]
+            if platform in seen_platforms:
+                # 같은 플랫폼의 서로 다른 공고 ID → 어느 쪽이 같은 공고인지 알 수 없다.
+                ambiguous = True
+                break
+            seen_platforms.add(platform)
+            titles.add(job_title_fingerprint(entry["title"]))
+            companies.add(_dedup_company_key(entry["company"]))
+        if ambiguous or len(titles) != 1 or len(companies) != 1:
+            continue
+
+        primary_key = keys[0]
+        primary = deduped[primary_key]
+        for key in keys[1:]:
+            other = deduped[key]
+            for platform in other["platforms"]:
+                if platform not in primary["platforms"]:
+                    primary["platforms"].append(platform)
+            if not primary["location"] and other["location"]:
+                primary["location"] = other["location"]
+            curr_dl = primary.get("deadline", "상시채용")
+            new_dl = other.get("deadline", "상시채용")
             if ("상시" in curr_dl or "채용시" in curr_dl) and ("D-" in new_dl or "D-Day" in new_dl):
-                deduped[key]["deadline"] = new_dl
-                
+                primary["deadline"] = new_dl
+            merged_into[key] = primary_key
+
     def get_deadline_sort_key(item):
         dl = item.get("deadline", "상시채용")
         if not dl:
@@ -598,7 +675,7 @@ def collect_all_jobs():
             return (2, 800)
         return (3, 999)
 
-    job_list = list(deduped.values())
+    job_list = [deduped[key] for key in order if key not in merged_into]
     # 플랫폼 공고 ID + 제목 지문 기반 키: 같은 통합 URL을 쓰는 다른 공고도 분리된다.
     from db_manager import make_job_key
     for job in job_list:
@@ -2468,6 +2545,21 @@ def generate_html(jobs, update_time_str):
     .ia-overview-copy {{ min-width: 0; }}
     .ia-overview .hero-title {{ margin-bottom: 6px; }}
     .ia-overview .hero-desc {{ margin-bottom: 0; }}
+    .ia-quick-link {{
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      padding: 9px 12px; border: 1px solid var(--border-default); border-radius: 11px;
+      background: var(--bg-surface); color: var(--text-primary); text-decoration: none;
+      font-size: 12.5px; font-weight: 600; max-width: 100%;
+      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }}
+    .ia-quick-link:hover {{ background: var(--bg-subtle); border-color: var(--border-strong); }}
+    .ia-quick-link:active {{ transform: scale(0.99); }}
+    .ia-quick-kicker {{ flex: 0 0 auto; font-weight: 700; color: var(--accent-primary); }}
+    .ia-quick-text {{
+      min-width: 0; color: var(--text-secondary);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }}
+    .ia-quick-link svg {{ width: 14px; height: 14px; color: var(--text-muted); flex: 0 0 auto; }}
     .ia-kpis {{ display: flex; gap: 8px; flex: 0 0 auto; }}
     .ia-kpi {{
       min-width: 98px;
@@ -2723,6 +2815,11 @@ def generate_html(jobs, update_time_str):
       <div class="ia-overview-copy">
         <h1 class="hero-title">정보보안 직무 & 포지션 아카이브</h1>
         <p class="hero-desc">원티드 · 점핏 · 사람인 · 리멤버 · 잡코리아 · 인크루트의 보안 포지션을 직무 검증을 거쳐 선별하고 중복 없이 아카이빙하는 정보공유 플랫폼입니다.</p>
+        <a class="ia-quick-link" href="today.html">
+          <span class="ia-quick-kicker">오늘 한 번에</span>
+          <span class="ia-quick-text">마감 공고 · KEV · 복습 · 브리핑 · 날씨</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+        </a>
       </div>
       <div class="ia-kpis">
         <div class="ia-kpi">
@@ -3477,8 +3574,9 @@ def generate_readme(jobs, update_time_str):
         "",
         f"> **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
         f"> **마지막 업데이트**: `{update_time_str}` (매일 08:00 KST 자동 수집)",
-        f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
+        "> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
+        "> **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)",
         "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",
         "> **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)",
         "> **시험 공부 허브**: [study.html](https://bling9513-ship-it.github.io/project-1/study.html) (CPPG · 정보보안기사 · ISMS-P)",
@@ -3526,54 +3624,56 @@ def generate_readme(jobs, update_time_str):
 
     return "\n".join(lines)
 
-def main():
-    jobs = collect_all_jobs()
-    
-    # EXAONE AI 기반 직무 요약 및 정밀 태깅 배치 연동
-    try:
-        from ai_enricher import enrich_jobs_batch
-        print("\n[AI 배치] 엑사원(EXAONE) API 연동 직무 요약 및 정밀 태깅 진행 중...")
-        jobs = enrich_jobs_batch(jobs, max_calls=2, batch_size=4)
-    except Exception as e:
-        print(f"[AI 배치 경고] 엑사원 연동 중 오류 발생 (기본 크롤링 데이터로 계속 진행): {e}")
-    
+def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
+    """수집한 공고를 archive.db 에 반영하고 더 이상 보이지 않는 공고를 마감 처리한다.
+
+    · 기존 행 연결은 platform+external_id 가 최우선이고, 짧은 제목 키는 후보가
+      정확히 1건이고 외부 ID가 충돌하지 않을 때만 쓴다(crawler.main 과 같은 코드경로).
+    · 테스트에서 archive.db 사본으로 같은 재수집을 돌려볼 수 있게 분리했다.
+    """
+    from db_manager import (get_connection, init_db, parse_deadline_status, make_job_key,
+                            migrate_job_keys, mark_expired_jobs, build_job_identity_index,
+                            resolve_existing_job_key, expire_platform_conflict_duplicates, DB_PATH)
+    db_path = db_path or DB_PATH
     kst = timezone(timedelta(hours=9))
-    now_dt = datetime.now(kst)
+    now_dt = now_dt or datetime.now(kst)
     now_kst = now_dt.strftime("%Y-%m-%d %H:%M:%S KST")
     today_date = now_dt.date()
-    
-    # SQLite DB (archive.db) 저장 및 마감 정리 연동
-    from db_manager import (get_connection, init_db, parse_deadline_status, normalize_key,
-                            make_job_key, migrate_job_keys, mark_expired_jobs,
-                            get_active_jobs, get_db_stats, expire_platform_conflict_duplicates)
-    init_db()
-    migrated = migrate_job_keys()
+
+    init_db(db_path)
+    migrated = migrate_job_keys(db_path)
     if migrated:
         print(f"-> 기존 공고 키를 플랫폼 ID 기반 키로 정리: {migrated}건")
-    conn = get_connection()
+    conn = get_connection(db_path)
     cur = conn.cursor()
 
     # 1. 수집된 공고 DB UPSERT
-    #   이미 저장된 공고(회사+제목12자 동일)는 그 행의 job_key를 그대로 이어받아,
-    #   대표 플랫폼이 바뀌거나 제목이 살짝 고쳐져도 사용자가 저장해 둔 관심·메모가 끊기지 않게 한다.
-    cur.execute("SELECT id, job_key, company, title FROM jobs WHERE status = 'ACTIVE';")
-    active_identity = {}
-    for row in cur.fetchall():
-        active_identity[normalize_key(row["company"], row["title"])] = row["job_key"]
+    #   이미 저장된 공고는 platform+external_id를 최우선으로 찾아 그 행의 job_key를 이어받는다.
+    #   짧은 제목 키는 '후보가 정확히 1건이고 외부 ID가 충돌하지 않을 때'만 쓰므로,
+    #   제목 12자만 같은 다른 공고(플랫폼 ID가 다른 2건)가 1행으로 합쳐지거나 사라지지 않는다.
+    cur.execute("SELECT id, job_key, company, title, url, platforms FROM jobs WHERE status = 'ACTIVE';")
+    identity_index, title_index = build_job_identity_index(cur.fetchall())
 
     seen_keys = set()
     for job in jobs:
-        identity = normalize_key(job["company"], job["title"])
-        key = active_identity.get(identity) or job.get("job_key") or make_job_key(
+        platform = (job.get("platforms") or [""])[0]
+        key = resolve_existing_job_key(
+            job["company"], job["title"], platform, job.get("external_id", ""), job["url"],
+            identity_index, title_index,
+        )
+        own_key = job.get("job_key") or make_job_key(
             job["company"], job["title"], job["url"],
-            platforms=job.get("platforms", []), platform=(job.get("platforms") or [""])[0],
+            platforms=job.get("platforms", []), platform=platform,
             external_id=job.get("external_id", ""),
         )
+        # 같은 실행에서 두 공고가 한 행으로 몰리면 먼저 쓴 공고가 덮이므로, 중복 키는 피한다.
+        if not key or key in seen_keys:
+            key = own_key
         job["job_key"] = key
         seen_keys.add(key)
         raw_deadline = job.get("deadline", "상시채용")
         dl_status, status = parse_deadline_status(raw_deadline, today_date, now_kst, now_dt=now_dt)
-        
+
         cur.execute("""
         INSERT INTO jobs (
             job_key, company, title, url, platforms, keywords,
@@ -3600,10 +3700,10 @@ def main():
             job.get("summary", ""), json.dumps(job.get("tags", []), ensure_ascii=False),
             now_kst, now_kst, now_kst, now_kst
         ))
-        
+
     # 2. 마감일 지난 공고 및 플랫폼에서 삭제된 공고 EXPIRED 처리
     conn.commit()
-    mark_expired_jobs(today_date, now_dt=now_dt)
+    mark_expired_jobs(today_date, db_path=db_path, now_dt=now_dt)
     cur.execute("SELECT id, job_key, deadline FROM jobs WHERE status = 'ACTIVE';")
     active_rows = cur.fetchall()
     for r in active_rows:
@@ -3611,15 +3711,38 @@ def main():
             dl_st, st = parse_deadline_status(r["deadline"], today_date, now_dt=now_dt)
             if st == "EXPIRED" or "D-" not in r["deadline"]:
                 cur.execute("UPDATE jobs SET status = 'EXPIRED', deadline_status = 'EXPIRED', updated_at = ? WHERE id = ?;", (now_kst, r["id"]))
-                
+
     conn.commit()
 
     # 2-b. 플랫폼별 마감 표기 불일치로 생긴 복제 행 정리 (예: 사람인 14시마감 ↔ 잡코리아 D-Day 오늘 마감)
-    conflict_expired = expire_platform_conflict_duplicates(today_date, now_dt=now_dt)
+    conflict_expired = expire_platform_conflict_duplicates(today_date, db_path=db_path, now_dt=now_dt)
     if conflict_expired:
         print(f"-> 플랫폼 마감 표기 불일치 복제 행 {conflict_expired}건 정리")
     conn.commit()
     conn.close()
+    return sorted(seen_keys)
+
+
+def main():
+    jobs = collect_all_jobs()
+    
+    # EXAONE AI 기반 직무 요약 및 정밀 태깅 배치 연동
+    try:
+        from ai_enricher import enrich_jobs_batch
+        print("\n[AI 배치] 엑사원(EXAONE) API 연동 직무 요약 및 정밀 태깅 진행 중...")
+        jobs = enrich_jobs_batch(jobs, max_calls=2, batch_size=4)
+    except Exception as e:
+        print(f"[AI 배치 경고] 엑사원 연동 중 오류 발생 (기본 크롤링 데이터로 계속 진행): {e}")
+    
+    kst = timezone(timedelta(hours=9))
+    now_dt = datetime.now(kst)
+    now_kst = now_dt.strftime("%Y-%m-%d %H:%M:%S KST")
+    today_date = now_dt.date()
+
+    # SQLite DB (archive.db) 저장 및 마감 정리 연동
+    from db_manager import get_active_jobs, get_db_stats
+    sync_jobs_to_db(jobs, now_dt=now_dt)
+    
     
     # 3. DB에서 활성 공고 조회 (Single Source of Truth)
     active_jobs = get_active_jobs()

@@ -3,10 +3,10 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart'];
 const root = path.join(__dirname, '..');
 
-const SHELL_HREFS = ['index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
+const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html'];
 
 async function assertCveJump(page, cid, label) {
@@ -815,7 +815,7 @@ async function checkMobileSheet(page, width, tag) {
   assert.equal(opened.locked, true, `${tag}: background scroll not locked`);
   assert.equal(opened.bodyOverflow, 'hidden', `${tag}: body overflow not hidden`);
   assert.equal(opened.expanded, 'true', `${tag}: 전체 button aria-expanded`);
-  assert.equal(opened.links.length, 12, `${tag}: sheet lists ${opened.links.length} pages`);
+  assert.equal(opened.links.length, SHELL_HREFS.length, `${tag}: sheet lists ${opened.links.length} pages`);
   for (const href of SHELL_HREFS) assert.ok(opened.links.includes(href), `${tag}: sheet missing ${href}`);
   assert.deepEqual(opened.groups, ['보안·채용', '브리핑·유틸', '데일리·생활', '게임·챌린지'], `${tag}: sheet groups`);
   assert.ok(opened.top >= 0 && opened.top < opened.vh, `${tag}: sheet off-screen (top ${opened.top})`);
@@ -2056,6 +2056,190 @@ async function checkStudyReviewQueue(page, width) {
   console.log(`study review ${width}px passed`);
 }
 
+// ---- 오늘 허브: 4카드+2요약 · 상태 칩 · 각 페이지 이동 링크 ----
+async function checkToday(page, width, tag) {
+  await page.waitForFunction(() => document.querySelectorAll('.day-card').length === 4, null, { timeout: 5000 });
+  const state = await page.evaluate(() => {
+    const chip = (id) => {
+      const el = document.getElementById(id);
+      return el ? { state: el.getAttribute('data-state'), text: el.textContent.trim() } : null;
+    };
+    return {
+      cards: document.querySelectorAll('.day-card').length,
+      summaries: document.querySelectorAll('.summary-card').length,
+      chips: ['jobsState', 'cveState', 'studyState', 'aiState', 'weatherState', 'gameState'].map(chip),
+      links: Array.from(document.querySelectorAll('a[href]')).map((a) => a.getAttribute('href')),
+      jobs: (document.getElementById('jobsCount') || {}).textContent,
+      jobsData: typeof TODAY === 'undefined' ? null : TODAY.jobs.count,
+      wx: (document.getElementById('wxTemp') || {}).textContent,
+      chipsText: Array.from(document.querySelectorAll('.day-chip')).map((c) => c.textContent.trim()),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  assert.equal(state.cards, 4, `${tag}: ${state.cards} core cards`);
+  assert.equal(state.summaries, 2, `${tag}: ${state.summaries} summary cards`);
+  for (const chip of state.chips) {
+    assert.ok(chip, `${tag}: missing state chip`);
+    assert.ok(chip.text.length > 0, `${tag}: empty state chip label`);
+    assert.ok(['ok', 'stale', 'none', 'error'].includes(chip.state),
+      `${tag}: unknown chip state "${chip.state}"`);
+  }
+  assert.equal(state.jobs, String(state.jobsData), `${tag}: today-closing count must come from the build data`);
+  for (const href of ['index.html', 'cve.html', 'study.html', 'ai.html', 'outfit.html', 'wargame.html', 'clue.html']) {
+    assert.ok(state.links.includes(href), `${tag}: ${href} not linked from the hub`);
+  }
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+
+  const weather = await page.evaluate(() => {
+    const w = (typeof TODAY === 'undefined' ? null : TODAY.weather) || {};
+    return {
+      ok: !!w.ok,
+      temp: document.getElementById('wxTemp').textContent.trim(),
+      state: document.getElementById('weatherState').getAttribute('data-state'),
+      label: document.getElementById('weatherState').textContent.trim(),
+    };
+  });
+  if (weather.ok) {
+    assert.notEqual(weather.temp, '-', `${tag}: build-time temperature not shown`);
+  } else {
+    assert.equal(weather.state, 'error', `${tag}: weather failure state not marked`);
+  }
+}
+
+// ---- 오늘 허브: 브라우저 복습 큐를 실제로 읽어 오늘 복습 수를 보여 준다 ----
+async function checkTodayStudyQueue(page, tag) {
+  const seeded = await page.evaluate(() => {
+    const now = Date.now();
+    const items = {};
+    for (let i = 0; i < 3; i += 1) {
+      items[`smoke-due-${i}`] = { stage: 0, next_review_at: now - 3600000, review_count: 0, last_reviewed_at: 0, added_at: now - 7200000 };
+    }
+    items['smoke-later'] = { stage: 1, next_review_at: now + 86400000, review_count: 1, last_reviewed_at: now - 1000, added_at: now - 90000000 };
+    localStorage.setItem('study_review_queue_v1', JSON.stringify({ version: 1, items, dismissed: {} }));
+    localStorage.setItem('study_user_answers_v4', JSON.stringify({ a: { isCorrect: false }, b: { isCorrect: true } }));
+    localStorage.setItem('study_bookmarks_v1', JSON.stringify({ c: true }));
+    return { due: 3, total: 4 };
+  });
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => {
+    const el = document.getElementById('studyCount');
+    return !!el && el.textContent.trim() !== '';
+  }, null, { timeout: 5000 });
+  const view = await page.evaluate(() => ({
+    count: document.getElementById('studyCount').textContent.trim(),
+    sub: document.getElementById('studySub').textContent.trim(),
+    items: document.querySelectorAll('#studyList li').length,
+  }));
+  assert.equal(view.count, String(seeded.due), `${tag}: due count ${view.count}`);
+  assert.ok(view.sub.includes(`전체 큐 ${seeded.total}문항`), `${tag}: queue summary "${view.sub}"`);
+  assert.ok(view.items > 0, `${tag}: no queue detail line`);
+  await page.evaluate(() => {
+    localStorage.removeItem('study_review_queue_v1');
+    localStorage.removeItem('study_user_answers_v4');
+    localStorage.removeItem('study_bookmarks_v1');
+  });
+}
+
+// ---- 복습 정답 사전 노출 회귀: 오답 5시간 뒤 같은 탭에서 다시 열어도 이전 정답·해설이 숨겨진다 ----
+async function checkStudyReviewTimeline(context, base) {
+  const tag = 'study review timeline';
+  const page = await context.newPage();
+  try {
+    await page.clock.install();
+    await page.goto(`${base}/study.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      localStorage.removeItem('study_review_queue_v1');
+      localStorage.removeItem('study_user_answers_v4');
+      localStorage.removeItem('study_bookmarks_v1');
+    });
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#questionsList .q-card').first().waitFor({ state: 'attached' });
+
+    // 1) 퀴즈에서 오답 → 복습 큐 자동 등록
+    const picked = await page.evaluate(() => {
+      const btn = document.querySelector('#questionsList .q-card [data-action="toggle-bookmark"]');
+      const id = btn.getAttribute('data-id');
+      const q = (window.ALL_QUESTIONS || []).find((x) => x.id === id);
+      return { id, answer: q ? q.answer : null, choices: q ? q.options.length : 0 };
+    });
+    assert.ok(picked.answer, `${tag}: question data missing`);
+    const wrongChoice = picked.answer === 1 ? 2 : 1;
+    await page.click(`.choice-row[data-id="${picked.id}"][data-choice="${wrongChoice}"]`);
+    await page.waitForTimeout(200);
+
+    // 2) 오늘 복습에서 같은 문항을 다시 틀린다 → 이때만 정답·해설이 보인다
+    await page.click('#modeReviewBtn');
+    await page.waitForTimeout(250);
+    await page.click(`#reviewList .review-card[data-review-q="${picked.id}"] .choice-row[data-choice="${wrongChoice}"]`);
+    await page.waitForTimeout(250);
+    const graded = await page.evaluate((id) => {
+      const card = document.querySelector(`#reviewList .review-card[data-review-q="${id}"]`);
+      return {
+        show: !!card.querySelector('.exp-box.show'),
+        result: JSON.parse(localStorage.getItem('study_review_queue_v1')).items[id].last_result,
+      };
+    }, picked.id);
+    assert.equal(graded.result, 'wrong', `${tag}: wrong review result not stored`);
+    assert.equal(graded.show, true, `${tag}: grading result must show right after submitting`);
+
+    // 3) 브라우저 시간을 5시간 진행 → 4시간 뒤 재복습 예약이 도래한다
+    await page.clock.fastForward(5 * 60 * 60 * 1000);
+    await page.waitForTimeout(100);
+
+    // 4) 같은 탭에서 '오늘 복습'을 다시 연다 → 다시 풀 수 있는 카드는 깨끗해야 한다
+    await page.click('#modeQuizBtn');
+    await page.waitForTimeout(200);
+    await page.click('#modeReviewBtn');
+    await page.waitForTimeout(250);
+    const reopened = await page.evaluate((id) => {
+      const card = document.querySelector(`#reviewList .review-card[data-review-q="${id}"]`);
+      if (!card) return { found: false };
+      return {
+        found: true,
+        show: !!card.querySelector('.exp-box.show'),
+        expText: (card.querySelector('.exp-box') || {}).textContent.trim(),
+        answerable: card.querySelectorAll('.choice-row[data-action="review-choice"]').length,
+        choices: card.querySelectorAll('.choice-row').length,
+        marked: card.querySelectorAll('.choice-row.correct, .choice-row.wrong').length,
+        done: card.classList.contains('is-done'),
+        due: document.getElementById('reviewDueCount').textContent.trim(),
+      };
+    }, picked.id);
+    assert.equal(reopened.found, true, `${tag}: review card missing after reopening`);
+    assert.ok(parseInt(reopened.due, 10) >= 1, `${tag}: card not due after 5 hours (due ${reopened.due})`);
+    assert.equal(reopened.show, false, `${tag}: previous answer/explanation leaked before answering again`);
+    assert.equal(reopened.marked, 0, `${tag}: previous correct/wrong marks leaked`);
+    assert.equal(reopened.done, false, `${tag}: card rendered as already done`);
+    assert.equal(reopened.answerable, reopened.choices, `${tag}: choices are not answerable again`);
+
+    // 5) 전체 복습 큐에서도 다시 풀 수 있는 카드는 이전 정답·해설을 숨긴다
+    await page.click('#reviewAllTab');
+    await page.waitForTimeout(250);
+    const allTab = await page.evaluate((id) => {
+      const card = document.querySelector(`#reviewList .review-card[data-review-q="${id}"]`);
+      if (!card) return { found: false };
+      return {
+        found: true,
+        show: !!card.querySelector('.exp-box.show'),
+        answerable: card.querySelectorAll('.choice-row[data-action="review-choice"]').length,
+        marked: card.querySelectorAll('.choice-row.correct, .choice-row.wrong').length,
+      };
+    }, picked.id);
+    assert.equal(allTab.found, true, `${tag}: card missing in the full review queue`);
+    assert.equal(allTab.show, false, `${tag}: full queue leaked the previous answer`);
+    assert.equal(allTab.marked, 0, `${tag}: full queue leaked previous marks`);
+    assert.ok(allTab.answerable > 0, `${tag}: full queue card is not answerable`);
+    console.log(`${tag} passed`);
+  } finally {
+    await page.evaluate(() => {
+      localStorage.removeItem('study_review_queue_v1');
+      localStorage.removeItem('study_user_answers_v4');
+      localStorage.removeItem('study_bookmarks_v1');
+    }).catch(() => {});
+    await page.close();
+  }
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -2111,6 +2295,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'chart') await checkChartGame(page, base, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
+    if (name === 'today') await checkToday(page, width, `today ${width}px`);
+    if (name === 'today' && (width === 390 || width === 1280)) await checkTodayStudyQueue(page, `today queue ${width}px`);
 
     const blocked = await page.evaluate(() => ({
       csp: window.smokeCspViolations,
@@ -2183,6 +2369,9 @@ async function main() {
 
     await checkMissionMobile(browser, base);
     await checkReducedMotion(browser, base);
+    const timelineContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    await checkStudyReviewTimeline(timelineContext, base);
+    await timelineContext.close();
   } finally {
     try {
       await browser?.close();

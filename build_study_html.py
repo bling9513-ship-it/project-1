@@ -2876,7 +2876,10 @@ html_content = """<!DOCTYPE html>
       const answerable = reviewItemAnswerable(item);
       const answered = !!item.last_reviewed_at;
       const correct = item.last_result === 'correct';
-      const showResult = answered && (!!reviewAnsweredNow[q.id] || !answerable || reviewTab === 'all');
+      // 채점 결과·해설·다음 일정은 '이번 턴에 방금 제출한 카드'에서만 보여 준다.
+      // 다시 응답할 수 있는 상태(오늘 복습 대상이 됐거나 재시도를 연 경우)에는
+      // 이전 정답과 해설을 숨기고 깨끗한 선택지로 다시 풀게 한다.
+      const showResult = answered && !answerable;
       const stageText = item.review_count > 0 ? ('복습 ' + item.review_count + '회') : '새 문항';
       let choicesHtml = '';
       (q.options || []).forEach((optText, cIdx) => {

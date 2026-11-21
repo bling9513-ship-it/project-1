@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-12개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+13개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
-- 시트: 카테고리별 12개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 시트: 카테고리별 13개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
 """
 import re
 
 # key, 파일, 표시 이름, 짧은 이름(모바일 헤더)
 PAGES = [
+    ("today", "today.html", "오늘", "오늘"),
     ("index", "index.html", "채용공고", "채용공고"),
     ("study", "study.html", "시험 공부", "시험 공부"),
     ("ai", "ai.html", "AI 트렌드", "AI 트렌드"),
@@ -35,14 +36,14 @@ PAGE_SHORT = {key: short for key, _file, _label, short in PAGES}
 # (그룹 이름, 페이지 키 목록) — 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
 GROUPS = [
     ("보안·채용", ["index", "study"]),
-    ("브리핑·유틸", ["ai", "cve", "tools", "radar"]),
+    ("브리핑·유틸", ["today", "ai", "cve", "tools", "radar"]),
     ("데일리·생활", ["outfit", "pick"]),
     ("게임·챌린지", ["wargame", "clue", "mission", "chart"]),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
-    ("브리핑·트렌드", ["ai", "cve", "tools", "radar"]),
+    ("브리핑·트렌드", ["today", "ai", "cve", "tools", "radar"]),
     ("데일리·생활", ["outfit", "pick"]),
     ("게임·챌린지", ["wargame", "clue", "mission", "chart"]),
 ]
@@ -51,7 +52,7 @@ DESKTOP_DROPDOWNS = [
 MOBILE_TABS = [
     ("jobs", "채용", "index.html", ["index"], "briefcase"),
     ("study", "학습", "study.html", ["study"], "book"),
-    ("brief", "브리핑", "ai.html", ["ai", "cve", "tools", "radar"], "chart"),
+    ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
     ("game", "게임", "wargame.html", ["wargame", "clue", "mission", "chart"], "game"),
 ]
 
