@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CLUE_HTML = os.path.join(BASE_DIR, "clue.html")
@@ -1670,7 +1671,7 @@ def build():
     html = html.replace("__BUILT_AT__", esc(built_at))
 
     with open(CLUE_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'clue')))
 
     daily_count = len([q for q in questions if q.get("is_daily")])
     print("-> 'clue.html' 생성 완료 (문제 %d개 · 시드 %d개 · 데일리 %d개 · 오늘 %s)"

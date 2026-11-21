@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 from wargame_generator import rotate_answer
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -2454,7 +2455,7 @@ def build():
     html = html.replace("__BUILT_AT__", esc(built_at))
 
     with open(WARGAME_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'wargame')))
 
     cats_count = {}
     for q in questions:

@@ -15,6 +15,7 @@ import urllib.request
 from datetime import datetime, timezone, timedelta
 
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PICK_HTML = os.path.join(BASE_DIR, "pick.html")
@@ -2241,7 +2242,7 @@ def build():
         html = html.replace("__SYM_%s__" % name.upper(), ICONS[name])
 
     with open(PICK_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'pick')))
 
     print("-> 'pick.html' 생성 완료 (메뉴 %d종 · 나들이 %d곳, 서울 %s %s, %s~%s, 모드 %s)"
           % (len(MENUS), len(COURSES), tt(wx.get("now_temp")), wx.get("now_cond"),

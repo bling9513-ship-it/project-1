@@ -147,7 +147,9 @@ def main():
 
     print("== 표기 ==")
     check("이모지 없음", not EMOJI_RE.search(src))
-    check("상단 탭 11개", src.count('class="nav-tab-item') == 11, src.count('class="nav-tab-item'))
+    check("공통 셸 하단 탭 바", src.count('class="ia-tabbar"') == 1, src.count('class="ia-tabbar"'))
+    sheet_links = src.count('class="ia-sheet-link') - src.count('class="ia-sheet-links"')
+    check("전체 메뉴 12개", sheet_links == 12, sheet_links)
     check("CSP 메타 1개", src.count("Content-Security-Policy") == 1)
     check("인라인 on* 핸들러 없음", not re.search(r"<[^>]+\son[a-z]+=", src, re.I))
 

@@ -672,7 +672,7 @@ def get_active_jobs(db_path=DB_PATH, today_date=None):
     conn = get_connection(db_path)
     cur = conn.cursor()
     cur.execute("""
-    SELECT company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status, last_seen_at
+    SELECT company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status, last_seen_at, first_seen_at
     FROM jobs
     WHERE status = 'ACTIVE'
     ORDER BY
@@ -701,7 +701,8 @@ def get_active_jobs(db_path=DB_PATH, today_date=None):
             "summary": r["summary"] or "",
             "tags": json.loads(r["tags"]) if r["tags"] else [],
             "deadline_status": r["deadline_status"],
-            "last_seen_at": r["last_seen_at"]
+            "last_seen_at": r["last_seen_at"],
+            "first_seen_at": r["first_seen_at"] or "",
         })
     conn.close()
     return jobs

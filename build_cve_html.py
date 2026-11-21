@@ -13,6 +13,7 @@ from datetime import datetime, timezone, timedelta
 from db_manager import (init_db, get_cve_reports, get_cve_stats, get_cve_alerts,
                         normalize_cve_published_dates)
 from html_guard import harden_html, safe_json_for_script
+import ui_shell
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CVE_DATA_JSON = os.path.join(BASE_DIR, "cve_data.json")
@@ -1998,7 +1999,7 @@ def build():
     html = html.replace("__POC__", str(stats["poc"]))
 
     with open(CVE_HTML, "w", encoding="utf-8") as f:
-        f.write(harden_html(html))
+        f.write(harden_html(ui_shell.apply(html, 'cve')))
 
     print(f"-> 'cve.html' · 'cve_data.json' 생성 완료 (CVE {len(items)}건, KEV {stats['kev']}건, PoC {stats['poc']}건)")
     return len(items)
