@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html', 'arcade.html'];
+  'seat.html', 'load.html', 'arcade.html', 'hangul.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -1368,6 +1368,20 @@ async function checkReducedMotion(browser, base) {
       return node ? getComputedStyle(node).animationName : 'missing';
     });
     assert.equal(crate, 'none', `reduced motion: crate drop still animating (${crate})`);
+
+    await page.goto(`${base}/hangul.html`, { waitUntil: 'load' });
+    await page.waitForTimeout(220);
+    const hangulDemo = await page.evaluate(() => ({
+      tiles: Array.from(document.querySelectorAll('#guideTiles .hg-demo-tile')).map((node) => node.textContent),
+      anims: document.getAnimations().length,
+      open: !document.getElementById('guideBody').hidden,
+      pop: getComputedStyle(document.querySelector('#guideTiles .hg-demo-tile')).animationName,
+    }));
+    assert.deepEqual(hangulDemo.tiles, ['가', '지', '가지'],
+      `reduced motion: hangul guide not static (${hangulDemo.tiles})`);
+    assert.equal(hangulDemo.anims, 0, `reduced motion: hangul guide still animating (${hangulDemo.anims})`);
+    assert.equal(hangulDemo.open, true, 'reduced motion: hangul guide hidden on the first visit');
+    assert.equal(hangulDemo.pop, 'none', `reduced motion: hangul demo tile animation ${hangulDemo.pop}`);
     console.log('prefers-reduced-motion passed');
   } finally {
     await context.close();
@@ -4141,6 +4155,381 @@ async function checkArcadeKeyboard(browser, base, width) {
   }
 }
 
+/* ---- 한글 한 칸 변신: 오늘 문제·연습 최단 경로 계획 ---- */
+async function hangulPlan(page) {
+  return page.evaluate(() => {
+    const data = JSON.parse(document.getElementById('hangulData').textContent);
+    const words = data.words;
+    const adj = new Map();
+    words.forEach((word) => adj.set(word, []));
+    [0, 1].forEach((pos) => {
+      const buckets = new Map();
+      words.forEach((word) => {
+        const key = word[pos];
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(word);
+      });
+      buckets.forEach((group) => {
+        for (let i = 0; i < group.length; i += 1) {
+          for (let j = i + 1; j < group.length; j += 1) {
+            adj.get(group[i]).push(group[j]);
+            adj.get(group[j]).push(group[i]);
+          }
+        }
+      });
+    });
+    const shortest = (start, goal) => {
+      const previous = new Map([[start, null]]);
+      const queue = [start];
+      for (let head = 0; head < queue.length; head += 1) {
+        const current = queue[head];
+        if (current === goal) break;
+        for (const next of adj.get(current)) {
+          if (!previous.has(next)) {
+            previous.set(next, current);
+            queue.push(next);
+          }
+        }
+      }
+      if (!previous.has(goal)) return null;
+      const path = [];
+      for (let node = goal; node !== null; node = previous.get(node)) path.push(node);
+      return path.reverse();
+    };
+    const toSteps = (path) => path.slice(1).map((word, index) => {
+      const from = path[index];
+      const pos = from[0] === word[0] ? 1 : 0;
+      const code = word.charCodeAt(pos) - 0xAC00;
+      return { pos, cho: data.cho[Math.floor(code / 588)], syllable: word[pos], word };
+    });
+    const t = new Date(Date.now() + 9 * 3600000);
+    const pad = (n) => String(n).padStart(2, '0');
+    const kst = `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}`;
+    const ordinal = Math.floor(Date.parse(`${kst}T00:00:00Z`) / 86400000);
+    const dailyPuzzle = data.daily[ordinal % data.daily.length];
+    const practicePuzzle = data.practice[0];
+    let invalid = null;
+    for (const cho of Object.keys(data.syllableGroups)) {
+      for (const syllable of data.syllableGroups[cho]) {
+        if (syllable === dailyPuzzle.start[0]) continue;
+        if (!words.includes(syllable + dailyPuzzle.start[1])) {
+          invalid = { pos: 0, cho, syllable, word: syllable + dailyPuzzle.start[1] };
+          break;
+        }
+      }
+      if (invalid) break;
+    }
+    return {
+      kst,
+      ordinal,
+      dailyPuzzle,
+      dailySteps: toSteps(shortest(dailyPuzzle.start, dailyPuzzle.goal)),
+      practicePuzzle,
+      practiceSteps: toSteps(shortest(practicePuzzle.start, practicePuzzle.goal)),
+      invalid,
+      words: words.length,
+    };
+  });
+}
+
+async function hangulApply(page, step) {
+  await page.click(`#wordRow .hg-syl[data-pos="${step.pos}"]`);
+  await page.waitForTimeout(70);
+  await page.click(`#letterChoRow .hg-cho[data-cho="${step.cho}"]`);
+  await page.waitForTimeout(50);
+  await page.click(`#letterGrid .hg-key[data-syllable="${step.syllable}"]`);
+  await page.waitForTimeout(130);
+}
+
+function hangulRead(page) {
+  return page.evaluate(() => ({
+    word: document.getElementById('startWord').textContent,
+    goal: document.getElementById('goalWord').textContent,
+    title: document.getElementById('boardTitle').textContent,
+    moves: Number(document.getElementById('moveValue').textContent),
+    par: Number(document.getElementById('parValue').textContent),
+    remain: document.getElementById('remainValue').textContent,
+    stars: document.querySelectorAll('#starGauge .hg-star.is-on').length,
+    status: document.getElementById('statusLine').textContent,
+    streak: document.getElementById('streakChip').textContent,
+    timer: document.getElementById('timerValue').textContent,
+    resultHidden: document.getElementById('resultBox').hidden,
+    padHidden: document.getElementById('pad').hidden,
+    actionHidden: document.getElementById('actionRow').hidden,
+    resultStars: document.querySelectorAll('#resultStars .hg-star.is-on').length,
+    perfectHidden: document.getElementById('resultPerfect').hidden,
+    undoDisabled: document.getElementById('undoBtn').disabled,
+    practiceHidden: document.getElementById('practiceCard').hidden,
+    recordBest: document.getElementById('recordBest').textContent,
+    recordPlays: document.getElementById('recordPlays').textContent,
+    dayBadge: { hidden: document.getElementById('dayBadge').hidden, text: document.getElementById('dayBadge').textContent },
+    store: JSON.parse(localStorage.getItem('hangul_ladder_stats_v1') || 'null'),
+  }));
+}
+
+async function checkHangulLayout(page, width) {
+  const tag = `hangul layout ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(120);
+
+  const state = await page.evaluate(() => {
+    const bar = document.querySelector('.ia-tabbar');
+    const limit = bar && getComputedStyle(bar).display !== 'none'
+      ? bar.getBoundingClientRect().top : window.innerHeight;
+    const box = (sel) => {
+      const node = document.querySelector(sel);
+      if (!node) return null;
+      const r = node.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width };
+    };
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      limit,
+      units: document.querySelectorAll('#wordRow .hg-unit').length,
+      syllables: document.querySelectorAll('#wordRow .hg-syl').length,
+      parts: document.querySelectorAll('#wordRow .hg-part').length,
+      jamoKeys: document.querySelectorAll('#jamoKeys .hg-key').length,
+      steps: document.querySelectorAll('#guideStage .hg-demo-step').length,
+      guideOpen: !document.getElementById('guideBody').hidden,
+      guideLabel: document.getElementById('guideToggle').textContent.trim(),
+      stars: document.querySelectorAll('#starGauge .hg-star.is-on').length,
+      word: box('#wordRow'),
+      pad: box('#pad'),
+      actions: box('#actionRow'),
+      status: box('#statusLine'),
+      board: box('#board'),
+      rail: box('.hg-rail'),
+    };
+  });
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.equal(state.units, 2, `${tag}: word units ${state.units}`);
+  assert.equal(state.syllables, 2, `${tag}: syllable tiles ${state.syllables}`);
+  assert.equal(state.parts, 6, `${tag}: jamo cells ${state.parts}`);
+  assert.equal(state.jamoKeys, 19, `${tag}: initial-consonant keys ${state.jamoKeys}`);
+  assert.equal(state.steps, 3, `${tag}: guide steps ${state.steps}`);
+  assert.equal(state.stars, 3, `${tag}: star gauge ${state.stars}`);
+  assert.equal(state.guideOpen, true, `${tag}: guide should be open on the first visit`);
+  assert.equal(state.guideLabel, '접기', `${tag}: guide toggle label ${state.guideLabel}`);
+  assert.ok(state.word && state.word.bottom < state.limit,
+    `${tag}: word row is below the first screen (${Math.round(state.word && state.word.bottom)}/${Math.round(state.limit)})`);
+  assert.ok(state.pad && state.pad.top < state.limit, `${tag}: keypad is below the first screen`);
+  assert.ok(state.actions && state.actions.bottom <= state.limit + 1,
+    `${tag}: action buttons are cut by the first screen (${Math.round(state.actions && state.actions.bottom)}/${Math.round(state.limit)})`);
+  if (width > 768) {
+    assert.ok(state.rail.right <= state.board.left + 1, `${tag}: side rail is not left of the board`);
+  }
+
+  await page.click('#guideToggle');
+  await page.waitForTimeout(160);
+  const collapsed = await page.evaluate(() => ({
+    hidden: document.getElementById('guideBody').hidden,
+    label: document.getElementById('guideToggle').textContent.trim(),
+    saved: localStorage.getItem('hangul_guide_seen_v1'),
+  }));
+  assert.equal(collapsed.hidden, true, `${tag}: guide did not collapse`);
+  assert.equal(collapsed.label, '게임 방법', `${tag}: collapsed label ${collapsed.label}`);
+  assert.equal(collapsed.saved, '1', `${tag}: guide seen flag not stored`);
+  console.log(`${tag} passed`);
+}
+
+// ---- 한글 한 칸 변신: 잘못된 단어 거부 → 한 칸 이동 → 되돌리기 → 클리어 → 연습 모드 ----
+async function checkHangulGame(page, width) {
+  const tag = `hangul game ${width}px`;
+  await page.evaluate(() => localStorage.removeItem('hangul_ladder_stats_v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#wordRow .hg-syl').first().waitFor({ state: 'attached' });
+  const plan = await hangulPlan(page);
+  assert.ok(plan.dailySteps.length === plan.dailyPuzzle.par,
+    `${tag}: daily path length ${plan.dailySteps.length} vs par ${plan.dailyPuzzle.par}`);
+
+  let state = await hangulRead(page);
+  assert.equal(state.word, plan.dailyPuzzle.start, `${tag}: start ${state.word}`);
+  assert.equal(state.goal, plan.dailyPuzzle.goal, `${tag}: goal ${state.goal}`);
+  assert.equal(state.title, plan.dailyPuzzle.title, `${tag}: title ${state.title}`);
+  assert.equal(state.par, plan.dailyPuzzle.par, `${tag}: par ${state.par}`);
+  assert.equal(state.moves, 0, `${tag}: start moves ${state.moves}`);
+  assert.equal(state.stars, 3, `${tag}: start stars ${state.stars}`);
+  assert.equal(state.undoDisabled, true, `${tag}: undo enabled at start`);
+  assert.equal(state.resultHidden, true, `${tag}: result shown at start`);
+  assert.equal(state.padHidden, false, `${tag}: pad hidden at start`);
+  assert.equal(state.practiceHidden, true, `${tag}: practice card shown in daily mode`);
+  assert.equal(state.store, null, `${tag}: fresh storage expected`);
+  assert.ok(state.remain.includes(String(plan.dailyPuzzle.par)), `${tag}: remain ${state.remain}`);
+
+  // 사전에 없는 단어는 거부되고 이동으로 세지 않는다.
+  assert.ok(plan.invalid, `${tag}: no invalid candidate`);
+  await hangulApply(page, plan.invalid);
+  state = await hangulRead(page);
+  assert.equal(state.word, plan.dailyPuzzle.start, `${tag}: invalid word applied (${state.word})`);
+  assert.equal(state.moves, 0, `${tag}: invalid word counted (${state.moves})`);
+  assert.ok(state.status.includes('사전에 없는'), `${tag}: no rejection message (${state.status})`);
+
+  // 한 칸 이동 + 되돌리기
+  await hangulApply(page, plan.dailySteps[0]);
+  state = await hangulRead(page);
+  assert.equal(state.word, plan.dailySteps[0].word, `${tag}: first move ${state.word}`);
+  assert.equal(state.moves, 1, `${tag}: moves after one step ${state.moves}`);
+  assert.equal(state.undoDisabled, false, `${tag}: undo still disabled`);
+  assert.ok(/^\d+:\d\d$/.test(state.timer), `${tag}: timer ${state.timer}`);
+
+  await page.click('#undoBtn');
+  await page.waitForTimeout(140);
+  state = await hangulRead(page);
+  assert.equal(state.word, plan.dailyPuzzle.start, `${tag}: undo word ${state.word}`);
+  assert.equal(state.moves, 0, `${tag}: undo moves ${state.moves}`);
+  assert.equal(state.undoDisabled, true, `${tag}: undo enabled after undo`);
+
+  // 최소 이동으로 클리어 → 별 3개 · 스트릭 · 로컬 기록
+  for (const step of plan.dailySteps) await hangulApply(page, step);
+  state = await hangulRead(page);
+  assert.equal(state.word, plan.dailyPuzzle.goal, `${tag}: goal word ${state.word}`);
+  assert.equal(state.moves, plan.dailyPuzzle.par, `${tag}: cleared moves ${state.moves}`);
+  assert.equal(state.resultHidden, false, `${tag}: result not shown`);
+  assert.equal(state.padHidden, true, `${tag}: pad still shown after clear`);
+  assert.equal(state.actionHidden, true, `${tag}: action row still shown after clear`);
+  assert.equal(state.resultStars, 3, `${tag}: result stars ${state.resultStars}`);
+  assert.equal(state.perfectHidden, false, `${tag}: perfect badge missing without hints`);
+  assert.equal(state.streak, '연속 1회', `${tag}: streak ${state.streak}`);
+  assert.ok(state.store && state.store.daily.days[plan.kst], `${tag}: daily record missing`);
+  assert.equal(state.store.daily.days[plan.kst].clears, 1, `${tag}: daily clears ${state.store.daily.days[plan.kst].clears}`);
+  assert.equal(state.store.daily.days[plan.kst].bestMoves, plan.dailyPuzzle.par, `${tag}: best moves mismatch`);
+  assert.deepEqual(Object.keys(state.store.practice.puzzles), [], `${tag}: practice record written in daily mode`);
+  assert.equal(state.recordBest, '3', `${tag}: record best ${state.recordBest}`);
+
+  // 연습 모드 전환 · 힌트 사용 · 퍼펙트 배지 없음
+  await page.click('#modePractice');
+  await page.waitForTimeout(220);
+  state = await hangulRead(page);
+  assert.equal(state.practiceHidden, false, `${tag}: practice list missing`);
+  assert.equal(state.word, plan.practicePuzzle.start, `${tag}: practice start ${state.word}`);
+  assert.equal(state.goal, plan.practicePuzzle.goal, `${tag}: practice goal ${state.goal}`);
+  assert.equal(await page.locator('#practiceList .hg-practice-btn').count(), 12, `${tag}: practice buttons`);
+
+  await page.click('#hintBtn');
+  await page.waitForTimeout(140);
+  state = await hangulRead(page);
+  assert.ok(state.status.startsWith('힌트'), `${tag}: hint message missing (${state.status})`);
+  assert.ok(/[ㄱ-ㅎ]/.test(state.status), `${tag}: hint does not reveal a jamo (${state.status})`);
+
+  for (const step of plan.practiceSteps) await hangulApply(page, step);
+  state = await hangulRead(page);
+  assert.equal(state.resultHidden, false, `${tag}: practice clear not shown`);
+  assert.equal(state.resultStars, 3, `${tag}: practice stars ${state.resultStars}`);
+  assert.equal(state.perfectHidden, true, `${tag}: perfect badge shown after using a hint`);
+  assert.ok(state.store.practice.puzzles[plan.practicePuzzle.id], `${tag}: practice record missing`);
+  assert.equal(state.store.practice.puzzles[plan.practicePuzzle.id].clears, 1, `${tag}: practice clears`);
+  assert.equal(state.store.daily.days[plan.kst].clears, 1, `${tag}: practice run leaked into the daily record`);
+  assert.equal(state.recordPlays, '1판', `${tag}: practice plays ${state.recordPlays}`);
+  console.log(`${tag} passed (${plan.dailyPuzzle.start}→${plan.dailyPuzzle.goal} ${plan.dailyPuzzle.par}수 · ${plan.practicePuzzle.start}→${plan.practicePuzzle.goal})`);
+}
+
+// ---- 한글 한 칸 변신: 가이드 1회 재생 후 정지 + 다시 보기 ----
+async function checkHangulGuide(browser, base) {
+  const tag = 'hangul guide';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/hangul.html`, { waitUntil: 'load' });
+    await page.waitForTimeout(150);
+    const start = await page.evaluate(() => ({
+      tiles: Array.from(document.querySelectorAll('#guideTiles .hg-demo-tile')).map((node) => node.textContent),
+      step: document.querySelector('#guideStage .hg-demo-step.is-on')
+        ? document.querySelector('#guideStage .hg-demo-step.is-on').getAttribute('data-step') : null,
+      open: !document.getElementById('guideBody').hidden,
+    }));
+    assert.equal(start.open, true, `${tag}: guide did not open automatically`);
+    assert.equal(start.step, '1', `${tag}: first step ${start.step}`);
+    assert.deepEqual(start.tiles, ['바', '다', '?'], `${tag}: start tiles ${start.tiles}`);
+
+    await page.waitForTimeout(2900);
+    const done = await page.evaluate(() => ({
+      tiles: Array.from(document.querySelectorAll('#guideTiles .hg-demo-tile')).map((node) => node.textContent),
+      step: document.querySelector('#guideStage .hg-demo-step.is-on')
+        ? document.querySelector('#guideStage .hg-demo-step.is-on').getAttribute('data-step') : null,
+      anims: document.getAnimations().length,
+    }));
+    assert.deepEqual(done.tiles, ['가', '지', '가지'], `${tag}: demo not stopped at the end (${done.tiles})`);
+    assert.equal(done.step, '3', `${tag}: last step ${done.step}`);
+    assert.equal(done.anims, 0, `${tag}: demo keeps moving after one play (${done.anims})`);
+
+    await page.click('#guideReplay');
+    await page.waitForTimeout(1200);
+    const mid = await page.evaluate(() => Array.from(document.querySelectorAll('#guideTiles .hg-demo-tile')).map((node) => node.textContent));
+    assert.deepEqual(mid, ['바', '지', '?'], `${tag}: replay did not restart (${mid})`);
+    await page.waitForTimeout(1700);
+    const again = await page.evaluate(() => Array.from(document.querySelectorAll('#guideTiles .hg-demo-tile')).map((node) => node.textContent));
+    assert.deepEqual(again, ['가', '지', '가지'], `${tag}: replay did not settle (${again})`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 한글 한 칸 변신: 자정을 넘긴 일일판은 시작일 기록으로 남는다 ----
+async function checkHangulMidnight(browser, base) {
+  const tag = 'hangul midnight';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/hangul.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.removeItem('hangul_ladder_stats_v1'));
+    const plan = await hangulPlan(page);
+    const [year, month, day] = plan.kst.split('-').map(Number);
+    const next = new Date(Date.UTC(year, month - 1, day + 1));
+    const pad = (n) => String(n).padStart(2, '0');
+    const nextKey = `${next.getUTCFullYear()}-${pad(next.getUTCMonth() + 1)}-${pad(next.getUTCDate())}`;
+    const nextPuzzle = plan.dailyPuzzle;
+    const nextDaily = await page.evaluate((ordinal) => {
+      const data = JSON.parse(document.getElementById('hangulData').textContent);
+      return data.daily[(ordinal + 1) % data.daily.length];
+    }, plan.ordinal);
+
+    // KST 23:55에 탭을 열어 두고 한 수 진행
+    await page.clock.setFixedTime(new Date(Date.UTC(year, month - 1, day, 14, 55)));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#wordRow .hg-syl').first().waitFor({ state: 'attached' });
+    let state = await hangulRead(page);
+    assert.equal(state.title, nextPuzzle.title, `${tag}: board ${state.title}`);
+    assert.equal(state.dayBadge.hidden, true, `${tag}: day badge shown before midnight`);
+
+    await hangulApply(page, plan.dailySteps[0]);
+    const progressed = await hangulRead(page);
+    assert.equal(progressed.word, plan.dailySteps[0].word, `${tag}: first move ${progressed.word}`);
+    assert.equal(progressed.moves, 1, `${tag}: moves ${progressed.moves}`);
+
+    // 새로고침 없이 시계만 KST 00:05로 넘기고 탭을 다시 보이게 한다.
+    await page.clock.setFixedTime(new Date(Date.UTC(year, month - 1, day, 15, 5)));
+    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await page.waitForTimeout(220);
+    const kept = await hangulRead(page);
+    assert.equal(kept.title, nextPuzzle.title, `${tag}: 진행 중인 판이 자정에 초기화됨`);
+    assert.equal(kept.word, progressed.word, `${tag}: word reset at midnight (${kept.word})`);
+    assert.equal(kept.moves, 1, `${tag}: moves reset at midnight (${kept.moves})`);
+    assert.equal(kept.dayBadge.hidden, false, `${tag}: 새 날짜 안내 배지가 없음`);
+    assert.ok(kept.dayBadge.text.includes('새 날짜 문제'), `${tag}: badge text ${kept.dayBadge.text}`);
+
+    // 남은 수를 마저 두어 완주 — 판 시작일 기록으로 저장된다.
+    for (const step of plan.dailySteps.slice(1)) await hangulApply(page, step);
+    const done = await hangulRead(page);
+    assert.equal(done.resultHidden, false, `${tag}: 자정을 넘긴 판을 마치지 못함`);
+    assert.equal(done.moves, plan.dailyPuzzle.par, `${tag}: final moves ${done.moves}`);
+    assert.ok(done.store && done.store.daily.days[plan.kst], `${tag}: 판 시작일 기록이 없음`);
+    assert.equal(done.store.daily.days[plan.kst].clears, 1, `${tag}: 판 시작일 완주 ${done.store.daily.days[plan.kst].clears}`);
+    assert.ok(!done.store.daily.days[nextKey], `${tag}: 자정을 넘긴 판이 새 날짜 기록으로 저장됨`);
+
+    // '다시 하기'는 새 날짜 문제를 연다.
+    await page.click('#retryBtn');
+    await page.waitForTimeout(260);
+    const restarted = await hangulRead(page);
+    assert.equal(restarted.title, nextDaily.title, `${tag}: 새 날짜 문제 제목 ${restarted.title}`);
+    assert.equal(restarted.moves, 0, `${tag}: 새 판 이동 ${restarted.moves}`);
+    assert.equal(restarted.dayBadge.hidden, true, `${tag}: 새 판을 열었는데 배지가 남음`);
+    console.log(`${tag} passed (${nextPuzzle.title} → ${nextDaily.title})`);
+  } finally {
+    await context.close();
+  }
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -4219,6 +4608,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'load') await checkLoadGame(page, width);
     if (name === 'arcade') await checkArcadeLayout(page, width);
     if (name === 'arcade') await checkArcadeGame(page, width);
+    if (name === 'hangul') await checkHangulLayout(page, width);
+    if (name === 'hangul' && (width === 390 || width === 1280)) await checkHangulGame(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -4324,16 +4715,17 @@ async function checkGameTabSheet(browser, base, width) {
         groupBottom: gr.bottom - sr.top,
         sheetHeight: sr.height,
         lastGameBottom: (() => {
-          const hrefs = ['wargame.html', 'clue.html', 'mission.html', 'chart.html', 'arcade.html', 'ops.html', 'seat.html', 'load.html'];
+          const hrefs = ['wargame.html', 'clue.html', 'mission.html', 'chart.html', 'arcade.html', 'ops.html', 'seat.html', 'load.html', 'hangul.html'];
           const nodes = Array.from(document.querySelectorAll('.ia-sheet-link'))
             .filter((anchor) => hrefs.includes(anchor.getAttribute('href')));
           return nodes.length ? nodes[nodes.length - 1].getBoundingClientRect().bottom - sr.top : -1;
         })(),
         groupText: group.textContent.trim(),
         arcade: links.includes('arcade.html'),
+        hangul: links.includes('hangul.html'),
         subs: Array.from(document.querySelectorAll('.ia-sheet-sub')).map((el) => el.textContent.trim()),
         gameLinks: Array.from(document.querySelectorAll('.ia-sheet-link'))
-          .filter((anchor) => ['wargame.html', 'clue.html', 'mission.html', 'chart.html', 'arcade.html', 'ops.html', 'seat.html', 'load.html']
+          .filter((anchor) => ['wargame.html', 'clue.html', 'mission.html', 'chart.html', 'arcade.html', 'ops.html', 'seat.html', 'load.html', 'hangul.html']
             .includes(anchor.getAttribute('href'))).length,
       };
     });
@@ -4349,7 +4741,8 @@ async function checkGameTabSheet(browser, base, width) {
       `${tag}: last game link cut by the sheet (${Math.round(state.lastGameBottom)}/${Math.round(state.sheetHeight)})`);
     assert.ok(state.arcade, `${tag}: arcade.html missing from the game group`);
     assert.ok(state.subs.includes('미니게임'), `${tag}: mini games sub group missing`);
-    assert.equal(state.gameLinks, 8, `${tag}: game links ${state.gameLinks}`);
+    assert.equal(state.gameLinks, 9, `${tag}: game links ${state.gameLinks}`);
+    assert.ok(state.hangul, `${tag}: hangul.html missing from the game group`);
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => document.getElementById('iaSheet').hidden);
     const focusBack = await page.evaluate(() => (document.activeElement ? document.activeElement.id : null));
@@ -4405,6 +4798,7 @@ async function main() {
           if (name === 'seat') await checkSeatLayout(page, width);
           if (name === 'load') await checkLoadLayout(page, width);
           if (name === 'arcade') await checkArcadeLayout(page, width);
+          if (name === 'hangul') await checkHangulLayout(page, width);
         } finally {
           await page.close();
         }
@@ -4421,8 +4815,10 @@ async function main() {
     await checkTodayMidnight(browser, base);
     await checkTodayFocusKeep(browser, base);
     await checkOpsClockJump(browser, base);
+    await checkHangulGuide(browser, base);
     await checkLoadPracticeRecord(browser, base);
     await checkLoadMidnightRun(browser, base);
+    await checkHangulMidnight(browser, base);
     await checkArcadeKeyboard(browser, base, 390);
     await checkArcadeKeyboard(browser, base, 1280);
     await checkGameTabSheet(browser, base, 320);

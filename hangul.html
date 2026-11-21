@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-oKtkC7Cr9l+dOkl5CxYJ3MSo5yq1oJ0NK+aTfJxECZ0=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 한글 한 칸 변신</title>
+  <meta name="description" content="두 글자 단어에서 초성·중성·종성 한 칸 또는 글자 하나만 바꿔 목표 단어까지 가는 한국어 단어 사다리 퍼즐. 최소 이동 수(par)와 별 3개, 연속 클리어, 라이벌 기록에 도전합니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-muted: #e2e8f0;
+
+      --border-subtle: #f1f5f9;
+      --border-default: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
+      --warn-bg: #fffbeb; --warn-text: #b45309; --warn-border: #fde68a;
+      --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #09090b;
+      --bg-surface: #18181b;
+      --bg-subtle: #27272a;
+      --bg-muted: #3f3f46;
+
+      --border-subtle: #1f1f23;
+      --border-default: #27272a;
+      --border-strong: #3f3f46;
+
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+
+      --accent-primary: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+
+      --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
+      --warn-bg: rgba(245, 158, 11, 0.12); --warn-text: #fcd34d; --warn-border: rgba(245, 158, 11, 0.32);
+      --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    .navbar { position: sticky; top: 0; z-index: 50; background: var(--bg-surface); border-bottom: 1px solid var(--border-default); }
+    .nav-container { max-width: 1360px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo-img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; display: block; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); flex-shrink: 0; }
+    .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; }
+    .update-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; flex-shrink: 0; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+    .icon-btn:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .nav-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .hg-wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 72px; }
+
+    .hg-hero { margin-bottom: 13px; }
+    .hg-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin-bottom: 8px;
+    }
+    .hg-hero h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; }
+    .hg-hero p { margin-top: 5px; font-size: 13px; color: var(--text-secondary); max-width: 700px; }
+
+    .hg-shell { display: grid; grid-template-columns: 324px minmax(0, 1fr); gap: 16px; align-items: start; }
+    .hg-rail { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 76px; }
+
+    .hg-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 13px 14px;
+      box-shadow: var(--card-shadow);
+      min-width: 0;
+    }
+    .hg-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .hg-card-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .hg-card-head span { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .hg-foot { margin-top: 9px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
+
+    .hg-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 11px; }
+    .hg-seg-btn {
+      border: 0; background: transparent; border-radius: 8px; padding: 8px 4px;
+      font-family: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: -0.02em;
+      color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+    .hg-seg-btn:hover { color: var(--text-primary); }
+    .hg-seg-btn.is-active { background: var(--bg-surface); color: var(--text-primary); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); }
+    .hg-seg-small .hg-seg-btn { padding: 6px 10px; font-size: 11.5px; }
+
+    .hg-meter { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 11px; font-size: 11.5px; color: var(--text-secondary); }
+    .hg-meter strong { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .hg-meter span { white-space: nowrap; }
+    .hg-remain { font-size: 11px; font-weight: 600; color: var(--accent-primary); }
+    .hg-remain.is-done { color: var(--ok-text); }
+
+    .hg-stars { display: flex; align-items: center; gap: 4px; margin-top: 8px; }
+    .hg-star { width: 19px; height: 19px; flex-shrink: 0; color: var(--bg-muted); transition: color 200ms ease, transform 200ms ease; }
+    .hg-star.is-on { color: #f59e0b; }
+    .hg-star.is-pop { animation: hgStarPop 320ms ease; }
+    .hg-stars-big { justify-content: center; gap: 7px; margin: 8px 0 4px; }
+    .hg-stars-big .hg-star { width: 30px; height: 30px; }
+
+    .hg-streakrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px; }
+    .hg-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: -0.01em;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 999px; padding: 3px 8px;
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .hg-chip.is-hot { color: var(--warn-text); background: var(--warn-bg); border-color: var(--warn-border); }
+    .hg-chip.is-over { color: var(--no-text); background: var(--no-bg); border-color: var(--no-border); }
+    .hg-streak-best { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+    .hg-daybadge {
+      display: block; margin-top: 8px; padding: 6px 8px;
+      font-size: 10.5px; line-height: 1.4; color: var(--warn-text);
+      background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px;
+    }
+
+    /* ----- 게임 방법(한 번만 움직이는 데모) ----- */
+    .hg-guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .hg-guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
+    .hg-guide-toggle {
+      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
+      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
+    }
+    .hg-guide-body { margin-top: 8px; }
+    .hg-demo {
+      position: relative; padding: 12px 10px 9px;
+      border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-page);
+    }
+    .hg-demo-tiles { display: flex; align-items: center; justify-content: center; gap: 7px; }
+    .hg-demo-tile {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 46px; height: 46px; border-radius: 12px;
+      border: 1px solid var(--border-strong); background: var(--bg-surface);
+      font-size: 21px; font-weight: 700; letter-spacing: -0.03em;
+      transition: border-color 160ms ease, background-color 160ms ease;
+    }
+    .hg-demo-tile.is-target { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); }
+    .hg-demo-tile.is-pop { animation: hgPop 380ms ease; }
+    .hg-demo-arrow { font-size: 12px; color: var(--text-muted); }
+    .hg-demo-steps { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 9px; }
+    .hg-demo-step {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600; color: var(--text-muted);
+      padding: 2px 5px; border-radius: 999px; border: 1px solid transparent;
+      transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+    }
+    .hg-demo-step.is-on { color: var(--accent-primary); background: var(--accent-subtle); border-color: var(--border-default); }
+    .hg-guide-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); min-height: 30px; }
+    .hg-guide-foot { margin-top: 6px; font-size: 10px; line-height: 1.5; color: var(--text-muted); }
+    .hg-guide-replay {
+      margin-top: 7px; width: 100%; border: 1px solid var(--border-default); border-radius: 9px;
+      background: var(--bg-surface); color: var(--accent-primary);
+      font-family: inherit; font-size: 11px; font-weight: 600; padding: 7px 8px; cursor: pointer;
+    }
+    .hg-guide-replay:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+
+    /* ----- 기록 ----- */
+    .hg-record-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    .hg-record-grid dt { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+    .hg-record-grid dd { font-size: 14px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .hg-record-list { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-top: 9px; }
+    .hg-record-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--text-secondary); }
+    .hg-record-list b { font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .hg-record-empty { font-size: 10.5px; color: var(--text-muted); }
+
+    /* ----- 자유 연습 ----- */
+    .hg-practice-group + .hg-practice-group { margin-top: 10px; }
+    .hg-practice-label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em; margin-bottom: 5px; }
+    .hg-practice-list { display: flex; flex-direction: column; gap: 5px; }
+    .hg-practice-btn {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      width: 100%; text-align: left; border: 1px solid var(--border-default); border-radius: 9px;
+      background: var(--bg-surface); padding: 7px 9px; cursor: pointer; font-family: inherit;
+    }
+    .hg-practice-btn:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .hg-practice-btn.is-active { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .hg-practice-title { font-size: 11.5px; font-weight: 600; color: var(--text-primary); }
+    .hg-practice-meta { font-size: 9.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+    /* ----- 보드 ----- */
+    .hg-board { padding: 14px 15px 13px; }
+    .hg-board-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .hg-board-title { min-width: 0; }
+    .hg-board-title h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+    .hg-board-title span { display: block; margin-top: 2px; font-size: 10.5px; color: var(--text-muted); }
+    .hg-board-top .hg-seg { width: 178px; flex-shrink: 0; }
+
+    .hg-route { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 11px; font-size: 12px; color: var(--text-secondary); }
+    .hg-route-label { font-size: 10px; color: var(--text-muted); }
+    .hg-route strong { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+    .hg-route svg { width: 15px; height: 15px; color: var(--text-muted); flex-shrink: 0; }
+    .hg-route-chips { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+
+    .hg-progress { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle); }
+    .hg-progress-main { display: flex; align-items: baseline; gap: 4px; font-size: 11.5px; color: var(--text-secondary); white-space: nowrap; }
+    .hg-progress-main strong { font-size: 18px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+    .hg-progress .hg-stars { margin-top: 0; }
+    .hg-progress .hg-remain { margin-left: auto; }
+
+    .hg-word { display: flex; align-items: flex-start; justify-content: center; gap: 14px; margin: 12px 0 5px; }
+    .hg-unit { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .hg-syl {
+      width: 92px; height: 92px; border-radius: 20px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); box-shadow: var(--card-shadow);
+      display: flex; align-items: center; justify-content: center;
+      font-family: inherit; font-size: 42px; font-weight: 600; letter-spacing: -0.04em; color: var(--text-primary);
+      cursor: pointer; transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+    }
+    .hg-syl:hover { background: var(--bg-subtle); }
+    .hg-syl.is-active { border-color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+    .hg-syl.is-changed { animation: hgPop 340ms ease; }
+    .hg-syl.is-reject { animation: hgShake 340ms ease; color: var(--no-text); }
+    .hg-parts { display: flex; gap: 4px; }
+    .hg-part {
+      position: relative; width: 29px; height: 36px; padding: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border: 1px solid var(--border-default); border-radius: 9px;
+      background: var(--bg-surface); color: var(--text-secondary); font-family: inherit;
+      cursor: pointer; transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+    .hg-part:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .hg-part-jamo { font-size: 14px; font-weight: 600; line-height: 1.15; }
+    .hg-part-label { font-size: 7.5px; line-height: 1; color: var(--text-muted); }
+    .hg-part.is-empty .hg-part-jamo { color: var(--text-muted); }
+    .hg-part.is-active { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); }
+    .hg-part.is-active .hg-part-label { color: var(--accent-primary); }
+    .hg-part.is-changed { animation: hgPop 340ms ease; }
+    .hg-part.is-reject { animation: hgShake 340ms ease; color: var(--no-text); }
+    .hg-wordnote { text-align: center; font-size: 10.5px; color: var(--text-muted); }
+    .hg-wordnote b { font-weight: 700; color: var(--text-secondary); }
+
+    .hg-pad { margin-top: 12px; }
+    .hg-pad-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .hg-pad-hint { font-size: 10.5px; color: var(--text-muted); min-width: 0; }
+    .hg-keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); gap: 5px; }
+    .hg-letterpad { display: flex; flex-direction: column; gap: 6px; }
+    .hg-cho-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 4px; }
+    .hg-cho {
+      height: 28px; border-radius: 8px; border: 1px solid var(--border-default);
+      background: var(--bg-subtle); color: var(--text-secondary);
+      font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .hg-cho:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .hg-cho.is-active { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); }
+    .hg-keys-letters { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); max-height: 118px; overflow-y: auto; padding: 6px 2px 0 0; border-top: 1px solid var(--border-subtle); }
+    .hg-key {
+      height: 36px; border-radius: 10px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); color: var(--text-primary);
+      font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+    .hg-key:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .hg-key.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); }
+    .hg-key.is-off { font-size: 10px; font-weight: 600; color: var(--text-secondary); }
+    .hg-pad-note { margin-top: 7px; font-size: 10px; color: var(--text-muted); }
+
+    .hg-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 11px; }
+    .hg-btn {
+      border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface);
+      color: var(--text-primary); font-family: inherit; font-size: 12px; font-weight: 600;
+      padding: 10px 6px; cursor: pointer; white-space: nowrap;
+      transition: background-color 140ms ease, border-color 140ms ease, opacity 140ms ease;
+    }
+    .hg-btn:hover:not(:disabled) { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .hg-btn:disabled { opacity: 0.45; cursor: default; }
+    .hg-btn-primary { background: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+    .hg-btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .hg-btn-ghost { color: var(--text-secondary); }
+
+    .hg-status { margin-top: 9px; min-height: 17px; font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
+    .hg-status.is-bad { color: var(--no-text); }
+    .hg-status.is-good { color: var(--ok-text); }
+
+    /* ----- 결과 ----- */
+    .hg-result { margin-top: 10px; border: 1px solid var(--ok-border); background: var(--ok-bg); border-radius: 14px; padding: 12px 13px; }
+    .hg-result-head { display: flex; align-items: center; justify-content: center; gap: 7px; }
+    .hg-result-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 700; color: var(--ok-text);
+      border: 1px solid var(--ok-border); border-radius: 999px; padding: 2px 8px; background: var(--bg-surface);
+    }
+    .hg-perfect { font-size: 10.5px; font-weight: 700; color: var(--accent-primary); border: 1px solid var(--border-default); border-radius: 999px; padding: 2px 8px; background: var(--bg-surface); }
+    .hg-result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 8px; text-align: center; }
+    .hg-result-grid dt { font-size: 10px; color: var(--text-secondary); }
+    .hg-result-grid dd { font-size: 15px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .hg-result-note { margin-top: 7px; text-align: center; font-size: 11px; color: var(--text-secondary); }
+    .hg-result-next { margin-top: 2px; text-align: center; font-size: 10.5px; color: var(--text-muted); }
+    .hg-result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 9px; }
+
+    @keyframes hgPop {
+      0% { transform: scale(1); }
+      38% { transform: scale(1.16); background: var(--accent-subtle); color: var(--accent-primary); }
+      100% { transform: scale(1); }
+    }
+    @keyframes hgShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      55% { transform: translateX(3px); }
+      80% { transform: translateX(-1px); }
+    }
+    @keyframes hgStarPop {
+      0% { transform: scale(0.8); }
+      55% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 940px) {
+      .hg-shell { grid-template-columns: 1fr; }
+      .hg-main { order: -1; }
+      .hg-rail { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .hg-wrap { padding: 10px 12px 72px; }
+      .hg-hero { margin-bottom: 9px; }
+      .hg-hero h1 { font-size: 18px; }
+      .hg-hero p { margin-top: 4px; font-size: 11.5px; line-height: 1.45; }
+      .hg-pill { margin-bottom: 6px; }
+      .hg-card { padding: 10px 11px; border-radius: 14px; }
+      .hg-board { padding: 10px 11px; }
+      .hg-board-top .hg-seg { width: 100%; }
+      .hg-board-title h2 { font-size: 15px; }
+      .hg-route { margin-top: 8px; }
+      .hg-route strong { font-size: 16px; }
+      .hg-route-chips { margin-left: 0; }
+      .hg-progress { margin-top: 8px; padding-top: 8px; gap: 6px; }
+      .hg-progress-main strong { font-size: 16px; }
+      .hg-word { gap: 10px; margin: 9px 0 4px; }
+      .hg-syl { width: 82px; height: 82px; border-radius: 18px; font-size: 37px; }
+      .hg-parts { gap: 3px; }
+      .hg-part { width: 25px; height: 32px; }
+      .hg-part-jamo { font-size: 12.5px; }
+      .hg-pad { margin-top: 9px; }
+      .hg-pad-head { margin-bottom: 6px; }
+      .hg-keys { grid-template-columns: repeat(auto-fill, minmax(33px, 1fr)); gap: 4px; }
+      .hg-key { height: 33px; font-size: 14px; border-radius: 9px; }
+      .hg-cho { height: 26px; }
+      .hg-keys-letters { grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); max-height: 104px; }
+      .hg-record-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+      .hg-actions { margin-top: 9px; }
+      .hg-btn { font-size: 11.5px; padding: 8px 4px; }
+      .hg-status { margin-top: 7px; font-size: 10.5px; }
+    }
+
+    @media (max-width: 420px) {
+      .hg-streak-best { display: none; }
+    }
+
+    @media (max-width: 360px) {
+      .hg-wrap { padding: 8px 10px 72px; }
+      .hg-word { gap: 8px; }
+      .hg-syl { width: 74px; height: 74px; font-size: 33px; border-radius: 16px; }
+      .hg-part { width: 23px; height: 31px; }
+      .hg-part-jamo { font-size: 12px; }
+      .hg-keys { grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); }
+      .hg-key { height: 32px; font-size: 13px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hg-syl.is-changed, .hg-syl.is-reject, .hg-part.is-changed, .hg-part.is-reject,
+      .hg-star.is-pop, .hg-demo-tile.is-pop { animation: none !important; }
+      .hg-star, .hg-demo-tile, .hg-seg-btn { transition: none !important; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="hangul">
+
+  <!-- Global Nav -->
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">한 칸 변신</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link is-current" role="menuitem" href="hangul.html" aria-current="page">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">매일 KST 00:00 새 문제</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="hg-wrap">
+    <div class="hg-hero">
+      <span class="hg-pill">한글 사다리 · 일일 퍼즐</span>
+      <h1>한 칸만 바꿔 목표 단어까지</h1>
+      <p>초성·중성·종성 중 한 칸, 또는 글자 하나만 바꿔 사전에 있는 단어를 거쳐 목표 단어에 도달하세요. 최소 이동 수에 가까울수록 별이 쌓입니다.</p>
+    </div>
+
+    <div class="hg-shell">
+      <aside class="hg-rail" aria-label="게임 안내">
+        <section class="hg-card hg-guide" id="guideCard" aria-labelledby="guideTitle">
+          <div class="hg-guide-head">
+            <h2 id="guideTitle">게임 방법</h2>
+            <button type="button" class="hg-guide-toggle" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
+          </div>
+          <div class="hg-guide-body" id="guideBody">
+            <div class="hg-demo" id="guideStage" aria-hidden="true">
+              <div class="hg-demo-tiles" id="guideTiles">
+                <span class="hg-demo-tile" data-side="0">바</span>
+                <span class="hg-demo-arrow">→</span>
+                <span class="hg-demo-tile" data-side="1">다</span>
+                <span class="hg-demo-arrow">→</span>
+                <span class="hg-demo-tile hg-demo-goal" data-side="2">?</span>
+              </div>
+              <div class="hg-demo-steps">
+                <span class="hg-demo-step is-on" data-step="1">① 칸 탭</span>
+                <span class="hg-demo-step" data-step="2">② 자모 선택</span>
+                <span class="hg-demo-step" data-step="3">③ 목표 도착</span>
+              </div>
+            </div>
+            <p class="hg-guide-note" id="guideNote">바꿀 칸을 탭하고 자모 하나를 고르면 그 칸만 바뀝니다.</p>
+            <button type="button" class="hg-guide-replay" id="guideReplay">다시 보기</button>
+            <p class="hg-guide-foot">처음 한 번만 자동으로 움직이고 멈춥니다. 다시 보기로 언제든 되돌려 볼 수 있습니다.</p>
+          </div>
+        </section>
+
+        <section class="hg-card" id="recordCard">
+          <div class="hg-card-head">
+            <h2>기록</h2>
+            <span id="recordScope">오늘</span>
+          </div>
+          <dl class="hg-record-grid">
+            <div><dt>최고 별</dt><dd id="recordBest">0</dd></div>
+            <div><dt>완주</dt><dd id="recordPlays">0판</dd></div>
+            <div><dt>연속</dt><dd id="recordStreak">0회</dd></div>
+            <div><dt>최단</dt><dd id="recordTime">—</dd></div>
+          </dl>
+          <ul class="hg-record-list" id="recordList"></ul>
+          <p class="hg-foot">기록은 이 브라우저(localStorage)에만 저장됩니다. 서버로 보내지 않습니다.</p>
+        </section>
+
+        <section class="hg-card" id="practiceCard" hidden>
+          <div class="hg-card-head">
+            <h2>자유 연습</h2>
+            <span id="practiceMeta">12판</span>
+          </div>
+          <div id="practiceList"></div>
+          <p class="hg-foot">입문·중급·고급 각 4판. 최소 이동 수는 판마다 다릅니다.</p>
+        </section>
+      </aside>
+
+      <section class="hg-main" aria-label="한 칸 변신 보드">
+        <section class="hg-card hg-board" id="board">
+          <div class="hg-board-top">
+            <div class="hg-board-title">
+              <h2 id="boardTitle">서재 정리</h2>
+              <span id="boardMeta">오늘의 문제 · 기준 4수</span>
+            </div>
+            <div class="hg-seg" role="group" aria-label="게임 모드">
+              <button type="button" class="hg-seg-btn is-active" id="modeDaily" aria-pressed="true">오늘의 문제</button>
+              <button type="button" class="hg-seg-btn" id="modePractice" aria-pressed="false">자유 연습</button>
+            </div>
+          </div>
+
+          <div class="hg-route">
+            <span class="hg-route-label">지금</span><strong id="startWord">의자</strong>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="12" x2="18" y2="12"></line><polyline points="13 7 18 12 13 17"></polyline></svg>
+            <span class="hg-route-label">목표</span><strong id="goalWord">책상</strong>
+            <span class="hg-route-chips">
+              <span class="hg-chip" id="timerValue">0:00</span>
+              <span class="hg-chip" id="rivalValue">라이벌 4수 · 0:56</span>
+            </span>
+          </div>
+
+          <div class="hg-progress">
+            <span class="hg-progress-main">이동 <strong id="moveValue">0</strong> / <span id="parValue">4</span>수</span>
+            <span class="hg-stars" id="starGauge" aria-label="별 3개 중 3개"></span>
+            <span class="hg-chip" id="streakChip">연속 0회</span>
+            <span class="hg-streak-best" id="streakBest">최고 0회</span>
+            <span class="hg-remain" id="remainValue">최소 4수 남음</span>
+          </div>
+          <p class="hg-daybadge" id="dayBadge" hidden></p>
+
+          <div class="hg-word" id="wordRow" role="group" aria-label="현재 단어 자모"></div>
+          <p class="hg-wordnote" id="wordNote">현재 단어 <b>의자</b> · 목표까지 최소 4수</p>
+
+          <div class="hg-result" id="resultBox" hidden>
+            <div class="hg-result-head">
+              <span class="hg-result-badge">클리어</span>
+              <span class="hg-perfect" id="resultPerfect" hidden>퍼펙트</span>
+            </div>
+            <div class="hg-stars hg-stars-big" id="resultStars"></div>
+            <dl class="hg-result-grid">
+              <div><dt>이동</dt><dd id="resultMoves">4수</dd></div>
+              <div><dt>시간</dt><dd id="resultTime">0:41</dd></div>
+              <div><dt>최소</dt><dd id="resultPar">4수</dd></div>
+            </dl>
+            <p class="hg-result-note" id="resultRival">라이벌보다 15초 빨랐습니다.</p>
+            <p class="hg-result-next" id="resultNext">다음 문제가 기다립니다.</p>
+            <div class="hg-result-actions">
+              <button type="button" class="hg-btn hg-btn-primary" id="nextBtn">다음 문제</button>
+              <button type="button" class="hg-btn hg-btn-ghost" id="retryBtn">다시 하기</button>
+            </div>
+          </div>
+
+          <div class="hg-pad" id="pad">
+            <div class="hg-pad-head">
+              <div class="hg-seg hg-seg-small" role="tablist" aria-label="바꾸기 방식">
+                <button type="button" class="hg-seg-btn is-active" id="padTabJamo" role="tab" aria-selected="true">자모</button>
+                <button type="button" class="hg-seg-btn" id="padTabLetter" role="tab" aria-selected="false">글자</button>
+              </div>
+              <span class="hg-pad-hint" id="padHint">바꿀 칸을 탭하세요</span>
+            </div>
+            <div class="hg-keys" id="jamoKeys" role="group" aria-label="자모 선택"></div>
+            <div class="hg-letterpad" id="letterKeys" hidden>
+              <div class="hg-cho-row" id="letterChoRow" role="group" aria-label="초성 고르기"></div>
+              <div class="hg-keys hg-keys-letters" id="letterGrid" role="group" aria-label="글자 선택"></div>
+            </div>
+            <p class="hg-pad-note" id="padNote">사전에 없는 단어는 이동으로 세지 않고 되돌립니다.</p>
+          </div>
+
+          <div class="hg-actions" id="actionRow">
+            <button type="button" class="hg-btn" id="undoBtn" disabled>한 수 되돌리기</button>
+            <button type="button" class="hg-btn" id="hintBtn">힌트</button>
+            <button type="button" class="hg-btn hg-btn-ghost" id="resetBtn">처음부터</button>
+          </div>
+          <p class="hg-status" id="statusLine" role="status" aria-live="polite">바꿀 칸을 탭하고 자모를 골라 보세요.</p>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script id="hangulData" type="application/json">{"generated":"2026-11-21 21:42 KST","words":["가게","가격","가구","가끔","가로","가루","가면","가뭄","가방","가사","가수","가스","가슴","가시","가위","가을","가족","가죽","가지","각도","간장","간판","갈등","갈비","갈치","감기","감동","감자","감정","강물","강수","강의","개미","거래","거미","거실","거울","거위","거짓","건강","건물","검사","검색","겨울","결재","결제","경계","경력","경보","경찰","계곡","계단","계약","계획","고기","고추","골목","골프","공격","공기","공부","공원","공책","과일","과자","과장","관심","광고","광어","교사","교수","교실","교통","구급","구두","구름","구역","구이","구조","국물","국수","군인","굴뚝","권리","권한","규정","규칙","극장","근육","글자","금지","기름","기린","기쁨","기사","기억","기온","기차","기침","김밥","김치","까치","꼬리","꽃병","꿀벌","나라","나무","나물","나비","나이","나중","낙엽","낙지","낙타","난로","날개","날씨","남매","남자","내일","냄비","냉면","노래","노력","노을","노트","농구","농부","눈물","눈썹","느낌","늑대","다리","다시","다툼","단추","달력","달빛","담장","대구","대답","대리","대문","대응","대책","대추","대출","대피","도로","도마","도서","도시","도움","독서","동네","동료","동물","동생","돼지","두부","들판","등대","등불","등산","딸기","떡국","라면","로그","로봇","마늘","마당","마을","마음","만두","매미","매일","매트","맥주","먹이","먼저","면접","멸치","명절","명태","명함","모기","모래","모레","모자","목욕","목표","무릎","무침","문어","문제","물감","물건","미소","미역","미용","미터","바늘","바다","바람","바위","바지","박수","반지","반찬","발등","발목","발음","발표","밤낮","밥상","밥솥","방금","방문","방어","배구","배상","배우","배추","백성","백업","버그","버스","번개","벌레","벌써","법원","벨트","벽돌","변기","별빛","병원","보고","보관","보리","보상","보안","복구","볶음","봄날","봉투","부두","부서","부엌","부장","북극","분노","분석","분필","불꽃","불빛","비누","비용","빵집","사고","사과","사람","사랑","사무","사슴","사실","사원","사자","사장","사진","사탕","삭제","산길","산불","산책","상사","상자","새벽","새우","색깔","생각","생선","생수","생일","샴푸","서랍","서리","서버","서점","선물","선반","설날","설렘","설탕","성공","성냥","성적","세금","셔츠","소금","소리","소문","소방","소주","손님","손등","손목","손실","손해","수건","수박","수사","수술","수업","수영","수저","수정","숙제","슬픔","습도","승리","승진","시계","시내","시민","시장","시험","식당","식물","식탁","신고","신문","신발","신입","실내","실수","실패","심장","싸움","아까","아내","아들","아이","아직","아침","안개","안경","안방","안전","암호","야구","야근","약국","약사","약속","양말","양파","어깨","어선","어제","언어","얼굴","엄마","업무","여름","여우","여행","연봉","연어","연필","연휴","열매","열쇠","열정","염소","영화","옆집","예방","예산","오늘","오답","오리","오이","오전","오후","온도","올해","옷장","와인","왕자","외투","요리","욕조","용기","용서","우산","우유","우정","운동","운전","울음","웃음","월급","월식","위험","유리","유성","유출","은하","은행","음식","음악","의무","의사","의자","이따","이력","이름","이마","이불","이웃","이익","이자","인증","인형","일기","일몰","일식","일정","일출","입술","입학","잉크","자금","자리","자매","자유","자정","자주","잔디","장갑","장마","장미","재킷","저녁","저울","저장","저축","전골","전공","전구","전등","전복","전쟁","전화","절망","절반","점검","점심","접근","접속","정답","정보","정오","정원","정의","정책","제비","조개","조기","조끼","조림","졸업","종이","좌석","주말","주방","주사","주인","주중","주차","준비","증거","지갑","지구","지금","지도","지붕","지식","지진","지하","지혜","직원","진실","진찰","질문","질서","찌개","차단","차표","참새","참외","창고","창문","채소","채용","책방","책상","책임","책장","천둥","천장","철도","청소","체력","체조","추석","축구","출근","출장","치료","치마","치약","친구","칠판","침대","침해","칫솔","커튼","커피","코드","코트","콜라","콧물","탁자","탐지","태양","태풍","택시","토끼","퇴근","퇴직","투자","튀김","트럭","팀장","파도","파리","파일","판결","패배","패치","편지","편집","평일","평화","포도","폭설","폭염","폭포","폴더","표정","풍경","피부","피자","피해","필통","하늘","하루","하천","학교","학생","학습","학점","한강","한파","할인","항구","항상","해답","해변","해커","해킹","햇빛","행복","행성","향기","허가","허리","현관","형제","혜성","호박","호수","홍수","화가","화분","화재","화해","환불","회사","회식","회의","회장","후추","휴가","휴일","휴지","희망"],"cho":["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"],"jung":["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"],"jong":["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"],"syllableGroups":{"ㄱ":["가","각","간","갈","감","갑","강","개","거","건","검","게","겨","격","결","경","계","고","곡","골","공","과","관","광","교","구","국","군","굴","권","규","그","극","근","글","금","급","기","길","김"],"ㄲ":["까","깔","깨","꼬","꽃","꿀","끔","끼","낌"],"ㄴ":["나","낙","난","날","남","낮","내","냄","냉","냥","네","녁","노","농","누","눈","느","늑","늘","님"],"ㄷ":["다","단","달","담","답","당","대","더","도","독","돌","동","돼","두","둥","드","들","등","디"],"ㄸ":["따","딸","떡","뚝"],"ㄹ":["라","람","랍","랑","래","럭","레","렘","력","로","료","루","름","릎","리","린","림"],"ㅁ":["마","만","말","망","매","맥","먹","먼","면","멸","명","모","목","몰","무","문","물","뭄","미","민"],"ㅂ":["바","박","반","발","밤","밥","방","배","백","버","번","벌","법","벨","벽","변","별","병","보","복","볶","봄","봇","봉","부","북","분","불","붕","비","빛"],"ㅃ":["빵","쁨"],"ㅅ":["사","삭","산","상","새","색","생","샴","서","석","선","설","성","세","셔","소","속","손","솔","솥","쇠","수","숙","술","스","슬","슴","습","승","시","식","신","실","심"],"ㅆ":["싸","써","썹","씨"],"ㅇ":["아","악","안","암","야","약","양","어","억","언","얼","엄","업","엌","여","역","연","열","염","엽","영","옆","예","오","온","올","옷","와","왕","외","요","욕","용","우","운","울","움","웃","원","월","위","유","육","은","을","음","응","의","이","익","인","일","임","입","잉"],"ㅈ":["자","잔","장","재","쟁","저","적","전","절","점","접","정","제","조","족","졸","종","좌","주","죽","준","중","증","지","직","진","질","집","짓"],"ㅉ":["찌"],"ㅊ":["차","찬","찰","참","창","채","책","천","철","청","체","추","축","출","츠","치","칙","친","칠","침","칫"],"ㅋ":["커","코","콜","콧","크","킷","킹"],"ㅌ":["타","탁","탐","탕","태","택","터","토","통","퇴","투","툼","튀","트","튼","팀"],"ㅍ":["파","판","패","편","평","포","폭","폴","표","푸","풍","프","픔","피","필"],"ㅎ":["하","학","한","할","함","항","해","햇","행","향","허","험","현","형","혜","호","홍","화","환","회","획","후","휴","희"]},"syllables":["가","각","간","갈","감","갑","강","개","거","건","검","게","겨","격","결","경","계","고","곡","골","공","과","관","광","교","구","국","군","굴","권","규","그","극","근","글","금","급","기","길","김","까","깔","깨","꼬","꽃","꿀","끔","끼","낌","나","낙","난","날","남","낮","내","냄","냉","냥","네","녁","노","농","누","눈","느","늑","늘","님","다","단","달","담","답","당","대","더","도","독","돌","동","돼","두","둥","드","들","등","디","따","딸","떡","뚝","라","람","랍","랑","래","럭","레","렘","력","로","료","루","름","릎","리","린","림","마","만","말","망","매","맥","먹","먼","면","멸","명","모","목","몰","무","문","물","뭄","미","민","바","박","반","발","밤","밥","방","배","백","버","번","벌","법","벨","벽","변","별","병","보","복","볶","봄","봇","봉","부","북","분","불","붕","비","빛","빵","쁨","사","삭","산","상","새","색","생","샴","서","석","선","설","성","세","셔","소","속","손","솔","솥","쇠","수","숙","술","스","슬","슴","습","승","시","식","신","실","심","싸","써","썹","씨","아","악","안","암","야","약","양","어","억","언","얼","엄","업","엌","여","역","연","열","염","엽","영","옆","예","오","온","올","옷","와","왕","외","요","욕","용","우","운","울","움","웃","원","월","위","유","육","은","을","음","응","의","이","익","인","일","임","입","잉","자","잔","장","재","쟁","저","적","전","절","점","접","정","제","조","족","졸","종","좌","주","죽","준","중","증","지","직","진","질","집","짓","찌","차","찬","찰","참","창","채","책","천","철","청","체","추","축","출","츠","치","칙","친","칠","침","칫","커","코","콜","콧","크","킷","킹","타","탁","탐","탕","태","택","터","토","통","퇴","투","툼","튀","트","튼","팀","파","판","패","편","평","포","폭","폴","표","푸","풍","프","픔","피","필","하","학","한","할","함","항","해","햇","행","향","허","험","현","형","혜","호","홍","화","환","회","획","후","휴","희"],"daily":[{"id":"d01","title":"서재 정리","start":"의자","goal":"책상","par":4,"rivalMs":56000},{"id":"d02","title":"내일로","start":"오늘","goal":"내일","par":4,"rivalMs":56000},{"id":"d03","title":"집수리","start":"창문","goal":"지붕","par":4,"rivalMs":56000},{"id":"d04","title":"과일 가게","start":"사과","goal":"포도","par":4,"rivalMs":56000},{"id":"d05","title":"방어 훈련","start":"공격","goal":"방어","par":5,"rivalMs":67000},{"id":"d06","title":"파도와 모래","start":"파도","goal":"모래","par":5,"rivalMs":67000},{"id":"d07","title":"아침 안개","start":"안개","goal":"구름","par":5,"rivalMs":67000},{"id":"d08","title":"시험 전날","start":"공부","goal":"시험","par":5,"rivalMs":67000},{"id":"d09","title":"점심 메뉴","start":"국수","goal":"김치","par":6,"rivalMs":78000},{"id":"d10","title":"병원 가는 길","start":"병원","goal":"약국","par":6,"rivalMs":78000},{"id":"d11","title":"현관 앞","start":"신발","goal":"양말","par":6,"rivalMs":78000},{"id":"d12","title":"계절 바꾸기","start":"겨울","goal":"여름","par":7,"rivalMs":89000},{"id":"d13","title":"졸업 후","start":"학교","goal":"회사","par":7,"rivalMs":89000},{"id":"d14","title":"휴가 첫날","start":"휴가","goal":"여행","par":7,"rivalMs":89000}],"practice":[{"id":"p-b1","level":"입문","title":"첫 변신","start":"바다","goal":"하늘","par":2,"rivalMs":34000},{"id":"p-b2","level":"입문","title":"환승","start":"버스","goal":"택시","par":3,"rivalMs":45000},{"id":"p-b3","level":"입문","title":"아침 이불","start":"이불","goal":"침대","par":3,"rivalMs":45000},{"id":"p-b4","level":"입문","title":"복구 작업","start":"유출","goal":"복구","par":3,"rivalMs":45000},{"id":"p-m1","level":"중급","title":"분기 목표","start":"목표","goal":"계획","par":4,"rivalMs":56000},{"id":"p-m2","level":"중급","title":"회의 정리","start":"회의","goal":"보고","par":4,"rivalMs":56000},{"id":"p-m3","level":"중급","title":"카페 사다리","start":"커피","goal":"우유","par":5,"rivalMs":67000},{"id":"p-m4","level":"중급","title":"나갈 준비","start":"지갑","goal":"열쇠","par":5,"rivalMs":67000},{"id":"p-a1","level":"고급","title":"침해 탐지","start":"해킹","goal":"탐지","par":6,"rivalMs":78000},{"id":"p-a2","level":"고급","title":"신고 접수","start":"경찰","goal":"소방","par":6,"rivalMs":78000},{"id":"p-a3","level":"고급","title":"밤샘","start":"저녁","goal":"새벽","par":7,"rivalMs":89000},{"id":"p-a4","level":"고급","title":"해산물 사다리","start":"조개","goal":"문어","par":7,"rivalMs":89000}]}</script>
+  <script>
+
+(function () {
+  'use strict';
+
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var DATA = JSON.parse(document.getElementById('hangulData').textContent);
+  var WORDS = DATA.words;
+  var WORD_SET = Object.create(null);
+  WORDS.forEach(function (word) { WORD_SET[word] = true; });
+
+  var STORE_KEY = 'hangul_ladder_stats_v1';
+  var GUIDE_KEY = 'hangul_guide_seen_v1';
+  var CHO = DATA.cho, JUNG = DATA.jung, JONG = DATA.jong;
+  var PART_LABEL = { cho: '초성', jung: '중성', jong: '종성' };
+  var PART_SHORT = { cho: '초', jung: '중', jong: '종' };
+  var PARTS = ['cho', 'jung', 'jong'];
+
+  var el = {};
+  [
+    'themeToggle', 'modeDaily', 'modePractice', 'moveValue', 'parValue',
+    'remainValue', 'starGauge', 'streakChip', 'streakBest', 'dayBadge',
+    'boardTitle', 'boardMeta', 'startWord', 'goalWord', 'timerValue', 'rivalValue',
+    'wordRow', 'wordNote', 'resultBox', 'resultStars', 'resultPerfect', 'resultMoves',
+    'resultTime', 'resultPar', 'resultRival', 'resultNext', 'nextBtn', 'retryBtn',
+    'pad', 'padTabJamo', 'padTabLetter', 'padHint', 'jamoKeys', 'letterKeys', 'letterChoRow', 'letterGrid', 'padNote',
+    'undoBtn', 'hintBtn', 'resetBtn', 'statusLine', 'actionRow',
+    'recordScope', 'recordBest', 'recordPlays', 'recordStreak', 'recordTime', 'recordList',
+    'practiceCard', 'practiceList', 'practiceMeta',
+    'guideCard', 'guideToggle', 'guideBody', 'guideStage', 'guideTiles', 'guideNote', 'guideReplay'
+  ].forEach(function (id) { el[id] = document.getElementById(id); });
+
+  /* ------------------------------------------------------------------ 자모 */
+  function decompose(syllable) {
+    var code = syllable.charCodeAt(0) - 0xAC00;
+    if (code < 0 || code > 11171) return null;
+    return {
+      cho: CHO[Math.floor(code / 588)],
+      jung: JUNG[Math.floor((code % 588) / 28)],
+      jong: JONG[code % 28]
+    };
+  }
+
+  function compose(cho, jung, jong) {
+    var choIndex = CHO.indexOf(cho);
+    var jungIndex = JUNG.indexOf(jung);
+    var jongIndex = JONG.indexOf(jong);
+    if (choIndex < 0 || jungIndex < 0 || jongIndex < 0) return null;
+    return String.fromCharCode(0xAC00 + choIndex * 588 + jungIndex * 28 + jongIndex);
+  }
+
+  function jamoDiff(a, b) {
+    var count = 0;
+    for (var i = 0; i < Math.min(a.length, b.length); i += 1) {
+      if (a[i] === b[i]) continue;
+      var left = decompose(a[i]);
+      var right = decompose(b[i]);
+      if (!left || !right) return 99;
+      count += (left.cho !== right.cho ? 1 : 0)
+        + (left.jung !== right.jung ? 1 : 0)
+        + (left.jong !== right.jong ? 1 : 0);
+    }
+    return count;
+  }
+
+  /* ------------------------------------------------------------ 단어 그래프 */
+  var NEI = Object.create(null);
+  (function buildGraph() {
+    var buckets = Object.create(null);
+    WORDS.forEach(function (word) {
+      NEI[word] = [];
+      for (var i = 0; i < word.length; i += 1) {
+        var key = i + '|' + word[i];
+        if (!buckets[key]) buckets[key] = [];
+        buckets[key].push(word);
+      }
+    });
+    Object.keys(buckets).forEach(function (key) {
+      var group = buckets[key];
+      for (var i = 0; i < group.length; i += 1) {
+        for (var j = i + 1; j < group.length; j += 1) {
+          NEI[group[i]].push(group[j]);
+          NEI[group[j]].push(group[i]);
+        }
+      }
+    });
+  })();
+
+  function distance(from, to) {
+    if (from === to) return 0;
+    var dist = Object.create(null);
+    dist[from] = 0;
+    var queue = [from];
+    var head = 0;
+    while (head < queue.length) {
+      var current = queue[head];
+      head += 1;
+      var neighbours = NEI[current] || [];
+      for (var i = 0; i < neighbours.length; i += 1) {
+        var next = neighbours[i];
+        if (next in dist) continue;
+        dist[next] = dist[current] + 1;
+        if (next === to) return dist[next];
+        queue.push(next);
+      }
+    }
+    return -1;
+  }
+
+  function bestStep(from, to) {
+    var total = distance(from, to);
+    if (total <= 0) return null;
+    var neighbours = NEI[from] || [];
+    var best = null;
+    var bestDiff = 99;
+    for (var i = 0; i < neighbours.length; i += 1) {
+      var candidate = neighbours[i];
+      if (distance(candidate, to) !== total - 1) continue;
+      var diff = jamoDiff(from, candidate);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = candidate;
+        if (diff === 1) break;
+      }
+    }
+    return best;
+  }
+
+  /* ------------------------------------------------------------------ 저장 */
+  function emptyStore() {
+    return {
+      v: 1,
+      daily: { plays: 0, streak: 0, bestStreak: 0, bestStars: 0, bestMs: 0, days: {} },
+      practice: { plays: 0, streak: 0, bestStreak: 0, bestStars: 0, bestMs: 0, puzzles: {} },
+      recent: []
+    };
+  }
+
+  function readStore() {
+    var raw = null;
+    try { raw = localStorage.getItem(STORE_KEY); } catch (e) { raw = null; }
+    if (!raw) return emptyStore();
+    var parsed;
+    try { parsed = JSON.parse(raw); } catch (e) { parsed = null; }
+    if (!parsed || typeof parsed !== 'object') return emptyStore();
+    var base = emptyStore();
+    ['daily', 'practice'].forEach(function (key) {
+      var source = parsed[key];
+      if (!source || typeof source !== 'object') return;
+      ['plays', 'streak', 'bestStreak', 'bestStars', 'bestMs'].forEach(function (field) {
+        if (typeof source[field] === 'number' && isFinite(source[field])) base[key][field] = source[field];
+      });
+      if (source.days && typeof source.days === 'object') base.daily.days = source.days;
+      if (source.puzzles && typeof source.puzzles === 'object') base.practice.puzzles = source.puzzles;
+    });
+    if (Array.isArray(parsed.recent)) base.recent = parsed.recent.slice(0, 8);
+    return base;
+  }
+
+  function saveStore() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state.store)); } catch (e) {}
+  }
+
+  /* ------------------------------------------------------------------ 날짜 */
+  function kstKey(date) {
+    var now = date || new Date();
+    var kst = new Date(now.getTime() + 9 * 3600000);
+    var month = String(kst.getUTCMonth() + 1);
+    var day = String(kst.getUTCDate());
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return kst.getUTCFullYear() + '-' + month + '-' + day;
+  }
+
+  function dayOrdinal(key) {
+    var parts = key.split('-');
+    return Math.floor(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])) / 86400000);
+  }
+
+  function dayLabel(key) {
+    var parts = key.split('-');
+    return Number(parts[1]) + '/' + Number(parts[2]);
+  }
+
+  function fmtDuration(ms) {
+    var total = Math.max(0, Math.round(ms / 1000));
+    var minutes = Math.floor(total / 60);
+    var seconds = total % 60;
+    return minutes + ':' + (seconds < 10 ? '0' + seconds : String(seconds));
+  }
+
+  /* ------------------------------------------------------------------ 상태 */
+  var state = {
+    mode: 'daily',
+    puzzle: null,
+    dayKey: '',
+    todayKey: '',
+    word: '',
+    history: [],
+    moves: 0,
+    par: 0,
+    hints: 0,
+    startedAt: 0,
+    elapsedMs: 0,
+    running: false,
+    cleared: false,
+    cell: null,
+    padTab: 'jamo',
+    letterCho: null,
+    lastPracticeId: null,
+    store: emptyStore(),
+    timer: null,
+    guideTimers: []
+  };
+
+  function modeBucket() {
+    return state.mode === 'daily' ? state.store.daily : state.store.practice;
+  }
+
+  function currentRecord() {
+    if (state.mode === 'daily') return state.store.daily.days[state.dayKey] || null;
+    return state.store.practice.puzzles[state.puzzle.id] || null;
+  }
+
+  function starsFor(moves, par) {
+    var over = moves - par;
+    if (over <= 0) return 3;
+    if (over <= 2) return 2;
+    return 1;
+  }
+
+  function liveStars() {
+    return starsFor(state.moves, state.par);
+  }
+
+  /* ------------------------------------------------------------------ 렌더 */
+  function starSvg(on, big) {
+    return '<svg class="hg-star' + (on ? ' is-on' : '') + '" viewBox="0 0 24 24" aria-hidden="true">'
+      + '<path fill="currentColor" d="M12 3.4l2.7 5.5 6 .9-4.3 4.2 1 6-5.4-2.9-5.4 2.9 1-6L3.3 9.8l6-.9z"></path></svg>';
+  }
+
+  function paintStars(target, count) {
+    var html = '';
+    for (var i = 1; i <= 3; i += 1) html += starSvg(i <= count);
+    target.innerHTML = html;
+    target.setAttribute('aria-label', '별 3개 중 ' + count + '개');
+  }
+
+  function buildWordRow() {
+    el.wordRow.innerHTML = '';
+    for (var i = 0; i < state.word.length; i += 1) {
+      var unit = document.createElement('div');
+      unit.className = 'hg-unit';
+      unit.setAttribute('data-pos', String(i));
+
+      var syllable = document.createElement('button');
+      syllable.type = 'button';
+      syllable.className = 'hg-syl';
+      syllable.setAttribute('data-pos', String(i));
+      unit.appendChild(syllable);
+
+      var parts = document.createElement('div');
+      parts.className = 'hg-parts';
+      for (var p = 0; p < PARTS.length; p += 1) {
+        var part = PARTS[p];
+        var cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'hg-part';
+        cell.setAttribute('data-pos', String(i));
+        cell.setAttribute('data-part', part);
+        cell.innerHTML = '<span class="hg-part-jamo"></span><span class="hg-part-label">' + PART_SHORT[part] + '</span>';
+        parts.appendChild(cell);
+      }
+      unit.appendChild(parts);
+      el.wordRow.appendChild(unit);
+    }
+  }
+
+  function paintWord() {
+    for (var i = 0; i < state.word.length; i += 1) {
+      var syllable = state.word[i];
+      var parts = decompose(syllable) || { cho: '', jung: '', jong: '' };
+      var syllableButton = el.wordRow.querySelector('.hg-syl[data-pos="' + i + '"]');
+      if (syllableButton) {
+        syllableButton.textContent = syllable;
+        syllableButton.setAttribute('aria-label', (i + 1) + '번째 글자 ' + syllable + ' 통째로 바꾸기');
+      }
+      for (var p = 0; p < PARTS.length; p += 1) {
+        var part = PARTS[p];
+        var cell = el.wordRow.querySelector('.hg-part[data-pos="' + i + '"][data-part="' + part + '"]');
+        if (!cell) continue;
+        cell.querySelector('.hg-part-jamo').textContent = parts[part] || '·';
+        cell.classList.toggle('is-empty', !parts[part]);
+        cell.setAttribute('aria-label', (i + 1) + '번째 글자 ' + PART_LABEL[part] + ' ' + (parts[part] || '없음') + ' 바꾸기');
+      }
+    }
+    syncSelection();
+  }
+
+  function syncSelection() {
+    var cells = el.wordRow.querySelectorAll('.hg-part');
+    for (var i = 0; i < cells.length; i += 1) {
+      var selected = !!state.cell
+        && state.cell.pos === Number(cells[i].getAttribute('data-pos'))
+        && state.cell.part === cells[i].getAttribute('data-part');
+      cells[i].classList.toggle('is-active', selected);
+    }
+    var syllables = el.wordRow.querySelectorAll('.hg-syl');
+    for (var j = 0; j < syllables.length; j += 1) {
+      var whole = !!state.cell && state.cell.part === 'whole'
+        && state.cell.pos === Number(syllables[j].getAttribute('data-pos'));
+      syllables[j].classList.toggle('is-active', whole);
+    }
+  }
+
+  function currentCellJamo() {
+    if (!state.cell || state.cell.part === 'whole') return null;
+    var parts = decompose(state.word[state.cell.pos]);
+    return parts ? parts[state.cell.part] : null;
+  }
+
+  function buildJamoKeys() {
+    el.jamoKeys.innerHTML = '';
+    if (!state.cell) {
+      el.padHint.textContent = '바꿀 칸을 탭하세요';
+      return;
+    }
+    if (state.cell.part === 'whole') {
+      el.padHint.textContent = '글자를 고르면 그 글자로 바뀝니다';
+      return;
+    }
+    var part = state.cell.part;
+    var list = part === 'cho' ? CHO : (part === 'jung' ? JUNG : JONG);
+    var current = currentCellJamo();
+    el.padHint.textContent = (state.cell.pos + 1) + '번째 글자 ' + PART_LABEL[part] + ' 바꾸기';
+    for (var i = 0; i < list.length; i += 1) {
+      var jamo = list[i];
+      var button = document.createElement('button');
+      button.type = 'button';
+      var cls = 'hg-key';
+      if (jamo === current) cls += ' is-current';
+      if (!jamo) cls += ' is-off';
+      button.className = cls;
+      button.setAttribute('data-jamo', jamo);
+      button.textContent = jamo || '없음';
+      if (part === 'jong' && !jamo) button.setAttribute('aria-label', '받침 없음으로 바꾸기');
+      else button.setAttribute('aria-label', PART_LABEL[part] + ' ' + jamo + '으로 바꾸기');
+      el.jamoKeys.appendChild(button);
+    }
+  }
+
+  function buildLetterKeys() {
+    var current = state.cell && state.cell.part === 'whole' ? state.word[state.cell.pos] : '';
+    if (!state.letterCho) {
+      var parts = current ? decompose(current) : null;
+      state.letterCho = parts ? parts.cho : CHO[0];
+    }
+    el.letterChoRow.innerHTML = '';
+    for (var c = 0; c < CHO.length; c += 1) {
+      var choButton = document.createElement('button');
+      choButton.type = 'button';
+      choButton.className = 'hg-cho' + (CHO[c] === state.letterCho ? ' is-active' : '');
+      choButton.setAttribute('data-cho', CHO[c]);
+      choButton.setAttribute('aria-label', '초성 ' + CHO[c] + ' 글자 보기');
+      choButton.textContent = CHO[c];
+      el.letterChoRow.appendChild(choButton);
+    }
+    el.padHint.textContent = '초성 ' + state.letterCho + ' · 글자를 고르면 그 글자로 바뀝니다';
+    var list = DATA.syllableGroups[state.letterCho] || [];
+    el.letterGrid.innerHTML = '';
+    for (var i = 0; i < list.length; i += 1) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'hg-key' + (list[i] === current ? ' is-current' : '');
+      button.setAttribute('data-syllable', list[i]);
+      button.textContent = list[i];
+      button.setAttribute('aria-label', list[i] + ' 글자로 바꾸기');
+      el.letterGrid.appendChild(button);
+    }
+  }
+
+  function paintMode() {
+    var daily = state.mode === 'daily';
+    el.modeDaily.classList.toggle('is-active', daily);
+    el.modePractice.classList.toggle('is-active', !daily);
+    el.modeDaily.setAttribute('aria-pressed', daily ? 'true' : 'false');
+    el.modePractice.setAttribute('aria-pressed', daily ? 'false' : 'true');
+    el.practiceCard.hidden = daily;
+    el.recordScope.textContent = daily ? (state.dayKey ? dayLabel(state.dayKey) : '오늘') : '연습';
+    el.boardMeta.textContent = (daily ? '오늘의 문제' : state.puzzle.level + ' 연습') + ' · 기준 ' + state.par + '수';
+    el.padTabJamo.classList.toggle('is-active', state.padTab === 'jamo');
+    el.padTabLetter.classList.toggle('is-active', state.padTab === 'letter');
+    el.padTabJamo.setAttribute('aria-selected', state.padTab === 'jamo' ? 'true' : 'false');
+    el.padTabLetter.setAttribute('aria-selected', state.padTab === 'letter' ? 'true' : 'false');
+    el.jamoKeys.hidden = state.padTab !== 'jamo';
+    el.letterKeys.hidden = state.padTab !== 'letter';
+  }
+
+  function paint() {
+    var daily = state.mode === 'daily';
+    el.boardTitle.textContent = state.puzzle.title;
+    el.startWord.textContent = state.word;
+    el.goalWord.textContent = state.puzzle.goal;
+    el.moveValue.textContent = String(state.moves);
+    el.parValue.textContent = String(state.par);
+    el.rivalValue.textContent = '라이벌 ' + state.par + '수 · ' + fmtDuration(state.puzzle.rivalMs);
+    el.timerValue.textContent = fmtDuration(state.elapsedMs);
+    el.timerValue.classList.toggle('is-over', state.elapsedMs > state.puzzle.rivalMs);
+
+    var remain = distance(state.word, state.puzzle.goal);
+    if (remain <= 0) {
+      el.remainValue.textContent = '목표 도착';
+      el.remainValue.classList.add('is-done');
+    } else {
+      el.remainValue.textContent = (remain === 1 ? '한 수만 더!' : '최소 ' + remain + '수 남음');
+      el.remainValue.classList.remove('is-done');
+    }
+    el.wordNote.innerHTML = '현재 단어 <b>' + state.word + '</b> · 목표까지 최소 ' + Math.max(0, remain) + '수';
+
+    paintStars(el.starGauge, state.cleared ? starsFor(state.moves, state.par) : liveStars());
+    var bucket = modeBucket();
+    el.streakChip.textContent = '연속 ' + bucket.streak + '회';
+    el.streakChip.classList.toggle('is-hot', bucket.streak >= 3);
+    el.streakBest.textContent = '최고 ' + bucket.bestStreak + '회';
+
+    el.undoBtn.disabled = state.cleared || state.history.length === 0;
+    el.hintBtn.disabled = state.cleared;
+    el.resetBtn.disabled = false;
+    el.pad.hidden = state.cleared;
+    el.actionRow.hidden = state.cleared;
+    el.resultBox.hidden = !state.cleared;
+
+    paintWord();
+    if (state.padTab === 'letter') buildLetterKeys();
+    else buildJamoKeys();
+    paintMode();
+    paintRecord();
+
+    if (state.mode === 'practice') paintPractice();
+  }
+
+  function paintRecord() {
+    var record = currentRecord();
+    var bucket = modeBucket();
+    el.recordBest.textContent = String(record ? record.bestStars : 0);
+    el.recordPlays.textContent = (record ? record.clears : 0) + '판';
+    el.recordStreak.textContent = bucket.streak + '회';
+    el.recordTime.textContent = record && record.bestMs ? fmtDuration(record.bestMs) : '—';
+
+    el.recordList.innerHTML = '';
+    var entries = state.store.recent.filter(function (entry) {
+      return state.mode === 'daily' ? entry.mode === 'daily' : entry.mode === 'practice';
+    }).slice(0, 4);
+    if (!entries.length) {
+      var empty = document.createElement('li');
+      empty.className = 'hg-record-empty';
+      empty.textContent = state.mode === 'daily' ? '오늘 클리어 기록이 아직 없습니다.' : '연습 클리어 기록이 아직 없습니다.';
+      el.recordList.appendChild(empty);
+      return;
+    }
+    entries.forEach(function (entry) {
+      var item = document.createElement('li');
+      var name = document.createElement('span');
+      name.textContent = entry.title;
+      var value = document.createElement('b');
+      value.textContent = entry.moves + '수 · 별 ' + entry.stars + ' · ' + fmtDuration(entry.ms);
+      item.appendChild(name);
+      item.appendChild(value);
+      el.recordList.appendChild(item);
+    });
+  }
+
+  function paintPractice() {
+    var groups = {};
+    DATA.practice.forEach(function (puzzle) {
+      if (!groups[puzzle.level]) groups[puzzle.level] = [];
+      groups[puzzle.level].push(puzzle);
+    });
+    el.practiceList.innerHTML = '';
+    ['입문', '중급', '고급'].forEach(function (level) {
+      if (!groups[level]) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'hg-practice-group';
+      var label = document.createElement('div');
+      label.className = 'hg-practice-label';
+      label.textContent = level;
+      wrap.appendChild(label);
+      var list = document.createElement('div');
+      list.className = 'hg-practice-list';
+      groups[level].forEach(function (puzzle) {
+        var record = state.store.practice.puzzles[puzzle.id];
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'hg-practice-btn' + (state.puzzle.id === puzzle.id ? ' is-active' : '');
+        button.setAttribute('data-id', puzzle.id);
+        var title = document.createElement('span');
+        title.className = 'hg-practice-title';
+        title.textContent = puzzle.title;
+        var meta = document.createElement('span');
+        meta.className = 'hg-practice-meta';
+        meta.textContent = puzzle.par + '수 · 별 ' + (record ? record.bestStars : 0);
+        button.appendChild(title);
+        button.appendChild(meta);
+        list.appendChild(button);
+      });
+      wrap.appendChild(list);
+      el.practiceList.appendChild(wrap);
+    });
+  }
+
+  function setStatus(text, tone) {
+    el.statusLine.textContent = text;
+    el.statusLine.classList.toggle('is-bad', tone === 'bad');
+    el.statusLine.classList.toggle('is-good', tone === 'good');
+  }
+
+  function cellNode(pos, part) {
+    if (part === 'whole') return el.wordRow.querySelector('.hg-syl[data-pos="' + pos + '"]');
+    return el.wordRow.querySelector('.hg-part[data-pos="' + pos + '"][data-part="' + part + '"]');
+  }
+
+  function popCell(pos, part) {
+    if (reduceMotion) return;
+    var cell = cellNode(pos, part);
+    if (!cell) return;
+    cell.classList.remove('is-changed');
+    void cell.offsetWidth;
+    cell.classList.add('is-changed');
+    window.setTimeout(function () { cell.classList.remove('is-changed'); }, 380);
+  }
+
+  function shakeCell(pos, part) {
+    if (reduceMotion) return;
+    var cell = cellNode(pos, part);
+    if (!cell) return;
+    cell.classList.remove('is-reject');
+    void cell.offsetWidth;
+    cell.classList.add('is-reject');
+    window.setTimeout(function () { cell.classList.remove('is-reject'); }, 380);
+  }
+
+  /* ------------------------------------------------------------------ 진행 */
+  function stopTimer() {
+    state.running = false;
+    if (state.timer) {
+      window.clearInterval(state.timer);
+      state.timer = null;
+    }
+  }
+
+  function startTimer() {
+    if (state.running) return;
+    state.running = true;
+    state.startedAt = Date.now() - state.elapsedMs;
+    state.timer = window.setInterval(function () {
+      if (!state.running) return;
+      state.elapsedMs = Date.now() - state.startedAt;
+      el.timerValue.textContent = fmtDuration(state.elapsedMs);
+      el.timerValue.classList.toggle('is-over', state.elapsedMs > state.puzzle.rivalMs);
+    }, 250);
+  }
+
+  function loadPuzzle(puzzle, options) {
+    var opts = options || {};
+    if (!opts.keepStreak && state.puzzle && !state.cleared && state.moves > 0) {
+      modeBucket().streak = 0;
+    }
+    stopTimer();
+    state.puzzle = puzzle;
+    if (state.mode === 'practice') state.lastPracticeId = puzzle.id;
+    state.word = puzzle.start;
+    state.par = puzzle.par;
+    state.history = [];
+    state.moves = 0;
+    state.hints = 0;
+    state.elapsedMs = 0;
+    state.cleared = false;
+    state.cell = { pos: 0, part: 'cho' };
+    state.padTab = 'jamo';
+    state.letterCho = null;
+    state.dayKey = opts.dayKey || state.dayKey || state.todayKey;
+    el.dayBadge.hidden = state.mode !== 'daily' || state.dayKey === state.todayKey;
+    if (state.mode === 'daily') el.dayBadge.hidden = true;
+    buildWordRow();
+    paint();
+    setStatus('시작 단어 ' + puzzle.start + ' · 목표 ' + puzzle.goal + ' · 최소 ' + puzzle.par + '수. 바꿀 칸을 탭하세요.');
+  }
+
+  function todayDaily() {
+    var index = dayOrdinal(state.todayKey) % DATA.daily.length;
+    return DATA.daily[index];
+  }
+
+  function setMode(mode) {
+    if (state.mode === mode && !(mode === 'practice' && !state.puzzle)) return;
+    if (mode === state.mode) return;
+    state.mode = mode;
+    var puzzle;
+    if (mode === 'daily') {
+      state.dayKey = state.todayKey;
+      puzzle = todayDaily();
+    } else {
+      puzzle = DATA.practice.filter(function (item) {
+        return item.id === state.lastPracticeId;
+      })[0] || DATA.practice[0];
+      state.dayKey = state.todayKey;
+    }
+    loadPuzzle(puzzle, { keepStreak: false });
+    setStatus(mode === 'daily'
+      ? '오늘의 문제로 돌아왔습니다. 최소 ' + puzzle.par + '수에 도전하세요.'
+      : '자유 연습입니다. 아래 연습 목록에서 판을 고를 수 있습니다.');
+  }
+
+  function commit(next, pos, part) {
+    if (next === state.word) {
+      setStatus('같은 글자입니다. 다른 자모를 골라 보세요.');
+      return;
+    }
+    if (!WORD_SET[next]) {
+      shakeCell(pos, part);
+      setStatus('"' + next + '"는 사전에 없는 단어입니다. 이동으로 세지 않았어요.', 'bad');
+      return;
+    }
+    state.history.push(state.word);
+    state.word = next;
+    state.moves += 1;
+    if (!state.running) startTimer();
+    paint();
+    popCell(pos, part);
+
+    if (state.word === state.puzzle.goal) {
+      finishRun();
+      return;
+    }
+    var remain = distance(state.word, state.puzzle.goal);
+    var neighbours = NEI[state.word] ? NEI[state.word].length : 0;
+    if (!neighbours) {
+      setStatus('막다른 단어입니다. "한 수 되돌리기"로 돌아가세요.', 'bad');
+    } else if (remain === 1) {
+      setStatus('한 수만 더 가면 목표입니다!', 'good');
+    } else {
+      setStatus(state.moves + '수째 · 목표까지 최소 ' + remain + '수 남았습니다.');
+    }
+  }
+
+  function applyJamo(jamo) {
+    if (!state.cell || state.cell.part === 'whole' || state.cleared) return;
+    var pos = state.cell.pos;
+    var part = state.cell.part;
+    var parts = decompose(state.word[pos]);
+    if (!parts) return;
+    if (parts[part] === jamo) {
+      setStatus('이미 ' + (jamo || '받침 없음') + '입니다. 다른 자모를 골라 보세요.');
+      return;
+    }
+    var nextSyllable = compose(
+      part === 'cho' ? jamo : parts.cho,
+      part === 'jung' ? jamo : parts.jung,
+      part === 'jong' ? jamo : parts.jong
+    );
+    if (!nextSyllable) return;
+    var next = state.word.slice(0, pos) + nextSyllable + state.word.slice(pos + 1);
+    commit(next, pos, part);
+  }
+
+  function applySyllable(syllable) {
+    if (!state.cell || state.cell.part !== 'whole' || state.cleared) return;
+    var pos = state.cell.pos;
+    if (state.word[pos] === syllable) {
+      setStatus('같은 글자입니다. 다른 글자를 골라 보세요.');
+      return;
+    }
+    var next = state.word.slice(0, pos) + syllable + state.word.slice(pos + 1);
+    commit(next, pos, 'whole');
+  }
+
+  function finishRun() {
+    stopTimer();
+    state.cleared = true;
+    var stars = starsFor(state.moves, state.par);
+    var bucket = modeBucket();
+    bucket.plays += 1;
+    bucket.streak += 1;
+    bucket.bestStreak = Math.max(bucket.bestStreak, bucket.streak);
+    bucket.bestStars = Math.max(bucket.bestStars, stars);
+    if (!bucket.bestMs || state.elapsedMs < bucket.bestMs) bucket.bestMs = state.elapsedMs;
+
+    var record;
+    if (state.mode === 'daily') {
+      record = bucket.days[state.dayKey];
+      if (!record) {
+        record = { puzzleId: state.puzzle.id, clears: 0, bestStars: 0, bestMoves: 0, bestMs: 0 };
+        bucket.days[state.dayKey] = record;
+      }
+    } else {
+      record = bucket.puzzles[state.puzzle.id];
+      if (!record) {
+        record = { clears: 0, bestStars: 0, bestMoves: 0, bestMs: 0 };
+        bucket.puzzles[state.puzzle.id] = record;
+      }
+    }
+    record.clears += 1;
+    record.bestStars = Math.max(record.bestStars, stars);
+    record.bestMoves = record.bestMoves ? Math.min(record.bestMoves, state.moves) : state.moves;
+    record.bestMs = record.bestMs ? Math.min(record.bestMs, state.elapsedMs) : state.elapsedMs;
+
+    state.store.recent.unshift({
+      mode: state.mode,
+      id: state.puzzle.id,
+      title: state.puzzle.title,
+      moves: state.moves,
+      stars: stars,
+      ms: state.elapsedMs,
+      day: state.dayKey
+    });
+    state.store.recent = state.store.recent.slice(0, 8);
+    saveStore();
+
+    el.resultStars.innerHTML = '';
+    for (var i = 1; i <= 3; i += 1) el.resultStars.innerHTML += starSvg(i <= stars);
+    el.resultStars.setAttribute('aria-label', '별 3개 중 ' + stars + '개');
+    el.resultMoves.textContent = state.moves + '수';
+    el.resultTime.textContent = fmtDuration(state.elapsedMs);
+    el.resultPar.textContent = state.par + '수';
+    el.resultPerfect.hidden = state.hints > 0;
+    var rivalDiff = state.puzzle.rivalMs - state.elapsedMs;
+    if (state.hints > 0) {
+      el.resultPerfect.textContent = '퍼펙트';
+    }
+    if (rivalDiff >= 0) {
+      el.resultRival.textContent = '라이벌(' + fmtDuration(state.puzzle.rivalMs) + ')보다 ' + fmtDuration(rivalDiff) + ' 빠릅니다.';
+    } else {
+      el.resultRival.textContent = '라이벌(' + fmtDuration(state.puzzle.rivalMs) + ')보다 ' + fmtDuration(-rivalDiff) + ' 느립니다. 한 번 더 도전해 보세요.';
+    }
+    if (state.mode === 'daily') {
+      el.resultNext.textContent = '오늘의 문제를 마쳤습니다. 연습 목록에서 다른 판을 골라도 됩니다.';
+      el.nextBtn.textContent = '자유 연습';
+    } else {
+      var nextPractice = nextPracticePuzzle();
+      el.resultNext.textContent = nextPractice ? '다음 연습: ' + nextPractice.title : '연습을 모두 둘러봤습니다.';
+      el.nextBtn.textContent = '다음 문제';
+    }
+    paint();
+    setStatus('목표 도착! ' + state.moves + '수 · 별 ' + stars + '개 · ' + fmtDuration(state.elapsedMs) + '.', 'good');
+  }
+
+  function nextPracticePuzzle() {
+    var index = DATA.practice.findIndex(function (item) { return item.id === state.puzzle.id; });
+    if (index < 0 || index + 1 >= DATA.practice.length) return null;
+    return DATA.practice[index + 1];
+  }
+
+  function undo() {
+    if (state.cleared || !state.history.length) return;
+    var previous = state.history.pop();
+    var pos = 0;
+    for (var i = 0; i < previous.length; i += 1) {
+      if (previous[i] !== state.word[i]) { pos = i; break; }
+    }
+    var changedPart = 'cho';
+    var before = decompose(previous[pos]);
+    var after = decompose(state.word[pos]);
+    if (before && after) {
+      var diffs = 0;
+      if (before.cho !== after.cho) diffs += 1;
+      if (before.jung !== after.jung) diffs += 1;
+      if (before.jong !== after.jong) diffs += 1;
+      if (diffs > 1) changedPart = 'whole';
+      else if (before.jung !== after.jung) changedPart = 'jung';
+      else if (before.jong !== after.jong) changedPart = 'jong';
+    }
+    state.word = previous;
+    state.moves = Math.max(0, state.moves - 1);
+    paint();
+    popCell(pos, changedPart);
+    setStatus('한 수 되돌렸습니다. ' + state.moves + '수째입니다.');
+  }
+
+  function resetRun() {
+    if (!state.cleared && state.moves > 0) modeBucket().streak = 0;
+    stopTimer();
+    state.word = state.puzzle.start;
+    state.history = [];
+    state.moves = 0;
+    state.hints = 0;
+    state.elapsedMs = 0;
+    state.cleared = false;
+    state.cell = { pos: 0, part: 'cho' };
+    state.padTab = 'jamo';
+    state.letterCho = null;
+    buildWordRow();
+    paint();
+    setStatus('처음부터 다시 시작합니다. 기록은 그대로입니다.');
+  }
+
+  function showHint() {
+    if (state.cleared) return;
+    var next = bestStep(state.word, state.puzzle.goal);
+    if (!next) {
+      setStatus('지금 단어에서 목표까지 가는 길을 찾지 못했습니다. 되돌려 보세요.', 'bad');
+      return;
+    }
+    state.hints += 1;
+    for (var i = 0; i < state.word.length; i += 1) {
+      if (state.word[i] === next[i]) continue;
+      var before = decompose(state.word[i]);
+      var after = decompose(next[i]);
+      if (!before || !after) break;
+      for (var p = 0; p < PARTS.length; p += 1) {
+        var part = PARTS[p];
+        if (before[part] === after[part]) continue;
+        state.cell = { pos: i, part: part };
+        state.padTab = 'jamo';
+        state.letterCho = null;
+        paint();
+        if (!after[part]) setStatus('힌트 · ' + (i + 1) + '번째 글자의 받침을 없애 보세요.', 'good');
+        else setStatus('힌트 · ' + (i + 1) + '번째 글자 ' + PART_LABEL[part] + ' → ' + after[part], 'good');
+        return;
+      }
+    }
+    setStatus('힌트를 찾지 못했습니다.', 'bad');
+  }
+
+  /* ------------------------------------------------------------ 가이드 데모 */
+  function clearGuideTimers() {
+    state.guideTimers.forEach(function (timer) { window.clearTimeout(timer); });
+    state.guideTimers = [];
+  }
+
+  function guideTiles() {
+    return el.guideTiles.querySelectorAll('.hg-demo-tile');
+  }
+
+  function setGuideStep(step) {
+    var steps = el.guideStage.querySelectorAll('.hg-demo-step');
+    for (var i = 0; i < steps.length; i += 1) {
+      steps[i].classList.toggle('is-on', Number(steps[i].getAttribute('data-step')) === step);
+    }
+  }
+
+  function guidePop(side) {
+    if (reduceMotion) return;
+    var tile = guideTiles()[side];
+    if (!tile) return;
+    tile.classList.remove('is-pop');
+    void tile.offsetWidth;
+    tile.classList.add('is-pop');
+  }
+
+  function guideResetState() {
+    var tiles = guideTiles();
+    if (tiles.length < 3) return;
+    tiles[0].textContent = '바';
+    tiles[1].textContent = '다';
+    tiles[2].textContent = '?';
+    tiles[0].classList.remove('is-target');
+    tiles[1].classList.add('is-target');
+    el.guideNote.textContent = '① 바꿀 칸을 탭합니다. 지금은 두 번째 글자를 고릅니다.';
+    setGuideStep(1);
+  }
+
+  function playGuide() {
+    clearGuideTimers();
+    guideResetState();
+    // 자동 재생은 첫 방문 한 번뿐 — 이후에는 정지된 마지막 장면만 남긴다.
+    try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
+    if (reduceMotion) {
+      var tiles = guideTiles();
+      tiles[0].textContent = '가';
+      tiles[1].textContent = '지';
+      tiles[2].textContent = '가지';
+      tiles[0].classList.remove('is-target');
+      el.guideNote.textContent = '바꿀 칸을 탭하고 자모를 고르면 그 칸만 바뀝니다. 두 번이면 목표 단어에 도착합니다.';
+      setGuideStep(3);
+      return;
+    }
+    state.guideTimers.push(window.setTimeout(function () {
+      var tiles2 = guideTiles();
+      tiles2[1].textContent = '지';
+      guidePop(1);
+      el.guideNote.textContent = '② 두 번째 글자 ' + '다' + '를 ' + '지' + '로 바꿉니다. 사전에 있는 단어면 한 수로 인정됩니다.';
+      setGuideStep(2);
+    }, 900));
+    state.guideTimers.push(window.setTimeout(function () {
+      var tiles3 = guideTiles();
+      tiles3[0].textContent = '가';
+      guidePop(0);
+      tiles3[1].classList.remove('is-target');
+      el.guideNote.textContent = '③ 첫 글자도 한 칸 바꾸면 목표 단어 가지에 도착합니다. 여기서 데모가 멈춥니다.';
+      setGuideStep(3);
+    }, 1800));
+    state.guideTimers.push(window.setTimeout(function () {
+      var tiles4 = guideTiles();
+      tiles4[2].textContent = '가지';
+    }, 2400));
+  }
+
+  function setGuideOpen(open, remember) {
+    el.guideBody.hidden = !open;
+    el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    el.guideToggle.textContent = open ? '접기' : '게임 방법';
+    if (!open && remember) {
+      try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
+    }
+  }
+
+  function initGuide() {
+    var seen = null;
+    try { seen = localStorage.getItem(GUIDE_KEY); } catch (e) { seen = null; }
+    if (seen) {
+      setGuideOpen(false, false);
+      guideResetState();
+      var tiles = guideTiles();
+      tiles[0].textContent = '가';
+      tiles[1].textContent = '지';
+      tiles[2].textContent = '가지';
+      tiles[1].classList.remove('is-target');
+      setGuideStep(3);
+      el.guideNote.textContent = '바꿀 칸을 탭하고 자모를 고르면 그 칸만 바뀝니다. 다시 보기로 데모를 볼 수 있습니다.';
+      return;
+    }
+    setGuideOpen(true, false);
+    playGuide();
+  }
+
+  /* ------------------------------------------------------------------ 날짜 */
+  function checkDay() {
+    var key = kstKey();
+    if (key === state.todayKey) return;
+    state.todayKey = key;
+    if (state.mode !== 'daily') {
+      paintRecord();
+      return;
+    }
+    if (state.cleared || state.moves > 0) {
+      el.dayBadge.hidden = false;
+      el.dayBadge.textContent = '새 날짜 문제가 열렸습니다 · 이 판은 ' + dayLabel(state.dayKey) + ' 기록으로 남습니다.';
+      paintRecord();
+      setStatus(dayLabel(state.dayKey) + ' 문제로 시작했으니 이 판은 그날 기록으로 마칩니다. 새 문제는 다음 시작 때 열립니다.');
+      return;
+    }
+    state.dayKey = key;
+    loadPuzzle(todayDaily(), { dayKey: key, keepStreak: true });
+    el.dayBadge.hidden = true;
+    setStatus('날짜가 바뀌어 오늘의 새 문제가 열렸습니다.');
+  }
+
+  /* ---------------------------------------------------------------- 이벤트 */
+  el.wordRow.addEventListener('click', function (event) {
+    if (state.cleared) return;
+    var target = event.target;
+    if (!target || !target.closest) return;
+    var syllable = target.closest('.hg-syl');
+    if (syllable) {
+      state.cell = { pos: Number(syllable.getAttribute('data-pos')), part: 'whole' };
+      state.padTab = 'letter';
+      state.letterCho = null;
+      paint();
+      return;
+    }
+    var cell = target.closest('.hg-part');
+    if (!cell) return;
+    state.cell = { pos: Number(cell.getAttribute('data-pos')), part: cell.getAttribute('data-part') };
+    state.padTab = 'jamo';
+    paint();
+  });
+
+  el.jamoKeys.addEventListener('click', function (event) {
+    var button = event.target.closest ? event.target.closest('.hg-key') : null;
+    if (!button) return;
+    applyJamo(button.getAttribute('data-jamo') || '');
+  });
+
+  el.letterGrid.addEventListener('click', function (event) {
+    var button = event.target.closest ? event.target.closest('.hg-key') : null;
+    if (!button) return;
+    applySyllable(button.getAttribute('data-syllable') || '');
+  });
+
+  el.padTabJamo.addEventListener('click', function () {
+    state.padTab = 'jamo';
+    if (state.cell && state.cell.part === 'whole') state.cell = { pos: state.cell.pos, part: 'cho' };
+    paint();
+  });
+
+  el.padTabLetter.addEventListener('click', function () {
+    state.padTab = 'letter';
+    if (state.cell) state.cell = { pos: state.cell.pos, part: 'whole' };
+    state.letterCho = null;
+    paint();
+  });
+
+  el.letterChoRow.addEventListener('click', function (event) {
+    var button = event.target.closest ? event.target.closest('.hg-cho') : null;
+    if (!button) return;
+    state.letterCho = button.getAttribute('data-cho');
+    paint();
+  });
+
+  el.undoBtn.addEventListener('click', undo);
+  el.hintBtn.addEventListener('click', showHint);
+  el.resetBtn.addEventListener('click', resetRun);
+
+  el.modeDaily.addEventListener('click', function () { setMode('daily'); });
+  el.modePractice.addEventListener('click', function () { setMode('practice'); });
+
+  el.nextBtn.addEventListener('click', function () {
+    if (state.mode === 'daily') {
+      setMode('practice');
+      setStatus('자유 연습으로 이동했습니다. 아래 목록에서 판을 골라 보세요.');
+      return;
+    }
+    var next = nextPracticePuzzle();
+    if (next) loadPuzzle(next, { keepStreak: true });
+    else setMode('practice');
+  });
+
+  el.retryBtn.addEventListener('click', function () {
+    if (state.mode === 'daily') {
+      // 날짜가 바뀐 뒤에는 '다시 하기'가 오늘의 새 문제를 연다.
+      state.dayKey = state.todayKey;
+      loadPuzzle(todayDaily(), { keepStreak: true, dayKey: state.dayKey });
+    } else {
+      loadPuzzle(state.puzzle, { keepStreak: true });
+    }
+    setStatus('같은 문제를 다시 시작합니다. 최소 ' + state.par + '수에 도전하세요.');
+  });
+
+  el.practiceList.addEventListener('click', function (event) {
+    var button = event.target.closest ? event.target.closest('.hg-practice-btn') : null;
+    if (!button) return;
+    var id = button.getAttribute('data-id');
+    var puzzle = DATA.practice.filter(function (item) { return item.id === id; })[0];
+    if (!puzzle) return;
+    loadPuzzle(puzzle, { keepStreak: false });
+    setStatus(puzzle.level + ' · ' + puzzle.title + ' · 최소 ' + puzzle.par + '수.');
+  });
+
+  el.guideToggle.addEventListener('click', function () {
+    setGuideOpen(el.guideBody.hidden, true);
+    if (!el.guideBody.hidden) playGuide();
+  });
+
+  el.guideReplay.addEventListener('click', function () {
+    setGuideOpen(true, false);
+    playGuide();
+  });
+
+  el.themeToggle.addEventListener('click', function () {
+    var root = document.documentElement;
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', 'dark');
+    try { localStorage.setItem('secjobs-theme', dark ? 'light' : 'dark'); } catch (e) {}
+  });
+
+  /* ------------------------------------------------------------------ 초기화 */
+  state.store = readStore();
+  state.todayKey = kstKey();
+  state.dayKey = state.todayKey;
+  initGuide();
+  loadPuzzle(todayDaily(), { dayKey: state.dayKey, keepStreak: true });
+
+  window.setInterval(checkDay, 60000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) checkDay();
+  });
+})();
+
+  </script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab is-active" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link is-current" href="hangul.html" aria-current="page"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>
