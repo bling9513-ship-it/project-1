@@ -1319,45 +1319,48 @@ async function checkReducedMotion(browser, base) {
     await page.goto(`${base}/seat.html`, { waitUntil: 'load' });
     await page.waitForTimeout(200);
     const demo = await page.evaluate(() => {
-      const style = (sel) => getComputedStyle(document.querySelector(sel));
+      const seat = document.querySelector('.sg-seat[data-demo-seat="0"]');
+      const step = (n) => document.querySelector(`#seatGuideSteps .gg-step[data-step="${n}"]`);
       return {
-        chip: style('.gd-chip').opacity,
-        seat: style('.gd-in').opacity,
-        check: style('.gd-check').opacity,
-        caption: style('.gc-3').opacity,
-        anim: style('.gd-in').animationName,
+        settled: seat ? seat.classList.contains('is-done') : false,
+        checkHidden: document.querySelector('[data-demo-check]').hidden,
+        freeHidden: document.querySelector('[data-demo-free]').hidden,
+        onStep: document.querySelectorAll('#seatGuideSteps .gg-step.is-on').length,
+        lastOn: step(3) ? step(3).classList.contains('is-on') : false,
+        doneSteps: document.querySelectorAll('#seatGuideSteps .gg-step.is-done').length,
+        transition: getComputedStyle(seat).transitionDuration,
       };
     });
-    assert.equal(demo.anim, 'none', `reduced motion: guide demo still animating (${demo.anim})`);
-    assert.equal(demo.chip, '0', `reduced motion: guide chip should be seated (${demo.chip})`);
-    assert.equal(demo.seat, '1', `reduced motion: guide seat name hidden (${demo.seat})`);
-    assert.equal(demo.check, '1', `reduced motion: guide check hidden (${demo.check})`);
-    assert.equal(demo.caption, '1', `reduced motion: guide final caption hidden (${demo.caption})`);
+    assert.equal(demo.settled, true, 'reduced motion: seat guide did not settle on the last frame');
+    assert.equal(demo.checkHidden, false, 'reduced motion: seat guide check hidden');
+    assert.equal(demo.freeHidden, true, 'reduced motion: seat guide availability label still shown');
+    assert.equal(demo.onStep, 1, `reduced motion: seat guide active step ${demo.onStep}`);
+    assert.equal(demo.lastOn, true, 'reduced motion: seat guide last step not active');
+    assert.equal(demo.doneSteps, 2, `reduced motion: seat guide done steps ${demo.doneSteps}`);
+    assert.ok(parseFloat(demo.transition) <= 0.02, `reduced motion: seat guide transition ${demo.transition}`);
 
     await page.goto(`${base}/load.html`, { waitUntil: 'load' });
     await page.waitForTimeout(220);
     const loadDemo = await page.evaluate(() => {
-      const style = (sel) => getComputedStyle(document.querySelector(sel));
+      const fill = document.querySelector('[data-demo-fill]');
+      const step = (n) => document.querySelector(`#loadGuideSteps .gg-step[data-step="${n}"]`);
       return {
-        anim: style('.gl-box').animationName,
-        boxOpacity: style('.gl-box').opacity,
-        fillWidth: style('.gl-fill').width,
-        ship: style('.gl-ship').opacity,
-        bonus: style('.gl-bonus').opacity,
-        step1: style('.gc-1').opacity,
-        step3: style('.gc-3').opacity,
+        crateOff: document.querySelector('[data-demo-crate]').classList.contains('is-off'),
+        fillWidth: parseFloat(fill.style.width) || 0,
+        shipOff: document.querySelector('[data-demo-ship]').classList.contains('is-off'),
+        kg: document.querySelector('[data-demo-kg]').textContent.trim(),
+        onStep: document.querySelectorAll('#loadGuideSteps .gg-step.is-on').length,
+        lastOn: step(3) ? step(3).classList.contains('is-on') : false,
         deckWidth: document.querySelector('.cart-deck').getBoundingClientRect().width,
-        rigTransition: style('#cartRig').transitionDuration,
+        rigTransition: getComputedStyle(document.getElementById('cartRig')).transitionDuration,
       };
     });
-    assert.equal(loadDemo.anim, 'none', `reduced motion: load guide still animating (${loadDemo.anim})`);
-    assert.equal(loadDemo.boxOpacity, '1', `reduced motion: load guide box hidden (${loadDemo.boxOpacity})`);
-    assert.ok(parseFloat(loadDemo.fillWidth) > loadDemo.deckWidth * 0.3,
-      `reduced motion: load guide gauge not filled (${loadDemo.fillWidth})`);
-    assert.equal(loadDemo.ship, '1', `reduced motion: load guide ship chip hidden`);
-    assert.equal(loadDemo.bonus, '1', `reduced motion: load guide bonus hidden`);
-    assert.equal(loadDemo.step1, '0', `reduced motion: load guide step 1 visible (${loadDemo.step1})`);
-    assert.equal(loadDemo.step3, '1', `reduced motion: load guide step 3 hidden (${loadDemo.step3})`);
+    assert.equal(loadDemo.crateOff, false, 'reduced motion: load guide crate hidden');
+    assert.ok(loadDemo.fillWidth > 50, `reduced motion: load guide gauge not filled (${loadDemo.fillWidth})`);
+    assert.equal(loadDemo.shipOff, false, 'reduced motion: load guide ship chip hidden');
+    assert.ok(loadDemo.kg.includes('62'), `reduced motion: load guide weight label ${loadDemo.kg}`);
+    assert.equal(loadDemo.onStep, 1, `reduced motion: load guide active step ${loadDemo.onStep}`);
+    assert.equal(loadDemo.lastOn, true, 'reduced motion: load guide last step not active');
     assert.ok(loadDemo.rigTransition === '1e-05s' || parseFloat(loadDemo.rigTransition) <= 0.02,
       `reduced motion: cart tilt transition ${loadDemo.rigTransition}`);
 
@@ -2828,6 +2831,7 @@ async function checkOpsLayout(page, width) {
     const limit = bar && getComputedStyle(bar).display !== 'none'
       ? bar.getBoundingClientRect().top : window.innerHeight;
     const cards = Array.from(document.querySelectorAll('#alertBoard .ops-alert')).map(box);
+    const guide = document.getElementById('opsGuideCard');
     return {
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       limit,
@@ -2838,10 +2842,23 @@ async function checkOpsLayout(page, width) {
       boardCols: cards.length > 1 && Math.abs(cards[0].top - cards[1].top) < 2 ? 2 : 1,
       rail: box(document.querySelector('.ops-rail')),
       main: box(document.querySelector('.ops-main')),
+      guide: guide ? box(guide) : null,
+      guideSteps: document.querySelectorAll('#opsGuideSteps .gg-step').length,
+      replay: document.getElementById('opsGuideReplay') ? document.getElementById('opsGuideReplay').textContent.trim() : null,
+      demo: !!document.querySelector('[data-demo-alert]') && !!document.querySelector('[data-demo-rec]'),
+      count: (document.getElementById('boardCount') || {}).textContent || '',
+      guideAnimation: guide ? getComputedStyle(document.querySelector('[data-demo-alert]')).animationName : 'none',
     };
   });
   assert.equal(geo.overflow, 0, `${tag}: horizontal overflow ${geo.overflow}px`);
   assert.equal(geo.cards.length, 6, `${tag}: alert cards ${geo.cards.length}`);
+  assert.ok(geo.guide && geo.guide.top >= 0 && geo.guide.bottom <= geo.limit,
+    `${tag}: game guide is not in the first screen`);
+  assert.equal(geo.guideSteps, 3, `${tag}: guide steps ${geo.guideSteps}`);
+  assert.equal(geo.replay, '다시 보기', `${tag}: replay label ${geo.replay}`);
+  assert.equal(geo.demo, true, `${tag}: guide demo markup missing`);
+  assert.equal(geo.guideAnimation, 'none', `${tag}: guide demo must stop (${geo.guideAnimation})`);
+  assert.ok(geo.count.includes('남은') && geo.count.includes('처리'), `${tag}: remaining counter ${geo.count}`);
   assert.ok(geo.mode && geo.mode.top >= 0 && geo.mode.bottom <= geo.limit,
     `${tag}: mode switch is not in the first screen`);
   assert.ok(geo.clock && geo.clock.top >= 0 && geo.clock.bottom <= geo.limit,
@@ -2903,6 +2920,21 @@ async function checkOpsGame(page, base, width) {
   const practice = await read();
   assert.equal(practice.mode, 'false', `${tag}: practice mode not selected`);
   assert.equal(practice.startDisabled, true, `${tag}: batch must be disabled before six placements`);
+  await page.click('#person-infra');
+  const firstInfra = practice.cards.find((item) => item.spec === 'infra');
+  await page.click(`.ops-alert[data-id="${firstInfra.id}"]`);
+  const pulse = await page.evaluate(() => ({
+    rec: document.querySelectorAll('#rosterList .ops-person.is-rec').length,
+    recBadge: document.querySelectorAll('#rosterList .ops-person.is-rec .ops-person-badge').length,
+    suggested: document.querySelectorAll('#alertBoard .ops-alert.is-suggested').length,
+    count: document.getElementById('boardCount').textContent.trim(),
+    pop: document.querySelectorAll('#alertBoard .ops-alert.is-pop').length,
+  }));
+  assert.ok(pulse.rec >= 1, `${tag}: specialist responder was not highlighted`);
+  assert.ok(pulse.recBadge >= 1, `${tag}: recommendation badge missing`);
+  assert.ok(pulse.suggested >= 1, `${tag}: ready alerts of the active specialist were not suggested`);
+  assert.ok(pulse.pop >= 1, `${tag}: assigned alert did not pop`);
+  assert.ok(pulse.count.includes('남은') && pulse.count.includes('처리'), `${tag}: remaining counter ${pulse.count}`);
   for (const spec of ['infra', 'sec']) {
     await page.click(`#person-${spec}`);
     for (const card of practice.cards.filter((item) => item.spec === spec)) {
@@ -2922,6 +2954,17 @@ async function checkOpsGame(page, base, width) {
   assert.equal(done.best, done.score + '점', `${tag}: today's best not recorded`);
   assert.ok(Number(done.streak.replace('일', '')) >= 1, `${tag}: streak not counted`);
   assert.equal(done.history, 1, `${tag}: history entries ${done.history}`);
+  const opsGap = await page.evaluate(() => ({
+    text: document.getElementById('resultGapText').textContent.trim(),
+    retryTop: document.getElementById('retryBtn').getBoundingClientRect().top,
+    gridTop: document.getElementById('resultScore').getBoundingClientRect().top,
+    label: document.getElementById('retryBtn').textContent.trim(),
+  }));
+  assert.ok(opsGap.text.includes('등급') || opsGap.text.includes('최적') || opsGap.text.includes('경보'),
+    `${tag}: goal gap missing (${opsGap.text})`);
+  assert.ok(opsGap.text.includes('!') || opsGap.text.includes('달성'), `${tag}: goal gap ending ${opsGap.text}`);
+  assert.ok(opsGap.retryTop < opsGap.gridTop, `${tag}: retry is not placed first in the result`);
+  assert.equal(opsGap.label, '바로 재도전', `${tag}: retry label ${opsGap.label}`);
   assert.ok(done.store && done.store.days, `${tag}: stats not saved`);
   assert.equal(done.store.days[Object.keys(done.store.days)[0]].plays, 1, `${tag}: plays not counted`);
   assert.equal(done.store.streak.count, 1, `${tag}: stored streak`);
@@ -3053,46 +3096,45 @@ async function checkSeatLayout(page, width) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(120);
 
-  // 게임 방법: 첫 방문에는 펼쳐지고, 데모는 CSS 애니메이션으로 움직인다.
-  const guide = await page.evaluate(() => {
-    const anim = (sel) => {
-      const el = document.querySelector(sel);
-      return el ? getComputedStyle(el).animationName : null;
-    };
-    return {
-      exists: !!document.getElementById('guideCard'),
-      expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-      bodyHidden: document.getElementById('guideBody').hidden,
-      label: document.getElementById('guideToggle').textContent.trim(),
-      chip: anim('.gd-chip'),
-      seat: anim('.gd-in'),
-      check: anim('.gd-check'),
-      caption: anim('.gc-3'),
-      steps: document.querySelectorAll('.gc-step').length,
-    };
-  });
+  // 게임 방법: 3단계 데모가 처음 한 번만 움직이고 마지막 장면에서 멈춘다(무한 루프 없음).
+  const guide = await page.evaluate(() => ({
+    exists: !!document.querySelector('#guideCard .gg-card'),
+    replay: document.getElementById('seatGuideReplay') ? document.getElementById('seatGuideReplay').textContent.trim() : null,
+    steps: document.querySelectorAll('#seatGuideSteps .gg-step').length,
+    demo: !!document.querySelector('.sg-seat[data-demo-seat="0"]'),
+    pax: !!document.querySelector('[data-demo-pax]'),
+    check: !!document.querySelector('[data-demo-check]'),
+    animation: getComputedStyle(document.querySelector('.sg-seat')).animationName,
+    seen: !!localStorage.getItem('seat_demo_seen_v1'),
+  }));
   assert.ok(guide.exists, `${tag}: game guide missing`);
-  assert.equal(guide.expanded, 'true', `${tag}: guide should be open on the first visit`);
-  assert.equal(guide.bodyHidden, false, `${tag}: guide body hidden on the first visit`);
-  assert.equal(guide.label, '접기', `${tag}: guide toggle label ${guide.label}`);
+  assert.equal(guide.replay, '다시 보기', `${tag}: replay label ${guide.replay}`);
   assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
-  for (const [name, value] of Object.entries({ chip: guide.chip, seat: guide.seat, check: guide.check, caption: guide.caption })) {
-    assert.ok(value && value !== 'none', `${tag}: guide demo ${name} animation missing (${value})`);
-  }
+  assert.ok(guide.demo && guide.pax && guide.check, `${tag}: guide demo markup missing`);
+  assert.equal(guide.animation, 'none', `${tag}: guide demo must not loop (${guide.animation})`);
+  assert.equal(guide.seen, true, `${tag}: guide seen flag not stored`);
 
-  // 첫 화면 검사는 재방문 기본값(접힌 상태)에서 한다 — 펼친 상태는 안내용이다.
-  if (guide.expanded === 'true') {
-    await page.click('#guideToggle');
-    await page.waitForTimeout(150);
-    const collapsed = await page.evaluate(() => ({
-      hidden: document.getElementById('guideBody').hidden,
-      expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-      label: document.getElementById('guideToggle').textContent.trim(),
-    }));
-    assert.equal(collapsed.hidden, true, `${tag}: guide did not collapse`);
-    assert.equal(collapsed.expanded, 'false', `${tag}: guide aria-expanded after collapse`);
-    assert.equal(collapsed.label, '게임 방법', `${tag}: collapsed label ${collapsed.label}`);
-  }
+  // 데모는 1회 재생 후 3단계에서 정지한다. '다시 보기'는 1단계부터 다시 재생한다.
+  await page.waitForTimeout(2300);
+  const settled = await page.evaluate(() => ({
+    on: Array.from(document.querySelectorAll('#seatGuideSteps .gg-step.is-on')).map((el) => el.dataset.step),
+    done: document.querySelectorAll('#seatGuideSteps .gg-step.is-done').length,
+    note: document.getElementById('seatGuideNote').textContent.trim(),
+    seatDone: document.querySelector('.sg-seat[data-demo-seat="0"]').classList.contains('is-done'),
+  }));
+  assert.deepEqual(settled.on, ['3'], `${tag}: guide did not stop on the last step (${settled.on})`);
+  assert.equal(settled.done, 2, `${tag}: guide completed steps ${settled.done}`);
+  assert.equal(settled.seatDone, true, `${tag}: guide last frame not settled`);
+  assert.ok(settled.note.includes('초록 체크'), `${tag}: last step note missing (${settled.note})`);
+
+  await page.click('#seatGuideReplay');
+  await page.waitForTimeout(120);
+  const replay = await page.evaluate(() => ({
+    on: Array.from(document.querySelectorAll('#seatGuideSteps .gg-step.is-on')).map((el) => el.dataset.step),
+  }));
+  assert.deepEqual(replay.on, ['1'], `${tag}: replay did not restart from step 1 (${replay.on})`);
+  await page.waitForTimeout(2300);
+
   const geo = await page.evaluate(() => {
     const box = (el) => {
       if (!el) return null;
@@ -3133,8 +3175,9 @@ async function checkSeatLayout(page, width) {
     assert.ok(geo.cond && geo.cond.bottom <= geo.limit, `${tag}: condition summary is cut by the first screen`);
     assert.ok(geo.cells[15].bottom <= geo.limit + 1,
       `${tag}: seat grid is cut by the first screen (${Math.round(geo.cells[15].bottom)} > ${Math.round(geo.limit)})`);
-    assert.ok(geo.firstWait && geo.firstWait.top < geo.limit,
-      `${tag}: waiting passengers are not in the first screen`);
+    assert.ok(geo.firstWait, `${tag}: waiting passengers are not rendered`);
+    assert.ok(geo.firstWait.top < geo.limit + 90,
+      `${tag}: waiting passengers are far below the first screen (${Math.round(geo.firstWait.top)} > ${Math.round(geo.limit)})`);
   } else {
     assert.ok(geo.status.right <= geo.main.left + 1, `${tag}: side rail is not left of the board`);
     assert.equal(geo.gridCols, 4, `${tag}: board is not four columns`);
@@ -3185,6 +3228,40 @@ async function checkSeatGame(page, width) {
   assert.equal(initial.practiceHidden, true, `${tag}: practice list shown in daily mode`);
   assert.ok(waitingCount >= 1, `${tag}: no waiting passenger`);
 
+  // 보드 즉시 피드백: 승객을 고르면 앉을 수 있는 빈 좌석만 「가능」으로 켜지고, 앉은 승객은 조건 칩이 초록으로 바뀐다.
+  const feedback = await page.evaluate(() => {
+    const waiting = Array.from(document.querySelectorAll('.wait-card')).find((card) => !card.hidden && !card.classList.contains('is-seated'));
+    if (waiting) waiting.click();
+    const targets = Array.from(document.querySelectorAll('#seatGrid .seat-cell.is-target'));
+    return {
+      clicked: !!waiting,
+      targets: targets.length,
+      targetsEmpty: targets.every((cell) => !cell.classList.contains('is-occupied')),
+      avail: targets.filter((cell) => !!cell.querySelector('.sc-avail')).length,
+      swaps: document.querySelectorAll('#seatGrid .seat-cell.is-swap').length,
+      seatedCards: document.querySelectorAll('.wait-card.is-seated').length,
+      seatedChips: document.querySelectorAll('.wait-card.is-seated .chip.is-ok').length,
+      seatedBadges: document.querySelectorAll('.wait-card.is-seated .wait-state:not([hidden])').length,
+    };
+  });
+  assert.ok(feedback.clicked, `${tag}: no waiting passenger to pick`);
+  assert.ok(feedback.targets > 0, `${tag}: selecting a passenger did not highlight any seat`);
+  assert.equal(feedback.targetsEmpty, true, `${tag}: occupied seats were marked as available`);
+  assert.equal(feedback.avail, feedback.targets, `${tag}: availability labels ${feedback.avail}/${feedback.targets}`);
+  await page.waitForTimeout(220);
+  const availVisible = await page.evaluate(() => Array.from(document.querySelectorAll('#seatGrid .seat-cell.is-target .sc-avail'))
+    .filter((node) => parseFloat(getComputedStyle(node).opacity) > 0.9).length);
+  assert.equal(availVisible, feedback.targets, `${tag}: availability labels not visible (${availVisible}/${feedback.targets})`);
+  if (puzzle.start.some(Boolean)) {
+    assert.ok(feedback.seatedCards > 0, `${tag}: seated passengers missing from the list`);
+    assert.ok(feedback.seatedChips > 0, `${tag}: satisfied conditions not marked green`);
+    assert.equal(feedback.seatedBadges, feedback.seatedCards, `${tag}: seated badges ${feedback.seatedBadges}/${feedback.seatedCards}`);
+  }
+  await page.evaluate(() => {
+    const selected = document.querySelector('.wait-card.is-selected');
+    if (selected) selected.click();
+  });
+
   const { steps, seats } = seatPlan(puzzle.start, puzzle.solution);
   assert.deepEqual(seats, puzzle.solution, `${tag}: planner did not reach the solution`);
   assert.equal(steps.length / 2, puzzle.par, `${tag}: plan ${steps.length / 2} moves vs par ${puzzle.par}`);
@@ -3207,6 +3284,15 @@ async function checkSeatGame(page, width) {
   assert.equal(done.store.totals.plays, 1, `${tag}: plays ${done.store.totals.plays}`);
   assert.equal(done.store.streak.count, 1, `${tag}: streak ${done.store.streak.count}`);
   assert.equal(done.recToday, puzzle.par + '수', `${tag}: today's record ${done.recToday}`);
+  const gap = await page.evaluate(() => ({
+    text: document.getElementById('resultGapText').textContent.trim(),
+    retryTop: document.getElementById('retryBtn').getBoundingClientRect().top,
+    gridTop: document.getElementById('resultStars').getBoundingClientRect().top,
+    retryLabel: document.getElementById('retryBtn').textContent.trim(),
+  }));
+  assert.ok(gap.text.includes('별 3개'), `${tag}: goal gap missing (${gap.text})`);
+  assert.ok(gap.retryTop < gap.gridTop, `${tag}: retry is not placed before the score details`);
+  assert.equal(gap.retryLabel, '다시 도전', `${tag}: retry label ${gap.retryLabel}`);
 
   // 조건 달성 초록 체크 · 착석 팝 · 선택 펄스 · 클리어 축하 연출이 살아 있는지
   const motion = await page.evaluate(() => {
@@ -3354,44 +3440,36 @@ async function checkLoadLayout(page, width) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(150);
 
-  const guide = await page.evaluate(() => {
-    const anim = (sel) => {
-      const node = document.querySelector(sel);
-      return node ? getComputedStyle(node).animationName : null;
-    };
-    return {
-      exists: !!document.getElementById('guideCard'),
-      expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-      bodyHidden: document.getElementById('guideBody').hidden,
-      label: document.getElementById('guideToggle').textContent.trim(),
-      steps: document.querySelectorAll('.gc-step').length,
-      box: anim('.gl-box'),
-      fill: anim('.gl-fill'),
-      ship: anim('.gl-ship'),
-      caption: anim('.gc-3'),
-    };
-  });
-  assert.ok(guide.exists, `${tag}: game guide missing`);
-  assert.equal(guide.expanded, 'true', `${tag}: guide should be open on the first visit`);
-  assert.equal(guide.bodyHidden, false, `${tag}: guide body hidden on the first visit`);
-  assert.equal(guide.label, '접기', `${tag}: guide toggle label ${guide.label}`);
-  assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
-  for (const [name, value] of Object.entries({ box: guide.box, fill: guide.fill, ship: guide.ship, caption: guide.caption })) {
-    assert.ok(value && value !== 'none', `${tag}: guide demo ${name} animation missing (${value})`);
-  }
-
-  await page.click('#guideToggle');
-  await page.waitForTimeout(180);
-  const collapsed = await page.evaluate(() => ({
-    hidden: document.getElementById('guideBody').hidden,
-    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-    label: document.getElementById('guideToggle').textContent.trim(),
-    saved: !!localStorage.getItem('load_guide_seen_v1'),
+  const guide = await page.evaluate(() => ({
+    exists: !!document.querySelector('#guideCard .gg-card'),
+    replay: document.getElementById('loadGuideReplay') ? document.getElementById('loadGuideReplay').textContent.trim() : null,
+    steps: document.querySelectorAll('#loadGuideSteps .gg-step').length,
+    demo: !!document.querySelector('[data-demo-crate]'),
+    animation: getComputedStyle(document.querySelector('[data-demo-crate]')).animationName,
+    seen: !!localStorage.getItem('load_demo_seen_v1'),
   }));
-  assert.equal(collapsed.hidden, true, `${tag}: guide did not collapse`);
-  assert.equal(collapsed.expanded, 'false', `${tag}: guide aria-expanded after collapse`);
-  assert.equal(collapsed.label, '게임 방법', `${tag}: collapsed label ${collapsed.label}`);
-  assert.equal(collapsed.saved, true, `${tag}: guide seen flag not stored`);
+  assert.ok(guide.exists, `${tag}: game guide missing`);
+  assert.equal(guide.replay, '다시 보기', `${tag}: replay label ${guide.replay}`);
+  assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+  assert.ok(guide.demo, `${tag}: guide demo markup missing`);
+  assert.equal(guide.animation, 'none', `${tag}: guide demo must not loop (${guide.animation})`);
+  assert.equal(guide.seen, true, `${tag}: guide seen flag not stored`);
+
+  // 1회 재생 후 3단계에서 정지하고, '다시 보기'로 1단계부터 다시 본다.
+  await page.waitForTimeout(2300);
+  const settled = await page.evaluate(() => ({
+    on: Array.from(document.querySelectorAll('#loadGuideSteps .gg-step.is-on')).map((el) => el.dataset.step),
+    shipOff: document.querySelector('[data-demo-ship]').classList.contains('is-off'),
+    fill: parseFloat(document.querySelector('[data-demo-fill]').style.width) || 0,
+  }));
+  assert.deepEqual(settled.on, ['3'], `${tag}: guide did not stop on the last step (${settled.on})`);
+  assert.equal(settled.shipOff, false, `${tag}: guide ship chip hidden on the last frame`);
+  assert.ok(settled.fill > 50, `${tag}: guide gauge not filled on the last frame (${settled.fill})`);
+  await page.click('#loadGuideReplay');
+  await page.waitForTimeout(120);
+  const replayed = await page.evaluate(() => Array.from(document.querySelectorAll('#loadGuideSteps .gg-step.is-on')).map((el) => el.dataset.step));
+  assert.deepEqual(replayed, ['1'], `${tag}: replay did not restart from step 1 (${replayed})`);
+  await page.waitForTimeout(2300);
 
   // 가이드 카드를 누르면 브라우저가 그 위치로 스크롤하므로, 첫 화면 측정 전에 맨 위로 되돌린다.
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -3515,7 +3593,18 @@ async function checkLoadGame(page, width) {
   assert.ok(/^\+[1-9]/.test(loaded.preview), `${tag}: ship preview ${loaded.preview}`);
   assert.equal(loaded.shipDisabled, false, `${tag}: ship still disabled after loading`);
   assert.ok(loaded.tiltNote.includes(String(first.kg)), `${tag}: tilt note ${loaded.tiltNote}`);
-  assert.ok(['안전', '주의', '위험', '넘침'].includes(loaded.risk[0]), `${tag}: risk tag ${loaded.risk[0]}`);
+  assert.ok(['안전', '주의', '위험', '넘침'].includes(loaded.risk[0].split(' ')[0]), `${tag}: risk tag ${loaded.risk[0]}`);
+  const tiltPreview = await page.evaluate(() => {
+    const marks = [document.getElementById('tiltPreviewL'), document.getElementById('tiltPreviewR')];
+    return {
+      shown: marks.filter((mark) => mark && !mark.hidden).length,
+      labels: marks.map((mark) => (mark ? mark.getAttribute('aria-label') : '')),
+    };
+  });
+  assert.equal(tiltPreview.shown, 2, `${tag}: tilt preview markers ${tiltPreview.shown}/2`);
+  for (const label of tiltPreview.labels) {
+    assert.ok(label && label.includes('기울기'), `${tag}: tilt preview label ${label}`);
+  }
 
   const motion = await page.evaluate(() => {
     const rig = document.getElementById('cartRig');
@@ -3589,6 +3678,22 @@ async function checkLoadGame(page, width) {
   assert.equal(Number(done.resultTotal), expected, `${tag}: final total ${done.resultTotal} vs ${expected}`);
   assert.equal(done.total, String(expected), `${tag}: running total after finish`);
   assert.ok(done.resultStars >= 0 && done.resultStars <= 3, `${tag}: stars ${done.resultStars}`);
+  const loadGap = await page.evaluate(() => ({
+    text: document.getElementById('resultGapText').textContent.trim(),
+    retryTop: document.getElementById('retryBtn').getBoundingClientRect().top,
+    gridTop: document.getElementById('resultStars').getBoundingClientRect().top,
+    label: document.getElementById('retryBtn').textContent.trim(),
+  }));
+  const topTarget = challenge.stars[challenge.stars.length - 1];
+  assert.ok(loadGap.text.length > 0, `${tag}: goal gap missing`);
+  if (done.resultStars < 3) {
+    assert.ok(loadGap.text.includes('별 3개') && loadGap.text.includes(String(topTarget)),
+      `${tag}: star goal gap ${loadGap.text}`);
+  } else {
+    assert.ok(loadGap.text.includes('연속'), `${tag}: streak goal gap ${loadGap.text}`);
+  }
+  assert.ok(loadGap.retryTop < loadGap.gridTop, `${tag}: retry is not placed before the score details`);
+  assert.equal(loadGap.label, '바로 재도전', `${tag}: retry label ${loadGap.label}`);
   assert.ok(done.store && done.store.days && done.store.days[todayKey],
     `${tag}: daily record missing`);
   assert.equal(done.store.days[todayKey].plays, 1, `${tag}: plays ${done.store.days[todayKey].plays}`);
@@ -3637,16 +3742,18 @@ async function checkLoadGame(page, width) {
   assert.equal(switched.boxHidden, false, `${tag}: practice switch kept the result panel`);
   assert.equal(switched.tripHidden, true, `${tag}: practice switch kept the trip panel`);
 
-  // 가이드 토글: 접힌 상태에서 열고 다시 접는다.
+  // 가이드 '다시 보기': 어느 화면에서든 1단계부터 다시 재생한다.
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.click('#guideToggle');
+  await page.click('#loadGuideReplay');
   await page.waitForTimeout(160);
-  assert.equal(await page.evaluate(() => document.getElementById('guideBody').hidden), false,
-    `${tag}: guide did not reopen`);
-  await page.click('#guideToggle');
-  await page.waitForTimeout(160);
-  assert.equal(await page.evaluate(() => document.getElementById('guideToggle').textContent.trim()), '게임 방법',
-    `${tag}: guide did not collapse again`);
+  const replay = await page.evaluate(() => ({
+    on: Array.from(document.querySelectorAll('#loadGuideSteps .gg-step.is-on')).map((el) => el.dataset.step),
+    shipOff: document.querySelector('[data-demo-ship]').classList.contains('is-off'),
+    fill: parseFloat(document.querySelector('[data-demo-fill]').style.width) || 0,
+  }));
+  assert.deepEqual(replay.on, ['1'], `${tag}: guide replay did not restart (${replay.on})`);
+  assert.equal(replay.shipOff, true, `${tag}: guide replay did not reset the ship chip`);
+  assert.equal(replay.fill, 0, `${tag}: guide replay kept the gauge (${replay.fill})`);
 
   console.log(`${tag} passed`);
 }
@@ -3839,7 +3946,7 @@ async function checkArcadeLayout(page, width) {
       main: box('.arc-main'),
       brick: box('#gameBrick'),
       board: document.getElementById('stage').getAttribute('data-board'),
-      cards: document.querySelectorAll('.arc-rail .arc-card').length,
+      cards: document.querySelectorAll('.arc-rail > section').length,
       dpad: getComputedStyle(document.getElementById('dpad')).display,
       backing: { w: canvas.width, h: canvas.height, css: canvas.getBoundingClientRect().width },
     };
@@ -3881,37 +3988,36 @@ async function checkArcadeGame(page, width) {
     `${tag}: rival records ${brickBoard ? brickBoard.rivals.length : 0}`);
   assert.equal(data.boards.length, 4, `${tag}: split boards ${data.boards.length}`);
 
-  // 게임 방법: 첫 방문에는 펼쳐진 Canvas 프리뷰 + 다시 보기
+  // 게임 방법: 3단계 데모가 한 번 움직이고 마지막 장면에서 멈춘다. 다시 보기로 재생.
   const guide = await page.evaluate(() => ({
-    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-    hidden: document.getElementById('guideBody').hidden,
-    label: document.getElementById('guideToggle').textContent.trim(),
+    exists: !!document.getElementById('guideCard') && document.getElementById('guideCard').classList.contains('gg-card'),
     replay: document.getElementById('guideReplay').textContent.trim(),
-    steps: document.querySelectorAll('.arc-step').length,
+    steps: document.querySelectorAll('#guideSteps .gg-step').length,
     cap: document.getElementById('guideCaption').textContent.trim(),
     canvasW: document.getElementById('guideCanvas').width,
+    seen: !!localStorage.getItem('arcade_guide_seen_v1'),
+    animation: getComputedStyle(document.querySelector('.arc-canvas')).animationName,
   }));
-  assert.equal(guide.expanded, 'true', `${tag}: guide should open on the first visit`);
-  assert.equal(guide.hidden, false, `${tag}: guide body hidden`);
-  assert.equal(guide.label, '접기', `${tag}: guide label ${guide.label}`);
+  assert.equal(guide.exists, true, `${tag}: guide card missing`);
   assert.equal(guide.replay, '다시 보기', `${tag}: replay label ${guide.replay}`);
   assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
-  assert.ok(guide.cap.includes('미리보기'), `${tag}: guide caption ${guide.cap}`);
+  assert.ok(guide.cap.length > 10, `${tag}: guide caption ${guide.cap}`);
   assert.ok(guide.canvasW > 100, `${tag}: guide preview canvas ${guide.canvasW}px`);
+  assert.equal(guide.seen, true, `${tag}: guide seen flag not stored`);
+  assert.equal(guide.animation, 'none', `${tag}: guide demo must not loop (${guide.animation})`);
 
-  // 접었다가 '다시 보기'로 다시 펼쳐 프리뷰를 재생한다.
-  await page.click('#guideToggle');
-  await page.waitForTimeout(120);
-  assert.equal(await page.evaluate(() => document.getElementById('guideToggle').textContent.trim()), '게임 방법',
-    `${tag}: guide did not collapse`);
+  await page.waitForTimeout(4400);
+  const settled = await page.evaluate(() => ({
+    on: Array.from(document.querySelectorAll('#guideSteps .gg-step.is-on')).map((el) => el.dataset.step),
+    done: document.querySelectorAll('#guideSteps .gg-step.is-done').length,
+  }));
+  assert.deepEqual(settled.on, ['3'], `${tag}: guide did not stop on the last step (${settled.on})`);
+  assert.equal(settled.done, 2, `${tag}: guide completed steps ${settled.done}`);
   await page.click('#guideReplay');
   await page.waitForTimeout(160);
-  const replayed = await page.evaluate(() => ({
-    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-    hidden: document.getElementById('guideBody').hidden,
-  }));
-  assert.equal(replayed.expanded, 'true', `${tag}: replay did not reopen the guide`);
-  assert.equal(replayed.hidden, false, `${tag}: replay kept the guide body hidden`);
+  const replayed = await page.evaluate(() => Array.from(document.querySelectorAll('#guideSteps .gg-step.is-on')).map((el) => el.dataset.step));
+  assert.deepEqual(replayed, ['1'], `${tag}: replay did not restart from step 1 (${replayed})`);
+  await page.waitForTimeout(4300);
 
   // 1) 벽돌깨기: 시작 → 점수 → 일시정지/재개 → 판 포기
   await page.click('#overlayBtn');
@@ -3929,6 +4035,14 @@ async function checkArcadeGame(page, width) {
   assert.equal(brickRun.lives, '3', `${tag}: brick lives ${brickRun.lives}`);
   assert.ok(brickRun.aux.includes('스테이지'), `${tag}: brick hud ${brickRun.aux}`);
   assert.equal(brickRun.pauseDisabled, false, `${tag}: pause disabled while playing`);
+  const chase = await page.evaluate(() => ({
+    tier: document.getElementById('chaseTier').textContent.trim(),
+    rival: document.getElementById('chaseRival').textContent.trim(),
+    shown: !document.getElementById('arcChase').hidden,
+  }));
+  assert.ok(chase.shown, `${tag}: live chase badges missing`);
+  assert.ok(chase.tier.includes('티어') && chase.tier.includes('점'), `${tag}: tier chase ${chase.tier}`);
+  assert.ok(chase.rival.includes('추월'), `${tag}: rival chase ${chase.rival}`);
 
   await page.click('#pauseBtn');
   await page.waitForTimeout(150);
@@ -3960,6 +4074,17 @@ async function checkArcadeGame(page, width) {
   assert.equal(ended.title, '기록 종료', `${tag}: end title ${ended.title}`);
   assert.ok(ended.detail.length > 0, `${tag}: end detail missing`);
   assert.equal(ended.statsHidden, true, `${tag}: duplicate stats shown above the nickname panel`);
+  const endedExtra = await page.evaluate(() => ({
+    gap: document.getElementById('overlayGap').textContent.trim(),
+    gapHidden: document.getElementById('overlayGap').hidden,
+    retry: document.getElementById('overlayBtn').textContent.trim(),
+    retryBeforeNick: document.getElementById('overlayBtn').compareDocumentPosition(document.getElementById('nickPanel'))
+      === Node.DOCUMENT_POSITION_FOLLOWING,
+  }));
+  assert.equal(endedExtra.gapHidden, false, `${tag}: goal gap hidden on game over`);
+  assert.ok(endedExtra.gap.includes('점'), `${tag}: goal gap ${endedExtra.gap}`);
+  assert.equal(endedExtra.retry, '한 판 더', `${tag}: retry label ${endedExtra.retry}`);
+  assert.equal(endedExtra.retryBeforeNick, true, `${tag}: one-tap retry is not first`);
   assert.ok(ended.nickScore >= brickScore, `${tag}: nickname score ${ended.nickScore} < ${brickScore}`);
 
   // 티어: 현재 점수가 들어가는 구간의 등급이 배지에 보인다.
@@ -4099,36 +4224,33 @@ async function checkArcadeKeyboard(browser, base, width) {
   const read = () => page.evaluate(() => ({
     phase: document.getElementById('stage').getAttribute('data-phase'),
     game: document.getElementById('stage').getAttribute('data-game'),
-    expanded: document.getElementById('guideToggle').getAttribute('aria-expanded'),
-    hidden: document.getElementById('guideBody').hidden,
-    label: document.getElementById('guideToggle').textContent.trim(),
+    steps: Array.from(document.querySelectorAll('#guideSteps .gg-step.is-on')).map((el) => el.dataset.step),
+    label: document.getElementById('guideReplay').textContent.trim(),
     focus: document.activeElement ? (document.activeElement.id || document.activeElement.tagName) : null,
   }));
   try {
     await page.goto(`${base}/arcade.html`, { waitUntil: 'load' });
     await page.evaluate(() => localStorage.removeItem('arcade_guide_seen_v1'));
     await page.reload({ waitUntil: 'load' });
-    await page.locator('#guideToggle').waitFor({ state: 'attached' });
+    await page.locator('#guideReplay').waitFor({ state: 'attached' });
 
-    // 1) '게임 방법' 토글 버튼에 포커스를 두고 Space — 안내 패널만 토글되어야 한다.
-    await page.focus('#guideToggle');
+    // 1) '다시 보기' 버튼에 포커스를 두고 Space — 데모만 다시 재생되고 게임은 시작되지 않는다.
+    await page.focus('#guideReplay');
     const opened = await read();
-    assert.equal(opened.focus, 'guideToggle', `${tag}: focus ${opened.focus}`);
-    assert.equal(opened.expanded, 'true', `${tag}: guide not open on the first visit`);
+    assert.equal(opened.focus, 'guideReplay', `${tag}: focus ${opened.focus}`);
+    assert.equal(opened.label, '다시 보기', `${tag}: replay label ${opened.label}`);
     await page.keyboard.press('Space');
     await page.waitForTimeout(160);
-    const collapsed = await read();
-    assert.equal(collapsed.phase, 'idle', `${tag}: Space on the guide button started the game (${collapsed.phase})`);
-    assert.equal(collapsed.expanded, 'false', `${tag}: guide did not toggle with Space`);
-    assert.equal(collapsed.hidden, true, `${tag}: guide body still open`);
-    assert.equal(collapsed.label, '게임 방법', `${tag}: toggle label ${collapsed.label}`);
+    const replayed = await read();
+    assert.equal(replayed.phase, 'idle', `${tag}: Space on the guide button started the game (${replayed.phase})`);
+    assert.deepEqual(replayed.steps, ['1'], `${tag}: Space did not replay the guide (${replayed.steps})`);
 
     // 2) Enter도 같은 규칙(버튼의 기본 클릭 동작 우선)
     await page.keyboard.press('Enter');
     await page.waitForTimeout(160);
-    const reopened = await read();
-    assert.equal(reopened.phase, 'idle', `${tag}: Enter on the guide button started the game (${reopened.phase})`);
-    assert.equal(reopened.expanded, 'true', `${tag}: guide did not reopen with Enter`);
+    const replayedAgain = await read();
+    assert.equal(replayedAgain.phase, 'idle', `${tag}: Enter on the guide button started the game (${replayedAgain.phase})`);
+    assert.deepEqual(replayedAgain.steps, ['1'], `${tag}: Enter did not replay the guide (${replayedAgain.steps})`);
 
     // 3) 다른 대화형 요소(게임 전환 탭)에 포커스가 있어도 게임이 시작되지 않는다.
     await page.focus('#gameSnake');

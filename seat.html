@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-XEiNdTxSP+wkWXv2Wu/1SPTIt76bzzV+XpBGuPJLbzQ=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-1He+TIhzZ/EUXnXIlDB4hq+MC5VPacoYNZgKIGEE60M=' 'sha256-S+aiD4DQ4prOW+E95+RHjLQUFRgKqqaPI9Sq1HTTYSw=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 막차 자리 배치</title>
   <meta name="description" content="4×4 막차 한 칸에 승객을 조건에 맞게 앉히는 퍼즐. 일행·출입문 근접·창가·조용한 칸·노약자석 조건을 모두 맞추면 클리어. 매일 KST 날짜로 새 퍼즐이 열리고, 입문·중급·고급 연습 12판의 해답은 빌드 시 검증됩니다.">
@@ -191,133 +191,6 @@
     .wait-empty { font-size: 11px; color: var(--text-muted); }
     .seat-hint { margin-top: 9px; font-size: 10.5px; line-height: 1.45; color: var(--text-muted); }
 
-    /* ----- 게임 방법(애니메이션 데모) ----- */
-    .guide-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .guide-head h2 { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; }
-    .guide-toggle {
-      border: 0; background: transparent; font-family: inherit; font-size: 11px; font-weight: 600;
-      color: var(--accent-primary); cursor: pointer; padding: 4px 0 4px 8px; white-space: nowrap;
-    }
-    .guide-body { margin-top: 9px; }
-    .guide-demo {
-      display: flex; align-items: center; gap: 7px;
-      padding: 8px 9px; border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-page);
-    }
-    .gd-wait { position: relative; display: inline-flex; flex: 0 0 auto; }
-    .gd-chip {
-      display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 22px;
-      padding: 0 7px; border: 1px solid var(--accent-primary); border-radius: 7px;
-      background: var(--accent-subtle); color: var(--accent-primary);
-      font-size: 10px; font-weight: 700;
-      animation: gdChip 7.2s ease-in-out infinite;
-    }
-    .gd-tap {
-      position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px;
-      border-radius: 50%; border: 1.5px solid var(--accent-primary); opacity: 0;
-      animation: gdTap 7.2s ease-out infinite;
-    }
-    .gd-arrow { flex: 0 0 auto; font-size: 10px; color: var(--text-muted); }
-    .gd-seats { display: grid; grid-template-columns: repeat(2, 26px); grid-template-rows: repeat(2, 21px); gap: 3px; flex: 0 0 auto; }
-    .gd-seat {
-      position: relative; display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border-default); border-radius: 5px; background: var(--bg-surface);
-    }
-    .gd-tag { font-size: 6.5px; color: var(--text-muted); white-space: nowrap; }
-    .gd-in {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      border-radius: 4px; background: var(--bg-surface);
-      font-size: 8px; font-weight: 700; color: var(--text-primary);
-      opacity: 0; animation: gdIn 7.2s ease-in-out infinite;
-    }
-    .gd-check {
-      position: absolute; right: -4px; top: -4px; width: 11px; height: 11px; border-radius: 50%;
-      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
-      opacity: 0; animation: gdCheckAnim 7.2s ease-in-out infinite;
-    }
-    .gd-check svg { width: 7px; height: 7px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .gd-cond {
-      margin-left: auto; display: flex; align-items: center; gap: 4px; flex: 0 0 auto;
-      padding: 3px 6px; border: 1px solid var(--border-default); border-radius: 8px;
-      background: var(--bg-surface); font-size: 9.5px; color: var(--text-secondary);
-    }
-    .gd-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--border-strong); animation: gdDot 7.2s ease-in-out infinite; }
-    .gd-counts { position: relative; width: 19px; height: 12px; font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; }
-    .gd-counts b { position: absolute; left: 0; top: 0; font-weight: 700; }
-    .gd-bad { color: var(--text-muted); animation: gdBad 7.2s steps(1, end) infinite; }
-    .gd-ok { color: var(--ok-text); opacity: 0; animation: gdOk 7.2s steps(1, end) infinite; }
-    .guide-caption { position: relative; height: 18px; margin-top: 8px; }
-    .gc-step {
-      position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px;
-      font-size: 10.5px; font-weight: 600; color: var(--text-secondary); opacity: 0; white-space: nowrap;
-    }
-    .gc-num {
-      display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px;
-      border-radius: 50%; background: var(--bg-muted); color: var(--text-secondary);
-      font-size: 8.5px; font-weight: 700; flex-shrink: 0;
-    }
-    .gc-3 .gc-num { background: var(--ok-text); color: #ffffff; }
-    .gc-1 { animation: gc1 7.2s ease infinite; }
-    .gc-2 { animation: gc2 7.2s ease infinite; }
-    .gc-3 { animation: gc3 7.2s ease infinite; }
-    .guide-note { margin-top: 6px; font-size: 10px; line-height: 1.45; color: var(--text-muted); }
-
-    @keyframes gdChip {
-      0% { transform: none; opacity: 1; box-shadow: 0 0 0 0 var(--accent-subtle); }
-      8% { transform: scale(1.05); }
-      14% { transform: scale(1.05); box-shadow: 0 0 0 5px var(--accent-subtle); }
-      20% { transform: none; box-shadow: 0 0 0 0 var(--accent-subtle); }
-      32% { transform: translateX(58px) scale(0.86); opacity: 1; }
-      36% { transform: translateX(58px) scale(0.72); opacity: 0; }
-      92% { transform: none; opacity: 0; }
-      98%, 100% { transform: none; opacity: 1; }
-    }
-    @keyframes gdTap {
-      0%, 8% { opacity: 0; transform: scale(0.6); }
-      14% { opacity: 0.75; transform: scale(1); }
-      26%, 100% { opacity: 0; transform: scale(1.5); }
-    }
-    @keyframes gdIn {
-      0%, 30% { opacity: 0; transform: scale(0.4); }
-      36% { opacity: 1; transform: scale(1.14); }
-      42%, 92% { opacity: 1; transform: scale(1); }
-      97%, 100% { opacity: 0; transform: scale(0.4); }
-    }
-    @keyframes gdCheckAnim {
-      0%, 42% { opacity: 0; transform: scale(0.3); }
-      48% { opacity: 1; transform: scale(1.2); }
-      54%, 92% { opacity: 1; transform: scale(1); }
-      97%, 100% { opacity: 0; transform: scale(0.3); }
-    }
-    @keyframes gdDot {
-      0%, 46% { background: transparent; border-color: var(--border-strong); }
-      52%, 92% { background: var(--ok-text); border-color: var(--ok-text); }
-      97%, 100% { background: transparent; border-color: var(--border-strong); }
-    }
-    @keyframes gdBad {
-      0% { opacity: 1; }
-      52%, 92% { opacity: 0; }
-      97%, 100% { opacity: 1; }
-    }
-    @keyframes gdOk {
-      0% { opacity: 0; }
-      52%, 92% { opacity: 1; }
-      97%, 100% { opacity: 0; }
-    }
-    @keyframes gc1 {
-      0%, 26% { opacity: 1; }
-      32%, 100% { opacity: 0; }
-    }
-    @keyframes gc2 {
-      0%, 30% { opacity: 0; }
-      34%, 52% { opacity: 1; }
-      58%, 100% { opacity: 0; }
-    }
-    @keyframes gc3 {
-      0%, 54% { opacity: 0; }
-      60%, 92% { opacity: 1; }
-      97%, 100% { opacity: 0; }
-    }
-
     .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
     .record-grid dt { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
     .record-grid dd { font-size: 14.5px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -476,12 +349,21 @@
       .seat-hero { display: none; }
       #statusCard { padding: 10px 12px; }
       #statusCard .seat-card-head { display: none; }
+      .seat-guide { padding: 9px 10px 8px; }
+      .seat-guide .gg-note { display: none; }
+      .seat-guide .gg-demo { padding: 6px 7px 5px; }
+      .sg-seats { grid-template-rows: repeat(2, 20px); }
       .seat-seg-btn { padding: 7px 4px; }
       .seat-meter { margin-top: 8px; }
       .seat-stars { margin-top: 3px; }
       .seat-status { margin-top: 4px; font-size: 10.5px; min-height: 15px; }
       .seat-ghost { margin-top: 6px; padding: 7px 10px; font-size: 11.5px; }
-      .seat-cell { min-height: 54px; padding: 6px 7px; }
+      .seat-cell { min-height: 50px; padding: 5px 7px; }
+      .coach { padding: 8px 10px 9px; }
+      .coach-cols { padding-bottom: 3px; }
+      .coach-top { padding-bottom: 4px; }
+      .coach-bottom { padding-top: 4px; }
+      .seat-grid, .coach-cols { gap: 6px; }
       .seat-result { padding: 14px; }
       .result-score strong { font-size: 28px; }
     }
@@ -535,20 +417,139 @@
       100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
     }
 
+    /* ----- 게임 방법 데모 (승객 선택 → 가능 좌석 → 조건 충족) ----- */
+    .seat-guide { padding: 11px 12px 10px; }
+    .seat-guide .gg-card { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+    .sg-demo { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .sg-pax {
+      position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 1px;
+      padding: 4px 8px; border: 1px solid var(--border-default); border-radius: 8px;
+      background: var(--bg-surface); font-size: 10px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap;
+      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+    .sg-pax em { font-style: normal; font-size: 7.5px; font-weight: 600; color: var(--text-muted); }
+    .sg-pax.is-on { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .sg-arrow { font-size: 10px; color: var(--text-muted); }
+    .sg-seats { display: grid; grid-template-columns: repeat(2, 38px); grid-template-rows: repeat(2, 26px); gap: 3px; }
+    .sg-seat {
+      position: relative; display: flex; align-items: flex-start; justify-content: flex-start;
+      padding: 2px 3px; border: 1px solid var(--border-default); border-radius: 5px;
+      background: var(--bg-surface); font-size: 6.5px; color: var(--text-muted); overflow: hidden;
+      transition: border-color 160ms ease, background-color 160ms ease;
+    }
+    .sg-seat b { font-weight: 600; }
+    .sg-name {
+      position: absolute; left: 2px; bottom: 1px; font-style: normal; font-size: 8px; font-weight: 700;
+      color: var(--text-primary); opacity: 0; transition: opacity 160ms ease;
+    }
+    .sg-free {
+      position: absolute; right: 3px; bottom: 2px; font-style: normal; font-size: 6.5px; font-weight: 700;
+      color: var(--accent-primary); opacity: 0; transition: opacity 160ms ease;
+    }
+    .sg-check {
+      position: absolute; right: -5px; top: -5px; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--ok-text); display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.5); transition: opacity 160ms ease, transform 200ms ease;
+    }
+    .sg-check svg { width: 8px; height: 8px; stroke: #ffffff; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .sg-seat.is-ok { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .sg-seat.is-ok .sg-free { opacity: 1; }
+    .sg-seat.is-done { border-color: var(--ok-border); background: var(--ok-bg); }
+    .sg-seat.is-done .sg-name { opacity: 1; }
+    .sg-seat.is-done .sg-check { opacity: 1; transform: none; }
+
+    /* ----- 보드 즉시 피드백: 가능 좌석 · 충족 조건 ----- */
+    .sc-avail {
+      position: absolute; right: 4px; bottom: 4px;
+      font-size: 7.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--bg-surface); border: 1px solid var(--accent-primary); border-radius: 4px; padding: 0 3px;
+      opacity: 0; transform: scale(0.85); pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+    .seat-cell.is-target { border-color: var(--accent-primary); border-style: solid; background: var(--accent-subtle); box-shadow: 0 0 0 2px var(--accent-subtle); }
+    .seat-cell.is-target .sc-avail { opacity: 1; transform: none; }
+    .seat-cell.is-target .sc-sub { visibility: hidden; }
+    .seat-cell.is-swap { border-color: var(--accent-primary); border-style: dashed; }
+    .seat-cell.is-swap .sc-avail { opacity: 1; transform: none; color: var(--text-secondary); border-color: var(--border-strong); }
+    .seat-cell.is-swap .sc-sub { visibility: hidden; }
+    .chip.is-ok { color: var(--ok-text); border-color: var(--ok-border); background: var(--ok-bg); }
+    .wait-state {
+      display: inline-flex; align-items: center; gap: 2px; margin-left: auto;
+      font-size: 8.5px; font-weight: 700; color: var(--ok-text);
+    }
+    .wait-state svg { width: 9px; height: 9px; stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .wait-card.is-seated { background: var(--ok-bg); border-color: var(--ok-border); opacity: 0.86; }
+    .wait-card.is-seated .wait-state { display: inline-flex; }
+
+    /* ----- 결과: 목표 격차 + 원탭 재도전 최우선 ----- */
+    .result-gap {
+      display: flex; align-items: flex-start; gap: 6px; margin-top: 8px;
+      font-size: 12.5px; font-weight: 700; line-height: 1.5; color: var(--text-primary);
+    }
+    .result-gap .tag {
+      flex: 0 0 auto; margin-top: 1px; font-size: 8.5px; font-weight: 700;
+      color: var(--accent-primary); background: var(--accent-subtle);
+      border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 4px;
+    }
+    .result-actions.is-first { margin-top: 10px; }
+
     @media (prefers-reduced-motion: reduce) {
       .seat-seg-btn, .seat-cell, .wait-card, .stage { transition: none !important; }
       .seat-cell.is-selected, .wait-card.is-selected, .coach.is-cleared,
       .seat-cell.is-landing, .seat-cell.is-landing .sc-name,
       .seat-result.is-new, .result-stars .star.is-pop { animation: none !important; }
       .seat-result.is-new .result-burst span { animation: none !important; opacity: 0 !important; }
-      /* 데모는 움직이지 않고 '완료된 한 장면'으로 보여 준다. */
-      .gd-chip, .gd-tap { animation: none !important; opacity: 0 !important; }
-      .gd-in, .gd-check { animation: none !important; opacity: 1 !important; transform: none !important; }
-      .gd-dot { animation: none !important; background: var(--ok-text) !important; border-color: var(--ok-text) !important; }
-      .gd-bad { animation: none !important; opacity: 0 !important; }
-      .gd-ok { animation: none !important; opacity: 1 !important; }
-      .gc-step { animation: none !important; opacity: 0 !important; }
-      .gc-3 { animation: none !important; opacity: 1 !important; }
+      .sg-pax, .sg-seat, .sg-free, .sg-check, .seat-cell.is-target .sc-avail { transition: none !important; }
+    }
+
+    /* ----- 게임 방법: 한 번만 움직이는 데모 (4종 공통) ----- */
+    .gg-card {
+      background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 12px; padding: 11px 12px 10px; margin: 0 0 10px;
+      box-shadow: var(--card-shadow);
+    }
+    .gg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .gg-head-actions { display: inline-flex; align-items: center; gap: 6px; }
+    .gg-head h2 {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary);
+    }
+    .gg-head h2 svg { color: var(--accent-primary); flex-shrink: 0; }
+    .gg-auto { font-size: 9.5px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+    .gg-demo {
+      position: relative; margin-top: 8px; padding: 9px 9px 8px;
+      border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-page);
+      overflow: hidden;
+    }
+    .gg-steps { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 8px; }
+    .gg-step {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap;
+      color: var(--text-muted); padding: 2px 5px; border-radius: 999px;
+      border: 1px solid transparent; transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+    }
+    .gg-step.is-done { color: var(--text-secondary); }
+    .gg-step.is-on { color: var(--accent-primary); background: var(--accent-subtle); border-color: var(--border-default); }
+    .gg-note { margin-top: 7px; font-size: 10px; line-height: 1.5; color: var(--text-muted); min-height: 15px; }
+    .gg-replay {
+      width: auto; border: 1px solid var(--border-default); border-radius: 7px;
+      background: var(--bg-surface); color: var(--accent-primary);
+      font-family: inherit; font-size: 10.5px; font-weight: 700; padding: 3px 8px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .gg-replay:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .gg-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    @media (max-width: 420px) {
+      .gg-card { padding: 8px 10px 7px; }
+      .gg-demo { margin-top: 6px; padding: 7px 8px 6px; }
+      .gg-steps { margin-top: 6px; }
+      .gg-note { margin-top: 5px; min-height: 13px; }
+      .gg-replay { padding: 2px 6px; font-size: 10px; }
+      .gg-step { font-size: 8.6px; padding: 2px 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gg-step { transition: none !important; }
     }
 </style>
   <script>
@@ -1032,43 +1033,14 @@
           </div>
           <div class="seat-meter">
             <span>이동 <strong id="moveValue">0</strong>수</span>
-            <span class="seat-meter-par">기준 <strong id="parValue">2</strong>수</span>
+            <span class="seat-meter-par">목표 <strong id="parValue">2</strong>수 이내</span>
           </div>
           <div class="seat-stars" id="starRow" aria-label="예상 별점"></div>
           <p class="seat-status" id="seatStatus" role="status" aria-live="polite">막차가 도착했습니다. 반대편 문 쪽부터 자리를 잡아 보세요.</p>
         </section>
 
-        <section class="seat-card guide" id="guideCard" aria-labelledby="guideTitle">
-          <div class="guide-head">
-            <h2 id="guideTitle">게임 방법</h2>
-            <button type="button" class="guide-toggle" id="guideToggle" aria-expanded="true" aria-controls="guideBody">접기</button>
-          </div>
-          <div class="guide-body" id="guideBody">
-            <div class="guide-demo" aria-hidden="true">
-              <span class="gd-wait">
-                <span class="gd-chip">하늘</span>
-                <span class="gd-tap"></span>
-              </span>
-              <span class="gd-arrow">→</span>
-              <span class="gd-seats">
-                <span class="gd-seat"><span class="gd-tag">창가</span><span class="gd-in">하늘</span><span class="gd-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg></span></span>
-                <span class="gd-seat"><span class="gd-tag">통로</span></span>
-                <span class="gd-seat"><span class="gd-tag">창가</span></span>
-                <span class="gd-seat"><span class="gd-tag">통로</span></span>
-              </span>
-              <span class="gd-cond">
-                <span class="gd-dot"></span>
-                <span class="gd-cond-label">창가</span>
-                <span class="gd-counts"><b class="gd-bad">0/1</b><b class="gd-ok">1/1</b></span>
-              </span>
-            </div>
-            <div class="guide-caption" aria-hidden="true">
-              <span class="gc-step gc-1"><span class="gc-num">1</span>대기 승객을 탭해 고르기</span>
-              <span class="gc-step gc-2"><span class="gc-num">2</span>점선으로 표시된 좌석을 탭</span>
-              <span class="gc-step gc-3"><span class="gc-num">3</span>조건을 모두 맞추면 클리어</span>
-            </div>
-            <p class="guide-note">승객을 고르면 조건에 맞는 좌석이 점선으로 표시됩니다. 앉은 승객을 누르면 그 승객이 선택됩니다.</p>
-          </div>
+        <section class="seat-card seat-guide" id="guideCard" aria-label="게임 방법">
+          <section class="gg-card" id="seatGuideCard" aria-labelledby="seatGuideTitle"><div class="gg-head"><h2 id="seatGuideTitle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v.01"></path><path d="M11 12h1v4h1"></path></svg> 게임 방법</h2><div class="gg-head-actions"><span class="gg-auto">자동 1회</span><button type="button" class="gg-replay" id="seatGuideReplay">다시 보기</button></div></div><div class="gg-demo" id="seatGuideStage" aria-hidden="true"><div class="sg-demo"><span class="sg-pax" data-demo-pax>하늘<em>창가 · 일행</em></span><span class="sg-arrow">→</span><span class="sg-seats"><span class="sg-seat" data-demo-seat="0"><b>창가</b><i class="sg-name" data-demo-name>하늘</i><i class="sg-free" data-demo-free>가능</i><span class="sg-check" data-demo-check hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg></span></span><span class="sg-seat"><b>통로</b></span><span class="sg-seat"><b>창가</b></span><span class="sg-seat"><b>통로</b></span></span></div><div class="gg-steps" id="seatGuideSteps"><span class="gg-step" data-step="1">① 승객 선택</span><span class="gg-step" data-step="2">② 가능 좌석</span><span class="gg-step" data-step="3">③ 조건 충족</span></div></div><p class="gg-note" id="seatGuideNote">승객을 고르면 조건에 맞는 빈 좌석만 「가능」으로 켜집니다. 앉히면 충족한 조건이 초록 체크로 바뀝니다.</p></section>
         </section>
 
         <section class="seat-card" id="condCard">
@@ -1131,6 +1103,11 @@
             <span class="result-burst" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></span>
           </div>
           <h2 class="result-title" id="resultTitle">모든 조건을 만족했습니다</h2>
+          <p class="result-gap"><span class="tag">다음 목표</span><span id="resultGapText">—</span></p>
+          <div class="result-actions is-first">
+            <button type="button" class="seat-primary" id="retryBtn">다시 도전</button>
+            <button type="button" class="seat-ghost" id="nextBtn" hidden>다음 판</button>
+          </div>
           <div class="result-score">
             <strong id="resultMoves">0</strong><span class="unit">수</span>
             <span class="result-par" id="resultPar">기준 2수</span>
@@ -1142,10 +1119,6 @@
             <div><dt>오늘 클리어</dt><dd id="resultClears">1판</dd></div>
           </dl>
           <p class="result-hint" id="resultHint"></p>
-          <div class="result-actions">
-            <button type="button" class="seat-primary" id="retryBtn">다시 하기</button>
-            <button type="button" class="seat-ghost" id="nextBtn" hidden>다음 연습</button>
-          </div>
         </section>
 
       </section>
@@ -1160,7 +1133,75 @@
     </div>
   </main>
 
-  <script type="application/json" id="seatData">{"version":1,"built_at":"2026-11-21 23:14 KST","built_date":"2026-11-21","max_par":3,"seats":[{"i":0,"row":1,"col":1,"label":"1A","tags":["window","door"]},{"i":1,"row":1,"col":2,"label":"1B","tags":["aisle","door","senior"]},{"i":2,"row":1,"col":3,"label":"1C","tags":["aisle","door","senior"]},{"i":3,"row":1,"col":4,"label":"1D","tags":["window","door"]},{"i":4,"row":2,"col":1,"label":"2A","tags":["window","quiet"]},{"i":5,"row":2,"col":2,"label":"2B","tags":["aisle","quiet"]},{"i":6,"row":2,"col":3,"label":"2C","tags":["aisle","quiet"]},{"i":7,"row":2,"col":4,"label":"2D","tags":["window","quiet"]},{"i":8,"row":3,"col":1,"label":"3A","tags":["window","quiet"]},{"i":9,"row":3,"col":2,"label":"3B","tags":["aisle","quiet"]},{"i":10,"row":3,"col":3,"label":"3C","tags":["aisle","quiet"]},{"i":11,"row":3,"col":4,"label":"3D","tags":["window","quiet"]},{"i":12,"row":4,"col":1,"label":"4A","tags":["window","door"]},{"i":13,"row":4,"col":2,"label":"4B","tags":["aisle","door","senior"]},{"i":14,"row":4,"col":3,"label":"4C","tags":["aisle","door","senior"]},{"i":15,"row":4,"col":4,"label":"4D","tags":["window","door"]}],"tags":[{"key":"window","label":"창가"},{"key":"aisle","label":"통로"},{"key":"door","label":"출입문 근접"},{"key":"quiet","label":"조용한 칸"},{"key":"senior","label":"노약자석"}],"daily":[{"id":"d01","level":"beginner","title":"2호선 막차","note":"창가 3명 · 통로 1명 · 출입문 근접 1명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"문태호","short":"태호","conds":["senior"]},{"id":"p2","name":"신유진","short":"유진","conds":["aisle"]},{"id":"p3","name":"홍시우","short":"시우","conds":["door","window"]},{"id":"p4","name":"이서준","short":"서준","conds":["window"]},{"id":"p5","name":"남기택","short":"기택","conds":["window"]},{"id":"p6","name":"정다은","short":"다은","conds":["quiet"]}],"groups":[],"start":[null,"p1",null,null,null,"p3",null,null,"p5",null,null,"p4",null,"p2",null,null],"solution":[null,"p1",null,null,null,null,"p6",null,"p5",null,null,"p4",null,"p2",null,"p3"]},{"id":"d02","level":"mid","title":"6호선 마지막 칸","note":"일행 2명 · 창가 1명 · 출입문 근접 2명 · 조용한 칸 2명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"류지안","short":"지안","conds":[],"together":true},{"id":"p2","name":"백서아","short":"서아","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["door"]},{"id":"p4","name":"최민호","short":"민호","conds":["window"]},{"id":"p5","name":"홍시우","short":"시우","conds":["door","senior"]},{"id":"p6","name":"신유진","short":"유진","conds":["quiet"]},{"id":"p7","name":"노윤재","short":"윤재","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,null,null,"p4",null,"p5",null,null,"p1","p7",null,"p3",null,null,null],"solution":[null,null,null,null,"p4",null,null,null,"p2","p1","p7","p6","p3",null,"p5",null]},{"id":"d03","level":"mid","title":"9호선 급행 막차","note":"일행 2명 · 창가 2명 · 통로 1명 · 출입문 근접 2명 · 조용한 칸 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"오세라","short":"세라","conds":[],"together":true},{"id":"p2","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p3","name":"배준영","short":"준영","conds":["window"]},{"id":"p4","name":"문태호","short":"태호","conds":["aisle","door"]},{"id":"p5","name":"최민호","short":"민호","conds":["quiet"]},{"id":"p6","name":"정다은","short":"다은","conds":["door","senior"]},{"id":"p7","name":"한지훈","short":"지훈","conds":["window","quiet"]}],"groups":[["p1","p2"]],"start":[null,"p4",null,null,null,"p2","p1","p3",null,"p7",null,null,null,"p6",null,null],"solution":[null,"p4",null,null,null,"p2","p1","p3",null,null,"p5","p7",null,"p6",null,null]},{"id":"d04","level":"adv","title":"1호선 심야 열차","note":"일행 2명 · 창가 3명 · 통로 1명 · 출입문 근접 4명 · 조용한 칸 1명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"윤소미","short":"소미","conds":[],"together":true},{"id":"p2","name":"심가온","short":"가온","conds":[],"together":true},{"id":"p3","name":"오세라","short":"세라","conds":["window","door"]},{"id":"p4","name":"김하늘","short":"하늘","conds":["quiet"]},{"id":"p5","name":"류지안","short":"지안","conds":["door","aisle"]},{"id":"p6","name":"박지윤","short":"지윤","conds":["senior"]},{"id":"p7","name":"배준영","short":"준영","conds":["window","door"]},{"id":"p8","name":"강현우","short":"현우","conds":["window","door"]}],"groups":[["p1","p2"]],"start":["p7","p5",null,"p8","p1",null,null,null,null,"p3",null,null,null,"p6",null,null],"solution":["p7","p5",null,"p8","p1","p2",null,null,"p4",null,null,null,"p3","p6",null,null]},{"id":"d05","level":"mid","title":"분당선 막차","note":"일행 2명 · 창가 2명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"조은결","short":"은결","conds":[],"together":true},{"id":"p2","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p3","name":"문태호","short":"태호","conds":["window"]},{"id":"p4","name":"윤소미","short":"소미","conds":["door"]},{"id":"p5","name":"오세라","short":"세라","conds":["quiet","window"]},{"id":"p6","name":"홍시우","short":"시우","conds":["senior","door"]},{"id":"p7","name":"정다은","short":"다은","conds":["door"]}],"groups":[["p1","p2"]],"start":[null,"p4",null,null,"p2",null,null,null,"p5",null,"p1",null,"p7",null,"p6",null],"solution":[null,"p4",null,null,null,null,null,"p3","p5","p2","p1",null,"p7",null,"p6",null]},{"id":"d06","level":"adv","title":"4호선 마지막 칸","note":"일행 2명 · 창가 3명 · 통로 2명 · 출입문 근접 1명 · 조용한 칸 3명","par":3,"passengers":[{"id":"p1","name":"백서아","short":"서아","conds":[],"together":true},{"id":"p2","name":"홍시우","short":"시우","conds":[],"together":true},{"id":"p3","name":"서동혁","short":"동혁","conds":["window"]},{"id":"p4","name":"임채원","short":"채원","conds":["window","quiet"]},{"id":"p5","name":"최민호","short":"민호","conds":["aisle","door"]},{"id":"p6","name":"강현우","short":"현우","conds":["aisle"]},{"id":"p7","name":"장예린","short":"예린","conds":["window","quiet"]},{"id":"p8","name":"남기택","short":"기택","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,null,null,null,"p1","p2","p4","p7",null,null,null,null,"p5",null,"p6"],"solution":[null,null,null,null,"p8","p1","p2","p4","p7","p6",null,null,null,"p5",null,"p3"]},{"id":"d07","level":"beginner","title":"7호선 심야","note":"창가 1명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"심가온","short":"가온","conds":["door"]},{"id":"p2","name":"유하람","short":"하람","conds":["door"]},{"id":"p3","name":"강현우","short":"현우","conds":["door"]},{"id":"p4","name":"남기택","short":"기택","conds":["senior"]},{"id":"p5","name":"백서아","short":"서아","conds":["window"]},{"id":"p6","name":"이서준","short":"서준","conds":["quiet"]}],"groups":[],"start":[null,null,null,"p1",null,"p6",null,null,null,null,null,null,null,null,"p4","p2"],"solution":["p3",null,null,"p1","p5","p6",null,null,null,null,null,null,null,null,"p4","p2"]},{"id":"d08","level":"mid","title":"3호선 막차","note":"일행 2명 · 통로 3명 · 출입문 근접 2명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"유하람","short":"하람","conds":[],"together":true},{"id":"p2","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["aisle","door"]},{"id":"p4","name":"남기택","short":"기택","conds":["door"]},{"id":"p5","name":"임채원","short":"채원","conds":["aisle","quiet"]},{"id":"p6","name":"홍시우","short":"시우","conds":["senior"]},{"id":"p7","name":"심가온","short":"가온","conds":["aisle"]}],"groups":[["p1","p2"]],"start":[null,null,null,null,null,null,null,"p7",null,"p1","p5",null,null,"p6","p3","p4"],"solution":[null,"p7",null,null,null,null,null,null,"p2","p1","p5",null,null,"p6","p3","p4"]},{"id":"d09","level":"mid","title":"경의중앙선 막차","note":"일행 2명 · 창가 2명 · 통로 3명 · 조용한 칸 2명","par":2,"passengers":[{"id":"p1","name":"심가온","short":"가온","conds":[],"together":true},{"id":"p2","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p3","name":"윤소미","short":"소미","conds":["aisle"]},{"id":"p4","name":"한지훈","short":"지훈","conds":["aisle"]},{"id":"p5","name":"정다은","short":"다은","conds":["window"]},{"id":"p6","name":"배준영","short":"준영","conds":["quiet","aisle"]},{"id":"p7","name":"박지윤","short":"지윤","conds":["window","quiet"]}],"groups":[["p1","p2"]],"start":[null,"p3","p1","p2",null,null,"p6",null,"p7",null,null,null,null,"p5",null,null],"solution":[null,"p3","p1","p2",null,null,"p6",null,"p7",null,null,null,null,null,"p4","p5"]},{"id":"d10","level":"adv","title":"5호선 마지막 칸","note":"일행 2명 · 창가 3명 · 통로 2명 · 출입문 근접 5명 · 조용한 칸 1명","par":3,"passengers":[{"id":"p1","name":"배준영","short":"준영","conds":[],"together":true},{"id":"p2","name":"정다은","short":"다은","conds":[],"together":true},{"id":"p3","name":"권도현","short":"도현","conds":["window","door"]},{"id":"p4","name":"홍시우","short":"시우","conds":["door"]},{"id":"p5","name":"김하늘","short":"하늘","conds":["aisle","door"]},{"id":"p6","name":"한지훈","short":"지훈","conds":["door","window"]},{"id":"p7","name":"류지안","short":"지안","conds":["window","quiet"]},{"id":"p8","name":"유하람","short":"하람","conds":["door","aisle"]}],"groups":[["p1","p2"]],"start":["p6","p5",null,null,null,null,"p8","p3",null,"p1","p2",null,null,null,null,"p4"],"solution":["p6","p5","p8","p3",null,null,null,"p7",null,"p1","p2",null,null,null,null,"p4"]},{"id":"d11","level":"mid","title":"8호선 심야","note":"일행 2명 · 통로 2명 · 출입문 근접 2명 · 조용한 칸 1명 · 노약자석 2명","par":3,"passengers":[{"id":"p1","name":"오세라","short":"세라","conds":[],"together":true},{"id":"p2","name":"권도현","short":"도현","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["door","senior"]},{"id":"p4","name":"노윤재","short":"윤재","conds":["aisle"]},{"id":"p5","name":"이서준","short":"서준","conds":["door"]},{"id":"p6","name":"조은결","short":"은결","conds":["quiet"]},{"id":"p7","name":"강현우","short":"현우","conds":["senior","aisle"]}],"groups":[["p1","p2"]],"start":[null,"p7","p4",null,null,null,null,null,null,"p1",null,null,"p6",null,"p3",null],"solution":[null,"p7","p4","p5",null,null,null,null,"p2","p1",null,"p6",null,null,"p3",null]},{"id":"d12","level":"adv","title":"신분당선 막차","note":"일행 2명 · 창가 1명 · 통로 1명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 3명","par":3,"passengers":[{"id":"p1","name":"류지안","short":"지안","conds":[],"together":true},{"id":"p2","name":"이서준","short":"서준","conds":[],"together":true},{"id":"p3","name":"강현우","short":"현우","conds":["door","senior"]},{"id":"p4","name":"신유진","short":"유진","conds":["window"]},{"id":"p5","name":"남기택","short":"기택","conds":["senior"]},{"id":"p6","name":"노윤재","short":"윤재","conds":["door","aisle"]},{"id":"p7","name":"조은결","short":"은결","conds":["door","senior"]},{"id":"p8","name":"한지훈","short":"지훈","conds":["quiet"]}],"groups":[["p1","p2"]],"start":["p4","p7","p3",null,null,null,null,null,null,null,null,null,null,"p5","p6","p1"],"solution":["p4","p7","p3",null,null,null,null,null,"p2","p1","p8",null,null,"p5","p6",null]},{"id":"d13","level":"beginner","title":"수인분당선 막차","note":"창가 1명 · 통로 2명 · 출입문 근접 2명 · 조용한 칸 3명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"조은결","short":"은결","conds":["quiet","aisle"]},{"id":"p2","name":"강현우","short":"현우","conds":["senior"]},{"id":"p3","name":"박지윤","short":"지윤","conds":["door","aisle"]},{"id":"p4","name":"한지훈","short":"지훈","conds":["window","door"]},{"id":"p5","name":"배준영","short":"준영","conds":["quiet"]},{"id":"p6","name":"유하람","short":"하람","conds":["quiet"]}],"groups":[],"start":[null,null,"p2",null,null,"p5",null,null,null,null,null,"p6",null,null,"p3",null],"solution":[null,null,"p2",null,null,"p5","p1",null,null,null,null,"p6","p4",null,"p3",null]},{"id":"d14","level":"mid","title":"2호선 지선 막차","note":"일행 2명 · 통로 2명 · 출입문 근접 2명 · 조용한 칸 2명 · 노약자석 2명","par":2,"passengers":[{"id":"p1","name":"노윤재","short":"윤재","conds":[],"together":true},{"id":"p2","name":"장예린","short":"예린","conds":[],"together":true},{"id":"p3","name":"신유진","short":"유진","conds":["door","senior"]},{"id":"p4","name":"문태호","short":"태호","conds":["quiet"]},{"id":"p5","name":"권도현","short":"도현","conds":["door","aisle"]},{"id":"p6","name":"윤소미","short":"소미","conds":["senior","aisle"]},{"id":"p7","name":"오세라","short":"세라","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,"p3",null,null,null,null,null,"p7","p2",null,"p4",null,"p6",null,null],"solution":[null,"p5","p3",null,null,null,null,null,"p7","p2","p1","p4",null,"p6",null,null]},{"id":"d15","level":"mid","title":"공항철도 막차","note":"일행 2명 · 통로 1명 · 출입문 근접 1명 · 조용한 칸 2명 · 노약자석 2명","par":2,"passengers":[{"id":"p1","name":"홍시우","short":"시우","conds":[],"together":true},{"id":"p2","name":"유하람","short":"하람","conds":[],"together":true},{"id":"p3","name":"권도현","short":"도현","conds":["senior","aisle"]},{"id":"p4","name":"심가온","short":"가온","conds":["quiet"]},{"id":"p5","name":"장예린","short":"예린","conds":["door"]},{"id":"p6","name":"신유진","short":"유진","conds":["senior"]},{"id":"p7","name":"배준영","short":"준영","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,"p5","p2","p1",null,null,null,null,null,null,null,"p4","p3",null,"p6",null],"solution":[null,"p5","p2","p1","p7",null,null,null,null,null,null,"p4",null,"p3","p6",null]},{"id":"d16","level":"adv","title":"우이신설선 막차","note":"일행 2명 · 창가 2명 · 통로 2명 · 출입문 근접 3명 · 조용한 칸 2명","par":3,"passengers":[{"id":"p1","name":"강현우","short":"현우","conds":[],"together":true},{"id":"p2","name":"이서준","short":"서준","conds":[],"together":true},{"id":"p3","name":"심가온","short":"가온","conds":["door"]},{"id":"p4","name":"오세라","short":"세라","conds":["window","quiet"]},{"id":"p5","name":"노윤재","short":"윤재","conds":["window"]},{"id":"p6","name":"남기택","short":"기택","conds":["door"]},{"id":"p7","name":"신유진","short":"유진","conds":["aisle","door"]},{"id":"p8","name":"한지훈","short":"지훈","conds":["quiet","aisle"]}],"groups":[["p1","p2"]],"start":[null,null,"p6",null,null,null,null,null,"p4",null,"p2","p1","p3",null,"p8",null],"solution":[null,null,"p6",null,null,null,"p8","p5","p4",null,"p2","p1","p3","p7",null,null]},{"id":"d17","level":"mid","title":"김포골드라인 막차","note":"일행 2명 · 통로 3명 · 출입문 근접 3명 · 조용한 칸 1명","par":2,"passengers":[{"id":"p1","name":"한지훈","short":"지훈","conds":[],"together":true},{"id":"p2","name":"남기택","short":"기택","conds":[],"together":true},{"id":"p3","name":"이서준","short":"서준","conds":["aisle"]},{"id":"p4","name":"장예린","short":"예린","conds":["aisle","quiet"]},{"id":"p5","name":"최민호","short":"민호","conds":["aisle","door"]},{"id":"p6","name":"정다은","short":"다은","conds":["door"]},{"id":"p7","name":"임채원","short":"채원","conds":["door"]}],"groups":[["p1","p2"]],"start":[null,"p1",null,null,null,"p6","p3",null,null,null,"p4",null,"p7","p5",null,null],"solution":["p6","p1","p2",null,null,null,"p3",null,null,null,"p4",null,"p7","p5",null,null]},{"id":"d18","level":"adv","title":"서해선 막차","note":"일행 2명 · 창가 2명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"홍시우","short":"시우","conds":[],"together":true},{"id":"p2","name":"조은결","short":"은결","conds":[],"together":true},{"id":"p3","name":"권도현","short":"도현","conds":["window"]},{"id":"p4","name":"문태호","short":"태호","conds":["door"]},{"id":"p5","name":"유하람","short":"하람","conds":["door"]},{"id":"p6","name":"이서준","short":"서준","conds":["door","senior"]},{"id":"p7","name":"박지윤","short":"지윤","conds":["window"]},{"id":"p8","name":"강현우","short":"현우","conds":["quiet"]}],"groups":[["p1","p2"]],"start":["p7",null,"p6",null,null,null,"p8","p1",null,null,"p2",null,"p4",null,null,null],"solution":["p7",null,"p6","p5",null,null,"p8",null,"p3",null,"p2","p1","p4",null,null,null]}],"practice":[{"id":"pb1","level":"beginner","title":"입문 연습 1","note":"창가 3명 · 통로 1명 · 출입문 근접 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"서동혁","short":"동혁","conds":["door"]},{"id":"p2","name":"백서아","short":"서아","conds":["senior","aisle"]},{"id":"p3","name":"최민호","short":"민호","conds":["door"]},{"id":"p4","name":"장예린","short":"예린","conds":["window"]},{"id":"p5","name":"문태호","short":"태호","conds":["window"]},{"id":"p6","name":"박지윤","short":"지윤","conds":["window"]}],"groups":[],"start":[null,null,null,"p3",null,null,null,null,"p5",null,null,"p6",null,null,null,"p1"],"solution":[null,null,null,"p3",null,null,null,"p4","p5",null,null,"p6",null,"p2",null,"p1"]},{"id":"pb2","level":"beginner","title":"입문 연습 2","note":"창가 2명 · 통로 1명 · 출입문 근접 2명 · 조용한 칸 1명","par":2,"passengers":[{"id":"p1","name":"권도현","short":"도현","conds":["door"]},{"id":"p2","name":"오세라","short":"세라","conds":["door"]},{"id":"p3","name":"강현우","short":"현우","conds":["window"]},{"id":"p4","name":"심가온","short":"가온","conds":["quiet"]},{"id":"p5","name":"조은결","short":"은결","conds":["window"]},{"id":"p6","name":"김하늘","short":"하늘","conds":["aisle"]}],"groups":[],"start":["p5",null,"p2",null,null,null,null,"p3",null,null,null,"p4",null,null,null,null],"solution":["p5",null,"p2",null,null,null,"p6","p3",null,null,null,"p4","p1",null,null,null]},{"id":"pb3","level":"beginner","title":"입문 연습 3","note":"창가 2명 · 출입문 근접 1명 · 조용한 칸 3명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"노윤재","short":"윤재","conds":["door"]},{"id":"p2","name":"윤소미","short":"소미","conds":["quiet"]},{"id":"p3","name":"장예린","short":"예린","conds":["window"]},{"id":"p4","name":"김하늘","short":"하늘","conds":["senior"]},{"id":"p5","name":"강현우","short":"현우","conds":["quiet"]},{"id":"p6","name":"오세라","short":"세라","conds":["quiet","window"]}],"groups":[],"start":[null,"p4",null,null,null,null,null,"p3","p2","p5",null,null,null,null,null,null],"solution":[null,"p4",null,null,"p6",null,null,"p3","p2","p5",null,null,"p1",null,null,null]},{"id":"pb4","level":"beginner","title":"입문 연습 4","note":"창가 3명 · 출입문 근접 2명 · 조용한 칸 3명","par":2,"passengers":[{"id":"p1","name":"백서아","short":"서아","conds":["window"]},{"id":"p2","name":"노윤재","short":"윤재","conds":["door","window"]},{"id":"p3","name":"강현우","short":"현우","conds":["window","quiet"]},{"id":"p4","name":"윤소미","short":"소미","conds":["quiet"]},{"id":"p5","name":"최민호","short":"민호","conds":["door"]},{"id":"p6","name":"이서준","short":"서준","conds":["quiet"]}],"groups":[],"start":[null,null,null,"p5",null,"p6",null,null,null,null,"p4","p3",null,null,null,null],"solution":[null,null,null,"p5",null,"p6",null,null,"p1",null,"p4","p3",null,null,null,"p2"]},{"id":"pm1","level":"mid","title":"중급 연습 1","note":"일행 2명 · 창가 1명 · 통로 3명 · 출입문 근접 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p2","name":"남기택","short":"기택","conds":[],"together":true},{"id":"p3","name":"이서준","short":"서준","conds":["window"]},{"id":"p4","name":"문태호","short":"태호","conds":["senior"]},{"id":"p5","name":"홍시우","short":"시우","conds":["door","aisle"]},{"id":"p6","name":"장예린","short":"예린","conds":["door","aisle"]},{"id":"p7","name":"노윤재","short":"윤재","conds":["aisle"]}],"groups":[["p1","p2"]],"start":[null,"p5",null,null,null,"p7",null,null,null,null,null,null,null,"p4","p6","p3"],"solution":[null,"p5","p1","p2",null,"p7",null,null,null,null,null,null,null,"p4","p6","p3"]},{"id":"pm2","level":"mid","title":"중급 연습 2","note":"일행 2명 · 창가 2명 · 출입문 근접 1명 · 노약자석 3명","par":2,"passengers":[{"id":"p1","name":"류지안","short":"지안","conds":[],"together":true},{"id":"p2","name":"권도현","short":"도현","conds":[],"together":true},{"id":"p3","name":"유하람","short":"하람","conds":["window"]},{"id":"p4","name":"백서아","short":"서아","conds":["window","door"]},{"id":"p5","name":"강현우","short":"현우","conds":["senior"]},{"id":"p6","name":"남기택","short":"기택","conds":["senior"]},{"id":"p7","name":"정다은","short":"다은","conds":["senior"]}],"groups":[["p1","p2"]],"start":[null,"p6",null,"p4",null,"p2","p1",null,null,null,null,null,null,null,"p5",null],"solution":[null,"p6",null,"p4",null,"p2","p1","p3",null,null,null,null,null,"p7","p5",null]},{"id":"pm3","level":"mid","title":"중급 연습 3","note":"일행 2명 · 창가 3명 · 통로 1명 · 출입문 근접 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"심가온","short":"가온","conds":[],"together":true},{"id":"p2","name":"장예린","short":"예린","conds":[],"together":true},{"id":"p3","name":"백서아","short":"서아","conds":["window"]},{"id":"p4","name":"윤소미","short":"소미","conds":["aisle"]},{"id":"p5","name":"박지윤","short":"지윤","conds":["window"]},{"id":"p6","name":"권도현","short":"도현","conds":["door","senior"]},{"id":"p7","name":"최민호","short":"민호","conds":["window","door"]}],"groups":[["p1","p2"]],"start":[null,"p1",null,"p7","p5",null,"p4","p3","p2",null,null,null,null,null,null,null],"solution":[null,null,null,"p7","p5",null,"p4","p3","p2","p1",null,null,null,null,"p6",null]},{"id":"pm4","level":"mid","title":"중급 연습 4","note":"일행 2명 · 출입문 근접 1명 · 조용한 칸 4명","par":2,"passengers":[{"id":"p1","name":"이서준","short":"서준","conds":[],"together":true},{"id":"p2","name":"강현우","short":"현우","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["quiet"]},{"id":"p4","name":"한지훈","short":"지훈","conds":["door"]},{"id":"p5","name":"서동혁","short":"동혁","conds":["quiet"]},{"id":"p6","name":"박지윤","short":"지윤","conds":["quiet"]},{"id":"p7","name":"장예린","short":"예린","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,"p4",null,null,null,null,null,null,"p6","p3",null,"p1","p2",null,null],"solution":[null,null,"p4",null,"p5","p7",null,null,null,"p6","p3",null,"p1","p2",null,null]},{"id":"pa1","level":"adv","title":"고급 연습 1","note":"일행 2명 · 창가 2명 · 통로 4명 · 출입문 근접 2명 · 조용한 칸 3명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"윤소미","short":"소미","conds":[],"together":true},{"id":"p2","name":"신유진","short":"유진","conds":[],"together":true},{"id":"p3","name":"노윤재","short":"윤재","conds":["window","quiet"]},{"id":"p4","name":"장예린","short":"예린","conds":["aisle","door"]},{"id":"p5","name":"김하늘","short":"하늘","conds":["senior","aisle"]},{"id":"p6","name":"임채원","short":"채원","conds":["window","quiet"]},{"id":"p7","name":"조은결","short":"은결","conds":["door","aisle"]},{"id":"p8","name":"백서아","short":"서아","conds":["aisle","quiet"]}],"groups":[["p1","p2"]],"start":[null,"p5","p3",null,null,"p1",null,null,"p6","p8","p4",null,null,"p7",null,null],"solution":[null,"p5",null,null,"p3","p1","p2",null,"p6","p8",null,null,null,"p7","p4",null]},{"id":"pa2","level":"adv","title":"고급 연습 2","note":"일행 2명 · 창가 2명 · 출입문 근접 4명 · 조용한 칸 1명 · 노약자석 2명","par":3,"passengers":[{"id":"p1","name":"박지윤","short":"지윤","conds":[],"together":true},{"id":"p2","name":"강현우","short":"현우","conds":[],"together":true},{"id":"p3","name":"신유진","short":"유진","conds":["window","door"]},{"id":"p4","name":"노윤재","short":"윤재","conds":["senior"]},{"id":"p5","name":"장예린","short":"예린","conds":["door"]},{"id":"p6","name":"이서준","short":"서준","conds":["senior","door"]},{"id":"p7","name":"임채원","short":"채원","conds":["door","window"]},{"id":"p8","name":"문태호","short":"태호","conds":["quiet"]}],"groups":[["p1","p2"]],"start":["p1","p4","p6",null,null,null,null,null,null,null,"p8",null,"p3",null,null,"p5"],"solution":["p7","p4","p6",null,null,null,null,null,null,null,"p8",null,"p3","p1","p2","p5"]},{"id":"pa3","level":"adv","title":"고급 연습 3","note":"일행 2명 · 창가 4명 · 통로 2명 · 조용한 칸 1명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"문태호","short":"태호","conds":[],"together":true},{"id":"p2","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p3","name":"백서아","short":"서아","conds":["window"]},{"id":"p4","name":"이서준","short":"서준","conds":["window","quiet"]},{"id":"p5","name":"심가온","short":"가온","conds":["senior","aisle"]},{"id":"p6","name":"윤소미","short":"소미","conds":["window"]},{"id":"p7","name":"유하람","short":"하람","conds":["window"]},{"id":"p8","name":"신유진","short":"유진","conds":["aisle"]}],"groups":[["p1","p2"]],"start":[null,"p5",null,null,null,null,null,"p6",null,null,null,"p4","p2","p8",null,"p7"],"solution":["p3","p5","p1","p2",null,null,null,"p6",null,null,null,"p4",null,"p8",null,"p7"]},{"id":"pa4","level":"adv","title":"고급 연습 4","note":"일행 2명 · 창가 3명 · 통로 1명 · 출입문 근접 4명 · 노약자석 2명","par":3,"passengers":[{"id":"p1","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p2","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p3","name":"유하람","short":"하람","conds":["aisle","senior"]},{"id":"p4","name":"윤소미","short":"소미","conds":["door"]},{"id":"p5","name":"정다은","short":"다은","conds":["window","door"]},{"id":"p6","name":"이서준","short":"서준","conds":["door","window"]},{"id":"p7","name":"배준영","short":"준영","conds":["senior"]},{"id":"p8","name":"조은결","short":"은결","conds":["window","door"]}],"groups":[["p1","p2"]],"start":[null,"p7","p3",null,null,"p1","p5",null,"p8",null,null,null,null,"p4",null,"p6"],"solution":[null,"p7","p3","p8",null,"p1","p2",null,null,null,null,null,"p5","p4",null,"p6"]}],"settings":{"stars":{"three":0,"two":2}}}</script>
+  <script type="application/json" id="seatData">{"version":1,"built_at":"2026-11-22 00:02 KST","built_date":"2026-11-22","max_par":3,"seats":[{"i":0,"row":1,"col":1,"label":"1A","tags":["window","door"]},{"i":1,"row":1,"col":2,"label":"1B","tags":["aisle","door","senior"]},{"i":2,"row":1,"col":3,"label":"1C","tags":["aisle","door","senior"]},{"i":3,"row":1,"col":4,"label":"1D","tags":["window","door"]},{"i":4,"row":2,"col":1,"label":"2A","tags":["window","quiet"]},{"i":5,"row":2,"col":2,"label":"2B","tags":["aisle","quiet"]},{"i":6,"row":2,"col":3,"label":"2C","tags":["aisle","quiet"]},{"i":7,"row":2,"col":4,"label":"2D","tags":["window","quiet"]},{"i":8,"row":3,"col":1,"label":"3A","tags":["window","quiet"]},{"i":9,"row":3,"col":2,"label":"3B","tags":["aisle","quiet"]},{"i":10,"row":3,"col":3,"label":"3C","tags":["aisle","quiet"]},{"i":11,"row":3,"col":4,"label":"3D","tags":["window","quiet"]},{"i":12,"row":4,"col":1,"label":"4A","tags":["window","door"]},{"i":13,"row":4,"col":2,"label":"4B","tags":["aisle","door","senior"]},{"i":14,"row":4,"col":3,"label":"4C","tags":["aisle","door","senior"]},{"i":15,"row":4,"col":4,"label":"4D","tags":["window","door"]}],"tags":[{"key":"window","label":"창가"},{"key":"aisle","label":"통로"},{"key":"door","label":"출입문 근접"},{"key":"quiet","label":"조용한 칸"},{"key":"senior","label":"노약자석"}],"daily":[{"id":"d01","level":"beginner","title":"2호선 막차","note":"창가 3명 · 통로 1명 · 출입문 근접 1명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"문태호","short":"태호","conds":["senior"]},{"id":"p2","name":"신유진","short":"유진","conds":["aisle"]},{"id":"p3","name":"홍시우","short":"시우","conds":["door","window"]},{"id":"p4","name":"이서준","short":"서준","conds":["window"]},{"id":"p5","name":"남기택","short":"기택","conds":["window"]},{"id":"p6","name":"정다은","short":"다은","conds":["quiet"]}],"groups":[],"start":[null,"p1",null,null,null,"p3",null,null,"p5",null,null,"p4",null,"p2",null,null],"solution":[null,"p1",null,null,null,null,"p6",null,"p5",null,null,"p4",null,"p2",null,"p3"]},{"id":"d02","level":"mid","title":"6호선 마지막 칸","note":"일행 2명 · 창가 1명 · 출입문 근접 2명 · 조용한 칸 2명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"류지안","short":"지안","conds":[],"together":true},{"id":"p2","name":"백서아","short":"서아","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["door"]},{"id":"p4","name":"최민호","short":"민호","conds":["window"]},{"id":"p5","name":"홍시우","short":"시우","conds":["door","senior"]},{"id":"p6","name":"신유진","short":"유진","conds":["quiet"]},{"id":"p7","name":"노윤재","short":"윤재","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,null,null,"p4",null,"p5",null,null,"p1","p7",null,"p3",null,null,null],"solution":[null,null,null,null,"p4",null,null,null,"p2","p1","p7","p6","p3",null,"p5",null]},{"id":"d03","level":"mid","title":"9호선 급행 막차","note":"일행 2명 · 창가 2명 · 통로 1명 · 출입문 근접 2명 · 조용한 칸 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"오세라","short":"세라","conds":[],"together":true},{"id":"p2","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p3","name":"배준영","short":"준영","conds":["window"]},{"id":"p4","name":"문태호","short":"태호","conds":["aisle","door"]},{"id":"p5","name":"최민호","short":"민호","conds":["quiet"]},{"id":"p6","name":"정다은","short":"다은","conds":["door","senior"]},{"id":"p7","name":"한지훈","short":"지훈","conds":["window","quiet"]}],"groups":[["p1","p2"]],"start":[null,"p4",null,null,null,"p2","p1","p3",null,"p7",null,null,null,"p6",null,null],"solution":[null,"p4",null,null,null,"p2","p1","p3",null,null,"p5","p7",null,"p6",null,null]},{"id":"d04","level":"adv","title":"1호선 심야 열차","note":"일행 2명 · 창가 3명 · 통로 1명 · 출입문 근접 4명 · 조용한 칸 1명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"윤소미","short":"소미","conds":[],"together":true},{"id":"p2","name":"심가온","short":"가온","conds":[],"together":true},{"id":"p3","name":"오세라","short":"세라","conds":["window","door"]},{"id":"p4","name":"김하늘","short":"하늘","conds":["quiet"]},{"id":"p5","name":"류지안","short":"지안","conds":["door","aisle"]},{"id":"p6","name":"박지윤","short":"지윤","conds":["senior"]},{"id":"p7","name":"배준영","short":"준영","conds":["window","door"]},{"id":"p8","name":"강현우","short":"현우","conds":["window","door"]}],"groups":[["p1","p2"]],"start":["p7","p5",null,"p8","p1",null,null,null,null,"p3",null,null,null,"p6",null,null],"solution":["p7","p5",null,"p8","p1","p2",null,null,"p4",null,null,null,"p3","p6",null,null]},{"id":"d05","level":"mid","title":"분당선 막차","note":"일행 2명 · 창가 2명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"조은결","short":"은결","conds":[],"together":true},{"id":"p2","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p3","name":"문태호","short":"태호","conds":["window"]},{"id":"p4","name":"윤소미","short":"소미","conds":["door"]},{"id":"p5","name":"오세라","short":"세라","conds":["quiet","window"]},{"id":"p6","name":"홍시우","short":"시우","conds":["senior","door"]},{"id":"p7","name":"정다은","short":"다은","conds":["door"]}],"groups":[["p1","p2"]],"start":[null,"p4",null,null,"p2",null,null,null,"p5",null,"p1",null,"p7",null,"p6",null],"solution":[null,"p4",null,null,null,null,null,"p3","p5","p2","p1",null,"p7",null,"p6",null]},{"id":"d06","level":"adv","title":"4호선 마지막 칸","note":"일행 2명 · 창가 3명 · 통로 2명 · 출입문 근접 1명 · 조용한 칸 3명","par":3,"passengers":[{"id":"p1","name":"백서아","short":"서아","conds":[],"together":true},{"id":"p2","name":"홍시우","short":"시우","conds":[],"together":true},{"id":"p3","name":"서동혁","short":"동혁","conds":["window"]},{"id":"p4","name":"임채원","short":"채원","conds":["window","quiet"]},{"id":"p5","name":"최민호","short":"민호","conds":["aisle","door"]},{"id":"p6","name":"강현우","short":"현우","conds":["aisle"]},{"id":"p7","name":"장예린","short":"예린","conds":["window","quiet"]},{"id":"p8","name":"남기택","short":"기택","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,null,null,null,"p1","p2","p4","p7",null,null,null,null,"p5",null,"p6"],"solution":[null,null,null,null,"p8","p1","p2","p4","p7","p6",null,null,null,"p5",null,"p3"]},{"id":"d07","level":"beginner","title":"7호선 심야","note":"창가 1명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"심가온","short":"가온","conds":["door"]},{"id":"p2","name":"유하람","short":"하람","conds":["door"]},{"id":"p3","name":"강현우","short":"현우","conds":["door"]},{"id":"p4","name":"남기택","short":"기택","conds":["senior"]},{"id":"p5","name":"백서아","short":"서아","conds":["window"]},{"id":"p6","name":"이서준","short":"서준","conds":["quiet"]}],"groups":[],"start":[null,null,null,"p1",null,"p6",null,null,null,null,null,null,null,null,"p4","p2"],"solution":["p3",null,null,"p1","p5","p6",null,null,null,null,null,null,null,null,"p4","p2"]},{"id":"d08","level":"mid","title":"3호선 막차","note":"일행 2명 · 통로 3명 · 출입문 근접 2명 · 조용한 칸 1명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"유하람","short":"하람","conds":[],"together":true},{"id":"p2","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["aisle","door"]},{"id":"p4","name":"남기택","short":"기택","conds":["door"]},{"id":"p5","name":"임채원","short":"채원","conds":["aisle","quiet"]},{"id":"p6","name":"홍시우","short":"시우","conds":["senior"]},{"id":"p7","name":"심가온","short":"가온","conds":["aisle"]}],"groups":[["p1","p2"]],"start":[null,null,null,null,null,null,null,"p7",null,"p1","p5",null,null,"p6","p3","p4"],"solution":[null,"p7",null,null,null,null,null,null,"p2","p1","p5",null,null,"p6","p3","p4"]},{"id":"d09","level":"mid","title":"경의중앙선 막차","note":"일행 2명 · 창가 2명 · 통로 3명 · 조용한 칸 2명","par":2,"passengers":[{"id":"p1","name":"심가온","short":"가온","conds":[],"together":true},{"id":"p2","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p3","name":"윤소미","short":"소미","conds":["aisle"]},{"id":"p4","name":"한지훈","short":"지훈","conds":["aisle"]},{"id":"p5","name":"정다은","short":"다은","conds":["window"]},{"id":"p6","name":"배준영","short":"준영","conds":["quiet","aisle"]},{"id":"p7","name":"박지윤","short":"지윤","conds":["window","quiet"]}],"groups":[["p1","p2"]],"start":[null,"p3","p1","p2",null,null,"p6",null,"p7",null,null,null,null,"p5",null,null],"solution":[null,"p3","p1","p2",null,null,"p6",null,"p7",null,null,null,null,null,"p4","p5"]},{"id":"d10","level":"adv","title":"5호선 마지막 칸","note":"일행 2명 · 창가 3명 · 통로 2명 · 출입문 근접 5명 · 조용한 칸 1명","par":3,"passengers":[{"id":"p1","name":"배준영","short":"준영","conds":[],"together":true},{"id":"p2","name":"정다은","short":"다은","conds":[],"together":true},{"id":"p3","name":"권도현","short":"도현","conds":["window","door"]},{"id":"p4","name":"홍시우","short":"시우","conds":["door"]},{"id":"p5","name":"김하늘","short":"하늘","conds":["aisle","door"]},{"id":"p6","name":"한지훈","short":"지훈","conds":["door","window"]},{"id":"p7","name":"류지안","short":"지안","conds":["window","quiet"]},{"id":"p8","name":"유하람","short":"하람","conds":["door","aisle"]}],"groups":[["p1","p2"]],"start":["p6","p5",null,null,null,null,"p8","p3",null,"p1","p2",null,null,null,null,"p4"],"solution":["p6","p5","p8","p3",null,null,null,"p7",null,"p1","p2",null,null,null,null,"p4"]},{"id":"d11","level":"mid","title":"8호선 심야","note":"일행 2명 · 통로 2명 · 출입문 근접 2명 · 조용한 칸 1명 · 노약자석 2명","par":3,"passengers":[{"id":"p1","name":"오세라","short":"세라","conds":[],"together":true},{"id":"p2","name":"권도현","short":"도현","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["door","senior"]},{"id":"p4","name":"노윤재","short":"윤재","conds":["aisle"]},{"id":"p5","name":"이서준","short":"서준","conds":["door"]},{"id":"p6","name":"조은결","short":"은결","conds":["quiet"]},{"id":"p7","name":"강현우","short":"현우","conds":["senior","aisle"]}],"groups":[["p1","p2"]],"start":[null,"p7","p4",null,null,null,null,null,null,"p1",null,null,"p6",null,"p3",null],"solution":[null,"p7","p4","p5",null,null,null,null,"p2","p1",null,"p6",null,null,"p3",null]},{"id":"d12","level":"adv","title":"신분당선 막차","note":"일행 2명 · 창가 1명 · 통로 1명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 3명","par":3,"passengers":[{"id":"p1","name":"류지안","short":"지안","conds":[],"together":true},{"id":"p2","name":"이서준","short":"서준","conds":[],"together":true},{"id":"p3","name":"강현우","short":"현우","conds":["door","senior"]},{"id":"p4","name":"신유진","short":"유진","conds":["window"]},{"id":"p5","name":"남기택","short":"기택","conds":["senior"]},{"id":"p6","name":"노윤재","short":"윤재","conds":["door","aisle"]},{"id":"p7","name":"조은결","short":"은결","conds":["door","senior"]},{"id":"p8","name":"한지훈","short":"지훈","conds":["quiet"]}],"groups":[["p1","p2"]],"start":["p4","p7","p3",null,null,null,null,null,null,null,null,null,null,"p5","p6","p1"],"solution":["p4","p7","p3",null,null,null,null,null,"p2","p1","p8",null,null,"p5","p6",null]},{"id":"d13","level":"beginner","title":"수인분당선 막차","note":"창가 1명 · 통로 2명 · 출입문 근접 2명 · 조용한 칸 3명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"조은결","short":"은결","conds":["quiet","aisle"]},{"id":"p2","name":"강현우","short":"현우","conds":["senior"]},{"id":"p3","name":"박지윤","short":"지윤","conds":["door","aisle"]},{"id":"p4","name":"한지훈","short":"지훈","conds":["window","door"]},{"id":"p5","name":"배준영","short":"준영","conds":["quiet"]},{"id":"p6","name":"유하람","short":"하람","conds":["quiet"]}],"groups":[],"start":[null,null,"p2",null,null,"p5",null,null,null,null,null,"p6",null,null,"p3",null],"solution":[null,null,"p2",null,null,"p5","p1",null,null,null,null,"p6","p4",null,"p3",null]},{"id":"d14","level":"mid","title":"2호선 지선 막차","note":"일행 2명 · 통로 2명 · 출입문 근접 2명 · 조용한 칸 2명 · 노약자석 2명","par":2,"passengers":[{"id":"p1","name":"노윤재","short":"윤재","conds":[],"together":true},{"id":"p2","name":"장예린","short":"예린","conds":[],"together":true},{"id":"p3","name":"신유진","short":"유진","conds":["door","senior"]},{"id":"p4","name":"문태호","short":"태호","conds":["quiet"]},{"id":"p5","name":"권도현","short":"도현","conds":["door","aisle"]},{"id":"p6","name":"윤소미","short":"소미","conds":["senior","aisle"]},{"id":"p7","name":"오세라","short":"세라","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,"p3",null,null,null,null,null,"p7","p2",null,"p4",null,"p6",null,null],"solution":[null,"p5","p3",null,null,null,null,null,"p7","p2","p1","p4",null,"p6",null,null]},{"id":"d15","level":"mid","title":"공항철도 막차","note":"일행 2명 · 통로 1명 · 출입문 근접 1명 · 조용한 칸 2명 · 노약자석 2명","par":2,"passengers":[{"id":"p1","name":"홍시우","short":"시우","conds":[],"together":true},{"id":"p2","name":"유하람","short":"하람","conds":[],"together":true},{"id":"p3","name":"권도현","short":"도현","conds":["senior","aisle"]},{"id":"p4","name":"심가온","short":"가온","conds":["quiet"]},{"id":"p5","name":"장예린","short":"예린","conds":["door"]},{"id":"p6","name":"신유진","short":"유진","conds":["senior"]},{"id":"p7","name":"배준영","short":"준영","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,"p5","p2","p1",null,null,null,null,null,null,null,"p4","p3",null,"p6",null],"solution":[null,"p5","p2","p1","p7",null,null,null,null,null,null,"p4",null,"p3","p6",null]},{"id":"d16","level":"adv","title":"우이신설선 막차","note":"일행 2명 · 창가 2명 · 통로 2명 · 출입문 근접 3명 · 조용한 칸 2명","par":3,"passengers":[{"id":"p1","name":"강현우","short":"현우","conds":[],"together":true},{"id":"p2","name":"이서준","short":"서준","conds":[],"together":true},{"id":"p3","name":"심가온","short":"가온","conds":["door"]},{"id":"p4","name":"오세라","short":"세라","conds":["window","quiet"]},{"id":"p5","name":"노윤재","short":"윤재","conds":["window"]},{"id":"p6","name":"남기택","short":"기택","conds":["door"]},{"id":"p7","name":"신유진","short":"유진","conds":["aisle","door"]},{"id":"p8","name":"한지훈","short":"지훈","conds":["quiet","aisle"]}],"groups":[["p1","p2"]],"start":[null,null,"p6",null,null,null,null,null,"p4",null,"p2","p1","p3",null,"p8",null],"solution":[null,null,"p6",null,null,null,"p8","p5","p4",null,"p2","p1","p3","p7",null,null]},{"id":"d17","level":"mid","title":"김포골드라인 막차","note":"일행 2명 · 통로 3명 · 출입문 근접 3명 · 조용한 칸 1명","par":2,"passengers":[{"id":"p1","name":"한지훈","short":"지훈","conds":[],"together":true},{"id":"p2","name":"남기택","short":"기택","conds":[],"together":true},{"id":"p3","name":"이서준","short":"서준","conds":["aisle"]},{"id":"p4","name":"장예린","short":"예린","conds":["aisle","quiet"]},{"id":"p5","name":"최민호","short":"민호","conds":["aisle","door"]},{"id":"p6","name":"정다은","short":"다은","conds":["door"]},{"id":"p7","name":"임채원","short":"채원","conds":["door"]}],"groups":[["p1","p2"]],"start":[null,"p1",null,null,null,"p6","p3",null,null,null,"p4",null,"p7","p5",null,null],"solution":["p6","p1","p2",null,null,null,"p3",null,null,null,"p4",null,"p7","p5",null,null]},{"id":"d18","level":"adv","title":"서해선 막차","note":"일행 2명 · 창가 2명 · 출입문 근접 3명 · 조용한 칸 1명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"홍시우","short":"시우","conds":[],"together":true},{"id":"p2","name":"조은결","short":"은결","conds":[],"together":true},{"id":"p3","name":"권도현","short":"도현","conds":["window"]},{"id":"p4","name":"문태호","short":"태호","conds":["door"]},{"id":"p5","name":"유하람","short":"하람","conds":["door"]},{"id":"p6","name":"이서준","short":"서준","conds":["door","senior"]},{"id":"p7","name":"박지윤","short":"지윤","conds":["window"]},{"id":"p8","name":"강현우","short":"현우","conds":["quiet"]}],"groups":[["p1","p2"]],"start":["p7",null,"p6",null,null,null,"p8","p1",null,null,"p2",null,"p4",null,null,null],"solution":["p7",null,"p6","p5",null,null,"p8",null,"p3",null,"p2","p1","p4",null,null,null]}],"practice":[{"id":"pb1","level":"beginner","title":"입문 연습 1","note":"창가 3명 · 통로 1명 · 출입문 근접 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"서동혁","short":"동혁","conds":["door"]},{"id":"p2","name":"백서아","short":"서아","conds":["senior","aisle"]},{"id":"p3","name":"최민호","short":"민호","conds":["door"]},{"id":"p4","name":"장예린","short":"예린","conds":["window"]},{"id":"p5","name":"문태호","short":"태호","conds":["window"]},{"id":"p6","name":"박지윤","short":"지윤","conds":["window"]}],"groups":[],"start":[null,null,null,"p3",null,null,null,null,"p5",null,null,"p6",null,null,null,"p1"],"solution":[null,null,null,"p3",null,null,null,"p4","p5",null,null,"p6",null,"p2",null,"p1"]},{"id":"pb2","level":"beginner","title":"입문 연습 2","note":"창가 2명 · 통로 1명 · 출입문 근접 2명 · 조용한 칸 1명","par":2,"passengers":[{"id":"p1","name":"권도현","short":"도현","conds":["door"]},{"id":"p2","name":"오세라","short":"세라","conds":["door"]},{"id":"p3","name":"강현우","short":"현우","conds":["window"]},{"id":"p4","name":"심가온","short":"가온","conds":["quiet"]},{"id":"p5","name":"조은결","short":"은결","conds":["window"]},{"id":"p6","name":"김하늘","short":"하늘","conds":["aisle"]}],"groups":[],"start":["p5",null,"p2",null,null,null,null,"p3",null,null,null,"p4",null,null,null,null],"solution":["p5",null,"p2",null,null,null,"p6","p3",null,null,null,"p4","p1",null,null,null]},{"id":"pb3","level":"beginner","title":"입문 연습 3","note":"창가 2명 · 출입문 근접 1명 · 조용한 칸 3명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"노윤재","short":"윤재","conds":["door"]},{"id":"p2","name":"윤소미","short":"소미","conds":["quiet"]},{"id":"p3","name":"장예린","short":"예린","conds":["window"]},{"id":"p4","name":"김하늘","short":"하늘","conds":["senior"]},{"id":"p5","name":"강현우","short":"현우","conds":["quiet"]},{"id":"p6","name":"오세라","short":"세라","conds":["quiet","window"]}],"groups":[],"start":[null,"p4",null,null,null,null,null,"p3","p2","p5",null,null,null,null,null,null],"solution":[null,"p4",null,null,"p6",null,null,"p3","p2","p5",null,null,"p1",null,null,null]},{"id":"pb4","level":"beginner","title":"입문 연습 4","note":"창가 3명 · 출입문 근접 2명 · 조용한 칸 3명","par":2,"passengers":[{"id":"p1","name":"백서아","short":"서아","conds":["window"]},{"id":"p2","name":"노윤재","short":"윤재","conds":["door","window"]},{"id":"p3","name":"강현우","short":"현우","conds":["window","quiet"]},{"id":"p4","name":"윤소미","short":"소미","conds":["quiet"]},{"id":"p5","name":"최민호","short":"민호","conds":["door"]},{"id":"p6","name":"이서준","short":"서준","conds":["quiet"]}],"groups":[],"start":[null,null,null,"p5",null,"p6",null,null,null,null,"p4","p3",null,null,null,null],"solution":[null,null,null,"p5",null,"p6",null,null,"p1",null,"p4","p3",null,null,null,"p2"]},{"id":"pm1","level":"mid","title":"중급 연습 1","note":"일행 2명 · 창가 1명 · 통로 3명 · 출입문 근접 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p2","name":"남기택","short":"기택","conds":[],"together":true},{"id":"p3","name":"이서준","short":"서준","conds":["window"]},{"id":"p4","name":"문태호","short":"태호","conds":["senior"]},{"id":"p5","name":"홍시우","short":"시우","conds":["door","aisle"]},{"id":"p6","name":"장예린","short":"예린","conds":["door","aisle"]},{"id":"p7","name":"노윤재","short":"윤재","conds":["aisle"]}],"groups":[["p1","p2"]],"start":[null,"p5",null,null,null,"p7",null,null,null,null,null,null,null,"p4","p6","p3"],"solution":[null,"p5","p1","p2",null,"p7",null,null,null,null,null,null,null,"p4","p6","p3"]},{"id":"pm2","level":"mid","title":"중급 연습 2","note":"일행 2명 · 창가 2명 · 출입문 근접 1명 · 노약자석 3명","par":2,"passengers":[{"id":"p1","name":"류지안","short":"지안","conds":[],"together":true},{"id":"p2","name":"권도현","short":"도현","conds":[],"together":true},{"id":"p3","name":"유하람","short":"하람","conds":["window"]},{"id":"p4","name":"백서아","short":"서아","conds":["window","door"]},{"id":"p5","name":"강현우","short":"현우","conds":["senior"]},{"id":"p6","name":"남기택","short":"기택","conds":["senior"]},{"id":"p7","name":"정다은","short":"다은","conds":["senior"]}],"groups":[["p1","p2"]],"start":[null,"p6",null,"p4",null,"p2","p1",null,null,null,null,null,null,null,"p5",null],"solution":[null,"p6",null,"p4",null,"p2","p1","p3",null,null,null,null,null,"p7","p5",null]},{"id":"pm3","level":"mid","title":"중급 연습 3","note":"일행 2명 · 창가 3명 · 통로 1명 · 출입문 근접 2명 · 노약자석 1명","par":2,"passengers":[{"id":"p1","name":"심가온","short":"가온","conds":[],"together":true},{"id":"p2","name":"장예린","short":"예린","conds":[],"together":true},{"id":"p3","name":"백서아","short":"서아","conds":["window"]},{"id":"p4","name":"윤소미","short":"소미","conds":["aisle"]},{"id":"p5","name":"박지윤","short":"지윤","conds":["window"]},{"id":"p6","name":"권도현","short":"도현","conds":["door","senior"]},{"id":"p7","name":"최민호","short":"민호","conds":["window","door"]}],"groups":[["p1","p2"]],"start":[null,"p1",null,"p7","p5",null,"p4","p3","p2",null,null,null,null,null,null,null],"solution":[null,null,null,"p7","p5",null,"p4","p3","p2","p1",null,null,null,null,"p6",null]},{"id":"pm4","level":"mid","title":"중급 연습 4","note":"일행 2명 · 출입문 근접 1명 · 조용한 칸 4명","par":2,"passengers":[{"id":"p1","name":"이서준","short":"서준","conds":[],"together":true},{"id":"p2","name":"강현우","short":"현우","conds":[],"together":true},{"id":"p3","name":"정다은","short":"다은","conds":["quiet"]},{"id":"p4","name":"한지훈","short":"지훈","conds":["door"]},{"id":"p5","name":"서동혁","short":"동혁","conds":["quiet"]},{"id":"p6","name":"박지윤","short":"지윤","conds":["quiet"]},{"id":"p7","name":"장예린","short":"예린","conds":["quiet"]}],"groups":[["p1","p2"]],"start":[null,null,"p4",null,null,null,null,null,null,"p6","p3",null,"p1","p2",null,null],"solution":[null,null,"p4",null,"p5","p7",null,null,null,"p6","p3",null,"p1","p2",null,null]},{"id":"pa1","level":"adv","title":"고급 연습 1","note":"일행 2명 · 창가 2명 · 통로 4명 · 출입문 근접 2명 · 조용한 칸 3명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"윤소미","short":"소미","conds":[],"together":true},{"id":"p2","name":"신유진","short":"유진","conds":[],"together":true},{"id":"p3","name":"노윤재","short":"윤재","conds":["window","quiet"]},{"id":"p4","name":"장예린","short":"예린","conds":["aisle","door"]},{"id":"p5","name":"김하늘","short":"하늘","conds":["senior","aisle"]},{"id":"p6","name":"임채원","short":"채원","conds":["window","quiet"]},{"id":"p7","name":"조은결","short":"은결","conds":["door","aisle"]},{"id":"p8","name":"백서아","short":"서아","conds":["aisle","quiet"]}],"groups":[["p1","p2"]],"start":[null,"p5","p3",null,null,"p1",null,null,"p6","p8","p4",null,null,"p7",null,null],"solution":[null,"p5",null,null,"p3","p1","p2",null,"p6","p8",null,null,null,"p7","p4",null]},{"id":"pa2","level":"adv","title":"고급 연습 2","note":"일행 2명 · 창가 2명 · 출입문 근접 4명 · 조용한 칸 1명 · 노약자석 2명","par":3,"passengers":[{"id":"p1","name":"박지윤","short":"지윤","conds":[],"together":true},{"id":"p2","name":"강현우","short":"현우","conds":[],"together":true},{"id":"p3","name":"신유진","short":"유진","conds":["window","door"]},{"id":"p4","name":"노윤재","short":"윤재","conds":["senior"]},{"id":"p5","name":"장예린","short":"예린","conds":["door"]},{"id":"p6","name":"이서준","short":"서준","conds":["senior","door"]},{"id":"p7","name":"임채원","short":"채원","conds":["door","window"]},{"id":"p8","name":"문태호","short":"태호","conds":["quiet"]}],"groups":[["p1","p2"]],"start":["p1","p4","p6",null,null,null,null,null,null,null,"p8",null,"p3",null,null,"p5"],"solution":["p7","p4","p6",null,null,null,null,null,null,null,"p8",null,"p3","p1","p2","p5"]},{"id":"pa3","level":"adv","title":"고급 연습 3","note":"일행 2명 · 창가 4명 · 통로 2명 · 조용한 칸 1명 · 노약자석 1명","par":3,"passengers":[{"id":"p1","name":"문태호","short":"태호","conds":[],"together":true},{"id":"p2","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p3","name":"백서아","short":"서아","conds":["window"]},{"id":"p4","name":"이서준","short":"서준","conds":["window","quiet"]},{"id":"p5","name":"심가온","short":"가온","conds":["senior","aisle"]},{"id":"p6","name":"윤소미","short":"소미","conds":["window"]},{"id":"p7","name":"유하람","short":"하람","conds":["window"]},{"id":"p8","name":"신유진","short":"유진","conds":["aisle"]}],"groups":[["p1","p2"]],"start":[null,"p5",null,null,null,null,null,"p6",null,null,null,"p4","p2","p8",null,"p7"],"solution":["p3","p5","p1","p2",null,null,null,"p6",null,null,null,"p4",null,"p8",null,"p7"]},{"id":"pa4","level":"adv","title":"고급 연습 4","note":"일행 2명 · 창가 3명 · 통로 1명 · 출입문 근접 4명 · 노약자석 2명","par":3,"passengers":[{"id":"p1","name":"최민호","short":"민호","conds":[],"together":true},{"id":"p2","name":"김하늘","short":"하늘","conds":[],"together":true},{"id":"p3","name":"유하람","short":"하람","conds":["aisle","senior"]},{"id":"p4","name":"윤소미","short":"소미","conds":["door"]},{"id":"p5","name":"정다은","short":"다은","conds":["window","door"]},{"id":"p6","name":"이서준","short":"서준","conds":["door","window"]},{"id":"p7","name":"배준영","short":"준영","conds":["senior"]},{"id":"p8","name":"조은결","short":"은결","conds":["window","door"]}],"groups":[["p1","p2"]],"start":[null,"p7","p3",null,null,"p1","p5",null,"p8",null,null,null,null,"p4",null,"p6"],"solution":[null,"p7","p3","p8",null,"p1","p2",null,null,null,null,null,"p5","p4",null,"p6"]}],"settings":{"stars":{"three":0,"two":2}}}</script>
+
+  <script>
+
+  /* ---------------------------------------------------------- 게임 방법 데모
+     처음 방문에 한 번만 자동 재생하고 마지막 장면에서 멈춘다. '다시 보기'로 재생.
+     prefers-reduced-motion 이면 애니메이션 없이 마지막 장면만 보여 준다. */
+  var GameGuide = (function () {
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var TIMING = [900, 1900];
+
+    function create(opts) {
+      var timers = [];
+      var last = opts.notes.length;
+
+      function clear() {
+        timers.forEach(function (t) { window.clearTimeout(t); });
+        timers = [];
+      }
+
+      function paintSteps(n) {
+        var chips = opts.steps ? opts.steps.querySelectorAll('.gg-step') : [];
+        for (var i = 0; i < chips.length; i += 1) {
+          var step = Number(chips[i].getAttribute('data-step'));
+          chips[i].classList.toggle('is-on', step === n);
+          chips[i].classList.toggle('is-done', step < n);
+        }
+      }
+
+      function apply(n) {
+        paintSteps(n);
+        if (opts.note) opts.note.textContent = opts.notes[n - 1];
+        if (opts.step) opts.step(n);
+      }
+
+      function settle() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(last);
+      }
+
+      function play() {
+        clear();
+        if (opts.reset) opts.reset();
+        apply(1);
+        if (reduce) { settle(); return; }
+        TIMING.forEach(function (delay, index) {
+          timers.push(window.setTimeout(function () { apply(index + 2); }, delay));
+        });
+      }
+
+      var seen = null;
+      try { seen = localStorage.getItem(opts.key); } catch (e) { seen = null; }
+      if (seen || reduce) {
+        settle();
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+      } else {
+        try { localStorage.setItem(opts.key, '1'); } catch (e) {}
+        play();
+      }
+      if (opts.replay) opts.replay.addEventListener('click', function () { play(); });
+
+      return { play: play, settle: settle };
+    }
+
+    return { create: create, reduce: reduce };
+  })();
+
+  </script>
 
   <script>
   (function () {
@@ -1185,11 +1226,11 @@
     /* ---------------------------------------------------------------- DOM */
     var el = {};
     ['modeDaily', 'modePractice', 'modeNote', 'moveValue', 'parValue', 'starRow', 'seatStatus',
-     'resetBtn', 'guideCard', 'guideToggle', 'guideBody',
+     'resetBtn',
      'condValue', 'condList', 'waitValue', 'waitList', 'waitEmpty', 'selectHint',
      'recordDate', 'recToday', 'recClears', 'recStreak', 'recHistory', 'boardTitle', 'boardSub',
      'seatGrid', 'coachTag', 'resultBox', 'resultBadge', 'resultTitle', 'resultMoves', 'resultPar',
-     'resultStars', 'resultEff', 'resultBest', 'resultClears', 'resultHint', 'retryBtn', 'nextBtn',
+     'resultStars', 'resultEff', 'resultBest', 'resultClears', 'resultHint', 'resultGapText', 'retryBtn', 'nextBtn',
      'practiceWrap', 'practiceNote', 'practiceList', 'themeToggle', 'moonIcon', 'sunIcon'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
@@ -1211,7 +1252,6 @@
     var waitEls = {};
     var passengerIndex = {};
     var prevCondDone = {};
-    var GUIDE_KEY = 'seat_guide_seen_v1';
 
     /* ---------------------------------------------------------------- 유틸 */
     function pad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -1492,14 +1532,20 @@
         check.className = 'sc-check';
         check.setAttribute('aria-hidden', 'true');
         check.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>';
+        var avail = document.createElement('span');
+        avail.className = 'sc-avail';
+        avail.setAttribute('aria-hidden', 'true');
+        avail.textContent = '가능';
         cell.appendChild(top);
         cell.appendChild(name);
         cell.appendChild(sub);
         cell.appendChild(check);
+        cell.appendChild(avail);
         cell.__label = label;
         cell.__tag = tag;
         cell.__name = name;
         cell.__sub = sub;
+        cell.__avail = avail;
         cell.addEventListener('click', (function (index) {
           return function () { onSeatClick(index); };
         })(i));
@@ -1556,7 +1602,11 @@
         cell.classList.toggle('is-senior', seatHasTag(i, 'senior'));
         cell.classList.toggle('is-selected', !!pid && pid === selected);
         cell.classList.toggle('is-ok', !!pid && passengerOk(pid, seatOfP));
-        cell.classList.toggle('is-target', !!selected && !state.cleared && canTake(selected, i));
+        var canSit = !!selected && !state.cleared && !pid && canTake(selected, i);
+        var canSwap = !!selected && !state.cleared && !!pid && pid !== selected && canTake(selected, i);
+        cell.classList.toggle('is-target', canSit);
+        cell.classList.toggle('is-swap', canSwap);
+        if (cell.__avail) cell.__avail.textContent = canSit ? '가능' : '교환';
         var text = seat.label + ' ' + (seatHasTag(i, 'window') ? '창가' : '통로') + ' · ' + cell.__sub.textContent;
         text += pid ? ' · ' + passengerName(pid) : ' · 빈 자리';
         cell.setAttribute('aria-label', text);
@@ -1587,6 +1637,7 @@
         (pass.conds || []).forEach(function (tag) {
           var chip = document.createElement('span');
           chip.className = 'chip';
+          chip.setAttribute('data-tag', tag);
           chip.textContent = TAG_LABEL[tag] || tag;
           chips.appendChild(chip);
         });
@@ -1604,6 +1655,13 @@
         }
         card.appendChild(top);
         card.appendChild(chips);
+        var stateBadge = document.createElement('span');
+        stateBadge.className = 'wait-state';
+        stateBadge.hidden = true;
+        stateBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2"></path></svg>앉음';
+        top.appendChild(stateBadge);
+        card.__state = stateBadge;
+        card.__chips = chips;
         card.addEventListener('click', function () { onWaitClick(pass.id); });
         waitEls[pass.id] = card;
         el.waitList.appendChild(card);
@@ -1611,20 +1669,30 @@
     }
 
     function renderWaiting() {
+      var waiting = 0;
       var shown = 0;
       state.puzzle.passengers.forEach(function (pass) {
         var card = waitEls[pass.id];
         if (!card) return;
-        var waiting = isWaiting(pass.id);
-        card.hidden = !waiting;
-        if (!waiting) return;
-        shown += 1;
+        var seat = seatOf(pass.id);
+        var seated = seat !== -1;
+        var isWait = isWaiting(pass.id);
+        card.hidden = !seated && !isWait;
+        if (isWait) waiting += 1;
+        if (!card.hidden) shown += 1;
         var selected = state.selected === pass.id;
         card.classList.toggle('is-selected', selected);
+        card.classList.toggle('is-seated', seated);
         card.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        if (card.__state) card.__state.hidden = !seated;
+        // 앉은 승객은 좌석에서 충족한 조건 칩이 즉시 초록으로 바뀐다.
+        Array.prototype.forEach.call(card.__chips ? card.__chips.children : [], function (chip) {
+          var tag = chip.getAttribute('data-tag');
+          chip.classList.toggle('is-ok', !!seated && !!tag && seatHasTag(seat, tag));
+        });
       });
-      el.waitValue.textContent = shown + '명';
-      el.waitEmpty.hidden = shown > 0;
+      el.waitValue.textContent = waiting + '명';
+      el.waitEmpty.hidden = waiting > 0;
       el.waitList.hidden = shown === 0;
     }
 
@@ -1771,6 +1839,10 @@
       var best = recordClear(stars);
       el.resultBadge.textContent = '클리어';
       el.resultTitle.textContent = '모든 조건을 만족했습니다';
+      var over = Math.max(0, state.moves - puzzle.par);
+      el.resultGapText.textContent = over > 0
+        ? '별 3개(최소 이동)까지 ' + over + '수만 더 줄이면 됩니다!'
+        : '별 3개 · 최소 이동(' + puzzle.par + '수)으로 클리어!';
       el.resultMoves.textContent = String(state.moves);
       el.resultPar.textContent = '기준 ' + puzzle.par + '수';
       el.resultStars.innerHTML = starMarkup(stars);
@@ -1860,21 +1932,41 @@
     }
 
     /* ---------------------------------------------------------------- 게임 방법 */
-    function setGuide(open, persist) {
-      if (!el.guideBody || !el.guideToggle) return;
-      el.guideBody.hidden = !open;
-      el.guideToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      el.guideToggle.textContent = open ? '접기' : '게임 방법';
-      if (persist && open) {
-        try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
-      }
-    }
+    // ---- 게임 방법 데모: 승객 선택 → 가능 좌석 → 조건 충족 (처음 한 번만 움직임) ----
+    (function initSeatGuide() {
+      var stage = document.getElementById('seatGuideStage');
+      if (!stage) return;
+      var pax = stage.querySelector('[data-demo-pax]');
+      var seat = stage.querySelector('[data-demo-seat="0"]');
+      var free = stage.querySelector('[data-demo-free]');
+      var name = stage.querySelector('[data-demo-name]');
+      var check = stage.querySelector('[data-demo-check]');
 
-    if (el.guideToggle) {
-      el.guideToggle.addEventListener('click', function () {
-        setGuide(el.guideBody.hidden, true);
+      function paint(n) {
+        if (pax) pax.classList.toggle('is-on', n >= 1);
+        if (seat) {
+          seat.classList.toggle('is-ok', n === 2);
+          seat.classList.toggle('is-done', n >= 3);
+        }
+        if (free) free.hidden = n !== 2;
+        if (name) name.hidden = n < 3;
+        if (check) check.hidden = n < 3;
+      }
+
+      GameGuide.create({
+        key: 'seat_demo_seen_v1',
+        steps: document.getElementById('seatGuideSteps'),
+        note: document.getElementById('seatGuideNote'),
+        replay: document.getElementById('seatGuideReplay'),
+        notes: [
+          '① 대기 승객을 탭해 고릅니다. 조건은 카드에 적혀 있습니다.',
+          '② 앉을 수 있는 빈 좌석만 「가능」으로 켜집니다.',
+          '③ 앉히면 충족한 조건이 초록 체크로 바뀌고 남은 조건 수가 줄어듭니다.'
+        ],
+        reset: function () { paint(0); },
+        step: paint
       });
-    }
+    })();
 
     /* ---------------------------------------------------------------- 이벤트 */
     el.modeDaily.addEventListener('click', function () { setMode('daily'); });
@@ -1930,12 +2022,6 @@
     state.store = loadStore();
     state.dayKey = kstKey(0);
     buildGrid();
-    (function initGuide() {
-      var seen = false;
-      try { seen = localStorage.getItem(GUIDE_KEY) === '1'; } catch (e) {}
-      // 첫 방문에는 펼쳐서 보여 주고(본 것으로 기록), 다음부터는 접힌 채로 시작한다.
-      setGuide(!seen, !seen);
-    })();
     loadPuzzle(dailyPuzzle(), 'daily');
     renderPracticeList();
     setStatus('막차가 도착했습니다. 대기 승객부터 조건에 맞는 좌석에 앉혀 보세요.');
