@@ -754,11 +754,15 @@ CSS = """
     .cd-hint kbd { font-family: inherit; font-weight: 600; color: var(--text-secondary); }
 
     .cd-savedlist { display: flex; flex-direction: column; gap: 9px; }
-    .cd-alllist { display: flex; flex-direction: column; gap: 16px; }
+    .cd-alllist { display: flex; flex-direction: column; gap: 22px; }
+    .cd-alldeck { display: flex; flex-direction: column; gap: 12px; }
+    .cd-alldeck-head { display: flex; align-items: baseline; gap: 8px; padding: 0 2px 7px; border-bottom: 1px solid var(--border-default); }
+    .cd-alldeck-title { font-size: 13px; font-weight: 800; letter-spacing: -0.03em; }
+    .cd-alldeck-count { margin-left: auto; font-size: 9.5px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
     .cd-allgroup { display: flex; flex-direction: column; gap: 7px; }
-    .cd-allgroup-head { display: flex; align-items: baseline; gap: 7px; padding: 0 2px; }
-    .cd-allgroup-deck { font-size: 12px; font-weight: 800; letter-spacing: -0.03em; }
-    .cd-allgroup-theme { font-size: 10.5px; font-weight: 700; color: var(--accent-primary); }
+    .cd-allgroup-head { display: flex; align-items: center; gap: 6px; padding: 0 2px; }
+    .cd-allgroup-theme { font-size: 11px; font-weight: 700; color: var(--accent-primary); }
+    .cd-alltoday { display: inline-flex; align-items: center; padding: 0 6px; height: 15px; border-radius: 999px; background: var(--accent-subtle); color: var(--accent-primary); font-size: 9px; font-weight: 700; }
     .cd-allgroup-count { margin-left: auto; font-size: 9.5px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
     .cd-allrow {
       display: flex; flex-direction: column;
@@ -982,7 +986,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
       </button>
     </div>
-    <p class="cd-hint">좌우로 넘기거나 <kbd>←</kbd> <kbd>→</kbd> 키로도 볼 수 있어요. 저장과 실천 기록은 이 브라우저에만 남습니다.</p>
+    <p class="cd-hint" id="cdHint"><span id="cdHintCard">좌우로 넘기거나 <kbd>←</kbd> <kbd>→</kbd> 키로도 볼 수 있어요. 저장과 실천 기록은 이 브라우저에만 남습니다.</span><span id="cdHintList" hidden>목록에서 카드를 누르면 그 테마로 열립니다. 저장과 실천 기록은 이 브라우저에만 남습니다.</span></p>
   </main>
 
   <script type="application/json" id="cardsData">__DATA_JSON__</script>
@@ -1046,6 +1050,9 @@ JS = r"""
     savedList: document.getElementById('cdSavedList'),
     allList: document.getElementById('cdAllList'),
     controls: document.getElementById('cdControls'),
+    hint: document.getElementById('cdHint'),
+    hintCard: document.getElementById('cdHintCard'),
+    hintList: document.getElementById('cdHintList'),
     dots: document.getElementById('cdDots')
   };
 
@@ -1143,7 +1150,7 @@ JS = r"""
   function updateCount() {
     const n = readSaved().length;
     el.savedCount.textContent = String(n);
-    el.savedCount.setAttribute('aria-label', '저장한 카드 ' + n + '장');
+    el.savedCount.setAttribute('aria-label', n + '장');
   }
 
   function updateMeta() {
@@ -1322,6 +1329,10 @@ JS = r"""
     el.controls.hidden = saved || all;
     el.savedList.hidden = !saved;
     el.allList.hidden = !all;
+    if (el.hintCard && el.hintList) {
+      el.hintCard.hidden = all;
+      el.hintList.hidden = !all;
+    }
     if (saved) {
       renderSavedList();
       updateCount();
@@ -1380,28 +1391,48 @@ JS = r"""
   function renderAllList() {
     el.allList.textContent = '';
     CD_DATA.decks.forEach(function (deck) {
+      const section = document.createElement('section');
+      section.className = 'cd-alldeck';
+      section.setAttribute('data-deck', deck.id);
+
+      const deckHead = document.createElement('div');
+      deckHead.className = 'cd-alldeck-head';
+      const deckName = document.createElement('span');
+      deckName.className = 'cd-alldeck-title';
+      deckName.textContent = deck.title;
+      const deckCount = document.createElement('span');
+      deckCount.className = 'cd-alldeck-count';
+      deckCount.textContent = (deck.themes.length * 3) + '장 · 테마 ' + deck.themes.length + '개';
+      deckHead.appendChild(deckName);
+      deckHead.appendChild(deckCount);
+      section.appendChild(deckHead);
+
+      const todayId = todayTheme(deck).id;
       deck.themes.forEach(function (theme) {
-        const group = document.createElement('section');
+        const group = document.createElement('div');
         group.className = 'cd-allgroup';
         group.setAttribute('data-theme', theme.id);
         const head = document.createElement('div');
         head.className = 'cd-allgroup-head';
-        const deckName = document.createElement('span');
-        deckName.className = 'cd-allgroup-deck';
-        deckName.textContent = deck.title;
         const themeName = document.createElement('span');
         themeName.className = 'cd-allgroup-theme';
         themeName.textContent = theme.title;
         const count = document.createElement('span');
         count.className = 'cd-allgroup-count';
         count.textContent = theme.cards.length + '장';
-        head.appendChild(deckName);
         head.appendChild(themeName);
+        if (theme.id === todayId) {
+          const tag = document.createElement('span');
+          tag.className = 'cd-alltoday';
+          tag.textContent = '오늘';
+          head.appendChild(tag);
+        }
         head.appendChild(count);
         group.appendChild(head);
         theme.cards.forEach(function (c) { group.appendChild(allRow(BY_ID[c.id])); });
-        el.allList.appendChild(group);
+        section.appendChild(group);
       });
+      el.allList.appendChild(section);
     });
   }
 
