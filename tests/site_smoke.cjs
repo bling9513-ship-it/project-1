@@ -3411,6 +3411,57 @@ function loadPlan(ch) {
   });
 }
 
+// 별 3개를 노리는 계획: 박스는 앞에서부터만 실을 수 있으므로 '앞 k개를 좌/우로 나눠 싣고 배송'하는
+// 모든 조합 중 회차 점수(합계 × 균형 배율)가 가장 큰 것을 고른다.
+function perfectLoadPlan(ch) {
+  const tiers = [[0.9, 1.5], [0.78, 1.25], [0.62, 1], [0, 0.75]];
+  const balance = (l, r) => {
+    if (l + r <= 0) return 1;
+    const ratio = 1 - Math.abs(l - r) / (l + r);
+    for (const [min, mult] of tiers) if (ratio >= min) return mult;
+    return 0.75;
+  };
+  const streakMult = (n) => Math.round((1 + Math.min(n, 5) * 0.1) * 100) / 100;
+  let streak = 0;
+  let total = 0;
+  const plan = ch.batches.map((trip) => {
+    let best = null;
+    for (let k = 1; k <= trip.length; k += 1) {
+      for (let mask = 0; mask < (1 << k); mask += 1) {
+        let l = 0;
+        let r = 0;
+        let score = 0;
+        let safe = true;
+        const sides = [];
+        trip.slice(0, k).forEach((box, i) => {
+          const left = !!(mask & (1 << i));
+          if (left) l += box.kg; else r += box.kg;
+          score += box.score;
+          sides.push(left ? 'left' : 'right');
+          // 게임은 상자를 실을 때마다 한도·균형을 검사하므로 중간 상태도 안전해야 한다.
+          if (l + r > ch.limit || Math.abs(l - r) > ch.tilt) safe = false;
+        });
+        if (!safe) continue;
+        const value = score * balance(l, r);
+        if (!best || value > best.value + 1e-9) best = { value, sides };
+      }
+    }
+    if (!best) return { sides: [], gain: 0 };
+    let l = 0;
+    let r = 0;
+    let score = 0;
+    best.sides.forEach((side, i) => {
+      if (side === 'left') l += trip[i].kg; else r += trip[i].kg;
+      score += trip[i].score;
+    });
+    const gain = Math.round(score * balance(l, r) * streakMult(streak));
+    streak += 1;
+    total += gain;
+    return { sides: best.sides, gain };
+  });
+  return { plan, total };
+}
+
 async function readLoadState(page) {
   return page.evaluate(() => {
     const dayBadge = document.getElementById('dayBadge');
@@ -3518,6 +3569,13 @@ async function checkLoadLayout(page, width) {
     if (width === 390) {
       assert.ok(geo.actions.bottom <= geo.limit, `${tag}: load buttons are cut by the first screen`);
       assert.ok(geo.ship && geo.ship.bottom <= geo.limit + 1, `${tag}: ship button is cut by the first screen`);
+    }
+    if (width === 768) {
+      // 768×900 태블릿 세로에서도 적재 버튼·지금 배송 버튼이 하단 탭바 위에 온전히 들어와야 한다.
+      assert.ok(geo.actions && geo.actions.bottom <= geo.limit,
+        `${tag}: load buttons are cut by the tab bar (${geo.actions && geo.actions.bottom} > ${geo.limit})`);
+      assert.ok(geo.ship && geo.ship.bottom <= geo.limit,
+        `${tag}: ship button is cut by the tab bar (${geo.ship && geo.ship.bottom} > ${geo.limit})`);
     }
   } else {
     assert.ok(geo.rail.right <= geo.cart.left + 1, `${tag}: side rail is not left of the board`);
@@ -3825,6 +3883,120 @@ async function checkLoadPracticeRecord(browser, base) {
     assert.equal(daily.recBest, '—', `${tag}: 오늘 최고에 연습 점수가 남음 (${daily.recBest})`);
     assert.equal(daily.recPlays, '0판', `${tag}: 오늘 완주에 연습판이 남음 (${daily.recPlays})`);
     console.log(`${tag} passed (연습 ${expected}점 · 오늘 기록 비어 있음)`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
+}
+
+// ---- 회귀: 5회 연속 · 별 3개를 달성해도 '신기록까지 1회' 같은 불가능한 목표를 띄우지 않는다 ----
+async function checkLoadPerfectGap(browser, base) {
+  const tag = 'load perfect gap';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/load.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.removeItem('load_cart_stats_v1'));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#loadLeft').waitFor({ state: 'attached' });
+
+    const data = await page.evaluate(() => JSON.parse(document.getElementById('loadData').textContent));
+    const title = await page.evaluate(() => document.getElementById('boardTitle').textContent.trim());
+    const challenge = (data.daily || []).find((ch) => ch.title === title) || data.daily[0];
+    assert.ok(challenge, `${tag}: 오늘의 챌린지를 찾지 못했습니다`);
+
+    const { plan, total } = perfectLoadPlan(challenge);
+    assert.ok(total >= challenge.stars[challenge.stars.length - 1],
+      `${tag}: 완벽 계획이 별 3개 목표에 못 미칩니다 (${total} < ${challenge.stars[challenge.stars.length - 1]})`);
+
+    for (let t = 0; t < plan.length; t += 1) {
+      for (const side of plan[t].sides) {
+        await page.click(side === 'left' ? '#loadLeft' : '#loadRight');
+        await page.waitForTimeout(35);
+      }
+      await page.click('#shipBtn');
+      await page.waitForFunction(() => document.getElementById('tripScore').hasAttribute('data-value'));
+      await page.click('#nextTripBtn');
+      await page.waitForTimeout(140);
+    }
+    await page.waitForTimeout(700);
+
+    const done = await page.evaluate(() => ({
+      gap: document.getElementById('resultGapText').textContent.trim(),
+      stars: document.querySelectorAll('#resultStars svg.is-on').length,
+      streak: document.getElementById('resultStreak').textContent.trim(),
+      total: Number(document.getElementById('resultTotal').getAttribute('data-value')),
+      store: JSON.parse(localStorage.getItem('load_cart_stats_v1') || 'null'),
+    }));
+    assert.equal(done.stars, 3, `${tag}: 별 3개를 못 채웠습니다 (${done.total}점 · 별 ${done.stars}개)`);
+    assert.equal(done.streak, '5회', `${tag}: 최고 연속 ${done.streak}`);
+    assert.ok(!/신기록까지\s*1회/.test(done.gap), `${tag}: 불가능한 목표 문구가 떴습니다 ("${done.gap}")`);
+    assert.ok(!/신기록까지/.test(done.gap), `${tag}: 한 판 최대치를 넘기는 목표 문구 ("${done.gap}")`);
+    assert.ok(done.gap.includes('신기록') || done.gap.includes('완벽 달성'),
+      `${tag}: 달성 문구가 아닙니다 ("${done.gap}")`);
+    assert.equal(done.store.streak.best, 5, `${tag}: 최고 연속 저장값 ${done.store.streak.best}`);
+    console.log(`${tag} passed (${done.total}점 · 별 3개 · ${done.gap})`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
+}
+
+// ---- 회귀: '다시 풀기' 연습 모드의 단서·정답 보기는 기록 저장소를 바꾸지 않는다 ----
+async function checkChartPracticeStore(browser, base) {
+  const tag = 'chart practice store';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/chart.html`, { waitUntil: 'load' });
+    await page.waitForFunction(() => document.getElementById('options').querySelectorAll('.opt').length === 4,
+      null, { timeout: 5000 });
+    await page.click('#options .opt[data-idx="0"]');
+    await page.locator('#resultBox:not([hidden])').waitFor({ timeout: 5000 });
+
+    const saved = await page.evaluate(() => localStorage.getItem('secjobs-chart-v1'));
+    assert.ok(saved, `${tag}: 기록 저장값이 없습니다`);
+
+    await page.click('#retryBtn');
+    await page.waitForTimeout(160);
+    const practice = await page.evaluate(() => ({
+      hidden: document.getElementById('resultBox').hidden,
+      note: document.getElementById('askMsg').textContent.trim(),
+      open: document.querySelectorAll('#clueList .clue.open').length,
+    }));
+    assert.equal(practice.hidden, true, `${tag}: 다시 풀기 후 결과가 남아 있습니다`);
+    assert.ok(practice.note.includes('연습'), `${tag}: 연습 모드 안내 문구 "${practice.note}"`);
+    assert.equal(practice.open, 0, `${tag}: 연습 모드 단서 ${practice.open}개가 열려 있습니다`);
+
+    const before = await page.evaluate(() => localStorage.getItem('secjobs-chart-v1'));
+    for (let i = 0; i < 3; i += 1) {
+      await page.click('#nextClue');
+      await page.waitForTimeout(80);
+    }
+    const opened = await page.evaluate(() => document.querySelectorAll('#clueList .clue.open').length);
+    assert.equal(opened, 3, `${tag}: 연습 모드에서 단서가 열리지 않습니다 (${opened}/3)`);
+    await page.click('#giveUp');
+    await page.locator('#resultBox:not([hidden])').waitFor({ timeout: 5000 });
+
+    const after = await page.evaluate(() => localStorage.getItem('secjobs-chart-v1'));
+    assert.equal(after, before, `${tag}: 연습 모드의 단서·정답 보기가 기록(secjobs-chart-v1)을 바꿨습니다`);
+
+    const revealed = await page.evaluate(() => ({
+      answer: document.getElementById('resultAnswer').textContent.trim(),
+      open: document.querySelectorAll('#clueList .clue.open').length,
+      badge: document.getElementById('resultBadge').textContent.trim(),
+    }));
+    assert.ok(revealed.answer.length > 0, `${tag}: 정답 보기가 동작하지 않습니다`);
+    assert.equal(revealed.open, 3, `${tag}: 정답 확인 후 단서 ${revealed.open}/3`);
+    assert.ok(revealed.badge.length > 0, `${tag}: 결과 배지가 비어 있습니다`);
+
+    // 기록은 실제로 그대로 남아 있어야 한다(새로고침 후에도).
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForFunction(() => document.getElementById('options').querySelectorAll('.opt').length === 4,
+      null, { timeout: 5000 });
+    const reloaded = await page.evaluate(() => localStorage.getItem('secjobs-chart-v1'));
+    assert.equal(reloaded, before, `${tag}: 새로고침 뒤 기록이 달라졌습니다`);
+    console.log(`${tag} passed`);
   } finally {
     await page.close();
     await context.close();
@@ -5381,6 +5553,8 @@ async function main() {
     await checkHangulChoFocus(browser, base);
     await checkGamePolish(browser, base);
     await checkLoadPracticeRecord(browser, base);
+    await checkLoadPerfectGap(browser, base);
+    await checkChartPracticeStore(browser, base);
     await checkLoadMidnightRun(browser, base);
     await checkHangulMidnight(browser, base);
     await checkArcadeKeyboard(browser, base, 390);

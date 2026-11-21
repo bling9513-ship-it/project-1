@@ -801,6 +801,31 @@ CSS = """
       .box-body { margin-top: 7px; }
     }
 
+    /* 641~860px(태블릿 세로)에서는 한 화면에 손수레·상자 카드가 모두 올라오도록 높이를 압축한다.
+       하단 탭바(y=836, 900px 뷰포트) 위로 적재 버튼과 '지금 배송' 버튼이 완전히 들어와야 한다. */
+    @media (min-width: 641px) and (max-width: 860px) {
+      .load-wrap { padding-top: 8px; }
+      .load-hero { margin-bottom: 6px; }
+      .load-pill { margin-bottom: 4px; padding: 2px 7px; }
+      .load-hero h1 { font-size: 19px; }
+      .load-hero > p:not(.load-goal) { display: none; }
+      #statusCard .load-card-head { display: none; }
+      .load-main-head { margin-bottom: 3px; }
+      .cart-card { padding: 9px 11px 10px; }
+      .cart-stage { padding: 4px 0 0; }
+      .deck-head { margin-bottom: 3px; }
+      .crate-stack { height: 56px; }
+      .cart-meters { margin-top: 6px; }
+      .gauge-track, .tilt-track { margin-top: 3px; }
+      .tilt-note { margin-top: 2px; }
+      .load-status { margin-top: 5px; }
+      .box-card { padding: 10px 11px; }
+      .box-body { margin-top: 6px; }
+      .next-strip { margin-top: 7px; padding: 5px 8px; }
+      .box-actions { margin-top: 8px; }
+      .ship-btn { margin-top: 6px; padding: 10px 8px; }
+    }
+
     @media (max-width: 640px) {
       .load-hero p { display: none; }
       .load-hero .load-goal { display: flex; }
@@ -1845,14 +1870,19 @@ __GUIDE_SCRIPTS__
       var challenge = state.challenge;
       var stars = starsOf(challenge, state.total);
       var isDaily = state.mode === 'daily';
-      var record = state.store.best[challenge.id] || 0;
-      var personalBest = state.total > record;
+      /* 기록을 쓰기 전 값을 먼저 잡아 둔다. 저장 뒤 최고값과 비교하면 방금 세운 기록이
+         이미 최고값에 반영되어 '신기록' 판정이 뒤집힌다(5회 연속 뒤 '신기록까지 1회'). */
+      var prevBestScore = state.store.best[challenge.id] || 0;
+      var prevBestStreak = (state.store.streak && state.store.streak.best) || 0;
+      var prevDay = isDaily ? (state.store.days[state.dayKey] || null) : null;
+      var prevDayBest = prevDay ? (prevDay.best || 0) : 0;
+      var personalBest = state.total > prevBestScore;
       if (personalBest) state.store.best[challenge.id] = state.total;
       var day = null;
       /* 연습판은 스테이지 최고 기록만 남긴다(연습 점수가 오늘의 최고점·완주·연속에 섞이지 않게).
          날짜별 통계는 시작일 기준 일일판에서만 쌓는다. */
       if (isDaily) {
-        day = state.store.days[state.dayKey] || { best: 0, plays: 0, streak: 0, stars: 0, last: 0 };
+        day = prevDay || { best: 0, plays: 0, streak: 0, stars: 0, last: 0 };
         day.plays = (day.plays || 0) + 1;
         day.last = state.total;
         day.stars = Math.max(day.stars || 0, stars);
@@ -1868,12 +1898,12 @@ __GUIDE_SCRIPTS__
 
       el.resultBox.hidden = false;
       el.boxCard.hidden = true;
-      el.resultBox.classList.toggle('is-new', personalBest || (isDaily && !!day && state.total >= day.best));
+      el.resultBox.classList.toggle('is-new', personalBest || (isDaily && state.total > prevDayBest));
       el.resultBadge.textContent = isDaily ? '완주' : '연습 완료';
       el.resultTitle.textContent = (personalBest ? '신기록입니다. ' : '') + TRIPS + '회차 배송을 마쳤습니다';
       el.resultTotal.setAttribute('data-value', String(state.total));
       countUp(el.resultTotal, state.total);
-      el.resultBest.textContent = '최고 ' + Math.max(record, state.total) + '점';
+      el.resultBest.textContent = '최고 ' + Math.max(prevBestScore, state.total) + '점';
       el.resultStars.textContent = '';
       for (var i = 0; i < 3; i += 1) el.resultStars.appendChild(starSvg(i < stars, i < stars));
       el.resultDeliveries.textContent = state.deliveries + '/' + TRIPS;
@@ -1883,13 +1913,18 @@ __GUIDE_SCRIPTS__
           ? (state.dayKey === state.todayKey ? '오늘 최고' : dayLabel(state.dayKey) + ' 최고')
           : '스테이지 최고';
       }
-      el.resultToday.textContent = isDaily ? ((day && day.best) || 0) + '점' : Math.max(record, state.total) + '점';
+      el.resultToday.textContent = isDaily ? Math.max(prevDayBest, state.total) + '점' : Math.max(prevBestScore, state.total) + '점';
       var top = challenge.stars[challenge.stars.length - 1] || 1;
-      var streakBest = (state.store.streak && state.store.streak.best) || 0;
       if (stars >= 3) {
-        el.resultGapText.textContent = state.bestStreak > streakBest
-          ? '연속 배송 신기록(' + state.bestStreak + '회)을 세웠습니다!'
-          : '연속 배송 신기록까지 ' + Math.max(1, streakBest + 1 - state.bestStreak) + '회!';
+        /* 한 판은 최대 TRIPS(5)회라 5회 연속이 마지막 목표다. 이미 5회를 세웠거나 이번 판에서
+           세웠으면 더 큰 목표를 약속하지 않고 달성한 기록을 그대로 알린다. */
+        if (isDaily && state.bestStreak > prevBestStreak) {
+          el.resultGapText.textContent = '연속 배송 신기록(' + state.bestStreak + '회)을 세웠습니다!';
+        } else if (state.bestStreak >= TRIPS || prevBestStreak >= TRIPS) {
+          el.resultGapText.textContent = TRIPS + '회 연속 · 별 3개 완벽 달성!';
+        } else {
+          el.resultGapText.textContent = '연속 배송 신기록까지 ' + Math.max(1, prevBestStreak + 1 - state.bestStreak) + '회!';
+        }
       } else {
         el.resultGapText.textContent = '별 3개(목표 ' + top + '점)까지 ' + Math.max(1, top - state.total) + '점!';
       }
