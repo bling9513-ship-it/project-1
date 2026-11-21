@@ -160,7 +160,7 @@ def count_articles(page, css_class):
 def run_unit_tests():
     scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
                "tests/test_hangul_puzzles.py", "tests/test_cards_data.py", "tests/test_wash_data.py",
-               "tests/test_recycle_data.py",
+               "tests/test_recycle_data.py", "tests/test_food_data.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py"]
     for script in scripts:
@@ -509,6 +509,25 @@ def check_pages():
               and recycle_json.get("quizzes") == recycle_embedded.get("quizzes"))
     else:
         check("recycle.html 데이터 블록", False, "id=recycleData 파싱 실패")
+
+    # 식품 라벨·영양성분표: food_data.json 과 food.html 에 심긴 데이터가 같은지
+    food_json = load_json("food_data.json")
+    food_embedded = embedded_json("food.html", 'id="foodData">')
+    if isinstance(food_json, dict):
+        check("food_data.json 항목 10개 이상", len(food_json.get("items") or []) >= 10,
+              len(food_json.get("items") or []))
+        check("food_data.json 퀴즈 6문항 이상", len(food_json.get("quizzes") or []) >= 6,
+              len(food_json.get("quizzes") or []))
+        check("food_data.json 확인일", food_json.get("checkedOn") == "2026-11-22",
+              food_json.get("checkedOn"))
+        check("food_data.json 영양성분 9항목", len(food_json.get("nutrients") or []) == 9,
+              len(food_json.get("nutrients") or []))
+    if isinstance(food_json, dict) and isinstance(food_embedded, dict):
+        check("food.html ↔ food_data.json 일치",
+              food_json.get("items") == food_embedded.get("items")
+              and food_json.get("quizzes") == food_embedded.get("quizzes"))
+    else:
+        check("food.html 데이터 블록", False, "id=foodData 파싱 실패")
 
     menus = embedded_json("pick.html", "const MENUS = ")
     courses = embedded_json("pick.html", "const COURSES = ")
