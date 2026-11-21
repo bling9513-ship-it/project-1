@@ -209,12 +209,17 @@ def check_jobs():
         if isinstance(dl, str) and re.match(r"^\u0000", dl):  # 방어적: 제어문자 유입
             check("jobs.json 마감 표기", False, repr(dl)[:40])
     check("jobs.json 중복 항목", exact == 0, "%d건" % exact)
+    job_keys = [job.get("job_key") for job in jobs]
+    check("jobs.json 공고 키", all(isinstance(k, str) and k for k in job_keys),
+          "빈 키 %d건" % sum(1 for k in job_keys if not k))
+    check("jobs.json 공고 키 중복", len(set(job_keys)) == len(job_keys),
+          "중복 %d건" % (len(job_keys) - len(set(job_keys))))
     check("jobs.json 수집 시각 형식", bad_stamp == 0, "%d건" % bad_stamp)
     check("jobs.json 마감 상태값", bad_deadline_status == 0, "%d건" % bad_deadline_status)
     check("jobs.json 미래 수집 시각", bad_future == 0, "%d건" % bad_future)
     shared = sum(1 for titles in url_seen.values() if len(titles) > 1)
     if shared:
-        warn("jobs.json 같은 URL 다른 공고", "%d건(플랫폼 통합 링크로 추정)" % shared)
+        warn("jobs.json 같은 URL 다른 공고", "%d건(통합 링크 · job_key 로 분리)" % shared)
     stamps = [parse_stamp(j.get("last_seen_at")) for j in jobs]
     stamps = [s for s in stamps if s]
     if stamps:

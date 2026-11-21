@@ -16,7 +16,7 @@ import json
 from datetime import datetime, timezone, timedelta
 
 sys.path.append(os.path.dirname(__file__))
-from db_manager import get_connection, init_db, mark_expired_jobs, refresh_deadline_statuses, get_active_jobs, get_db_stats, export_study_data_from_db, expire_platform_conflict_duplicates
+from db_manager import get_connection, init_db, mark_expired_jobs, refresh_deadline_statuses, get_active_jobs, get_db_stats, export_study_data_from_db, expire_platform_conflict_duplicates, migrate_job_keys
 from crawler import generate_html, generate_readme
 
 def build_all():
@@ -26,6 +26,10 @@ def build_all():
     today_date = datetime.now(kst).date()
     
     init_db()
+    # 0. 예전 '회사명_제목12자' 키 → 플랫폼 공고 ID 기반 키로 정리 (관심 목록 식별자)
+    migrated_keys = migrate_job_keys()
+    if migrated_keys:
+        print(f"-> 공고 키 마이그레이션: {migrated_keys}건을 플랫폼 ID 기반 키로 전환")
     
     # 1. 마감일 지난 공고 정리 (EXPIRED 전환)
     expired_count = mark_expired_jobs(today_date)

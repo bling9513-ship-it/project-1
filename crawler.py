@@ -233,6 +233,7 @@ def fetch_jumpit(today_date):
                         deadline = format_jumpit_deadline(p, today_date)
                         results.append({
                             "platform": "점핏",
+                            "external_id": jid,
                             "company": comp,
                             "title": title,
                             "url": f"https://www.jumpit.co.kr/position/{jid}",
@@ -269,6 +270,7 @@ def fetch_wanted():
                     comp = clean_text(item.get("company", {}).get("name", "") if isinstance(item.get("company"), dict) else item.get("company", ""))
                     results.append({
                         "platform": "원티드",
+                        "external_id": jid,
                         "company": comp,
                         "title": pos,
                         "url": f"https://www.wanted.co.kr/wd/{jid}",
@@ -317,6 +319,7 @@ def fetch_saramin(today_date):
                     deadline = parse_saramin_deadline(raw_deadline, today_date)
                     results.append({
                         "platform": "사람인",
+                        "external_id": (re.search(r"rec_idx=(\d+)", link).group(1) if re.search(r"rec_idx=(\d+)", link) else ""),
                         "company": corp,
                         "title": title,
                         "url": link,
@@ -368,6 +371,7 @@ def fetch_remember(today_date):
                                 deadline = "상시채용"
                         results.append({
                             "platform": "리멤버",
+                            "external_id": jid,
                             "company": comp,
                             "title": title,
                             "url": f"https://career.rememberapp.co.kr/job/posting/{jid}",
@@ -421,6 +425,7 @@ def fetch_jobkorea(today_date):
                                 
                             results.append({
                                 "platform": "잡코리아",
+                                "external_id": (re.search(r"/GI_Read/(\d+)", link).group(1) if re.search(r"/GI_Read/(\d+)", link) else ""),
                                 "company": comp,
                                 "title": title,
                                 "url": link,
@@ -501,6 +506,7 @@ def fetch_incruit(today_date):
                             
                             results.append({
                                 "platform": "인크루트",
+                                "external_id": (re.search(r"[?&]job=(\d+)", link).group(1) if re.search(r"[?&]job=(\d+)", link) else ""),
                                 "company": comp,
                                 "title": title,
                                 "url": link,
@@ -559,6 +565,7 @@ def collect_all_jobs():
                 "title": job["title"],
                 "url": job["url"],
                 "platforms": [job["platform"]],
+                "external_id": job.get("external_id", ""),
                 "keywords": assign_keywords(job["title"]),
                 "location": job["location"],
                 "deadline": job.get("deadline", "상시채용")
@@ -592,9 +599,698 @@ def collect_all_jobs():
         return (3, 999)
 
     job_list = list(deduped.values())
+    # 플랫폼 공고 ID + 제목 지문 기반 키: 같은 통합 URL을 쓰는 다른 공고도 분리된다.
+    from db_manager import make_job_key
+    for job in job_list:
+        job["job_key"] = make_job_key(
+            job["company"], job["title"], job["url"],
+            platforms=job["platforms"], platform=job["platforms"][0],
+            external_id=job.get("external_id", ""),
+        )
     job_list.sort(key=get_deadline_sort_key)
     print(f"-> 중복 제거 및 마감 임박 순 정렬 후 최종 공고: {len(job_list)}건")
     return job_list
+
+_WATCH_CSS = """
+    /* ---- 관심 목록(상태·메모) · 저장 검색 ---- */
+    .job-card { padding: 0; }
+    .job-card-link {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 18px 20px 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .job-card.is-watched { border-color: #bfdbfe; }
+    .job-watch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px 12px 14px;
+      min-width: 0;
+    }
+    .watch-btn {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+    }
+    .watch-btn svg { fill: none; }
+    .watch-btn:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+    .watch-btn:active { transform: scale(0.94); }
+    .watch-btn.is-on { color: var(--accent-primary); border-color: #bfdbfe; background: var(--accent-subtle); }
+    .watch-btn.is-on svg { fill: currentColor; }
+    .status-select {
+      flex: 0 0 auto;
+      max-width: 96px;
+      padding: 5px 6px;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .status-select.is-off { color: var(--text-muted); font-weight: 500; }
+    .job-watch[data-status="지원예정"] .status-select { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
+    .job-watch[data-status="지원완료"] .status-select { color: #047857; border-color: #a7f3d0; background: #ecfdf5; }
+    .job-watch[data-status="면접"] .status-select { color: #b45309; border-color: #fed7aa; background: #fff7ed; }
+    .job-watch[data-status="보류"] .status-select { color: #475569; border-color: #e2e8f0; background: #f1f5f9; }
+    .memo-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 6px 9px;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .memo-input::placeholder { color: var(--text-muted); }
+    .memo-input:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-subtle); }
+
+    .list-item { border-bottom: 1px solid var(--border-subtle); }
+    .list-item:last-child { border-bottom: none; }
+    .list-item .list-row { border-bottom: 0; }
+    .job-watch.is-list { justify-content: flex-end; padding: 0 18px 10px; }
+    .job-watch.is-list .memo-input { flex: 0 1 320px; }
+
+    .watch-archive {
+      margin: 0 0 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      background: var(--bg-surface);
+      box-shadow: var(--card-shadow);
+    }
+    .watch-archive[hidden] { display: none; }
+    .watch-archive-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .watch-archive-title { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
+    .watch-archive-count { font-size: 11px; font-weight: 700; color: var(--text-secondary); background: var(--bg-subtle); border-radius: 6px; padding: 1px 6px; }
+    .watch-archive-desc { flex-basis: 100%; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .watch-arch-item { padding: 11px 0 6px; border-top: 1px solid var(--border-subtle); margin-top: 10px; }
+    .watch-arch-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .watch-arch-meta { min-width: 0; }
+    .watch-arch-company { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); }
+    .watch-arch-title { display: block; font-size: 13.5px; font-weight: 600; color: var(--text-primary); line-height: 1.4; }
+    .watch-arch-deadline { display: inline-block; margin-top: 3px; font-size: 11px; color: var(--text-muted); }
+    .watch-arch-actions { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+    .watch-arch-link, .watch-arch-remove {
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: 1px solid var(--border-default);
+      background: var(--bg-page);
+      border-radius: 7px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .watch-arch-link:hover, .watch-arch-remove:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .watch-arch-remove { color: #b91c1c; }
+    .job-watch.is-arch { padding: 0; }
+
+    .save-search-btn {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border-default);
+      border-radius: 9px;
+      background: var(--bg-page);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 150ms ease, color 150ms ease;
+    }
+    .save-search-btn:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .save-search-btn:active { transform: scale(0.99); }
+    .saved-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .saved-empty { font-size: 11.5px; color: var(--text-muted); }
+    .saved-chip { display: inline-flex; align-items: center; border: 1px solid var(--border-default); border-radius: 999px; background: var(--bg-page); max-width: 100%; }
+    .saved-chip-apply {
+      border: 0;
+      background: transparent;
+      padding: 5px 4px 5px 10px;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      max-width: 168px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .saved-chip-del { border: 0; background: transparent; padding: 4px 8px 4px 2px; font-size: 13px; line-height: 1; color: var(--text-muted); cursor: pointer; }
+    .saved-chip-del:hover { color: #b91c1c; }
+    .filter-pill-count { margin-left: 4px; font-size: 10px; font-weight: 700; color: var(--accent-primary); }
+
+    @media (max-width: 640px) {
+      .job-card-link { padding: 14px 16px 10px; }
+      .job-watch { flex-wrap: wrap; padding: 0 12px 10px 12px; }
+      .memo-input { flex: 1 1 140px; }
+      .status-select { max-width: 88px; }
+      .watch-arch-top { flex-direction: column; gap: 6px; }
+      .job-watch.is-list { justify-content: flex-start; padding: 0 14px 10px; }
+      .job-watch.is-list .memo-input { flex: 1 1 140px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .watch-btn, .save-search-btn { transition: none; }
+    }
+"""
+
+_WATCH_JS = """
+    // ===== 관심 목록(상태·한 줄 메모) + 저장 검색 =====
+    // 저장 위치는 브라우저 localStorage 뿐이고, 서버로는 아무것도 보내지 않는다.
+    // 사용자가 입력한 메모·검색어는 전부 textContent / input.value 로만 그려서
+    // <img onerror=...> 같은 문자열이 마크업으로 해석되지 않게 한다.
+    var WATCH_STORE_KEY = 'secjobs-watchlist-v1';
+    var SAVED_SEARCH_KEY = 'secjobs-saved-searches-v1';
+    var WATCH_STATUSES = ['관심', '지원예정', '지원완료', '면접', '보류'];
+    var STAR_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 17.6l-5.7 3 1.1-6.4-4.6-4.5 6.4-.9L12 3l2.8 5.8 6.4.9-4.6 4.5 1.1 6.4z"></path></svg>';
+
+    var watchlist = readStore(WATCH_STORE_KEY, sanitizeWatchStore);
+    var savedSearches = readStore(SAVED_SEARCH_KEY, sanitizeSavedSearches);
+    var jobByKey = {};
+
+    function readStore(key, sanitize) {
+      try {
+        var raw = localStorage.getItem(key);
+        return sanitize(raw ? JSON.parse(raw) : null);
+      } catch (err) {
+        return sanitize(null);
+      }
+    }
+
+    function sanitizeWatchStore(parsed) {
+      var clean = {};
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return clean;
+      Object.keys(parsed).forEach(function (key) {
+        var item = parsed[key];
+        if (!item || typeof item !== 'object') return;
+        if (typeof item.company !== 'string' || typeof item.title !== 'string') return;
+        clean[String(key)] = {
+          key: String(key),
+          company: item.company,
+          title: item.title,
+          url: typeof item.url === 'string' ? item.url : '',
+          platforms: Array.isArray(item.platforms) ? item.platforms.filter(function (p) { return typeof p === 'string'; }) : [],
+          deadline: typeof item.deadline === 'string' ? item.deadline : '',
+          status: WATCH_STATUSES.indexOf(item.status) >= 0 ? item.status : '관심',
+          memo: typeof item.memo === 'string' ? item.memo.slice(0, 120) : '',
+          watched_at: typeof item.watched_at === 'string' ? item.watched_at : '',
+          updated_at: typeof item.updated_at === 'string' ? item.updated_at : ''
+        };
+      });
+      return clean;
+    }
+
+    function sanitizeSavedSearches(parsed) {
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(function (item) {
+        return item && typeof item === 'object' && typeof item.label === 'string' && item.state && typeof item.state === 'object';
+      }).slice(0, 8).map(function (item) {
+        return {
+          id: typeof item.id === 'string' ? item.id : ('ss' + Math.random().toString(36).slice(2, 8)),
+          label: item.label.slice(0, 60),
+          signature: typeof item.signature === 'string' ? item.signature : '',
+          state: item.state,
+          saved_at: typeof item.saved_at === 'string' ? item.saved_at : ''
+        };
+      });
+    }
+
+    function persistStore(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (err) {
+        // 저장 공간을 쓰지 못해도 화면 동작은 유지한다.
+      }
+    }
+
+    function persistWatch() { persistStore(WATCH_STORE_KEY, watchlist); }
+    function persistSavedSearches() { persistStore(SAVED_SEARCH_KEY, savedSearches); }
+
+    function rememberJob(job) {
+      if (!job || typeof job.job_key !== 'string' || !job.job_key) return null;
+      var key = job.job_key;
+      var now = new Date().toISOString();
+      var entry = watchlist[key];
+      if (!entry) {
+        entry = watchlist[key] = {
+          key: key,
+          company: typeof job.company === 'string' ? job.company : '',
+          title: typeof job.title === 'string' ? job.title : '',
+          url: safeUrl(job.url),
+          platforms: Array.isArray(job.platforms) ? job.platforms.filter(function (p) { return typeof p === 'string'; }).slice(0, 6) : [],
+          deadline: typeof job.deadline_label === 'string' ? job.deadline_label : (typeof job.deadline === 'string' ? job.deadline : ''),
+          status: '관심',
+          memo: '',
+          watched_at: now,
+          updated_at: now
+        };
+      }
+      persistWatch();
+      return entry;
+    }
+
+    function updateWatchEntry(key, patch) {
+      var job = jobByKey[key];
+      var entry = watchlist[key] || (job ? rememberJob(job) : null);
+      if (!entry) return null;
+      Object.keys(patch || {}).forEach(function (field) {
+        if (field === 'status') {
+          if (WATCH_STATUSES.indexOf(patch.status) >= 0) entry.status = patch.status;
+          return;
+        }
+        if (field === 'memo') {
+          entry.memo = String(patch.memo == null ? '' : patch.memo).slice(0, 120);
+          return;
+        }
+        entry[field] = patch[field];
+      });
+      entry.updated_at = new Date().toISOString();
+      persistWatch();
+      return entry;
+    }
+
+    function forgetJob(key) {
+      if (!watchlist[key]) return;
+      delete watchlist[key];
+      persistWatch();
+      refreshWatchSurface();
+    }
+
+    function toggleWatch(key) {
+      if (watchlist[key]) forgetJob(key);
+      else if (rememberJob(jobByKey[key])) refreshWatchSurface();
+      renderFeed();
+    }
+
+    function setWatchStatus(key, status) {
+      if (!updateWatchEntry(key, { status: status })) return;
+      updateWatchCounts();
+      syncWatchNode(key);
+    }
+
+    function setWatchMemo(key, memo) {
+      if (!watchlist[key] && !String(memo || '').trim()) return;
+      if (!updateWatchEntry(key, { memo: memo })) return;
+      updateWatchCounts();
+      syncWatchNode(key);
+    }
+
+    function updateWatchCounts() {
+      var countEl = document.getElementById('watchFilterCount');
+      if (countEl) countEl.textContent = String(Object.keys(watchlist).length);
+      return Object.keys(watchlist).length;
+    }
+
+    function syncWatchNode(key) {
+      var entry = watchlist[key] || null;
+      var nodes = document.querySelectorAll('[data-watch-for]');
+      for (var i = 0; i < nodes.length; i += 1) {
+        var node = nodes[i];
+        if (node.getAttribute('data-watch-for') !== key) continue;
+        var star = node.querySelector('[data-watch-toggle]');
+        if (star) {
+          star.classList.toggle('is-on', !!entry);
+          star.setAttribute('aria-pressed', entry ? 'true' : 'false');
+          var label = entry ? '관심 해제' : '관심 등록';
+          star.setAttribute('aria-label', label);
+          star.setAttribute('title', label);
+        }
+        var select = node.querySelector('[data-watch-status]');
+        var memoInput = node.querySelector('[data-watch-memo]');
+        if (select) {
+          select.classList.toggle('is-off', !entry);
+          if (entry) select.value = entry.status;
+        }
+        if (memoInput && entry && memoInput.value !== entry.memo && document.activeElement !== memoInput) {
+          memoInput.value = entry.memo;
+        }
+      }
+      var cards = document.querySelectorAll('.job-card.is-watched, .job-card');
+      for (var j = 0; j < cards.length; j += 1) {
+        var card = cards[j];
+        if (card.getAttribute('data-key') !== key) continue;
+        card.classList.toggle('is-watched', !!entry);
+      }
+      var items = document.querySelectorAll('.job-watch[data-watch-for]');
+      for (var k = 0; k < items.length; k += 1) {
+        if (items[k].getAttribute('data-watch-for') === key) {
+          items[k].setAttribute('data-status', entry ? entry.status : '관심');
+        }
+      }
+    }
+
+    function buildStatusSelect(key, status, off) {
+      var select = document.createElement('select');
+      select.className = 'status-select' + (off ? ' is-off' : '');
+      select.setAttribute('data-watch-status', key);
+      select.setAttribute('aria-label', '진행 상태');
+      WATCH_STATUSES.forEach(function (label) {
+        var option = document.createElement('option');
+        option.value = label;
+        option.textContent = label;
+        select.appendChild(option);
+      });
+      select.value = WATCH_STATUSES.indexOf(status) >= 0 ? status : '관심';
+      return select;
+    }
+
+    function buildMemoInput(key, memo, ariaLabel) {
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'memo-input';
+      input.setAttribute('data-watch-memo', key);
+      input.setAttribute('maxlength', '120');
+      input.setAttribute('placeholder', '한 줄 메모');
+      input.setAttribute('aria-label', ariaLabel || '한 줄 메모');
+      input.value = typeof memo === 'string' ? memo : '';
+      return input;
+    }
+
+    function buildJobWatch(job) {
+      var key = job.job_key;
+      var entry = watchlist[key] || null;
+      var wrap = document.createElement('div');
+      wrap.className = 'job-watch';
+      wrap.setAttribute('data-watch-for', key);
+      wrap.setAttribute('data-status', entry ? entry.status : '관심');
+
+      var star = document.createElement('button');
+      star.type = 'button';
+      star.className = 'watch-btn' + (entry ? ' is-on' : '');
+      star.setAttribute('data-watch-toggle', key);
+      star.setAttribute('aria-pressed', entry ? 'true' : 'false');
+      star.setAttribute('title', entry ? '관심 해제' : '관심 등록');
+      star.setAttribute('aria-label', entry ? '관심 해제' : '관심 등록');
+      star.innerHTML = STAR_SVG;
+      wrap.appendChild(star);
+
+      wrap.appendChild(buildStatusSelect(key, entry ? entry.status : '관심', !entry));
+      wrap.appendChild(buildMemoInput(key, entry ? entry.memo : '', (job.company || '') + ' ' + (job.title || '') + ' 한 줄 메모'));
+      return wrap;
+    }
+
+    function hydrateWatchSlots(root) {
+      if (!root || !root.querySelectorAll) return;
+      var slots = root.querySelectorAll('[data-watch-slot]');
+      for (var i = 0; i < slots.length; i += 1) {
+        var slot = slots[i];
+        var card = slot.parentElement;
+        while (card && !card.getAttribute('data-key')) card = card.parentElement;
+        if (!card) continue;
+        var key = card.getAttribute('data-key') || '';
+        var job = jobByKey[key];
+        if (!job) continue;
+        var built = buildJobWatch(job);
+        // 그리드/리스트 슬롯이 가진 클래스(예: is-list 여백)를 그대로 이어받는다.
+        built.className = slot.className;
+        slot.replaceWith(built);
+      }
+    }
+
+    function buildArchiveItem(entry) {
+      var item = document.createElement('div');
+      item.className = 'watch-arch-item';
+      item.setAttribute('data-watch-for', entry.key);
+
+      var top = document.createElement('div');
+      top.className = 'watch-arch-top';
+
+      var meta = document.createElement('div');
+      meta.className = 'watch-arch-meta';
+      var company = document.createElement('span');
+      company.className = 'watch-arch-company';
+      company.textContent = entry.company || '회사명 없음';
+      meta.appendChild(company);
+      var title = document.createElement('span');
+      title.className = 'watch-arch-title';
+      title.textContent = entry.title || '제목 없음';
+      meta.appendChild(title);
+      if (entry.deadline) {
+        var deadline = document.createElement('span');
+        deadline.className = 'watch-arch-deadline';
+        deadline.textContent = entry.deadline;
+        meta.appendChild(deadline);
+      }
+      top.appendChild(meta);
+
+      var actions = document.createElement('div');
+      actions.className = 'watch-arch-actions';
+      var link = document.createElement('a');
+      link.className = 'watch-arch-link';
+      link.href = safeUrl(entry.url);
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = '원문';
+      actions.appendChild(link);
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'watch-arch-remove';
+      remove.setAttribute('data-watch-remove', entry.key);
+      remove.setAttribute('aria-label', (entry.company || '') + ' ' + (entry.title || '') + ' 관심 목록에서 삭제');
+      remove.textContent = '삭제';
+      actions.appendChild(remove);
+      top.appendChild(actions);
+      item.appendChild(top);
+
+      var controls = document.createElement('div');
+      controls.className = 'job-watch is-arch';
+      controls.setAttribute('data-status', entry.status);
+      controls.appendChild(buildStatusSelect(entry.key, entry.status, false));
+      controls.appendChild(buildMemoInput(entry.key, entry.memo, (entry.company || '') + ' ' + (entry.title || '') + ' 한 줄 메모'));
+      item.appendChild(controls);
+      return item;
+    }
+
+    function renderWatchArchive() {
+      var section = document.getElementById('watchArchive');
+      var list = document.getElementById('watchArchiveList');
+      var countEl = document.getElementById('watchArchiveCount');
+      if (!section || !list) return;
+      var live = {};
+      getLiveJobs().forEach(function (job) { if (job && job.job_key) live[job.job_key] = true; });
+      var archived = Object.keys(watchlist)
+        .filter(function (key) { return !live[key]; })
+        .map(function (key) { return watchlist[key]; })
+        .sort(function (a, b) { return String(b.updated_at || '').localeCompare(String(a.updated_at || '')); });
+      list.replaceChildren();
+      archived.forEach(function (entry) { list.appendChild(buildArchiveItem(entry)); });
+      if (countEl) countEl.textContent = archived.length + '건';
+      section.hidden = archived.length === 0;
+    }
+
+    function refreshWatchSurface() {
+      updateWatchCounts();
+      renderWatchArchive();
+    }
+
+    // ---- 저장 검색 ----
+    function currentSearchState() {
+      return {
+        query: searchTerm,
+        keyword: selectedKeyword,
+        platform: selectedPlatform,
+        deadline: selectedDeadline,
+        sort: sortBy,
+        watch: selectedWatch
+      };
+    }
+
+    function searchLabel(state) {
+      var parts = [];
+      if (state.query) parts.push('"' + state.query + '"');
+      if (state.keyword && state.keyword !== 'all') parts.push(state.keyword);
+      if (state.platform && state.platform !== 'all') parts.push(state.platform);
+      if (state.deadline === 'urgent') parts.push('마감임박');
+      else if (state.deadline === 'always') parts.push('상시');
+      if (state.watch === 'watch') parts.push('관심만');
+      var label = parts.length ? parts.join(' · ') : '전체 조건';
+      if (state.sort === 'company') label += ' · 회사명순';
+      else if (state.sort === 'default') label += ' · 등록순';
+      return label;
+    }
+
+    function saveCurrentSearch() {
+      var state = currentSearchState();
+      var signature = JSON.stringify(state);
+      var duplicate = null;
+      for (var i = 0; i < savedSearches.length; i += 1) {
+        if (savedSearches[i].signature === signature) { duplicate = savedSearches[i]; break; }
+      }
+      if (duplicate) {
+        duplicate.saved_at = new Date().toISOString();
+        persistSavedSearches();
+        renderSavedSearches();
+        return;
+      }
+      savedSearches.unshift({
+        id: 'ss' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+        label: searchLabel(state),
+        signature: signature,
+        state: state,
+        saved_at: new Date().toISOString()
+      });
+      if (savedSearches.length > 8) savedSearches = savedSearches.slice(0, 8);
+      persistSavedSearches();
+      renderSavedSearches();
+    }
+
+    function removeSavedSearch(id) {
+      savedSearches = savedSearches.filter(function (item) { return item.id !== id; });
+      persistSavedSearches();
+      renderSavedSearches();
+    }
+
+    function findSavedSearch(id) {
+      for (var i = 0; i < savedSearches.length; i += 1) {
+        if (savedSearches[i].id === id) return savedSearches[i];
+      }
+      return null;
+    }
+
+    function renderSavedSearches() {
+      var box = document.getElementById('savedSearchList');
+      if (!box) return;
+      box.replaceChildren();
+      if (!savedSearches.length) {
+        var hint = document.createElement('p');
+        hint.className = 'saved-empty';
+        hint.textContent = '저장한 검색이 없습니다.';
+        box.appendChild(hint);
+        return;
+      }
+      savedSearches.forEach(function (item) {
+        var chip = document.createElement('span');
+        chip.className = 'saved-chip';
+        var apply = document.createElement('button');
+        apply.type = 'button';
+        apply.className = 'saved-chip-apply';
+        apply.setAttribute('data-saved-apply', item.id);
+        apply.setAttribute('title', item.label + ' 조건으로 보기');
+        apply.textContent = item.label;
+        var del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'saved-chip-del';
+        del.setAttribute('data-saved-delete', item.id);
+        del.setAttribute('aria-label', item.label + ' 저장 검색 삭제');
+        del.textContent = '×';
+        chip.appendChild(apply);
+        chip.appendChild(del);
+        box.appendChild(chip);
+      });
+    }
+
+    function syncFilterButtons() {
+      document.querySelectorAll('#keywordNav .segment-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-kw') === selectedKeyword);
+      });
+      document.querySelectorAll('.filter-pill').forEach(function (pill) {
+        var type = pill.getAttribute('data-filter');
+        var value = pill.getAttribute('data-val');
+        if (type === 'platform') pill.classList.toggle('active', value === selectedPlatform);
+        else if (type === 'deadline') pill.classList.toggle('active', value === selectedDeadline);
+        else if (type === 'watch') pill.classList.toggle('active', value === selectedWatch);
+      });
+    }
+
+    function applySearchState(state) {
+      if (!state) return;
+      searchTerm = typeof state.query === 'string' ? state.query : '';
+      searchInput.value = searchTerm;
+      clearSearchBtn.style.display = searchTerm ? 'block' : 'none';
+      selectedKeyword = typeof state.keyword === 'string' ? state.keyword : 'all';
+      selectedPlatform = typeof state.platform === 'string' ? state.platform : 'all';
+      selectedDeadline = typeof state.deadline === 'string' ? state.deadline : 'all';
+      selectedWatch = state.watch === 'watch' ? 'watch' : 'all';
+      sortBy = typeof state.sort === 'string' ? state.sort : 'deadline';
+      if (sortSelect) sortSelect.value = sortBy;
+      if (sortSelectMobile) sortSelectMobile.value = sortBy;
+      syncFilterButtons();
+      renderFeed();
+      if (filterRail && filterRail.classList.contains('is-open')) closeFilterSheet();
+    }
+
+    // ---- 이벤트 ----
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+      var toggle = target.closest('[data-watch-toggle]');
+      if (toggle) {
+        event.preventDefault();
+        toggleWatch(toggle.getAttribute('data-watch-toggle'));
+        return;
+      }
+      var remove = target.closest('[data-watch-remove]');
+      if (remove) {
+        event.preventDefault();
+        forgetJob(remove.getAttribute('data-watch-remove'));
+        renderFeed();
+        return;
+      }
+      var apply = target.closest('[data-saved-apply]');
+      if (apply) {
+        event.preventDefault();
+        var saved = findSavedSearch(apply.getAttribute('data-saved-apply'));
+        if (saved) applySearchState(saved.state);
+        return;
+      }
+      var del = target.closest('[data-saved-delete]');
+      if (del) {
+        event.preventDefault();
+        removeSavedSearch(del.getAttribute('data-saved-delete'));
+      }
+    });
+
+    document.addEventListener('change', function (event) {
+      var target = event.target;
+      if (target && target.matches && target.matches('[data-watch-status]')) {
+        setWatchStatus(target.getAttribute('data-watch-status'), target.value);
+      }
+    });
+
+    document.addEventListener('input', function (event) {
+      var target = event.target;
+      if (target && target.matches && target.matches('[data-watch-memo]')) {
+        setWatchMemo(target.getAttribute('data-watch-memo'), target.value);
+      }
+    });
+
+    function initWatchFeatures() {
+      for (var i = 0; i < JOBS.length; i += 1) {
+        var job = JOBS[i];
+        if (job && typeof job.job_key === 'string') jobByKey[job.job_key] = job;
+      }
+      var saveBtn = document.getElementById('saveSearchBtn');
+      if (saveBtn) saveBtn.addEventListener('click', saveCurrentSearch);
+      renderSavedSearches();
+      updateWatchCounts();
+      renderFeed();
+    }
+
+    initWatchFeatures();
+"""
 
 def generate_html(jobs, update_time_str):
     """GitHub Pages 배포용 정적 웹 대시보드 (프로덕트급 미니멀 UI/UX)"""
@@ -1941,6 +2637,7 @@ def generate_html(jobs, update_time_str):
       .ia-rail {{ overflow-x: hidden; }}
     }}
 
+{_WATCH_CSS}
   </style>
 </head>
 <body>
@@ -2103,12 +2800,26 @@ def generate_html(jobs, update_time_str):
         </div>
 
         <div class="ia-rail-section">
+          <p class="ia-rail-label">관심</p>
+          <div class="filter-pills-scroll">
+            <button class="filter-pill active" data-filter="watch" data-val="all">전체</button>
+            <button class="filter-pill" data-filter="watch" data-val="watch">관심만<span class="filter-pill-count" id="watchFilterCount">0</span></button>
+          </div>
+        </div>
+
+        <div class="ia-rail-section">
           <p class="ia-rail-label">정렬</p>
           <select id="sortSelect" class="sort-select" aria-label="정렬">
             <option value="deadline" selected>마감 임박 순</option>
             <option value="default">등록 순</option>
             <option value="company">회사명 순</option>
           </select>
+        </div>
+
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">저장 검색</p>
+          <button type="button" class="save-search-btn" id="saveSearchBtn">현재 조건 저장</button>
+          <div class="saved-chips" id="savedSearchList"></div>
         </div>
 
         <div class="ia-rail-section">
@@ -2158,6 +2869,15 @@ def generate_html(jobs, update_time_str):
           <div id="filterSummary"></div>
         </div>
 
+        <section class="watch-archive" id="watchArchive" aria-label="보관된 관심 공고" hidden>
+          <div class="watch-archive-head">
+            <strong class="watch-archive-title">보관된 관심 공고</strong>
+            <span class="watch-archive-count" id="watchArchiveCount">0건</span>
+            <p class="watch-archive-desc">현재 목록에서 마감·제외된 공고입니다. 상태와 메모는 그대로 남아 있습니다.</p>
+          </div>
+          <div id="watchArchiveList"></div>
+        </section>
+
         <div id="jobsContainer"></div>
       </div>
     </div>
@@ -2176,6 +2896,7 @@ def generate_html(jobs, update_time_str):
     let selectedKeyword = 'all';
     let selectedPlatform = 'all';
     let selectedDeadline = 'all';
+    let selectedWatch = 'all';
     let sortBy = 'deadline';
     let searchTerm = '';
     let currentView = 'grid';
@@ -2411,6 +3132,7 @@ def generate_html(jobs, update_time_str):
         if (dlMeta.expired) return false;   // 현재 KST 시각 기준 이미 마감된 공고는 숨김
         if (selectedDeadline === 'urgent' && !dlMeta.isUrgent) return false;
         if (selectedDeadline === 'always' && !dlMeta.isAlways) return false;
+        if (selectedWatch === 'watch' && !watchlist[job.job_key]) return false;
 
         if (searchTerm) {{
           const term = searchTerm.toLowerCase();
@@ -2465,7 +3187,8 @@ def generate_html(jobs, update_time_str):
           const summaryHtml = job.summary ? `<div class="job-summary">${{escapeHtml(job.summary)}}</div>` : '';
 
           html += `
-            <a class="job-card" href="${{safeUrl(job.url)}}" target="_blank" rel="noopener noreferrer">
+            <article class="job-card${{watchlist[job.job_key] ? ' is-watched' : ''}}" data-key="${{escapeHtml(job.job_key)}}" data-watch-for="${{escapeHtml(job.job_key)}}">
+              <a class="job-card-link" href="${{safeUrl(job.url)}}" target="_blank" rel="noopener noreferrer">
               <div>
                 <div class="card-top">
                   <span class="company-name" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</span>
@@ -2487,11 +3210,14 @@ def generate_html(jobs, update_time_str):
                   </svg>
                 </div>
               </div>
-            </a>
+              </a>
+              <div class="job-watch" data-watch-slot></div>
+            </article>
           `;
         }});
         html += '</div>';
         jobsContainer.innerHTML = html;
+        hydrateWatchSlots(jobsContainer);
       }} else {{
         let html = '<div class="jobs-list-compact">';
         filtered.forEach(job => {{
@@ -2504,6 +3230,7 @@ def generate_html(jobs, update_time_str):
           const listSummaryHtml = job.summary ? `<div class="list-summary" title="${{escapeHtml(job.summary)}}">${{escapeHtml(job.summary)}}</div>` : '';
 
           html += `
+            <div class="list-item" data-key="${{escapeHtml(job.job_key)}}" data-watch-for="${{escapeHtml(job.job_key)}}">
             <a class="list-row" href="${{safeUrl(job.url)}}" target="_blank" rel="noopener noreferrer">
               <div class="list-company" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</div>
               <div class="list-title">
@@ -2520,17 +3247,23 @@ def generate_html(jobs, update_time_str):
                 </svg>
               </div>
             </a>
+            <div class="job-watch is-list" data-watch-slot></div>
+            </div>
           `;
         }});
         html += '</div>';
         jobsContainer.innerHTML = html;
+        hydrateWatchSlots(jobsContainer);
       }}
+      renderWatchArchive();
+      updateWatchCounts();
     }}
 
     function resetFilters() {{
       selectedKeyword = 'all';
       selectedPlatform = 'all';
       selectedDeadline = 'all';
+      selectedWatch = 'all';
       searchTerm = '';
       searchInput.value = '';
       clearSearchBtn.style.display = 'none';
@@ -2538,6 +3271,7 @@ def generate_html(jobs, update_time_str):
       document.querySelectorAll('#keywordNav .segment-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-kw') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="platform"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="deadline"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
+      document.querySelectorAll('.filter-pill[data-filter="watch"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
 
       renderFeed();
     }}
@@ -2561,6 +3295,7 @@ def generate_html(jobs, update_time_str):
 
         if (filterType === 'platform') selectedPlatform = val;
         if (filterType === 'deadline') selectedDeadline = val;
+        if (filterType === 'watch') selectedWatch = val;
         renderFeed();
       }});
     }});
@@ -2612,9 +3347,8 @@ def generate_html(jobs, update_time_str):
       }}
     }});
 
-    // Initialize
+    // Initialize (관심 목록·저장 검색 초기화 뒤에 첫 렌더가 실행된다)
     initTheme();
-    renderFeed();
 
     // 결과 없음 화면의 '필터 초기화' 버튼은 매번 새로 그려지므로 문서 레벨 위임으로 받는다.
     // (CSP script-src 에서 'unsafe-inline' 을 쓰지 않아 인라인 onclick 을 사용할 수 없다)
@@ -2647,6 +3381,7 @@ def generate_html(jobs, update_time_str):
       if (selectedPlatform !== 'all') n += 1;
       if (selectedDeadline !== 'all') n += 1;
       if (selectedKeyword !== 'all') n += 1;
+      if (selectedWatch === 'watch') n += 1;
       if (searchTerm) n += 1;
       return n;
     }}
@@ -2718,6 +3453,7 @@ def generate_html(jobs, update_time_str):
       }}
     }});
 
+{_WATCH_JS}
   </script>
 </body>
 </html>
@@ -2807,15 +3543,33 @@ def main():
     today_date = now_dt.date()
     
     # SQLite DB (archive.db) 저장 및 마감 정리 연동
-    from db_manager import get_connection, init_db, parse_deadline_status, normalize_key, mark_expired_jobs, get_active_jobs, get_db_stats, expire_platform_conflict_duplicates
+    from db_manager import (get_connection, init_db, parse_deadline_status, normalize_key,
+                            make_job_key, migrate_job_keys, mark_expired_jobs,
+                            get_active_jobs, get_db_stats, expire_platform_conflict_duplicates)
     init_db()
+    migrated = migrate_job_keys()
+    if migrated:
+        print(f"-> 기존 공고 키를 플랫폼 ID 기반 키로 정리: {migrated}건")
     conn = get_connection()
     cur = conn.cursor()
-    
+
     # 1. 수집된 공고 DB UPSERT
+    #   이미 저장된 공고(회사+제목12자 동일)는 그 행의 job_key를 그대로 이어받아,
+    #   대표 플랫폼이 바뀌거나 제목이 살짝 고쳐져도 사용자가 저장해 둔 관심·메모가 끊기지 않게 한다.
+    cur.execute("SELECT id, job_key, company, title FROM jobs WHERE status = 'ACTIVE';")
+    active_identity = {}
+    for row in cur.fetchall():
+        active_identity[normalize_key(row["company"], row["title"])] = row["job_key"]
+
     seen_keys = set()
     for job in jobs:
-        key = normalize_key(job["company"], job["title"])
+        identity = normalize_key(job["company"], job["title"])
+        key = active_identity.get(identity) or job.get("job_key") or make_job_key(
+            job["company"], job["title"], job["url"],
+            platforms=job.get("platforms", []), platform=(job.get("platforms") or [""])[0],
+            external_id=job.get("external_id", ""),
+        )
+        job["job_key"] = key
         seen_keys.add(key)
         raw_deadline = job.get("deadline", "상시채용")
         dl_status, status = parse_deadline_status(raw_deadline, today_date, now_kst, now_dt=now_dt)

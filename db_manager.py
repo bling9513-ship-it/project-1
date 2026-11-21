@@ -3,9 +3,108 @@ import sqlite3
 import json
 import os
 import re
+import hashlib
 from datetime import datetime, timezone, timedelta
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "archive.db")
+
+# ---------------------------------------------------------------------------
+# 공고 식별자(job_key)
+#   예전에는 '회사명 + 제목 앞 12자'를 키로 썼기 때문에 제목이 비슷한 다른 공고가
+#   같은 키로 뭉개지고, 사람인 rec_idx·원티드 wd 처럼 하나의 통합 URL을 여러 공고가
+#   함께 쓰는 경우에도 구분할 방법이 없었다. 이제 플랫폼이 준 공고 ID(URL에서 추출)와
+#   제목 지문을 함께 써서 같은 URL의 서로 다른 공고도 완전히 분리한다.
+#   형식: `<platform>:<external_id>:<title_fingerprint>`  (예: wanted:390475:1a2b3c4d)
+#         ID가 없으면 `h1:<sha1 회사|제목|URL>`
+# ---------------------------------------------------------------------------
+PLATFORM_SLUGS = {
+    "원티드": "wanted",
+    "점핏": "jumpit",
+    "사람인": "saramin",
+    "리멤버": "remember",
+    "잡코리아": "jobkorea",
+    "인크루트": "incruit",
+}
+
+# 플랫폼 공고 상세 URL의 ID 부분 (플랫폼별 표기)
+EXTERNAL_ID_PATTERNS = (
+    (r"/wd/(\d+)", "wanted"),
+    (r"/position/(\d+)", "jumpit"),
+    (r"[?&]rec_idx=(\d+)", "saramin"),
+    (r"/posting/(\d+)", "remember"),
+    (r"/GI_Read/(\d+)", "jobkorea"),
+    (r"[?&]job=(\d+)", "incruit"),
+)
+
+JOB_KEY_PREFIX_RE = re.compile(
+    r"^(?:" + "|".join(sorted(set(PLATFORM_SLUGS.values()) | {"etc", "h1"})) + r"):"
+)
+
+
+def extract_external_id(url):
+    """플랫폼 공고 URL에서 공고 ID를 뽑는다. 없으면 빈 문자열."""
+    text = str(url or "")
+    for pattern, _slug in EXTERNAL_ID_PATTERNS:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(1)
+    return ""
+
+
+def job_title_fingerprint(title):
+    """제목 지문 — 공백·대소문자만 정규화해 원문 구성을 최대한 보존한다."""
+    return re.sub(r"\s+", "", str(title or "")).lower()
+
+
+def make_job_key(company, title, url, platforms=None, platform=None, external_id=None):
+    """충돌 없는 안정적인 공고 키. 같은 URL을 쓰는 다른 공고도 제목 지문으로 분리된다."""
+    platform_list = [platform] if platform else list(platforms or [])
+    slug = PLATFORM_SLUGS.get(platform_list[0], "") if platform_list else ""
+    ext = str(external_id or "").strip() or extract_external_id(url)
+    fingerprint = hashlib.sha1(job_title_fingerprint(title).encode("utf-8")).hexdigest()[:8]
+    if ext:
+        return "%s:%s:%s" % (slug or "etc", ext, fingerprint)
+    seed = "%s|%s|%s" % (company or "", title or "", url or "")
+    return "h1:" + hashlib.sha1(seed.encode("utf-8")).hexdigest()[:16]
+
+
+def is_platform_job_key(job_key):
+    """이미 플랫폼 ID 기반 키인지."""
+    return bool(JOB_KEY_PREFIX_RE.match(str(job_key or "")))
+
+
+def migrate_job_keys(db_path=DB_PATH):
+    """예전 '회사명_제목12자' 키를 플랫폼 ID 기반 키로 한 번에 옮긴다.
+
+    수집이 다시 돌지 않아도(빌드만 돌아도) 화면·저장 데이터가 새 키를 쓰도록 하고,
+    기존 행의 id·first_seen_at·요약은 그대로 유지한다. 대상 키가 이미 다른 행에
+    있으면(희귀 충돌) 건드리지 않는다.
+    """
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("SELECT id, job_key, company, title, url, platforms FROM jobs;")
+    rows = [dict(r) for r in cur.fetchall()]
+    existing = {r["job_key"] for r in rows}
+    now_str = get_kst_now().strftime("%Y-%m-%d %H:%M:%S KST")
+    updates = []
+    for row in rows:
+        if is_platform_job_key(row["job_key"]):
+            continue
+        try:
+            platforms = json.loads(row["platforms"]) if row["platforms"] else []
+        except (TypeError, ValueError):
+            platforms = []
+        new_key = make_job_key(row["company"], row["title"], row["url"], platforms=platforms)
+        if new_key == row["job_key"] or new_key in existing:
+            continue
+        updates.append((new_key, now_str, row["id"]))
+        existing.add(new_key)
+        existing.discard(row["job_key"])
+    if updates:
+        cur.executemany("UPDATE jobs SET job_key = ?, updated_at = ? WHERE id = ?;", updates)
+        conn.commit()
+    conn.close()
+    return len(updates)
 
 def get_connection(db_path=DB_PATH):
     conn = sqlite3.connect(db_path, timeout=30.0)
@@ -672,7 +771,7 @@ def get_active_jobs(db_path=DB_PATH, today_date=None):
     conn = get_connection(db_path)
     cur = conn.cursor()
     cur.execute("""
-    SELECT company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status, last_seen_at, first_seen_at
+    SELECT job_key, company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status, last_seen_at, first_seen_at
     FROM jobs
     WHERE status = 'ACTIVE'
     ORDER BY
@@ -690,6 +789,7 @@ def get_active_jobs(db_path=DB_PATH, today_date=None):
     jobs = []
     for r in rows:
         jobs.append({
+            "job_key": r["job_key"],
             "company": r["company"],
             "title": r["title"],
             "url": r["url"],
