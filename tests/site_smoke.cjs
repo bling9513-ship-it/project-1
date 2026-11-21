@@ -5232,6 +5232,9 @@ async function checkCardsFlow(page, width) {
 // ---- 세탁 라벨 읽기: 첫 화면(가상 라벨 + 기호 설명) · 넘침 0 · 입력 필드 0 ----
 async function checkWashLayout(page, width) {
   const tag = `wash ${width}px`;
+  // 앞선 검사(하단 바·시트 등)가 남긴 스크롤을 지우고 첫 화면 기준으로 잰다.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(60);
   const state = await page.evaluate(() => {
     const r = (sel) => {
       const el = document.querySelector(sel);
