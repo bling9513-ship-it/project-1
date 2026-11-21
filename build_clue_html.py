@@ -1081,7 +1081,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <div class="share-preview" id="sharePreview"></div>
           <button class="btn btn-primary" id="copyBtn" type="button">결과 복사</button>
         </div>
-        <p class="share-note">결과 문구에는 정답이 들어가지 않습니다. 링크를 붙이면 오늘의 기록만 전해집니다.</p>
+        <p class="share-note">결과 문구에는 정답이 들어가지 않습니다. 링크에 이 문제 ID가 들어가, 받은 사람이 같은 문제를 바로 열 수 있습니다.</p>
       </div>
     </section>
 
@@ -1149,6 +1149,31 @@ __ARC_CARDS__
     CATS.forEach(c => { catLabel[c.key] = c.label; });
     const byId = {};
     DATA.forEach(p => { byId[p.id] = p; });
+
+    // ---- 공유 링크 (?id=<문제 ID> · 예전 #<문제 ID> 해시도 받아 준다) ----
+    function puzzleUrl(id) {
+      return SITE + '?id=' + encodeURIComponent(id);
+    }
+
+    function puzzleIdFromUrl() {
+      let q = null;
+      try { q = new URLSearchParams(location.search).get('id'); } catch (e) { q = null; }
+      if (q && byId[q]) return q;
+      let h = String(location.hash || '').replace(/^#/, '');
+      if (h) {
+        try { h = decodeURIComponent(h); } catch (e) {}
+        if (byId[h]) return h;
+      }
+      return null;
+    }
+
+    function syncUrl(id) {
+      // 지난 문제를 열면 주소창도 그 문제의 공유 링크로 맞춰 둔다(뒤로 가기 기록은 늘리지 않는다).
+      try {
+        const next = '?id=' + encodeURIComponent(id);
+        if (location.search !== next || location.hash) history.replaceState(null, '', next);
+      } catch (e) {}
+    }
 
     function escapeHtml(s) {
       return String(s == null ? '' : s)
@@ -1232,7 +1257,7 @@ __ARC_CARDS__
     function shareText(p, r) {
       const state = r.solved ? (r.clues + '단서 만에 해결') : (r.gaveUp ? '정답 확인' : '풀이 중');
       return '하루 한 판 · 3단서 추리\\n' + fmtDate(p.date) + ' · ' + (catLabel[p.cat] || p.cat)
-        + ' · ' + state + ' (' + dotsText(r.clues) + ')\\n' + SITE;
+        + ' · ' + state + ' (' + dotsText(r.clues) + ')\\n' + puzzleUrl(p.id);
     }
 
     function renderClues(p, r) {
@@ -1446,6 +1471,7 @@ __ARC_CARDS__
     function loadPuzzle(id, scroll) {
       if (!byId[id]) return;
       currentId = id;
+      syncUrl(id);
       renderPlayer();
       if (scroll) {
         const top = document.getElementById('playPanel').getBoundingClientRect().top + window.scrollY - 70;
@@ -1455,6 +1481,12 @@ __ARC_CARDS__
 
     arcGrid.querySelectorAll('.arc-card').forEach(card => {
       card.addEventListener('click', () => loadPuzzle(card.dataset.id, true));
+    });
+
+    // 주소 끝의 #<문제 ID> 가 바뀌면 그 문제를 연다.
+    window.addEventListener('hashchange', function () {
+      const id = puzzleIdFromUrl();
+      if (id && id !== currentId) loadPuzzle(id, false);
     });
 
     catFilter.addEventListener('click', ev => {
@@ -1504,8 +1536,14 @@ __ARC_CARDS__
     // ---- 시작 ----
     (function start() {
       const todays = DATA.filter(p => p.date === TODAY);
-      currentId = todays.length ? todays[0].id : (DATA[0] ? DATA[0].id : null);
-      if (currentId) renderPlayer();
+      const fallbackId = todays.length ? todays[0].id : (DATA[0] ? DATA[0].id : null);
+      const wanted = puzzleIdFromUrl();
+      if (wanted) {
+        loadPuzzle(wanted, false);
+      } else {
+        currentId = fallbackId;
+        if (currentId) renderPlayer();
+      }
       renderArchive();
       renderStats();
     })();
