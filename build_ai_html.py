@@ -599,6 +599,8 @@ CSS = """
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      row-gap: 4px;
       gap: 10px;
       font-size: 12.5px;
       color: var(--text-muted);
@@ -811,6 +813,61 @@ CSS = """
     }
 
     .source-link:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    /* ===== 저장(북마크) · 읽음 표시 — 브라우저 localStorage 개인화 ===== */
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 11px;
+    }
+
+    .mark-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      border-radius: 7px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+    }
+
+    .mark-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .mark-btn.is-on { color: var(--accent-primary); border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .mark-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .mark-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    .ai-card.is-saved { border-color: var(--accent-primary); }
+    .ai-card.is-read .ai-title a { color: var(--text-secondary); }
+    .ai-card.is-read .ai-summary { color: var(--text-muted); }
+
+    .read-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      padding: 3px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .filter-pill .count { margin-left: 4px; font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
+    .filter-pill.active .count { color: inherit; }
+
+    .collection-summary {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
 
     /* Empty state */
     .empty-state {
@@ -1326,6 +1383,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <div class="ai-rail-section">
+          <p class="ai-rail-label">내 목록</p>
+          <div class="filter-pills-scroll" id="collectionNav">
+            <button type="button" class="filter-pill" data-collection="saved" aria-pressed="false">저장한 항목만<span class="count" id="aiSavedCount">0</span></button>
+            <button type="button" class="filter-pill" data-collection="unread" aria-pressed="false">안 읽은 항목만<span class="count" id="aiUnreadCount">0</span></button>
+          </div>
+        </div>
+
+        <div class="ai-rail-section">
           <p class="ai-rail-label">출처</p>
           <div class="filter-pills-scroll" id="sourceNav">
             <button class="filter-pill active" data-src="all">전체</button>
@@ -1390,6 +1455,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         <div class="result-meta">
           <span><strong id="visibleCount">__TOTAL__</strong>건 표시 중 · 전체 __TOTAL__건</span>
+          <span class="collection-summary" id="aiCollectionSummary">저장 0 · 안 읽음 __TOTAL__</span>
           <button class="reset-btn" id="resetFiltersMeta">필터 초기화</button>
         </div>
 
@@ -1453,6 +1519,65 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     let activeSrc = 'all';
     let activeSort = 'featured';
     let searchTerm = '';
+    let onlySaved = false;
+    let onlyUnread = false;
+
+    // ===== 저장(북마크) · 읽음 표시 =====
+    // 저장 위치는 이 브라우저의 localStorage 뿐이고 서버로는 아무것도 보내지 않는다.
+    // 저장한 ID는 화면에 그릴 때 다시 마크업으로 해석되지 않고, 정해진 버튼 상태로만 쓴다.
+    const SAVED_KEY = 'ai_saved_v1';
+    const READ_KEY = 'ai_read_v1';
+    const MARK_ID_RE = /^[A-Za-z0-9_.:-]{1,80}$/;
+    const markStore = { saved: readMarkStore(SAVED_KEY), read: readMarkStore(READ_KEY) };
+
+    function readMarkStore(key) {
+      const clean = {};
+      try {
+        const raw = localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return clean;
+        Object.keys(parsed).forEach(function (id) {
+          if (MARK_ID_RE.test(id)) clean[id] = 1;
+        });
+      } catch (e) {}
+      return clean;
+    }
+
+    function persistMark(kind) {
+      try {
+        localStorage.setItem(kind === 'saved' ? SAVED_KEY : READ_KEY, JSON.stringify(markStore[kind]));
+      } catch (e) {}
+    }
+
+    function toggleMark(kind, id) {
+      if (!id || !MARK_ID_RE.test(id) || !markStore[kind]) return;
+      if (markStore[kind][id]) delete markStore[kind][id];
+      else markStore[kind][id] = 1;
+      persistMark(kind);
+      render();
+    }
+
+    function savedCount() {
+      return AI_ITEMS.filter(function (it) { return !!markStore.saved[it.item_key]; }).length;
+    }
+
+    function unreadCount() {
+      return AI_ITEMS.filter(function (it) { return !markStore.read[it.item_key]; }).length;
+    }
+
+    function updateMarkCounts() {
+      const savedEl = document.getElementById('aiSavedCount');
+      if (savedEl) savedEl.textContent = String(savedCount());
+      const unreadEl = document.getElementById('aiUnreadCount');
+      if (unreadEl) unreadEl.textContent = String(unreadCount());
+      const summary = document.getElementById('aiCollectionSummary');
+      if (summary) summary.textContent = '저장 ' + savedCount() + ' · 안 읽음 ' + unreadCount();
+    }
+
+    const MARK_ICONS = {
+      saved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4.5h11a1 1 0 0 1 1 1v14l-6.5-4.2-6.5 4.2v-14a1 1 0 0 1 1-1z"></path></svg>',
+      read: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l4.5 4.5 10-10"></path></svg>'
+    };
 
     const grid = document.getElementById('aiGrid');
     const emptyState = document.getElementById('emptyState');
@@ -1497,6 +1622,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function matches(item) {
+      if (onlySaved && !markStore.saved[item.item_key]) return false;
+      if (onlyUnread && markStore.read[item.item_key]) return false;
       if (activeCat === 'featured' && !item.is_featured) return false;
       if (activeCat !== 'all' && activeCat !== 'featured' && item.category !== activeCat) return false;
       if (activeSrc !== 'all' && item.source !== activeSrc) return false;
@@ -1528,6 +1655,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const catCls = CAT_CLASS[item.category] || 'cat-trend';
       const tags = (item.tags || []).map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('');
       const featured = item.is_featured ? '<span class="featured-badge">주목</span>' : '';
+      const key = escapeHtml(item.item_key);
+      const isSaved = !!markStore.saved[item.item_key];
+      const isRead = !!markStore.read[item.item_key];
+      const readBadge = isRead ? '<span class="read-badge">읽음</span>' : '';
+      const actions = `
+          <div class="card-actions">
+            <button type="button" class="mark-btn ${isSaved ? 'is-on' : ''}" data-mark="saved" data-id="${key}" aria-pressed="${isSaved ? 'true' : 'false'}" title="${isSaved ? '저장 해제' : '저장'}">${MARK_ICONS.saved}${isSaved ? '저장됨' : '저장'}</button>
+            <button type="button" class="mark-btn ${isRead ? 'is-on' : ''}" data-mark="read" data-id="${key}" aria-pressed="${isRead ? 'true' : 'false'}" title="${isRead ? '읽음 취소' : '읽음 표시'}">${MARK_ICONS.read}${isRead ? '읽음' : '읽음 표시'}</button>
+          </div>`;
       const star = (item.source === 'GitHub' && item.score > 0)
         ? `<span class="star-badge">스타 ${item.score >= 1000 ? (item.score / 1000).toFixed(1).replace(/\\.0$/, '') + 'k' : item.score}</span>` : '';
       const orig = item.title_orig && item.title_orig !== item.title_ko
@@ -1535,12 +1671,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const host = linkHost(item.url);
       const hostTag = host ? `<span class="src-host">${escapeHtml(host)}</span>` : '';
       return `
-        <article class="ai-card">
+        <article class="ai-card ${isSaved ? 'is-saved' : ''} ${isRead ? 'is-read' : ''}" data-key="${key}">
           <div class="card-top">
             <span class="cat-badge ${catCls}">${escapeHtml(item.category)}</span>
             <span class="src-badge">${escapeHtml(item.source)}</span>
             ${star}
             ${featured}
+            ${readBadge}
             <span class="card-date">${formatDate(item.published_at)}</span>
           </div>
           <h3 class="ai-title"><a href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title_ko)}</a></h3>
@@ -1550,6 +1687,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <span class="insight-label">기술 포인트 &amp; 시사점</span>
             <p>${escapeHtml(item.tech_insight)}</p>
           </div>
+          ${actions}
           <div class="card-bottom">
             <div class="tag-list">${tags}</div>
             <a class="source-link" href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer" title="원문: ${escapeHtml(item.url)}">${hostTag}원문 보기 →</a>
@@ -1564,7 +1702,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       emptyState.classList.toggle('visible', list.length === 0);
       clearSearchBtn.classList.toggle('visible', searchTerm.length > 0);
       updateFilterBadge();
+      updateMarkCounts();
     }
+
+    // 카드의 저장·읽음 버튼 (그리드를 다시 그리므로 이벤트는 위임으로 받는다)
+    grid.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('[data-mark]');
+      if (!btn) return;
+      ev.preventDefault();
+      toggleMark(btn.getAttribute('data-mark'), btn.getAttribute('data-id'));
+    });
 
     // ---- Filters (레일·시트 공통 이벤트 위임) ----
     const rail = document.getElementById('aiRail');
@@ -1575,6 +1722,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           document.querySelectorAll('#categoryNav .segment-btn').forEach(b => b.classList.remove('active'));
           catBtn.classList.add('active');
           activeCat = catBtn.dataset.cat;
+          render();
+          return;
+        }
+        const colBtn = ev.target.closest('#collectionNav .filter-pill');
+        if (colBtn) {
+          const kind = colBtn.getAttribute('data-collection');
+          const on = kind === 'saved' ? !onlySaved : !onlyUnread;
+          if (kind === 'saved') onlySaved = on;
+          else if (kind === 'unread') onlyUnread = on;
+          colBtn.classList.toggle('active', on);
+          colBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
           render();
           return;
         }
@@ -1611,11 +1769,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       activeSrc = 'all';
       activeSort = 'featured';
       searchTerm = '';
+      onlySaved = false;
+      onlyUnread = false;
       searchInput.value = '';
       aiSort.value = 'featured';
       if (aiSortMobile) aiSortMobile.value = 'featured';
       document.querySelectorAll('#categoryNav .segment-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
       document.querySelectorAll('#sourceNav .filter-pill').forEach(b => b.classList.toggle('active', b.dataset.src === 'all'));
+      document.querySelectorAll('#collectionNav .filter-pill').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       render();
     }
 
@@ -1651,6 +1815,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       let n = 0;
       if (activeCat !== 'all') n += 1;
       if (activeSrc !== 'all') n += 1;
+      if (onlySaved) n += 1;
+      if (onlyUnread) n += 1;
       if (searchTerm) n += 1;
       return n;
     }
