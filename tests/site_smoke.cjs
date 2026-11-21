@@ -513,6 +513,227 @@ async function checkChartGame(page, base, width) {
   console.log(`chart game ${width}px passed (${won.name} · 가려진 ${won.future})`);
 }
 
+// ---- 옷차림: 오늘 추천 우선 배치 · 스타일/기온 필터 ----
+function firstScreenLimit() {
+  const bar = document.querySelector('.ia-tabbar');
+  const shown = bar && getComputedStyle(bar).display !== 'none';
+  return shown ? bar.getBoundingClientRect().top : window.innerHeight;
+}
+
+async function checkOutfit(page, width) {
+  const tag = `outfit ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(150);
+  const read = async () => {
+    const limit = await page.evaluate(firstScreenLimit);
+    return page.evaluate((limit) => {
+    const inFirst = (el) => {
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom > 0 && r.bottom <= limit + 1;
+    };
+    const shown = Array.from(document.querySelectorAll('.band-section')).filter(s => !s.hidden);
+    const rail = document.querySelector('.of-rail');
+    const main = document.querySelector('.of-main');
+    const cards = Array.from(document.querySelectorAll('.band-section:not([hidden]) .outfit-card'))
+      .filter(c => !c.hidden);
+    const tops = cards.map(c => Math.round(c.getBoundingClientRect().top));
+    const minTop = tops.length ? Math.min(...tops) : 0;
+    const perRow = tops.filter(t => Math.abs(t - minTop) < 2).length;
+    return {
+      wxFirst: (() => {
+        const el = document.getElementById('wxCard');
+        const r = el.getBoundingClientRect();
+        return r.height > 0 && r.top < limit && r.bottom > 0;
+      })(),
+      recFirst: inFirst(document.getElementById('recText')),
+      styleFirst: inFirst(document.getElementById('styleChips')),
+      recText: document.getElementById('recText').textContent.trim(),
+      recLabel: document.getElementById('recLabel').textContent.trim(),
+      styleLine: document.getElementById('recStyleLine').textContent.trim(),
+      styleLineHidden: document.getElementById('recStyleLine').hidden,
+      visible: document.getElementById('visibleCount').textContent.trim(),
+      shownBands: shown.map(s => s.dataset.band),
+      firstBand: shown.length ? shown[0].dataset.band : null,
+      todayBand: (document.querySelector('.band-section.is-today') || { dataset: {} }).dataset.band || null,
+      sliderInRail: !!rail && rail.contains(document.getElementById('tempSlider')),
+      styleInRail: !!rail && rail.contains(document.getElementById('styleChips')),
+      seasonInRail: !!rail && rail.contains(document.getElementById('seasonTabs')),
+      sticky: !!rail && getComputedStyle(rail).position === 'sticky',
+      railRight: rail ? rail.getBoundingClientRect().right : null,
+      mainLeft: main ? main.getBoundingClientRect().left : null,
+      cardRows: new Set(tops).size,
+      perRow,
+      cards: cards.length,
+      cardStyles: Array.from(new Set(cards.map(c => c.dataset.style))),
+    };
+  }, limit);
+  };
+
+  const first = await read();
+  assert.ok(first.recText.length > 0, `${tag}: 오늘 추천 문구 없음`);
+  assert.ok(first.todayBand, `${tag}: 오늘 구간 표시가 없다`);
+  assert.equal(first.firstBand, first.todayBand, `${tag}: 오늘 구간이 목록 맨 위가 아니다`);
+  if (width < 1024) {
+    assert.equal(first.wxFirst, true, `${tag}: 첫 화면에 오늘 날씨 카드가 없다`);
+    assert.equal(first.recFirst, true, `${tag}: 첫 화면에 오늘 추천 요약이 없다`);
+    assert.equal(first.styleFirst, true, `${tag}: 첫 화면에 스타일 필터가 없다`);
+    assert.equal(first.shownBands.length, 1, `${tag}: 모바일 첫 화면은 오늘 구간만 (${first.shownBands.length})`);
+    assert.equal(first.visible, '3', `${tag}: 코디 ${first.visible}개`);
+    assert.equal(first.perRow, width < 600 ? 1 : 2, `${tag}: 한 줄에 카드 ${first.perRow}개`);
+  } else {
+    assert.equal(first.sticky, true, `${tag}: 레일이 sticky 가 아니다`);
+    assert.equal(first.sliderInRail && first.styleInRail && first.seasonInRail, true,
+      `${tag}: 기온·스타일·계절 필터가 레일 밖에 있다`);
+    assert.ok(first.railRight <= first.mainLeft, `${tag}: 레일이 목록 왼쪽에 있지 않다`);
+    assert.equal(first.shownBands.length, 8, `${tag}: 구간 ${first.shownBands.length}개 표시`);
+    assert.equal(first.visible, '24', `${tag}: 코디 ${first.visible}개`);
+    assert.ok(first.perRow >= 2, `${tag}: PC 한 줄에 카드 ${first.perRow}개`);
+  }
+
+  // 스타일 필터 → 오늘 추천 요약이 그 스타일 코디로 바뀌고 목록도 좁아진다
+  await page.click('#styleChips .chip[data-style="office"]');
+  await page.waitForTimeout(120);
+  const styled = await read();
+  assert.ok(styled.recLabel.includes('오피스'), `${tag}: 스타일 추천 라벨 "${styled.recLabel}"`);
+  assert.equal(styled.styleLineHidden, false, `${tag}: 스타일 코디 상세 없음`);
+  assert.ok(styled.styleLine.includes('아우터'), `${tag}: 스타일 코디 상세 "${styled.styleLine}"`);
+  assert.deepEqual(styled.cardStyles, ['office'], `${tag}: 스타일 필터가 카드에 적용되지 않음`);
+  assert.equal(styled.visible, width < 1024 ? '1' : '8', `${tag}: 스타일 적용 코디 ${styled.visible}개`);
+
+  // 전체 구간 칩 → 8구간 복원
+  await page.click('#tempChips .chip[data-band=""]');
+  await page.waitForTimeout(120);
+  const all = await read();
+  assert.equal(all.shownBands.length, 8, `${tag}: 전체 칩 후 구간 ${all.shownBands.length}개`);
+
+  // 슬라이더 25°C → 초여름(b7) 구간
+  await page.click('#styleChips .chip[data-style="all"]');
+  await page.evaluate(() => {
+    const slider = document.getElementById('tempSlider');
+    slider.value = '25';
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await page.waitForTimeout(120);
+  const slide = await read();
+  assert.deepEqual(slide.shownBands, ['b7'], `${tag}: 슬라이더 구간 ${slide.shownBands}`);
+  assert.equal(slide.visible, '3', `${tag}: 슬라이더 후 코디 ${slide.visible}개`);
+
+  // 필터 초기화 → 오늘 구간(모바일) / 전체(PC)
+  await page.click('#resetFilters');
+  await page.waitForTimeout(120);
+  const reset = await read();
+  assert.equal(reset.visible, width < 1024 ? '3' : '24', `${tag}: 초기화 후 코디 ${reset.visible}개`);
+  console.log(`outfit ${width}px passed (오늘 ${first.todayBand} · 코디 ${reset.visible}개)`);
+}
+
+// ---- 오늘 뭐 먹지: 첫 화면 룰렛 · 상황/동행/스타일 칩 · 나들이 분리 ----
+async function checkPick(page, width) {
+  const tag = `pick ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(150);
+  const read = async () => {
+    const limit = await page.evaluate(firstScreenLimit);
+    return page.evaluate((limit) => {
+    const inFirst = (el) => {
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom > 0 && r.bottom <= limit + 1;
+    };
+    const rail = document.querySelector('.pk-rail');
+    const main = document.querySelector('.pk-main');
+    return {
+      wxFirst: inFirst(document.getElementById('wxCard')),
+      modeFirst: inFirst(document.getElementById('modeChips')),
+      sitFirst: inFirst(document.getElementById('sitChips')),
+      compFirst: inFirst(document.getElementById('compChips')),
+      styleFirst: inFirst(document.getElementById('styleChips')),
+      drawFirst: inFirst(document.getElementById('drawBtn')),
+      drawInRail: !!rail && rail.contains(document.getElementById('drawBtn')),
+      slotInMain: !!main && main.contains(document.getElementById('slotCard')),
+      coursesInMain: !!main && main.contains(document.getElementById('outingPanel')),
+      coursesBelow: main && main.contains(document.getElementById('outingPanel'))
+        ? document.getElementById('outingPanel').getBoundingClientRect().top
+          > document.getElementById('resultPanel').getBoundingClientRect().top : false,
+      railRight: rail ? rail.getBoundingClientRect().right : null,
+      mainLeft: main ? main.getBoundingClientRect().left : null,
+      cand: document.getElementById('candCount').textContent.trim(),
+      modeTitle: document.getElementById('modeTitle').textContent.trim(),
+      pickName: document.getElementById('pickName').textContent.trim(),
+      slotHidden: document.getElementById('slotBody').hidden,
+      recent: document.querySelectorAll('#recentList .list-item').length,
+      fav: document.getElementById('favCount').textContent.trim(),
+      quickHref: (document.querySelector('.quick-link') || {}).getAttribute
+        ? document.querySelector('.quick-link').getAttribute('href') : null,
+    };
+  }, limit);
+  };
+
+  const first = await read();
+  assert.equal(first.drawInRail, true, `${tag}: 뽑기 버튼이 조건 레일에 없다`);
+  assert.equal(first.slotInMain, true, `${tag}: 추천 결과가 본문에 없다`);
+  assert.equal(first.coursesBelow, true, `${tag}: 나들이 코스가 추천 결과 아래에 있지 않다`);
+  if (width < 1024) {
+    assert.equal(first.wxFirst, true, `${tag}: 첫 화면에 오늘 날씨가 없다`);
+    assert.equal(first.modeFirst, true, `${tag}: 첫 화면에 추천 모드 칩이 없다`);
+    assert.equal(first.sitFirst, true, `${tag}: 첫 화면에 상황 칩이 없다`);
+    assert.equal(first.drawFirst, true, `${tag}: 첫 화면에 뽑기 버튼이 없다`);
+  } else {
+    assert.ok(first.railRight <= first.mainLeft, `${tag}: 조건 레일이 결과 왼쪽에 있지 않다`);
+  }
+  assert.ok(Number(first.cand) > 0, `${tag}: 후보 ${first.cand}개`);
+  assert.equal(first.quickHref, '#outingPanel', `${tag}: 나들이 바로가기 링크`);
+
+  // 상황 칩 → 후보 수 갱신
+  await page.click('#sitChips .chip[data-sit="lunch"]');
+  await page.waitForTimeout(120);
+  const lunch = await read();
+  assert.ok(Number(lunch.cand) > 0 && Number(lunch.cand) <= Number(first.cand),
+    `${tag}: 점심 후보 ${lunch.cand}개 (전체 ${first.cand}개)`);
+
+  // 모드 칩 → 추천 모드 문구 교체
+  await page.click('#modeChips .chip[data-mode="rain"]');
+  await page.waitForTimeout(120);
+  const rain = await read();
+  assert.ok(rain.modeTitle.includes('비'), `${tag}: 비 오는 날 모드 문구 "${rain.modeTitle}"`);
+  await page.click('#modeChips .chip[data-mode="auto"]');
+
+  // 뽑기 → 결과 카드·최근 기록
+  await page.click('#drawBtn');
+  await page.waitForFunction(() => {
+    const body = document.getElementById('slotBody');
+    const name = document.getElementById('pickName');
+    const btn = document.getElementById('drawBtn');
+    return !!body && !body.hidden && !!name && name.textContent.trim().length > 0 && !btn.disabled;
+  }, null, { timeout: 10000 });
+  const drawn = await read();
+  assert.ok(drawn.pickName.length > 0, `${tag}: 뽑힌 메뉴 이름 없음`);
+  assert.equal(drawn.slotHidden, false, `${tag}: 결과 카드가 숨겨져 있다`);
+  assert.ok(drawn.recent >= 1, `${tag}: 최근 기록 ${drawn.recent}개`);
+
+  // 즐겨찾기 토글
+  await page.click('#pickStar');
+  await page.waitForTimeout(150);
+  const fav = await read();
+  assert.equal(fav.fav, '1', `${tag}: 즐겨찾기 ${fav.fav}개`);
+
+  // 나들이 바로가기 → 코스 섹션으로 이동
+  await page.click('.quick-link');
+  await page.waitForFunction(() => {
+    const panel = document.getElementById('outingPanel');
+    const top = panel.getBoundingClientRect().top;
+    return location.hash === '#outingPanel' && top >= -2 && top < 140;
+  }, null, { timeout: 4000 }).catch(() => {});
+  const anchored = await page.evaluate(() => {
+    const panel = document.getElementById('outingPanel');
+    const top = panel.getBoundingClientRect().top;
+    return { top, hash: location.hash };
+  });
+  assert.equal(anchored.hash, '#outingPanel', `${tag}: 해시 ${anchored.hash}`);
+  assert.ok(anchored.top >= -2 && anchored.top < 140, `${tag}: 나들이 섹션 위치 ${Math.round(anchored.top)}px`);
+  console.log(`pick ${width}px passed (${drawn.pickName} · 후보 ${first.cand}개)`);
+}
+
 // ---- 공통 셸: PC 드롭다운 내비 · 모바일 하단 탭 바 ----
 async function checkShellLayout(page, width, name) {
   const tag = `shell ${name} ${width}px`;
@@ -1466,6 +1687,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'tools') await checkTools(page, width);
     if (name === 'mission') await checkMissionGame(page, width);
     if (name === 'chart') await checkChartGame(page, base, width);
+    if (name === 'outfit') await checkOutfit(page, width);
+    if (name === 'pick') await checkPick(page, width);
 
     const blocked = await page.evaluate(() => ({
       csp: window.smokeCspViolations,
@@ -1526,6 +1749,8 @@ async function main() {
           if (width === 768 && name === 'clue') await checkClueLayout(page, width);
           if (width === 768 && name === 'radar') await checkRadar(page, width);
           if (width === 768 && name === 'tools') await checkTools(page, width);
+          if (width === 768 && name === 'outfit') await checkOutfit(page, width);
+          if (width === 768 && name === 'pick') await checkPick(page, width);
         } finally {
           await page.close();
         }
