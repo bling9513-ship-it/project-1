@@ -3,11 +3,11 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
-  'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html'];
+  'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -2678,6 +2678,186 @@ async function checkStudyReviewTimeline(context, base) {
   }
 }
 
+// ---- 60초 관제실: 첫 화면 배치(모드·타이머·인력 2명·경보 카드) · PC 좌측 레일/보드 2단 ----
+async function checkOpsLayout(page, width) {
+  const tag = `ops layout ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(120);
+  const geo = await page.evaluate(() => {
+    const box = (el) => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    const limit = bar && getComputedStyle(bar).display !== 'none'
+      ? bar.getBoundingClientRect().top : window.innerHeight;
+    const cards = Array.from(document.querySelectorAll('#alertBoard .ops-alert')).map(box);
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      limit,
+      mode: box(document.getElementById('modeLive')),
+      clock: box(document.getElementById('clockValue')),
+      people: Array.from(document.querySelectorAll('.ops-person')).map(box),
+      cards,
+      boardCols: cards.length > 1 && Math.abs(cards[0].top - cards[1].top) < 2 ? 2 : 1,
+      rail: box(document.querySelector('.ops-rail')),
+      main: box(document.querySelector('.ops-main')),
+    };
+  });
+  assert.equal(geo.overflow, 0, `${tag}: horizontal overflow ${geo.overflow}px`);
+  assert.equal(geo.cards.length, 6, `${tag}: alert cards ${geo.cards.length}`);
+  assert.ok(geo.mode && geo.mode.top >= 0 && geo.mode.bottom <= geo.limit,
+    `${tag}: mode switch is not in the first screen`);
+  assert.ok(geo.clock && geo.clock.top >= 0 && geo.clock.bottom <= geo.limit,
+    `${tag}: timer is not in the first screen`);
+  assert.equal(geo.people.length, 2, `${tag}: responders ${geo.people.length}`);
+  for (const person of geo.people) {
+    assert.ok(person.top >= 0 && person.bottom <= geo.limit,
+      `${tag}: responder card outside the first screen (${Math.round(person.bottom)} > ${Math.round(geo.limit)})`);
+  }
+  assert.ok(geo.cards[0].top >= 0 && geo.cards[0].bottom <= geo.limit + 1,
+    `${tag}: first alert card is cut by the first screen (${Math.round(geo.cards[0].bottom)} > ${Math.round(geo.limit)})`);
+  if (width >= 768) {
+    assert.ok(geo.rail.right <= geo.main.left + 1, `${tag}: side rail is not left of the board`);
+    assert.equal(geo.boardCols, 2, `${tag}: board is not two columns`);
+  } else {
+    assert.equal(geo.boardCols, width < 420 ? 1 : 2, `${tag}: board columns ${geo.boardCols}`);
+  }
+  console.log(`${tag} passed`);
+}
+
+// ---- 60초 관제실: 연습 배치 → 결과·기록 저장 → 다시 도전 · 실전 60초 타이머 회귀 ----
+async function checkOpsGame(page, base, width) {
+  const tag = `ops ${width}px`;
+  const read = () => page.evaluate(() => ({
+    mode: document.getElementById('modeLive').getAttribute('aria-pressed'),
+    clock: document.getElementById('clockValue').textContent.trim(),
+    cards: Array.from(document.querySelectorAll('#alertBoard .ops-alert')).map((card) => ({
+      id: card.dataset.id, spec: card.dataset.spec, state: card.dataset.state,
+    })),
+    startLabel: document.getElementById('startBtn').textContent.trim(),
+    startDisabled: document.getElementById('startBtn').disabled,
+    resultHidden: document.getElementById('resultBox').hidden,
+    score: document.getElementById('resultScore').textContent.trim(),
+    completed: document.getElementById('resultCompleted').textContent.trim(),
+    missed: document.getElementById('resultMissed').textContent.trim(),
+    downtime: document.getElementById('resultDowntime').textContent.trim(),
+    hint: document.getElementById('resultHint').textContent.trim(),
+    best: document.getElementById('recBest').textContent.trim(),
+    streak: document.getElementById('recStreak').textContent.trim(),
+    history: document.querySelectorAll('#recHistory li:not(.is-empty)').length,
+    store: JSON.parse(localStorage.getItem('ops_room_stats_v1') || 'null'),
+  }));
+
+  await page.evaluate(() => localStorage.removeItem('ops_room_stats_v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#alertBoard .ops-alert').first().waitFor({ state: 'attached' });
+
+  const initial = await read();
+  assert.equal(initial.cards.length, 6, `${tag}: six alerts expected`);
+  assert.equal(initial.cards.filter((card) => card.spec === 'infra').length, 3, `${tag}: infra alerts`);
+  assert.equal(initial.cards.filter((card) => card.spec === 'sec').length, 3, `${tag}: security alerts`);
+  assert.equal(initial.mode, 'true', `${tag}: live mode must be the default`);
+  assert.equal(initial.startDisabled, false, `${tag}: start button disabled on load`);
+  assert.equal(initial.store, null, `${tag}: fresh storage expected`);
+
+  // 1) 연습 모드: 6건을 전문 담당에게 배치 → 결과 카드·기록 저장
+  await page.click('#modePractice');
+  await page.waitForTimeout(120);
+  const practice = await read();
+  assert.equal(practice.mode, 'false', `${tag}: practice mode not selected`);
+  assert.equal(practice.startDisabled, true, `${tag}: batch must be disabled before six placements`);
+  for (const spec of ['infra', 'sec']) {
+    await page.click(`#person-${spec}`);
+    for (const card of practice.cards.filter((item) => item.spec === spec)) {
+      await page.click(`.ops-alert[data-id="${card.id}"]`);
+    }
+  }
+  const placed = await read();
+  assert.equal(placed.startDisabled, false, `${tag}: batch not enabled after six placements`);
+  assert.ok(placed.cards.every((card) => card.state === 'queued'), `${tag}: placed alerts not queued`);
+  await page.click('#startBtn');
+  await page.locator('#resultBox:not([hidden])').waitFor({ timeout: 5000 });
+  const done = await read();
+  assert.ok(Number(done.score) > 0, `${tag}: practice score ${done.score}`);
+  assert.equal(done.completed, '6 / 6', `${tag}: practice completed ${done.completed}`);
+  assert.equal(done.missed, '0건', `${tag}: practice missed ${done.missed}`);
+  assert.ok(done.hint.includes('최적'), `${tag}: hint missing the optimum (${done.hint})`);
+  assert.equal(done.best, done.score + '점', `${tag}: today's best not recorded`);
+  assert.ok(Number(done.streak.replace('일', '')) >= 1, `${tag}: streak not counted`);
+  assert.equal(done.history, 1, `${tag}: history entries ${done.history}`);
+  assert.ok(done.store && done.store.days, `${tag}: stats not saved`);
+  assert.equal(done.store.days[Object.keys(done.store.days)[0]].plays, 1, `${tag}: plays not counted`);
+  assert.equal(done.store.streak.count, 1, `${tag}: stored streak`);
+  assert.equal(done.store.history.length, 1, `${tag}: stored history`);
+
+  // 2) 다시 도전: 보드·결과 초기화, 기록은 유지
+  await page.click('#retryBtn');
+  await page.waitForTimeout(120);
+  const reset = await read();
+  assert.equal(reset.resultHidden, true, `${tag}: result card stayed after retry`);
+  assert.ok(reset.cards.every((card) => card.state === 'ready'), `${tag}: board not reset`);
+  assert.equal(reset.startDisabled, true, `${tag}: batch enabled on a fresh board`);
+  assert.equal(reset.best, done.score + '점', `${tag}: today's best lost after retry`);
+
+  // 3) 실전: 60초 타이머가 끝나면 결과·기록이 남는다
+  const liveContext = await page.context().browser().newContext({ viewport: { width, height: 900 } });
+  const live = await liveContext.newPage();
+  const liveErrors = [];
+  live.on('pageerror', (error) => liveErrors.push(error.message));
+  try {
+    await live.clock.install();
+    await live.goto(`${base}/ops.html`, { waitUntil: 'load' });
+    await live.locator('#alertBoard .ops-alert').first().waitFor({ state: 'attached' });
+    await live.evaluate(() => localStorage.removeItem('ops_room_stats_v1'));
+    await live.reload({ waitUntil: 'load' });
+    await live.locator('#alertBoard .ops-alert').first().waitFor({ state: 'attached' });
+    await live.click('#startBtn');
+    await live.clock.runFor(1000);
+
+    const assignReady = async () => {
+      const ready = await live.evaluate(() => Array.from(document.querySelectorAll('#alertBoard .ops-alert'))
+        .filter((card) => card.dataset.state === 'ready')
+        .map((card) => ({ id: card.dataset.id, spec: card.dataset.spec })));
+      for (const item of ready) {
+        await live.click(`#person-${item.spec}`);
+        await live.click(`.ops-alert[data-id="${item.id}"]`);
+      }
+      return ready.length;
+    };
+
+    const firstBatch = await assignReady();
+    assert.ok(firstBatch >= 3, `${tag}: only ${firstBatch} alerts arrived in the first second`);
+    await live.clock.runFor(6000);
+    const secondBatch = await assignReady();
+    assert.ok(firstBatch + secondBatch === 6, `${tag}: ${firstBatch + secondBatch} alerts assigned, expected 6`);
+
+    await live.clock.runFor(53000);
+    const end = await live.evaluate(() => ({
+      clock: document.getElementById('clockValue').textContent.trim(),
+      hidden: document.getElementById('resultBox').hidden,
+      score: Number(document.getElementById('resultScore').textContent.trim()),
+      completed: document.getElementById('resultCompleted').textContent.trim(),
+      missed: document.getElementById('resultMissed').textContent.trim(),
+      states: Array.from(document.querySelectorAll('#alertBoard .ops-alert')).map((card) => card.dataset.state),
+      store: JSON.parse(localStorage.getItem('ops_room_stats_v1') || 'null'),
+    }));
+    assert.equal(end.hidden, false, `${tag}: result not shown when the clock ran out`);
+    assert.equal(end.clock, '0.0', `${tag}: clock ${end.clock} after 60 seconds`);
+    assert.equal(end.completed.split('/')[1].trim(), '6', `${tag}: summary "${end.completed}"`);
+    assert.ok(end.missed.endsWith('건'), `${tag}: missed summary "${end.missed}"`);
+    assert.ok(end.states.every((state) => state === 'done' || state === 'missed'),
+      `${tag}: alerts left mid-run (${end.states})`);
+    assert.ok(end.score > 0, `${tag}: live score ${end.score}`);
+    assert.ok(end.store && end.store.history.length >= 1, `${tag}: live run not stored`);
+    assert.deepEqual(liveErrors, [], `${tag}: browser errors`);
+  } finally {
+    await liveContext.close();
+  }
+  console.log(`${tag} passed`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -2748,6 +2928,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'tools') await checkTools(page, width);
     if (name === 'mission') await checkMissionGame(page, width);
     if (name === 'chart') await checkChartGame(page, base, width);
+    if (name === 'ops') await checkOpsLayout(page, width);
+    if (name === 'ops') await checkOpsGame(page, base, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -2814,6 +2996,7 @@ async function main() {
           if (width === 768 && name === 'tools') await checkTools(page, width);
           if (width === 768 && name === 'outfit') await checkOutfit(page, width);
           if (width === 768 && name === 'pick') await checkPick(page, width);
+          if (name === 'ops') await checkOpsLayout(page, width);
         } finally {
           await page.close();
         }
