@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta
 from html import escape as esc
 
 from html_guard import harden_html, safe_json_for_script
+from wargame_generator import rotate_answer
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WARGAME_HTML = os.path.join(BASE_DIR, "wargame.html")
@@ -837,7 +838,7 @@ CSS = """
     }
 
     .nav-container {
-      max-width: 1250px;
+      max-width: 1360px;
       margin: 0 auto;
       padding: 0 20px;
       height: 60px;
@@ -869,7 +870,7 @@ CSS = """
 
     .nav-tabs {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       margin-left: 10px;
       flex: 1 1 auto;
       min-width: 0;
@@ -882,9 +883,9 @@ CSS = """
     .nav-tabs::-webkit-scrollbar { display: none; }
 
     .nav-tab-item {
-      padding: 5px 12px;
+      padding: 5px 10px;
       border-radius: 18px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       text-decoration: none;
       color: var(--text-secondary);
@@ -1682,6 +1683,12 @@ CSS = """
     }
 
     /* 내비게이션 8탭 대응: 탭 영역만 가로 스크롤, 테마 토글은 고정 */
+    @media (max-width: 1440px) {
+      .nav-container { max-width: 1360px; padding: 0 16px; }
+      .nav-tabs { gap: 4px; margin-left: 8px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; }
+    }
+
     @media (max-width: 1024px) {
       .nav-brand { min-width: 0; }
       .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
@@ -1756,6 +1763,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
           <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
           <a href="clue.html" class="nav-tab-item">3단서 추리</a>
+          <a href="mission.html" class="nav-tab-item">퇴근길 미션</a>
         </div>
       </div>
 
@@ -2336,6 +2344,59 @@ def sort_questions(qs):
     return daily + static
 
 
+def spread_static_answers(questions):
+    """정적 4지선다의 정답이 A(0)에 몰리지 않도록 i % 4 위치로 회전한다.
+
+    - 보기 텍스트(정답 포함)는 그대로 두고 위치만 바꾼다(rotate_answer 가 검증).
+    - 데일리 자동 출제(daily-*)는 wargame_generator 가 이미 분산하므로 건드리지 않는다.
+    - 이미 목표 위치에 있으면 회전하지 않으므로 여러 번 빌드해도 결과가 같다(멱등).
+    """
+    slot = 0
+    changed = []
+    for q in questions:
+        if q.get("is_daily") or q.get("type") != "choice":
+            continue
+        target = slot % 4
+        slot += 1
+        if len(q.get("choices") or []) != 4 or q.get("answer") is None:
+            continue
+        if q["answer"] != target:
+            rotate_answer(q, target)
+            changed.append((q["id"], target))
+    return changed
+
+
+def persist_answer_order(questions):
+    """DB(wargame_questions)의 보기 순서·정답 위치를 현재 값으로 맞춘다(비데일리 4지선다만)."""
+    from db_manager import get_connection
+    updated = 0
+    conn = get_connection()
+    try:
+        for q in questions:
+            if q.get("is_daily") or q.get("type") != "choice":
+                continue
+            choices = q.get("choices") or []
+            if len(choices) != 4 or q.get("answer") is None:
+                continue
+            cur = conn.execute(
+                "SELECT choices_json, answer_idx FROM wargame_questions WHERE id = ?", (q["id"],)
+            ).fetchone()
+            if not cur:
+                continue
+            stored_choices, stored_answer = cur[0], cur[1]
+            if stored_answer == q["answer"]:
+                continue
+            conn.execute(
+                "UPDATE wargame_questions SET choices_json = ?, answer_idx = ? WHERE id = ?",
+                (json.dumps(choices, ensure_ascii=False), q["answer"], q["id"]),
+            )
+            updated += 1
+        conn.commit()
+    finally:
+        conn.close()
+    return updated
+
+
 def build():
     kst = timezone(timedelta(hours=9))
     now = datetime.now(kst)
@@ -2343,6 +2404,13 @@ def build():
     today_str = now.strftime("%Y-%m-%d")
 
     questions = sort_questions(load_questions())
+    rotated = spread_static_answers(questions)
+    if rotated:
+        try:
+            row_count = persist_answer_order(questions)
+            print("-> 정적 4지선다 정답 위치 분산: %d문항 회전 (DB %d행 반영)" % (len(rotated), row_count))
+        except Exception as e:  # DB 쓰기 실패해도 페이지는 정답 위치가 분산된 상태로 만든다
+            print("  [경고] 정답 위치를 DB에 반영하지 못했습니다: %s: %s" % (type(e).__name__, e))
 
     payload = []
     for q in questions:

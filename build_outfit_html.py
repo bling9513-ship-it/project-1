@@ -706,7 +706,7 @@ CSS = """
     }
 
     .nav-container {
-      max-width: 1250px;
+      max-width: 1360px;
       margin: 0 auto;
       padding: 0 20px;
       height: 60px;
@@ -738,7 +738,7 @@ CSS = """
 
     .nav-tabs {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       margin-left: 10px;
       flex: 1 1 auto;
       min-width: 0;
@@ -751,9 +751,9 @@ CSS = """
     .nav-tabs::-webkit-scrollbar { display: none; }
 
     .nav-tab-item {
-      padding: 5px 12px;
+      padding: 5px 10px;
       border-radius: 18px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       text-decoration: none;
       color: var(--text-secondary);
@@ -1405,6 +1405,12 @@ CSS = """
     }
 
     /* 내비게이션 8탭(피싱 레이더 추가) 대응: 넘침 없이 한 줄 유지 */
+    @media (max-width: 1440px) {
+      .nav-container { max-width: 1360px; padding: 0 16px; }
+      .nav-tabs { gap: 4px; margin-left: 8px; }
+      .nav-tab-item { padding: 4px 8px; font-size: 11.5px; }
+    }
+
     @media (max-width: 1024px) {
       .nav-brand { min-width: 0; }
       .nav-tabs { flex: 1 1 auto; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
@@ -1476,6 +1482,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <a href="radar.html" class="nav-tab-item">피싱 레이더</a>
           <a href="pick.html" class="nav-tab-item">오늘 뭐 먹지</a>
           <a href="clue.html" class="nav-tab-item">3단서 추리</a>
+          <a href="mission.html" class="nav-tab-item">퇴근길 미션</a>
         </div>
       </div>
 
