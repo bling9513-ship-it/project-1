@@ -849,6 +849,30 @@ __JS__
 
 JS = r"""
 (function () {
+  // ---------- 화면 테마 (공통 셸 헤더의 토글) ----------
+  const themeBtn = document.getElementById('themeToggle');
+  const moonIcon = document.getElementById('moonIcon');
+  const sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) {
+      try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
   const SYM = {};
   WASH.symbols.forEach(function (item) { SYM[item.id] = item; });
   const QUIZ = WASH.quizzes;
