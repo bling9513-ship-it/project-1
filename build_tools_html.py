@@ -702,6 +702,8 @@ CSS = """
 
     .tool-tab:hover { background: var(--bg-subtle); color: var(--text-primary); }
 
+    .tool-tab:active { transform: scale(0.97); }
+
     .tool-tab.active {
       background: var(--accent-primary);
       border-color: var(--accent-primary);
