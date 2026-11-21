@@ -4408,8 +4408,18 @@ async function checkHangulGame(page, width) {
   await page.click('#hintBtn');
   await page.waitForTimeout(140);
   state = await hangulRead(page);
+  const hintView = await page.evaluate(() => ({
+    letter: !document.getElementById('letterKeys').hidden,
+    chip: document.querySelector('#letterGrid .hg-key[data-hint="1"]')
+      ? document.querySelector('#letterGrid .hg-key[data-hint="1"]').getAttribute('data-syllable') : null,
+  }));
   assert.ok(state.status.startsWith('힌트'), `${tag}: hint message missing (${state.status})`);
-  assert.ok(/[ㄱ-ㅎ]/.test(state.status), `${tag}: hint does not reveal a jamo (${state.status})`);
+  // 자모 한 칸 힌트이거나, 음절 교체 판이면 글자 모드 + 목표 음절 강조 중 하나다.
+  assert.ok(/[ㄱ-ㅎ]/.test(state.status) || hintView.chip,
+    `${tag}: 힌트가 자모도 목표 음절도 알려주지 않음 (${state.status})`);
+  if (hintView.letter) {
+    assert.ok(hintView.chip, `${tag}: 글자 모드 힌트에 목표 음절 강조가 없음`);
+  }
 
   for (const step of plan.practiceSteps) await hangulApply(page, step);
   state = await hangulRead(page);
@@ -4460,6 +4470,154 @@ async function checkHangulGuide(browser, base) {
     const again = await page.evaluate(() => Array.from(document.querySelectorAll('#guideTiles .hg-demo-tile')).map((node) => node.textContent));
     assert.deepEqual(again, ['가', '지', '가지'], `${tag}: replay did not settle (${again})`);
     console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 한글 힌트 분기: 자모 1칸으로 못 가면 글자 모드 + 목표 음절 강조 ----
+async function checkHangulHintBranch(browser, base) {
+  const tag = 'hangul hint branch';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/hangul.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.removeItem('hangul_ladder_stats_v1'));
+    // 오늘의 일일판을 d01(의자→책상)로 고정한다: ordinal % length === 0 인 날짜로 시계를 맞춘다.
+    const plan = await page.evaluate(() => {
+      const t = new Date(Date.now() + 9 * 3600000);
+      const pad = (n) => String(n).padStart(2, '0');
+      const kst = `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}`;
+      const ordinal = Math.floor(Date.parse(`${kst}T00:00:00Z`) / 86400000);
+      const data = JSON.parse(document.getElementById('hangulData').textContent);
+      const back = ordinal % data.daily.length;
+      const target = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate() - back, 3));
+      return { iso: target.toISOString(), puzzle: data.daily[0] };
+    });
+    assert.equal(plan.puzzle.id, 'd01', `${tag}: d01이 첫 일일판이 아님 (${plan.puzzle.id})`);
+    assert.equal(plan.puzzle.start, '의자', `${tag}: start ${plan.puzzle.start}`);
+    assert.equal(plan.puzzle.goal, '책상', `${tag}: goal ${plan.puzzle.goal}`);
+    await page.clock.setFixedTime(new Date(plan.iso));
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#wordRow .hg-syl').first().waitFor({ state: 'attached' });
+    let state = await hangulRead(page);
+    assert.equal(state.word, '의자', `${tag}: board ${state.word}`);
+    assert.equal(state.goal, '책상', `${tag}: goal ${state.goal}`);
+
+    // 의자 → 사자/기자 는 초성·중성을 함께 바꿔야 한다(자모 1칸 불가) → 글자 모드 안내
+    await page.click('#hintBtn');
+    await page.waitForTimeout(180);
+    const hinted = await page.evaluate(() => ({
+      letterOpen: !document.getElementById('letterKeys').hidden,
+      jamoOpen: !document.getElementById('jamoKeys').hidden,
+      cho: document.querySelector('#letterChoRow .hg-cho.is-active')
+        ? document.querySelector('#letterChoRow .hg-cho.is-active').getAttribute('data-cho') : null,
+      chips: Array.from(document.querySelectorAll('#letterGrid .hg-key')).map((b) => b.getAttribute('data-syllable')),
+      hintChip: document.querySelector('#letterGrid .hg-key[data-hint="1"]')
+        ? document.querySelector('#letterGrid .hg-key[data-hint="1"]').getAttribute('data-syllable') : null,
+      status: document.getElementById('statusLine').textContent,
+      words: JSON.parse(document.getElementById('hangulData').textContent).words,
+      chipCho: (() => {
+        const chip = document.querySelector('#letterGrid .hg-key[data-hint="1"]');
+        if (!chip) return null;
+        const data = JSON.parse(document.getElementById('hangulData').textContent);
+        const code = chip.getAttribute('data-syllable').charCodeAt(0) - 0xAC00;
+        return data.cho[Math.floor(code / 588)];
+      })(),
+    }));
+    assert.equal(hinted.letterOpen, true, `${tag}: 글자 모드로 전환되지 않음`);
+    assert.equal(hinted.jamoOpen, false, `${tag}: 자모 팔레트가 남아 있음`);
+    assert.ok(hinted.hintChip, `${tag}: 목표 음절 강조가 없음`);
+    assert.ok(hinted.chips.includes(hinted.hintChip), `${tag}: 강조한 칩이 현재 초성 후보에 없음`);
+    assert.equal(hinted.cho, hinted.chipCho, `${tag}: 강조 칩과 초성 필터가 어긋남 (${hinted.cho}/${hinted.chipCho})`);
+    assert.ok(hinted.status.includes('강조'), `${tag}: 안내 문구 ${hinted.status}`);
+    assert.ok(!hinted.status.includes('초성 →'), `${tag}: 자모 1칸이 안 되는 판에 자모 힌트를 줌 (${hinted.status})`);
+    assert.ok(hinted.words.includes(hinted.hintChip + '자'), `${tag}: 힌트 음절이 실제 단어를 만들지 못함`);
+
+    // 강조된 칩을 바로 누르면 실제 유효 이동이 된다 (긔자 같은 사전에 없는 단어가 나오지 않는다)
+    await page.click('#letterGrid .hg-key[data-hint="1"]');
+    await page.waitForTimeout(160);
+    state = await hangulRead(page);
+    assert.equal(state.word, hinted.hintChip + '자', `${tag}: 이동 결과 ${state.word}`);
+    assert.equal(state.moves, 1, `${tag}: 이동 수 ${state.moves}`);
+    assert.ok(!state.status.includes('사전에 없는'), `${tag}: 힌트가 사전에 없는 단어로 안내함 (${state.status})`);
+
+    // 사자로 되돌려, 받침 한 칸만 다른 경우는 자모(받침) 힌트로 안내되는지 확인
+    if (state.word !== '사자') {
+      await page.click('#wordRow .hg-syl[data-pos="0"]');
+      await page.waitForTimeout(90);
+      await page.click('#letterChoRow .hg-cho[data-cho="ㅅ"]');
+      await page.waitForTimeout(90);
+      await page.click('#letterGrid .hg-key[data-syllable="사"]');
+      await page.waitForTimeout(140);
+    }
+    state = await hangulRead(page);
+    assert.equal(state.word, '사자', `${tag}: 되돌리기 실패 (${state.word})`);
+    await page.click('#hintBtn');
+    await page.waitForTimeout(180);
+    const jamo = await page.evaluate(() => ({
+      letterOpen: !document.getElementById('letterKeys').hidden,
+      jamoOpen: !document.getElementById('jamoKeys').hidden,
+      part: (() => {
+        const cell = document.querySelector('#wordRow .hg-part.is-active');
+        return cell ? cell.getAttribute('data-part') : null;
+      })(),
+      status: document.getElementById('statusLine').textContent,
+    }));
+    assert.equal(jamo.jamoOpen, true, `${tag}: 자모 힌트가 열리지 않음`);
+    assert.equal(jamo.letterOpen, false, `${tag}: 한 칸 이동인데 글자 모드로 안내함`);
+    assert.equal(jamo.part, 'jong', `${tag}: 선택 칸 ${jamo.part}`);
+    assert.ok(/받침|종성/.test(jamo.status), `${tag}: 자모 힌트 문구 ${jamo.status}`);
+    console.log(`${tag} passed (의자→사자 글자 모드 · 사자→사장 받침 힌트)`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 한글 초성 팔레트: Enter/Space로 골라도 포커스가 body로 떨어지지 않는다 ----
+async function checkHangulChoFocus(browser, base) {
+  const tag = 'hangul cho focus';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/hangul.html`, { waitUntil: 'load' });
+    await page.locator('#wordRow .hg-syl').first().waitFor({ state: 'attached' });
+    await page.click('#wordRow .hg-syl[data-pos="1"]');
+    await page.waitForTimeout(120);
+    await page.evaluate(() => document.querySelector('#letterChoRow .hg-cho[data-cho="ㄴ"]').focus());
+    assert.equal(await page.evaluate(() => document.activeElement.getAttribute('data-cho')), 'ㄴ',
+      `${tag}: 초성 버튼에 포커스를 못 줌`);
+
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(140);
+    let state = await page.evaluate(() => ({
+      tag: document.activeElement ? document.activeElement.tagName : null,
+      cho: document.activeElement ? document.activeElement.getAttribute('data-cho') : null,
+      active: document.querySelector('#letterChoRow .hg-cho.is-active')
+        ? document.querySelector('#letterChoRow .hg-cho.is-active').getAttribute('data-cho') : null,
+      chips: document.querySelectorAll('#letterGrid .hg-key').length,
+    }));
+    assert.equal(state.tag, 'BUTTON', `${tag}: Enter 뒤 포커스가 ${state.tag}로 떨어짐`);
+    assert.equal(state.cho, 'ㄴ', `${tag}: Enter 뒤 포커스 초성 ${state.cho}`);
+    assert.equal(state.active, 'ㄴ', `${tag}: Enter로 초성 선택이 안 됨 (${state.active})`);
+    assert.ok(state.chips > 0, `${tag}: 초성 ㄴ 후보가 비었음`);
+
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(140);
+    state = await page.evaluate(() => ({
+      tag: document.activeElement ? document.activeElement.tagName : null,
+      cho: document.activeElement ? document.activeElement.getAttribute('data-cho') : null,
+      active: document.querySelector('#letterChoRow .hg-cho.is-active')
+        ? document.querySelector('#letterChoRow .hg-cho.is-active').getAttribute('data-cho') : null,
+    }));
+    assert.equal(state.cho, 'ㄴ', `${tag}: Space 뒤 포커스 초성 ${state.cho}`);
+    assert.equal(state.active, 'ㄴ', `${tag}: Space 뒤 초성 선택 ${state.active}`);
+
+    // 키보드로 다른 초성까지 이동해도 재렌더 후 포커스가 유지된다
+    await page.focus('#letterGrid .hg-key');
+    assert.equal(await page.evaluate(() => document.activeElement.getAttribute('data-syllable') !== null), true,
+      `${tag}: 음절 후보로 포커스 이동 실패`);
+    console.log(`${tag} passed (Enter·Space 후 포커스 유지)`);
   } finally {
     await context.close();
   }
@@ -4753,6 +4911,281 @@ async function checkGameTabSheet(browser, base, width) {
   }
 }
 
+// ---- 게임 고도화 1차: 워게임·추리·미션·차트 공통(1회 가이드·보드 강조·결과 격차) ----
+async function checkGamePolish(browser, base) {
+  const errors = [];
+  const open = async (name, height) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: height || 900 } });
+    const page = await context.newPage();
+    page.on('pageerror', (error) => errors.push(`${name}: ${error.message}`));
+    await page.goto(`${base}/${name}.html`, { waitUntil: 'load' });
+    await page.evaluate(() => localStorage.clear());
+    await page.reload({ waitUntil: 'load' });
+    return { context, page };
+  };
+
+  // ---------- 워게임 ----------
+  {
+    const tag = 'wargame polish';
+    const { context, page } = await open('wargame');
+    try {
+      await page.locator('#wgGuideStage .gg-step').first().waitFor({ state: 'attached' });
+      await page.waitForTimeout(2300);
+      const guide = await page.evaluate(() => ({
+        steps: document.querySelectorAll('#wgGuideStage .gg-step').length,
+        on: document.querySelector('#wgGuideStage .gg-step.is-on')
+          ? document.querySelector('#wgGuideStage .gg-step.is-on').getAttribute('data-step') : null,
+        verdict: document.querySelector('[data-demo-verdict]').hidden,
+        seen: localStorage.getItem('wargame_demo_seen_v1'),
+        replay: !!document.getElementById('wgGuideReplay'),
+      }));
+      assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+      assert.equal(guide.on, '3', `${tag}: guide did not settle on the last step (${guide.on})`);
+      assert.equal(guide.verdict, false, `${tag}: verdict chip missing at the end`);
+      assert.equal(guide.seen, '1', `${tag}: guide autoplay not remembered`);
+      assert.equal(guide.replay, true, `${tag}: 다시 보기 button missing`);
+
+      await page.click('#wgGuideReplay');
+      await page.waitForTimeout(120);
+      const replay = await page.evaluate(() => document.querySelector('#wgGuideStage .gg-step.is-on')
+        ? document.querySelector('#wgGuideStage .gg-step.is-on').getAttribute('data-step') : null);
+      assert.equal(replay, '1', `${tag}: replay did not restart (${replay})`);
+
+      const id = await page.evaluate(() => (DATA.find((q) => q.type === 'choice' && q.cat === 'web') || DATA.find((q) => q.type === 'choice')).id);
+      await page.evaluate((qid) => { location.hash = '#q-' + qid; }, id);
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForTimeout(250);
+      const answered = await page.evaluate((qid) => {
+        const card = document.getElementById('q-' + qid);
+        const q = DATA.find((x) => x.id === qid);
+        card.querySelector('.opt[data-idx="' + q.answer + '"]').click();
+        return {
+          lit: card.querySelectorAll('.code-block.is-lit').length,
+          keyLines: card.querySelectorAll('.cl.is-key').length,
+          badge: card.querySelector('.code-badge') ? card.querySelector('.code-badge').textContent : null,
+          resultHidden: card.querySelector('.q-result').hidden,
+          gap: card.querySelector('.q-result-text').textContent,
+        };
+      }, id);
+      assert.ok(answered.lit > 0, `${tag}: 판단 근거 줄이 강조되지 않음`);
+      assert.ok(answered.keyLines > 0, `${tag}: 근거 줄 span 없음`);
+      assert.equal(answered.badge, '정답 근거', `${tag}: code badge "${answered.badge}"`);
+      assert.equal(answered.resultHidden, false, `${tag}: 결과 영역이 숨어 있음`);
+      assert.ok(answered.gap.includes('다음 티어'), `${tag}: 목표 격차 문구 "${answered.gap}"`);
+      assert.ok(answered.gap.includes('퍼펙트'), `${tag}: 퍼펙트 격차 문구 "${answered.gap}"`);
+
+      const retried = await page.evaluate((qid) => {
+        const card = document.getElementById('q-' + qid);
+        card.querySelector('.q-result-retry').click();
+        return {
+          resultHidden: card.querySelector('.q-result').hidden,
+          lit: card.querySelectorAll('.code-block.is-lit').length,
+          enabled: Array.from(card.querySelectorAll('.opt')).filter((o) => !o.disabled).length,
+        };
+      }, id);
+      assert.equal(retried.resultHidden, true, `${tag}: 재도전 후 결과 영역이 남아 있음`);
+      assert.equal(retried.lit, 0, `${tag}: 재도전 후 근거 강조가 남아 있음`);
+      assert.ok(retried.enabled >= 3, `${tag}: 재도전 후 보기가 다시 열리지 않음 (${retried.enabled})`);
+      console.log(`${tag} passed`);
+    } finally {
+      await context.close();
+    }
+  }
+
+  // ---------- 3단서 추리 ----------
+  {
+    const tag = 'clue polish';
+    const { context, page } = await open('clue');
+    try {
+      await page.waitForFunction(() => typeof currentId !== 'undefined' && !!currentId, null, { timeout: 5000 });
+      await page.waitForTimeout(2300);
+      const guide = await page.evaluate(() => ({
+        steps: document.querySelectorAll('#clueGuideStage .gg-step').length,
+        on: document.querySelector('#clueGuideStage .gg-step.is-on')
+          ? document.querySelector('#clueGuideStage .gg-step.is-on').getAttribute('data-step') : null,
+        pick: document.querySelector('[data-demo-pick]').hidden,
+      }));
+      assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+      assert.equal(guide.on, '3', `${tag}: guide end step ${guide.on}`);
+      assert.equal(guide.pick, false, `${tag}: demo verdict missing`);
+
+      await page.click('#nextClue');
+      await page.waitForTimeout(150);
+      const two = await page.evaluate(() => ({
+        dots: document.querySelectorAll('#pDots .dot.on').length,
+        onSteps: document.querySelectorAll('#pDots .track-step.is-on').length,
+        pop: document.querySelectorAll('#pDots .track-step.is-pop').length,
+        fresh: document.querySelectorAll('#clueList .clue.is-fresh').length,
+      }));
+      assert.equal(two.dots, 2, `${tag}: clue dots ${two.dots}`);
+      assert.equal(two.onSteps, 2, `${tag}: timeline steps ${two.onSteps}`);
+      assert.equal(two.pop, 1, `${tag}: 방금 연 단서 단계가 움직이지 않음`);
+      assert.equal(two.fresh, 1, `${tag}: 새로 열린 단서 카드 강조 없음`);
+
+      const wrong = await page.evaluate(() => {
+        const p = byId[currentId];
+        return p.choices.map((_, i) => i).find((i) => i !== p.answer);
+      });
+      await page.click(`#options .opt[data-idx="${wrong}"]`);
+      await page.waitForTimeout(150);
+      const flash = await page.evaluate(() => ({
+        hidden: document.getElementById('clueFlash').hidden,
+        cls: document.getElementById('clueFlash').className,
+      }));
+      assert.equal(flash.hidden, false, `${tag}: 오답 피드백이 카드 위에 없음`);
+      assert.ok(flash.cls.includes('no'), `${tag}: 오답 피드백 색상 ${flash.cls}`);
+
+      const answer = await page.evaluate(() => byId[currentId].answer);
+      await page.click(`#options .opt[data-idx="${answer}"]`);
+      await page.waitForTimeout(250);
+      const won = await page.evaluate(() => ({
+        hidden: document.getElementById('resultBox').hidden,
+        gap: document.getElementById('resultGapText').textContent,
+        record: JSON.parse(localStorage.getItem('secjobs-clue-v1') || '{}')[currentId],
+        flash: document.getElementById('clueFlash').className,
+      }));
+      assert.equal(won.hidden, false, `${tag}: 결과 박스가 열리지 않음`);
+      assert.ok(won.gap.includes('연속'), `${tag}: 결과 격차 문구 "${won.gap}"`);
+      assert.ok(won.gap.includes('최소 단서'), `${tag}: 단서 격차 문구 "${won.gap}"`);
+      assert.ok(won.flash.includes('ok'), `${tag}: 정답 피드백 ${won.flash}`);
+      assert.ok(won.record && won.record.solved, `${tag}: 해결 기록이 저장되지 않음`);
+
+      await page.click('#retryBtn');
+      await page.waitForTimeout(250);
+      const practice = await page.evaluate(() => ({
+        hidden: document.getElementById('resultBox').hidden,
+        open: document.querySelectorAll('#clueList .clue.open').length,
+        record: JSON.parse(localStorage.getItem('secjobs-clue-v1') || '{}')[currentId],
+        enabled: Array.from(document.querySelectorAll('#options .opt')).filter((o) => !o.disabled).length,
+      }));
+      assert.equal(practice.hidden, true, `${tag}: 한 판 더 후 결과 박스가 남아 있음`);
+      assert.equal(practice.open, 1, `${tag}: 연습 모드 단서 수 ${practice.open}`);
+      assert.ok(practice.enabled === 4, `${tag}: 연습 모드 보기 ${practice.enabled}`);
+      assert.ok(practice.record.solved, `${tag}: 연습 모드가 기록을 지움`);
+      console.log(`${tag} passed`);
+    } finally {
+      await context.close();
+    }
+  }
+
+  // ---------- 퇴근길 미션 ----------
+  {
+    const tag = 'mission polish';
+    const { context, page } = await open('mission', 844);
+    try {
+      await page.locator('#board .cell').first().waitFor({ state: 'attached' });
+      await page.waitForTimeout(2300);
+      const guide = await page.evaluate(() => ({
+        steps: document.querySelectorAll('#mgGuide .gg-step').length,
+        on: document.querySelector('#mgGuide .gg-step.is-on')
+          ? document.querySelector('#mgGuide .gg-step.is-on').getAttribute('data-step') : null,
+        ghost: !!document.querySelector('.ghost-dot'),
+        remain: document.getElementById('remainLabel').textContent.trim(),
+        next: document.querySelectorAll('#board .cell.next').length,
+      }));
+      assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+      assert.equal(guide.on, '3', `${tag}: guide end step ${guide.on}`);
+      assert.equal(guide.ghost, true, `${tag}: 보드 위 가이드 점이 없음`);
+      assert.ok(/최소까지 \d+수 남음|도착!/.test(guide.remain), `${tag}: 남은 수 문구 "${guide.remain}"`);
+      assert.equal(guide.next, 1, `${tag}: 다음 이동 칸 강조 ${guide.next}`);
+
+      const before = await page.evaluate(() => Number(document.getElementById('remainLabel').textContent.replace(/[^0-9]/g, '')));
+      const nextCell = await page.evaluate(() => {
+        const cell = document.querySelector('#board .cell.next');
+        return { r: Number(cell.dataset.r), c: Number(cell.dataset.c) };
+      });
+      const pos = await page.evaluate(() => {
+        const cur = document.querySelector('#board .cell.current');
+        return { r: Number(cur.dataset.r), c: Number(cur.dataset.c) };
+      });
+      const key = missionKey([pos.r, pos.c], [nextCell.r, nextCell.c]);
+      await page.keyboard.press(key);
+      await page.waitForTimeout(220);
+      const after = await page.evaluate(() => ({
+        remain: document.getElementById('remainLabel').textContent.trim(),
+        next: document.querySelectorAll('#board .cell.next').length,
+      }));
+      assert.equal(after.next, 1, `${tag}: 이동 후 다음 칸 강조 ${after.next}`);
+      assert.equal(Number(after.remain.replace(/[^0-9]/g, '')), before - 1,
+        `${tag}: 남은 수가 줄지 않음 (${before} → ${after.remain})`);
+      assert.equal(await page.locator('#retryBtn').count(), 1, `${tag}: 결과 다시 도전 버튼 없음`);
+      console.log(`${tag} passed`);
+    } finally {
+      await context.close();
+    }
+  }
+
+  // ---------- 차트 추리실 ----------
+  {
+    const tag = 'chart polish';
+    const { context, page } = await open('chart');
+    try {
+      await page.waitForFunction(() => typeof currentId !== 'undefined' && !!currentId, null, { timeout: 5000 });
+      await page.waitForTimeout(2300);
+      const guide = await page.evaluate(() => ({
+        steps: document.querySelectorAll('#chartGuideStage .gg-step').length,
+        on: document.querySelector('#chartGuideStage .gg-step.is-on')
+          ? document.querySelector('#chartGuideStage .gg-step.is-on').getAttribute('data-step') : null,
+        picked: !document.querySelector('[data-demo-chip="pick"]').classList.contains('is-pick') ? false : true,
+      }));
+      assert.equal(guide.steps, 3, `${tag}: guide steps ${guide.steps}`);
+      assert.equal(guide.on, '3', `${tag}: guide end step ${guide.on}`);
+      assert.equal(guide.picked, true, `${tag}: 예측 칩이 마지막 단계에 켜지지 않음`);
+
+      const box = await page.evaluate(() => {
+        const r = document.querySelector('#chartSvg').getBoundingClientRect();
+        return { x: r.x, y: r.y, w: r.width, h: r.height };
+      });
+      await page.mouse.move(box.x + box.w * 0.45, box.y + box.h * 0.4);
+      await page.waitForTimeout(220);
+      const hover = await page.evaluate(() => ({
+        hidden: document.getElementById('chartTip').hidden,
+        text: document.getElementById('chartTip').textContent,
+        hot: document.querySelectorAll('#chartSvg .is-hot').length,
+        band: document.getElementById('hoverBand') ? document.getElementById('hoverBand').style.display : null,
+      }));
+      assert.equal(hover.hidden, false, `${tag}: 봉 툴팁이 뜨지 않음`);
+      assert.ok(hover.text.includes('거래량'), `${tag}: 툴팁에 거래량 없음 (${hover.text})`);
+      assert.ok(hover.text.includes('시가'), `${tag}: 툴팁에 시가 없음 (${hover.text})`);
+      assert.ok(hover.hot > 0, `${tag}: 짚은 봉 하이라이트 없음`);
+      assert.notEqual(hover.band, 'none', `${tag}: 봉 하이라이트 밴드가 숨겨져 있음`);
+
+      const answer = await page.evaluate(() => byId[currentId].quiz.answer);
+      await page.click(`#options .opt[data-idx="${answer}"]`);
+      await page.waitForTimeout(260);
+      const won = await page.evaluate(() => ({
+        badgeHidden: document.getElementById('pickBadge').hidden,
+        badge: document.getElementById('pickBadge').textContent,
+        cls: document.getElementById('pickBadge').className,
+        gap: document.getElementById('resultGapText').textContent,
+      }));
+      assert.equal(won.badgeHidden, false, `${tag}: 내 예측 배지가 없음`);
+      assert.ok(won.badge.includes('내 예측'), `${tag}: 배지 문구 "${won.badge}"`);
+      assert.ok(won.cls.includes('is-ok'), `${tag}: 정답 예측 배지 색 ${won.cls}`);
+      assert.ok(won.gap.includes('연속 정답'), `${tag}: 결과 격차 문구 "${won.gap}"`);
+      assert.ok(won.gap.includes('등급'), `${tag}: 등급 격차 문구 "${won.gap}"`);
+
+      await page.click('#retryBtn');
+      await page.waitForTimeout(260);
+      const practice = await page.evaluate(() => ({
+        hidden: document.getElementById('resultBox').hidden,
+        badgeHidden: document.getElementById('pickBadge').hidden,
+        open: document.querySelectorAll('#clueList .clue.open').length,
+        solved: document.getElementById('solvedStat').textContent.trim(),
+      }));
+      assert.equal(practice.hidden, true, `${tag}: 다시 풀기 후 결과가 남아 있음`);
+      assert.equal(practice.badgeHidden, true, `${tag}: 다시 풀기 후 예측 배지가 남아 있음`);
+      assert.equal(practice.open, 0, `${tag}: 다시 풀기 단서 ${practice.open}`);
+      assert.ok(practice.solved.startsWith('1 /'), `${tag}: 다시 풀기가 기록을 바꿈 (${practice.solved})`);
+      console.log(`${tag} passed`);
+    } finally {
+      await context.close();
+    }
+  }
+
+  assert.deepEqual(errors, [], `game polish: browser errors ${errors.join(' | ')}`);
+}
+
 async function main() {
   const server = spawn('python3', ['-u', '-m', 'http.server', '0', '--bind', '127.0.0.1'], {
     cwd: root, stdio: ['ignore', 'pipe', 'inherit']
@@ -4816,6 +5249,9 @@ async function main() {
     await checkTodayFocusKeep(browser, base);
     await checkOpsClockJump(browser, base);
     await checkHangulGuide(browser, base);
+    await checkHangulHintBranch(browser, base);
+    await checkHangulChoFocus(browser, base);
+    await checkGamePolish(browser, base);
     await checkLoadPracticeRecord(browser, base);
     await checkLoadMidnightRun(browser, base);
     await checkHangulMidnight(browser, base);

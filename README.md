@@ -1,9 +1,9 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-21 21:31:53 KST` (매일 08:00 KST 자동 수집)
+> **마지막 업데이트**: `2026-11-21 23:14:31 KST` (매일 08:00 KST 자동 수집)
 > **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)
-> **마감 임박 공고**: 총 **90**개 (D-Day 및 마감 기한 순 정렬)
+> **마감 임박 공고**: 총 **88**개 (D-Day 및 마감 기한 순 정렬)
 > **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
 > **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)
@@ -14,18 +14,17 @@
 ### 분야별 바로가기
 | 분야 | 등록 공고 | 바로가기 |
 | :--- | :---: | :--- |
-| **정보보안** | **393개** | [목록 바로가기](#정보보안-393건) |
-| **정보보호** | **183개** | [목록 바로가기](#정보보호-183건) |
+| **정보보안** | **392개** | [목록 바로가기](#정보보안-392건) |
+| **정보보호** | **182개** | [목록 바로가기](#정보보호-182건) |
 | **취약점 진단** | **72개** | [목록 바로가기](#취약점-진단-72건) |
 | **모의해킹** | **55개** | [목록 바로가기](#모의해킹-55건) |
 
 ---
 
-## 정보보안 (393건)
+## 정보보안 (392건)
 
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
-| **HR컨설팅(주)** | [인프라 보안 (그룹사)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610220002280) | 인크루트 | **D-Day (~11/21 토) 23시 마감** | `정보보안` |
 | **(주)맨파워써치** | [SK계열 에너지 기업_ 정보·물리보안/총무(사원~대리급)](https://career.rememberapp.co.kr/job/posting/354474) | 리멤버 | **D-Day (~11/21 토)** | `정보보안` |
 | **(주)써니즈** | [[써니즈] [IT정보보안] 취약점진단 서비스 운영지원](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 사람인, 잡코리아 | **D-6 (~ 11/27(금))** | `취약점 진단`, `정보보안` |
 | **교보디티에스(주)** | [교보DTS 경력 채용공고 (보안운영, 보안관제, 모의해킹)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502807&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 사람인 | **D-4 (~ 11/25(수))** | `모의해킹`, `정보보안` |
@@ -423,11 +422,10 @@
 
 ---
 
-## 정보보호 (183건)
+## 정보보호 (182건)
 
 | 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- |
-| **(주)힐링페이퍼** | [개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/342705) | 인크루트 | **D-Day (~11/21 토) 23시 마감** | `정보보호` |
 | **(주)맨토스파워** | [[대기업] CISO(정보보호 총괄 임원) 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55503007&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-Day (오늘 마감)** | `정보보호` |
 | **한화오션(주)** | [[경영지원] 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 잡코리아, 인크루트 | **D-4** | `정보보호` |
 | **한화시스템(주)** | [정보보호/해외수출보안 경력사원 채용 (CMMC업무담당)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55434890&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 사람인 | **D-1 (~ 11/22(일))** | `정보보호`, `정보보안` |
