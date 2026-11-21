@@ -34,6 +34,7 @@ PAGES = [
     ("load", "load.html", "한 번 더 싣기", "한 번 더 싣기"),
     ("arcade", "arcade.html", "아케이드", "아케이드"),
     ("hangul", "hangul.html", "한글 한 칸", "한 칸 변신"),
+    ("cards", "cards.html", "오늘의 카드", "오늘의 카드"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
@@ -55,14 +56,14 @@ GAME_TAB_TARGET = SHEET_GROUP_IDS["게임"]
 GROUPS = [
     ("보안·채용", ["index", "study"]),
     ("브리핑·유틸", ["today", "ai", "cve", "tools", "radar"]),
-    ("데일리·생활", ["outfit", "pick"]),
+    ("데일리·생활", ["outfit", "pick", "cards"]),
     ("게임", GAME_GROUPS),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
     ("브리핑·트렌드", ["today", "ai", "cve", "tools", "radar"]),
-    ("데일리·생활", ["outfit", "pick"]),
+    ("데일리·생활", ["outfit", "pick", "cards"]),
     ("게임", GAME_GROUPS),
 ]
 

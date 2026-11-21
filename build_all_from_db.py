@@ -7,7 +7,7 @@ AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(c
 피싱·스미싱 판별 레이더(radar.html), 오늘 뭐 먹지·날씨 맞춤 추천(pick.html),
 하루 한 판 · 3단서 추리(clue.html), 퇴근길 미션(mission.html), 차트 추리실(chart.html),
 퇴근 전 60초 관제실(ops.html), 막차 자리 배치(seat.html), 한 번 더 싣기(load.html),
-실시간 Canvas 아케이드(arcade.html), 한글 한 칸 변신(hangul.html)을 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
+실시간 Canvas 아케이드(arcade.html), 한글 한 칸 변신(hangul.html), 오늘의 카드(cards.html)를 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
    이 스크립트는 DB에 적재된 ai_insights / cve_reports 를 각 HTML로 빌드하는 역할만 한다.
@@ -136,6 +136,10 @@ def build_all():
     from build_hangul_html import build as build_hangul
     hangul_total = build_hangul()
 
+    # 23. cards.html 재생성 (오늘의 카드: 컨디션 키워드 · 1분 디지털 생활 · KST 날짜 테마 순환)
+    from build_cards_html import build as build_cards
+    cards_total = build_cards()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -156,6 +160,7 @@ def build_all():
     print(f"  - 한 번 더 싣기: 일일 {load_total['daily']}일치 · 연습 {load_total['practice']}판 (오늘 {load_total['today']} · 목표 {load_total['goal']}점 · 최적 {load_total['optimal']}점)")
     print(f"  - 아케이드: 점수판 {arcade_total['boards']}개(게임×난이도) · 기준 라이벌 {arcade_total['rivals']}명 · 티어 {arcade_total['tiers']}단계")
     print(f"  - 한글 한 칸 변신: 단어 {hangul_total['words']}개 · 일일 {hangul_total['daily']}판 · 연습 {hangul_total['practice']}판 (오늘 {hangul_total['today']} · {hangul_total['today_start']}→{hangul_total['today_goal']} · 최소 {hangul_total['today_par']}수)")
+    print(f"  - 오늘의 카드: 카드 {cards_total['cards']}장 · 덱 {cards_total['decks']}개 · 오늘 {cards_total['today']}")
     print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
           f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 

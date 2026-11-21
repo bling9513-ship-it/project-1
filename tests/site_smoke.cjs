@@ -3,12 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html', 'arcade.html', 'hangul.html'];
+  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -88,6 +88,9 @@ async function checkCvePriorityNav(page, width) {
   await assertCveJump(page, target.cid, `cve ${width}px keyboard jump`);
 
   // 2) 필터로 대상 카드를 숨긴 뒤 마우스 클릭
+  //    (1단계에서 같은 카드로 이동해 hash 가 남아 있으면 클릭해도 hashchange 가 없으므로 먼저 비운다)
+  await page.evaluate(() => { history.replaceState(null, '', location.pathname + location.search); });
+  await setCveFilter(page, 'all', width);
   let filtered = null;
   const rows = await page.evaluate(() => {
     const items = (typeof CVE_ITEMS !== 'undefined' && Array.isArray(CVE_ITEMS)) ? CVE_ITEMS : [];
@@ -4988,6 +4991,157 @@ async function checkHangulMidnight(browser, base) {
   }
 }
 
+// ---- 오늘의 카드: 첫 화면(덱 전환·그림·핵심 한 줄·이전/다음) · 입력 필드 0 ----
+async function checkCardsLayout(page, width) {
+  const tag = `cards ${width}px`;
+  const state = await page.evaluate(() => {
+    const r = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      const b = el.getBoundingClientRect();
+      return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      decks: r('.cd-decks'),
+      art: r('#cdArt'),
+      headline: r('#cdHeadline'),
+      prev: r('#cdPrev'),
+      next: r('#cdNext'),
+      tabTop: bar ? bar.getBoundingClientRect().top : 0,
+      viewport: window.innerHeight,
+      dots: document.querySelectorAll('.cd-dot').length,
+      hasArt: !!document.querySelector('#cdArt svg'),
+      index: document.getElementById('cdIndex').textContent.trim(),
+      theme: document.getElementById('cdTheme').textContent.trim(),
+      source: document.getElementById('cdSource').textContent.trim(),
+      action: document.getElementById('cdActionText').textContent.trim(),
+      fields: document.querySelectorAll('input, textarea, select').length,
+    };
+  });
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.ok(state.decks && state.decks.height >= 30, `${tag}: deck switch missing`);
+  assert.equal(state.hasArt, true, `${tag}: card art missing`);
+  assert.equal(state.dots, 3, `${tag}: expected 3 progress dots, got ${state.dots}`);
+  assert.equal(state.index, '1 / 3', `${tag}: progress label ${state.index}`);
+  assert.ok(state.theme.indexOf('오늘의 테마') === 0, `${tag}: theme label ${state.theme}`);
+  assert.ok(state.source.length >= 10, `${tag}: health source line missing`);
+  assert.ok(state.action.length >= 3, `${tag}: today action missing`);
+  assert.equal(state.fields, 0, `${tag}: input fields are not allowed on this page`);
+
+  const limit = width <= 768 ? state.tabTop - 2 : state.viewport;
+  for (const key of ['decks', 'art', 'headline', 'prev', 'next']) {
+    const box = state[key];
+    assert.ok(box, `${tag}: ${key} missing`);
+    assert.ok(box.top >= 0, `${tag}: ${key} starts above the viewport (${Math.round(box.top)})`);
+    assert.ok(box.bottom <= limit, `${tag}: ${key} ends at ${Math.round(box.bottom)}, below ${Math.round(limit)}`);
+  }
+}
+
+// ---- 오늘의 카드: 넘기기(버튼·키보드·스와이프) · 저장/저장한 카드 · 실천 체크 · 저장소 화이트리스트 ----
+async function checkCardsFlow(page, width) {
+  const tag = `cards flow ${width}px`;
+  const read = () => page.evaluate(() => ({
+    theme: document.getElementById('cdTheme').textContent.trim(),
+    index: document.getElementById('cdIndex').textContent.trim(),
+    headline: document.getElementById('cdHeadline').textContent.trim(),
+    savedCount: document.getElementById('cdSavedCount').textContent.trim(),
+    activeDeck: document.querySelector('.cd-deck.is-active').getAttribute('data-deck'),
+    savedView: !document.getElementById('cdSavedList').hidden,
+    cardHidden: document.getElementById('cdCard').hidden,
+    savePressed: document.getElementById('cdSaveBtn').getAttribute('aria-pressed'),
+    donePressed: document.getElementById('cdDoneBtn').getAttribute('aria-pressed'),
+    doneMeter: document.getElementById('cdDoneMeter').textContent.trim(),
+    rows: document.querySelectorAll('.cd-savedrow').length,
+    emptyText: document.querySelector('.cd-empty strong') ? document.querySelector('.cd-empty strong').textContent.trim() : '',
+    firstRow: document.querySelector('.cd-savedrow h3') ? document.querySelector('.cd-savedrow h3').textContent.trim() : '',
+  }));
+
+  const first = await read();
+  assert.equal(first.activeDeck, 'condition', `${tag}: default deck must be condition`);
+  assert.equal(first.index, '1 / 3', `${tag}: initial progress ${first.index}`);
+  assert.equal(first.savePressed, 'false', `${tag}: card must start unsaved`);
+
+  await page.click('#cdNext');
+  let state = await read();
+  assert.equal(state.index, '2 / 3', `${tag}: next button did not advance`);
+  assert.notEqual(state.headline, first.headline, `${tag}: headline did not change`);
+
+  await page.keyboard.press('ArrowRight');
+  assert.equal((await read()).index, '3 / 3', `${tag}: ArrowRight did not advance`);
+  await page.keyboard.press('ArrowRight');
+  assert.equal((await read()).index, '1 / 3', `${tag}: ArrowRight must wrap to the first card`);
+  await page.keyboard.press('ArrowLeft');
+  assert.equal((await read()).index, '3 / 3', `${tag}: ArrowLeft did not wrap backwards`);
+
+  const art = await page.locator('#cdArt').boundingBox();
+  assert.ok(art, `${tag}: art box missing for swipe`);
+  await page.mouse.move(art.x + art.width * 0.82, art.y + art.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(art.x + art.width * 0.18, art.y + art.height / 2, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(160);
+  state = await read();
+  assert.equal(state.index, '1 / 3', `${tag}: swipe left did not advance to the first card`);
+  assert.equal(state.headline, first.headline, `${tag}: swiped card is not the first card`);
+
+  await page.click('.cd-dot:nth-child(2)');
+  const target = await read();
+  assert.equal(target.index, '2 / 3', `${tag}: dot navigation failed`);
+
+  await page.click('#cdSaveBtn');
+  state = await read();
+  assert.equal(state.savePressed, 'true', `${tag}: save state not set`);
+  assert.equal(state.savedCount, '1', `${tag}: saved badge ${state.savedCount}`);
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('daily_cards_saved_v1') || '[]'));
+  assert.equal(stored.length, 1, `${tag}: saved id not written`);
+
+  await page.click('#cdDeckSaved');
+  state = await read();
+  assert.equal(state.savedView, true, `${tag}: saved tab did not open`);
+  assert.equal(state.cardHidden, true, `${tag}: card stage still visible in saved tab`);
+  assert.equal(state.rows, 1, `${tag}: saved list rows ${state.rows}`);
+  assert.equal(state.firstRow, target.headline, `${tag}: saved row headline mismatch`);
+
+  await page.click('.cd-saved-remove');
+  state = await read();
+  assert.equal(state.rows, 0, `${tag}: saved row was not removed`);
+  assert.ok(state.emptyText.indexOf('아직 저장한 카드가 없어요') === 0, `${tag}: empty state missing`);
+  assert.equal(state.savedCount, '0', `${tag}: saved badge not reset`);
+
+  await page.click('#cdDeckCondition');
+  await page.click('#cdDoneBtn');
+  state = await read();
+  assert.equal(state.donePressed, 'true', `${tag}: done state not set`);
+  assert.ok(state.doneMeter.indexOf('1/3') >= 0, `${tag}: today meter ${state.doneMeter}`);
+  const done = await page.evaluate(() => JSON.parse(localStorage.getItem('daily_cards_done_v1') || '{}'));
+  assert.equal(done.ids.length, 1, `${tag}: done id not written`);
+  assert.match(done.date, /^\d{4}-\d{2}-\d{2}$/, `${tag}: done date ${done.date}`);
+
+  await page.reload({ waitUntil: 'load' });
+  assert.equal(await page.getAttribute('#cdDoneBtn', 'aria-pressed'), 'true', `${tag}: done state lost on reload`);
+
+  await page.evaluate(() => {
+    localStorage.setItem('daily_cards_saved_v1', JSON.stringify(['bogus-id', '<img src=x>', 12]));
+    localStorage.setItem('daily_cards_done_v1', JSON.stringify({ date: '1999-01-01', ids: ['cond-sleep-1'] }));
+  });
+  await page.reload({ waitUntil: 'load' });
+  assert.equal((await read()).savedCount, '0', `${tag}: unknown saved ids were not filtered`);
+  assert.equal(await page.getAttribute('#cdDoneBtn', 'aria-pressed'), 'false', `${tag}: stale done date was not ignored`);
+  assert.equal(await page.locator('.cd-savedrow').count(), 0, `${tag}: bogus saved row rendered`);
+
+  await page.click('#cdDeckDigital');
+  state = await read();
+  assert.equal(state.activeDeck, 'digital', `${tag}: digital deck not active`);
+  assert.equal(state.index, '1 / 3', `${tag}: deck switch must start at the first card`);
+  assert.notEqual(state.headline, first.headline, `${tag}: digital deck shows the same headline`);
+  assert.ok(state.theme.indexOf('2단계 인증') >= 0 || state.theme.indexOf('알림') >= 0 || state.theme.indexOf('와이파이') >= 0 || state.theme.indexOf('앱 권한') >= 0, `${tag}: digital theme ${state.theme}`);
+
+  const pageErrors = await page.evaluate(() => window.smokeCspViolations || []);
+  assert.deepEqual(pageErrors, [], `${tag}: CSP violations`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -5068,6 +5222,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'arcade') await checkArcadeGame(page, width);
     if (name === 'hangul') await checkHangulLayout(page, width);
     if (name === 'hangul' && (width === 390 || width === 1280)) await checkHangulGame(page, width);
+    if (name === 'cards') await checkCardsLayout(page, width);
+    if (name === 'cards' && (width === 390 || width === 1280)) await checkCardsFlow(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -5532,6 +5688,7 @@ async function main() {
           if (name === 'load') await checkLoadLayout(page, width);
           if (name === 'arcade') await checkArcadeLayout(page, width);
           if (name === 'hangul') await checkHangulLayout(page, width);
+          if (name === 'cards') await checkCardsLayout(page, width);
         } finally {
           await page.close();
         }
