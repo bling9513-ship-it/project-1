@@ -650,10 +650,6 @@ CSS = """
     .ws-summary-score { font-size: 27px; font-weight: 800; letter-spacing: -0.04em; margin-top: 8px; font-variant-numeric: tabular-nums; }
     .ws-summary-score span { font-size: 13px; color: var(--text-muted); font-weight: 700; margin-left: 3px; }
 
-    @media (max-width: 640px) {
-      .update-meta { display: none; }
-    }
-
     @media (min-width: 900px) {
       .ws-hero h1 { font-size: 24px; }
       .ws-tabs { max-width: 380px; }
