@@ -5,7 +5,8 @@
 한 번의 실행으로 아래를 묶어 확인한다.
   1) 퍼즐·워게임 회귀 테스트
        tests/test_mission_puzzles.py · tests/test_seat_puzzles.py · tests/test_load_puzzles.py
-       · tests/test_hangul_puzzles.py · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
+       · tests/test_hangul_puzzles.py · tests/test_cards_data.py
+       · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
        - meta.total 과 실제 건수 불일치
@@ -157,7 +158,8 @@ def count_articles(page, css_class):
 # ---------------------------------------------------------------- 1) 회귀 테스트
 def run_unit_tests():
     scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
-               "tests/test_hangul_puzzles.py", "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
+               "tests/test_hangul_puzzles.py", "tests/test_cards_data.py",
+               "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)
@@ -459,6 +461,19 @@ def check_pages():
             src = f.read()
         check("outfit.html 기온 구간", src.count('class="band-section') >= 8,
               "%d개" % src.count('class="band-section'))
+
+    # 오늘의 카드: cards_data.json 과 cards.html 에 심긴 데이터가 같은지
+    cards_json = load_json("cards_data.json")
+    cards_embedded = embedded_json("cards.html", 'id="cardsData">')
+    if isinstance(cards_json, dict):
+        check("cards_data.json 덱 2개", len(cards_json.get("decks") or []) == 2,
+              len(cards_json.get("decks") or []))
+        total = sum(len(t.get("cards") or []) for d in cards_json.get("decks") or [] for t in d.get("themes") or [])
+        check("cards_data.json 카드 24장", total == 24, total)
+    if isinstance(cards_json, dict) and isinstance(cards_embedded, dict):
+        check("cards.html ↔ cards_data.json 일치", cards_json.get("decks") == cards_embedded.get("decks"))
+    else:
+        check("cards.html 데이터 블록", False, "id=cardsData 파싱 실패")
 
     menus = embedded_json("pick.html", "const MENUS = ")
     courses = embedded_json("pick.html", "const COURSES = ")
