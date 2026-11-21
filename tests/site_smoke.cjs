@@ -2400,11 +2400,8 @@ async function checkTodayStudyQueue(page, tag) {
 }
 
 // ---- 오늘 허브: 자정을 넘겨 열면 집계 기준일과 '갱신 대기'를 카드마다 밝힌다 ----
-async function checkTodayMidnight(browser, base) {
-  const tag = 'today midnight';
-  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-  const page = await context.newPage();
-  const read = () => page.evaluate(() => {
+function readTodayMidnightState(page) {
+  return page.evaluate(() => {
     const chip = (id) => {
       const el = document.getElementById(id);
       return el ? { state: el.getAttribute('data-state'), text: el.textContent.trim() } : null;
@@ -2420,9 +2417,110 @@ async function checkTodayMidnight(browser, base) {
       jobsCount: document.getElementById('jobsCount').textContent.trim(),
       jobsData: typeof TODAY === 'undefined' ? null : String(TODAY.jobs.count),
       jobsList: document.getElementById('jobsList').textContent,
-      chips: ['jobsState', 'cveState', 'aiState'].map(chip),
+      chips: ['jobsState', 'cveState', 'aiState', 'gameState'].map(chip),
     };
   });
+}
+
+// 기준일(build)에서 하루 뒤의 KST 날짜 라벨·짧은 라벨과 그날 00:05/23:55 UTC 시각을 만든다.
+function kstDayParts(build) {
+  const parts = build.split('-').map(Number);
+  const next = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + 1));
+  return {
+    parts,
+    short: `${parts[1]}/${parts[2]}`,
+    nextLabel: `${next.getUTCMonth() + 1}월 ${next.getUTCDate()}일`,
+    beforeMidnight: new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], 14, 55)),
+    // KST 00:05 = 같은 날짜의 UTC 15:05
+    afterMidnight: new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], 15, 5)),
+  };
+}
+
+// ---- 오늘 허브: 탭을 열어 둔 채 새로고침 없이 자정을 넘겨도 날짜·기준일 표시가 따라온다 ----
+//  trigger: 'timer'  → 자정 타이머가 스스로 다시 그린다
+//           'focus'  → 잠들었던 탭이 window focus로 깨어날 때
+//           'visibilitychange' → 문서가 다시 보일 때
+async function checkTodayMidnightWake(browser, base, trigger) {
+  const tag = `today midnight no-reload (${trigger})`;
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  const read = () => readTodayMidnightState(page);
+  try {
+    await page.goto(`${base}/today.html`, { waitUntil: 'load' });
+    const build = await page.evaluate(() => (typeof TODAY === 'undefined' ? null : (TODAY.build_date_kst || TODAY.today)));
+    assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(String(build)), `${tag}: build date missing (${build})`);
+    const day = kstDayParts(build);
+
+    // 23:55 KST에 탭을 열어 둔 상태 (이 시점의 화면은 아직 오늘이다)
+    await page.clock.install({ time: day.beforeMidnight });
+    await page.goto(`${base}/today.html`, { waitUntil: 'load' });
+    await page.evaluate(() => { window.__smokeNoReloadMark = 'kept'; });
+    let state = await read();
+    assert.ok(state.date.includes(`${day.parts[1]}월 ${day.parts[2]}일`), `${tag}: hero date not today (${state.date})`);
+    assert.ok(state.notice && state.notice.hidden, `${tag}: day notice shown before midnight`);
+    assert.ok(!state.hero.includes('갱신 대기'), `${tag}: hero marked waiting before midnight (${state.hero})`);
+    const hadTodayDeadline = state.jobsList.includes('(오늘 마감)');
+
+    // 새로고침 없이 시계만 00:05 KST로 진행한다
+    if (trigger === 'timer') {
+      await page.clock.runFor(10 * 60 * 1000);
+    } else {
+      // 타이머는 그대로 두고 시간만 앞으로 민 상태 — 이벤트가 없으면 화면은 아직 어제다
+      await page.clock.setSystemTime(day.afterMidnight);
+      const before = await read();
+      assert.ok(before.date.includes(`${day.parts[1]}월 ${day.parts[2]}일`),
+        `${tag}: date rolled over before the wake event (${before.date})`);
+      assert.ok(before.notice && before.notice.hidden, `${tag}: day notice shown before the wake event`);
+      if (trigger === 'focus') {
+        await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+      } else {
+        await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+      }
+    }
+
+    state = await read();
+    const mark = await page.evaluate(() => window.__smokeNoReloadMark || null);
+    assert.equal(mark, 'kept', `${tag}: page was reloaded during the check`);
+    assert.ok(state.date.includes(day.nextLabel) && state.date.includes('KST'),
+      `${tag}: hero date did not roll over (${state.date})`);
+    assert.ok(state.notice && !state.notice.hidden, `${tag}: day notice missing after midnight`);
+    assert.ok(state.notice.text.includes(day.nextLabel), `${tag}: notice does not show today's date (${state.notice.text})`);
+    assert.ok(state.notice.text.includes(day.short + ' 기준'), `${tag}: notice has no basis date (${state.notice.text})`);
+    assert.ok(state.notice.text.includes('갱신 대기'), `${tag}: notice has no waiting label`);
+    assert.ok(state.hero.includes(day.short + ' 기준') && state.hero.includes('갱신 대기'),
+      `${tag}: hero meta not marked (${state.hero})`);
+    for (const chip of state.chips) {
+      assert.ok(chip, `${tag}: missing state chip`);
+      assert.equal(chip.state, 'stale', `${tag}: chip not marked waiting (${chip.text})`);
+      assert.ok(chip.text.includes(day.short + ' 기준'), `${tag}: chip has no basis date (${chip.text})`);
+      assert.ok(chip.text.includes('갱신 대기'), `${tag}: chip has no waiting label (${chip.text})`);
+    }
+    assert.equal(state.jobsCount, state.jobsData, `${tag}: count changed instead of being labelled`);
+    assert.ok(state.unit.includes(day.short + ' 기준'), `${tag}: jobs unit has no basis date (${state.unit})`);
+    assert.ok(state.jobsSub.includes('갱신 전'), `${tag}: jobs note missing after midnight (${state.jobsSub})`);
+    assert.ok(!state.jobsList.includes('(오늘 마감)'), `${tag}: yesterday's deadline still reads today`);
+    if (hadTodayDeadline) {
+      assert.ok(state.jobsList.includes('(' + day.short + ' 마감)'),
+        `${tag}: deadline not retagged to ${day.short} (${state.jobsList})`);
+    }
+
+    // 한 번 더 깨워도 같은 글자가 같은 자리에 남아야 한다(멱등)
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    const repeated = await read();
+    assert.deepEqual(repeated, state, `${tag}: refresh is not idempotent`);
+
+    console.log(`${tag} passed`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
+}
+
+async function checkTodayMidnight(browser, base) {
+  const tag = 'today midnight';
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  const read = () => readTodayMidnightState(page);
   try {
     await page.goto(`${base}/today.html`, { waitUntil: 'load' });
     const build = await page.evaluate(() => (typeof TODAY === 'undefined' ? null : (TODAY.build_date_kst || TODAY.today)));
@@ -2472,6 +2570,11 @@ async function checkTodayMidnight(browser, base) {
     await page.close();
     await context.close();
   }
+
+  // 3) 새로고침 없는 자정 경과: 자정 타이머·focus·visibilitychange 각각의 경로
+  await checkTodayMidnightWake(browser, base, 'timer');
+  await checkTodayMidnightWake(browser, base, 'focus');
+  await checkTodayMidnightWake(browser, base, 'visibilitychange');
 }
 
 // ---- 복습 정답 사전 노출 회귀: 오답 5시간 뒤 같은 탭에서 다시 열어도 이전 정답·해설이 숨겨진다 ----
