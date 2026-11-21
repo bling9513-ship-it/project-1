@@ -3,11 +3,12 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
-  'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html'];
+  'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
+  'seat.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -2479,6 +2480,9 @@ async function checkTodayMidnightWake(browser, base, trigger) {
     }
 
     state = await read();
+    const builtTime = await page.evaluate(() => (typeof TODAY === 'undefined' ? null
+      : (TODAY.built_at_kst || (String(TODAY.built_at || '').match(/(\d{1,2}:\d{2})/) || [])[1] || null)));
+    assert.ok(builtTime, `${tag}: build time is missing from the page data`);
     const mark = await page.evaluate(() => window.__smokeNoReloadMark || null);
     assert.equal(mark, 'kept', `${tag}: page was reloaded during the check`);
     assert.ok(state.date.includes(day.nextLabel) && state.date.includes('KST'),
@@ -2487,6 +2491,12 @@ async function checkTodayMidnightWake(browser, base, trigger) {
     assert.ok(state.notice.text.includes(day.nextLabel), `${tag}: notice does not show today's date (${state.notice.text})`);
     assert.ok(state.notice.text.includes(day.short + ' 기준'), `${tag}: notice has no basis date (${state.notice.text})`);
     assert.ok(state.notice.text.includes('갱신 대기'), `${tag}: notice has no waiting label`);
+    assert.ok(state.notice.text.includes(builtTime),
+      `${tag}: notice does not show the real build time (${state.notice.text})`);
+    assert.ok(state.notice.text.includes('다음 갱신 예정'),
+      `${tag}: notice has no scheduled refresh label (${state.notice.text})`);
+    assert.ok(state.jobsSub.includes(builtTime),
+      `${tag}: jobs note does not show the real build time (${state.jobsSub})`);
     assert.ok(state.hero.includes(day.short + ' 기준') && state.hero.includes('갱신 대기'),
       `${tag}: hero meta not marked (${state.hero})`);
     for (const chip of state.chips) {
@@ -2509,6 +2519,56 @@ async function checkTodayMidnightWake(browser, base, trigger) {
     const repeated = await read();
     assert.deepEqual(repeated, state, `${tag}: refresh is not idempotent`);
 
+    console.log(`${tag} passed`);
+  } finally {
+    await page.close();
+    await context.close();
+  }
+}
+
+
+// ---- 오늘 허브: 같은 날짜에서 창 포커스·가시성 이벤트가 와도 목록을 다시 그리지 않아 키보드 포커스가 유지된다 ----
+async function checkTodayFocusKeep(browser, base) {
+  const tag = 'today focus keep';
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/today.html`, { waitUntil: 'load' });
+    await page.waitForSelector('#gameList a.game-link');
+    const before = await page.evaluate(() => {
+      const link = document.querySelector('#gameList a.game-link');
+      link.setAttribute('data-smoke-mark', 'kept');
+      link.focus();
+      return {
+        href: link.getAttribute('href'),
+        count: document.querySelectorAll('#gameList li').length,
+        focused: document.activeElement === link,
+      };
+    });
+    assert.equal(before.focused, true, `${tag}: game link could not take focus`);
+    assert.ok(before.count > 0, `${tag}: game list is empty`);
+
+    await page.evaluate(() => {
+      window.dispatchEvent(new Event('focus'));
+      document.dispatchEvent(new Event('visibilitychange'));
+      window.dispatchEvent(new Event('pageshow'));
+    });
+    await page.waitForTimeout(150);
+
+    const after = await page.evaluate(() => {
+      const active = document.activeElement;
+      return {
+        tag: active ? active.tagName : null,
+        mark: active && active.getAttribute ? active.getAttribute('data-smoke-mark') : null,
+        href: active && active.getAttribute ? active.getAttribute('href') : null,
+        count: document.querySelectorAll('#gameList li').length,
+        marked: document.querySelectorAll('#gameList a[data-smoke-mark="kept"]').length,
+      };
+    });
+    assert.equal(after.mark, 'kept', `${tag}: focus fell to ${after.tag} on wake`);
+    assert.equal(after.href, before.href, `${tag}: focused link changed`);
+    assert.equal(after.marked, 1, `${tag}: game list was rebuilt on wake`);
+    assert.equal(after.count, before.count, `${tag}: game list entries changed`);
     console.log(`${tag} passed`);
   } finally {
     await page.close();
@@ -2550,6 +2610,12 @@ async function checkTodayMidnight(browser, base) {
     assert.ok(state.notice && !state.notice.hidden, `${tag}: day notice missing after midnight`);
     assert.ok(state.notice.text.includes(short + ' 기준'), `${tag}: notice has no basis date (${state.notice.text})`);
     assert.ok(state.notice.text.includes('갱신 대기'), `${tag}: notice has no waiting label`);
+    const builtTimeReload = await page.evaluate(() => (typeof TODAY === 'undefined' ? null
+      : (TODAY.built_at_kst || (String(TODAY.built_at || '').match(/(\d{1,2}:\d{2})/) || [])[1] || null)));
+    assert.ok(builtTimeReload && state.notice.text.includes(builtTimeReload),
+      `${tag}: notice does not show the real build time (${state.notice.text})`);
+    assert.ok(state.notice.text.includes('다음 갱신 예정'),
+      `${tag}: notice has no scheduled refresh label (${state.notice.text})`);
     assert.ok(state.hero.includes(short + ' 기준') && state.hero.includes('갱신 대기'),
       `${tag}: hero meta not marked (${state.hero})`);
     for (const chip of state.chips) {
@@ -2858,6 +2924,239 @@ async function checkOpsGame(page, base, width) {
   console.log(`${tag} passed`);
 }
 
+
+// ---- 막차 자리 배치: 같은 규칙(대기 승객 탭 → 좌석 탭 / 앉은 승객 탭 → 좌석 탭)으로 최소 이동 계획을 만든다 ----
+function seatPlan(start, solution) {
+  const seats = start.slice();
+  const target = {};
+  solution.forEach((pid, i) => { if (pid) target[pid] = i; });
+  const steps = [];
+  const same = () => seats.every((value, i) => value === solution[i]);
+  for (let guard = 0; guard < 40 && !same(); guard += 1) {
+    let moved = false;
+    for (const pid of Object.keys(target)) {
+      if (seats.indexOf(pid) !== -1) continue;
+      const seat = target[pid];
+      if (seats[seat] === null) {
+        steps.push(['wait', pid]); steps.push(['seat', seat]);
+        seats[seat] = pid; moved = true; break;
+      }
+    }
+    if (moved) continue;
+    for (let i = 0; i < seats.length && !moved; i += 1) {
+      const pid = seats[i];
+      if (!pid) continue;
+      const seat = target[pid];
+      if (seat !== i && seats[seat] === null) {
+        steps.push(['seat', i]); steps.push(['seat', seat]);
+        seats[seat] = pid; seats[i] = null; moved = true;
+      }
+    }
+    if (moved) continue;
+    for (let i = 0; i < seats.length && !moved; i += 1) {
+      const pid = seats[i];
+      if (!pid) continue;
+      const j = target[pid];
+      const other = seats[j];
+      if (other && i !== j && target[other] === i) {
+        steps.push(['seat', i]); steps.push(['seat', j]);
+        seats[i] = other; seats[j] = pid; moved = true;
+      }
+    }
+    if (moved) continue;
+    for (let i = 0; i < seats.length && !moved; i += 1) {
+      const pid = seats[i];
+      if (!pid) continue;
+      const j = target[pid];
+      if (j !== i && seats[j] !== null) {
+        steps.push(['seat', i]); steps.push(['seat', j]);
+        seats[i] = seats[j]; seats[j] = pid; moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  return { steps, seats };
+}
+
+// ---- 막차 자리 배치: 첫 화면(조건 요약·4×4 좌석·대기 승객) · PC 레일/보드 2단 ----
+async function checkSeatLayout(page, width) {
+  const tag = `seat layout ${width}px`;
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(120);
+  const geo = await page.evaluate(() => {
+    const box = (el) => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height };
+    };
+    const bar = document.querySelector('.ia-tabbar');
+    const limit = bar && getComputedStyle(bar).display !== 'none'
+      ? bar.getBoundingClientRect().top : window.innerHeight;
+    const cells = Array.from(document.querySelectorAll('#seatGrid .seat-cell')).map(box);
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      limit,
+      mode: box(document.getElementById('modeDaily')),
+      hint: box(document.getElementById('seatStatus')),
+      cond: box(document.getElementById('condCard')),
+      cells,
+      rows: new Set(cells.map((cell) => Math.round(cell.top))).size,
+      gridCols: cells.length > 1 && Math.abs(cells[0].top - cells[1].top) < 2 ? 4 : 1,
+      wait: box(document.getElementById('waitCard')),
+      firstWait: box(Array.from(document.querySelectorAll('.wait-card')).find((card) => !card.hidden) || null),
+      status: box(document.getElementById('statusCard')),
+      main: box(document.querySelector('.seat-main')),
+    };
+  });
+  assert.equal(geo.overflow, 0, `${tag}: horizontal overflow ${geo.overflow}px`);
+  assert.equal(geo.cells.length, 16, `${tag}: seats ${geo.cells.length}`);
+  assert.equal(geo.gridCols, 4, `${tag}: seat grid is not four columns`);
+  assert.equal(geo.rows, 4, `${tag}: seat grid rows ${geo.rows}`);
+  for (const cell of geo.cells) {
+    assert.ok(cell.width >= 40, `${tag}: seat cell too narrow (${Math.round(cell.width)}px)`);
+  }
+  if (width <= 768) {
+    assert.ok(geo.mode && geo.mode.top >= 0 && geo.mode.bottom <= geo.limit,
+      `${tag}: mode switch is not in the first screen`);
+    assert.ok(geo.hint && geo.hint.top >= 0 && geo.hint.bottom <= geo.limit,
+      `${tag}: selection hint is not in the first screen`);
+    assert.ok(geo.cond && geo.cond.bottom <= geo.limit, `${tag}: condition summary is cut by the first screen`);
+    assert.ok(geo.cells[15].bottom <= geo.limit + 1,
+      `${tag}: seat grid is cut by the first screen (${Math.round(geo.cells[15].bottom)} > ${Math.round(geo.limit)})`);
+    assert.ok(geo.firstWait && geo.firstWait.top < geo.limit,
+      `${tag}: waiting passengers are not in the first screen`);
+  } else {
+    assert.ok(geo.status.right <= geo.main.left + 1, `${tag}: side rail is not left of the board`);
+    assert.equal(geo.gridCols, 4, `${tag}: board is not four columns`);
+  }
+  console.log(`${tag} passed`);
+}
+
+// ---- 막차 자리 배치: 오늘 퍼즐을 par 수로 클리어 → 기록 저장 · 다시 하기 · 자리 교환 · 연습 스테이지 ----
+async function checkSeatGame(page, width) {
+  const tag = `seat game ${width}px`;
+  await page.evaluate(() => localStorage.removeItem('seat_puzzle_stats_v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#seatGrid .seat-cell').first().waitFor({ state: 'attached' });
+
+  const data = await page.evaluate(() => JSON.parse(document.getElementById('seatData').textContent));
+  const todayKey = await page.evaluate(() => {
+    const t = new Date(Date.now() + 9 * 3600000);
+    const p = (n) => String(n).padStart(2, '0');
+    return `${t.getUTCFullYear()}-${p(t.getUTCMonth() + 1)}-${p(t.getUTCDate())}`;
+  });
+  const ordinal = Math.floor(Date.parse(todayKey + 'T00:00:00Z') / 86400000);
+  const puzzle = data.daily[ordinal % data.daily.length];
+  const waitingCount = puzzle.start.filter((value) => !value).length > 0
+    ? puzzle.passengers.filter((person) => puzzle.start.indexOf(person.id) === -1).length : 0;
+
+  const read = () => page.evaluate(() => {
+    const store = JSON.parse(localStorage.getItem('seat_puzzle_stats_v1') || 'null');
+    return {
+      moves: document.getElementById('moveValue').textContent.trim(),
+      par: document.getElementById('parValue').textContent.trim(),
+      resultHidden: document.getElementById('resultBox').hidden,
+      stars: document.querySelectorAll('#resultStars .star.is-on').length,
+      eff: document.getElementById('resultEff').textContent.trim(),
+      recToday: document.getElementById('recToday').textContent.trim(),
+      recClears: document.getElementById('recClears').textContent.trim(),
+      condValue: document.getElementById('condValue').textContent.trim(),
+      title: document.getElementById('boardTitle').textContent.trim(),
+      practiceHidden: document.getElementById('practiceWrap').hidden,
+      store,
+    };
+  });
+
+  const initial = await read();
+  assert.equal(initial.moves, '0', `${tag}: moves on load ${initial.moves}`);
+  assert.equal(initial.par, String(puzzle.par), `${tag}: par ${initial.par} vs ${puzzle.par}`);
+  assert.equal(initial.resultHidden, true, `${tag}: result shown before playing`);
+  assert.equal(initial.store, null, `${tag}: fresh storage expected`);
+  assert.equal(initial.practiceHidden, true, `${tag}: practice list shown in daily mode`);
+  assert.ok(waitingCount >= 1, `${tag}: no waiting passenger`);
+
+  const { steps, seats } = seatPlan(puzzle.start, puzzle.solution);
+  assert.deepEqual(seats, puzzle.solution, `${tag}: planner did not reach the solution`);
+  assert.equal(steps.length / 2, puzzle.par, `${tag}: plan ${steps.length / 2} moves vs par ${puzzle.par}`);
+
+  for (const [kind, value] of steps) {
+    if (kind === 'wait') await page.click(`.wait-card[data-pid="${value}"]`);
+    else await page.click(`.seat-cell[data-seat="${value}"]`);
+  }
+  await page.locator('#resultBox:not([hidden])').waitFor({ timeout: 5000 });
+  const done = await read();
+  assert.equal(done.moves, String(puzzle.par), `${tag}: cleared in ${done.moves} moves`);
+  assert.equal(done.stars, 3, `${tag}: stars ${done.stars}`);
+  assert.equal(done.eff, '100%', `${tag}: efficiency ${done.eff}`);
+  assert.ok(done.store && done.store.days && done.store.days[todayKey],
+    `${tag}: daily record missing`);
+  assert.equal(done.store.days[todayKey].moves, puzzle.par, `${tag}: stored moves`);
+  assert.equal(done.store.days[todayKey].cleared, true, `${tag}: record not marked cleared`);
+  assert.equal(done.store.best[puzzle.id], puzzle.par, `${tag}: best move not stored`);
+  assert.equal(done.store.totals.clears, 1, `${tag}: clears ${done.store.totals.clears}`);
+  assert.equal(done.store.totals.plays, 1, `${tag}: plays ${done.store.totals.plays}`);
+  assert.equal(done.store.streak.count, 1, `${tag}: streak ${done.store.streak.count}`);
+  assert.equal(done.recToday, puzzle.par + '수', `${tag}: today's record ${done.recToday}`);
+
+  // 다시 하기: 보드·이동 초기화, 기록 유지
+  await page.click('#retryBtn');
+  await page.waitForTimeout(120);
+  const reset = await read();
+  assert.equal(reset.moves, '0', `${tag}: moves after retry ${reset.moves}`);
+  assert.equal(reset.resultHidden, true, `${tag}: result stayed after retry`);
+  assert.equal(reset.recToday, puzzle.par + '수', `${tag}: today's record lost after retry`);
+
+  // 앉은 승객 두 명을 탭하면 1수로 자리를 바꾼다
+  const pair = await page.evaluate(() => {
+    const cells = Array.from(document.querySelectorAll('#seatGrid .seat-cell.is-occupied'));
+    return cells.length >= 2 ? [Number(cells[0].dataset.seat), Number(cells[1].dataset.seat)] : null;
+  });
+  assert.ok(pair, `${tag}: not enough seated passengers for a swap`);
+  const names = await page.evaluate(([a, b]) => [
+    document.querySelector(`.seat-cell[data-seat="${a}"] .sc-name`).textContent,
+    document.querySelector(`.seat-cell[data-seat="${b}"] .sc-name`).textContent,
+  ], pair);
+  await page.click(`.seat-cell[data-seat="${pair[0]}"]`);
+  assert.equal(await page.evaluate(() => document.querySelectorAll('.seat-cell.is-selected').length), 1,
+    `${tag}: picking a seated passenger did not select it`);
+  await page.click(`.seat-cell[data-seat="${pair[1]}"]`);
+  const swapped = await page.evaluate(([a, b]) => ({
+    moves: document.getElementById('moveValue').textContent.trim(),
+    names: [
+      document.querySelector(`.seat-cell[data-seat="${a}"] .sc-name`).textContent,
+      document.querySelector(`.seat-cell[data-seat="${b}"] .sc-name`).textContent,
+    ],
+  }), pair);
+  assert.equal(swapped.moves, '1', `${tag}: swap counted ${swapped.moves} moves`);
+  assert.equal(swapped.names[0], names[1], `${tag}: swap did not move the passenger`);
+  assert.equal(swapped.names[1], names[0], `${tag}: swap did not exchange seats`);
+
+  // 연습 모드: 스테이지 목록 → 다른 스테이지 로드
+  await page.click('#modePractice');
+  await page.locator('#practiceWrap:not([hidden])').waitFor({ timeout: 5000 });
+  const practice = await page.evaluate(() => ({
+    stages: document.querySelectorAll('.stage').length,
+    current: document.querySelectorAll('.stage.is-current').length,
+    title: document.getElementById('boardTitle').textContent.trim(),
+    par: document.getElementById('parValue').textContent.trim(),
+    moves: document.getElementById('moveValue').textContent.trim(),
+  }));
+  assert.equal(practice.stages, data.practice.length, `${tag}: practice stages ${practice.stages}`);
+  assert.equal(practice.current, 1, `${tag}: current stage ${practice.current}`);
+  assert.equal(practice.par, String(data.practice[0].par), `${tag}: practice par ${practice.par}`);
+  assert.equal(practice.moves, '0', `${tag}: practice moves ${practice.moves}`);
+  await page.click(`.stage[data-pid="${data.practice[1].id}"]`);
+  await page.waitForTimeout(120);
+  const switched = await page.evaluate(() => ({
+    title: document.getElementById('boardTitle').textContent.trim(),
+    par: document.getElementById('parValue').textContent.trim(),
+  }));
+  assert.equal(switched.title, data.practice[1].title, `${tag}: stage switch title ${switched.title}`);
+  assert.equal(switched.par, String(data.practice[1].par), `${tag}: stage switch par ${switched.par}`);
+
+  console.log(`${tag} passed`);
+}
+
 async function checkPage(context, base, name, width) {
   const page = await context.newPage();
   const errors = [];
@@ -2930,6 +3229,8 @@ async function checkPage(context, base, name, width) {
     if (name === 'chart') await checkChartGame(page, base, width);
     if (name === 'ops') await checkOpsLayout(page, width);
     if (name === 'ops') await checkOpsGame(page, base, width);
+    if (name === 'seat') await checkSeatLayout(page, width);
+    if (name === 'seat') await checkSeatGame(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -2997,6 +3298,7 @@ async function main() {
           if (width === 768 && name === 'outfit') await checkOutfit(page, width);
           if (width === 768 && name === 'pick') await checkPick(page, width);
           if (name === 'ops') await checkOpsLayout(page, width);
+          if (name === 'seat') await checkSeatLayout(page, width);
         } finally {
           await page.close();
         }
@@ -3011,6 +3313,7 @@ async function main() {
     await checkStudyReviewTimeline(timelineContext, base);
     await timelineContext.close();
     await checkTodayMidnight(browser, base);
+    await checkTodayFocusKeep(browser, base);
   } finally {
     try {
       await browser?.close();

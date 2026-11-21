@@ -25,6 +25,7 @@ import ui_shell
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TODAY_HTML = os.path.join(BASE_DIR, "today.html")
 KST = timezone(timedelta(hours=9))
+REFRESH_AT = "08:00"
 WEEKDAYS = ["월", "화", "수", "목", "금", "토", "일"]
 STALE_HOURS = 26
 
@@ -252,6 +253,8 @@ def build():
         "build_date_kst": today_str,
         "date_label": date_label,
         "built_at": built_at,
+        "built_at_kst": now.strftime("%H:%M"),
+        "refresh_at_kst": REFRESH_AT,
         "built_ms": int(now.timestamp() * 1000),
         "stale_hours": STALE_HOURS,
         "jobs": jobs,
@@ -264,6 +267,7 @@ def build():
     html = TEMPLATE
     html = html.replace("__DATE_LABEL__", date_label)
     html = html.replace("__BUILT_AT__", built_at)
+    html = html.replace("__REFRESH_AT__", REFRESH_AT)
     html = html.replace("__TODAY__", today_str)
     html = html.replace("__JOBS_COUNT__", str(jobs["count"]))
     html = html.replace("__JOBS_WEEK__", str(jobs["week"]))
@@ -583,7 +587,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   <header class="navbar">
     <div class="nav-container">
       <a class="brand" href="index.html">Infosec Archive</a>
-      <div class="update-meta"><span class="live-dot"></span><span>__BUILT_AT__ 기준 · 매일 08:00 갱신</span></div>
+      <div class="update-meta"><span class="live-dot"></span><span>__BUILT_AT__ 기준 · 매일 __REFRESH_AT__ 갱신</span></div>
       <nav class="nav-links" aria-label="바로가기">
         <a href="index.html">채용공고</a>
         <a href="cve.html">CVE</a>
@@ -747,6 +751,10 @@ TEMPLATE = r"""<!DOCTYPE html>
       var buildDateKst = TODAY.build_date_kst || TODAY.today || '';
       var buildLabel = shortDate(buildDateKst) || buildDateKst;
       var builtAtText = TODAY.built_at || '';
+      var refreshAt = TODAY.refresh_at_kst || '08:00';
+      // 마지막 집계 시각은 빌드한 실제 시각이다(08:00 은 '다음 갱신 예정' 시각).
+      var builtTimeKst = TODAY.built_at_kst || (builtAtText.match(/(\d{1,2}:\d{2})/) || [])[1] || '';
+      var builtStamp = buildLabel + (builtTimeKst ? ' ' + builtTimeKst : '');
       var dayStale = false;
       var dayToday = kstDate();
 
@@ -795,6 +803,18 @@ TEMPLATE = r"""<!DOCTYPE html>
         }
       }
 
+      // 다음 예정 갱신은 '오늘 또는 내일 REFRESH_AT 시각'이다(KST 기준, 브라우저 시간대 무관).
+      function nextRefreshLabel() {
+        var nowShifted = Date.now() + 9 * 3600000;
+        var d = new Date(nowShifted);
+        var hour = parseInt(String(refreshAt).split(':')[0], 10);
+        if (!isFinite(hour)) hour = 8;
+        var target = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), hour, 0, 0, 0);
+        if (nowShifted >= target) target += DAY_MS;
+        var t = new Date(target);
+        return (t.getUTCMonth() + 1) + '월 ' + t.getUTCDate() + '일 ' + refreshAt;
+      }
+
       function stamp(ms) {
         if (!ms) return '';
         var d = new Date(ms);
@@ -830,7 +850,7 @@ TEMPLATE = r"""<!DOCTYPE html>
         byId('jobsUnit').textContent = dayStale ? '건 · ' + buildLabel + ' 기준' : '건';
         var sub = '이번 주 마감 ' + (jobs.week || 0) + '건 · 전체 활성 ' + (jobs.total || 0) + '건';
         byId('jobsSub').textContent = dayStale
-          ? buildLabel + ' 08:00 갱신 전 집계입니다 · ' + sub
+          ? builtStamp + ' 갱신 전 집계입니다 · ' + sub
           : sub;
         var items = jobs.items || [];
         items.forEach(function (job) {
@@ -1069,18 +1089,28 @@ TEMPLATE = r"""<!DOCTYPE html>
           return;
         }
         var shownToday = longDate(dayToday) || dayToday;
-        notice.textContent = shownToday + ' 화면을 열었지만 마지막 집계는 ' + buildLabel + ' 08:00입니다. '
-          + '오늘 몫은 다음 갱신(08:00) 뒤에 채워지므로, 마감·KEV·AI 브리핑 카드는 '
+        notice.textContent = shownToday + ' 화면을 열었지만 마지막 집계는 ' + builtStamp + '입니다. '
+          + '오늘 몫은 다음 갱신 예정(' + nextRefreshLabel() + ') 뒤에 채워지므로, 마감·KEV·AI 브리핑 카드는 '
           + buildLabel + ' 기준 · 갱신 대기 상태입니다.';
         notice.hidden = false;
       }
 
+      // 날짜에 기대는 표시(stateKey)를 한 번이라도 그렸는지 표시한다.
+      var renderedStateKey = null;
+
       // 날짜에 기대는 표시를 한 번에 다시 그린다.
       // 카드 내용은 매번 TODAY 원본 데이터에서 새로 만들기 때문에, 이미 '11/21 마감'으로
       // 바뀐 글자를 다시 바꾸는 일 없이 몇 번을 불러도 같은 결과(멱등)가 된다.
-      function refreshDayDependentUI() {
-        dayToday = kstDate();
-        dayStale = !!buildDateKst && dayToday !== buildDateKst;
+      // 다만 목록(gameList 등)을 innerHTML로 다시 만들면 그 안에 있던 키보드 포커스가
+      // body 로 빠지므로, 날짜·대기 상태가 그대로면 아무것도 다시 그리지 않는다.
+      function refreshDayDependentUI(force) {
+        var nextToday = kstDate();
+        var nextStale = !!buildDateKst && nextToday !== buildDateKst;
+        var stateKey = nextToday + '|' + (nextStale ? 'waiting' : 'live');
+        if (!force && stateKey === renderedStateKey) return;
+        renderedStateKey = stateKey;
+        dayToday = nextToday;
+        dayStale = nextStale;
         renderJobsCard();
         renderCveCard();
         renderAiCard();
@@ -1127,7 +1157,8 @@ TEMPLATE = r"""<!DOCTYPE html>
       }, 30000);
 
       /* ---------- 날짜 의존 표시 첫 렌더 ---------- */
-      refreshOnWake();
+      refreshDayDependentUI(true);
+      scheduleMidnightTick();
 
       /* ---------- 테마 ---------- */
       var themeToggle = byId('themeToggle');
