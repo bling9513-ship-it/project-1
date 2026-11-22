@@ -710,16 +710,52 @@ def parse_deadline_status(deadline_str, today_date=None, last_seen_at=None, now_
         
     return "UPCOMING", "ACTIVE"
 
+# ---------------------------------------------------------------------------
+# 중복 공고 판정 키 (회사·제목)
+#   플랫폼마다 같은 공고를 다르게 적어 둔다.
+#     회사: '(주)보령' · '㈜보령' · '한화오션 (주)' · '핀다(FINDA)' · '㈜숲(SOOP CO., LTD.)'
+#     제목: '[채용공고] …' · '[경력] …' · '[HYBE] …' 처럼 앞머리 태그만 붙는 경우
+#   그래서 회사는 법인 표기((주)·㈜·주식회사·유한회사 …)와 괄호 별칭·영문 표기를 지우고,
+#   제목은 앞머리 [태그]만 지운 뒤 공백·기호 차이를 없앤다.
+#   제목 속 괄호는 **지우지 않는다** — '(서비스 보안)'과 '(자산관리 보안)'처럼
+#   실제로 다른 직무를 가르는 표기라서, 지우면 다른 포지션이 한 건으로 뭉개진다.
+# ---------------------------------------------------------------------------
+CORP_MARKER_RE = re.compile(r"\(주\)|\(유\)|\(합자\)|\(사\)|주식회사|유한회사|합자회사|[㈜㈕㈎-㈫]")
+COMPANY_ALIAS_PAREN_RE = re.compile(r"\([^()]*\)|\[[^\[\]]*\]")
+TITLE_LEADING_TAG_RE = re.compile(r"^(?:\s*\[[^\]]*\]\s*)+")
+DEDUP_PUNCT_RE = re.compile(r"[\s\-_/|·.,'\"&+~`^]")
+
+
+def dedup_company_key(company):
+    """회사명 비교 키 — 법인 표기·괄호 별칭/영문 표기·공백·기호를 없앤다.
+
+    '(주)보령' = '㈜보령' = '보령' = '한화오션(주)' = '한화오션 (주)',
+    '하이브(HYBE)' = '(주)하이브' = '㈜하이브', '핀다(FINDA)' = '(주)핀다'
+    """
+    c = CORP_MARKER_RE.sub("", str(company or ""))
+    c = COMPANY_ALIAS_PAREN_RE.sub("", c)
+    return DEDUP_PUNCT_RE.sub("", c).lower()
+
+
+def dedup_title_key(title):
+    """제목 비교 키 — 앞머리 [회사명]·[경력] 같은 태그만 지우고, 속 괄호는 그대로 둔다."""
+    t = TITLE_LEADING_TAG_RE.sub("", str(title or "").strip())
+    return DEDUP_PUNCT_RE.sub("", t).lower()
+
+
+def job_dedup_key(company, title):
+    """같은 공고인지 판정하는 (회사 키, 제목 키) 쌍."""
+    return (dedup_company_key(company), dedup_title_key(title))
+
+
 def _dedup_company_key(company):
-    """회사명 앞뒤의 법인 표기(주㈜·(주)·주식회사)를 지우고 공백·기호를 없앤 비교용 키"""
-    c = re.sub(r"[㈜㈕㈎-㈫]", "", company or "")
-    c = re.sub(r"\(주\)|\(유\)|주식회사|유한회사", "", c)
-    return re.sub(r"[\s\-_/|·.,]", "", c).lower()
+    """(하위 호환) 회사명 비교용 키 — dedup_company_key 와 같은 값."""
+    return dedup_company_key(company)
 
 
 def _dedup_title_key(title):
-    t = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", title or "")
-    return re.sub(r"[\s\-_/|·.,]", "", t).lower()
+    """(하위 호환) 제목 비교용 키 — dedup_title_key 와 같은 값."""
+    return dedup_title_key(title)
 
 
 def expire_platform_conflict_duplicates(today_date=None, db_path=DB_PATH, now_dt=None):
@@ -768,11 +804,194 @@ def expire_platform_conflict_duplicates(today_date=None, db_path=DB_PATH, now_dt
 
 
 def normalize_key(company, title):
-    c = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", company)
-    c = re.sub(r"[\s\-_/|·]", "", c).lower()
-    t = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", title)
-    t = re.sub(r"[\s\-_/|·]", "", t).lower()
+    """짧은 제목 키(회사+제목12자) — 같은 공고인지 '후보'를 좁히는 용도로만 쓴다.
+
+    회사 법인 표기((주)·㈜·주식회사 …)와 괄호 별칭, 제목 앞머리 [태그], 공백·기호 차이를
+    없앤다(제목 속 괄호는 다른 직무를 가르므로 그대로 둔다).
+    """
+    c = dedup_company_key(company)
+    t = dedup_title_key(title)
     return f"{c}_{t[:12]}"
+
+
+# 마감 표기의 '구체성' — 애매한 표기(상시채용)보다 실제 날짜가 적힌 표기를 남긴다.
+DEADLINE_MARKER_RE = re.compile(r"D-Day|D-\d+|오늘|내일")
+
+
+def deadline_rank(deadline, last_seen_at=None, today_date=None):
+    """중복 공고를 병합할 때 어느 마감 표기를 남길지 정하는 우선순위(클수록 우선).
+
+    ① 표기 구체성: 날짜(MM/DD) > 당일 시각 > D-N·D-Day > 상시·채용시
+    ② 최근 수집된 표기
+    ③ 더 임박한 표기(같은 구체성·같은 수집일이면 사용자가 놓치지 않도록)
+    """
+    if not today_date:
+        today_date = get_kst_now().date()
+    dl = str(deadline or "").strip()
+    if not dl:
+        concreteness = 0
+    elif "마감 (" in dl or "마감(" in dl or dl.startswith("마감"):
+        concreteness = 0
+    elif parse_explicit_deadline_date(dl, today_date) is not None:
+        concreteness = 4
+    elif is_time_only_deadline(dl):
+        concreteness = 3
+    elif DEADLINE_MARKER_RE.search(dl):
+        concreteness = 2
+    else:
+        concreteness = 1
+    seen = parse_seen_date(last_seen_at) or today_date
+    days = compute_remaining_days(dl, today_date, last_seen_at)
+    return (concreteness, seen.toordinal(), -(days if days is not None else 100000))
+
+
+def _json_list(value):
+    """JSON 배열 컬럼 값을 리스트로 읽는다(문자열·None·깨진 값 방어)."""
+    if isinstance(value, list):
+        return value
+    if not value:
+        return []
+    try:
+        items = json.loads(value) if isinstance(value, str) else value
+    except (TypeError, ValueError):
+        return []
+    if isinstance(items, list):
+        return items
+    return [items] if items else []
+
+
+def _union_json_lists(values):
+    """여러 행의 JSON 배열 컬럼을 순서를 지키며 합집합으로 만든다."""
+    out = []
+    for value in values:
+        for item in _json_list(value):
+            if item not in out:
+                out.append(item)
+    return out
+
+
+def deduplicate_active_jobs(db_path=DB_PATH, today_date=None, now_dt=None, dry_run=False):
+    """활성 공고 중 같은 공고(정규화 회사·제목)를 대표 1건으로 병합한다.
+
+    왜 필요한가:
+      · 플랫폼마다 회사 표기가 달라('(주)보령' / '㈜보령') 같은 공고가 따로 노출되고,
+      · 잡코리아·사람인 등은 같은 공고를 새 공고 ID로 다시 올려(재등록·복제 등록) 행이 쌓이며,
+      · 교차 게시된 공고도 제목 앞머리 태그('[HYBE] …')만 다르면 합쳐지지 않았다.
+
+    병합 규칙:
+      · 대표 = 요약이 있는 행 → 위치 정보가 있는 행 → 먼저 수집된 행 → id 작은 행.
+        (수집일마다 대표가 바뀌지 않도록 first_seen_at 을 우선 기준으로 둔다)
+      · platforms·keywords·tags 는 합집합, location·summary 는 있는 값을 유지.
+      · deadline 은 deadline_rank 우선순위(구체적 → 최근 → 임박)로 고르고
+        그 표기 기준으로 deadline_status 를 다시 계산한다.
+      · first_seen_at 은 가장 이른 값, last_seen_at 은 가장 늦은 값을 남긴다.
+      · 나머지 중복 행은 status='EXPIRED' 로 정리한다(삭제하지 않고 보관).
+
+    반환: {"merged": 병합해 EXPIRED 로 정리한 행 수, "groups": 병합한 그룹 수, "detail": [...]}
+    """
+    now = get_kst_now(now_dt)
+    if not today_date:
+        today_date = now.date()
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S KST")
+
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("""
+    SELECT id, job_key, company, title, url, platforms, keywords, location,
+           deadline, summary, tags, first_seen_at, last_seen_at
+    FROM jobs
+    WHERE status = 'ACTIVE'
+    ORDER BY id ASC;
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+
+    groups = {}
+    for row in rows:
+        groups.setdefault(job_dedup_key(row["company"], row["title"]), []).append(row)
+
+    merged = 0
+    detail = []
+    for key, members in groups.items():
+        if len(members) < 2:
+            continue
+
+        def primary_rank(row):
+            return (
+                1 if (row["summary"] or "").strip() else 0,
+                1 if (row["location"] or "").strip() else 0,
+                -(parse_seen_date(row["first_seen_at"]) or today_date).toordinal(),
+                -int(row["id"]),
+            )
+
+        primary = max(members, key=primary_rank)
+        others = [m for m in members if m["id"] != primary["id"]]
+        ordered = [primary] + sorted(others, key=lambda m: int(m["id"]))
+
+        platforms = _union_json_lists([m["platforms"] for m in ordered])
+        keywords = _union_json_lists([m["keywords"] for m in ordered])
+        tags = _union_json_lists([m["tags"] for m in ordered])
+        location = next((m["location"] for m in ordered if (m["location"] or "").strip()), "")
+        summary = next((m["summary"] for m in ordered if (m["summary"] or "").strip()), "")
+
+        # 마감 표기: 살아 있는(ACTIVE) 표기 중 가장 구체적·최근·임박한 것.
+        deadline_row = None
+        deadline_rank_best = None
+        for m in ordered:
+            dl = m["deadline"] or ""
+            status = parse_deadline_status(dl, today_date, m["last_seen_at"], now_dt=now)[1]
+            rank = deadline_rank(dl, m["last_seen_at"], today_date)
+            if status != "ACTIVE":
+                rank = (-1,) + rank[1:]
+            if deadline_rank_best is None or rank > deadline_rank_best:
+                deadline_row, deadline_rank_best = m, rank
+        deadline = deadline_row["deadline"] or primary["deadline"]
+        deadline_status = parse_deadline_status(
+            deadline, today_date, deadline_row["last_seen_at"], now_dt=now)[0]
+
+        seen_stamps = [m["first_seen_at"] for m in ordered if m["first_seen_at"]]
+        last_stamps = [m["last_seen_at"] for m in ordered if m["last_seen_at"]]
+
+        detail.append({
+            "company": primary["company"],
+            "title": primary["title"],
+            "kept_job_key": primary["job_key"],
+            "merged_job_keys": [m["job_key"] for m in others],
+            "platforms": platforms,
+            "deadline": deadline,
+            "merged_rows": len(others),
+        })
+        merged += len(others)
+        if dry_run:
+            continue
+
+        cur.execute("""
+        UPDATE jobs
+        SET platforms = ?, keywords = ?, tags = ?, location = ?, deadline = ?,
+            deadline_status = ?, summary = ?, first_seen_at = ?, last_seen_at = ?,
+            updated_at = ?
+        WHERE id = ?;
+        """, (
+            json.dumps(platforms, ensure_ascii=False),
+            json.dumps(keywords, ensure_ascii=False),
+            json.dumps(tags, ensure_ascii=False),
+            location,
+            deadline,
+            deadline_status,
+            summary,
+            min(seen_stamps) if seen_stamps else now_str,
+            max(last_stamps) if last_stamps else now_str,
+            now_str,
+            primary["id"],
+        ))
+        cur.executemany(
+            "UPDATE jobs SET status = 'EXPIRED', deadline_status = 'EXPIRED', updated_at = ? WHERE id = ?;",
+            [(now_str, m["id"]) for m in others],
+        )
+
+    if not dry_run and merged:
+        conn.commit()
+    conn.close()
+    return {"merged": merged, "groups": len(detail), "detail": detail}
 
 def mark_expired_jobs(today_date=None, db_path=DB_PATH, now_dt=None):
     """현재 날짜·시각(KST)을 기준으로 마감일이 지난 공고를 일괄 EXPIRED 상태로 전환"""
