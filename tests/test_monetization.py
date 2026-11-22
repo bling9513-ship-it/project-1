@@ -10,11 +10,15 @@
   · 배치 제한: 제휴 카드는 study.html 학습 자료 하단 1곳, 후원은 공통 푸터(study·tools)에만.
     index·grocery 등 제3자 데이터 페이지에는 어떤 설정에서도 들어가지 않는다.
   · 미리보기 빌드(임시 설정)에서도 CSP 메타는 그대로 1개이고 unsafe-inline(script) 이 없다.
+  · 수수료 고지문은 설정의 `disclosure` 로 덮어쓸 수 없다 — 어떤 문자열을 넣어도
+    `DEFAULT_DISCLOSURE` 가 렌더되고, 빌드한 study.html 에도 그 문구만 나간다.
 
 실행: python3 tests/test_monetization.py
 """
+import json
 import os
 import re
+import subprocess
 import sys
 import tempfile
 
@@ -172,19 +176,58 @@ def check_preview_build():
     check("제휴 스타일 1개", src.count("ia-affiliate-style") == 1, src.count("ia-affiliate-style"))
 
 
+def check_disclosure_locked():
+    print("== 수수료 고지문 고정 ==")
+    override = "추천 자료입니다"
+    sample = dict(SAMPLE["studyAffiliate"], disclosure=override)
+    config = monetization.normalize_config({"version": 1, "studyAffiliate": sample})
+    affiliate = monetization.affiliate_html(config)
+    check("정규화된 설정 고지문 고정",
+          config["studyAffiliate"]["disclosure"] == monetization.DEFAULT_DISCLOSURE,
+          config["studyAffiliate"]["disclosure"])
+    check("affiliate_html 고지문 고정", monetization.DEFAULT_DISCLOSURE in affiliate, affiliate[:160])
+    check("affiliate_html 사용자 문구 미노출", override not in affiliate, affiliate[:160])
+    check("설명은 그대로", "정보보안기사 수험서" in affiliate, affiliate[:160])
+
+    # 정규화를 건너뛰고 만든 설정 dict 를 그대로 넘겨도 고지문은 그대로 고정된다.
+    raw_html = monetization.affiliate_html({"studyAffiliate": sample})
+    check("비정규화 설정 고지문 고정", monetization.DEFAULT_DISCLOSURE in raw_html, raw_html[:160])
+    check("비정규화 설정 사용자 문구 미노출", override not in raw_html, raw_html[:160])
+
+    # 실제 빌드 결과(study.html)에서도 같은지 본다.
+    workdir = tempfile.mkdtemp(prefix="monetization-disclosure-")
+    out_html = os.path.join(workdir, "study.html")
+    out_config = os.path.join(workdir, "config.json")
+    with open(out_config, "w", encoding="utf-8") as handle:
+        json.dump({"version": 1, "studyAffiliate": sample}, handle, ensure_ascii=False, indent=2)
+    env = dict(os.environ, MONETIZATION_CONFIG=out_config, STUDY_OUT_HTML=out_html)
+    proc = subprocess.run([sys.executable, os.path.join(BASE_DIR, "build_study_html.py")],
+                          cwd=BASE_DIR, env=env, capture_output=True, text=True)
+    check("빌드 성공", proc.returncode == 0, (proc.stderr or "").strip()[-160:])
+    built = ""
+    if proc.returncode == 0 and os.path.exists(out_html):
+        with open(out_html, encoding="utf-8") as handle:
+            built = handle.read()
+    check("빌드 결과 고지문 고정", monetization.DEFAULT_DISCLOSURE in built, built.count("data-monetization"))
+    check("빌드 결과 사용자 문구 미노출", bool(built) and override not in built, built.count(override))
+    check("빌드 결과 제휴 카드 1곳", built.count('data-monetization="affiliate"') == 1,
+          built.count('data-monetization="affiliate"'))
+
+
 def main():
     check_default_off()
     check_url_validator()
     check_placement()
     check_rendered()
     check_preview_build()
+    check_disclosure_locked()
     print()
     if failures:
         print("실패 %d건" % len(failures))
         for name in failures:
             print("  - %s" % name)
         return 1
-    print("제휴·후원 인프라 검증 통과 (기본 숨김 · URL 화이트리스트 · sponsored rel · 배치 제한)")
+    print("제휴·후원 인프라 검증 통과 (기본 숨김 · URL 화이트리스트 · sponsored rel · 배치 제한 · 고지문 고정)")
     return 0
 
 

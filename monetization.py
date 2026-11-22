@@ -13,6 +13,8 @@
 - 보안: 허용 호스트의 HTTPS URL 만 통과시키고(그 외는 조용히 무시),
   활성 링크에는 `rel="sponsored noopener noreferrer"` 와 `target="_blank"` 를 붙인다.
 - 표시: 제휴 카드에는 공정위 고지(수수료 수령 가능)를 함께 렌더링한다.
+  고지문은 `DEFAULT_DISCLOSURE` 로 고정이며, 설정의 `disclosure` 문자열로 덮어쓸 수 없다
+  (수수료 관계를 숨기는 문구가 나가지 않도록). 일반 설명은 `description` 만 쓴다.
 """
 import html
 import json
@@ -136,15 +138,18 @@ def _entry(raw, defaults):
 def normalize_config(raw):
     """설정 dict 를 화면에 쓸 형태로 정리한다(모르는 키는 버리고 URL 은 검증한다)."""
     raw = raw if isinstance(raw, dict) else {}
+    affiliate = _entry(raw.get("studyAffiliate"), {
+        "title": "수험서 구매",
+        "description": "",
+        "buttonLabel": "수험서 보기",
+        "url": "",
+        "disclosure": DEFAULT_DISCLOSURE,
+    })
+    # 공정위 고지문은 설정으로 바꿀 수 없다 — 어떤 문자열이 들어와도 고정값을 쓴다.
+    affiliate["disclosure"] = DEFAULT_DISCLOSURE
     return {
         "version": raw.get("version") if isinstance(raw.get("version"), int) else 1,
-        "studyAffiliate": _entry(raw.get("studyAffiliate"), {
-            "title": "수험서 구매",
-            "description": "",
-            "buttonLabel": "수험서 보기",
-            "url": "",
-            "disclosure": DEFAULT_DISCLOSURE,
-        }),
+        "studyAffiliate": affiliate,
         "supportLink": _entry(raw.get("supportLink"), {
             "title": "이 사이트 돕기",
             "description": "",
@@ -182,7 +187,8 @@ def affiliate_html(config=None):
     url = validate_url(entry.get("url"))
     if not url:
         return ""
-    disclosure = _text(entry.get("disclosure"), DEFAULT_DISCLOSURE)
+    # 설정의 disclosure 로 덮어쓰지 않는다: 수수료 고지문은 항상 DEFAULT_DISCLOSURE.
+    disclosure = DEFAULT_DISCLOSURE
     description = entry.get("description") or ""
     desc_html = ('<span class="ia-aff-desc">%s</span>' % html.escape(description)) if description else ""
     return (
