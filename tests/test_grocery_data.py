@@ -25,7 +25,11 @@ import re
 import statistics
 import sys
 import tempfile
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
+
+# 데이터의 날짜는 모두 KST 기준이다. CI 러너는 UTC 로 돌기 때문에
+# UTC 오늘(예: 08:00 KST 푸시 = 전날 23:00 UTC)로 비교하면 정상 데이터가 실패한다.
+KST = timezone(timedelta(hours=9))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
@@ -75,7 +79,7 @@ def check_data(data):
     start = datetime.strptime(data["window"]["start"], "%Y-%m-%d").date()
     end = datetime.strptime(data["window"]["end"], "%Y-%m-%d").date()
     check("창 28일", (end - start).days + 1 == WINDOW_DAYS, (data["window"]["start"], data["window"]["end"]))
-    check("창 종료가 오늘 이전", end <= datetime.now().date(), end)
+    check("창 종료가 오늘 이전", end <= datetime.now(KST).date(), end)
     check("수집 시각 형식", bool(re.match(r"^20\d\d-\d\d-\d\d \d\d:\d\d KST$", data["generated"])),
           data["generated"])
 
