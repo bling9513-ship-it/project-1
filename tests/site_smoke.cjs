@@ -6061,6 +6061,54 @@ async function checkFoodFlow(page, width) {
   assert.deepEqual(violations, [], `${tag}: CSP violations`);
 }
 
+// ---- 장보기 타이밍: 지역 전환(축산물은 전국 공통) · 관심 저장 · 필터 · 정렬 ----
+async function checkGrocery(page, width) {
+  const tag = `grocery ${width}px`;
+  await page.evaluate(() => localStorage.removeItem('secjobs-grocery-saved-v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#gpGrid .gp-card').first().waitFor({ state: 'attached' });
+
+  const cards = await page.locator('#gpGrid .gp-card').count();
+  assert.equal(cards, 8, `${tag}: 카드 수 ${cards}`);
+
+  const price = (id) => page.locator(`.gp-card[data-id="${id}"] .gp-price strong`).innerText();
+  const seoulCabbage = await price('cabbage');
+  const seoulEgg = await price('egg');
+  await page.click('.gp-region[data-region="suwon"]');
+  await page.waitForTimeout(150);
+  const suwonCabbage = await price('cabbage');
+  const suwonEgg = await price('egg');
+  assert.notEqual(suwonCabbage, seoulCabbage, `${tag}: 지역을 바꿔도 배추 값이 같음`);
+  assert.equal(suwonEgg, seoulEgg, `${tag}: 계란(전국 조사)이 지역에 따라 달라짐`);
+  assert.equal((await page.locator('#gpSummaryRegion').innerText()).trim(), '수원', `${tag}: 요약 지역 표시`);
+  await page.click('.gp-region[data-region="seoul"]');
+  await page.waitForTimeout(120);
+  assert.equal(await price('cabbage'), seoulCabbage, `${tag}: 서울 복귀 값`);
+
+  await page.click('.gp-save[data-save="apple"]');
+  await page.waitForTimeout(80);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('secjobs-grocery-saved-v1') || '[]'));
+  assert.deepEqual(saved, ['apple'], `${tag}: 관심 저장 ${JSON.stringify(saved)}`);
+  assert.equal(await page.locator('.gp-save[data-save="apple"]').getAttribute('aria-pressed'), 'true',
+    `${tag}: 관심 버튼 상태`);
+  await page.click('.gp-filter[data-filter="saved"]');
+  await page.waitForTimeout(80);
+  assert.equal(await page.locator('#gpGrid .gp-card').count(), 1, `${tag}: 관심 필터 카드 수`);
+  await page.click('.gp-filter[data-filter="all"]');
+  await page.waitForTimeout(80);
+  assert.equal(await page.locator('#gpGrid .gp-card').count(), 8, `${tag}: 전체 필터 복귀`);
+
+  await page.selectOption('#gpSort', 'high');
+  await page.waitForTimeout(100);
+  const gaps = await page.evaluate(() => Array.from(document.querySelectorAll('#gpGrid .gp-card'))
+    .map((card) => parseFloat(card.dataset.gap)));
+  assert.ok(gaps.every((gap, index) => index === 0 || gaps[index - 1] >= gap),
+    `${tag}: 중앙값 대비 높은 순 정렬 ${gaps.join(',')}`);
+  await page.selectOption('#gpSort', 'low');
+  await page.waitForTimeout(80);
+
+  await page.evaluate(() => localStorage.removeItem('secjobs-grocery-saved-v1'));
+}
 async function checkPage(context, base, name, width) {  const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -6148,6 +6196,7 @@ async function checkPage(context, base, name, width) {  const page = await conte
     if (name === 'recycle' && (width === 390 || width === 1280)) await checkRecycleFlow(page, width);
     if (name === 'food') await checkFoodLayout(page, width);
     if (name === 'food' && (width === 390 || width === 1280)) await checkFoodFlow(page, width);
+    if (name === 'grocery') await checkGrocery(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);

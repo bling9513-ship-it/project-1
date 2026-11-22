@@ -185,6 +185,17 @@ def history_rows(series):
     return "".join(rows)
 
 
+def meta_line(item, date_text):
+    """'11.20 조사 · 대파 · 상품' — 품종이 '전체' 이거나 품목명과 같으면 빼고 적는다."""
+    parts = [date_text + " 조사"]
+    kind = (item.get("kind") or "").strip()
+    if kind and kind != "전체" and kind != item["name"]:
+        parts.append(kind)
+    if item.get("grade"):
+        parts.append(item["grade"])
+    return " \u00b7 ".join(parts)
+
+
 def card_html(item, data, region_id):
     stats = item["byRegion"][region_id]
     gap = stats["gapPct"]
@@ -206,7 +217,7 @@ def card_html(item, data, region_id):
           </button>
         </div>
         <p class="gp-price"><strong>{price}</strong><span class="gp-won">원</span><em>/{unit}</em></p>
-        <p class="gp-when">{date} 조사 · {kind} · {grade}</p>
+        <p class="gp-when">{when}</p>
         <p class="gp-chip-line"><span class="gp-chip is-{chip_kind}">{chip_label}</span></p>
         <div class="gp-spark" role="img" aria-label="{name} 최근 4주 조사값 추이">
           {spark}
@@ -234,8 +245,7 @@ def card_html(item, data, region_id):
         chip_label=chip["label"], scope_text=scope_text,
         special=" is-national" if special else "",
         price=fmt(stats["latest"]["price"]), unit=unit,
-        date=short_date(stats["latest"]["date"]),
-        kind=item.get("kind") or "-", grade=item.get("grade") or "-",
+        when=meta_line(item, short_date(stats["latest"]["date"])),
         spark=spark(stats["series"], stats["median"]),
         n=stats["observations"], median=fmt(stats["median"]),
         lo=fmt(stats["min"]["price"]), lo_d=short_date(stats["min"]["date"]),
@@ -446,8 +456,12 @@ CSS = """
       .gp-wrap { padding: 14px 13px 88px; }
       .gp-hero h1 { font-size: 21px; }
       .gp-hero p { font-size: 12px; }
-      .gp-main { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-      .gp-rail { position: static; order: 2; }
+      /* 모바일은 요약 → 카드 → 읽는 법 순서. 레일을 풀어(display:contents) 패널만 순서를 바꾼다. */
+      .gp-main { display: flex; flex-direction: column; gap: 10px; }
+      .gp-rail { display: contents; }
+      .gp-panel--summary { order: 1; }
+      .gp-main > section[aria-label="품목별 가격"] { order: 2; }
+      .gp-panel--howto { order: 3; }
       .gp-toolbar { margin: 13px 0 11px; gap: 7px; }
       .gp-toolbar-right { margin-left: 0; width: 100%; justify-content: space-between; }
       .gp-region { padding: 7px 15px; }
@@ -536,7 +550,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
     <div class="gp-main">
       <aside class="gp-rail" aria-label="오늘 요약">
-        <section class="gp-panel">
+        <section class="gp-panel gp-panel--summary">
           <h2>오늘 요약 · <span id="gpSummaryRegion">__FIRST_REGION__</span></h2>
           <div class="gp-tally" id="gpTally">
             <div class="is-low"><b>__CHEAP__</b><span>평소보다 낮음</span></div>
@@ -552,7 +566,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <button type="button" class="gp-copysum" id="gpCopySum">오늘 요약 한 줄 복사</button>
           <p class="gp-copied" id="gpCopySumState" role="status" aria-live="polite"></p>
         </section>
-        <section class="gp-panel">
+        <section class="gp-panel gp-panel--howto">
           <h2>읽는 법</h2>
           <p class="gp-line"><b>중앙값</b>은 최근 4주 동안 조사된 값들을 크기순으로 줄 세웠을 때 가운데 값입니다. 하루 튄 값에 흔들리지 않으려고 평균 대신 씁니다.</p>
           <p class="gp-line"><b>등락률</b>은 (최신 조사값 − 중앙값) ÷ 중앙값입니다. ±3% 안쪽은 '평소와 비슷', 그보다 낮으면 '낮음', 높으면 '높음'으로 표시합니다.</p>
@@ -586,6 +600,30 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
 JS = r"""
 (function () {
+  // ---------- 화면 테마 (공통 셸 헤더의 토글) ----------
+  var themeBtn = document.getElementById('themeToggle');
+  var moonIcon = document.getElementById('moonIcon');
+  var sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) {
+      try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
   var NEUTRAL = 3;
   var SAVED_KEY = 'secjobs-grocery-saved-v1';
   var KNOWN_IDS = [];
@@ -732,8 +770,10 @@ JS = r"""
     price.appendChild(el('em', '', '/' + item.unit));
     card.appendChild(price);
 
-    card.appendChild(el('p', 'gp-when', shortDate(stats.latest.date) + ' 조사 · ' +
-      (item.kind || '-') + ' · ' + (item.grade || '-')));
+    var whenParts = [shortDate(stats.latest.date) + ' 조사'];
+    if (item.kind && item.kind !== '전체' && item.kind !== item.name) whenParts.push(item.kind);
+    if (item.grade) whenParts.push(item.grade);
+    card.appendChild(el('p', 'gp-when', whenParts.join(' \u00b7 ')));
 
     var chipLine = el('p', 'gp-chip-line');
     chipLine.appendChild(el('span', 'gp-chip is-' + chip.kind, chip.label));
