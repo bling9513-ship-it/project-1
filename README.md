@@ -1,7 +1,7 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-22 08:53:23 KST` (매일 08:00 KST 자동 수집)
+> **마지막 업데이트**: `2026-11-22 10:17:38 KST` (매일 08:00 KST 자동 수집)
 > **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)
 > **마감 임박 공고**: 총 **127**개 (D-Day 및 마감 기한 순 정렬)
 > **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)
