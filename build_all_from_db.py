@@ -20,7 +20,7 @@ import json
 from datetime import datetime, timezone, timedelta
 
 sys.path.append(os.path.dirname(__file__))
-from db_manager import get_connection, init_db, mark_expired_jobs, refresh_deadline_statuses, get_active_jobs, get_db_stats, export_study_data_from_db, expire_platform_conflict_duplicates, migrate_job_keys
+from db_manager import get_connection, init_db, mark_expired_jobs, refresh_deadline_statuses, get_active_jobs, get_db_stats, export_study_data_from_db, expire_platform_conflict_duplicates, deduplicate_active_jobs, migrate_job_keys
 from crawler import generate_html, generate_readme
 
 def build_all():
@@ -39,6 +39,10 @@ def build_all():
     expired_count = mark_expired_jobs(today_date)
     # 1-a. 플랫폼별 마감 표기 불일치 복제 행 정리 (예: 14시마감 ↔ D-Day 오늘 마감)
     conflict_count = expire_platform_conflict_duplicates(today_date)
+    # 1-a-2. 같은 공고 중복 행 병합 — 회사 표기 차이((주)·㈜·괄호 별칭)·제목 앞머리 태그·플랫폼 재등록
+    dedup = deduplicate_active_jobs(today_date=today_date)
+    if dedup["merged"]:
+        print(f"-> 같은 공고 중복 병합: {dedup['merged']}건을 {dedup['groups']}개 대표 공고로 정리")
     stats = get_db_stats()
     print(f"-> 마감 공고 정리 완료: 오늘 기준 {expired_count}건 추가 정리, 플랫폼 표기 불일치 복제 {conflict_count}건 정리 (누적 마감 보관: {stats['expired_jobs']}건)")
 

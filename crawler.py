@@ -151,14 +151,11 @@ def normalize_key(company, title):
 
     제목 앞 12자가 같아도 플랫폼 공고 ID가 다르면 서로 다른 공고이므로,
     이 키만으로 합치지 않는다(합치기 판정은 collect_all_jobs / db_manager 참고).
+    회사 법인 표기((주)·㈜·주식회사 …)·괄호 별칭과 제목 앞머리 [태그] 차이는
+    db_manager 의 중복 판정 키와 같은 규칙으로 없앤다(제목 속 괄호는 그대로).
     """
-    c = clean_text(company)
-    c = re.sub(r"[\(주\)|㈜|주식회사|\s]", "", c).lower()
-    
-    t = clean_text(title)
-    t = re.sub(r"\[.*?\]|\(.*?\)|<.*?>", "", t)
-    t = re.sub(r"[\s\-_/|·]", "", t).lower()
-    return f"{c}_{t[:12]}"
+    from db_manager import normalize_key as _db_normalize_key
+    return _db_normalize_key(clean_text(company), clean_text(title))
 
 
 def job_external_identity(job):
@@ -616,7 +613,7 @@ def collect_all_jobs():
 
     # ③ 플랫폼 교차 게시 병합 — 짧은 제목 키 후보가 '플랫폼마다 정확히 1건'이고
     #    회사·전체 제목이 완전히 같으며 같은 플랫폼에 다른 공고 ID가 섞여 있지 않을 때만.
-    from db_manager import job_title_fingerprint, _dedup_company_key
+    from db_manager import job_title_fingerprint, dedup_company_key as _dedup_company_key
     groups = {}
     for key in order:
         entry = deduped[key]
@@ -3574,7 +3571,7 @@ def generate_readme(jobs, update_time_str):
         "",
         f"> **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)",
         f"> **마지막 업데이트**: `{update_time_str}` (매일 08:00 KST 자동 수집)",
-        "> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
+        f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
         "> **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)",
         "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",
@@ -3633,7 +3630,8 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
     """
     from db_manager import (get_connection, init_db, parse_deadline_status, make_job_key,
                             migrate_job_keys, mark_expired_jobs, build_job_identity_index,
-                            resolve_existing_job_key, expire_platform_conflict_duplicates, DB_PATH)
+                            resolve_existing_job_key, expire_platform_conflict_duplicates,
+                            deduplicate_active_jobs, job_dedup_key, DB_PATH)
     db_path = db_path or DB_PATH
     kst = timezone(timedelta(hours=9))
     now_dt = now_dt or datetime.now(kst)
@@ -3652,7 +3650,13 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
     #   짧은 제목 키는 '후보가 정확히 1건이고 외부 ID가 충돌하지 않을 때'만 쓰므로,
     #   제목 12자만 같은 다른 공고(플랫폼 ID가 다른 2건)가 1행으로 합쳐지거나 사라지지 않는다.
     cur.execute("SELECT id, job_key, company, title, url, platforms FROM jobs WHERE status = 'ACTIVE';")
-    identity_index, title_index = build_job_identity_index(cur.fetchall())
+    existing_rows = cur.fetchall()
+    identity_index, title_index = build_job_identity_index(existing_rows)
+    # 같은 공고를 플랫폼만 바꿔 다시 수집했을 때 기존 행의 플랫폼 배지를 잃지 않도록 보관
+    platforms_by_key = {r["job_key"]: r["platforms"] for r in existing_rows}
+    # 이번 수집에서 본 공고의 (회사·제목) 중복 판정 키 — 플랫폼이 새 공고 ID로 다시 올려도
+    # 같은 공고가 '목록에서 사라졌다'고 잘못 마감 처리하지 않기 위해 쓴다.
+    seen_dedup_keys = {job_dedup_key(j.get("company", ""), j.get("title", "")) for j in jobs}
 
     seen_keys = set()
     for job in jobs:
@@ -3671,6 +3675,18 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
             key = own_key
         job["job_key"] = key
         seen_keys.add(key)
+        # 기존 행에 이어붙이는 경우 플랫폼 배지는 합집합으로 유지한다.
+        previous_platforms = platforms_by_key.get(key)
+        if previous_platforms:
+            try:
+                previous_platforms = json.loads(previous_platforms) if isinstance(previous_platforms, str) else previous_platforms
+            except (TypeError, ValueError):
+                previous_platforms = []
+            merged_platforms = list(job.get("platforms", []) or [])
+            for platform_name in previous_platforms or []:
+                if platform_name not in merged_platforms:
+                    merged_platforms.append(platform_name)
+            job["platforms"] = merged_platforms
         raw_deadline = job.get("deadline", "상시채용")
         dl_status, status = parse_deadline_status(raw_deadline, today_date, now_kst, now_dt=now_dt)
 
@@ -3704,10 +3720,14 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
     # 2. 마감일 지난 공고 및 플랫폼에서 삭제된 공고 EXPIRED 처리
     conn.commit()
     mark_expired_jobs(today_date, db_path=db_path, now_dt=now_dt)
-    cur.execute("SELECT id, job_key, deadline FROM jobs WHERE status = 'ACTIVE';")
+    cur.execute("SELECT id, job_key, company, title, deadline FROM jobs WHERE status = 'ACTIVE';")
     active_rows = cur.fetchall()
     for r in active_rows:
         if r["job_key"] not in seen_keys:
+            # 플랫폼이 새 공고 ID로 같은 공고를 다시 올린 경우: 이번 수집에서 같은 (회사·제목)을
+            # 보았다면 아직 살아 있는 공고이므로 마감 처리하지 않는다(중복 병합이 대표 행으로 합친다).
+            if job_dedup_key(r["company"], r["title"]) in seen_dedup_keys:
+                continue
             dl_st, st = parse_deadline_status(r["deadline"], today_date, now_dt=now_dt)
             if st == "EXPIRED" or "D-" not in r["deadline"]:
                 cur.execute("UPDATE jobs SET status = 'EXPIRED', deadline_status = 'EXPIRED', updated_at = ? WHERE id = ?;", (now_kst, r["id"]))
@@ -3720,6 +3740,12 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
         print(f"-> 플랫폼 마감 표기 불일치 복제 행 {conflict_expired}건 정리")
     conn.commit()
     conn.close()
+
+    # 2-c. 같은 공고 중복 행 병합 — 회사 표기 차이((주)·㈜·괄호 별칭)·제목 앞머리 태그 차이와
+    #      플랫폼 재등록(새 공고 ID)으로 쌓인 중복을 대표 1건으로 합치고 나머지는 EXPIRED 로 보관한다.
+    dedup = deduplicate_active_jobs(db_path=db_path, today_date=today_date, now_dt=now_dt)
+    if dedup["merged"]:
+        print(f"-> 같은 공고 중복 병합: {dedup['merged']}건을 {dedup['groups']}개 대표 공고로 정리")
     return sorted(seen_keys)
 
 
