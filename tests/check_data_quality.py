@@ -161,6 +161,7 @@ def run_unit_tests():
     scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
                "tests/test_hangul_puzzles.py", "tests/test_cards_data.py", "tests/test_wash_data.py",
                "tests/test_recycle_data.py", "tests/test_food_data.py", "tests/test_grocery_data.py",
+               "tests/test_monetization.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py"]
     for script in scripts:

@@ -37,8 +37,8 @@ MIN_ITEMS = 6
 # ---------------------------------------------------------------------------
 # 데이터
 # ---------------------------------------------------------------------------
-def load_data():
-    with open(DATA_PATH, encoding="utf-8") as handle:
+def load_data(path=None):
+    with open(path or DATA_PATH, encoding="utf-8") as handle:
         data = json.load(handle)
     items = data.get("items") or []
     if len(items) < MIN_ITEMS:
@@ -68,6 +68,33 @@ def fmt(value):
 def short_date(iso):
     """2026-11-20 → 11.20"""
     return iso[5:7] + "." + iso[8:10]
+
+
+def stale_state(stats):
+    """품목 상태의 '이전 수집값(승계)' 표시값.
+
+    stale 은 이번 수집에 실패해 직전 수집값을 그대로 이어받았다는 뜻이다(과거 데이터에
+    inherited 만 찍혀 있어도 같은 의미로 본다). 경과일은 해당 품목의 실제 조사일(observedDate,
+    없으면 최신 조사일)과 기준일(fetchedDate, 없으면 KST 오늘)의 차이로 계산한다.
+    """
+    stale = bool(stats.get("stale") or stats.get("inherited"))
+    observed = stats.get("observedDate") or (stats.get("latest") or {}).get("date") or ""
+    days = stats.get("staleDays")
+    if not isinstance(days, int) or days < 0:
+        days = None
+    if days is None and observed:
+        try:
+            base = stats.get("fetchedDate") or datetime.now(KST).date().isoformat()
+            days = (datetime.strptime(base, "%Y-%m-%d").date()
+                    - datetime.strptime(observed, "%Y-%m-%d").date()).days
+        except ValueError:
+            days = None
+    parts = []
+    if days is not None:
+        parts.append("오늘" if days == 0 else "%d일 전" % days)
+    if observed:
+        parts.append("%s 조사" % observed)
+    return {"stale": stale, "days": days, "date": observed, "text": " \u00b7 ".join(parts)}
 
 
 def chip_of(gap):
@@ -107,10 +134,16 @@ def _clause(cheap, same, pricey):
 
 
 def summarize(data, region_id):
-    """요약 레일 · 한 줄 문장에 쓰는 값. 모두 수집값에서 바로 계산한다."""
+    """요약 레일 · 한 줄 문장에 쓰는 값. 모두 수집값에서 바로 계산한다.
+
+    이전 수집값(stale) 품목은 '오늘의 최신 조사값'이 아니므로 합계와 등락 극값 계산에서 뺀다.
+    개수는 그대로 세어 제외 건수를 화면에 알린다.
+    """
     cheap = same = pricey = 0
     latest_sum = median_sum = 0
     ranked = []
+    fresh = []
+    stale_count = 0
     latest_dates = []
     for item in data["items"]:
         stats = item["byRegion"][region_id]
@@ -121,22 +154,31 @@ def summarize(data, region_id):
             pricey += 1
         else:
             same += 1
-        latest_sum += stats["latest"]["price"]
-        median_sum += stats["median"]
+        row = {"name": item["name"], "gap": gap, "price": stats["latest"]["price"],
+               "unit": item["unit"], "stale": stale_state(stats)["stale"]}
+        ranked.append(row)
+        if row["stale"]:
+            stale_count += 1
+        else:
+            fresh.append(row)
+            latest_sum += stats["latest"]["price"]
+            median_sum += stats["median"]
         latest_dates.append(stats["latest"]["date"])
-        ranked.append({"name": item["name"], "gap": gap, "price": stats["latest"]["price"],
-                       "unit": item["unit"]})
     ranked.sort(key=lambda row: row["gap"])
+    fresh.sort(key=lambda row: row["gap"])
     basket_pct = round((latest_sum - median_sum) / median_sum * 100, 1) if median_sum else 0.0
-    lowest = ranked[0]
-    highest = ranked[-1]
     sentence = "%d품목 중 %s." % (len(ranked), _clause(cheap, same, pricey))
-    if lowest["gap"] <= -NEUTRAL_PCT:
-        sentence += " 가장 많이 내린 품목은 %s(%d%%)." % (lowest["name"], round(abs(lowest["gap"])))
-    if highest["gap"] >= NEUTRAL_PCT:
-        sentence += " 가장 오른 품목은 %s(+%d%%)." % (highest["name"], round(highest["gap"]))
+    if fresh:
+        lowest = fresh[0]
+        highest = fresh[-1]
+        if lowest["gap"] <= -NEUTRAL_PCT:
+            sentence += " 가장 많이 내린 품목은 %s(%d%%)." % (lowest["name"], round(abs(lowest["gap"])))
+        if highest["gap"] >= NEUTRAL_PCT:
+            sentence += " 가장 오른 품목은 %s(+%d%%)." % (highest["name"], round(highest["gap"]))
     return {
         "count": len(ranked),
+        "counted": len(fresh),
+        "staleCount": stale_count,
         "cheap": cheap,
         "same": same,
         "pricey": pricey,
@@ -204,8 +246,16 @@ def card_html(item, data, region_id):
     scope_text = scope if scope else region_name(data, region_id)
     unit = item["unit"]
     special = item.get("scope") == "national"
+    stale = stale_state(stats)
+    stale_line = ""
+    stale_detail = ""
+    if stale["stale"]:
+        stale_line = ('\n        <p class="gp-stale"><span class="gp-stale-tag">이전 수집값</span>'
+                      '<span>%s</span></p>' % stale["text"])
+        stale_detail = ('\n          <p class="gp-hist-note">이전 수집값 — %s 값을 그대로 표시합니다. '
+                        '이번 수집에 실패해 직전 수집값을 유지했습니다.</p>' % stale["text"])
     return """
-      <article class="gp-card" data-id="{id}" data-gap="{gap}" data-name="{name}" data-kind="{chip_kind}">
+      <article class="gp-card" data-id="{id}" data-gap="{gap}" data-name="{name}" data-kind="{chip_kind}"{stale_attr}>
         <div class="gp-card-top">
           <div class="gp-card-title">
             <h3>{name}</h3>
@@ -217,7 +267,7 @@ def card_html(item, data, region_id):
           </button>
         </div>
         <p class="gp-price"><strong>{price}</strong><span class="gp-won">원</span><em>/{unit}</em></p>
-        <p class="gp-when">{when}</p>
+        <p class="gp-when">{when}</p>{stale_line}
         <p class="gp-chip-line"><span class="gp-chip is-{chip_kind}">{chip_label}</span></p>
         <div class="gp-spark" role="img" aria-label="{name} 최근 4주 조사값 추이">
           {spark}
@@ -233,7 +283,7 @@ def card_html(item, data, region_id):
           <a class="gp-src" href="{url}" target="_blank" rel="noopener noreferrer">KAMIS 원문</a>
         </div>
         <details class="gp-hist">
-          <summary>최근 조사값 {n}건 보기</summary>
+          <summary>최근 조사값 {n}건 보기</summary>{stale_detail}
           <table><caption class="gp-sr">{name} 조사일별 소매가격</caption>
             <thead><tr><th scope="col">조사일</th><th scope="col">가격</th></tr></thead>
             <tbody>{rows}</tbody>
@@ -244,6 +294,8 @@ def card_html(item, data, region_id):
         id=item["id"], name=item["name"], gap="%.1f" % gap, chip_kind=chip["kind"],
         chip_label=chip["label"], scope_text=scope_text,
         special=" is-national" if special else "",
+        stale_attr=' data-stale="1"' if stale["stale"] else "",
+        stale_line=stale_line, stale_detail=stale_detail,
         price=fmt(stats["latest"]["price"]), unit=unit,
         when=meta_line(item, short_date(stats["latest"]["date"])),
         spark=spark(stats["series"], stats["median"]),
@@ -305,6 +357,7 @@ CSS = """
       --low-bg: #ecfdf5;  --low-text: #047857;  --low-border: #a7f3d0;
       --high-bg: #fef2f2;  --high-text: #b91c1c;  --high-border: #fecaca;
       --same-bg: #f8fafc;  --same-text: #475569;  --same-border: #e2e8f0;
+      --stale-bg: #fffbeb;  --stale-text: #b45309;  --stale-border: #fde68a;
       --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
     }
     [data-theme="dark"] {
@@ -315,6 +368,7 @@ CSS = """
       --low-bg: rgba(16, 185, 129, 0.12);  --low-text: #6ee7b7;  --low-border: rgba(16, 185, 129, 0.32);
       --high-bg: rgba(239, 68, 68, 0.12);  --high-text: #fca5a5;  --high-border: rgba(239, 68, 68, 0.32);
       --same-bg: rgba(148, 163, 184, 0.12);  --same-text: #cbd5e1;  --same-border: rgba(148, 163, 184, 0.28);
+      --stale-bg: rgba(245, 158, 11, 0.14);  --stale-text: #fcd34d;  --stale-border: rgba(245, 158, 11, 0.34);
       --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -401,6 +455,14 @@ CSS = """
     .gp-won { font-size: 13px; font-weight: 700; color: var(--text-secondary); }
     .gp-price em { font-style: normal; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-left: 3px; }
     .gp-when { font-size: 11px; color: var(--text-muted); }
+    .gp-stale { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 10.5px;
+      color: var(--stale-text); line-height: 1.45; }
+    .gp-stale-tag { font-weight: 700; background: var(--stale-bg); border: 1px solid var(--stale-border);
+      border-radius: 5px; padding: 1px 5px; font-size: 9.5px; }
+    .gp-card[data-stale="1"] { border-color: var(--stale-border); }
+    .gp-card[data-stale="1"] .gp-price strong { color: var(--text-secondary); }
+    .gp-hist-note { margin-top: 5px; font-size: 10.5px; line-height: 1.5; color: var(--stale-text); }
+    .gp-basket-excl { margin-top: 7px; font-size: 10.5px; font-weight: 700; color: var(--stale-text); }
     .gp-chip-line { margin-top: 1px; }
     .gp-chip { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 7px; padding: 3px 8px; border: 1px solid transparent; }
     .gp-chip.is-low { background: var(--low-bg); color: var(--low-text); border-color: var(--low-border); }
@@ -559,8 +621,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
           <p class="gp-line" id="gpSentence">__SENTENCE__</p>
           <div class="gp-basket">
-            <div class="gp-basket-row"><span>8품목 합계(최신 조사값)</span><b id="gpLatestSum">__LATEST_SUM__원</b></div>
+            <div class="gp-basket-row"><span id="gpSumLabel">__SUM_LABEL__</span><b id="gpLatestSum">__LATEST_SUM__원</b></div>
             <div class="gp-basket-row"><span>같은 품목 4주 중앙값 합계</span><b id="gpMedianSum">__MEDIAN_SUM__원</b></div>
+            <p class="gp-basket-excl" id="gpStaleNote"__STALE_NOTE_HIDDEN__>__STALE_NOTE__</p>
             <p class="gp-basket-note">품목마다 조사 규격(1kg·1포기·10구 등)이 달라 합계는 같은 규격 기준의 단순 합입니다. 장바구니 총액이 아니라 값의 방향을 보는 지표로만 쓰세요. 합계 등락 <b id="gpBasketPct">__BASKET_PCT__</b></p>
           </div>
           <button type="button" class="gp-copysum" id="gpCopySum">오늘 요약 한 줄 복사</button>
@@ -585,7 +648,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <li><b>지역</b> — 서울·수원은 KAMIS 소매가격 조사 지역입니다. 계란은 KAMIS 축산물 조사가 지역 구분 없이 전국 단일이라 '전국' 표기를 달았고, 지역을 바꿔도 값이 같습니다.</li>
         <li><b>규격·등급</b> — 값은 카드에 적힌 규격(1kg·1포기·10구 등)과 등급(상품·일반란) 기준입니다. 매장의 포장 단위가 다르면 그대로 비교할 수 없습니다.</li>
         <li><b>조사값의 성격</b> — 대형마트와 전통시장에서 조사한 평균으로, 집 앞 마트의 실제 가격이나 할인가는 다를 수 있습니다. 값이 오르내린 방향을 보고 장보기 순서를 정하는 데 쓰세요.</li>
-        <li><b>표시 원칙</b> — 화면의 모든 수치는 KAMIS 화면에 적힌 값을 그대로 옮긴 것이며, 빠진 값은 추정해 채우지 않습니다. 수집에 실패한 품목은 직전 수집값을 그대로 두고 표시합니다.</li>
+        <li><b>표시 원칙</b> — 화면의 모든 수치는 KAMIS 화면에 적힌 값을 그대로 옮긴 것이며, 빠진 값은 추정해 채우지 않습니다. 수집에 실패한 품목은 직전 수집값을 그대로 두고 <b>이전 수집값</b> 배지와 실제 조사일(예: 14일 전 · 2026-11-08 조사)을 함께 표시하며, 오늘 합계에서는 뺍니다.</li>
       </ul>
       <ul class="gp-srcs">__SOURCES__</ul>
     </section>
@@ -686,6 +749,17 @@ JS = r"""
     return { kind: 'same', label: '평소와 비슷' };
   }
 
+  // 이번 수집에 실패해 승계한 값인지, 얼마나 지난 조사값인지 (빌드 단계와 같은 규칙)
+  function staleInfo(stats) {
+    var stale = !!(stats.stale || stats.inherited);
+    var observed = stats.observedDate || (stats.latest && stats.latest.date) || '';
+    var days = (typeof stats.staleDays === 'number' && stats.staleDays >= 0) ? stats.staleDays : null;
+    var parts = [];
+    if (days !== null) parts.push(days === 0 ? '오늘' : days + '일 전');
+    if (observed) parts.push(observed + ' 조사');
+    return { stale: stale, days: days, date: observed, text: parts.join(' \u00b7 ') };
+  }
+
   function el(tag, cls, text) {
     var node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -775,6 +849,15 @@ JS = r"""
     if (item.grade) whenParts.push(item.grade);
     card.appendChild(el('p', 'gp-when', whenParts.join(' \u00b7 ')));
 
+    var stale = staleInfo(stats);
+    if (stale.stale) {
+      card.dataset.stale = '1';
+      var staleLine = el('p', 'gp-stale');
+      staleLine.appendChild(el('span', 'gp-stale-tag', '이전 수집값'));
+      staleLine.appendChild(el('span', '', stale.text));
+      card.appendChild(staleLine);
+    }
+
     var chipLine = el('p', 'gp-chip-line');
     chipLine.appendChild(el('span', 'gp-chip is-' + chip.kind, chip.label));
     card.appendChild(chipLine);
@@ -814,6 +897,10 @@ JS = r"""
 
     var hist = el('details', 'gp-hist');
     hist.appendChild(el('summary', '', '최근 조사값 ' + stats.observations + '건 보기'));
+    if (stale.stale) {
+      hist.appendChild(el('p', 'gp-hist-note', '이전 수집값 — ' + stale.text +
+        ' 값을 그대로 표시합니다. 이번 수집에 실패해 직전 수집값을 유지했습니다.'));
+    }
     var table = el('table');
     var cap = el('caption', 'gp-sr', item.name + ' 조사일별 소매가격');
     table.appendChild(cap);
@@ -874,17 +961,25 @@ JS = r"""
     list.forEach(function (item) { grid.appendChild(buildCard(item)); });
   }
 
+  // 이전 수집값(승계) 품목은 오늘 합계와 등락 극값에서 뺀다. 개수는 세어 제외 건수를 알린다.
   function summary() {
-    var cheap = 0, same = 0, pricey = 0, latestSum = 0, medianSum = 0;
-    var ranked = data.items.map(function (item) {
+    var cheap = 0, same = 0, pricey = 0, latestSum = 0, medianSum = 0, counted = 0, staleCount = 0;
+    var ranked = [], fresh = [];
+    data.items.forEach(function (item) {
       var stats = statsOf(item);
       if (stats.gapPct <= -NEUTRAL) cheap += 1;
       else if (stats.gapPct >= NEUTRAL) pricey += 1;
       else same += 1;
+      var row = { name: item.name, gap: stats.gapPct, stale: staleInfo(stats).stale };
+      ranked.push(row);
+      if (row.stale) { staleCount += 1; return; }
+      fresh.push(row);
+      counted += 1;
       latestSum += stats.latest.price;
       medianSum += stats.median;
-      return { name: item.name, gap: stats.gapPct };
-    }).sort(function (a, b) { return a.gap - b.gap; });
+    });
+    ranked.sort(function (a, b) { return a.gap - b.gap; });
+    fresh.sort(function (a, b) { return a.gap - b.gap; });
     var pct = medianSum ? Math.round((latestSum - medianSum) / medianSum * 1000) / 10 : 0;
     var pairs = [
       [cheap, '개는 4주 중앙값보다 낮고', '개는 4주 중앙값보다 낮습니다'],
@@ -895,10 +990,13 @@ JS = r"""
       return row[0] + (index === pairs.length - 1 ? row[2] : row[1]);
     });
     var sentence = ranked.length + '품목 중 ' + (parts.join(', ') || '값이 모였습니다') + '.';
-    if (ranked[0].gap <= -NEUTRAL) sentence += ' 가장 많이 내린 품목은 ' + ranked[0].name + '(' + Math.round(Math.abs(ranked[0].gap)) + '%).';
-    if (ranked[ranked.length - 1].gap >= NEUTRAL) sentence += ' 가장 오른 품목은 ' + ranked[ranked.length - 1].name + '(+' + Math.round(ranked[ranked.length - 1].gap) + '%).';
+    if (fresh.length) {
+      var low = fresh[0], high = fresh[fresh.length - 1];
+      if (low.gap <= -NEUTRAL) sentence += ' 가장 많이 내린 품목은 ' + low.name + '(' + Math.round(Math.abs(low.gap)) + '%).';
+      if (high.gap >= NEUTRAL) sentence += ' 가장 오른 품목은 ' + high.name + '(+' + Math.round(high.gap) + '%).';
+    }
     return { cheap: cheap, same: same, pricey: pricey, latestSum: latestSum, medianSum: medianSum,
-             pct: pct, sentence: sentence, ranked: ranked };
+             counted: counted, staleCount: staleCount, pct: pct, sentence: sentence, ranked: ranked };
   }
 
   function renderSummary() {
@@ -912,10 +1010,17 @@ JS = r"""
       cells[2].firstChild.textContent = String(info.pricey);
     }
     document.getElementById('gpSentence').textContent = info.sentence;
-    document.getElementById('gpLatestSum').textContent = fmt(info.latestSum) + '원';
-    document.getElementById('gpMedianSum').textContent = fmt(info.medianSum) + '원';
+    var label = document.getElementById('gpSumLabel');
+    if (label) label.textContent = info.counted + '품목 합계(최신 조사값)';
+    document.getElementById('gpLatestSum').textContent = info.counted ? fmt(info.latestSum) + '원' : '—';
+    document.getElementById('gpMedianSum').textContent = info.counted ? fmt(info.medianSum) + '원' : '—';
     document.getElementById('gpBasketPct').textContent =
       (info.pct > 0 ? '+' : '') + info.pct + '%';
+    var note = document.getElementById('gpStaleNote');
+    if (note) {
+      note.textContent = '이전 수집값 ' + info.staleCount + '건 제외';
+      note.hidden = info.staleCount === 0;
+    }
     document.getElementById('gpSummaryRegion').textContent = regionName();
   }
 
@@ -932,9 +1037,10 @@ JS = r"""
   function oneLine(item) {
     var stats = statsOf(item);
     var chip = chipOf(stats.gapPct);
-    return item.name + ' ' + item.unit + ' ' + fmt(stats.latest.price) + '원 (' +
-      shortDate(stats.latest.date) + ' 조사, ' + regionName() + ') · 4주 중앙값 ' +
-      fmt(stats.median) + '원 · ' + chip.label;
+    var stale = staleInfo(stats);
+    var when = stale.stale ? '이전 수집값 · ' + stale.text : shortDate(stats.latest.date) + ' 조사';
+    return item.name + ' ' + item.unit + ' ' + fmt(stats.latest.price) + '원 (' + when + ', ' +
+      regionName() + ') · 4주 중앙값 ' + fmt(stats.median) + '원 · ' + chip.label;
   }
 
   function summaryLine(info) {
@@ -942,7 +1048,8 @@ JS = r"""
       var sign = row.gap > 0 ? '+' : '';
       return row.name + ' ' + sign + row.gap.toFixed(1) + '%';
     }).join(' · ');
-    return '장보기 타이밍 ' + regionName() + ' · 중앙값 대비 ' + bits;
+    return '장보기 타이밍 ' + regionName() + ' · 중앙값 대비 ' + bits +
+      (info.staleCount ? ' · 이전 수집값 ' + info.staleCount + '건 제외' : '');
   }
 
   function copyText(text, target) {
@@ -1066,8 +1173,8 @@ JS = r"""
 """
 
 
-def build():
-    data = load_data()
+def build(data_path=None, out_path=None):
+    data = load_data(data_path)
     first_region = data["regionList"][0]["id"]
     info = summarize(data, first_region)
     payload = safe_json_for_script(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
@@ -1082,15 +1189,19 @@ def build():
             .replace("__SAME__", str(info["same"]))
             .replace("__PRICEY__", str(info["pricey"]))
             .replace("__SENTENCE__", info["sentence"])
-            .replace("__LATEST_SUM__", fmt(info["latestSum"]))
-            .replace("__MEDIAN_SUM__", fmt(info["medianSum"]))
+            .replace("__SUM_LABEL__", "%d품목 합계(최신 조사값)" % info["counted"])
+            .replace("__LATEST_SUM__", fmt(info["latestSum"]) if info["counted"] else "—")
+            .replace("__MEDIAN_SUM__", fmt(info["medianSum"]) if info["counted"] else "—")
+            .replace("__STALE_NOTE__", ("이전 수집값 %d건 제외" % info["staleCount"])
+                     if info["staleCount"] else "")
+            .replace("__STALE_NOTE_HIDDEN__", "" if info["staleCount"] else " hidden")
             .replace("__BASKET_PCT__", ("+" if info["basketPct"] > 0 else "") + ("%s%%" % info["basketPct"]))
             .replace("__CARDS__", cards_html(data, first_region))
             .replace("__SOURCES__", sources_html(data))
             .replace("__DATA_JSON__", payload)
             .replace("__JS__", JS))
 
-    with open(OUT_HTML, "w", encoding="utf-8") as handle:
+    with open(out_path or OUT_HTML, "w", encoding="utf-8") as handle:
         handle.write(harden_html(ui_shell.apply(html, "grocery")))
 
     print("-> 'grocery.html' 생성 완료 (품목 %d개 · %s ~ %s 기준)"

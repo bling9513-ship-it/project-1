@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { spawn } = require('node:child_process');
+const { spawn, execFileSync } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
@@ -6107,8 +6107,186 @@ async function checkGrocery(page, width) {
   await page.selectOption('#gpSort', 'low');
   await page.waitForTimeout(80);
 
+  assert.equal(await page.locator('#gpGrid .gp-card[data-stale="1"]').count(), 0,
+    `${tag}: 실데이터에 이전 수집값 카드가 섞임`);
+  assert.equal(await page.evaluate(() => document.getElementById('gpStaleNote').hidden), true,
+    `${tag}: 승계값이 없는데 제외 안내가 보임`);
+
   await page.evaluate(() => localStorage.removeItem('secjobs-grocery-saved-v1'));
 }
+// ---- 장보기 타이밍: 14일 지난 승계값(이전 수집값) 표시 · 합계 제외 · 한 줄 복사 ----
+async function checkGroceryStale(browser, base) {
+  const tag = 'grocery stale 390px';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  try {
+    await page.addInitScript(() => {
+      window.__copied = [];
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: (text) => { window.__copied.push(text); return Promise.resolve(); } },
+      });
+    });
+    const response = await page.goto(`${base}/_preview_grocery_stale.html`, { waitUntil: 'load' });
+    assert.equal(response?.status(), 200, `${tag}: preview page must load`);
+    await page.locator('#gpGrid .gp-card').first().waitFor({ state: 'attached' });
+
+    const state = await page.evaluate(() => {
+      const data = JSON.parse(document.getElementById('gpData').textContent);
+      const region = data.regionList[0].id;
+      const isStale = (stats) => !!(stats.stale || stats.inherited);
+      const fresh = data.items.filter((item) => !isStale(item.byRegion[region]));
+      const staleItem = data.items.find((item) => isStale(item.byRegion[region]));
+      const card = document.querySelector('#gpGrid .gp-card[data-stale="1"]');
+      // 페이지의 fmt() 와 같은 규칙: 정수는 그대로, 소수는 한 자리까지(중앙값 합계가 .5 가 될 수 있다)
+      const comma = (value) => {
+        const parts = String(Math.round(value * 10) / 10).split('.');
+        const head = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return parts.length > 1 ? head + '.' + parts[1] : head;
+      };
+      return {
+        staleCards: document.querySelectorAll('#gpGrid .gp-card[data-stale="1"]').length,
+        badge: card ? card.querySelector('.gp-stale-tag').textContent.trim() : null,
+        staleLine: card ? card.querySelector('.gp-stale').textContent.trim() : null,
+        when: card ? card.querySelector('.gp-when').textContent.trim() : null,
+        histNote: card && card.querySelector('.gp-hist-note')
+          ? card.querySelector('.gp-hist-note').textContent.trim() : null,
+        staleCount: data.items.length - fresh.length,
+        freshCount: fresh.length,
+        expectedSum: comma(fresh.reduce((sum, item) => sum + item.byRegion[region].latest.price, 0)),
+        expectedMedian: comma(fresh.reduce((sum, item) => sum + item.byRegion[region].median, 0)),
+        label: document.getElementById('gpSumLabel').textContent.trim(),
+        sumText: document.getElementById('gpLatestSum').textContent.trim(),
+        medianText: document.getElementById('gpMedianSum').textContent.trim(),
+        exclText: document.getElementById('gpStaleNote').textContent.trim(),
+        exclHidden: document.getElementById('gpStaleNote').hidden,
+        observedDate: staleItem.byRegion[region].observedDate,
+        staleDays: staleItem.byRegion[region].staleDays,
+        overflow: document.documentElement.scrollWidth - window.innerWidth,
+      };
+    });
+
+    assert.equal(state.staleCount, 1, `${tag}: 승계값 ${state.staleCount}건`);
+    assert.equal(state.staleCards, 1, `${tag}: 승계 카드 ${state.staleCards}장`);
+    assert.equal(state.staleDays, 14, `${tag}: staleDays ${state.staleDays}`);
+    assert.equal(state.badge, '이전 수집값', `${tag}: 배지 ${state.badge}`);
+    assert.ok(state.staleLine.includes('14일 전'), `${tag}: 경과일 표시 ${state.staleLine}`);
+    assert.ok(state.staleLine.includes(`${state.observedDate} 조사`), `${tag}: 조사일 ${state.staleLine}`);
+    assert.ok(state.when.includes('조사'), `${tag}: 조사일 줄 ${state.when}`);
+    assert.ok(state.histNote && state.histNote.includes('이전 수집값'), `${tag}: 상세 안내 ${state.histNote}`);
+    assert.equal(state.label, `${state.freshCount}품목 합계(최신 조사값)`, `${tag}: 합계 라벨 ${state.label}`);
+    assert.equal(state.sumText, `${state.expectedSum}원`, `${tag}: 승계값이 합계에 섞임 ${state.sumText}`);
+    assert.equal(state.medianText, `${state.expectedMedian}원`, `${tag}: 중앙값 합계 ${state.medianText}`);
+    assert.equal(state.exclText, `이전 수집값 ${state.staleCount}건 제외`, `${tag}: 제외 안내 ${state.exclText}`);
+    assert.equal(state.exclHidden, false, `${tag}: 제외 안내가 숨겨짐`);
+    assert.ok(state.overflow <= 0, `${tag}: 가로 넘침 ${state.overflow}`);
+
+    // 한 줄 복사 — 승계 품목은 '이전 수집값'과 실제 조사일을 함께 복사한다.
+    const staleId = await page.evaluate(() =>
+      document.querySelector('#gpGrid .gp-card[data-stale="1"]').dataset.id);
+    await page.click(`.gp-card[data-id="${staleId}"] .gp-copy`);
+    await page.waitForTimeout(150);
+    const copied = await page.evaluate(() => window.__copied[window.__copied.length - 1] || '');
+    assert.ok(copied.includes('이전 수집값'), `${tag}: 복사 문구에 승계 표시 없음 (${copied})`);
+    assert.ok(copied.includes('14일 전'), `${tag}: 복사 문구에 경과일 없음 (${copied})`);
+    assert.ok(copied.includes('조사'), `${tag}: 복사 문구에 조사일 없음 (${copied})`);
+
+    await page.click('#gpCopySum');
+    await page.waitForTimeout(150);
+    const summary = await page.evaluate(() => window.__copied[window.__copied.length - 1] || '');
+    assert.ok(summary.includes('이전 수집값 1건 제외'), `${tag}: 요약 복사에 제외 건수 없음 (${summary})`);
+
+    // 다른 지역으로 바꿔도 규칙이 유지되는지(두 지역 모두 승계값 1건)
+    await page.click('.gp-region[data-region="suwon"]');
+    await page.waitForTimeout(200);
+    const suwon = await page.evaluate(() => ({
+      stale: document.querySelectorAll('#gpGrid .gp-card[data-stale="1"]').length,
+      excl: document.getElementById('gpStaleNote').textContent.trim(),
+      hidden: document.getElementById('gpStaleNote').hidden,
+    }));
+    assert.equal(suwon.stale, 1, `${tag}: 수원 승계 카드 ${suwon.stale}`);
+    assert.equal(suwon.excl, '이전 수집값 1건 제외', `${tag}: 수원 제외 안내 ${suwon.excl}`);
+    assert.equal(suwon.hidden, false, `${tag}: 수원 제외 안내 숨김`);
+
+    assert.deepEqual(errors, [], `${tag}: browser errors`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 제휴·후원: 기본(URL 빔)은 DOM 0, 임시 설정 빌드에서만 고지 + sponsored rel ----
+async function checkMonetization(browser, base) {
+  const tag = 'monetization 390px';
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('console', (message) => {
+    if (message.type() === 'error' && !message.text().startsWith('Failed to load resource:')) {
+      errors.push(message.text());
+    }
+  });
+  try {
+    await page.addInitScript(() => {
+      window.smokeCspViolations = [];
+      window.addEventListener('securitypolicyviolation', (event) => {
+        window.smokeCspViolations.push(event.effectiveDirective);
+      });
+    });
+    for (const name of ['study', 'tools', 'index', 'grocery']) {
+      await page.goto(`${base}/${name}.html`, { waitUntil: 'load' });
+      const off = await page.evaluate(() => ({
+        count: document.querySelectorAll('[data-monetization]').length,
+        links: Array.from(document.querySelectorAll('a[href*="yes24"], a[href*="buymeacoffee"]')).length,
+      }));
+      assert.equal(off.count, 0, `${tag}: ${name}.html 에 제휴·후원 DOM ${off.count}개(기본은 숨김)`);
+      assert.equal(off.links, 0, `${tag}: ${name}.html 에 제휴 링크 노출`);
+    }
+
+    const response = await page.goto(`${base}/_preview_study_monetization.html`, { waitUntil: 'load' });
+    assert.equal(response?.status(), 200, `${tag}: preview page must load`);
+    const on = await page.evaluate(() => ({
+      affiliate: document.querySelectorAll('[data-monetization="affiliate"]').length,
+      support: document.querySelectorAll('[data-monetization="support"]').length,
+      disclosure: (document.querySelector('[data-monetization-disclosure]') || {}).textContent || '',
+      links: Array.from(document.querySelectorAll('[data-monetization-link]')).map((link) => ({
+        href: link.href,
+        target: link.target,
+        rel: link.rel,
+      })),
+      csp: window.smokeCspViolations || [],
+      overflow: document.documentElement.scrollWidth - window.innerWidth,
+      affiliateBeforeFooter: (() => {
+        const aff = document.querySelector('[data-monetization="affiliate"]');
+        const footer = document.querySelector('footer');
+        return !!(aff && footer && (aff.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING));
+      })(),
+    }));
+    assert.equal(on.affiliate, 1, `${tag}: 제휴 카드 ${on.affiliate}곳`);
+    assert.equal(on.support, 1, `${tag}: 후원 링크 ${on.support}곳`);
+    assert.ok(on.disclosure.includes('수수료'), `${tag}: 공정위 고지 없음 (${on.disclosure})`);
+    assert.equal(on.affiliateBeforeFooter, true, `${tag}: 제휴 카드 위치`);
+    assert.equal(on.links.length, 2, `${tag}: 수익화 링크 ${on.links.length}개`);
+    for (const link of on.links) {
+      assert.equal(link.target, '_blank', `${tag}: target ${link.target}`);
+      assert.ok(link.href.startsWith('https://'), `${tag}: https 아님 ${link.href}`);
+      const rel = link.rel.toLowerCase().split(/\s+/);
+      for (const token of ['sponsored', 'noopener', 'noreferrer']) {
+        assert.ok(rel.includes(token), `${tag}: rel 에 ${token} 없음 (${link.rel})`);
+      }
+    }
+    assert.deepEqual(on.csp, [], `${tag}: CSP violations`);
+    assert.ok(on.overflow <= 0, `${tag}: 가로 넘침 ${on.overflow}`);
+    assert.deepEqual(errors, [], `${tag}: browser errors`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
 async function checkPage(context, base, name, width) {  const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -6615,7 +6793,37 @@ async function checkGamePolish(browser, base) {
   assert.deepEqual(errors, [], `game polish: browser errors ${errors.join(' | ')}`);
 }
 
+// ---- 페이지 루프 밖의 추가 검사(게임·레이아웃·미리보기) ----
+async function runExtras(browser, base) {
+    await checkMissionMobile(browser, base);
+    await checkReducedMotion(browser, base);
+    const timelineContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    await checkStudyReviewTimeline(timelineContext, base);
+    await timelineContext.close();
+    await checkTodayMidnight(browser, base);
+    await checkTodayFocusKeep(browser, base);
+    await checkOpsClockJump(browser, base);
+    await checkHangulGuide(browser, base);
+    await checkHangulHintBranch(browser, base);
+    await checkHangulChoFocus(browser, base);
+    await checkGamePolish(browser, base);
+    await checkLoadPracticeRecord(browser, base);
+    await checkLoadPerfectGap(browser, base);
+    await checkChartPracticeStore(browser, base);
+    await checkLoadMidnightRun(browser, base);
+    await checkHangulMidnight(browser, base);
+    await checkArcadeKeyboard(browser, base, 390);
+    await checkArcadeKeyboard(browser, base, 1280);
+    await checkGameTabSheet(browser, base, 320);
+    await checkGameTabSheet(browser, base, 390);
+    await checkGroceryStale(browser, base);
+    await checkMonetization(browser, base);
+}
+
 async function main() {
+  // 미리보기(승계값 화면·제휴 카드 켠 화면)는 실제 데이터·설정을 건드리지 않고 임시 파일로만 만든다.
+  const python = process.env.PYTHON || 'python3';
+  execFileSync(python, [path.join('tests', 'make_preview_pages.py')], { cwd: root, stdio: 'inherit' });
   const server = spawn('python3', ['-u', '-m', 'http.server', '0', '--bind', '127.0.0.1'], {
     cwd: root, stdio: ['ignore', 'pipe', 'inherit']
   });
@@ -6631,15 +6839,34 @@ async function main() {
     });
     browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE });
     const base = `http://127.0.0.1:${port}`;
+    // 전체 실행이 길어 개발 중에는 페이지·폭을 좁혀 돌린다(CI 는 기본값 = 전체).
+    const onlyPages = process.env.SMOKE_PAGES ? process.env.SMOKE_PAGES.split(',').map((p) => p.trim()) : null;
+    const onlyWidth = process.env.SMOKE_WIDTH ? Number(process.env.SMOKE_WIDTH) : null;
+    if (process.env.SMOKE_ONLY === 'extras') {
+      await runExtras(browser, base);
+      return;
+    }
+    if (process.env.SMOKE_ONLY === 'preview') {
+      // 개발 중 빠른 확인용: 미리보기 검사(승계값 화면·제휴 카드)만 돈다.
+      await checkGroceryStale(browser, base);
+      await checkMonetization(browser, base);
+      return;
+    }
     for (const width of [390, 1280]) {
+      if (onlyWidth && width !== onlyWidth) continue;
       const context = await browser.newContext({ viewport: { width, height: 900 } });
-      for (const name of pages) await checkPage(context, base, name, width);
+      for (const name of pages) {
+        if (onlyPages && !onlyPages.includes(name)) continue;
+        await checkPage(context, base, name, width);
+      }
       await context.close();
     }
     // 320px·768px: 넘침 0, 하단 바 가림 0, 시트/필터 시트 동작(대표 페이지)
     for (const width of [320, 768]) {
+      if (onlyWidth && width !== onlyWidth) continue;
       const context = await browser.newContext({ viewport: { width, height: 900 } });
       for (const name of pages) {
+        if (onlyPages && !onlyPages.includes(name)) continue;
         const page = await context.newPage();
         try {
           const response = await page.goto(`${base}/${name}.html`, { waitUntil: 'load' });
@@ -6673,32 +6900,18 @@ async function main() {
       await context.close();
     }
 
-    await checkMissionMobile(browser, base);
-    await checkReducedMotion(browser, base);
-    const timelineContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-    await checkStudyReviewTimeline(timelineContext, base);
-    await timelineContext.close();
-    await checkTodayMidnight(browser, base);
-    await checkTodayFocusKeep(browser, base);
-    await checkOpsClockJump(browser, base);
-    await checkHangulGuide(browser, base);
-    await checkHangulHintBranch(browser, base);
-    await checkHangulChoFocus(browser, base);
-    await checkGamePolish(browser, base);
-    await checkLoadPracticeRecord(browser, base);
-    await checkLoadPerfectGap(browser, base);
-    await checkChartPracticeStore(browser, base);
-    await checkLoadMidnightRun(browser, base);
-    await checkHangulMidnight(browser, base);
-    await checkArcadeKeyboard(browser, base, 390);
-    await checkArcadeKeyboard(browser, base, 1280);
-    await checkGameTabSheet(browser, base, 320);
-    await checkGameTabSheet(browser, base, 390);
+    // 페이지·폭을 좁혀 돌릴 때는 추가 검사를 SMOKE_ONLY=extras 로 따로 돌린다.
+    if (!onlyPages && !onlyWidth) await runExtras(browser, base);
   } finally {
     try {
       await browser?.close();
     } finally {
       server.kill();
+      try {
+        execFileSync(python, [path.join('tests', 'make_preview_pages.py'), '--clean'], { cwd: root });
+      } catch (error) {
+        console.error(`preview cleanup failed: ${error.message}`);
+      }
     }
   }
 }

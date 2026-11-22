@@ -11,6 +11,7 @@
       - 최저·최고가 series 의 실제 최소·최대인지
       - 관측치 수와 series 길이가 같고 날짜가 정렬·중복 없음
       - 모든 출처 링크가 kamis.or.kr 도메인인지(값을 만든 곳이 KAMIS 뿐인지)
+  · 수집 실패로 승계한 값(stale)이 실제 조사일 기준 경과일로 표시되는지
   · grocery.html 이 그 데이터를 그대로 심었는지
       - data-page="grocery" · 23페이지 셸 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
       - 품목 카드 8장 · 지역 버튼 2개 · localStorage 키 · 출처 표기
@@ -22,9 +23,17 @@ import json
 import os
 import re
 import statistics
+import sys
+import tempfile
 from datetime import date, datetime, timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import build_grocery_html
+import grocery_crawler
+import make_preview_pages
 HTML = os.path.join(BASE_DIR, "grocery.html")
 DATA = os.path.join(BASE_DIR, "grocery_data.json")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
@@ -141,6 +150,95 @@ def check_data(data):
     check("고정값 아님(변동 있음)", len(set(gaps)) > 3, sorted(set(gaps)))
 
 
+def check_stale():
+    """14일 지난 승계값 — 경과일 재계산 · '이전 수집값' 표시 · 장바구니 합계 제외."""
+    print("== 이전 수집값(승계) ==")
+    data = load_json(DATA)
+    today = datetime.strptime(data["window"]["end"], "%Y-%m-%d").date()
+    observed = (today - timedelta(days=14)).isoformat()
+
+    # 직전 수집값은 5일 전 기준으로 저장돼 있었다고 가정 — 그대로 복사하면 5일로 굳는다.
+    previous = json.loads(json.dumps(data))
+    for item in previous["items"]:
+        if item["id"] != "spinach":
+            continue
+        for stats in item["byRegion"].values():
+            stats["latest"] = {"date": observed, "price": stats["latest"]["price"]}
+            stats["observedDate"] = observed
+            stats["fetchedDate"] = (today - timedelta(days=5)).isoformat()
+            stats["staleDays"] = 5
+            stats["stale"] = False
+
+    carried = grocery_crawler._inherit(previous, "spinach", "seoul", today)
+    check("승계 stale 표시", bool(carried and carried.get("stale") and carried.get("inherited")),
+          carried and carried.get("stale"))
+    check("승계 경과일 재계산(14일)", carried and carried["staleDays"] == 14,
+          carried and carried["staleDays"])
+    check("승계 조사일 유지", carried and carried["observedDate"] == observed,
+          carried and carried["observedDate"])
+    check("승계 기준일 갱신", carried and carried["fetchedDate"] == today.isoformat(),
+          carried and carried["fetchedDate"])
+    chain = grocery_crawler._inherit(
+        {"items": [{"id": "spinach", "byRegion": {"seoul": carried}}]},
+        "spinach", "seoul", today + timedelta(days=3))
+    check("연쇄 승계도 1일로 굳지 않음(17일)", chain and chain["staleDays"] == 17,
+          chain and chain["staleDays"])
+
+    workdir = tempfile.mkdtemp(prefix="grocery-stale-")
+    out_html = os.path.join(workdir, "grocery-stale.html")
+    out_json = os.path.join(workdir, "grocery-stale.json")
+    make_preview_pages.build_grocery_preview(out_html=out_html, out_json=out_json)
+    with open(out_html, encoding="utf-8") as handle:
+        src = handle.read()
+    fixture = load_json(out_json)
+    region = fixture["regionList"][0]["id"]
+
+    def is_stale(stats):
+        return bool(stats.get("stale") or stats.get("inherited"))
+
+    stale_items = [item for item in fixture["items"] if is_stale(item["byRegion"][region])]
+    fresh_items = [item for item in fixture["items"] if not is_stale(item["byRegion"][region])]
+    check("미리보기 승계 1품목", len(stale_items) == 1, [item["id"] for item in stale_items])
+    check("미리보기 승계 경과일 14일",
+          stale_items and stale_items[0]["byRegion"][region]["staleDays"] == 14,
+          stale_items and stale_items[0]["byRegion"][region]["staleDays"])
+
+    latest_sum = sum(item["byRegion"][region]["latest"]["price"] for item in fresh_items)
+    median_sum = sum(item["byRegion"][region]["median"] for item in fresh_items)
+    stale_cards = re.findall(r'<article class="gp-card"[^>]*data-stale="1"', src)
+    check("카드 data-stale 1장", len(stale_cards) == 1, len(stale_cards))
+    check("'이전 수집값' 배지", "'이전 수집값'" in src or ">이전 수집값<" in src, "배지 없음")
+    check("'14일 전' 표시", "14일 전" in src, "경과일 표시 없음")
+    check("조사일 표시(%s 조사)" % observed, observed + " 조사" in src, observed)
+    check("상세 안내 문구", "이전 수집값 — 14일 전" in src, "상세 안내 없음")
+
+    label = re.search(r'id="gpSumLabel">([^<]*)<', src)
+    check("합계 라벨 %d품목" % len(fresh_items),
+          label and label.group(1) == "%d품목 합계(최신 조사값)" % len(fresh_items),
+          label and label.group(1))
+    latest = re.search(r'id="gpLatestSum">([^<]*)<', src)
+    check("최신 합계에서 승계값 제외",
+          latest and latest.group(1) == build_grocery_html.fmt(latest_sum) + "원",
+          (latest and latest.group(1), build_grocery_html.fmt(latest_sum)))
+    median = re.search(r'id="gpMedianSum">([^<]*)<', src)
+    check("중앙값 합계에서 승계값 제외",
+          median and median.group(1) == build_grocery_html.fmt(median_sum) + "원",
+          (median and median.group(1), build_grocery_html.fmt(median_sum)))
+    note = re.search(r'id="gpStaleNote"([^>]*)>([^<]*)<', src)
+    check("제외 건수 표시", note and note.group(2) == "이전 수집값 1건 제외", note and note.group(2))
+    check("제외 건수는 숨기지 않음", note and "hidden" not in note.group(1), note and note.group(1))
+    check("한 줄 복사에 승계 표시", "이전 수집값 \u00b7 ' + stale.text" in src
+          or "'이전 수집값 · ' + stale.text" in src, "복사 문구 없음")
+    check("요약 한 줄에 제외 건수", "이전 수집값 ' + info.staleCount + '건 제외" in src,
+          "요약 복사 문구 없음")
+
+    with open(HTML, encoding="utf-8") as handle:
+        live = handle.read()
+    check("실데이터 화면엔 승계 카드 없음",
+          not re.search(r'<article class="gp-card"[^>]*data-stale="1"', live), "실제 페이지에 승계 카드")
+    check("실데이터 화면 제외 안내 숨김", 'id="gpStaleNote" hidden' in live, "제외 안내가 보임")
+
+
 def check_html(src, data):
     print("== HTML ==")
     check("이모지 0개", not EMOJI_RE.search(src))
@@ -182,6 +280,7 @@ def main():
     with open(HTML, encoding="utf-8") as handle:
         src = handle.read()
     check_html(src, data)
+    check_stale()
     print()
     if failures:
         print("실패 %d건" % len(failures))
