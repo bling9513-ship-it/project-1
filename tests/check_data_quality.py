@@ -6,7 +6,7 @@
   1) 퍼즐·워게임 회귀 테스트
        tests/test_mission_puzzles.py · tests/test_seat_puzzles.py · tests/test_load_puzzles.py
        · tests/test_hangul_puzzles.py · tests/test_cards_data.py · tests/test_wash_data.py
-       · tests/test_recycle_data.py
+       · tests/test_recycle_data.py · tests/test_food_data.py · tests/test_grocery_data.py
        · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
@@ -160,7 +160,7 @@ def count_articles(page, css_class):
 def run_unit_tests():
     scripts = ["tests/test_mission_puzzles.py", "tests/test_seat_puzzles.py", "tests/test_load_puzzles.py",
                "tests/test_hangul_puzzles.py", "tests/test_cards_data.py", "tests/test_wash_data.py",
-               "tests/test_recycle_data.py", "tests/test_food_data.py",
+               "tests/test_recycle_data.py", "tests/test_food_data.py", "tests/test_grocery_data.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py"]
     for script in scripts:
