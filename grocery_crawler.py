@@ -22,6 +22,8 @@
   전월·전년·평년 비교, 공식 출처 링크. 값은 사이트에 적힌 그대로이며 어떤 수치도 만들지 않는다.
 
   수집이 실패한 품목은 직전 grocery_data.json 값을 그대로 승계하고 stale=true 로 표시한다.
+  승계값에는 observedDate(실제 조사일) · fetchedDate(기준일) · staleDays(경과일)를 다시 계산해
+  넣는다. 승계가 여러 번 이어져도 경과일이 1일로 굳지 않고 실제 조사일에서 매번 세진다.
   승계할 값도 없으면 그 품목을 빼고 경고만 남긴다(가짜 값 금지).
 
 실행
@@ -54,7 +56,7 @@ WINDOW_DAYS = 28
 REQUEST_GAP = 0.6   # 요청 사이 간격(초) — 같은 사이트를 연달아 두드리지 않는다
 REQUEST_TIMEOUT = 25
 MIN_OBSERVATIONS = 5        # 28일 창 최소 관측치(주중 조사 4주 ≈ 20회)
-STALE_DAYS = 7              # 최신 조사값이 이보다 오래되면 stale 로 본다
+STALE_DAYS = 7              # 최신 조사값이 이보다 오래되면 경고를 남긴다(값은 그대로 표시)
 MIN_ITEMS = 6               # 빌더가 요구하는 최소 품목 수
 
 HEADERS = {
@@ -217,7 +219,10 @@ def summarize(parsed, today, start=None, end=None):
             "avgYear": comparisons.get("순평년") or comparisons.get("평년순"),
         },
         "compareRaw": comparisons,
-        "stale": (today - latest_date).days > STALE_DAYS,
+        # 조사일 기준 경과일 — 수집에 성공한 값은 stale=false, 승계값은 _inherit 에서 다시 계산한다.
+        "observedDate": latest["date"],
+        "fetchedDate": today.isoformat(),
+        "stale": False,
         "staleDays": (today - latest_date).days,
     }
 
@@ -255,6 +260,10 @@ def collect(today=None):
                 if stats["observations"] < MIN_OBSERVATIONS:
                     warnings.append("%s/%s 관측치 %d회(최소 %d회 미만)"
                                     % (item["name"], region["name"], stats["observations"], MIN_OBSERVATIONS))
+                if stats["staleDays"] > STALE_DAYS:
+                    warnings.append("%s/%s 최신 조사값이 %d일 전(%s) — KAMIS 조사 지연 가능"
+                                    % (item["name"], region["name"], stats["staleDays"],
+                                       stats["observedDate"]))
                 stats["sourceUrl"] = url
                 by_region[region["id"]] = stats
             except Exception as exc:  # noqa: BLE001 - 한 품목 실패가 전체를 막지 않는다
@@ -323,6 +332,15 @@ def _inherit(previous, item_id, region_id, today):
             stats = (item.get("byRegion") or {}).get(region_id)
             if stats:
                 carried = json.loads(json.dumps(stats))
+                # 승계값의 경과일은 '직전 수집 때의 값'이 아니라 실제 조사일에서 다시 센다.
+                # (이전 실행의 staleDays 를 그대로 두면 실패가 이어져도 1일로 굳는다)
+                observed = carried.get("observedDate") or (carried.get("latest") or {}).get("date")
+                if not observed:
+                    return None
+                observed_date = datetime.strptime(observed, "%Y-%m-%d").date()
+                carried["observedDate"] = observed_date.isoformat()
+                carried["fetchedDate"] = today.isoformat()
+                carried["staleDays"] = (today - observed_date).days
                 carried["stale"] = True
                 carried["inherited"] = True
                 return carried

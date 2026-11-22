@@ -24,3 +24,5 @@ _sec_tool_candidates.json
 cve_cache.json
 cve_run_items.json
 node_modules/
+_preview_*.html
+_preview_*.json

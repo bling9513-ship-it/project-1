@@ -11,12 +11,14 @@ import json
 import os
 
 from html_guard import harden_html
+import monetization
 import ui_shell
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 json_path = os.path.join(base_dir, 'cppg_questions.json')
 js_path = os.path.join(base_dir, 'cppg_questions.js')
-out_path = os.path.join(base_dir, 'study.html')
+# 미리보기 빌드(테스트)에서만 다른 경로로 쓸 수 있게 열어 둔다.
+out_path = os.environ.get('STUDY_OUT_HTML') or os.path.join(base_dir, 'study.html')
 
 with open(json_path, 'r', encoding='utf-8') as f:
     questions = json.load(f)
@@ -1791,6 +1793,9 @@ html_content = """<!DOCTYPE html>
 
     <div class="study-backdrop" id="studyBackdrop" hidden></div>
 
+    <!-- 제휴 카드: 직접 작성한 학습 자료 하단 1곳 (monetization_config.json 의 url 이 있을 때만 그려진다) -->
+    __STUDY_AFFILIATE__
+
     <!-- Footer -->
     <footer>
       <p>Infosec Archive · 자격증 &amp; 시험 공부 허브</p>
@@ -3264,6 +3269,13 @@ html_content = """<!DOCTYPE html>
 </body>
 </html>
 """
+
+# 제휴 카드는 설정에 허용된 URL 이 있을 때만 렌더링한다(없으면 빈 문자열 → 주석만 남는다).
+_affiliate_html = monetization.affiliate_html()
+html_content = html_content.replace('__STUDY_AFFILIATE__', _affiliate_html)
+if _affiliate_html:
+    html_content = html_content.replace(
+        '</head>', '<style id="ia-affiliate-style">' + monetization.AFFILIATE_CSS + '</style>\n</head>', 1)
 
 with open(out_path, 'w', encoding='utf-8') as f:
     # 데이터 스크립트 캐시 무력화: 배포 직후에도 항상 새 문제·요약이 보이도록 빌드 시각을 쿼리로 붙인다

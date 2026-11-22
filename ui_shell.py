@@ -14,6 +14,8 @@
 """
 import re
 
+import monetization
+
 # key, 파일, 표시 이름, 짧은 이름(모바일 헤더)
 PAGES = [
     ("today", "today.html", "오늘", "오늘"),
@@ -1023,8 +1025,20 @@ def apply(html, current):
     else:
         raise ValueError("</head> 를 찾지 못했습니다: " + str(current))
 
+    # 후원 링크: 설정에 허용된 URL 이 있을 때만, 운영자가 직접 쓴 페이지의 공통 푸터에 붙인다.
+    # (민간 채용공고·KAMIS 가격 등 제3자 데이터 페이지는 SUPPORT_FOOTER_PAGES 에서 제외)
+    support = (monetization.support_footer_html()
+               if monetization.support_enabled_for(current) else "")
+    if support:
+        html = html.replace(
+            "</head>",
+            '<style id="ia-monetization-style">' + monetization.SUPPORT_CSS + "</style>\n</head>",
+            1,
+        )
+
     tail = (
-        _mobile_tabs(current)
+        support
+        + _mobile_tabs(current)
         + _sheet(current)
         + '<script id="ia-shell-script">'
         + NAV_JS
