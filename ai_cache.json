@@ -3041,5 +3041,45 @@
       "#보안운영"
     ],
     "updated_at": "2026-11-23 08:14:00"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55594357&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8": {
+    "summary": "병원 정보보호 최고책임자로 보안 정책 수립과 거버넌스·개인정보보호 총괄",
+    "tags": [
+      "#정보보호최고책임자",
+      "#보안거버넌스",
+      "#개인정보보호",
+      "#CISO"
+    ],
+    "updated_at": "2026-11-24 08:04:23"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403612&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8": {
+    "summary": "게임 서비스 대상 취약점 진단과 모의해킹 수행 및 보안 강화",
+    "tags": [
+      "#모의해킹",
+      "#취약점진단",
+      "#게임보안",
+      "#정보보안"
+    ],
+    "updated_at": "2026-11-24 08:04:23"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55580388&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9": {
+    "summary": "보안 컨설팅 신입으로 모의해킹 수행 및 취약점 분석 지원",
+    "tags": [
+      "#보안컨설팅",
+      "#모의해킹",
+      "#취약점분석",
+      "#정보보안"
+    ],
+    "updated_at": "2026-11-24 08:04:23"
+  },
+  "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9": {
+    "summary": "경력자 대상 모의해킹 진단 수행 및 취약점 분석·보고",
+    "tags": [
+      "#모의해킹",
+      "#취약점분석",
+      "#보안진단",
+      "#정보보안"
+    ],
+    "updated_at": "2026-11-24 08:04:23"
   }
 }
