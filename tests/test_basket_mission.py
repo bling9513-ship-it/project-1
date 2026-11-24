@@ -97,17 +97,22 @@ def check_grading(data):
                "conditions": [{"id": "fruit", "label": "과일 1가지 담기"},
                               {"id": "leaf", "label": "잎채소 1가지 이상 담기"}]}
     prices = {item["id"]: bk.price_of(data, item["id"]) for item in data["items"]}
-    # 사과 1 + 시금치 1 + 양파 1 + 애호박 1 = 16,133 + 1,096 + 1,689 + 1,359 = 20,277
+    # 사과 1 + 시금치 1 + 양파 1 + 애호박 1 — 소매가격은 매일 갱신되므로 JSON 최신값에서 계산한다
     picks = {"apple": 1, "spinach": 1, "onion": 1, "zucchini": 1}
     total = sum(prices[key] * qty for key, qty in picks.items())
-    check("합계 계산", total == 16133 + 1096 + 1689 + 1359, total)
+    latest = {item["id"]: item["byRegion"][data["regionList"][0]["id"]]["latest"]["price"]
+              for item in data["items"]}
+    check("합계 계산", total == sum(latest[key] for key in picks) and total > 0,
+          (total, sum(latest[key] for key in picks)))
     result = bk.evaluate(picks, mission, data)
     check("합계 일치", result["total"] == total, result["total"])
     check("품목 수 4", result["count"] == 4, result["count"])
-    check("오차 2,723원", result["diff"] == abs(total - 23000), result["diff"])
-    check("예산 미달(오차 4,000원 초과 아님) 20점", result["points"] == 20 + 20 + 20, result["points"])
+    check("오차 = 예산 차이", result["diff"] == abs(total - 23000), result["diff"])
+    # 예산 점수는 오늘 시세에 따라 달라지므로 경계값 함수로 계산해 합산 규칙만 고정한다
+    check("점수 = 예산 점수 + 조건 2개", result["points"] == bk.budget_points(result["diff"], 1000) + 40,
+          (result["points"], bk.budget_points(result["diff"], 1000)))
     check("조건 모두 충족", all(c["met"] for c in result["checks"]), result["checks"])
-    check("등급 B", result["grade"] == "B", result["grade"])
+    check("등급 = 점수 구간", result["grade"] == bk.grade_for(result["points"]), result["grade"])
 
     empty = bk.evaluate({}, mission, data)
     check("빈 장바구니 C등급", empty["grade"] == "C", empty)
