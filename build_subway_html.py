@@ -1051,7 +1051,11 @@ JS = r"""
       }
     });
     out.sort(function (a, b) {
-      if (a.start !== b.start) return a.start ? -1 : 1;
+      // 이름이 정확히 같은 역 → 이름 앞부분 일치 → 그 밖(초성 일치) 순으로 보여 준다.
+      // 초성만 같은 역(예: '공덕' 입력에 '강동')이 먼저 오면 Enter 가 엉뚱한 역을 넣는다.
+      var rankA = a.station.name === term ? 0 : (a.station.name.indexOf(term) === 0 ? 1 : 2);
+      var rankB = b.station.name === term ? 0 : (b.station.name.indexOf(term) === 0 ? 1 : 2);
+      if (rankA !== rankB) return rankA - rankB;
       return a.station.name.length - b.station.name.length || a.station.name.localeCompare(b.station.name);
     });
     return out.slice(0, 8).map(function (row) { return row.station; });

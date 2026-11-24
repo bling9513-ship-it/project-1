@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-eWeLf1Sy9fljjmZ5zrve+TcJEFDeVKMJxmPQuKUYKf0=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-+EZyV7TcUL1m3MDVUCH5ZB3Ot2Og/AJqepbLJgA4f5k=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 오늘의 지하철역</title>
   <meta name="description" content="서울 25개 구 실제 지하철역 306곳 중 오늘의 역을 6회 안에 맞히는 데일리 퍼즐. 노선·환승·자치구·방향과 거리·초성 힌트를 한 줄씩 받아 좁혀 갑니다. 연습 모드와 연속 스트릭, 결과 복사가 있습니다.">
@@ -1286,7 +1286,11 @@
       }
     });
     out.sort(function (a, b) {
-      if (a.start !== b.start) return a.start ? -1 : 1;
+      // 이름이 정확히 같은 역 → 이름 앞부분 일치 → 그 밖(초성 일치) 순으로 보여 준다.
+      // 초성만 같은 역(예: '공덕' 입력에 '강동')이 먼저 오면 Enter 가 엉뚱한 역을 넣는다.
+      var rankA = a.station.name === term ? 0 : (a.station.name.indexOf(term) === 0 ? 1 : 2);
+      var rankB = b.station.name === term ? 0 : (b.station.name.indexOf(term) === 0 ? 1 : 2);
+      if (rankA !== rankB) return rankA - rankB;
       return a.station.name.length - b.station.name.length || a.station.name.localeCompare(b.station.name);
     });
     return out.slice(0, 8).map(function (row) { return row.station; });
