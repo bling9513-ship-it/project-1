@@ -6,7 +6,7 @@
   · 덱 2개(컨디션 키워드·1분 디지털 생활) · 덱마다 테마 4개 · 테마마다 카드 정확히 3장
   · 카드 ID 고유, 모든 카드에 그림 키·헤드라인·요약·실천 한 가지가 있는지
   · 컨디션(건강) 카드 전부에 공신력 있는 기관명·페이지 주제·확인일(2026-11-22) 표기
-  · 출처가 있는 카드(건강 12장 + 디지털 9장) 전부에 https 원문 링크(source.url) · 허용 호스트
+  · 모든 카드(건강 12장 + 디지털 12장)에 https 원문 링크(source.url) · 허용 호스트
   · cond-winter-2/3 는 확인된 질병관리청 원문(cntnts_sn=2047/2048) · cond-winter-1 은 개인차 반영 문구
   · cond-winter-1 은 질병관리청 「탈수」 원문(cntnts_sn=6551)에 없는 섭취 주기('한 시간에 한 잔씩')를 쓰지 않는다
   · dig-wifi-2 는 '자물쇠' 대신 연결 경고·도메인 확인 문구(그림 키 wifi-warn)
@@ -34,7 +34,7 @@ CREDIBLE_ORGS = ("질병관리청", "국민건강보험공단", "서울아산병
 SOURCE_URL_HOSTS = ("health.kdca.go.kr", "www.mentalhealth.go.kr", "www.aao.org",
                     "www.ophthalmology.org", "www.amc.seoul.kr", "www.kmcc.go.kr",
                     "m.blog.naver.com", "support.google.com")
-SOURCE_CARDS = 21          # 건강 12장 + 출처가 있는 디지털 9장
+SOURCE_CARDS = 24          # 건강 12장 + 디지털 12장
 KDCA_WINTER_URLS = ("cntnts_sn=2047", "cntnts_sn=2048")
 
 failures = []
@@ -126,7 +126,7 @@ def check_source_urls(data):
         check("%s 원문 링크 스킴 변조 없음" % cid, url.lower().startswith("https://") and "javascript" not in url.lower(), url)
     check("출처 있는 카드 %d장" % SOURCE_CARDS, seen == SOURCE_CARDS, seen)
     bare = [c["id"] for c in all_cards(data) if not c.get("source")]
-    check("출처 없는 카드는 생활 팁 3장", sorted(bare) == ["dig-notify-1", "dig-notify-2", "dig-notify-3"], bare)
+    check("출처 없는 카드 없음", bare == [], bare)
 
 
 def check_fact_fixes(data):
