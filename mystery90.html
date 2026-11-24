@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-dTZr54zYZi2OIgCsfLRXD3Vb5mgnlsBEhLVyiesuhEE=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-UNPZQ15HmhUakoaRZL0XPOAGdEOfsXIb1xTcSW15zZQ=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 90초 생활 추리</title>
   <meta name="description" content="영수증·택배함·출입기록·메모 모형 단서 카드를 읽고 90초 안에 사건 타임라인을 맞히거나 원인을 고르는 데일리 추리. 오늘의 사건 1건과 연습 13건, 남은 시간·힌트 기록과 연속 스트릭을 이 기기에 저장합니다.">
@@ -1505,7 +1505,8 @@
     var pool = CASES.slice(0, DATA.cases.length);
     caseForNow = pool[(dayNumber - epoch) % pool.length];
   }
-  setCase(caseForNow, dailyIsToday);
+  // 날짜가 바뀌어 화면에서 다시 골랐더라도 그 사건은 여전히 '오늘의 사건'이다.
+  setCase(caseForNow, true);
 
   // 테스트·디버깅용
   window.MYSTERY90 = {

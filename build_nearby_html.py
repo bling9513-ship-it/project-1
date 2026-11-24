@@ -577,7 +577,9 @@ JS = r"""
     if (now >= end) {
       return { kind: 'closed', reason: timeText(end) + ' 운영 종료', window: [start, end] };
     }
-    return { kind: 'open', left: end - now, window: [start, end] };
+    // 00:00~24:00 은 하루 종일 여는 곳이라 자정을 '마감'으로 보지 않는다.
+    var wholeDay = start === 0 && end === 24 * 60;
+    return { kind: 'open', left: wholeDay ? 24 * 60 : end - now, window: [start, end], wholeDay: wholeDay };
   }
 
   function cardOf(place, status, day) {
@@ -605,7 +607,7 @@ JS = r"""
     var windowLine = el('p', 'nb-window');
     if (status.kind === 'open') {
       windowLine.appendChild(el('b', '', timeText(status.window[0]) + '–' + timeText(status.window[1])));
-      var left = el('span', 'is-left', spanText(status.left) + ' 남음');
+      var left = el('span', 'is-left', status.wholeDay ? '24시간 개방' : spanText(status.left) + ' 남음');
       if (status.left <= 60) left.className = 'is-short';
       windowLine.appendChild(left);
     } else {

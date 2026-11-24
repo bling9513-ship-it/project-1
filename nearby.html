@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-msvCb7buUhfhQ5MjCdw/VeuBIWijHEV/o44pvzuDoV0=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-Mu752HTPGha/3J5oH4xvihPSQB4hRro3PTINTeaBCZU=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 우리 동네 지금 갈 곳</title>
   <meta name="description" content="서울 9개 자치구의 공공도서관·대형공원·무료 상설전시·한강공원 30곳을 지금 시각(KST)과 남은 시간(30분·1시간·2시간)으로 골라 보여 줍니다. 운영시간·정기휴무·요금·공식 안내를 시설 공식 자료와 대조해 기준일과 함께 표시합니다.">
@@ -839,7 +839,9 @@
     if (now >= end) {
       return { kind: 'closed', reason: timeText(end) + ' 운영 종료', window: [start, end] };
     }
-    return { kind: 'open', left: end - now, window: [start, end] };
+    // 00:00~24:00 은 하루 종일 여는 곳이라 자정을 '마감'으로 보지 않는다.
+    var wholeDay = start === 0 && end === 24 * 60;
+    return { kind: 'open', left: wholeDay ? 24 * 60 : end - now, window: [start, end], wholeDay: wholeDay };
   }
 
   function cardOf(place, status, day) {
@@ -867,7 +869,7 @@
     var windowLine = el('p', 'nb-window');
     if (status.kind === 'open') {
       windowLine.appendChild(el('b', '', timeText(status.window[0]) + '–' + timeText(status.window[1])));
-      var left = el('span', 'is-left', spanText(status.left) + ' 남음');
+      var left = el('span', 'is-left', status.wholeDay ? '24시간 개방' : spanText(status.left) + ' 남음');
       if (status.left <= 60) left.className = 'is-short';
       windowLine.appendChild(left);
     } else {

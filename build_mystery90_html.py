@@ -1268,7 +1268,8 @@ JS = r"""
     var pool = CASES.slice(0, DATA.cases.length);
     caseForNow = pool[(dayNumber - epoch) % pool.length];
   }
-  setCase(caseForNow, dailyIsToday);
+  // 날짜가 바뀌어 화면에서 다시 골랐더라도 그 사건은 여전히 '오늘의 사건'이다.
+  setCase(caseForNow, true);
 
   // 테스트·디버깅용
   window.MYSTERY90 = {
