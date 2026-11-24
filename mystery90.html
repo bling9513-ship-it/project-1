@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-UNPZQ15HmhUakoaRZL0XPOAGdEOfsXIb1xTcSW15zZQ=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 90초 생활 추리</title>
+  <meta name="description" content="영수증·택배함·출입기록·메모 모형 단서 카드를 읽고 90초 안에 사건 타임라인을 맞히거나 원인을 고르는 데일리 추리. 오늘의 사건 1건과 연습 13건, 남은 시간·힌트 기록과 연속 스트릭을 이 기기에 저장합니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --bg-page: #f8fafc;  --bg-surface: #ffffff;  --bg-subtle: #f1f5f9;  --bg-muted: #e2e8f0;
+      --border-subtle: #f1f5f9;  --border-default: #e2e8f0;  --border-strong: #cbd5e1;
+      --text-primary: #0f172a;  --text-secondary: #475569;  --text-muted: #94a3b8;
+      --accent-primary: #2563eb;  --accent-subtle: #eff6ff;
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;  --ok-ink: #0f766e;
+      --warn-bg: #fffbeb;  --warn-text: #b45309;  --warn-border: #fde68a;
+      --miss-bg: #fef2f2;  --miss-text: #b91c1c;  --miss-border: #fecaca;
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    }
+    [data-theme="dark"] {
+      --bg-page: #09090b;  --bg-surface: #18181b;  --bg-subtle: #27272a;  --bg-muted: #3f3f46;
+      --border-subtle: #1f1f23;  --border-default: #27272a;  --border-strong: #3f3f46;
+      --text-primary: #f4f4f5;  --text-secondary: #a1a1aa;  --text-muted: #71717a;
+      --accent-primary: #3b82f6;  --accent-subtle: rgba(59, 130, 246, 0.15);
+      --ok-bg: rgba(16, 185, 129, 0.14);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.34);  --ok-ink: #5eead4;
+      --warn-bg: rgba(245, 158, 11, 0.14);  --warn-text: #fcd34d;  --warn-border: rgba(245, 158, 11, 0.34);
+      --miss-bg: rgba(239, 68, 68, 0.14);  --miss-text: #fca5a5;  --miss-border: rgba(239, 68, 68, 0.32);
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-primary);
+      line-height: 1.5; letter-spacing: -0.02em; min-height: 100vh; -webkit-font-smoothing: antialiased;
+      transition: background-color .2s ease, color .2s ease; }
+    .m9-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    .m9-wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 96px; }
+    .m9-hero h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.045em; margin-top: 7px; }
+    .m9-hero p { margin-top: 6px; font-size: 13px; color: var(--text-secondary); max-width: 660px; word-break: keep-all; }
+    .m9-pill { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border-radius: 7px; padding: 3px 9px; }
+    .m9-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 10px;
+      font-size: 11.5px; color: var(--text-muted); }
+    .m9-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); display: inline-block; }
+
+    /* ---------- 움직이는 3단계 가이드 ---------- */
+    .m9-guide { margin-top: 16px; background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 14px 16px; box-shadow: var(--card-shadow); }
+    .m9-guide-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .m9-guide-head h2 { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+    .m9-guide-replay { border: 1px solid var(--border-default); background: var(--bg-page); color: var(--text-secondary);
+      border-radius: 9px; padding: 5px 10px; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .m9-guide-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .m9-guide-frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 11px; }
+    .m9-frame { border: 1px solid var(--border-subtle); background: var(--bg-page); border-radius: 12px;
+      padding: 10px; display: flex; flex-direction: column; gap: 6px; min-height: 128px; }
+    .m9-frame-stage { position: relative; height: 62px; border-radius: 9px; background: var(--bg-subtle);
+      overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .m9-frame-num { font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0; }
+    .m9-frame p { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); word-break: keep-all; }
+    .m9-frame p span { display: block; font-size: 10.5px; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
+    .m9-chipmini { width: 30px; height: 20px; border-radius: 6px; background: var(--bg-surface);
+      border: 1px solid var(--border-strong); }
+    .m9-chipmini.f1 { height: 24px; }
+    .m9-chipmini.f2 { opacity: .72; }
+    .m9-chipmini.f3 { opacity: .45; }
+    .m9-arg { position: absolute; left: 50%; bottom: 6px; width: 9px; height: 9px; margin-left: -5px;
+      border-right: 2px solid var(--accent-primary); border-bottom: 2px solid var(--accent-primary);
+      transform: rotate(45deg); }
+    .m9-numcircle { position: absolute; left: 50%; top: 7px; width: 32px; height: 32px; margin-left: -16px;
+      border-radius: 50%; border: 2px solid var(--accent-primary); display: flex; align-items: center;
+      justify-content: center; font-size: 13px; font-weight: 800; color: var(--accent-primary); background: var(--bg-surface); }
+    .m9-clockmini { position: absolute; left: 50%; top: 12px; width: 38px; height: 38px; margin-left: -19px;
+      border-radius: 50%; border: 3px solid var(--border-strong); }
+    .m9-clockmini::after { content: ""; position: absolute; left: 50%; top: 50%; width: 2px; height: 13px;
+      background: var(--text-primary); transform-origin: bottom center; transform: translate(-1px, -100%) rotate(38deg); }
+
+    /* 가이드 재생: 프레임이 차례로 켜지고 움직임이 멈춘 뒤 정지한다. */
+    .m9-guide.is-playing .m9-frame { animation: m9-frame-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    .m9-guide.is-playing .m9-frame:nth-child(1) { animation-delay: 80ms; }
+    .m9-guide.is-playing .m9-frame:nth-child(2) { animation-delay: 980ms; }
+    .m9-guide.is-playing .m9-frame:nth-child(3) { animation-delay: 1880ms; }
+    .m9-guide.is-playing .m9-chipmini { animation: m9-chip-move 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    .m9-guide.is-playing .m9-chipmini.f2 { animation-delay: 120ms; }
+    .m9-guide.is-playing .m9-chipmini.f3 { animation-delay: 240ms; }
+    .m9-guide.is-playing .m9-arg { animation: m9-arg-down 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 900ms both; }
+    .m9-guide.is-playing .m9-clockmini::after { animation: m9-hand 1600ms linear 1600ms both; }
+    @keyframes m9-frame-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @keyframes m9-chip-move { from { transform: translateX(-10px); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes m9-arg-down { from { transform: rotate(45deg) translate(-6px, -6px); opacity: 0; }
+      to { transform: rotate(45deg); opacity: 1; } }
+    @keyframes m9-hand { from { transform: translate(-1px, -100%) rotate(0deg); } to { transform: translate(-1px, -100%) rotate(300deg); } }
+
+    /* ---------- 본문 배치 ---------- */
+    .m9-main { display: grid; grid-template-columns: 310px minmax(0, 1fr); gap: 16px; margin-top: 16px; align-items: start; }
+    .m9-main > * { min-width: 0; }
+    .m9-panel { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 16px;
+      padding: 18px; box-shadow: var(--card-shadow); }
+    .m9-panel h2 { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+    .m9-rail { display: grid; gap: 12px; position: sticky; top: 76px; }
+    .m9-today-title { margin-top: 8px; font-size: 16.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .m9-today-where { margin-top: 2px; font-size: 11.5px; color: var(--text-muted); }
+    .m9-stats { margin-top: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .m9-stat { border: 1px solid var(--border-subtle); border-radius: 11px; padding: 8px 9px; background: var(--bg-page); }
+    .m9-stat span { display: block; font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .m9-stat b { display: block; margin-top: 2px; font-size: 16px; font-weight: 800; letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums; }
+    .m9-practice { margin-top: 13px; display: grid; gap: 6px; max-height: 420px; overflow-y: auto; padding-right: 2px; }
+    .m9-practice-item { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; border: 1px solid var(--border-default);
+      background: var(--bg-page); border-radius: 11px; padding: 9px 10px; font-family: inherit; cursor: pointer;
+      transition: border-color .15s ease, background-color .15s ease, transform .15s ease; }
+    .m9-practice-item:hover { border-color: var(--border-strong); background: var(--bg-subtle); }
+    .m9-practice-item:active { transform: scale(0.985); }
+    .m9-practice-item:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .m9-practice-item.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+    .m9-practice-num { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 7px; background: var(--bg-muted);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 800;
+      color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .m9-practice-item.is-current .m9-practice-num { background: var(--accent-primary); color: #fff; }
+    .m9-practice-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
+    .m9-practice-text b { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .m9-practice-text span { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .m9-practice-type { flex: 0 0 auto; font-size: 10px; font-weight: 700; color: var(--text-muted);
+      border: 1px solid var(--border-default); border-radius: 999px; padding: 1px 7px; }
+
+    /* ---------- 사건 카드 ---------- */
+    .m9-game { display: grid; gap: 12px; }
+    .m9-case-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .m9-case-tags { display: flex; flex-wrap: wrap; gap: 6px; font-size: 10.5px; color: var(--text-muted); }
+    .m9-case-tags span { border: 1px solid var(--border-default); border-radius: 999px; padding: 1px 8px; font-weight: 700; }
+    .m9-case-tags span.is-daily { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+    .m9-case-head h2 { margin-top: 8px; font-size: 20px; font-weight: 800; letter-spacing: -0.04em;
+      color: var(--text-primary); }
+    .m9-case-brief { margin-top: 5px; font-size: 12.5px; color: var(--text-secondary); word-break: keep-all; }
+
+    .m9-timerbar { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 11px 13px;
+      border: 1px solid var(--border-default); border-radius: 14px; background: var(--bg-page); }
+    .m9-clock { position: relative; width: 54px; height: 54px; flex: 0 0 auto; }
+    .m9-clock svg { width: 54px; height: 54px; transform: rotate(-90deg); }
+    .m9-clock circle { fill: none; stroke-width: 5; }
+    .m9-clock .m9-ring-bg { stroke: var(--border-default); }
+    .m9-clock .m9-ring-fg { stroke: var(--accent-primary); stroke-linecap: round;
+      transition: stroke-dashoffset .18s linear, stroke .2s ease; }
+    .m9-clock.is-low .m9-ring-fg { stroke: var(--miss-text); }
+    .m9-clock-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+    .m9-clock.is-low .m9-clock-value { color: var(--miss-text); }
+    .m9-timer-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+    .m9-timer-text b { font-size: 13px; font-weight: 800; letter-spacing: -0.03em; }
+    .m9-timer-text span { font-size: 11px; color: var(--text-muted); }
+    .m9-timer-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+    .m9-btn { border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary);
+      border-radius: 10px; padding: 9px 13px; font-family: inherit; font-size: 12px; font-weight: 800; cursor: pointer;
+      transition: background-color .15s ease, border-color .15s ease, transform .15s ease, opacity .15s ease; }
+    .m9-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+    .m9-btn:active { transform: scale(0.98); }
+    .m9-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .m9-btn:disabled { opacity: .4; cursor: default; }
+    .m9-btn.is-primary { border-color: var(--text-primary); background: var(--text-primary); color: var(--bg-surface); }
+    .m9-btn.is-primary:hover { opacity: .9; }
+
+    .m9-start { margin-top: 12px; }
+    .m9-start .m9-btn { width: 100%; padding: 14px; font-size: 14px; }
+
+    /* ---------- 단서 카드 ---------- */
+    .m9-section-label { margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .m9-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 7px; }
+    .m9-card { position: relative; display: flex; flex-direction: column; gap: 7px; text-align: left;
+      border: 1px solid var(--border-default); background: var(--bg-surface); border-radius: 13px; padding: 10px;
+      font-family: inherit; color: var(--text-primary); cursor: pointer; min-height: 96px;
+      transition: border-color .15s ease, background-color .15s ease, transform .15s ease, opacity .15s ease; }
+    .m9-card:disabled { cursor: default; }
+    .m9-card:hover:not(:disabled) { border-color: var(--border-strong); }
+    .m9-card:active:not(:disabled) { transform: scale(0.99); }
+    .m9-card:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .m9-card.is-picked { border-color: var(--text-primary); background: var(--bg-subtle); }
+    .m9-card.is-locked { opacity: .55; }
+    .m9-card.is-true { border-color: var(--ok-border); background: var(--ok-bg); }
+    .m9-card.is-false { border-color: var(--miss-border); background: var(--miss-bg); }
+    .m9-visual { height: 46px; border-radius: 9px; background: var(--bg-subtle); display: flex; align-items: center;
+      justify-content: center; overflow: hidden; }
+    .m9-visual svg { width: 100%; height: 100%; }
+    .m9-card-tag { font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0; }
+    .m9-card-text { font-size: 12px; font-weight: 600; line-height: 1.45; color: var(--text-secondary); word-break: keep-all; }
+    .m9-card.is-picked .m9-card-text { color: var(--text-primary); }
+    .m9-card-pickno { position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 5px;
+      border-radius: 999px; background: var(--text-primary); color: var(--bg-surface); font-size: 10.5px;
+      font-weight: 800; display: inline-flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+
+    /* 순서 트레이 */
+    .m9-tray { margin-top: 9px; display: grid; gap: 6px; }
+    .m9-slot { display: flex; align-items: center; gap: 8px; border: 1px dashed var(--border-strong);
+      border-radius: 11px; padding: 9px 10px; min-height: 44px; background: var(--bg-page); }
+    .m9-slot.is-filled { border-style: solid; border-color: var(--border-default); background: var(--bg-surface); }
+    .m9-slot.is-ok { border-color: var(--ok-border); background: var(--ok-bg); }
+    .m9-slot.is-ng { border-color: var(--miss-border); background: var(--miss-bg); }
+    .m9-slot-no { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border-strong);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 800;
+      color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .m9-slot.is-filled .m9-slot-no { border-color: var(--text-primary); color: var(--text-primary); }
+    .m9-slot-text { font-size: 11.5px; color: var(--text-muted); flex: 1 1 auto; min-width: 0; }
+    .m9-slot.is-filled .m9-slot-text { color: var(--text-primary); font-weight: 600; }
+    .m9-slot-remove { flex: 0 0 auto; border: 0; background: transparent; color: var(--text-muted); font-family: inherit;
+      font-size: 15px; font-weight: 800; cursor: pointer; padding: 2px 5px; border-radius: 6px; }
+    .m9-slot-remove:hover { color: var(--text-primary); background: var(--bg-subtle); }
+
+    /* 4지선다 */
+    .m9-choices { margin-top: 9px; display: grid; gap: 7px; }
+    .m9-choice { display: flex; align-items: flex-start; gap: 9px; width: 100%; text-align: left; border: 1px solid var(--border-default);
+      background: var(--bg-surface); border-radius: 11px; padding: 11px 12px; font-family: inherit; font-size: 12.5px;
+      font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: border-color .15s ease, background-color .15s ease; }
+    .m9-choice:hover:not(:disabled) { border-color: var(--border-strong); }
+    .m9-choice:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .m9-choice.is-picked { border-color: var(--text-primary); color: var(--text-primary); background: var(--bg-subtle); }
+    .m9-choice.is-true { border-color: var(--ok-border); background: var(--ok-bg); color: var(--ok-text); }
+    .m9-choice.is-false { border-color: var(--miss-border); background: var(--miss-bg); color: var(--miss-text); }
+    .m9-choice-no { flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-muted);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 800;
+      color: var(--text-secondary); }
+    .m9-choice.is-true .m9-choice-no { background: var(--ok-ink); color: #fff; }
+    .m9-choice.is-false .m9-choice-no { background: var(--miss-text); color: #fff; }
+
+    .m9-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .m9-actions .m9-btn { flex: 1 1 0; padding: 13px; font-size: 13.5px; }
+    .m9-status { min-height: 16px; margin-top: 7px; font-size: 11px; font-weight: 600; color: var(--ok-ink); }
+
+    /* ---------- 결과 ---------- */
+    .m9-result { margin-top: 12px; border: 1px solid var(--border-default); border-radius: 15px; padding: 15px;
+      background: var(--bg-surface); }
+    .m9-result.is-correct { border-color: var(--ok-border); background: var(--ok-bg); }
+    .m9-result.is-wrong { border-color: var(--miss-border); background: var(--miss-bg); }
+    .m9-result-top { display: flex; align-items: center; gap: 10px; }
+    .m9-badge { width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center;
+      justify-content: center; font-size: 12px; font-weight: 800; background: var(--text-primary); color: var(--bg-surface);
+      letter-spacing: -0.02em; }
+    .m9-result.is-correct .m9-badge { background: var(--ok-ink); color: #fff; }
+    .m9-result.is-wrong .m9-badge { background: var(--miss-text); color: #fff; }
+    .m9-result-top h3 { font-size: 15.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .m9-result-top p { font-size: 11.5px; color: var(--text-secondary); }
+    .m9-result-stats { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .m9-result-stats span { font-size: 11px; font-weight: 700; color: var(--text-secondary); background: var(--bg-surface);
+      border: 1px solid var(--border-default); border-radius: 999px; padding: 3px 9px; }
+    .m9-share { margin-top: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+      line-height: 1.55; white-space: pre-wrap; color: var(--text-secondary); background: var(--bg-subtle);
+      border: 1px solid var(--border-default); border-radius: 10px; padding: 9px 10px; }
+    .m9-explain { margin-top: 10px; font-size: 12px; line-height: 1.6; color: var(--text-secondary); word-break: keep-all; }
+    .m9-explain b { color: var(--text-primary); }
+
+    .m9-notes { margin-top: 22px; background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 17px 18px; box-shadow: var(--card-shadow); }
+    .m9-notes h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); }
+    .m9-notes ul { margin-top: 10px; display: grid; gap: 7px; padding-left: 16px; }
+    .m9-notes li { font-size: 11.5px; line-height: 1.62; color: var(--text-secondary); word-break: keep-all; }
+    .m9-notes li b { color: var(--text-primary); }
+    .m9-foot { margin-top: 14px; font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      .m9-wrap { padding: 14px 13px 120px; }
+      .m9-hero h1 { font-size: 21px; }
+      .m9-hero p { font-size: 12px; }
+      .m9-guide { padding: 12px; }
+      .m9-guide-frames { gap: 6px; }
+      .m9-frame { padding: 8px; min-height: 116px; }
+      .m9-frame p { font-size: 10.5px; }
+      .m9-frame p span { font-size: 9.5px; }
+      .m9-main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 12px; }
+      .m9-rail { position: static; order: 2; }
+      .m9-game { order: 1; }
+      .m9-panel { padding: 14px; }
+      .m9-case-head h2 { font-size: 18px; }
+      .m9-practice { max-height: none; }
+      .m9-cards { gap: 7px; }
+      .m9-card { min-height: 92px; padding: 9px; }
+      .m9-card-text { font-size: 11.5px; }
+      .m9-timerbar { padding: 9px 11px; gap: 10px; }
+      .m9-clock, .m9-clock svg { width: 46px; height: 46px; }
+      .m9-clock-value { font-size: 12.5px; }
+      .m9-timer-actions .m9-btn { padding: 8px 10px; font-size: 11px; }
+    }
+    @media (max-width: 430px) {
+      .m9-timerbar { flex-wrap: wrap; }
+      .m9-timer-text { flex: 1 1 calc(100% - 58px); }
+      .m9-timer-actions { width: 100%; }
+      .m9-timer-actions .m9-btn { flex: 1 1 0; }
+      .m9-timer-text b { font-size: 12px; line-height: 1.35; }
+    }
+    @media (max-width: 380px) {
+      .m9-cards { grid-template-columns: minmax(0, 1fr); }
+      .m9-guide-frames { grid-template-columns: minmax(0, 1fr); }
+      .m9-frame { min-height: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-delay: 0ms !important; }
+      .m9-guide.is-playing .m9-frame { opacity: 1; transform: none; }
+      .m9-clock .m9-ring-fg { transition: none; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="mystery90">
+
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">90초 추리</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link is-current" role="menuitem" href="mystery90.html" aria-current="page">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">2026-11-24 · 사건 14건</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="m9-wrap">
+    <section class="m9-hero">
+      <span class="m9-pill">생활 · 90초 추리</span>
+      <h1>90초 안에 사건의 순서를 세워라</h1>
+      <p>영수증·택배함·출입기록·메모 모형으로 만든 단서 카드를 읽고, 사건 타임라인을 시간 순서대로 배열하거나 원인을 고릅니다. 힌트는 남은 시간 10초를 깎습니다.</p>
+      <div class="m9-meta">
+        <span>오늘의 사건 박스 하나가 없다 · 이사 당일, 노원구</span>
+        <span class="m9-dot"></span>
+        <span>사건 14건(오늘 1 + 연습)</span>
+        <span class="m9-dot"></span>
+        <span>제한 90초</span>
+        <span class="m9-dot"></span>
+        <span>기록은 이 기기에만 저장</span>
+      </div>
+    </section>
+
+    <section class="m9-guide" id="m9Guide" aria-labelledby="m9GuideTitle">
+      <div class="m9-guide-head">
+        <h2 id="m9GuideTitle">이렇게 합니다 · 3단계</h2>
+        <button type="button" class="m9-guide-replay" id="m9Replay">다시 보기</button>
+      </div>
+      <div class="m9-guide-frames">
+        <div class="m9-frame">
+          <div class="m9-frame-stage" aria-hidden="true">
+            <span class="m9-chipmini f1"></span><span class="m9-chipmini f2"></span><span class="m9-chipmini f3"></span>
+          </div>
+          <p class="m9-frame-num">1</p>
+          <p>단서 카드가 흩어져 있다<span>영수증·출입기록·메모를 한 장씩 읽는다</span></p>
+        </div>
+        <div class="m9-frame">
+          <div class="m9-frame-stage" aria-hidden="true">
+            <span class="m9-numcircle">1</span><span class="m9-arg"></span>
+          </div>
+          <p class="m9-frame-num">2</p>
+          <p>시간 순서대로 탭한다<span>1번 칸부터 차례로 채우고, 다시 탭하면 뺀다</span></p>
+        </div>
+        <div class="m9-frame">
+          <div class="m9-frame-stage" aria-hidden="true"><span class="m9-clockmini"></span></div>
+          <p class="m9-frame-num">3</p>
+          <p>90초 안에 제출<span>시간이 끝나면 자동으로 제출된다</span></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="m9-main">
+      <aside class="m9-rail" aria-label="오늘의 사건과 연습 목록">
+        <section class="m9-panel">
+          <h2>오늘의 사건 · 2026-11-24</h2>
+          <p class="m9-today-title">박스 하나가 없다</p>
+          <p class="m9-today-where">이사 당일, 노원구</p>
+          <div class="m9-stats">
+            <div class="m9-stat"><span>연속</span><b id="m9Streak">0일</b></div>
+            <div class="m9-stat"><span>해결</span><b id="m9Solved">0</b></div>
+            <div class="m9-stat"><span>최고</span><b id="m9Best">-</b></div>
+          </div>
+        </section>
+        <section class="m9-panel">
+          <h2>연습 사건 14건 중 오늘 제외</h2>
+          <div class="m9-practice" id="m9Practice"><button type="button" class="m9-practice-item" data-case="m90-01"><span class="m9-practice-num">01</span><span class="m9-practice-text"><b>택배함이 비었다</b><span>성수동 오피스텔 · 보통</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-02"><span class="m9-practice-num">02</span><span class="m9-practice-text"><b>카드가 두 번 긁혔다</b><span>연남동 카페 · 보통</span></span><span class="m9-practice-type">원인</span></button><button type="button" class="m9-practice-item" data-case="m90-03"><span class="m9-practice-num">03</span><span class="m9-practice-text"><b>세탁물이 뒤바뀌었다</b><span>방배동 세탁소 · 쉬움</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-04"><span class="m9-practice-num">04</span><span class="m9-practice-text"><b>배달 음식이 사라졌다</b><span>망원동 빌라 · 보통</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-05"><span class="m9-practice-num">05</span><span class="m9-practice-text"><b>반납했는데 연체 알림</b><span>마포구립도서관 · 어려움</span></span><span class="m9-practice-type">원인</span></button><button type="button" class="m9-practice-item" data-case="m90-07"><span class="m9-practice-num">06</span><span class="m9-practice-text"><b>자전거가 사라졌다</b><span>성동구 아파트 자전거 보관소 · 보통</span></span><span class="m9-practice-type">원인</span></button><button type="button" class="m9-practice-item" data-case="m90-08"><span class="m9-practice-num">07</span><span class="m9-practice-text"><b>회의실이 두 번 예약됐다</b><span>회사 5층 · 쉬움</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-09"><span class="m9-practice-num">08</span><span class="m9-practice-text"><b>월세가 두 번 빠져나갔다</b><span>관악구 원룸 · 어려움</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-10"><span class="m9-practice-num">09</span><span class="m9-practice-text"><b>멀티탭이 타 버렸다</b><span>신림동 원룸 · 보통</span></span><span class="m9-practice-type">원인</span></button><button type="button" class="m9-practice-item" data-case="m90-11"><span class="m9-practice-num">10</span><span class="m9-practice-text"><b>윗집 소음 민원</b><span>부천시 오피스텔 · 보통</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-12"><span class="m9-practice-num">11</span><span class="m9-practice-text"><b>지갑을 어디서 잃었나</b><span>토요일 오후, 종로 · 어려움</span></span><span class="m9-practice-type">원인</span></button><button type="button" class="m9-practice-item" data-case="m90-13"><span class="m9-practice-num">12</span><span class="m9-practice-text"><b>다른 집 택배가 왔다</b><span>은평구 빌라 · 쉬움</span></span><span class="m9-practice-type">순서</span></button><button type="button" class="m9-practice-item" data-case="m90-14"><span class="m9-practice-num">13</span><span class="m9-practice-text"><b>관리비가 갑자기 올랐다</b><span>동작구 오피스텔 · 어려움</span></span><span class="m9-practice-type">원인</span></button></div>
+        </section>
+      </aside>
+
+      <section class="m9-game" aria-labelledby="m9CaseTitle">
+        <div class="m9-panel">
+          <div class="m9-case-head">
+            <div>
+              <div class="m9-case-tags">
+                <span class="is-daily" id="m9DailyTag">오늘의 사건</span>
+                <span id="m9Where">이사 당일, 노원구</span>
+                <span id="m9Level">보통</span>
+                <span id="m9Kind">순서</span>
+              </div>
+              <h2 id="m9CaseTitle">박스 하나가 없다</h2>
+              <p class="m9-case-brief" id="m9Brief">사건 설명을 불러오는 중입니다.</p>
+            </div>
+          </div>
+
+          <div class="m9-timerbar">
+            <div class="m9-clock" id="m9Clock" role="img" aria-label="남은 시간 90초">
+              <svg viewBox="0 0 54 54" aria-hidden="true">
+                <circle class="m9-ring-bg" cx="27" cy="27" r="23"></circle>
+                <circle class="m9-ring-fg" id="m9Ring" cx="27" cy="27" r="23" stroke-dasharray="144.5" stroke-dashoffset="0"></circle>
+              </svg>
+              <span class="m9-clock-value" id="m9Timer">90</span>
+            </div>
+            <div class="m9-timer-text">
+              <b id="m9TimerTitle">시작을 누르면 90초가 흐릅니다</b>
+              <span id="m9TimerSub">힌트 0개 · 제출 전</span>
+            </div>
+            <div class="m9-timer-actions">
+              <button type="button" class="m9-btn" id="m9Hint">힌트</button>
+              <button type="button" class="m9-btn" id="m9Restart">처음부터</button>
+            </div>
+          </div>
+
+          <div class="m9-start" id="m9StartWrap">
+            <button type="button" class="m9-btn is-primary" id="m9Start">90초 시작</button>
+          </div>
+
+          <p class="m9-section-label" id="m9CardsLabel">단서 카드 · 탭해서 순서대로 담기</p>
+          <div class="m9-cards" id="m9Cards"></div>
+
+          <div class="m9-tray" id="m9Tray" aria-label="사건 순서 배열"></div>
+          <div class="m9-choices" id="m9Choices" hidden></div>
+
+          <div class="m9-actions">
+            <button type="button" class="m9-btn is-primary" id="m9Submit" disabled>제출</button>
+          </div>
+          <p class="m9-status" id="m9Status" role="status" aria-live="polite"></p>
+
+          <div class="m9-result" id="m9Result" hidden>
+            <div class="m9-result-top">
+              <span class="m9-badge" id="m9Badge">정답</span>
+              <div>
+                <h3 id="m9ResultTitle">정답입니다</h3>
+                <p id="m9ResultSub"></p>
+              </div>
+            </div>
+            <div class="m9-result-stats" id="m9ResultStats"></div>
+            <div class="m9-share" id="m9Share"></div>
+            <p class="m9-explain" id="m9Explain"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="m9-notes">
+      <h2>알아 두실 점</h2>
+      <ul>
+        <li><b>문제의 성격</b> — 실제 사건이 아니라 생활에서 흔한 상황을 새로 지어 만든 추리 문제입니다. 인물·장소·번호는 모두 가상입니다.</li>
+        <li><b>점수</b> — 정답이면 60점에 남은 시간 초의 절반(최대 45점)을 더하고, 힌트 하나마다 8점을 뺍니다. 틀리면 0점입니다.</li>
+        <li><b>힌트</b> — 결정적 단서 한 줄을 보여 주는 대신 남은 시간 10초를 깎습니다.</li>
+        <li><b>기록</b> — 오늘의 사건 결과와 연속 일수는 이 브라우저(localStorage)에만 저장됩니다. 서버로 보내지 않습니다.</li>
+        <li><b>시각 단서 카드</b> — 영수증·택배함·출입기록·메모 모형은 이해를 돕기 위해 그린 그림이며 실제 서류와 다릅니다.</li>
+      </ul>
+      <p class="m9-foot">사건·정답·해설은 이 페이지에서만 쓰는 창작 문제입니다 · 기록은 기기를 바꾸면 이어지지 않습니다.</p>
+    </section>
+  </main>
+
+  <script type="application/json" id="m9Data">{"cases":[{"id":"m90-01","title":"택배함이 비었다","type":"order","where":"성수동 오피스텔","level":"보통","brief":"택배 앱은 203호에 넣었다고 했는데, 퇴근 후 열어 보니 비어 있다. 있었던 일을 시간 순서대로 늘어놓아라.","hint":"관리사무소 방송 시각과 201호 메모 시각 사이를 보라.","explain":"택배는 14:10에 203호에 들어갔고, 15:20 잠금장치 오류로 택배함이 열린 사이 201호 입주민이 자기 상자로 착각해 옮겼다. 201호 문 앞을 확인하면 된다.","steps":[{"tag":"알림","visual":"phone","text":"14:10 택배 앱 — '무인택배함 203호에 보관했습니다'"},{"tag":"관리실","visual":"door","text":"15:20 관리사무소 방송 — 잠금장치 오류로 택배함 전체가 10분간 열려 있었다"},{"tag":"입주민","visual":"memo","text":"15:30 201호 메모 — '203호에 있던 내 상자를 201호로 옮겨 둠'"},{"tag":"정리","visual":"locker","text":"16:05 관리사무소 — 203호 잠금장치 복구 후 다시 잠금"},{"tag":"확인","visual":"parcel","text":"18:40 나 — 203호를 열었지만 안이 비어 있음"}],"display":[2,1,4,0,3]},{"id":"m90-02","title":"카드가 두 번 긁혔다","type":"pick","where":"연남동 카페","level":"보통","brief":"커피 한 잔 값이 두 번 승인됐다. 영수증과 카드사 앱 기록을 보고 원인을 골라라.","hint":"두 승인 시각 차이는 12초뿐이다. 그 사이 단말기 화면에 무엇이 떴는지 보라.","explain":"첫 승인 응답이 늦어 단말기가 같은 결제를 자동 재전송했고, 카드사는 이를 별도 승인으로 처리했다. 가맹점에 승인번호 두 건을 보여 주고 한 건 취소를 요청하면 된다.","steps":[{"tag":"영수증","visual":"receipt","text":"승인 1건 4,500원 14:02:11 · 승인 2건 4,500원 14:02:23"},{"tag":"단말기","visual":"clock","text":"14:02:12 화면에 '통신 지연 — 재전송 중' 문구가 6초간 떠 있음"},{"tag":"카드사 앱","visual":"card","text":"14:02:23 두 번째 승인은 '자동 재승인'으로 표시"},{"tag":"가맹점","visual":"memo","text":"사장 메모 — '오후에 단말기 와이파이가 계속 끊겼다'"}],"display":[2,0,3,1],"question":"같은 결제가 두 번 승인된 이유는?","choices":["내가 실수로 카드를 두 번 대었다","카드사가 한도를 두 번 확인했다","단말기 통신 지연으로 같은 결제가 자동으로 다시 승인됐다","가맹점이 금액을 반으로 나눠 승인했다"],"answer":2},{"id":"m90-03","title":"세탁물이 뒤바뀌었다","type":"order","where":"방배동 세탁소","level":"쉬움","brief":"맡긴 코트 대신 다른 사람 코트가 왔다. 접수부터 수령까지를 시간 순서대로 늘어놓아라.","hint":"접수증 번호 두 개가 같은 선반에 올라간 시각이 갈림길이다.","explain":"27번과 28번이 같은 선반에 놓인 뒤 28번 손님이 옆 봉투를 함께 가져갔다. 28번 손님 연락처로 교환을 요청하면 된다.","steps":[{"tag":"수거","visual":"laundry","text":"09:00 나 — 코트 1벌을 세탁소에 맡기고 접수증 27번을 받음"},{"tag":"접수","visual":"receipt","text":"09:40 직원 — 27번과 28번을 같은 선반에 나란히 올림"},{"tag":"수령","visual":"door","text":"10:10 다른 손님 — 28번을 찾으며 선반의 27번 봉투를 함께 들고 나감"},{"tag":"요청","visual":"phone","text":"19:00 나 — 27번을 찾으러 왔지만 선반에는 28번만 남아 있음"}],"display":[0,2,1,3]},{"id":"m90-04","title":"배달 음식이 사라졌다","type":"order","where":"망원동 빌라","level":"보통","brief":"배달 완료 사진까지 왔는데 문 앞에 음식이 없다. 무슨 일이 있었는지 순서대로 늘어놓아라.","hint":"라이더 사진 시각과 옆집 단톡 시각 사이는 3분이다.","explain":"라이더가 302호 문 앞에 두었지만 옆집이 자기 것으로 착각해 들여놨다. 단톡방 메시지를 근거로 옆집에서 받으면 된다.","steps":[{"tag":"주문","visual":"phone","text":"19:02 주문 — 치킨 1마리, 요청란에 '문 앞에 놓아 주세요'"},{"tag":"조리","visual":"receipt","text":"19:10 가게 — 조리 완료, 배달 출발 알림"},{"tag":"도착","visual":"parcel","text":"19:38 라이더 — 302호 문 앞에 두고 사진 촬영"},{"tag":"이웃","visual":"chat","text":"19:41 옆집 단톡 — '302호 음식이 우리 집 앞에 와서 들여놨다'"},{"tag":"확인","visual":"door","text":"19:52 나 — 문 앞이 비어 있어 가게에 전화"}],"display":[1,4,3,0,2]},{"id":"m90-05","title":"반납했는데 연체 알림","type":"pick","where":"마포구립도서관","level":"어려움","brief":"분명 반납함에 넣었는데 다음 날 연체 문자가 왔다. 왜 이런 일이 생겼는지 골라라.","hint":"문자가 나간 시각과 시스템 반납 시각의 앞뒤를 비교하라.","explain":"반납은 다음 날 10:05에 처리됐고 자동 알림은 09:00에 이미 나갔다. 반납함 투입 시각과 직원 수거 시각을 보여 주면 연체료를 면제받을 수 있다.","steps":[{"tag":"반납","visual":"book","text":"21:10 나 — 폐관 10분 뒤 반납함에 책을 넣음"},{"tag":"정리","visual":"clock","text":"다음 날 09:30 직원 — 반납함을 열어 책을 수거"},{"tag":"처리","visual":"receipt","text":"10:05 시스템 — 반납 처리가 이 시각에 기록됨"},{"tag":"알림","visual":"phone","text":"09:00 자동 알림 — 전날 24시 기준 미반납 자료로 문자 발송"}],"display":[2,0,1,3],"question":"연체 알림이 발송된 이유는?","choices":["폐관 뒤에 넣어 반납 처리가 다음 날 시작됐고, 알림은 그 전에 나갔다","대출 기록이 두 번 등록됐다","연체료가 남아 있어 새 대출이 막혔다","반납함에 넣은 책이 다른 사람 책과 바뀌었다"],"answer":0},{"id":"m90-06","title":"박스 하나가 없다","type":"order","where":"이사 당일, 노원구","level":"보통","brief":"이삿짐 7개 중 1개가 보이지 않는다. 상차부터 확인까지를 순서대로 늘어놓아라.","hint":"하차할 때 기사가 한 말과 검수표 숫자가 어긋난다.","explain":"기사가 '다음 차'라고 했지만 다음 차는 오지 않았고, 검수표에 6개만 체크하고 서명한 것이 문제였다. 견적서 7개와 검수표 6개를 대조해 누락을 입증한다.","steps":[{"tag":"견적","visual":"memo","text":"08:30 견적서 — 박스 7개, 대형 가구 2점"},{"tag":"상차","visual":"parcel","text":"09:00 기사 — 7개를 세어 차에 실음"},{"tag":"하차","visual":"door","text":"11:00 새 집 — 6개를 내리고 '나머지는 다음 차'라고 말함"},{"tag":"검수","visual":"receipt","text":"14:00 나 — 검수표에 6개만 체크하고 서명"},{"tag":"연락","visual":"phone","text":"18:00 나 — 7번째 박스가 없다는 것을 알고 업체에 전화"}],"display":[0,3,1,4,2]},{"id":"m90-07","title":"자전거가 사라졌다","type":"pick","where":"성동구 아파트 자전거 보관소","level":"보통","brief":"밤에 세워 둔 자전거가 아침에 없다. 단서를 보고 가장 그럴듯한 원인을 골라라.","hint":"게시판 안내문의 날짜와 스티커의 견인일을 견주어 보라.","explain":"구청이 사전 안내 후 방치 자전거로 보고 견인했다. 견인 스티커의 연락처로 보관 장소를 확인하면 된다.","steps":[{"tag":"CCTV","visual":"cctv","text":"21:10 자전거를 잠그고 보관소를 떠나는 장면"},{"tag":"공지","visual":"memo","text":"보관소 게시판 — '10월 31일까지 미신고 자전거 견인 예정' 안내(사진 촬영일 11월 2일)"},{"tag":"스티커","visual":"receipt","text":"보관소 기둥에 구청 견인 안내 스티커 — 보관소 연락처와 견인일 11월 3일"},{"tag":"통화","visual":"phone","text":"관리사무소 — '어제 아침 구청 용역이 방치 자전거를 실어 갔다'"}],"display":[1,0,3,2],"question":"자전거가 보관소에서 사라진 이유는?","choices":["관리사무소가 다른 자리에 옮겨 두었다","구청이 방치 자전거로 보고 견인했다","도난당했다","내가 다른 곳에 세워 두고 잊었다"],"answer":1},{"id":"m90-08","title":"회의실이 두 번 예약됐다","type":"order","where":"회사 5층","level":"쉬움","brief":"같은 시간에 두 팀이 회의실을 쓰려고 한다. 예약이 겹친 과정을 순서대로 늘어놓아라.","hint":"B팀이 들은 '이야기'의 출처가 확정 메일인지 확인하라.","explain":"A팀은 시간을 바꾸지 않았는데 구두로 잘못 전달됐고, B팀은 확정 메일을 확인하지 않고 예약했다. 예약 시스템의 확정 기록이 A팀 손을 들어 준다.","steps":[{"tag":"예약","visual":"calendar","text":"월요일 10:00 A팀 — 3시 회의실을 예약하고 확정 메일을 받음"},{"tag":"변경","visual":"chat","text":"월요일 14:00 B팀 — 'A팀이 시간을 바꿨다'는 이야기를 듣고 같은 방을 예약"},{"tag":"확인","visual":"memo","text":"월요일 14:10 A팀 — 실제로는 시간을 바꾸지 않았고 확정 메일도 그대로"},{"tag":"충돌","visual":"door","text":"화요일 15:00 두 팀이 동시에 문 앞에서 만남"}],"display":[1,2,0,3]},{"id":"m90-09","title":"월세가 두 번 빠져나갔다","type":"order","where":"관악구 원룸","level":"어려움","brief":"자동이체와 직접 송금이 겹쳐 월세가 두 번 나갔다. 무슨 일이 있었는지 순서대로 늘어놓아라.","hint":"은행의 실패 건 재시도 규칙과 내 송금 시각을 나란히 놓아라.","explain":"자동이체 실패 건이 다음 날 자동 재시도되면서 직접 송금과 겹쳤다. 은행 앱에서 재시도 설정을 끄고, 집주인에게 이체 내역 두 건을 보여 주고 한 건을 돌려받으면 된다.","steps":[{"tag":"잔액","visual":"card","text":"25일 06:00 — 잔액 부족으로 자동이체 실패 알림"},{"tag":"송금","visual":"phone","text":"25일 09:00 나 — 급하게 집주인 계좌로 직접 송금"},{"tag":"입금","visual":"receipt","text":"25일 15:00 — 월급이 들어와 잔액이 채워짐"},{"tag":"재시도","visual":"meter","text":"26일 06:00 은행 — 실패했던 자동이체를 자동으로 다시 실행"},{"tag":"확인","visual":"chat","text":"27일 집주인 연락 — '이번 달 두 번 들어왔다'"}],"display":[4,2,1,0,3]},{"id":"m90-10","title":"멀티탭이 타 버렸다","type":"pick","where":"신림동 원룸","level":"보통","brief":"겨울에 난방기구를 쓰다 멀티탭이 녹았다. 단서를 보고 원인을 골라라.","hint":"두 기기의 소비전력을 더해 멀티탭 표시와 비교하라.","explain":"2,000W와 1,500W를 함께 쓰면 3,500W로 멀티탭 최대 3,000W를 넘는다. 난방기구는 멀티탭이 아니라 벽 콘센트에 단독으로 꽂아야 한다.","steps":[{"tag":"스펙","visual":"memo","text":"멀티탭 뒷면 — '16A 250V, 최대 3,000W'"},{"tag":"기기1","visual":"receipt","text":"전기히터 표시 — 소비전력 2,000W"},{"tag":"기기2","visual":"receipt","text":"온풍기 표시 — 소비전력 1,500W"},{"tag":"흔적","visual":"meter","text":"플러그 한쪽이 검게 그을리고 접촉부가 녹아 붙어 있음"}],"display":[3,0,2,1],"question":"멀티탭이 녹은 가장 직접적인 원인은?","choices":["콘센트의 접지가 없었다","멀티탭 색상이 밝아 열을 더 받았다","멀티탭의 정격 전류보다 큰 전류가 흘렀다","전기요금이 밀려 있었다"],"answer":2},{"id":"m90-11","title":"윗집 소음 민원","type":"order","where":"부천시 오피스텔","level":"보통","brief":"매일 밤 쿵쿵거리는 소리에 민원을 넣었다. 있었던 일을 순서대로 늘어놓아라.","hint":"민원 전에 5일간 기록한 것이 가장 먼저다.","explain":"시간·횟수 기록이 있어야 관리사무소가 근거로 삼는다. 안내 뒤에도 2주간 다시 기록해 남으면 다음 단계(층간소음 이웃사이센터)로 넘어간다.","steps":[{"tag":"기록","visual":"memo","text":"1일차 23:10 — 소음 시간과 횟수를 5일간 기록 시작"},{"tag":"민원","visual":"phone","text":"6일차 10:00 — 관리사무소에 기록지를 첨부해 민원 접수"},{"tag":"확인","visual":"door","text":"6일차 15:00 관리사무소 — 윗집 방문, '아이가 있다'는 답을 받음"},{"tag":"안내","visual":"chat","text":"6일차 18:00 — 층간소음 안내문과 매트 시공 안내를 받음"},{"tag":"재확인","visual":"clock","text":"13일차 23:00 — 소음이 줄었는지 다시 기록"}],"display":[4,3,2,1,0]},{"id":"m90-12","title":"지갑을 어디서 잃었나","type":"pick","where":"토요일 오후, 종로","level":"어려움","brief":"지갑이 없다. 결제·이동 기록으로 가장 마지막으로 지갑이 있던 곳을 골라라.","hint":"현금 결제는 지갑이 있어야 가능하다. 그 뒤로 실물 카드를 쓴 기록이 있는지 보라.","explain":"14:20 편의점에서 현금으로 결제했으니 그때까지는 지갑이 있었다. 이후는 모두 앱·교통카드 결제라 편의점과 영화관 사이에서 잃어버렸을 가능성이 가장 크다.","steps":[{"tag":"결제1","visual":"card","text":"13:40 카페 — 카드로 4,800원 결제(실물 카드 사용)"},{"tag":"이동","visual":"clock","text":"14:05 지하철 — 교통카드로 개찰구 통과"},{"tag":"결제2","visual":"receipt","text":"14:20 편의점 — 현금 3,000원으로 결제, 영수증에 '현금' 표시"},{"tag":"이후","visual":"phone","text":"14:40 영화 예매 — 앱 결제(카드 실물 사용 없음)"},{"tag":"발견","visual":"memo","text":"18:00 귀가 후 — 지갑이 없음"}],"display":[2,0,4,1,3],"question":"지갑이 마지막으로 확인된 장소는?","choices":["편의점 계산대","지하철 개찰구를 지난 뒤","집을 나서기 전","영화관 좌석"],"answer":0},{"id":"m90-13","title":"다른 집 택배가 왔다","type":"order","where":"은평구 빌라","level":"쉬움","brief":"내 이름이 아닌 택배가 문 앞에 놓여 있다. 처리 과정을 순서대로 늘어놓아라.","hint":"남의 물건은 열지 않고 사진부터 남긴다.","explain":"열지 않은 채 송장과 현관을 촬영하고 이웃에게 전달한 뒤 관리사무소에 알리면 된다. 사진은 나중에 분실·오배송 분쟁의 근거가 된다.","steps":[{"tag":"발견","visual":"parcel","text":"08:10 현관 — 101호 앞에 102호 수취인 상자가 놓여 있음"},{"tag":"촬영","visual":"cctv","text":"08:12 나 — 상자 송장과 현관을 함께 사진으로 남김"},{"tag":"전달","visual":"door","text":"08:20 102호 — 직접 가져다주고 문 앞에 둔 사실을 알림"},{"tag":"기록","visual":"memo","text":"08:25 관리사무소 — 배송 오류로 알리고 송장 사진 전달"}],"display":[0,3,2,1]},{"id":"m90-14","title":"관리비가 갑자기 올랐다","type":"pick","where":"동작구 오피스텔","level":"어려움","brief":"지난달보다 관리비가 4만 원 늘었다. 고지서와 계량기를 보고 원인을 골라라.","hint":"고지서 사용량과 계량기 실제 눈금을 나란히 놓아라.","explain":"계량기 실제 사용량은 206kWh인데 고지서에는 412kWh가 찍혔다. 검침 입력 오류이므로 관리사무소에 계량기 사진과 함께 정정을 요청한다.","steps":[{"tag":"고지서","visual":"receipt","text":"이번 달 전기 사용량 412kWh — 지난달 206kWh의 두 배"},{"tag":"계량기","visual":"meter","text":"직접 확인한 계량기 — 이번 달 누적 206kWh"},{"tag":"단가","visual":"memo","text":"관리비 단가표 — 전기 단가 지난달과 동일"},{"tag":"항목","visual":"calendar","text":"수리비 항목 없음, 공용전기 사용량 평소와 같음"}],"display":[0,3,2,1],"question":"관리비가 오른 가장 직접적인 이유는?","choices":["검침값이 잘못 입력되어 사용량이 두 배로 잡혔다","이번 달에 수리비가 새로 붙었다","예년보다 추워 난방을 많이 했다","관리비 단가가 올랐다"],"answer":0}],"daily":"m90-06","date":"2026-11-24","limit":90,"hintPenalty":10,"storeKey":"secjobs-mystery90-v1","guideKey":"mystery90_guide_seen_v1"}</script>
+  <script>
+(function () {
+  'use strict';
+
+  // ---------- 화면 테마 ----------
+  var themeBtn = document.getElementById('themeToggle');
+  var moonIcon = document.getElementById('moonIcon');
+  var sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) { try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {} }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
+  // ---------- 가이드: 한 번만 자동 재생 ----------
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var guide = document.getElementById('m9Guide');
+  var replay = document.getElementById('m9Replay');
+  var guideTimer = null;
+  function playGuide() {
+    if (!guide) return;
+    guide.classList.remove('is-playing');
+    if (guideTimer) { window.clearTimeout(guideTimer); guideTimer = null; }
+    if (reduceMotion) return;
+    // 같은 프레임에서 클래스를 다시 붙이면 애니메이션이 재시작되지 않으므로 한 번 끊는다.
+    void guide.offsetWidth;
+    guide.classList.add('is-playing');
+    guideTimer = window.setTimeout(function () {
+      guide.classList.remove('is-playing');
+      guideTimer = null;
+    }, 3200);
+  }
+  var GUIDE_KEY = 'mystery90_guide_seen_v1';
+  var guideSeen = false;
+  try { guideSeen = localStorage.getItem(GUIDE_KEY) === '1'; } catch (e) { guideSeen = false; }
+  if (!guideSeen) {
+    playGuide();
+    try { localStorage.setItem(GUIDE_KEY, '1'); } catch (e) {}
+  }
+  if (replay) replay.addEventListener('click', playGuide);
+
+  // ---------- 데이터 ----------
+  var DATA;
+  try { DATA = JSON.parse(document.getElementById('m9Data').textContent); } catch (e) { return; }
+  var CASES = DATA.cases;
+  var BY_ID = {};
+  CASES.forEach(function (item) { BY_ID[item.id] = item; });
+  var LIMIT = DATA.limit;
+  var HINT_PENALTY = DATA.hintPenalty;
+  var STORE_KEY = DATA.storeKey;
+
+  // ---------- KST 날짜 ----------
+  function pad(v) { return v < 10 ? '0' + v : String(v); }
+  function kstParts(now) {
+    var shifted = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
+    return { y: shifted.getFullYear(), m: shifted.getMonth() + 1, d: shifted.getDate() };
+  }
+  function kstDateString(now) {
+    var p = kstParts(now);
+    return p.y + '-' + pad(p.m) + '-' + pad(p.d);
+  }
+  function yesterdayOf(dateString) {
+    var p = dateString.split('-');
+    var d = new Date(Date.UTC(Number(p[0]), Number(p[1]) - 1, Number(p[2])));
+    d.setUTCDate(d.getUTCDate() - 1);
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+  }
+
+  // ---------- 기록 ----------
+  function loadRecord() {
+    var empty = { streak: 0, lastDate: '', solved: 0, best: 0, history: {} };
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { raw = null; }
+    if (!raw || typeof raw !== 'object') return empty;
+    return {
+      streak: Number(raw.streak) || 0,
+      lastDate: typeof raw.lastDate === 'string' ? raw.lastDate : '',
+      solved: Number(raw.solved) || 0,
+      best: Number(raw.best) || 0,
+      history: raw.history && typeof raw.history === 'object' ? raw.history : {}
+    };
+  }
+  var record = loadRecord();
+  function saveRecord() { try { localStorage.setItem(STORE_KEY, JSON.stringify(record)); } catch (e) {} }
+  function settle(caseId, result) {
+    var today = kstDateString(new Date());
+    var key = today + '|' + caseId;
+    var firstToday = !record.history[today];
+    if (!record.history[key] && record.solved < 9999) { record.solved += result.correct ? 1 : 0; }
+    record.history[key] = { correct: result.correct, remaining: result.remaining, hints: result.hints };
+    if (firstToday) {
+      record.streak = record.lastDate === yesterdayOf(today) ? record.streak + 1 : 1;
+      record.lastDate = today;
+    }
+    if (result.correct && result.points > record.best) record.best = result.points;
+    saveRecord();
+    return firstToday;
+  }
+  function renderStats() {
+    var streak = document.getElementById('m9Streak');
+    var solved = document.getElementById('m9Solved');
+    var best = document.getElementById('m9Best');
+    if (streak) streak.textContent = record.streak + '일';
+    if (solved) solved.textContent = String(record.solved);
+    if (best) best.textContent = record.best > 0 ? record.best + '점' : '-';
+  }
+
+  // ---------- 상태 ----------
+  var state = {
+    caseItem: null,
+    isDaily: true,
+    phase: 'idle',          // idle | playing | done
+    entered: [],            // order: 화면 카드 인덱스를 고른 순서
+    picked: -1,             // pick: 선택한 보기
+    hints: 0,
+    deadline: 0,
+    startedAt: 0,
+    remaining: LIMIT,
+    timer: null,
+    result: null
+  };
+
+  var els = {
+    cards: document.getElementById('m9Cards'),
+    cardsLabel: document.getElementById('m9CardsLabel'),
+    tray: document.getElementById('m9Tray'),
+    choices: document.getElementById('m9Choices'),
+    submit: document.getElementById('m9Submit'),
+    startWrap: document.getElementById('m9StartWrap'),
+    start: document.getElementById('m9Start'),
+    hint: document.getElementById('m9Hint'),
+    restart: document.getElementById('m9Restart'),
+    status: document.getElementById('m9Status'),
+    timer: document.getElementById('m9Timer'),
+    timerTitle: document.getElementById('m9TimerTitle'),
+    timerSub: document.getElementById('m9TimerSub'),
+    clock: document.getElementById('m9Clock'),
+    ring: document.getElementById('m9Ring'),
+    title: document.getElementById('m9CaseTitle'),
+    brief: document.getElementById('m9Brief'),
+    where: document.getElementById('m9Where'),
+    level: document.getElementById('m9Level'),
+    kind: document.getElementById('m9Kind'),
+    dailyTag: document.getElementById('m9DailyTag'),
+    result: document.getElementById('m9Result'),
+    badge: document.getElementById('m9Badge'),
+    resultTitle: document.getElementById('m9ResultTitle'),
+    resultSub: document.getElementById('m9ResultSub'),
+    resultStats: document.getElementById('m9ResultStats'),
+    share: document.getElementById('m9Share'),
+    explain: document.getElementById('m9Explain'),
+    practice: document.getElementById('m9Practice')
+  };
+
+  var RING = 2 * Math.PI * 23;
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined && text !== null) node.textContent = text;
+    return node;
+  }
+
+  // ---------- 시각 단서 카드 모형(SVG) ----------
+  function visualSvg(kind) {
+    var line = 'stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+    var box = '<rect x="6" y="6" width="60" height="34" rx="4" ' + line + ' opacity="0.55"></rect>';
+    var body = '';
+    if (kind === 'phone') {
+      body = '<rect x="24" y="4" width="24" height="38" rx="4" ' + line + '></rect>' +
+        '<rect x="28" y="9" width="16" height="22" rx="1.6" ' + line + ' opacity="0.7"></rect>' +
+        '<path d="M32 35h8" ' + line + '></path>';
+    } else if (kind === 'receipt' || kind === 'card') {
+      body = '<path d="M26 5h20v36l-4-3-4 3-4-3-4 3-4-3z" ' + line + '></path>' +
+        '<path d="M31 13h10M31 18h10M31 23h6" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'locker') {
+      body = '<rect x="14" y="6" width="44" height="34" rx="3" ' + line + '></rect>' +
+        '<path d="M26 6v34M38 6v34M50 6v34" ' + line + ' opacity="0.7"></path>' +
+        '<circle cx="22" cy="23" r="1.6" fill="currentColor"></circle>' +
+        '<circle cx="34" cy="23" r="1.6" fill="currentColor"></circle>';
+    } else if (kind === 'door') {
+      body = '<rect x="16" y="4" width="40" height="38" rx="3" ' + line + '></rect>' +
+        '<path d="M22 8h16v12h-16z" ' + line + ' opacity="0.7"></path>' +
+        '<circle cx="48" cy="24" r="2" fill="currentColor"></circle>';
+    } else if (kind === 'memo') {
+      body = '<path d="M20 5h32v34l-7-4H20z" ' + line + '></path>' +
+        '<path d="M26 13h20M26 19h20M26 25h12" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'cctv') {
+      body = '<rect x="10" y="18" width="26" height="13" rx="3" ' + line + '></rect>' +
+        '<path d="M36 22l10-5v16l-10-5" ' + line + '></path>' +
+        '<path d="M18 31v9M30 31v9" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'chat') {
+      body = '<path d="M10 10h34a4 4 0 0 1 4 4v13a4 4 0 0 1-4 4H26l-9 7v-7h-3a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4z" ' + line + '></path>' +
+        '<path d="M17 18h24M17 24h16" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'clock') {
+      body = '<circle cx="36" cy="23" r="17" ' + line + '></circle>' +
+        '<path d="M36 13v10l7 5" ' + line + '></path>';
+    } else if (kind === 'parcel') {
+      body = '<path d="M36 6l22 10v18L36 44 14 34V16z" ' + line + '></path>' +
+        '<path d="M14 16l22 10 22-10M36 26v18" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'laundry') {
+      body = '<path d="M36 8a6 6 0 0 1 6 6h6l-4 22a6 6 0 0 1-6 5H30a6 6 0 0 1-6-5l-4-22h6a6 6 0 0 1 6-6z" ' + line + '></path>' +
+        '<path d="M30 20c4 0 6 3 6 6s2 6 6 6" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'bike') {
+      body = '<circle cx="22" cy="32" r="9" ' + line + '></circle>' +
+        '<circle cx="52" cy="32" r="9" ' + line + '></circle>' +
+        '<path d="M22 32l9-14h9l8 14M31 18h10" ' + line + '></path>';
+    } else if (kind === 'book') {
+      body = '<path d="M14 9h18a4 4 0 0 1 4 4v26H18a4 4 0 0 1-4-4z" ' + line + '></path>' +
+        '<path d="M40 9h18v26H40" ' + line + ' opacity="0.7"></path>' +
+        '<path d="M20 16h10M20 22h10" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'calendar') {
+      body = '<rect x="16" y="9" width="40" height="32" rx="3" ' + line + '></rect>' +
+        '<path d="M16 17h40M26 5v8M46 5v8" ' + line + '></path>' +
+        '<rect x="24" y="24" width="8" height="7" ' + line + ' opacity="0.7"></rect>';
+    } else if (kind === 'meter') {
+      body = '<rect x="18" y="8" width="36" height="32" rx="4" ' + line + '></rect>' +
+        '<circle cx="36" cy="23" r="9" ' + line + ' opacity="0.7"></circle>' +
+        '<path d="M36 23l5-5M24 36h24" ' + line + ' opacity="0.7"></path>';
+    } else if (kind === 'key') {
+      body = '<circle cx="26" cy="20" r="9" ' + line + '></circle>' +
+        '<path d="M32 26l14 14M40 34l5-5M45 39l4-4" ' + line + '></path>';
+    } else {
+      body = box + '<path d="M14 28h44" ' + line + ' opacity="0.7"></path>';
+    }
+    return '<svg viewBox="0 0 72 46" aria-hidden="true" style="color:var(--text-secondary)">' + body + '</svg>';
+  }
+
+  // ---------- 사건 그리기 ----------
+  function setCase(caseItem, isDaily) {
+    stopTimer();
+    state.caseItem = caseItem;
+    state.isDaily = isDaily;
+    state.phase = 'idle';
+    state.entered = [];
+    state.picked = -1;
+    state.hints = 0;
+    state.remaining = LIMIT;
+    state.result = null;
+
+    els.title.textContent = caseItem.title;
+    els.brief.textContent = caseItem.brief;
+    els.where.textContent = caseItem.where;
+    els.level.textContent = caseItem.level;
+    els.kind.textContent = caseItem.type === 'order' ? '순서 배열' : '원인 선택';
+    els.dailyTag.textContent = isDaily ? '오늘의 사건' : '연습 사건';
+    els.dailyTag.className = isDaily ? 'is-daily' : '';
+    els.result.hidden = true;
+    els.status.textContent = '';
+    els.startWrap.hidden = false;
+    els.submit.disabled = true;
+    els.hint.disabled = false;
+    els.timerTitle.textContent = '시작을 누르면 ' + LIMIT + '초가 흐릅니다';
+    els.timerSub.textContent = '힌트 0개 · 제출 전';
+    els.cardsLabel.textContent = caseItem.type === 'order'
+      ? '단서 카드 · 탭해서 순서대로 담기'
+      : '단서 카드 · 읽고 아래에서 원인 선택';
+    renderClock(LIMIT);
+    renderCards();
+    renderAnswerArea();
+    renderStats();
+    Array.prototype.forEach.call(els.practice.querySelectorAll('.m9-practice-item'), function (btn) {
+      btn.classList.toggle('is-current', btn.dataset.case === caseItem.id);
+    });
+  }
+
+  function renderClock(remaining) {
+    var value = Math.max(0, remaining);
+    els.timer.textContent = value >= 10 ? String(Math.ceil(value)) : value.toFixed(1);
+    var ratio = Math.max(0, Math.min(1, value / LIMIT));
+    els.ring.setAttribute('stroke-dashoffset', String((RING * (1 - ratio)).toFixed(2)));
+    var low = value <= 20;
+    els.clock.classList.toggle('is-low', low);
+    els.clock.setAttribute('aria-label', '남은 시간 ' + Math.ceil(value) + '초');
+  }
+
+  function renderCards() {
+    var caseItem = state.caseItem;
+    els.cards.innerHTML = '';
+    caseItem.display.forEach(function (stepIndex) {
+      var step = caseItem.steps[stepIndex];
+      var card = el('button', 'm9-card');
+      card.type = 'button';
+      card.dataset.index = String(stepIndex);
+      var visual = el('div', 'm9-visual');
+      visual.innerHTML = visualSvg(step.visual);
+      card.appendChild(visual);
+      card.appendChild(el('span', 'm9-card-tag', step.tag));
+      card.appendChild(el('span', 'm9-card-text', step.text));
+      var no = el('span', 'm9-card-pickno', '');
+      no.hidden = true;
+      card.appendChild(no);
+      if (caseItem.type === 'order') {
+        card.setAttribute('aria-pressed', 'false');
+      }
+      els.cards.appendChild(card);
+    });
+  }
+
+  function renderAnswerArea() {
+    var caseItem = state.caseItem;
+    if (caseItem.type === 'order') {
+      els.tray.hidden = false;
+      els.choices.hidden = true;
+      renderTray();
+    } else {
+      els.tray.hidden = true;
+      els.choices.hidden = false;
+      renderChoices();
+    }
+  }
+
+  function renderTray() {
+    var caseItem = state.caseItem;
+    els.tray.innerHTML = '';
+    for (var i = 0; i < caseItem.steps.length; i += 1) {
+      var slot = el('div', 'm9-slot');
+      slot.appendChild(el('span', 'm9-slot-no', String(i + 1)));
+      var stepIndex = state.entered[i];
+      var text = el('span', 'm9-slot-text', stepIndex === undefined ? '여기에 ' + (i + 1) + '번째 단서' : caseItem.steps[stepIndex].text);
+      slot.appendChild(text);
+      if (stepIndex !== undefined) {
+        slot.classList.add('is-filled');
+        if (state.phase === 'done') {
+          var correctAt = caseItem.display[i];
+          slot.classList.add(correctAt === stepIndex ? 'is-ok' : 'is-ng');
+        }
+        if (state.phase !== 'done') {
+          var remove = el('button', 'm9-slot-remove', '×');
+          remove.type = 'button';
+          remove.dataset.remove = String(i);
+          remove.setAttribute('aria-label', (i + 1) + '번째 단서 빼기');
+          slot.appendChild(remove);
+        }
+      }
+      els.tray.appendChild(slot);
+    }
+    els.submit.disabled = state.phase !== 'playing' || state.entered.length !== caseItem.steps.length;
+  }
+
+  function renderChoices() {
+    var caseItem = state.caseItem;
+    els.choices.innerHTML = '';
+    caseItem.choices.forEach(function (text, index) {
+      var btn = el('button', 'm9-choice');
+      btn.type = 'button';
+      btn.dataset.choice = String(index);
+      btn.appendChild(el('span', 'm9-choice-no', String(index + 1)));
+      btn.appendChild(el('span', '', text));
+      if (state.picked === index) btn.classList.add('is-picked');
+      if (state.phase === 'done') {
+        if (index === caseItem.answer) btn.classList.add('is-true');
+        else if (index === state.picked) btn.classList.add('is-false');
+        btn.disabled = true;
+      }
+      els.choices.appendChild(btn);
+    });
+    els.submit.disabled = state.phase !== 'playing' || state.picked < 0;
+  }
+
+  function markCards() {
+    var caseItem = state.caseItem;
+    Array.prototype.forEach.call(els.cards.querySelectorAll('.m9-card'), function (card) {
+      var stepIndex = Number(card.dataset.index);
+      var no = card.querySelector('.m9-card-pickno');
+      var pos = state.entered.indexOf(stepIndex);
+      if (pos >= 0 && state.phase !== 'done') {
+        card.classList.add('is-picked');
+        no.hidden = false;
+        no.textContent = String(pos + 1);
+      } else if (pos >= 0) {
+        card.classList.add('is-picked');
+        no.hidden = false;
+        no.textContent = String(pos + 1);
+      } else {
+        card.classList.remove('is-picked');
+        no.hidden = true;
+      }
+      if (state.phase === 'done') {
+        card.disabled = true;
+        if (caseItem.type === 'order') {
+          var correctPos = caseItem.display.indexOf(stepIndex);
+          var placed = state.entered[correctPos];
+          card.classList.add(placed === stepIndex ? 'is-true' : 'is-false');
+        }
+      } else if (state.phase === 'idle') {
+        card.classList.add('is-locked');
+      } else {
+        card.classList.remove('is-locked');
+      }
+    });
+  }
+
+  // ---------- 타이머 ----------
+  function stopTimer() {
+    if (state.timer) { window.clearInterval(state.timer); state.timer = null; }
+  }
+  function tick() {
+    if (state.phase !== 'playing') return;
+    var now = Date.now();
+    var remaining = Math.max(0, (state.deadline - now) / 1000);
+    state.remaining = remaining;
+    renderClock(remaining);
+    if (remaining <= 0) {
+      stopTimer();
+      finish(true);
+    }
+  }
+  function startTimer() {
+    if (state.phase !== 'playing') return;
+    stopTimer();
+    tick();
+    state.timer = window.setInterval(tick, 100);
+  }
+
+  function setPhasePlaying() {
+    if (state.phase === 'done') return;
+    state.phase = 'playing';
+    state.startedAt = Date.now();
+    state.deadline = state.startedAt + LIMIT * 1000;
+    state.remaining = LIMIT;
+    els.startWrap.hidden = true;
+    els.timerTitle.textContent = '사건을 읽고 순서를 맞추세요';
+    els.timerSub.textContent = '힌트 0개 · 제출 전';
+    els.status.textContent = '';
+    renderClock(LIMIT);
+    markCards();
+    renderAnswerArea();
+    startTimer();
+  }
+
+  // ---------- 힌트 ----------
+  function useHint() {
+    if (state.phase !== 'playing') {
+      els.status.textContent = '시작을 누른 뒤에 힌트를 쓸 수 있습니다.';
+      return;
+    }
+    state.hints += 1;
+    state.deadline -= HINT_PENALTY * 1000;
+    var remaining = Math.max(0, (state.deadline - Date.now()) / 1000);
+    state.remaining = remaining;
+    renderClock(remaining);
+    els.timerSub.textContent = '힌트 ' + state.hints + '개 · 남은 시간 ' + HINT_PENALTY + '초 차감';
+    els.status.textContent = '힌트: ' + state.caseItem.hint;
+    if (remaining <= 0) { stopTimer(); finish(true); }
+  }
+
+  // ---------- 제출 · 채점 ----------
+  function currentCorrect() {
+    var caseItem = state.caseItem;
+    if (caseItem.type === 'pick') return state.picked === caseItem.answer;
+    if (state.entered.length !== caseItem.steps.length) return false;
+    for (var i = 0; i < caseItem.steps.length; i += 1) {
+      if (state.entered[i] !== caseItem.display[i]) return false;
+    }
+    return true;
+  }
+
+  function scoreOf(correct, remaining, hints) {
+    if (!correct) return 0;
+    return Math.max(0, Math.round(60 + Math.min(45, remaining * 0.5) - hints * 8));
+  }
+
+  function resultLine(result) {
+    return '90초 생활 추리 · ' + kstDateString(new Date()) + '\n' +
+      '"' + state.caseItem.title + '" · ' + (result.correct ? '정답' : '아쉬움') + '\n' +
+      '남은 시간 ' + Math.round(result.remaining) + '초 · 힌트 ' + result.hints + '개 · ' + result.points + '점\n' +
+      '연속 ' + record.streak + '일 · 해결 ' + record.solved + '건';
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function () {});
+    }
+  }
+
+  function finish(timeout) {
+    if (state.phase === 'done') return;
+    var caseItem = state.caseItem;
+    var correct = !timeout && currentCorrect();
+    var remaining = timeout ? 0 : Math.max(0, (state.deadline - Date.now()) / 1000);
+    state.remaining = remaining;
+    state.phase = 'done';
+    stopTimer();
+    var result = {
+      correct: correct,
+      timeout: !!timeout,
+      remaining: remaining,
+      hints: state.hints,
+      points: scoreOf(correct, remaining, state.hints)
+    };
+    state.result = result;
+    settle(caseItem.id, result);
+    renderStats();
+
+    els.result.hidden = false;
+    els.result.className = 'm9-result ' + (correct ? 'is-correct' : 'is-wrong');
+    els.badge.textContent = correct ? '정답' : '아쉬움';
+    els.resultTitle.textContent = correct ? '정답입니다 · ' + result.points + '점' : (timeout ? '시간이 끝났습니다' : '정답과 다릅니다');
+    els.resultSub.textContent = correct
+      ? '남은 ' + Math.round(remaining) + '초 · 힌트 ' + result.hints + '개로 해결했습니다.'
+      : (caseItem.type === 'order' ? '아래 초록 칸이 정답 순서입니다. 해설을 읽고 연습으로 다시 해 보세요.'
+        : '초록으로 표시된 보기가 정답입니다. 해설을 읽고 연습으로 다시 해 보세요.');
+    els.resultStats.innerHTML = '';
+    els.resultStats.appendChild(el('span', '', '남은 시간 ' + Math.round(remaining) + '초'));
+    els.resultStats.appendChild(el('span', '', '힌트 ' + result.hints + '개'));
+    els.resultStats.appendChild(el('span', '', '연속 ' + record.streak + '일'));
+    els.share.textContent = resultLine(result);
+    els.explain.textContent = '';
+    var label = el('b', '', '해설 · ');
+    els.explain.appendChild(label);
+    els.explain.appendChild(document.createTextNode(caseItem.explain));
+
+    renderClock(remaining);
+    els.timerTitle.textContent = correct ? '해결했습니다' : '결과를 확인하세요';
+    els.timerSub.textContent = '힌트 ' + result.hints + '개 · 제출 완료';
+    els.submit.disabled = true;
+    els.hint.disabled = true;
+    els.status.textContent = '결과 문구를 복사했습니다. 같은 사건은 다시 풀어도 기록은 한 번만 남습니다.';
+    markCards();
+    renderAnswerArea();
+    copyText(resultLine(result));
+  }
+
+  // ---------- 이벤트 ----------
+  els.cards.addEventListener('click', function (event) {
+    var card = event.target.closest ? event.target.closest('.m9-card') : null;
+    if (!card || state.phase !== 'playing') return;
+    var stepIndex = Number(card.dataset.index);
+    if (state.caseItem.type !== 'order') return;
+    var pos = state.entered.indexOf(stepIndex);
+    if (pos >= 0) state.entered.splice(pos, 1);
+    else state.entered.push(stepIndex);
+    renderTray();
+    markCards();
+  });
+
+  els.tray.addEventListener('click', function (event) {
+    var btn = event.target.closest ? event.target.closest('.m9-slot-remove') : null;
+    if (!btn || state.phase !== 'playing') return;
+    state.entered.splice(Number(btn.dataset.remove), 1);
+    renderTray();
+    markCards();
+  });
+
+  els.choices.addEventListener('click', function (event) {
+    var btn = event.target.closest ? event.target.closest('.m9-choice') : null;
+    if (!btn || state.phase !== 'playing') return;
+    state.picked = Number(btn.dataset.choice);
+    renderChoices();
+  });
+
+  els.start.addEventListener('click', setPhasePlaying);
+  els.hint.addEventListener('click', useHint);
+  els.submit.addEventListener('click', function () {
+    if (state.phase !== 'playing') return;
+    finish(false);
+  });
+  els.restart.addEventListener('click', function () {
+    setCase(state.caseItem, state.isDaily);
+  });
+
+  els.practice.addEventListener('click', function (event) {
+    var btn = event.target.closest ? event.target.closest('.m9-practice-item') : null;
+    if (!btn) return;
+    var caseItem = BY_ID[btn.dataset.case];
+    if (!caseItem) return;
+    setCase(caseItem, false);
+    if (window.innerWidth <= 900) {
+      var target = document.getElementById('m9CaseTitle');
+      if (target && target.scrollIntoView) target.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 900) return;
+  });
+
+  // ---------- 시작 ----------
+  var dailyCase = BY_ID[DATA.daily] || CASES[0];
+  var todayString = kstDateString(new Date());
+  var dailyIsToday = DATA.date === todayString;
+  var caseForNow = dailyCase;
+  if (!dailyIsToday) {
+    // 빌드한 날짜와 오늘(KST)이 다르면 날짜 시드로 다시 고른다.
+    var epoch = Math.floor(Date.UTC(1970, 0, 1) / 86400000);
+    var now = new Date();
+    var p = kstParts(now);
+    var dayNumber = Math.floor(Date.UTC(p.y, p.m - 1, p.d) / 86400000);
+    var pool = CASES.slice(0, DATA.cases.length);
+    caseForNow = pool[(dayNumber - epoch) % pool.length];
+  }
+  // 날짜가 바뀌어 화면에서 다시 골랐더라도 그 사건은 여전히 '오늘의 사건'이다.
+  setCase(caseForNow, true);
+
+  // 테스트·디버깅용
+  window.MYSTERY90 = {
+    data: DATA,
+    state: state,
+    case: function () { return state.caseItem; },
+    start: function () { els.start.click(); },
+    pickCard: function (stepIndex) {
+      var card = els.cards.querySelector('[data-index="' + stepIndex + '"]');
+      if (card) card.click();
+    },
+    answerOrder: function () {
+      // 정답 순서로 담는다(테스트·연습용).
+      state.entered = state.caseItem.display.slice();
+      renderTray();
+      markCards();
+    },
+    pickChoice: function (index) {
+      var btn = els.choices.querySelector('[data-choice="' + index + '"]');
+      if (btn) btn.click();
+    },
+    enter: function (list) {
+      state.entered = (list || []).slice();
+      renderTray();
+      markCards();
+    },
+    submit: function () { els.submit.click(); },
+    hint: function () { els.hint.click(); },
+    finishNow: function () { finish(true); },
+    result: function () { return state.result; }
+  };
+})();
+</script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab is-active" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="grocery.html"><span>장보기 타이밍</span><span class="ia-sheet-file">grocery.html</span></a><a class="ia-sheet-link" href="basket.html"><span>장바구니 리그</span><span class="ia-sheet-file">basket.html</span></a><a class="ia-sheet-link" href="paymeter.html"><span>월급 미터</span><span class="ia-sheet-file">paymeter.html</span></a><a class="ia-sheet-link" href="movein.html"><span>입주 점검</span><span class="ia-sheet-file">movein.html</span></a><a class="ia-sheet-link" href="nearby.html"><span>지금 갈 곳</span><span class="ia-sheet-file">nearby.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link" href="recycle.html"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a><a class="ia-sheet-link" href="food.html"><span>식품 라벨 읽기</span><span class="ia-sheet-file">food.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link is-current" href="mystery90.html" aria-current="page"><span>90초 추리</span><span class="ia-sheet-file">mystery90.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a><a class="ia-sheet-link" href="subway.html"><span>지하철역 맞히기</span><span class="ia-sheet-file">subway.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>

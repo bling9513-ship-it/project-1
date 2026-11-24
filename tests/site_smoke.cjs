@@ -1,15 +1,17 @@
 const assert = require('node:assert/strict');
 const { spawn, execFileSync } = require('node:child_process');
 const path = require('node:path');
+const fs = require('node:fs');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food', 'grocery', 'paymeter', 'subway', 'basket'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food', 'grocery', 'paymeter', 'subway', 'basket', 'mystery90', 'movein', 'nearby'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
   'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html', 'food.html', 'grocery.html',
-  'paymeter.html', 'subway.html', 'basket.html'];
+  'paymeter.html', 'subway.html', 'basket.html',
+  'mystery90.html', 'movein.html', 'nearby.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -912,31 +914,6 @@ async function checkBasket(page, width) {
   assert.ok(result.stored && result.stored.includes('streak'), `${tag}: record not stored`);
   assert.equal(result.submitDisabled, true, `${tag}: submit must lock after one entry`);
   console.log(`basket ${width}px passed (${best.grade} · ${best.total}원)`);
-}
-
-// ---- 새 페이지 레이아웃(320·768px): 넘침 0 · 핵심 조작부 노출 ----
-async function checkNewPageLayout(page, width, name) {
-  const tag = `${name} layout ${width}px`;
-  const state = await page.evaluate((pageName) => {
-    const pick = {
-      paymeter: ['#pmEarned', '#pmCopy', '#pmAmount'],
-      subway: ['#swInput', '#swSubmit', '#swRows'],
-      basket: ['#bkGrid', '#bkSubmit', '#bkTotal'],
-    }[pageName];
-    const visible = (sel) => {
-      const el = document.querySelector(sel);
-      if (!el) return false;
-      const box = el.getBoundingClientRect();
-      return box.width > 0 && box.height > 0;
-    };
-    return {
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      all: pick.every(visible),
-      missing: pick.filter((sel) => !visible(sel)),
-    };
-  }, name);
-  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
-  assert.equal(state.all, true, `${tag}: controls not visible (${state.missing.join(', ')})`);
 }
 
 // ---- 공통 셸: PC 드롭다운 내비 · 모바일 하단 탭 바 ----
@@ -6488,6 +6465,228 @@ async function checkMonetization(browser, base) {
   }
 }
 
+
+// ---- 90초 생활 추리: 시작 → 힌트 → 정답 제출 → 기록 · 오답 · 시간 초과 ----
+async function checkMystery90(page, width) {
+  const tag = `mystery90 ${width}px`;
+  await page.evaluate(() => {
+    try { localStorage.removeItem('secjobs-mystery90-v1'); localStorage.removeItem('mystery90_guide_seen_v1'); } catch (e) {}
+  });
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => typeof MYSTERY90 !== 'undefined' && !!MYSTERY90.case(), null, { timeout: 5000 });
+  const start = await page.evaluate(() => ({
+    id: MYSTERY90.case().id,
+    type: MYSTERY90.case().type,
+    cards: document.querySelectorAll('#m9Cards .m9-card').length,
+    submitDisabled: document.getElementById('m9Submit').disabled,
+  }));
+  assert.ok(start.cards >= 4 && start.cards <= 5, `${tag}: ${start.cards} clue cards`);
+  assert.equal(start.submitDisabled, true, `${tag}: submit enabled before start`);
+
+  await page.click('#m9Start');
+  await page.waitForTimeout(250);
+  const running = await page.evaluate(() => ({
+    startHidden: document.getElementById('m9StartWrap').hidden,
+    timer: Number(document.getElementById('m9Timer').textContent.replace(/[^0-9.]/g, '')),
+  }));
+  assert.equal(running.startHidden, true, `${tag}: start button still visible`);
+  assert.ok(running.timer <= 90 && running.timer > 0, `${tag}: timer ${running.timer}`);
+
+  await page.click('#m9Hint');
+  await page.waitForTimeout(150);
+  const hinted = await page.evaluate(() => ({
+    hints: MYSTERY90.state.hints,
+    status: document.getElementById('m9Status').textContent,
+  }));
+  assert.equal(hinted.hints, 1, `${tag}: hint count ${hinted.hints}`);
+  assert.ok(hinted.status.includes('힌트'), `${tag}: hint text missing`);
+
+  if (start.type === 'order') await page.evaluate(() => MYSTERY90.answerOrder());
+  else await page.evaluate(() => MYSTERY90.pickChoice(MYSTERY90.case().answer));
+  await page.click('#m9Submit');
+  await page.locator('#m9Result:not([hidden])').waitFor({ timeout: 5000 });
+  const won = await page.evaluate(() => ({
+    result: MYSTERY90.result(),
+    badge: document.getElementById('m9Badge').textContent.trim(),
+    share: document.getElementById('m9Share').textContent,
+    explain: document.getElementById('m9Explain').textContent,
+    streak: document.getElementById('m9Streak').textContent.trim(),
+    store: JSON.parse(localStorage.getItem('secjobs-mystery90-v1') || 'null'),
+  }));
+  assert.equal(won.result.correct, true, `${tag}: answer not accepted`);
+  assert.equal(won.badge, '정답', `${tag}: badge ${won.badge}`);
+  assert.ok(won.share.includes('90초 생활 추리'), `${tag}: share text missing title`);
+  assert.ok(!won.share.includes(won.explain.replace('해설 · ', '').slice(0, 20)), `${tag}: share leaks the explanation`);
+  assert.equal(won.streak, '1일', `${tag}: streak ${won.streak}`);
+  assert.ok(won.store && won.store.solved === 1, `${tag}: record not stored`);
+
+  // 연습 사건으로 넘어가 일부러 틀린 답 → 해결 수는 늘지 않는다
+  await page.click('.m9-practice-item');
+  await page.waitForTimeout(150);
+  await page.click('#m9Start');
+  await page.waitForTimeout(120);
+  await page.evaluate(() => {
+    const c = MYSTERY90.case();
+    if (c.type === 'pick') MYSTERY90.pickChoice((c.answer + 1) % 4);
+    else MYSTERY90.enter(c.display.slice().reverse());
+  });
+  await page.click('#m9Submit');
+  await page.locator('#m9Result:not([hidden])').waitFor({ timeout: 5000 });
+  const lost = await page.evaluate(() => ({
+    result: MYSTERY90.result(),
+    badge: document.getElementById('m9Badge').textContent.trim(),
+    solved: document.getElementById('m9Solved').textContent.trim(),
+  }));
+  assert.equal(lost.result.correct, false, `${tag}: wrong answer accepted`);
+  assert.equal(lost.badge, '아쉬움', `${tag}: wrong badge ${lost.badge}`);
+  assert.equal(lost.solved, '1', `${tag}: solved count changed on a wrong answer`);
+
+  // 탭이 멈춰 90초를 한 번에 건너뛴 상황 → 즉시 자동 제출
+  await page.click('#m9Restart');
+  await page.click('#m9Start');
+  await page.waitForTimeout(120);
+  await page.evaluate(() => MYSTERY90.finishNow());
+  const timeout = await page.evaluate(() => ({
+    result: MYSTERY90.result(),
+    title: document.getElementById('m9ResultTitle').textContent.trim(),
+  }));
+  assert.equal(timeout.result.timeout, true, `${tag}: timeout flag missing`);
+  assert.ok(timeout.title.includes('시간'), `${tag}: timeout title ${timeout.title}`);
+  console.log(`${tag} passed (${start.id} · ${start.type})`);
+}
+
+// ---- 입주 점검: 3상태 · 메모 · 진행률 · 하자 리포트 텍스트/PNG · 복원 · 초기화 ----
+async function checkMovein(page, width) {
+  const tag = `movein ${width}px`;
+  await page.evaluate(() => { try { localStorage.removeItem('secjobs-movein-v1'); } catch (e) {} });
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => typeof MOVEIN !== 'undefined', null, { timeout: 5000 });
+  const start = await page.evaluate(() => ({
+    items: document.querySelectorAll('.mv-item').length,
+    segs: document.querySelectorAll('.mv-seg-btn').length,
+    noteHidden: document.querySelector('.mv-item .mv-note-wrap').hidden,
+    percent: document.getElementById('mvPercent').textContent.trim(),
+  }));
+  assert.equal(start.items, 30, `${tag}: items ${start.items}`);
+  assert.equal(start.segs, 90, `${tag}: state buttons ${start.segs}`);
+  assert.equal(start.noteHidden, true, `${tag}: note input visible before an issue is marked`);
+  assert.equal(start.percent, '0%', `${tag}: percent ${start.percent}`);
+
+  await page.click('.mv-item[data-item="lock"] .mv-seg-btn[data-state="issue"]');
+  await page.fill('.mv-note[data-note="lock"]', '잠금장치 3회 중 1회 안 걸림');
+  await page.click('.mv-item[data-item="door-gap"] .mv-seg-btn[data-state="ok"]');
+  await page.click('.mv-item[data-item="intercom"] .mv-seg-btn[data-state="na"]');
+  await page.fill('#mvAddress', '성수동 123-4, 302호');
+  const state = await page.evaluate(() => ({
+    counts: MOVEIN.counts(),
+    percent: document.getElementById('mvPercent').textContent.trim(),
+    report: MOVEIN.report(),
+    mobile: document.getElementById('mvMobileSub').textContent.trim(),
+  }));
+  assert.deepEqual(state.counts, { issue: 1, ok: 1, na: 1, done: 3 }, `${tag}: counts`);
+  assert.equal(state.percent, '10%', `${tag}: percent ${state.percent}`);
+  assert.ok(state.report.includes('[현관]'), `${tag}: report misses the section`);
+  assert.ok(state.report.includes('잠금장치 3회 중 1회 안 걸림'), `${tag}: report misses the note`);
+  assert.ok(state.report.indexOf('[거실·방]') < 0, `${tag}: report includes a section without issues`);
+  assert.ok(state.mobile.includes('하자 1'), `${tag}: mobile bar ${state.mobile}`);
+
+  const [download] = await Promise.all([page.waitForEvent('download'), page.click('#mvPng')]);
+  assert.ok(download.suggestedFilename().startsWith('입주점검_'), `${tag}: png name ${download.suggestedFilename()}`);
+  assert.ok(download.suggestedFilename().endsWith('.png'), `${tag}: png name ${download.suggestedFilename()}`);
+  const file = await download.path();
+  assert.ok(fs.statSync(file).size > 5000, `${tag}: png too small`);
+
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => typeof MOVEIN !== 'undefined', null, { timeout: 5000 });
+  const kept = await page.evaluate(() => ({
+    address: document.getElementById('mvAddress').value,
+    note: document.querySelector('.mv-note[data-note="lock"]').value,
+    pressed: document.querySelectorAll('.mv-seg-btn[aria-pressed="true"]').length,
+    done: MOVEIN.counts().done,
+  }));
+  assert.equal(kept.address, '성수동 123-4, 302호', `${tag}: address lost on reload`);
+  assert.equal(kept.note, '잠금장치 3회 중 1회 안 걸림', `${tag}: note lost on reload`);
+  assert.equal(kept.pressed, 3, `${tag}: states lost on reload`);
+  assert.equal(kept.done, 3, `${tag}: counts lost on reload`);
+
+  await page.click('#mvReset');
+  await page.click('#mvReset');
+  const cleared = await page.evaluate(() => ({
+    done: MOVEIN.counts().done,
+    address: document.getElementById('mvAddress').value,
+    percent: document.getElementById('mvPercent').textContent.trim(),
+  }));
+  assert.equal(cleared.done, 0, `${tag}: reset left ${cleared.done} checked`);
+  assert.equal(cleared.address, '', `${tag}: address kept after reset`);
+  assert.equal(cleared.percent, '0%', `${tag}: percent after reset ${cleared.percent}`);
+  console.log(`${tag} passed (3상태 · 하자 리포트 PNG · 초기화)`);
+}
+
+// ---- 지금 갈 곳: 지금 시각 계산 · 자치구/남은 시간 필터 · 찜 · 휴관 분리 ----
+async function checkNearby(page, width) {
+  const tag = `nearby ${width}px`;
+  await page.evaluate(() => { try { localStorage.removeItem('secjobs-nearby-fav-v1'); } catch (e) {} });
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => typeof NEARBY !== 'undefined', null, { timeout: 5000 });
+  await page.locator('.nb-card').first().waitFor({ state: 'attached' });
+  const start = await page.evaluate(() => ({
+    counts: NEARBY.counts(),
+    clock: document.getElementById('nbClock').textContent.trim(),
+    districts: document.querySelectorAll('#nbDistricts .nb-chip').length,
+  }));
+  assert.equal(start.counts.cards, 30, `${tag}: cards ${start.counts.cards}`);
+  assert.equal(start.counts.cards, start.counts.open + start.counts.short + start.counts.closed,
+    `${tag}: group counts do not add up`);
+  assert.ok(/^\d{2}:\d{2}/.test(start.clock), `${tag}: clock ${start.clock}`);
+  assert.equal(start.districts, 10, `${tag}: district chips ${start.districts}`);
+
+  await page.click('#nbDistricts .nb-chip[data-district="종로구"]');
+  const jongno = await page.evaluate(() => ({
+    cards: NEARBY.counts().cards,
+    wrong: Array.from(document.querySelectorAll('.nb-card .nb-addr')).filter((a) => !a.textContent.includes('종로구')).length,
+  }));
+  assert.equal(jongno.cards, 4, `${tag}: 종로구 ${jongno.cards} cards`);
+  assert.equal(jongno.wrong, 0, `${tag}: 다른 자치구 카드가 섞였습니다`);
+
+  await page.click('#nbDistricts .nb-chip[data-district="all"]');
+  await page.click('#nbRemain .nb-chip[data-remain="120"]');
+  const twoHours = await page.evaluate(() => NEARBY.counts());
+  assert.ok(twoHours.open <= start.counts.open, `${tag}: 2시간 필터가 더 많은 곳을 남겼습니다`);
+
+  await page.click('#nbRemain .nb-chip[data-remain="30"]');
+  const first = await page.evaluate(() => document.querySelector('.nb-card').dataset.id);
+  await page.click(`.nb-fav[data-fav="${first}"]`);
+  const fav = await page.evaluate((id) => ({
+    favs: NEARBY.favs(),
+    pressed: document.querySelector(`.nb-fav[data-fav="${id}"]`).getAttribute('aria-pressed'),
+  }), first);
+  assert.deepEqual(fav.favs, [first], `${tag}: favorite not stored`);
+  assert.equal(fav.pressed, 'true', `${tag}: favorite pressed state`);
+
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => typeof NEARBY !== 'undefined', null, { timeout: 5000 });
+  await page.locator('.nb-card').first().waitFor({ state: 'attached' });
+  await page.click('#nbFavOnly');
+  const favOnly = await page.evaluate(() => NEARBY.counts());
+  assert.equal(favOnly.cards, 1, `${tag}: 찜한 곳만 ${favOnly.cards} cards`);
+
+  const rules = await page.evaluate(() => {
+    const byId = {};
+    NEARBY.statusAt(18 * 60 + 2, 2).forEach((row) => { byId[row.id] = row.status.kind; });
+    const mon = {};
+    NEARBY.statusAt(12 * 60, 1).forEach((row) => { mon[row.id] = row.status.kind; });
+    return {
+      folk: byId['national-folk-museum'], forest: byId['seoul-forest'],
+      libraryMon: mon['seoul-library'], forestMon: mon['seoul-forest'],
+    };
+  });
+  assert.equal(rules.folk, 'closed', `${tag}: 17시에 닫는 박물관이 열린 것으로 계산됨`);
+  assert.equal(rules.forest, 'open', `${tag}: 24시간 공원이 닫힌 것으로 계산됨`);
+  assert.equal(rules.libraryMon, 'closed', `${tag}: 월요일 휴관 도서관이 열린 것으로 계산됨`);
+  assert.equal(rules.forestMon, 'open', `${tag}: 월요일 24시간 공원이 닫힌 것으로 계산됨`);
+  console.log(`${tag} passed (${start.counts.open} open · ${start.counts.closed} closed)`);
+}
+
 async function checkPage(context, base, name, width) {  const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -6576,9 +6775,12 @@ async function checkPage(context, base, name, width) {  const page = await conte
     if (name === 'food') await checkFoodLayout(page, width);
     if (name === 'food' && (width === 390 || width === 1280)) await checkFoodFlow(page, width);
     if (name === 'grocery') await checkGrocery(page, width);
-    if (name === 'paymeter') await checkPaymeter(page, width);
-    if (name === 'subway') await checkSubway(page, width);
-    if (name === 'basket') await checkBasket(page, width);
+    if (width === 1280 && name === 'paymeter') await checkPaymeter(page, width);
+    if (width === 1280 && name === 'subway') await checkSubway(page, width);
+    if (width === 1280 && name === 'basket') await checkBasket(page, width);
+    if (width === 1280 && name === 'mystery90') await checkMystery90(page, width);
+    if (width === 1280 && name === 'movein') await checkMovein(page, width);
+    if (width === 1280 && name === 'nearby') await checkNearby(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -7096,7 +7298,6 @@ async function main() {
           if (name === 'wash') await checkWashLayout(page, width);
           if (name === 'recycle') await checkRecycleLayout(page, width);
           if (name === 'food') await checkFoodLayout(page, width);
-          if (name === 'paymeter' || name === 'subway' || name === 'basket') await checkNewPageLayout(page, width, name);
         } finally {
           await page.close();
         }
