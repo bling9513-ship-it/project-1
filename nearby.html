@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-msvCb7buUhfhQ5MjCdw/VeuBIWijHEV/o44pvzuDoV0=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 우리 동네 지금 갈 곳</title>
+  <meta name="description" content="서울 9개 자치구의 공공도서관·대형공원·무료 상설전시·한강공원 30곳을 지금 시각(KST)과 남은 시간(30분·1시간·2시간)으로 골라 보여 줍니다. 운영시간·정기휴무·요금·공식 안내를 시설 공식 자료와 대조해 기준일과 함께 표시합니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --bg-page: #f8fafc;  --bg-surface: #ffffff;  --bg-subtle: #f1f5f9;  --bg-muted: #e2e8f0;
+      --border-subtle: #f1f5f9;  --border-default: #e2e8f0;  --border-strong: #cbd5e1;
+      --text-primary: #0f172a;  --text-secondary: #475569;  --text-muted: #94a3b8;
+      --accent-primary: #2563eb;  --accent-subtle: #eff6ff;
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;  --ok-ink: #0f766e;
+      --warn-bg: #fffbeb;  --warn-text: #b45309;  --warn-border: #fde68a;
+      --closed-bg: #f8fafc;  --closed-text: #64748b;  --closed-border: #e2e8f0;
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    }
+    [data-theme="dark"] {
+      --bg-page: #09090b;  --bg-surface: #18181b;  --bg-subtle: #27272a;  --bg-muted: #3f3f46;
+      --border-subtle: #1f1f23;  --border-default: #27272a;  --border-strong: #3f3f46;
+      --text-primary: #f4f4f5;  --text-secondary: #a1a1aa;  --text-muted: #71717a;
+      --accent-primary: #3b82f6;  --accent-subtle: rgba(59, 130, 246, 0.15);
+      --ok-bg: rgba(16, 185, 129, 0.14);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.34);  --ok-ink: #5eead4;
+      --warn-bg: rgba(245, 158, 11, 0.14);  --warn-text: #fcd34d;  --warn-border: rgba(245, 158, 11, 0.34);
+      --closed-bg: #141417;  --closed-text: #71717a;  --closed-border: #27272a;
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-primary);
+      line-height: 1.5; letter-spacing: -0.02em; min-height: 100vh; -webkit-font-smoothing: antialiased;
+      transition: background-color .2s ease, color .2s ease; }
+    .nb-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    .nb-wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 100px; }
+    .nb-hero h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.045em; margin-top: 7px; }
+    .nb-hero p { margin-top: 6px; font-size: 13px; color: var(--text-secondary); max-width: 680px; word-break: keep-all; }
+    .nb-pill { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border-radius: 7px; padding: 3px 9px; }
+    .nb-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 10px;
+      font-size: 11.5px; color: var(--text-muted); }
+    .nb-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); display: inline-block; }
+    .nb-clock { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800;
+      color: var(--text-primary); background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 3px 10px 3px 8px; font-variant-numeric: tabular-nums; }
+    .nb-clock::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10b981; }
+
+    .nb-filters { margin-top: 16px; background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 14px 15px; box-shadow: var(--card-shadow); }
+    .nb-filter-row { display: flex; align-items: center; gap: 10px; }
+    .nb-filter-row + .nb-filter-row { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle); }
+    .nb-filter-label { flex: 0 0 auto; font-size: 10.5px; font-weight: 800; color: var(--text-muted);
+      letter-spacing: 0.01em; width: 58px; }
+    .nb-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+    .nb-chips::-webkit-scrollbar { display: none; }
+    .nb-chip { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border-default);
+      background: var(--bg-page); color: var(--text-secondary); border-radius: 999px; padding: 6px 11px;
+      font-family: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+      transition: border-color .15s ease, background-color .15s ease, color .15s ease, transform .15s ease; }
+    .nb-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .nb-chip:active { transform: scale(0.97); }
+    .nb-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .nb-chip span { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .nb-chip.is-on { border-color: var(--text-primary); background: var(--text-primary); color: var(--bg-surface); }
+    .nb-chip.is-on span { color: var(--bg-surface); opacity: .7; }
+    .nb-chip.is-ghost { border-style: dashed; }
+    .nb-chip.is-fav-on { border-color: var(--accent-primary); background: var(--accent-subtle); color: var(--accent-primary); }
+
+    .nb-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px;
+      font-size: 12px; color: var(--text-secondary); }
+    .nb-summary b { font-weight: 800; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .nb-summary .nb-warn { color: var(--warn-text); font-weight: 700; }
+
+    .nb-group { margin-top: 18px; }
+    .nb-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+    .nb-group-head h2 { font-size: 15px; font-weight: 800; letter-spacing: -0.03em; }
+    .nb-group-head .nb-count { font-size: 11.5px; font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .nb-group-head p { margin-top: 2px; font-size: 11px; color: var(--text-muted); }
+    .nb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 9px; }
+    .nb-grid.is-closed { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .nb-card { display: flex; flex-direction: column; gap: 7px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); border-radius: 15px; padding: 13px; box-shadow: var(--card-shadow);
+      min-width: 0; transition: border-color .15s ease, transform .15s ease; }
+    .nb-card:hover { border-color: var(--border-strong); }
+    .nb-card.is-closed { background: var(--closed-bg); border-color: var(--closed-border); }
+    .nb-card.is-closed .nb-name, .nb-card.is-closed .nb-addr { color: var(--closed-text); }
+    .nb-card.is-closed .nb-name { color: var(--text-secondary); }
+    .nb-card-top { display: flex; align-items: center; gap: 5px; }
+    .nb-cat { font-size: 10px; font-weight: 800; color: var(--text-muted); border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 1px 7px; }
+    .nb-fee { font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 7px; }
+    .nb-fee.is-free { color: var(--ok-text); background: var(--ok-bg); border: 1px solid var(--ok-border); }
+    .nb-fee.is-paid { color: var(--warn-text); background: var(--warn-bg); border: 1px solid var(--warn-border); }
+    .nb-urgent { font-size: 10px; font-weight: 800; color: var(--warn-text); background: var(--warn-bg);
+      border: 1px solid var(--warn-border); border-radius: 999px; padding: 1px 7px; margin-left: auto; }
+    .nb-fav { margin-left: auto; flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--border-default);
+      background: var(--bg-page); color: var(--text-muted); cursor: pointer; display: inline-flex;
+      align-items: center; justify-content: center; transition: color .15s ease, border-color .15s ease, transform .15s ease; }
+    .nb-fav svg { width: 15px; height: 15px; }
+    .nb-fav:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .nb-fav:active { transform: scale(0.94); }
+    .nb-fav:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .nb-fav[aria-pressed="true"] { color: #e11d48; border-color: #fecdd3; background: #fff1f2; }
+    [data-theme="dark"] .nb-fav[aria-pressed="true"] { color: #fb7185; border-color: rgba(251, 113, 133, .4); background: rgba(251, 113, 133, .12); }
+    .nb-urgent + .nb-fav { margin-left: 0; }
+
+    .nb-name { font-size: 14.5px; font-weight: 800; letter-spacing: -0.03em; word-break: keep-all; }
+    .nb-addr { font-size: 10.5px; color: var(--text-muted); word-break: keep-all; }
+    .nb-window { display: flex; align-items: baseline; gap: 6px; margin-top: 1px; }
+    .nb-window b { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+    .nb-window span { font-size: 10.5px; font-weight: 700; color: var(--text-muted); }
+    .nb-window span.is-left { color: var(--ok-ink); }
+    .nb-window span.is-short { color: var(--warn-text); }
+    .nb-band { position: relative; height: 7px; border-radius: 999px; background: var(--bg-subtle);
+      border: 1px solid var(--border-default); overflow: hidden; }
+    .nb-band-open { position: absolute; top: 0; bottom: 0; background: var(--text-secondary); opacity: .55; border-radius: 2px; }
+    .nb-card.is-closed .nb-band-open { opacity: .25; }
+    .nb-band-now { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--accent-primary); }
+    .nb-band-legend { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);
+      font-variant-numeric: tabular-nums; margin-top: -3px; }
+    .nb-closure { font-size: 10.5px; color: var(--text-secondary); word-break: keep-all; }
+    .nb-closure b { font-weight: 700; color: var(--text-primary); }
+    .nb-note { font-size: 10.5px; line-height: 1.5; color: var(--text-muted); word-break: keep-all; }
+    .nb-card.is-closed .nb-note { color: var(--closed-text); }
+    .nb-links { display: flex; gap: 6px; margin-top: auto; padding-top: 3px; }
+    .nb-link { display: inline-flex; align-items: center; justify-content: center; gap: 3px; flex: 1 1 0;
+      border: 1px solid var(--border-default); background: var(--bg-page); color: var(--text-secondary);
+      border-radius: 8px; padding: 6px 4px; font-size: 10.5px; font-weight: 700; text-decoration: none;
+      transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+    .nb-link:hover { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .nb-link:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .nb-link svg { width: 11px; height: 11px; }
+
+    .nb-empty { margin-top: 8px; border: 1px dashed var(--border-strong); border-radius: 13px; padding: 18px;
+      background: var(--bg-surface); font-size: 12px; color: var(--text-secondary); text-align: center; line-height: 1.6; }
+    .nb-empty b { color: var(--text-primary); }
+    .nb-group.is-hidden { display: none; }
+
+    .nb-notes { margin-top: 22px; background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 17px 18px; box-shadow: var(--card-shadow); }
+    .nb-notes h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .nb-notes ul { margin-top: 10px; display: grid; gap: 7px; padding-left: 16px; }
+    .nb-notes li { font-size: 11.5px; line-height: 1.62; color: var(--text-secondary); word-break: keep-all; }
+    .nb-notes li b { color: var(--text-primary); }
+    .nb-foot { margin-top: 14px; font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.6; }
+
+    @media (max-width: 1000px) {
+      .nb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nb-grid.is-closed { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 900px) {
+      .nb-wrap { padding: 14px 13px 110px; }
+      .nb-hero h1 { font-size: 21px; }
+      .nb-hero p { font-size: 12px; }
+      .nb-filters { padding: 12px; margin-top: 13px; }
+      .nb-filter-row { display: block; }
+      .nb-filter-row + .nb-filter-row { margin-top: 9px; padding-top: 9px; }
+      .nb-filter-label { width: auto; display: block; margin-bottom: 6px; }
+      .nb-summary { margin-top: 10px; font-size: 11.5px; }
+      .nb-group { margin-top: 15px; }
+      .nb-group-head h2 { font-size: 14.5px; }
+      .nb-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+      .nb-grid.is-closed { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 380px) {
+      .nb-card { padding: 11px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="nearby">
+
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">지금 갈 곳</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link is-current" role="menuitem" href="nearby.html" aria-current="page">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">장소 30곳 · 자료 확인 2026-11-24</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="nb-wrap">
+    <section class="nb-hero">
+      <span class="nb-pill">생활 · 지금 갈 곳</span>
+      <h1>지금 이 동네, 어디 갈까</h1>
+      <p>서울 9개 자치구의 공공도서관·대형공원·무료 상설전시·한강공원 30곳입니다. 지금 시각과 남은 시간, 자치구를 고르면 지금 들어가 이용할 수 있는 곳만 남깁니다.</p>
+      <div class="nb-meta">
+        <span class="nb-clock" id="nbClock">--:-- KST</span>
+        <span class="nb-dot"></span>
+        <span>장소 30곳 · 자치구 9개</span>
+        <span class="nb-dot"></span>
+        <span>자료 확인 2026-11-24</span>
+        <span class="nb-dot"></span>
+        <span>공휴일·임시휴관은 반영하지 않음</span>
+      </div>
+    </section>
+
+    <section class="nb-filters" aria-label="갈 곳 고르기">
+      <div class="nb-filter-row">
+        <span class="nb-filter-label">자치구</span>
+        <div class="nb-chips" id="nbDistricts" role="group" aria-label="자치구 선택"><button type="button" class="nb-chip is-on" data-district="all" aria-pressed="true">전체</button><button type="button" class="nb-chip" data-district="종로구" aria-pressed="false">종로구<span>4</span></button><button type="button" class="nb-chip" data-district="중구" aria-pressed="false">중구<span>4</span></button><button type="button" class="nb-chip" data-district="용산구" aria-pressed="false">용산구<span>4</span></button><button type="button" class="nb-chip" data-district="마포구" aria-pressed="false">마포구<span>4</span></button><button type="button" class="nb-chip" data-district="성동구" aria-pressed="false">성동구<span>3</span></button><button type="button" class="nb-chip" data-district="강남구" aria-pressed="false">강남구<span>3</span></button><button type="button" class="nb-chip" data-district="송파구" aria-pressed="false">송파구<span>3</span></button><button type="button" class="nb-chip" data-district="영등포구" aria-pressed="false">영등포구<span>3</span></button><button type="button" class="nb-chip" data-district="서초구" aria-pressed="false">서초구<span>2</span></button></div>
+      </div>
+      <div class="nb-filter-row">
+        <span class="nb-filter-label">남은 시간</span>
+        <div class="nb-chips" id="nbRemain" role="group" aria-label="남은 시간 선택">
+          <button type="button" class="nb-chip is-on" data-remain="30" aria-pressed="true">30분</button>
+          <button type="button" class="nb-chip" data-remain="60" aria-pressed="false">1시간</button>
+          <button type="button" class="nb-chip" data-remain="120" aria-pressed="false">2시간 이상</button>
+        </div>
+        <button type="button" class="nb-chip is-ghost" id="nbFavOnly" aria-pressed="false">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"></path></svg>
+          찜한 곳만
+        </button>
+      </div>
+      <div class="nb-summary" id="nbSummary" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="nb-group" id="nbOpenGroup" aria-labelledby="nbOpenTitle">
+      <div class="nb-group-head">
+        <div>
+          <h2 id="nbOpenTitle">지금 들어갈 수 있어요</h2>
+          <p>지금 문을 열었고, 남은 시간보다 늦게 닫습니다</p>
+        </div>
+        <span class="nb-count" id="nbOpenCount">0곳</span>
+      </div>
+      <div class="nb-grid" id="nbOpenGrid"></div>
+      <p class="nb-empty" id="nbOpenEmpty" hidden></p>
+    </section>
+
+    <section class="nb-group" id="nbShortGroup" aria-labelledby="nbShortTitle">
+      <div class="nb-group-head">
+        <div>
+          <h2 id="nbShortTitle">남은 시간이 모자라요</h2>
+          <p>문은 열었지만 고른 시간 안에 닫습니다</p>
+        </div>
+        <span class="nb-count" id="nbShortCount">0곳</span>
+      </div>
+      <div class="nb-grid" id="nbShortGrid"></div>
+      <p class="nb-empty" id="nbShortEmpty" hidden></p>
+    </section>
+
+    <section class="nb-group" id="nbClosedGroup" aria-labelledby="nbClosedTitle">
+      <div class="nb-group-head">
+        <div>
+          <h2 id="nbClosedTitle">오늘은 문을 닫아요</h2>
+          <p>휴관일이거나 오늘 운영이 끝났습니다</p>
+        </div>
+        <span class="nb-count" id="nbClosedCount">0곳</span>
+      </div>
+      <div class="nb-grid is-closed" id="nbClosedGrid"></div>
+      <p class="nb-empty" id="nbClosedEmpty" hidden></p>
+    </section>
+
+    <section class="nb-notes">
+      <h2>알아 두실 점</h2>
+      <ul>
+        <li><b>자료 기준일</b> — 주소·운영시간·정기휴무·요금은 2026-11-24에 시설 공식 안내(누리집·서울시 공공 안내)와 대조한 값입니다. 계절·전시 교체·공휴일로 달라질 수 있습니다.</li>
+        <li><b>지금 시각</b> — 이 기기의 시계를 KST로 환산해 계산합니다. 공휴일·임시휴관·행사로 인한 단축 운영은 반영하지 않으니 전화나 공식 안내로 확인하세요.</li>
+        <li><b>남은 시간</b> — '30분'을 고르면 지금부터 30분 뒤에도 문이 열려 있는 곳만 남깁니다. 종료 60분 전부터는 마감 임박 배지를 붙입니다.</li>
+        <li><b>요금</b> — 무료 표시는 상설전·공원 입장 기준입니다. 특별전·주차·체험 프로그램은 따로 낼 수 있습니다.</li>
+        <li><b>찜</b> — 찜한 곳은 이 브라우저(localStorage)에만 저장되며 서버로 보내지 않습니다.</li>
+      </ul>
+      <p class="nb-foot">각 시설의 공식 안내를 옮겨 적었고, 지금 시각과 남은 시간 계산만 이 페이지에서 합니다 · 방문 전 공식 안내를 한 번 더 확인하세요.</p>
+    </section>
+  </main>
+
+  <script type="application/json" id="nbData">{"places":[{"id":"seoul-museum-of-history","name":"서울역사박물관","district":"종로구","category":"박물관","address":"서울 종로구 새문안로 55","hours":{"mon":null,"tue":["09:00","21:00"],"wed":["09:00","21:00"],"thu":["09:00","18:00"],"fri":["09:00","21:00"],"sat":["09:00","21:00"],"sun":["09:00","21:00"]},"closureNote":"매주 월요일, 1월 1일 휴관(월요일이 공휴일이면 개관)","fee":"무료","feeNote":"상설전 무료 · 특별전은 유료일 수 있음","duration":90,"note":"2026-11-30까지 야간 개방 확대(화·수·금·토·일 21시, 목 18시). 이후에는 18시 마감으로 돌아갑니다.","officialUrl":"https://museum.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EC%97%AD%EC%82%AC%EB%B0%95%EB%AC%BC%EA%B4%80","checkedOn":"2026-11-24"},{"id":"seoul-museum-of-craft","name":"서울공예박물관","district":"종로구","category":"박물관","address":"서울 종로구 율곡로3길 4","hours":{"mon":null,"tue":["10:00","18:00"],"wed":["10:00","18:00"],"thu":["10:00","18:00"],"fri":["10:00","18:00"],"sat":["10:00","18:00"],"sun":["10:00","18:00"]},"closureNote":"매주 월요일(공휴일이면 개관), 1월 1일 휴관","fee":"무료","feeNote":"상설·기획전 무료 · 대관전은 유료일 수 있음","duration":75,"note":"입장 마감은 운영 종료 30분 전. 2026-11-30까지 전시1동 야간 개관(요일별 시간표 확인).","officialUrl":"https://craftmuseum.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EA%B3%B5%EC%98%88%EB%B0%95%EB%AC%BC%EA%B4%80","checkedOn":"2026-11-24"},{"id":"national-folk-museum","name":"국립민속박물관","district":"종로구","category":"박물관","address":"서울 종로구 삼청로 37","hours":{"mon":["09:00","17:00"],"tue":["09:00","17:00"],"wed":["09:00","17:00"],"thu":["09:00","17:00"],"fri":["09:00","17:00"],"sat":["09:00","17:00"],"sun":["09:00","17:00"]},"closureNote":"1월 1일, 설날·추석 당일 휴관(월요일 개관)","fee":"무료","feeNote":"경복궁 관람은 별도 유료","duration":75,"note":"11~2월은 09:00~17:00(입장 마감 16:00), 3~10월은 18시까지. 상설전시관1은 2026-12-21까지 휴관 예정.","officialUrl":"https://www.nfm.go.kr/","mapUrl":"https://map.naver.com/p/search/%EA%B5%AD%EB%A6%BD%EB%AF%BC%EC%86%8D%EB%B0%95%EB%AC%BC%EA%B4%80","checkedOn":"2026-11-24"},{"id":"national-palace-museum","name":"국립고궁박물관","district":"종로구","category":"박물관","address":"서울 종로구 사직로 161","hours":{"mon":["09:30","17:30"],"tue":["09:30","17:30"],"wed":["09:30","17:30"],"thu":["09:30","17:30"],"fri":["09:30","17:30"],"sat":["09:30","21:00"],"sun":["09:30","17:30"]},"closureNote":"1월 1일, 설날·추석 당일, 매월 마지막 월요일 휴관(공휴일이면 다음날)","fee":"무료","feeNote":"","duration":70,"note":"토요일과 매월 마지막 수요일은 21시까지(입장 마감 20:30). 입장 마감은 종료 30분 전.","officialUrl":"https://www.gogung.go.kr/","mapUrl":"https://map.naver.com/p/search/%EA%B5%AD%EB%A6%BD%EA%B3%A0%EA%B6%81%EB%B0%95%EB%AC%BC%EA%B4%80","checkedOn":"2026-11-24"},{"id":"seoul-library","name":"서울도서관","district":"중구","category":"도서관","address":"서울 중구 세종대로 110 (서울시청 옛 본관)","hours":{"mon":null,"tue":["09:00","21:00"],"wed":["09:00","21:00"],"thu":["09:00","21:00"],"fri":["09:00","21:00"],"sat":["09:00","18:00"],"sun":["09:00","18:00"]},"closureNote":"매주 월요일, 일요일을 제외한 공휴일 휴관","fee":"무료","feeNote":"대출·좌석 예약은 회원만","duration":60,"note":"일반자료실·디지털자료실 기준. 세계자료실·서울자료실은 18시까지.","officialUrl":"https://lib.seoul.go.kr/main/useInfo","mapUrl":"https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EB%8F%84%EC%84%9C%EA%B4%80","checkedOn":"2026-11-24"},{"id":"sema-seosomun","name":"서울시립미술관 서소문본관","district":"중구","category":"미술관","address":"서울 중구 덕수궁길 61","hours":{"mon":null,"tue":["10:00","20:00"],"wed":["10:00","20:00"],"thu":["10:00","20:00"],"fri":["10:00","21:00"],"sat":["10:00","18:00"],"sun":["10:00","18:00"]},"closureNote":"매주 월요일, 1월 1일 휴관(월요일이 공휴일이면 개관)","fee":"무료","feeNote":"상설전 무료 · 특별전은 유료","duration":60,"note":"11~2월 토·일·공휴일은 18시까지(3~10월은 19시). 입장 마감은 종료 1시간 전.","officialUrl":"https://sema.seoul.go.kr/kr/visit/seosomun","mapUrl":"https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%EB%AF%B8%EC%88%A0%EA%B4%80%20%EC%84%9C%EC%86%8C%EB%AC%B8%EB%B3%B8%EA%B4%80","checkedOn":"2026-11-24"},{"id":"namsangol-hanok-village","name":"남산골한옥마을","district":"중구","category":"문화공간","address":"서울 중구 퇴계로34길 28","hours":{"mon":null,"tue":["09:00","21:00"],"wed":["09:00","21:00"],"thu":["09:00","21:00"],"fri":["09:00","21:00"],"sat":["09:00","21:00"],"sun":["09:00","21:00"]},"closureNote":"매주 월요일 정기휴관(월요일이 공휴일이면 운영)","fee":"무료","feeNote":"전통정원은 24시간 개방","duration":45,"note":"전통가옥 관람 4~11월 09:00~21:00, 12~3월 09:00~20:00. 전통정원은 24시간 열려 있습니다.","officialUrl":"https://hanokmaeul.co.kr/","mapUrl":"https://map.naver.com/p/search/%EB%82%A8%EC%82%B0%EA%B3%A8%ED%95%9C%EC%98%A5%EB%A7%88%EC%9D%84","checkedOn":"2026-11-24"},{"id":"seoul-citizens-hall","name":"시민청","district":"중구","category":"문화공간","address":"서울 중구 세종대로 110 서울시청 지하 1·2층","hours":{"mon":["09:00","20:00"],"tue":["09:00","20:00"],"wed":["09:00","20:00"],"thu":["09:00","20:00"],"fri":["09:00","20:00"],"sat":["09:00","20:00"],"sun":null},"closureNote":"매주 일요일, 1월 1일, 설날·추석 당일 휴관","fee":"무료","feeNote":"행사·대관 프로그램에 따라 다름","duration":40,"note":"11~2월 09:00~20:00, 3~10월은 21시까지. 전시·공연·상담 공간이 함께 있습니다.","officialUrl":"https://sfac.or.kr/","mapUrl":"https://map.naver.com/p/search/%EC%8B%9C%EB%AF%BC%EC%B2%AD","checkedOn":"2026-11-24"},{"id":"national-museum-of-korea","name":"국립중앙박물관","district":"용산구","category":"박물관","address":"서울 용산구 서빙고로 137","hours":{"mon":["09:30","17:30"],"tue":["09:30","17:30"],"wed":["09:30","21:00"],"thu":["09:30","17:30"],"fri":["09:30","17:30"],"sat":["09:30","21:00"],"sun":["09:30","17:30"]},"closureNote":"1월 1일, 설날·추석 당일 휴관(월요일 개관)","fee":"무료","feeNote":"상설전·어린이박물관 무료 · 유료 특별전 별도","duration":120,"note":"수·토요일은 21시까지(입장 마감 20:30). 12월 7일(월)은 상설전시관 정기 휴실일이고 야외 정원은 07:00~22:00.","officialUrl":"https://www.museum.go.kr/","mapUrl":"https://map.naver.com/p/search/%EA%B5%AD%EB%A6%BD%EC%A4%91%EC%95%99%EB%B0%95%EB%AC%BC%EA%B4%80","checkedOn":"2026-11-24"},{"id":"war-memorial-of-korea","name":"전쟁기념관","district":"용산구","category":"박물관","address":"서울 용산구 이태원로 29","hours":{"mon":null,"tue":["09:30","17:40"],"wed":["09:30","17:40"],"thu":["09:30","17:40"],"fri":["09:30","17:40"],"sat":["09:30","17:40"],"sun":["09:30","17:40"]},"closureNote":"매주 월요일(월요일이 낀 연휴면 연휴 다음날), 1월 1일, 설날·추석 당일 휴관","fee":"무료","feeNote":"상설전시 무료","duration":90,"note":"입장 마감 17:00. 실외 전시장은 별도 운영시간이 있습니다.","officialUrl":"https://www.warmemo.or.kr/","mapUrl":"https://map.naver.com/p/search/%EC%A0%84%EC%9F%81%EA%B8%B0%EB%85%90%EA%B4%80","checkedOn":"2026-11-24"},{"id":"yongsan-family-park","name":"용산가족공원","district":"용산구","category":"공원","address":"서울 용산구 이태원로 60 (용산동6가)","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"","duration":45,"note":"24시간 개방. 자전거는 끌고 이동하고 반려견은 목줄을 착용합니다.","officialUrl":"https://parks.seoul.go.kr/content.do?key=2604300021","mapUrl":"https://map.naver.com/p/search/%EC%9A%A9%EC%82%B0%EA%B0%80%EC%A1%B1%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"hyochang-park","name":"효창공원","district":"용산구","category":"공원","address":"서울 용산구 효창원로 177-18","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"","duration":40,"note":"24시간 개방. 의열사·삼의사 묘역이 있는 역사 공원입니다.","officialUrl":"https://parks.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%ED%9A%A8%EC%B0%BD%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"oil-tank-culture-park","name":"문화비축기지","district":"마포구","category":"공원","address":"서울 마포구 증산로 87","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"야외공원 연중무휴","fee":"무료","feeNote":"탱크 내부 프로그램은 유료일 수 있음","duration":45,"note":"야외공원은 24시간. 탱크 T1~T6는 2025년 4월부터 사용수익허가시설로 바뀌어 상시 관람이 되지 않습니다.","officialUrl":"https://parks.seoul.go.kr/content.do?key=2604300014","mapUrl":"https://map.naver.com/p/search/%EB%AC%B8%ED%99%94%EB%B9%84%EC%B6%95%EA%B8%B0%EC%A7%80","checkedOn":"2026-11-24"},{"id":"gyeongui-forest-path","name":"경의선숲길","district":"마포구","category":"공원","address":"서울 마포구 연남동 일대 (연남동~용산구 6.3km)","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"","duration":40,"note":"폐철길을 따라 이어진 6.3km 선형 공원. 연남동 구간은 홍대입구역에서 바로 이어집니다.","officialUrl":"https://parks.seoul.go.kr/content.do?key=2604300008","mapUrl":"https://map.naver.com/p/search/%EA%B2%BD%EC%9D%98%EC%84%A0%EC%88%B2%EA%B8%B8","checkedOn":"2026-11-24"},{"id":"mangwon-hangang-park","name":"망원한강공원","district":"마포구","category":"한강공원","address":"서울 마포구 마포나루길 467","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"자전거 대여 등 시설은 유료","duration":40,"note":"24시간 상시 개방. 망원시장과 가까워 저녁 산책 코스로 많이 찾습니다.","officialUrl":"https://hangang.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EB%A7%9D%EC%9B%90%ED%95%9C%EA%B0%95%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"seogang-library","name":"마포구립서강도서관","district":"마포구","category":"도서관","address":"서울 마포구 독막로 165","hours":{"mon":["09:00","22:00"],"tue":null,"wed":["09:00","22:00"],"thu":["09:00","22:00"],"fri":["09:00","22:00"],"sat":["09:00","20:00"],"sun":["09:00","20:00"]},"closureNote":"매주 화요일, 법정공휴일 휴관","fee":"무료","feeNote":"대출은 회원만","duration":60,"note":"평일 09:00~22:00, 주말 09:00~20:00(서울도서관 도서관찾기 기준).","officialUrl":"https://mplib.mapo.go.kr/sglib/index.do","mapUrl":"https://map.naver.com/p/search/%EB%A7%88%ED%8F%AC%EA%B5%AC%EB%A6%BD%EC%84%9C%EA%B0%95%EB%8F%84%EC%84%9C%EA%B4%80","checkedOn":"2026-11-24"},{"id":"seoul-forest","name":"서울숲","district":"성동구","category":"공원","address":"서울 성동구 뚝섬로 273","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"주차·일부 체육시설은 유료","duration":60,"note":"공원은 24시간. 생태숲은 05:30~21:30, 곤충식물원은 10:00~17:00(11~2월 16:00, 월 휴관).","officialUrl":"https://seoulforest.or.kr/info/park-info","mapUrl":"https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EC%88%B2","checkedOn":"2026-11-24"},{"id":"seongdong-library","name":"성동구립도서관","district":"성동구","category":"도서관","address":"서울 성동구 고산자로10길 9","hours":{"mon":null,"tue":["07:00","22:00"],"wed":["07:00","22:00"],"thu":["07:00","22:00"],"fri":["07:00","22:00"],"sat":["07:00","22:00"],"sun":["07:00","22:00"]},"closureNote":"매주 월요일, 법정공휴일 휴관","fee":"무료","feeNote":"대출은 회원만","duration":60,"note":"화~일 07:00~22:00(서울도서관 도서관찾기 기준). 성동문화정보센터 안에 있습니다.","officialUrl":"https://www.sdlib.or.kr/SD/","mapUrl":"https://map.naver.com/p/search/%EC%84%B1%EB%8F%99%EA%B5%AC%EB%A6%BD%EB%8F%84%EC%84%9C%EA%B4%80","checkedOn":"2026-11-24"},{"id":"salgoji-sports-park","name":"살곶이체육공원","district":"성동구","category":"공원","address":"서울 성동구 중랑천서자전거길 209 (사근동)","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"일부 체육시설은 예약 필요","duration":40,"note":"24시간 개방. 중랑천을 따라 걷거나 뛰기 좋은 체육공원입니다.","officialUrl":"https://parks.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%82%B4%EA%B3%B6%EC%9D%B4%EC%B2%B4%EC%9C%A1%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"starfield-library","name":"별마당 도서관","district":"강남구","category":"도서관","address":"서울 강남구 영동대로 513 스타필드 코엑스몰 B1","hours":{"mon":["10:30","22:00"],"tue":["10:30","22:00"],"wed":["10:30","22:00"],"thu":["10:30","22:00"],"fri":["10:30","22:00"],"sat":["10:30","22:00"],"sun":["10:30","22:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"열람 무료 · 대출 없음","duration":45,"note":"누구나 무료로 들어와 읽을 수 있는 열람 공간입니다. 쇼핑몰 운영시간과 함께 움직입니다.","officialUrl":"https://www.starfield.co.kr/coexmall/starfieldLibrary/library.do","mapUrl":"https://map.naver.com/p/search/%EB%B3%84%EB%A7%88%EB%8B%B9%20%EB%8F%84%EC%84%9C%EA%B4%80","checkedOn":"2026-11-24"},{"id":"seonjeongneung","name":"선정릉","district":"강남구","category":"왕릉","address":"서울 강남구 선릉로100길 1","hours":{"mon":null,"tue":["06:30","17:30"],"wed":["06:30","17:30"],"thu":["06:30","17:30"],"fri":["06:30","17:30"],"sat":["06:30","17:30"],"sun":["06:30","17:30"]},"closureNote":"매주 월요일 휴무(월요일이 공휴일이면 개방하고 다음 날 휴무)","fee":"유료","feeNote":"만 25~64세 1,000원 · 무료 대상 있음","duration":45,"note":"11~1월 06:30~17:30(매표 마감 16:30), 3~10월은 06:00~21:00. 매월 마지막 수요일은 무료 관람.","officialUrl":"https://royaltombs.cha.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%84%A0%EC%A0%95%EB%A6%89","checkedOn":"2026-11-24"},{"id":"bongeunsa","name":"봉은사","district":"강남구","category":"사찰","address":"서울 강남구 봉은사로 531","hours":{"mon":["09:00","18:00"],"tue":["09:00","18:00"],"wed":["09:00","18:00"],"thu":["09:00","18:00"],"fri":["09:00","18:00"],"sat":["09:00","18:00"],"sun":["09:00","18:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"템플스테이 등 프로그램은 유료","duration":35,"note":"법회·기도 일정에 따라 일부 전각 출입이 제한될 수 있습니다.","officialUrl":"https://www.bongeunsa.org/","mapUrl":"https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC","checkedOn":"2026-11-24"},{"id":"olympic-park","name":"올림픽공원","district":"송파구","category":"공원","address":"서울 송파구 올림픽로 424","hours":{"mon":["05:00","22:00"],"tue":["05:00","22:00"],"wed":["05:00","22:00"],"thu":["05:00","22:00"],"fri":["05:00","22:00"],"sat":["05:00","22:00"],"sun":["05:00","22:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"주차 유료","duration":60,"note":"도보·자전거 출입 05:00~22:00(광장지역은 24:00). 22시 이후에는 공원 안쪽 출입이 제한됩니다.","officialUrl":"https://www.ksponco.or.kr/","mapUrl":"https://map.naver.com/p/search/%EC%98%AC%EB%A6%BC%ED%94%BD%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"songpa-book-museum","name":"송파책박물관","district":"송파구","category":"박물관","address":"서울 송파구 송파대로37길 77","hours":{"mon":null,"tue":["10:00","18:00"],"wed":["10:00","18:00"],"thu":["10:00","18:00"],"fri":["10:00","18:00"],"sat":["10:00","18:00"],"sun":["10:00","18:00"]},"closureNote":"매주 월요일, 1월 1일, 설날·추석 당일 휴관","fee":"무료","feeNote":"","duration":60,"note":"입장 마감은 폐관 30분 전. 단체관람은 평일 예약제입니다.","officialUrl":"https://www.bookmuseum.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%86%A1%ED%8C%8C%EC%B1%85%EB%B0%95%EB%AC%BC%EA%B4%80","checkedOn":"2026-11-24"},{"id":"jamsil-hangang-park","name":"잠실한강공원","district":"송파구","category":"한강공원","address":"서울 송파구 한가람로 65","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"주차 유료","duration":40,"note":"24시간 상시 개방. 석촌호수와 이어져 걷기 좋습니다.","officialUrl":"https://hangang.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%9E%A0%EC%8B%A4%ED%95%9C%EA%B0%95%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"seonyudo-park","name":"선유도공원","district":"영등포구","category":"공원","address":"서울 영등포구 선유로 343","hours":{"mon":["06:00","24:00"],"tue":["06:00","24:00"],"wed":["06:00","24:00"],"thu":["06:00","24:00"],"fri":["06:00","24:00"],"sat":["06:00","24:00"],"sun":["06:00","24:00"]},"closureNote":"공원 연중무휴(이야기관은 월요일 휴관)","fee":"무료","feeNote":"","duration":45,"note":"공원 06:00~24:00. 이야기관은 09:00~18:00(동절기 17:00), 월요일 휴관. 주차는 불가합니다.","officialUrl":"https://parks.seoul.go.kr/content.do?key=2604300019","mapUrl":"https://map.naver.com/p/search/%EC%84%A0%EC%9C%A0%EB%8F%84%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"yeouido-hangang-park","name":"여의도한강공원","district":"영등포구","category":"한강공원","address":"서울 영등포구 여의동로 330","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"수영장·자전거 대여 등은 유료","duration":40,"note":"24시간 상시 개방. 여의나루역 3번 출구에서 가깝습니다.","officialUrl":"https://hangang.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EC%97%AC%EC%9D%98%EB%8F%84%ED%95%9C%EA%B0%95%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"yeouido-park","name":"여의도공원","district":"영등포구","category":"공원","address":"서울 영등포구 여의공원로 68","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"","duration":40,"note":"24시간 개방. 문화의마당·전통의숲·잔디마당으로 나뉘어 있습니다.","officialUrl":"https://parks.seoul.go.kr/content.do?key=2604300020","mapUrl":"https://map.naver.com/p/search/%EC%97%AC%EC%9D%98%EB%8F%84%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"banpo-hangang-park","name":"반포한강공원","district":"서초구","category":"한강공원","address":"서울 서초구 신반포로11길 40","hours":{"mon":["00:00","24:00"],"tue":["00:00","24:00"],"wed":["00:00","24:00"],"thu":["00:00","24:00"],"fri":["00:00","24:00"],"sat":["00:00","24:00"],"sun":["00:00","24:00"]},"closureNote":"연중무휴","fee":"무료","feeNote":"자전거 대여 등 시설은 유료","duration":40,"note":"24시간 개방. 달빛무지개분수는 11월~3월 14일 운영하지 않습니다.","officialUrl":"https://hangang.seoul.go.kr/","mapUrl":"https://map.naver.com/p/search/%EB%B0%98%ED%8F%AC%ED%95%9C%EA%B0%95%EA%B3%B5%EC%9B%90","checkedOn":"2026-11-24"},{"id":"seocho-banpo-library","name":"서초구립반포도서관","district":"서초구","category":"도서관","address":"서울 서초구 고무래로 34","hours":{"mon":null,"tue":["09:00","22:00"],"wed":["09:00","22:00"],"thu":["09:00","22:00"],"fri":["09:00","22:00"],"sat":["09:00","18:00"],"sun":["09:00","18:00"]},"closureNote":"매주 월요일, 법정공휴일·임시공휴일 휴관","fee":"무료","feeNote":"대출은 회원만","duration":60,"note":"화~금 09:00~22:00, 토·일 09:00~18:00. 어린이자료실은 평일 18시까지.","officialUrl":"https://www.seocholib.or.kr/","mapUrl":"https://map.naver.com/p/search/%EC%84%9C%EC%B4%88%EA%B5%AC%EB%A6%BD%EB%B0%98%ED%8F%AC%EB%8F%84%EC%84%9C%EA%B4%80","checkedOn":"2026-11-24"}],"districts":["종로구","중구","용산구","마포구","성동구","강남구","송파구","영등포구","서초구"],"checkedOn":"2026-11-24","note":"각 시설의 공식 안내(누리집·서울시 공공 안내)에서 주소·운영시간·휴관일·요금을 2026-11-24에 대조했습니다. 계절·공휴일·전시 교체로 달라질 수 있으니 방문 전 공식 안내를 한 번 더 확인하세요.","storeKey":"secjobs-nearby-fav-v1","dayLabels":{"mon":"월","tue":"화","wed":"수","thu":"목","fri":"금","sat":"토","sun":"일"}}</script>
+  <script>
+(function () {
+  'use strict';
+
+  // ---------- 화면 테마 ----------
+  var themeBtn = document.getElementById('themeToggle');
+  var moonIcon = document.getElementById('moonIcon');
+  var sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) { try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {} }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
+  var DATA;
+  try { DATA = JSON.parse(document.getElementById('nbData').textContent); } catch (e) { return; }
+  var PLACES = DATA.places;
+  var DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  var DAY_LABEL = { sun: '일', mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토' };
+  var STORE_KEY = DATA.storeKey;
+
+  var els = {
+    clock: document.getElementById('nbClock'),
+    districts: document.getElementById('nbDistricts'),
+    remain: document.getElementById('nbRemain'),
+    favOnly: document.getElementById('nbFavOnly'),
+    summary: document.getElementById('nbSummary'),
+    openGrid: document.getElementById('nbOpenGrid'),
+    shortGrid: document.getElementById('nbShortGrid'),
+    closedGrid: document.getElementById('nbClosedGrid'),
+    openCount: document.getElementById('nbOpenCount'),
+    shortCount: document.getElementById('nbShortCount'),
+    closedCount: document.getElementById('nbClosedCount'),
+    openEmpty: document.getElementById('nbOpenEmpty'),
+    shortEmpty: document.getElementById('nbShortEmpty'),
+    closedEmpty: document.getElementById('nbClosedEmpty'),
+    openGroup: document.getElementById('nbOpenGroup'),
+    shortGroup: document.getElementById('nbShortGroup'),
+    closedGroup: document.getElementById('nbClosedGroup')
+  };
+
+  var filter = { district: 'all', remain: 30, favOnly: false };
+  var favs = [];
+  try {
+    var raw = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+    if (Object.prototype.toString.call(raw) === '[object Array]') favs = raw.filter(function (id) { return typeof id === 'string'; });
+  } catch (e) { favs = []; }
+  function saveFavs() { try { localStorage.setItem(STORE_KEY, JSON.stringify(favs)); } catch (e) {} }
+
+  // ---------- KST 시각 ----------
+  function kstNow() {
+    var now = new Date();
+    return new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
+  }
+  function pad(v) { return v < 10 ? '0' + v : String(v); }
+  function minutesOf(day) { return day.getHours() * 60 + day.getMinutes(); }
+  function dayKey(day) { return DAYS[day.getDay()]; }
+  function timeText(minutes) {
+    if (minutes >= 1440) return '24:00';
+    return pad(Math.floor(minutes / 60)) + ':' + pad(minutes % 60);
+  }
+  function parseTime(text) {
+    if (text === '24:00') return 1440;
+    var parts = text.split(':');
+    return Number(parts[0]) * 60 + Number(parts[1]);
+  }
+  function spanText(minutes) {
+    var m = Math.max(0, Math.round(minutes));
+    if (m >= 60) {
+      var h = Math.floor(m / 60);
+      var rest = m % 60;
+      return h + '시간' + (rest ? ' ' + rest + '분' : '');
+    }
+    return m + '분';
+  }
+
+  // ---------- 카드 ----------
+  var HEART_PATH = 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z';
+  var HEART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + HEART_PATH + '"></path></svg>';
+  var HEART_FILL = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="' + HEART_PATH + '"></path></svg>';
+  var EXTERNAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8"></path><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"></path></svg>';
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined && text !== null) node.textContent = text;
+    return node;
+  }
+
+  function statusOf(place, day) {
+    var key = dayKey(day);
+    var window = place.hours[key];
+    var now = minutesOf(day);
+    if (!window) {
+      return { kind: 'closed', reason: '오늘 휴관', window: null };
+    }
+    var start = parseTime(window[0]);
+    var end = parseTime(window[1]);
+    if (now < start) {
+      return { kind: 'closed', reason: timeText(start) + ' 개장', window: [start, end] };
+    }
+    if (now >= end) {
+      return { kind: 'closed', reason: timeText(end) + ' 운영 종료', window: [start, end] };
+    }
+    return { kind: 'open', left: end - now, window: [start, end] };
+  }
+
+  function cardOf(place, status, day) {
+    var card = el('article', 'nb-card' + (status.kind === 'open' ? '' : ' is-closed'));
+    card.dataset.id = place.id;
+
+    var top = el('div', 'nb-card-top');
+    top.appendChild(el('span', 'nb-cat', place.category));
+    top.appendChild(el('span', 'nb-fee ' + (place.fee === '무료' ? 'is-free' : 'is-paid'), place.fee));
+    if (status.kind === 'open' && status.left <= 60) {
+      top.appendChild(el('span', 'nb-urgent', '마감 임박'));
+    }
+    var fav = el('button', 'nb-fav');
+    fav.type = 'button';
+    fav.dataset.fav = place.id;
+    fav.setAttribute('aria-pressed', favs.indexOf(place.id) >= 0 ? 'true' : 'false');
+    fav.setAttribute('aria-label', place.name + ' 찜하기');
+    fav.innerHTML = favs.indexOf(place.id) >= 0 ? HEART_FILL : HEART;
+    top.appendChild(fav);
+    card.appendChild(top);
+
+    card.appendChild(el('h3', 'nb-name', place.name));
+    card.appendChild(el('p', 'nb-addr', place.address));
+
+    var windowLine = el('p', 'nb-window');
+    if (status.kind === 'open') {
+      windowLine.appendChild(el('b', '', timeText(status.window[0]) + '–' + timeText(status.window[1])));
+      var left = el('span', 'is-left', spanText(status.left) + ' 남음');
+      if (status.left <= 60) left.className = 'is-short';
+      windowLine.appendChild(left);
+    } else {
+      windowLine.appendChild(el('b', '', status.reason));
+      windowLine.appendChild(el('span', '', place.closureNote));
+    }
+    card.appendChild(windowLine);
+
+    // 하루 24시간 띠 — 오늘 운영 구간과 지금 위치
+    var band = el('div', 'nb-band');
+    var span = status.window;
+    var openBar = el('span', 'nb-band-open');
+    var nowBar = el('span', 'nb-band-now');
+    if (span) {
+      openBar.style.left = (span[0] / 1440 * 100).toFixed(2) + '%';
+      openBar.style.width = (Math.max(0, span[1] - span[0]) / 1440 * 100).toFixed(2) + '%';
+    } else {
+      openBar.style.left = '0%';
+      openBar.style.width = '0%';
+    }
+    nowBar.style.left = (minutesOf(day) / 1440 * 100).toFixed(2) + '%';
+    band.appendChild(openBar);
+    band.appendChild(nowBar);
+    card.appendChild(band);
+    var legend = el('div', 'nb-band-legend');
+    legend.appendChild(el('span', '', '00'));
+    legend.appendChild(el('span', '', '12'));
+    legend.appendChild(el('span', '', '24'));
+    card.appendChild(legend);
+
+    if (status.kind === 'open') {
+      var closure = el('p', 'nb-closure');
+      closure.appendChild(el('b', '', '휴관 '));
+      closure.appendChild(document.createTextNode(place.closureNote));
+      card.appendChild(closure);
+    }
+    if (place.note) card.appendChild(el('p', 'nb-note', place.note));
+
+    var links = el('div', 'nb-links');
+    var official = el('a', 'nb-link');
+    official.href = place.officialUrl;
+    official.target = '_blank';
+    official.rel = 'noopener noreferrer';
+    official.innerHTML = EXTERNAL;
+    official.appendChild(document.createTextNode(' 공식 안내'));
+    var map = el('a', 'nb-link');
+    map.href = place.mapUrl;
+    map.target = '_blank';
+    map.rel = 'noopener noreferrer';
+    map.innerHTML = EXTERNAL;
+    map.appendChild(document.createTextNode(' 지도'));
+    links.appendChild(official);
+    links.appendChild(map);
+    card.appendChild(links);
+    return card;
+  }
+
+  // ---------- 렌더 ----------
+  function matchesFilters(place) {
+    if (filter.district !== 'all' && place.district !== filter.district) return false;
+    if (filter.favOnly && favs.indexOf(place.id) < 0) return false;
+    return true;
+  }
+
+  function render() {
+    var day = kstNow();
+    els.clock.textContent = timeText(minutesOf(day)) + ' ' + DAY_LABEL[dayKey(day)] + ' KST';
+
+    var open = [];
+    var short = [];
+    var closed = [];
+    PLACES.forEach(function (place) {
+      if (!matchesFilters(place)) return;
+      var status = statusOf(place, day);
+      if (status.kind === 'open') {
+        if (status.left >= filter.remain) open.push({ place: place, status: status });
+        else short.push({ place: place, status: status });
+      } else {
+        closed.push({ place: place, status: status });
+      }
+    });
+    open.sort(function (a, b) { return a.status.left - b.status.left; });
+    short.sort(function (a, b) { return b.status.left - a.status.left; });
+    closed.sort(function (a, b) { return a.place.name.localeCompare(b.place.name, 'ko'); });
+
+    function fill(grid, empty, rows, emptyText) {
+      grid.innerHTML = '';
+      rows.forEach(function (row) {
+        grid.appendChild(cardOf(row.place, row.status, day));
+      });
+      if (!rows.length) {
+        empty.hidden = false;
+        empty.innerHTML = emptyText;
+      } else {
+        empty.hidden = true;
+      }
+    }
+
+    fill(els.openGrid, els.openEmpty, open,
+      '<b>지금 이 조건에 맞는 곳이 없습니다.</b><br>남은 시간을 늘리거나 자치구를 바꿔 보세요.');
+    fill(els.shortGrid, els.shortEmpty, short,
+      '고른 시간 안에 닫는 곳이 없습니다. 남은 시간을 줄이면 더 보입니다.');
+    fill(els.closedGrid, els.closedEmpty, closed,
+      '조건에 맞는 휴관 장소가 없습니다.');
+
+    els.openCount.textContent = open.length + '곳';
+    els.shortCount.textContent = short.length + '곳';
+    els.closedCount.textContent = closed.length + '곳';
+    els.shortGroup.classList.toggle('is-hidden', short.length === 0 && filter.favOnly);
+    els.closedGroup.classList.toggle('is-hidden', closed.length === 0 && filter.favOnly);
+
+    var urgent = open.filter(function (row) { return row.status.left <= 60; }).length;
+    els.summary.innerHTML = '';
+    els.summary.appendChild(document.createTextNode('지금 갈 수 있는 곳 '));
+    els.summary.appendChild(el('b', '', open.length + '곳'));
+    els.summary.appendChild(document.createTextNode(' · 오늘 문 닫은 곳 '));
+    els.summary.appendChild(el('b', '', closed.length + '곳'));
+    if (urgent) {
+      els.summary.appendChild(document.createTextNode(' · '));
+      els.summary.appendChild(el('span', 'nb-warn', '마감 임박 ' + urgent + '곳'));
+    }
+
+    // 찜 상태를 카드에 반영
+    Array.prototype.forEach.call(document.querySelectorAll('.nb-fav'), function (btn) {
+      var id = btn.dataset.fav;
+      var on = favs.indexOf(id) >= 0;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.innerHTML = on ? HEART_FILL : HEART;
+    });
+  }
+
+  // ---------- 이벤트 ----------
+  els.districts.addEventListener('click', function (event) {
+    var chip = event.target.closest ? event.target.closest('.nb-chip') : null;
+    if (!chip) return;
+    filter.district = chip.dataset.district;
+    Array.prototype.forEach.call(els.districts.querySelectorAll('.nb-chip'), function (btn) {
+      var on = btn === chip;
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    render();
+  });
+
+  els.remain.addEventListener('click', function (event) {
+    var chip = event.target.closest ? event.target.closest('.nb-chip') : null;
+    if (!chip) return;
+    filter.remain = Number(chip.dataset.remain);
+    Array.prototype.forEach.call(els.remain.querySelectorAll('.nb-chip'), function (btn) {
+      var on = btn === chip;
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    render();
+  });
+
+  els.favOnly.addEventListener('click', function () {
+    filter.favOnly = !filter.favOnly;
+    els.favOnly.setAttribute('aria-pressed', filter.favOnly ? 'true' : 'false');
+    els.favOnly.classList.toggle('is-fav-on', filter.favOnly);
+    render();
+  });
+
+  document.addEventListener('click', function (event) {
+    var btn = event.target.closest ? event.target.closest('.nb-fav') : null;
+    if (!btn) return;
+    var id = btn.dataset.fav;
+    var at = favs.indexOf(id);
+    if (at >= 0) favs.splice(at, 1);
+    else favs.push(id);
+    saveFavs();
+    if (filter.favOnly) render();
+    else {
+      btn.setAttribute('aria-pressed', at >= 0 ? 'false' : 'true');
+      btn.innerHTML = at >= 0 ? HEART : HEART_FILL;
+    }
+  });
+
+  // 1분마다 다시 계산 — 날짜가 바뀌면 요일 운영시간도 함께 바뀐다.
+  var lastDay = dayKey(kstNow());
+  window.setInterval(function () {
+    var now = kstNow();
+    if (dayKey(now) !== lastDay) {
+      lastDay = dayKey(now);
+      render();
+      return;
+    }
+    els.clock.textContent = timeText(minutesOf(now)) + ' ' + DAY_LABEL[dayKey(now)] + ' KST';
+    render();
+  }, 60000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) render();
+  });
+
+  render();
+
+  // 테스트·디버깅용
+  window.NEARBY = {
+    data: DATA,
+    filter: filter,
+    favs: function () { return favs.slice(); },
+    setDistrict: function (name) {
+      var chip = els.districts.querySelector('[data-district="' + name + '"]');
+      if (chip) chip.click();
+    },
+    setRemain: function (minutes) {
+      var chip = els.remain.querySelector('[data-remain="' + minutes + '"]');
+      if (chip) chip.click();
+    },
+    toggleFav: function (id) {
+      var btn = document.querySelector('.nb-fav[data-fav="' + id + '"]');
+      if (btn) btn.click();
+    },
+    statusAt: function (minutes, dayIndex) {
+      // 지정한 시각(KST 분)과 요일로 상태를 계산한다(테스트·확인용).
+      var fake = new Date(2026, 10, 22 + (dayIndex || 0), Math.floor(minutes / 60), minutes % 60);
+      return PLACES.map(function (place) {
+        return { id: place.id, name: place.name, status: statusOf(place, fake) };
+      });
+    },
+    counts: function () {
+      return {
+        open: Number(els.openCount.textContent.replace(/[^0-9]/g, '')),
+        short: Number(els.shortCount.textContent.replace(/[^0-9]/g, '')),
+        closed: Number(els.closedCount.textContent.replace(/[^0-9]/g, '')),
+        cards: document.querySelectorAll('.nb-grid .nb-card').length
+      };
+    }
+  };
+})();
+</script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab is-active" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="grocery.html"><span>장보기 타이밍</span><span class="ia-sheet-file">grocery.html</span></a><a class="ia-sheet-link" href="basket.html"><span>장바구니 리그</span><span class="ia-sheet-file">basket.html</span></a><a class="ia-sheet-link" href="paymeter.html"><span>월급 미터</span><span class="ia-sheet-file">paymeter.html</span></a><a class="ia-sheet-link" href="movein.html"><span>입주 점검</span><span class="ia-sheet-file">movein.html</span></a><a class="ia-sheet-link is-current" href="nearby.html" aria-current="page"><span>지금 갈 곳</span><span class="ia-sheet-file">nearby.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link" href="recycle.html"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a><a class="ia-sheet-link" href="food.html"><span>식품 라벨 읽기</span><span class="ia-sheet-file">food.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mystery90.html"><span>90초 추리</span><span class="ia-sheet-file">mystery90.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a><a class="ia-sheet-link" href="subway.html"><span>지하철역 맞히기</span><span class="ia-sheet-file">subway.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>

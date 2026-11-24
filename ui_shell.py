@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-26개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+29개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
@@ -44,6 +44,9 @@ PAGES = [
     ("paymeter", "paymeter.html", "월급 미터", "월급 미터"),
     ("subway", "subway.html", "지하철역 맞히기", "지하철역"),
     ("basket", "basket.html", "장바구니 리그", "장바구니"),
+    ("mystery90", "mystery90.html", "90초 추리", "90초 추리"),
+    ("movein", "movein.html", "입주 점검", "입주 점검"),
+    ("nearby", "nearby.html", "지금 갈 곳", "지금 갈 곳"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
@@ -52,7 +55,7 @@ PAGE_SHORT = {key: short for key, _file, _label, short in PAGES}
 
 # 게임 메뉴의 소제목 묶음 — 데스크톱 드롭다운과 모바일 시트 모두 '챌린지 / 미니게임' 으로 통일한다.
 GAME_GROUPS = [
-    ("챌린지", ["wargame", "clue", "mission", "chart", "subway"]),
+    ("챌린지", ["wargame", "clue", "mystery90", "mission", "chart", "subway"]),
     ("미니게임", ["arcade", "ops", "seat", "load", "hangul"]),
 ]
 
@@ -61,7 +64,7 @@ SHEET_GROUP_IDS = {"게임": "iaSheetGroupGame"}
 GAME_TAB_TARGET = SHEET_GROUP_IDS["게임"]
 
 # 데일리·생활 묶음 — 셸 그룹과 데스크톱 드롭다운이 같은 목록을 쓴다.
-DAILY_KEYS = ["outfit", "pick", "grocery", "basket", "paymeter", "cards", "wash", "recycle", "food"]
+DAILY_KEYS = ["outfit", "pick", "grocery", "basket", "paymeter", "movein", "nearby", "cards", "wash", "recycle", "food"]
 
 # (그룹 이름, 항목 목록) — 항목은 페이지 키(str) 또는 (소제목, 페이지 키 목록).
 # 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
@@ -85,7 +88,7 @@ MOBILE_TABS = [
     ("study", "학습", "study.html", ["study"], "book"),
     ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
     # href 가 None 이면 이동 대신 전체 시트의 게임 목록을 열어 준다.
-    ("game", "게임", None, ["wargame", "clue", "mission", "chart", "subway", "ops", "seat", "load", "arcade", "hangul"], "game"),
+    ("game", "게임", None, ["wargame", "clue", "mystery90", "mission", "chart", "subway", "ops", "seat", "load", "arcade", "hangul"], "game"),
 ]
 
 ICONS = {
