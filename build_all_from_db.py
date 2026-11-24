@@ -8,7 +8,8 @@ AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(c
 하루 한 판 · 3단서 추리(clue.html), 퇴근길 미션(mission.html), 차트 추리실(chart.html),
 퇴근 전 60초 관제실(ops.html), 막차 자리 배치(seat.html), 한 번 더 싣기(load.html),
 실시간 Canvas 아케이드(arcade.html), 한글 한 칸 변신(hangul.html), 오늘의 카드(cards.html), 세탁 라벨 읽기(wash.html),
-재질 표시·분리배출(recycle.html), 식품 라벨·영양성분표 읽기(food.html), 장보기 타이밍(grocery.html)을
+재질 표시·분리배출(recycle.html), 식품 라벨·영양성분표 읽기(food.html), 장보기 타이밍(grocery.html),
+실시간 월급·퇴근 미터(paymeter.html), 오늘의 지하철역 맞히기(subway.html), 오늘의 장바구니 리그(basket.html)을
 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
@@ -162,6 +163,18 @@ def build_all():
     from build_grocery_html import build as build_grocery
     grocery_total = build_grocery()
 
+    # 28. paymeter.html 재생성 (실시간 월급·퇴근 미터: 급여·출퇴근 설정 → 오늘 번 돈 · 영수증 · 카드)
+    from build_paymeter_html import build as build_paymeter
+    paymeter_total = build_paymeter()
+
+    # 29. subway.html 재생성 (오늘의 지하철역: 서울 25개 구 역 306곳 · KST 날짜 시드 데일리 + 연습)
+    from build_subway_html import build as build_subway
+    subway_total = build_subway()
+
+    # 30. basket.html 재생성 (오늘의 장바구니 리그: KAMIS 8품목 · 날짜 시드 미션 · S/A/B/C 등급)
+    from build_basket_html import build as build_basket
+    basket_total = build_basket()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -188,6 +201,10 @@ def build_all():
     print(f"  - 식품 라벨·영양성분표: 영양성분 {food_total['nutrients']}행 · 항목 {food_total['items']}개 · 퀴즈 {food_total['quizzes']}문항 (확인 {food_total['checkedOn']})")
     print(f"  - 장보기 타이밍: 품목 {grocery_total['items']}개 · 지역 {grocery_total['regions']}곳 "
           f"({grocery_total['window']['start']} ~ {grocery_total['window']['end']} 기준 · 수집 {grocery_total['generated']})")
+    print(f"  - 월급 미터: 환산 {paymeter_total['conversions']}종 (월 소정근로 {int(paymeter_total['monthlyHours'])}시간 기준)")
+    print(f"  - 지하철역: 역 {subway_total['stations']}곳 · 오늘({subway_total['date']}) 정답 {subway_total['answer']}")
+    print(f"  - 장바구니 리그: 품목 {basket_total['items']}개 · 목표 {basket_total['mission']['budget']:,}원 "
+          f"±{basket_total['mission']['tolerance']:,}원 · 최고 {basket_total['best']['grade']}등급")
     print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
           f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 

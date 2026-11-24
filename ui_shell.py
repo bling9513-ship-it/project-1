@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-23개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+26개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
 - 게임 메뉴는 '챌린지 / 미니게임' 소제목으로 묶는다(데스크톱 드롭다운·모바일 시트 공통).
-- 시트: 카테고리별 23개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 시트: 카테고리별 26개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
 - 모바일 `게임` 탭은 wargame.html 로 이동하지 않고 시트의 게임 목록으로 스크롤·포커스한다.
 """
@@ -41,6 +41,9 @@ PAGES = [
     ("recycle", "recycle.html", "분리배출 읽기", "분리배출"),
     ("food", "food.html", "식품 라벨 읽기", "식품 라벨"),
     ("grocery", "grocery.html", "장보기 타이밍", "장보기"),
+    ("paymeter", "paymeter.html", "월급 미터", "월급 미터"),
+    ("subway", "subway.html", "지하철역 맞히기", "지하철역"),
+    ("basket", "basket.html", "장바구니 리그", "장바구니"),
 ]
 
 PAGE_FILE = {key: file for key, file, _label, _short in PAGES}
@@ -49,7 +52,7 @@ PAGE_SHORT = {key: short for key, _file, _label, short in PAGES}
 
 # 게임 메뉴의 소제목 묶음 — 데스크톱 드롭다운과 모바일 시트 모두 '챌린지 / 미니게임' 으로 통일한다.
 GAME_GROUPS = [
-    ("챌린지", ["wargame", "clue", "mission", "chart"]),
+    ("챌린지", ["wargame", "clue", "mission", "chart", "subway"]),
     ("미니게임", ["arcade", "ops", "seat", "load", "hangul"]),
 ]
 
@@ -57,19 +60,22 @@ GAME_GROUPS = [
 SHEET_GROUP_IDS = {"게임": "iaSheetGroupGame"}
 GAME_TAB_TARGET = SHEET_GROUP_IDS["게임"]
 
+# 데일리·생활 묶음 — 셸 그룹과 데스크톱 드롭다운이 같은 목록을 쓴다.
+DAILY_KEYS = ["outfit", "pick", "grocery", "basket", "paymeter", "cards", "wash", "recycle", "food"]
+
 # (그룹 이름, 항목 목록) — 항목은 페이지 키(str) 또는 (소제목, 페이지 키 목록).
 # 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
 GROUPS = [
     ("보안·채용", ["index", "study"]),
     ("브리핑·유틸", ["today", "ai", "cve", "tools", "radar"]),
-    ("데일리·생활", ["outfit", "pick", "grocery", "cards", "wash", "recycle", "food"]),
+    ("데일리·생활", DAILY_KEYS),
     ("게임", GAME_GROUPS),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
     ("브리핑·트렌드", ["today", "ai", "cve", "tools", "radar"]),
-    ("데일리·생활", ["outfit", "pick", "grocery", "cards", "wash", "recycle", "food"]),
+    ("데일리·생활", DAILY_KEYS),
     ("게임", GAME_GROUPS),
 ]
 
@@ -79,7 +85,7 @@ MOBILE_TABS = [
     ("study", "학습", "study.html", ["study"], "book"),
     ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
     # href 가 None 이면 이동 대신 전체 시트의 게임 목록을 열어 준다.
-    ("game", "게임", None, ["wargame", "clue", "mission", "chart", "ops", "seat", "load", "arcade", "hangul"], "game"),
+    ("game", "게임", None, ["wargame", "clue", "mission", "chart", "subway", "ops", "seat", "load", "arcade", "hangul"], "game"),
 ]
 
 ICONS = {

@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-eWeLf1Sy9fljjmZ5zrve+TcJEFDeVKMJxmPQuKUYKf0=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 오늘의 지하철역</title>
+  <meta name="description" content="서울 25개 구 실제 지하철역 306곳 중 오늘의 역을 6회 안에 맞히는 데일리 퍼즐. 노선·환승·자치구·방향과 거리·초성 힌트를 한 줄씩 받아 좁혀 갑니다. 연습 모드와 연속 스트릭, 결과 복사가 있습니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --bg-page: #f8fafc;  --bg-surface: #ffffff;  --bg-subtle: #f1f5f9;  --bg-muted: #e2e8f0;
+      --border-subtle: #f1f5f9;  --border-default: #e2e8f0;  --border-strong: #cbd5e1;
+      --text-primary: #0f172a;  --text-secondary: #475569;  --text-muted: #94a3b8;
+      --accent-primary: #2563eb;  --accent-subtle: #eff6ff;
+      --hit-bg: #0f766e;  --hit-text: #ffffff;  --hit-soft: #ecfdf5;  --hit-border: #a7f3d0;  --hit-ink: #047857;
+      --near-bg: #fffbeb;  --near-text: #b45309;  --near-border: #fde68a;
+      --miss-bg: #f8fafc;  --miss-text: #94a3b8;  --miss-border: #e2e8f0;
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    }
+    [data-theme="dark"] {
+      --bg-page: #09090b;  --bg-surface: #18181b;  --bg-subtle: #27272a;  --bg-muted: #3f3f46;
+      --border-subtle: #1f1f23;  --border-default: #27272a;  --border-strong: #3f3f46;
+      --text-primary: #f4f4f5;  --text-secondary: #a1a1aa;  --text-muted: #71717a;
+      --accent-primary: #3b82f6;  --accent-subtle: rgba(59, 130, 246, 0.15);
+      --hit-bg: #0d9488;  --hit-text: #ffffff;  --hit-soft: rgba(16, 185, 129, 0.14);
+      --hit-border: rgba(16, 185, 129, 0.34);  --hit-ink: #6ee7b7;
+      --near-bg: rgba(245, 158, 11, 0.14);  --near-text: #fcd34d;  --near-border: rgba(245, 158, 11, 0.34);
+      --miss-bg: #18181b;  --miss-text: #71717a;  --miss-border: #27272a;
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-primary);
+      line-height: 1.5; letter-spacing: -0.02em; min-height: 100vh; -webkit-font-smoothing: antialiased;
+      transition: background-color .2s ease, color .2s ease; }
+    .sw-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    .sw-wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 96px; }
+    .sw-hero h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.045em; margin-top: 7px; }
+    .sw-hero p { margin-top: 6px; font-size: 13px; color: var(--text-secondary); max-width: 640px; word-break: keep-all; }
+    .sw-pill { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border-radius: 7px; padding: 3px 9px; }
+    .sw-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 10px;
+      font-size: 11.5px; color: var(--text-muted); }
+    .sw-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); display: inline-block; }
+
+    .sw-main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; margin-top: 16px; align-items: start; }
+    .sw-main > * { min-width: 0; }
+    .sw-panel { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 16px;
+      padding: 18px; box-shadow: var(--card-shadow); }
+    .sw-panel h2 { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+
+    /* ---------- 입력 ---------- */
+    .sw-play { padding: 18px; }
+    .sw-play-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .sw-tries { display: flex; gap: 5px; }
+    .sw-try-dot { width: 20px; height: 6px; border-radius: 3px; background: var(--bg-muted); }
+    .sw-try-dot.is-used { background: var(--text-secondary); }
+    .sw-try-dot.is-win { background: var(--hit-bg); }
+    .sw-try-dot.is-lose { background: var(--near-text); }
+    .sw-mode { display: inline-flex; gap: 3px; padding: 3px; background: var(--bg-subtle); border-radius: 10px; }
+    .sw-mode button { border: 0; background: transparent; color: var(--text-secondary); cursor: pointer;
+      font-family: inherit; font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: 7px; }
+    .sw-mode button.is-on { background: var(--bg-surface); color: var(--text-primary); box-shadow: var(--card-shadow); }
+    .sw-mode button:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    .sw-input-wrap { position: relative; margin-top: 13px; }
+    .sw-input-row { display: flex; gap: 8px; }
+    .sw-input { flex: 1 1 auto; min-width: 0; border: 1px solid var(--border-default); background: var(--bg-surface);
+      color: var(--text-primary); border-radius: 12px; padding: 13px 14px; font-family: inherit; font-size: 16px;
+      font-weight: 700; letter-spacing: -0.01em; }
+    .sw-input::placeholder { color: var(--text-muted); font-weight: 600; }
+    .sw-input:focus { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+    .sw-submit { flex: 0 0 auto; border: 1px solid var(--text-primary); background: var(--text-primary);
+      color: var(--bg-surface); border-radius: 12px; padding: 0 18px; font-family: inherit; font-size: 13px;
+      font-weight: 700; cursor: pointer; }
+    .sw-submit:disabled { opacity: .4; cursor: default; }
+    .sw-submit:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .sw-suggest { position: absolute; left: 0; right: 0; top: calc(100% + 5px); z-index: 20; background: var(--bg-surface);
+      border: 1px solid var(--border-default); border-radius: 12px; box-shadow: 0 10px 24px -12px rgba(15, 23, 42, 0.28);
+      overflow: hidden; max-height: 268px; overflow-y: auto; }
+    .sw-suggest button { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: transparent;
+      color: var(--text-primary); text-align: left; padding: 9px 12px; font-family: inherit; font-size: 13.5px;
+      font-weight: 700; cursor: pointer; }
+    .sw-suggest button:hover, .sw-suggest button.is-active { background: var(--bg-subtle); }
+    .sw-suggest button span { margin-left: auto; font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
+    .sw-suggest .sw-empty { padding: 11px 12px; font-size: 12px; color: var(--text-muted); }
+    .sw-input-hint { margin-top: 7px; font-size: 11px; color: var(--text-muted); }
+
+    /* ---------- 시도 기록 ---------- */
+    .sw-head { display: grid; grid-template-columns: 96px minmax(0, 1.5fr) 56px 68px 62px minmax(80px, 1fr) 66px;
+      gap: 6px; margin-top: 16px; padding: 0 2px; font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .sw-head span { text-align: center; }
+    .sw-head span:first-child { text-align: left; }
+    .sw-rows { margin-top: 6px; display: grid; gap: 6px; }
+    .sw-row { display: grid; grid-template-columns: 96px minmax(0, 1.5fr) 56px 68px 62px minmax(80px, 1fr) 66px;
+      gap: 6px; align-items: stretch; }
+    .sw-cell { display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 10px;
+      border: 1px solid var(--border-default); background: var(--bg-surface); font-size: 11.5px; font-weight: 700;
+      color: var(--text-secondary); padding: 3px 4px; }
+    .sw-cell.is-answer { border-color: var(--hit-border); background: var(--hit-soft); color: var(--hit-ink); }
+    .sw-cell.is-hit { background: var(--hit-bg); border-color: var(--hit-bg); color: var(--hit-text); }
+    .sw-cell.is-near { background: var(--near-bg); border-color: var(--near-border); color: var(--near-text); }
+    .sw-cell.is-miss { background: var(--miss-bg); border-color: var(--miss-border); color: var(--miss-text); }
+    .sw-name-cell { justify-content: flex-start; gap: 2px; padding: 3px 6px; font-size: 12.5px; flex-wrap: wrap; }
+    .sw-char { display: inline-flex; align-items: center; justify-content: center; min-width: 17px; height: 23px;
+      padding: 0 2px; border-radius: 5px; background: var(--bg-subtle); color: var(--text-secondary); }
+    .sw-char.is-hit { background: var(--hit-bg); color: var(--hit-text); }
+    .sw-char.is-near { background: var(--near-bg); color: var(--near-text); box-shadow: inset 0 0 0 1px var(--near-border); }
+    .sw-chips { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; width: 100%; }
+    .sw-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px;
+      padding: 0 5px; border-radius: 6px; font-size: 10.5px; font-weight: 800; background: var(--bg-subtle);
+      color: var(--text-muted); border: 1px solid var(--border-default); }
+    .sw-chip.is-on { color: #fff; border-color: transparent; }
+    .sw-num { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .sw-arrow-up { color: var(--near-text); }
+    .sw-arrow-down { color: var(--accent-primary); }
+    .sw-dir { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; }
+    .sw-dir svg { width: 13px; height: 13px; }
+    .sw-dir b { font-size: 11.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .sw-empty-row { border: 1px dashed var(--border-strong); border-radius: 10px; min-height: 44px;
+      display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: var(--text-muted); }
+
+    /* ---------- 초성 힌트 · 결과 ---------- */
+    .sw-hint { margin-top: 16px; border: 1px solid var(--border-default); border-radius: 14px; padding: 12px 14px;
+      background: var(--bg-subtle); }
+    .sw-hint-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .sw-hint-head h3 { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .sw-hint-head span { font-size: 10.5px; color: var(--text-muted); }
+    .sw-blanks { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+    .sw-blank { min-width: 30px; height: 34px; padding: 0 6px; border-radius: 8px; background: var(--bg-surface);
+      border: 1px solid var(--border-default); display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: var(--text-muted); }
+    .sw-blank.is-revealed { color: var(--text-primary); border-color: var(--border-strong); }
+    .sw-blank.is-correct { background: var(--hit-soft); border-color: var(--hit-border); color: var(--hit-ink); }
+
+    .sw-result { margin-top: 16px; border: 1px solid var(--border-default); border-radius: 14px; padding: 15px;
+      background: var(--bg-surface); }
+    .sw-result.is-win { border-color: var(--hit-border); background: var(--hit-soft); }
+    .sw-result.is-lose { border-color: var(--near-border); background: var(--near-bg); }
+    .sw-result-top { display: flex; align-items: center; gap: 8px; }
+    .sw-result-badge { font-size: 11px; font-weight: 800; border-radius: 999px; padding: 3px 9px;
+      background: var(--bg-surface); border: 1px solid var(--border-strong); color: var(--text-secondary); }
+    .sw-result h3 { font-size: 17px; font-weight: 800; letter-spacing: -0.03em; }
+    .sw-result p { margin-top: 6px; font-size: 12px; color: var(--text-secondary); word-break: keep-all; }
+    .sw-answer-line { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .sw-result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .sw-btn { border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary);
+      border-radius: 10px; padding: 8px 13px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .sw-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+    .sw-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .sw-btn.sw-primary { background: var(--text-primary); border-color: var(--text-primary); color: var(--bg-surface); }
+    .sw-status { min-height: 16px; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--hit-ink); }
+    .sw-share { margin-top: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+      line-height: 1.55; white-space: pre-wrap; color: var(--text-secondary); background: var(--bg-subtle);
+      border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 11px; }
+
+    /* ---------- 가이드 ---------- */
+    .sw-guide { margin-top: 12px; }
+    .sw-guide-body { margin-top: 9px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .sw-step { border: 1px solid var(--border-default); border-radius: 12px; padding: 9px; background: var(--bg-subtle);
+      transition: border-color .2s ease, background-color .2s ease, transform .2s ease; }
+    .sw-step.is-on { border-color: var(--text-secondary); background: var(--bg-surface); transform: translateY(-2px); }
+    .sw-step h4 { font-size: 10.5px; font-weight: 800; color: var(--text-secondary); }
+    .sw-step p { margin-top: 4px; font-size: 10px; line-height: 1.45; color: var(--text-muted); word-break: keep-all; }
+    .sw-stage { display: flex; align-items: center; justify-content: center; gap: 5px; height: 40px; margin-bottom: 4px; }
+    .sw-g-chip { width: 15px; height: 15px; border-radius: 5px; background: var(--bg-muted);
+      transition: background-color .35s ease, transform .35s ease; }
+    .sw-step.is-on .sw-g-chip:nth-child(1) { background: #00A84D; transform: translateY(-2px); }
+    .sw-step.is-on .sw-g-chip:nth-child(2) { background: #D4003B; transform: translateY(2px); }
+    .sw-step.is-on .sw-g-chip:nth-child(3) { background: var(--bg-muted); }
+    .sw-g-dir { width: 26px; height: 26px; color: var(--text-muted); transition: transform .5s cubic-bezier(0.2, 0.8, 0.2, 1), color .3s ease; }
+    .sw-step.is-on .sw-g-dir { transform: rotate(45deg); color: var(--accent-primary); }
+    .sw-g-tile { width: 22px; height: 26px; border-radius: 6px; background: var(--bg-muted); display: inline-flex;
+      align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: transparent;
+      transition: background-color .35s ease, color .35s ease; }
+    .sw-step.is-on .sw-g-tile.is-hit { background: var(--hit-bg); color: #fff; }
+    .sw-step.is-on .sw-g-tile.is-near { background: var(--near-bg); color: var(--near-text); box-shadow: inset 0 0 0 1px var(--near-border); }
+    .sw-guide-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .sw-guide-foot span { font-size: 10.5px; color: var(--text-muted); }
+    .sw-replay { border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary);
+      border-radius: 8px; padding: 5px 10px; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .sw-replay:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+
+    /* ---------- 레일 ---------- */
+    .sw-rail { display: grid; gap: 12px; position: sticky; top: 76px; }
+    .sw-stat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+    .sw-stat div { border: 1px solid var(--border-default); border-radius: 11px; padding: 9px 10px; background: var(--bg-subtle); }
+    .sw-stat span { display: block; font-size: 10px; color: var(--text-muted); }
+    .sw-stat b { display: block; margin-top: 2px; font-size: 18px; font-weight: 800; letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .sw-stat b small { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-left: 2px; }
+    .sw-rail p { margin-top: 9px; font-size: 11.5px; line-height: 1.62; color: var(--text-secondary); word-break: keep-all; }
+    .sw-rail p b { color: var(--text-primary); }
+    .sw-practice { margin-top: 10px; width: 100%; }
+    .sw-notes { margin-top: 22px; background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 17px 18px; box-shadow: var(--card-shadow); }
+    .sw-notes h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); }
+    .sw-notes ul { margin-top: 10px; display: grid; gap: 7px; padding-left: 16px; }
+    .sw-notes li { font-size: 11.5px; line-height: 1.62; color: var(--text-secondary); word-break: keep-all; }
+    .sw-notes li b { color: var(--text-primary); }
+    .sw-notes .sw-srcs { list-style: none; padding-left: 0; margin-top: 12px; padding-top: 11px;
+      border-top: 1px solid var(--border-subtle); }
+    .sw-notes .sw-srcs li { display: flex; flex-direction: column; gap: 1px; }
+    .sw-notes .sw-srcs a { font-weight: 700; color: var(--accent-primary); text-decoration: none; font-size: 11.5px; }
+    .sw-notes .sw-srcs span { font-size: 10.5px; color: var(--text-muted); }
+    .sw-foot { margin-top: 14px; font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      .sw-wrap { padding: 14px 13px 88px; }
+      .sw-hero h1 { font-size: 21px; }
+      .sw-hero p { font-size: 12px; }
+      .sw-main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 13px; }
+      .sw-play { order: 1; padding: 14px; }
+      .sw-rail { order: 2; position: static; width: 100%; }
+      .sw-head { display: none; }
+      .sw-row { min-width: 0; grid-template-columns: minmax(0, 1fr) 42px 50px 58px 44px;
+        grid-template-areas: "name name name area csc" "lines lines num dir km"; gap: 5px; }
+      .sw-row > .sw-cell:nth-child(1) { grid-area: name; }
+      .sw-row > .sw-cell:nth-child(2) { grid-area: lines; }
+      .sw-row > .sw-cell:nth-child(3) { grid-area: num; }
+      .sw-row > .sw-cell:nth-child(4) { grid-area: area; }
+      .sw-row > .sw-cell:nth-child(5) { grid-area: dir; }
+      .sw-row > .sw-cell:nth-child(6) { grid-area: km; }
+      .sw-row > .sw-cell:nth-child(7) { grid-area: csc; }
+      .sw-name-cell { min-height: 38px; }
+      .sw-input-row, .sw-input, .sw-suggest, .sw-hint, .sw-guide, .sw-rows { min-width: 0; max-width: 100%; }
+      .sw-hero p, .sw-rail p, .sw-notes li { overflow-wrap: anywhere; }
+      .sw-cell { min-height: 34px; font-size: 11px; }
+      .sw-guide-body { grid-template-columns: minmax(0, 1fr); }
+      .sw-step { display: flex; align-items: center; gap: 9px; }
+      .sw-stage { height: 34px; margin-bottom: 0; }
+      .sw-step > div:last-child { flex: 1 1 auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="subway">
+
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">지하철역</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link is-current" role="menuitem" href="subway.html" aria-current="page">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">역 목록 확인 2026-11-24</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="sw-wrap">
+    <section class="sw-hero">
+      <span class="sw-pill">게임 · 데일리 지하철역</span>
+      <h1>오늘의 역은 어디일까</h1>
+      <p>서울 25개 구 실제 지하철역 306곳 중 오늘의 역을 6회 안에 맞힙니다. 노선·환승·자치구·방향과 거리·초성 힌트가 매번 좁혀 주니, 지하철을 자주 타는 사람에게 유리한 퍼즐입니다.</p>
+      <div class="sw-meta">
+        <span>서울 25개 구 · 역 306곳</span>
+        <span class="sw-dot"></span>
+        <span>노선 18종</span>
+        <span class="sw-dot"></span>
+        <span>역 목록 확인 2026-11-24</span>
+      </div>
+    </section>
+
+    <div class="sw-main">
+      <section class="sw-panel sw-play" aria-labelledby="swPlayTitle">
+        <div class="sw-play-head">
+          <div>
+            <h2 id="swPlayTitle">오늘의 지하철역</h2>
+          </div>
+          <div class="sw-mode" role="group" aria-label="모드 선택">
+            <button type="button" data-mode="daily" class="is-on" aria-pressed="true">오늘</button>
+            <button type="button" data-mode="practice" aria-pressed="false">연습</button>
+          </div>
+        </div>
+
+        <div class="sw-tries" id="swTries" role="img" aria-label="남은 시도"></div>
+
+        <div class="sw-input-wrap">
+          <div class="sw-input-row">
+            <input class="sw-input" id="swInput" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="역 이름을 입력하세요 (예: 강남, ㄱㄴ)" aria-label="역 이름" aria-autocomplete="list"
+                   aria-controls="swSuggest" aria-expanded="false" role="combobox">
+            <button type="button" class="sw-submit" id="swSubmit">확인</button>
+          </div>
+          <div class="sw-suggest" id="swSuggest" role="listbox" aria-label="역 이름 제안" hidden></div>
+          <p class="sw-input-hint" id="swHint">초성으로도 찾을 수 있습니다. 같은 역은 다시 넣을 수 없습니다.</p>
+          <p class="sw-status" id="swInputStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="sw-head" aria-hidden="true">
+          <span>역명</span><span>노선</span><span>연계</span><span>자치구</span><span>방향</span><span>거리</span><span>초성</span>
+        </div>
+        <div class="sw-rows" id="swRows" role="list" aria-label="시도 기록"></div>
+
+        <div class="sw-hint" id="swChosung">
+          <div class="sw-hint-head">
+            <h3>정답 초성</h3>
+            <span id="swChosungNote">맞힌 글자는 드러납니다</span>
+          </div>
+          <div class="sw-blanks" id="swBlanks"></div>
+        </div>
+
+        <div class="sw-result" id="swResult" hidden>
+          <div class="sw-result-top">
+            <span class="sw-result-badge" id="swResultBadge">정답</span>
+            <h3 id="swResultTitle">정답입니다</h3>
+          </div>
+          <p id="swResultText"></p>
+          <div class="sw-answer-line" id="swAnswerLine"></div>
+          <div class="sw-result-actions">
+            <button type="button" class="sw-btn sw-primary" id="swCopy">결과 복사</button>
+            <button type="button" class="sw-btn" id="swAgain">연습 한 판</button>
+          </div>
+          <p class="sw-status" id="swStatus" role="status" aria-live="polite"></p>
+          <div class="sw-share" id="swShare"></div>
+        </div>
+
+        <section class="sw-guide" aria-labelledby="swGuideTitle">
+          <div class="sw-hint-head">
+            <h3 id="swGuideTitle">힌트 읽는 법 · 3단계</h3>
+            <span id="swGuideNote">한 번 재생됩니다</span>
+          </div>
+          <div class="sw-guide-body" id="swGuideSteps">
+            <div class="sw-step" data-step="1">
+              <div class="sw-stage" aria-hidden="true">
+                <span class="sw-g-chip"></span><span class="sw-g-chip"></span><span class="sw-g-chip"></span>
+              </div>
+              <div>
+                <h4>1. 노선</h4>
+                <p>추측한 역의 노선 칩이 정답 노선이면 그 노선 색으로 채워집니다.</p>
+              </div>
+            </div>
+            <div class="sw-step" data-step="2">
+              <div class="sw-stage" aria-hidden="true">
+                <svg class="sw-g-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5"></path><path d="M6 11l6-6 6 6"></path></svg>
+              </div>
+              <div>
+                <h4>2. 방향·거리</h4>
+                <p>정답이 추측한 역에서 어느 방향으로 몇 km 떨어졌는지 화살표로 보여 줍니다.</p>
+              </div>
+            </div>
+            <div class="sw-step" data-step="3">
+              <div class="sw-stage" aria-hidden="true">
+                <span class="sw-g-tile is-hit">강</span><span class="sw-g-tile is-near">남</span><span class="sw-g-tile">역</span>
+              </div>
+              <div>
+                <h4>3. 초성·글자</h4>
+                <p>정답 초성이 열리고, 자리까지 맞힌 글자는 진하게 표시됩니다.</p>
+              </div>
+            </div>
+          </div>
+          <div class="sw-guide-foot">
+            <button type="button" class="sw-replay" id="swReplay">다시 보기</button>
+            <span id="swGuideState">잠시 후 자동으로 재생됩니다</span>
+          </div>
+        </section>
+      </section>
+
+      <aside class="sw-rail" aria-label="기록과 안내">
+        <section class="sw-panel">
+          <h2>내 기록</h2>
+          <div class="sw-stat">
+            <div><span>연속 정답</span><b><span id="swStreak">0</span><small>일</small></b></div>
+            <div><span>최고 기록</span><b><span id="swBest">0</span><small>일</small></b></div>
+            <div><span>오늘 시도</span><b><span id="swTryCount">0</span><small>/6</small></b></div>
+            <div><span>누적 정답</span><b><span id="swSolved">0</span><small>판</small></b></div>
+          </div>
+          <p id="swRecordNote">오늘 처음 열었습니다. 정답을 맞히면 연속 기록이 올라갑니다.</p>
+          <button type="button" class="sw-btn sw-practice" id="swPracticeStart">연습 한 판 시작</button>
+        </section>
+        <section class="sw-panel">
+          <h2>이렇게 풀면 빨라집니다</h2>
+          <p><b>1수는 넓게</b> — 환승역을 넣으면 노선·연계·자치구를 한 번에 볼 수 있습니다.</p>
+          <p><b>거리로 좁히기</b> — 방향과 km가 맞으면 그 방향에 있는 역만 남습니다.</p>
+          <p><b>초성 확인</b> — 남은 후보가 몇 개 없을 때 초성과 글자 힌트가 결정적입니다.</p>
+        </section>
+      </aside>
+    </div>
+
+    <section class="sw-notes">
+      <h2>알아 두실 점</h2>
+      <ul>
+        <li><b>범위</b> — 서울특별시 25개 구 안에 있는 역 306곳이 정답 후보입니다. 경기·인천 역은 들어 있지 않습니다.</li>
+        <li><b>매일 바뀌는 방식</b> — 역 목록을 섞은 순서를 날짜로 세어 하루에 한 곳씩 냅니다. 306일 동안 같은 역이 다시 나오지 않습니다.</li>
+        <li><b>연계 노선 수</b> — 그 역에 들어오는 노선 수입니다. 1이면 단일 노선, 3이면 세 노선이 지나는 환승역입니다.</li>
+        <li><b>방향·거리</b> — 두 역의 실제 위·경도로 계산한 직선 방향과 거리입니다. 지하철 이동 거리와는 다릅니다.</li>
+        <li><b>역 목록의 성격</b> — 공개된 역 목록(CC0)과 위키데이터의 노선 정보를 대조해 정리했고, 확인일 2026-11-24 기준입니다. 노선이 바뀌면 목록도 함께 고칩니다.</li>
+      </ul>
+      <ul class="sw-srcs">
+        <li><a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer">위키데이터 — 서울 지하철역 위치·노선</a><span>역 좌표와 노선 정보 대조</span></li>
+        <li><a href="https://gist.github.com/nemorize/ac5f39ff62b6bf82dc496d10c69b2b46" target="_blank" rel="noopener noreferrer">공개 지하철역 목록(CC0)</a><span>역명·자치구·좌표</span></li>
+        <li><a href="https://www.seoulmetro.co.kr/kr/board.do?menuIdx=548" target="_blank" rel="noopener noreferrer">서울교통공사 노선 안내</a><span>노선명과 노선 색</span></li>
+      </ul>
+    </section>
+    <p class="sw-foot">역·노선·좌표는 공개 자료를 대조해 정리했습니다 · 방향·거리는 실제 좌표에서 계산한 직선값입니다.</p>
+  </main>
+
+  <script type="application/json" id="swData">{"generated":"2026-11-24 16:55 KST","checkedOn":"2026-11-24","scope":{"city":"서울특별시","label":"서울 25개 구","answerPool":306},"deck":["행당","가산디지털단지","신정","회기","여의나루","광운대","녹천","충무로","오류동","을지로입구","이태원","동대입구","용산","을지로4가","응봉","보라매병원","상도","강동","삼전","중곡","숙대입구","한강진","삼성중앙","월곡","서울역","신답","김포공항","잠실나루","등촌","고덕","보라매공원","석촌","남성","금천구청","선정릉","강남구청","새절","구의","당곡","대치","올림픽공원","남영","신반포","신도림","독산","이대","태릉입구","금호","뚝섬","가양","천왕","상봉","연신내","개봉","여의도","중화","독립문","도봉","석촌고분","신방화","불암산","구룡","구로","도림천","잠실새내","방이","홍제","상일동","북한산우이","녹사평","한성백제","명일","광흥창","교대","마곡","상월곡","구파발","관악산","샛강","신사","사당","홍대입구","청담","청구","한양대","염창","중계","내방","선유도","신설동","마포구청","암사역사공원","망우","신길","학여울","마천","미아사거리","서울대벤처타운","대방","문정","개포동","역촌","서울대입구","가락시장","아현","대흥","마들","용두","사가정","봉은사","용마산","양천향교","영등포","신정네거리","송파","을지로3가","삼성","방학","남부터미널","서울숲","종로3가","시청","가오리","월계","오목교","신림","창신","압구정","장한평","4.19민주묘지","대모산입구","증산","양천구청","면목","선릉","상왕십리","흑석","먹골","영등포시장","불광","군자","응암","솔샘","강일","도당","동대문역사문화공원","회현","옥수","경찰병원","제기동","낙성대","솔밭공원","학동","서초","방화","노량진","한남","봉화산","둔촌오륜","강동구청","성신여대입구","공릉","남태령","중앙보훈병원","압구정로데오","화곡","한성대입구","정릉","서대문","수서","마곡나루","왕십리","이수","신촌","봉천","도봉산","버티고개","무악재","잠실","화계","합정","상수","하계","몽촌토성","장승배기","공항시장","고속터미널","보문","디지털미디어시티","한티","대림","신내","당산","사평","우장산","안국","종합운동장","논현","종로5가","보라매","서울지방병무청","용답","거여","양재시민의숲","광나루","신용산","언주","석계","삼양사거리","효창공원앞","충정로","개화산","북한산보국문","마포","송정","녹번","노원","광화문","구산","종각","반포","중랑","대청","창동","수유","신대방삼거리","강남","수색","쌍문","신대방","양재","독바위","고려대","약수","장지","증미","둔촌동","국회의사당","암사","문래","삼각지","이촌","망원","신목동","잠원","어린이대공원","일원","개화","까치산","혜화","마장","역삼","가좌","화랑대","건대입구","삼양","도곡","동작","답십리","매봉","오금","천호","자양","굽은다리","명동","신당","영등포구청","남구로","신풍","안암","성수","방배","신이문","신금호","양원","구로디지털단지","구반포","수락산","신논현","송파나루","공덕","온수","개롱","동묘앞","목동","청계산입구","서빙고","애오개","숭실대입구","강변","경복궁","외대앞","서원","아차산","노들","길동","상계","청량리","동대문","월드컵경기장","길음","양평","발산","미아","돌곶이","구일"],"stations":[{"name":"4.19민주묘지","area":"강북구","lat":37.6492,"lng":127.0134,"lines":["우이신설선"]},{"name":"가락시장","area":"송파구","lat":37.49251,"lng":127.1183,"lines":["3호선","8호선"]},{"name":"가산디지털단지","area":"금천구","lat":37.4816,"lng":126.8826,"lines":["1호선","7호선"]},{"name":"가양","area":"강서구","lat":37.561365,"lng":126.854298,"lines":["9호선"]},{"name":"가오리","area":"강북구","lat":37.6416,"lng":127.0168,"lines":["우이신설선"]},{"name":"가좌","area":"서대문구","lat":37.568656,"lng":126.91525,"lines":["경의중앙선"]},{"name":"강남","area":"강남구","lat":37.497,"lng":127.0276,"lines":["2호선","신분당선"]},{"name":"강남구청","area":"강남구","lat":37.5171,"lng":127.0413,"lines":["7호선","수인분당선"]},{"name":"강동","area":"강동구","lat":37.5351,"lng":127.1328,"lines":["5호선"]},{"name":"강동구청","area":"강동구","lat":37.5305,"lng":127.1205,"lines":["8호선"]},{"name":"강변","area":"광진구","lat":37.535095,"lng":127.094681,"lines":["2호선"]},{"name":"강일","area":"강동구","lat":37.5574,"lng":127.1756,"lines":["5호선"]},{"name":"개롱","area":"송파구","lat":37.498,"lng":127.1351,"lines":["5호선"]},{"name":"개봉","area":"구로구","lat":37.494481,"lng":126.858481,"lines":["1호선"]},{"name":"개포동","area":"강남구","lat":37.4892,"lng":127.0665,"lines":["수인분당선"]},{"name":"개화","area":"강서구","lat":37.5783,"lng":126.797,"lines":["9호선"]},{"name":"개화산","area":"강서구","lat":37.5725,"lng":126.8068,"lines":["5호선"]},{"name":"거여","area":"송파구","lat":37.4934,"lng":127.1436,"lines":["5호선"]},{"name":"건대입구","area":"광진구","lat":37.540693,"lng":127.07023,"lines":["2호선","7호선"]},{"name":"경복궁","area":"종로구","lat":37.57576,"lng":126.9743,"lines":["3호선"]},{"name":"경찰병원","area":"송파구","lat":37.4957,"lng":127.1242,"lines":["3호선"]},{"name":"고덕","area":"강동구","lat":37.555004,"lng":127.154151,"lines":["5호선"]},{"name":"고려대","area":"성북구","lat":37.5902,"lng":127.0365,"lines":["6호선"]},{"name":"고속터미널","area":"서초구","lat":37.50481,"lng":127.004943,"lines":["3호선","7호선","9호선"]},{"name":"공덕","area":"마포구","lat":37.544,"lng":126.9515,"lines":["5호선","6호선","경의중앙선","공항철도"]},{"name":"공릉","area":"노원구","lat":37.6258,"lng":127.0729,"lines":["7호선"]},{"name":"공항시장","area":"강서구","lat":37.563515,"lng":126.81095,"lines":["9호선"]},{"name":"관악산","area":"관악구","lat":37.4689,"lng":126.9452,"lines":["신림선"]},{"name":"광나루","area":"광진구","lat":37.545303,"lng":127.10357,"lines":["5호선"]},{"name":"광운대","area":"노원구","lat":37.6235,"lng":127.0616,"lines":["1호선","경춘선"]},{"name":"광화문","area":"종로구","lat":37.57092,"lng":126.9769,"lines":["5호선"]},{"name":"광흥창","area":"마포구","lat":37.547184,"lng":126.931966,"lines":["6호선"]},{"name":"교대","area":"서초구","lat":37.4939,"lng":127.0144,"lines":["2호선","3호선"]},{"name":"구로","area":"구로구","lat":37.503,"lng":126.881,"lines":["1호선"]},{"name":"구로디지털단지","area":"구로구","lat":37.4852,"lng":126.9012,"lines":["2호선"]},{"name":"구룡","area":"강남구","lat":37.486839,"lng":127.058856,"lines":["수인분당선"]},{"name":"구반포","area":"서초구","lat":37.501364,"lng":126.987331,"lines":["9호선"]},{"name":"구산","area":"은평구","lat":37.611377,"lng":126.917601,"lines":["6호선"]},{"name":"구의","area":"광진구","lat":37.537077,"lng":127.085916,"lines":["2호선"]},{"name":"구일","area":"구로구","lat":37.4967,"lng":126.8704,"lines":["1호선"]},{"name":"구파발","area":"은평구","lat":37.636763,"lng":126.918821,"lines":["3호선"]},{"name":"국회의사당","area":"영등포구","lat":37.52827,"lng":126.9173,"lines":["9호선"]},{"name":"군자","area":"광진구","lat":37.557121,"lng":127.079542,"lines":["5호선","7호선"]},{"name":"굽은다리","area":"강동구","lat":37.5455,"lng":127.1426,"lines":["5호선"]},{"name":"금천구청","area":"금천구","lat":37.4556,"lng":126.894,"lines":["1호선"]},{"name":"금호","area":"성동구","lat":37.548,"lng":127.0158,"lines":["3호선"]},{"name":"길동","area":"강동구","lat":37.537801,"lng":127.140004,"lines":["5호선"]},{"name":"길음","area":"성북구","lat":37.6029,"lng":127.0253,"lines":["4호선"]},{"name":"김포공항","area":"강서구","lat":37.562434,"lng":126.801058,"lines":["5호선","9호선","공항철도","서해선","김포골드라인"]},{"name":"까치산","area":"강서구","lat":37.531768,"lng":126.846683,"lines":["2호선","5호선"]},{"name":"낙성대","area":"관악구","lat":37.4771,"lng":126.9635,"lines":["2호선"]},{"name":"남구로","area":"구로구","lat":37.4861,"lng":126.8873,"lines":["7호선"]},{"name":"남부터미널","area":"서초구","lat":37.485013,"lng":127.016189,"lines":["3호선"]},{"name":"남성","area":"동작구","lat":37.484596,"lng":126.971251,"lines":["7호선"]},{"name":"남영","area":"용산구","lat":37.5417,"lng":126.9716,"lines":["1호선"]},{"name":"남태령","area":"서초구","lat":37.463789,"lng":126.989119,"lines":["4호선"]},{"name":"내방","area":"서초구","lat":37.487462,"lng":126.993552,"lines":["7호선"]},{"name":"노들","area":"동작구","lat":37.512887,"lng":126.952739,"lines":["9호선"]},{"name":"노량진","area":"동작구","lat":37.5142,"lng":126.9425,"lines":["1호선","9호선"]},{"name":"노원","area":"노원구","lat":37.6543,"lng":127.0606,"lines":["4호선","7호선"]},{"name":"녹번","area":"은평구","lat":37.600927,"lng":126.935756,"lines":["3호선"]},{"name":"녹사평","area":"용산구","lat":37.534,"lng":126.9862,"lines":["6호선"]},{"name":"녹천","area":"노원구","lat":37.6446,"lng":127.0514,"lines":["1호선"]},{"name":"논현","area":"강남구","lat":37.511,"lng":127.0219,"lines":["7호선","신분당선"]},{"name":"답십리","area":"성동구","lat":37.567,"lng":127.0524,"lines":["5호선"]},{"name":"당곡","area":"관악구","lat":37.4843,"lng":126.9297,"lines":["신림선"]},{"name":"당산","area":"영등포구","lat":37.53452,"lng":126.9025,"lines":["2호선","9호선"]},{"name":"대림","area":"영등포구","lat":37.49297,"lng":126.8958,"lines":["2호선","7호선"]},{"name":"대모산입구","area":"강남구","lat":37.491814,"lng":127.072503,"lines":["수인분당선"]},{"name":"대방","area":"영등포구","lat":37.51334,"lng":126.9264,"lines":["1호선","신림선"]},{"name":"대청","area":"강남구","lat":37.493514,"lng":127.079532,"lines":["3호선"]},{"name":"대치","area":"강남구","lat":37.494612,"lng":127.063642,"lines":["3호선"]},{"name":"대흥","area":"마포구","lat":37.547456,"lng":126.94205,"lines":["6호선"]},{"name":"도곡","area":"강남구","lat":37.490858,"lng":127.055381,"lines":["3호선","수인분당선"]},{"name":"도당","area":"도봉구","lat":37.662,"lng":127.034,"lines":["우이신설선"]},{"name":"도림천","area":"구로구","lat":37.514,"lng":126.8826,"lines":["2호선"]},{"name":"도봉","area":"도봉구","lat":37.6792,"lng":127.0456,"lines":["1호선"]},{"name":"도봉산","area":"도봉구","lat":37.689313,"lng":127.046222,"lines":["1호선","7호선"]},{"name":"독립문","area":"종로구","lat":37.5744,"lng":126.9579,"lines":["3호선"]},{"name":"독바위","area":"은평구","lat":37.618456,"lng":126.933071,"lines":["6호선"]},{"name":"독산","area":"금천구","lat":37.4661,"lng":126.8894,"lines":["1호선"]},{"name":"돌곶이","area":"성북구","lat":37.6108,"lng":127.0573,"lines":["6호선"]},{"name":"동대문","area":"종로구","lat":37.57142,"lng":127.0094,"lines":["1호선","4호선"]},{"name":"동대문역사문화공원","area":"중구","lat":37.5657,"lng":127.009,"lines":["2호선","4호선","5호선"]},{"name":"동대입구","area":"중구","lat":37.559,"lng":127.0052,"lines":["3호선"]},{"name":"동묘앞","area":"종로구","lat":37.57263,"lng":127.0153,"lines":["1호선","6호선"]},{"name":"동작","area":"동작구","lat":37.50247,"lng":126.9798,"lines":["4호선","9호선"]},{"name":"둔촌동","area":"강동구","lat":37.5277,"lng":127.1362,"lines":["5호선"]},{"name":"둔촌오륜","area":"송파구","lat":37.5193,"lng":127.1386,"lines":["9호선"]},{"name":"등촌","area":"강서구","lat":37.5512,"lng":126.8645,"lines":["9호선"]},{"name":"디지털미디어시티","area":"은평구","lat":37.5776,"lng":126.9002,"lines":["6호선","경의중앙선","공항철도"]},{"name":"뚝섬","area":"성동구","lat":37.5472,"lng":127.0476,"lines":["2호선"]},{"name":"마곡","area":"강서구","lat":37.56025,"lng":126.8261,"lines":["5호선"]},{"name":"마곡나루","area":"강서구","lat":37.5667,"lng":126.8273,"lines":["9호선","공항철도"]},{"name":"마들","area":"노원구","lat":37.6653,"lng":127.0576,"lines":["7호선"]},{"name":"마장","area":"성동구","lat":37.566,"lng":127.0436,"lines":["5호선"]},{"name":"마천","area":"송파구","lat":37.49453,"lng":127.1526,"lines":["5호선"]},{"name":"마포","area":"마포구","lat":37.539722,"lng":126.946111,"lines":["5호선"]},{"name":"마포구청","area":"마포구","lat":37.5634,"lng":126.9035,"lines":["6호선"]},{"name":"망우","area":"중랑구","lat":37.5997,"lng":127.0925,"lines":["경의중앙선","경춘선"]},{"name":"망원","area":"마포구","lat":37.5561,"lng":126.9101,"lines":["6호선"]},{"name":"매봉","area":"강남구","lat":37.4871,"lng":127.0469,"lines":["3호선"]},{"name":"먹골","area":"중랑구","lat":37.61052,"lng":127.0778,"lines":["7호선"]},{"name":"면목","area":"중랑구","lat":37.58848,"lng":127.0877,"lines":["7호선"]},{"name":"명동","area":"중구","lat":37.56099,"lng":126.9863,"lines":["4호선"]},{"name":"명일","area":"강동구","lat":37.5513,"lng":127.144,"lines":["5호선"]},{"name":"목동","area":"양천구","lat":37.5261,"lng":126.8645,"lines":["5호선"]},{"name":"몽촌토성","area":"송파구","lat":37.51709,"lng":127.113,"lines":["8호선"]},{"name":"무악재","area":"서대문구","lat":37.5825,"lng":126.9503,"lines":["3호선"]},{"name":"문래","area":"영등포구","lat":37.51793,"lng":126.8948,"lines":["2호선"]},{"name":"문정","area":"송파구","lat":37.4859,"lng":127.1225,"lines":["8호선"]},{"name":"미아","area":"강북구","lat":37.6272,"lng":127.0265,"lines":["4호선"]},{"name":"미아사거리","area":"강북구","lat":37.6127,"lng":127.0302,"lines":["4호선"]},{"name":"반포","area":"서초구","lat":37.5082,"lng":127.0118,"lines":["7호선"]},{"name":"발산","area":"강서구","lat":37.5586,"lng":126.8383,"lines":["5호선"]},{"name":"방배","area":"서초구","lat":37.4815,"lng":126.9977,"lines":["2호선"]},{"name":"방이","area":"송파구","lat":37.50818,"lng":127.1268,"lines":["5호선"]},{"name":"방학","area":"도봉구","lat":37.6678,"lng":127.044,"lines":["1호선"]},{"name":"방화","area":"강서구","lat":37.5776,"lng":126.8128,"lines":["5호선"]},{"name":"버티고개","area":"중구","lat":37.5481,"lng":127.0072,"lines":["6호선"]},{"name":"보라매","area":"동작구","lat":37.4997,"lng":126.9208,"lines":["7호선","신림선"]},{"name":"보라매공원","area":"동작구","lat":37.494261,"lng":126.918631,"lines":["신림선"]},{"name":"보라매병원","area":"동작구","lat":37.492811,"lng":126.9242,"lines":["신림선"]},{"name":"보문","area":"성북구","lat":37.585,"lng":127.0192,"lines":["6호선","우이신설선"]},{"name":"봉은사","area":"강남구","lat":37.5142,"lng":127.0603,"lines":["9호선"]},{"name":"봉천","area":"관악구","lat":37.4825,"lng":126.9416,"lines":["2호선"]},{"name":"봉화산","area":"중랑구","lat":37.6174,"lng":127.0913,"lines":["6호선"]},{"name":"북한산보국문","area":"성북구","lat":37.612,"lng":127.0088,"lines":["우이신설선"]},{"name":"북한산우이","area":"강북구","lat":37.6637,"lng":127.0126,"lines":["우이신설선"]},{"name":"불광","area":"은평구","lat":37.6105,"lng":126.929,"lines":["3호선","6호선"]},{"name":"불암산","area":"노원구","lat":37.66996,"lng":127.07877,"lines":["4호선"]},{"name":"사가정","area":"중랑구","lat":37.581,"lng":127.0885,"lines":["7호선"]},{"name":"사당","area":"동작구","lat":37.4765,"lng":126.981611,"lines":["2호선","4호선"]},{"name":"사평","area":"서초구","lat":37.5044,"lng":127.0151,"lines":["9호선"]},{"name":"삼각지","area":"용산구","lat":37.5352,"lng":126.9737,"lines":["4호선","6호선"]},{"name":"삼성","area":"강남구","lat":37.5088,"lng":127.0632,"lines":["2호선"]},{"name":"삼성중앙","area":"강남구","lat":37.5129,"lng":127.0527,"lines":["9호선"]},{"name":"삼양","area":"강북구","lat":37.6269,"lng":127.0182,"lines":["우이신설선"]},{"name":"삼양사거리","area":"강북구","lat":37.6213,"lng":127.0205,"lines":["우이신설선"]},{"name":"삼전","area":"송파구","lat":37.5045,"lng":127.0874,"lines":["9호선"]},{"name":"상계","area":"노원구","lat":37.6607,"lng":127.0734,"lines":["4호선"]},{"name":"상도","area":"동작구","lat":37.5025,"lng":126.9483,"lines":["7호선"]},{"name":"상봉","area":"중랑구","lat":37.59607,"lng":127.0862,"lines":["7호선","경의중앙선","경춘선"]},{"name":"상수","area":"마포구","lat":37.5477,"lng":126.9223,"lines":["6호선"]},{"name":"상왕십리","area":"성동구","lat":37.5644,"lng":127.0291,"lines":["2호선"]},{"name":"상월곡","area":"성북구","lat":37.6065,"lng":127.0489,"lines":["6호선"]},{"name":"상일동","area":"강동구","lat":37.556,"lng":127.1655,"lines":["5호선"]},{"name":"새절","area":"은평구","lat":37.5917,"lng":126.9135,"lines":["6호선"]},{"name":"샛강","area":"영등포구","lat":37.51773,"lng":126.9291,"lines":["9호선","신림선"]},{"name":"서대문","area":"서대문구","lat":37.5658,"lng":126.9666,"lines":["5호선"]},{"name":"서빙고","area":"용산구","lat":37.5195,"lng":126.9884,"lines":["경의중앙선"]},{"name":"서울대벤처타운","area":"관악구","lat":37.4721,"lng":126.9339,"lines":["신림선"]},{"name":"서울대입구","area":"관악구","lat":37.4811,"lng":126.9529,"lines":["2호선"]},{"name":"서울숲","area":"성동구","lat":37.5435,"lng":127.0447,"lines":["수인분당선"]},{"name":"서울역","area":"중구","lat":37.55465,"lng":126.9726,"lines":["1호선","4호선","공항철도"]},{"name":"서울지방병무청","area":"영등포구","lat":37.5058,"lng":126.9226,"lines":["신림선"]},{"name":"서원","area":"관악구","lat":37.4979,"lng":126.9435,"lines":["신림선"]},{"name":"서초","area":"서초구","lat":37.4919,"lng":127.0074,"lines":["2호선"]},{"name":"석계","area":"노원구","lat":37.615,"lng":127.0657,"lines":["1호선","6호선"]},{"name":"석촌","area":"송파구","lat":37.5054,"lng":127.1071,"lines":["8호선","9호선"]},{"name":"석촌고분","area":"송파구","lat":37.49252,"lng":127.1112,"lines":["9호선"]},{"name":"선릉","area":"강남구","lat":37.5045,"lng":127.0497,"lines":["2호선","수인분당선"]},{"name":"선유도","area":"영등포구","lat":37.538,"lng":126.8937,"lines":["9호선"]},{"name":"선정릉","area":"강남구","lat":37.5102,"lng":127.0436,"lines":["9호선","수인분당선"]},{"name":"성수","area":"성동구","lat":37.5441,"lng":127.0558,"lines":["2호선"]},{"name":"성신여대입구","area":"성북구","lat":37.5927,"lng":127.0166,"lines":["4호선","우이신설선"]},{"name":"솔밭공원","area":"강북구","lat":37.6563,"lng":127.013,"lines":["우이신설선"]},{"name":"솔샘","area":"강북구","lat":37.6202,"lng":127.0135,"lines":["우이신설선"]},{"name":"송정","area":"강서구","lat":37.5614,"lng":126.8113,"lines":["5호선"]},{"name":"송파","area":"송파구","lat":37.4997,"lng":127.1122,"lines":["8호선"]},{"name":"송파나루","area":"송파구","lat":37.5103,"lng":127.1122,"lines":["9호선"]},{"name":"수락산","area":"노원구","lat":37.6778,"lng":127.0554,"lines":["7호선"]},{"name":"수색","area":"은평구","lat":37.581,"lng":126.8956,"lines":["경의중앙선"]},{"name":"수서","area":"강남구","lat":37.4875,"lng":127.101,"lines":["3호선","수인분당선"]},{"name":"수유","area":"강북구","lat":37.6371,"lng":127.0256,"lines":["4호선"]},{"name":"숙대입구","area":"용산구","lat":37.5446,"lng":126.9722,"lines":["4호선"]},{"name":"숭실대입구","area":"동작구","lat":37.496,"lng":126.9532,"lines":["7호선"]},{"name":"시청","area":"중구","lat":37.56472,"lng":126.9771,"lines":["1호선","2호선"]},{"name":"신금호","area":"성동구","lat":37.5544,"lng":127.0206,"lines":["5호선"]},{"name":"신길","area":"영등포구","lat":37.51712,"lng":126.9172,"lines":["1호선","5호선"]},{"name":"신내","area":"중랑구","lat":37.61266,"lng":127.1033,"lines":["6호선","경춘선"]},{"name":"신논현","area":"강남구","lat":37.5045,"lng":127.0254,"lines":["9호선","신분당선"]},{"name":"신답","area":"성동구","lat":37.5705,"lng":127.0464,"lines":["2호선"]},{"name":"신당","area":"중구","lat":37.56587,"lng":127.0176,"lines":["2호선","6호선"]},{"name":"신대방","area":"관악구","lat":37.4876,"lng":126.9133,"lines":["2호선"]},{"name":"신대방삼거리","area":"동작구","lat":37.4995,"lng":126.9271,"lines":["7호선"]},{"name":"신도림","area":"구로구","lat":37.5083,"lng":126.8911,"lines":["1호선","2호선"]},{"name":"신림","area":"관악구","lat":37.4842,"lng":126.9297,"lines":["2호선","신림선"]},{"name":"신목동","area":"양천구","lat":37.5443,"lng":126.8831,"lines":["9호선"]},{"name":"신반포","area":"서초구","lat":37.5045,"lng":126.9972,"lines":["9호선"]},{"name":"신방화","area":"강서구","lat":37.5675,"lng":126.8174,"lines":["9호선"]},{"name":"신사","area":"강남구","lat":37.5164,"lng":127.0207,"lines":["3호선","신분당선"]},{"name":"신설동","area":"동대문구","lat":37.575297,"lng":127.025087,"lines":["1호선","2호선","우이신설선"]},{"name":"신용산","area":"용산구","lat":37.5292,"lng":126.9679,"lines":["4호선"]},{"name":"신이문","area":"동대문구","lat":37.601627,"lng":127.067441,"lines":["1호선"]},{"name":"신정","area":"양천구","lat":37.525,"lng":126.8562,"lines":["5호선"]},{"name":"신정네거리","area":"양천구","lat":37.5202,"lng":126.8529,"lines":["2호선"]},{"name":"신촌","area":"마포구","lat":37.5551,"lng":126.9368,"lines":["2호선"]},{"name":"신풍","area":"영등포구","lat":37.5001,"lng":126.9096,"lines":["7호선"]},{"name":"쌍문","area":"도봉구","lat":37.648,"lng":127.0343,"lines":["4호선"]},{"name":"아차산","area":"광진구","lat":37.552,"lng":127.0897,"lines":["5호선"]},{"name":"아현","area":"마포구","lat":37.5574,"lng":126.9562,"lines":["2호선"]},{"name":"안국","area":"종로구","lat":37.5765,"lng":126.9855,"lines":["3호선"]},{"name":"안암","area":"성북구","lat":37.5863,"lng":127.0292,"lines":["6호선"]},{"name":"암사","area":"강동구","lat":37.5502,"lng":127.1276,"lines":["8호선"]},{"name":"암사역사공원","area":"강동구","lat":37.556793,"lng":127.135777,"lines":["8호선"]},{"name":"압구정","area":"강남구","lat":37.5273,"lng":127.0286,"lines":["3호선"]},{"name":"압구정로데오","area":"강남구","lat":37.52763,"lng":127.04063,"lines":["수인분당선"]},{"name":"애오개","area":"마포구","lat":37.5535,"lng":126.9567,"lines":["5호선"]},{"name":"약수","area":"중구","lat":37.5543,"lng":127.011,"lines":["3호선","6호선"]},{"name":"양원","area":"중랑구","lat":37.6066,"lng":127.108,"lines":["경의중앙선"]},{"name":"양재","area":"서초구","lat":37.4841,"lng":127.0347,"lines":["3호선","신분당선"]},{"name":"양재시민의숲","area":"서초구","lat":37.47,"lng":127.0387,"lines":["신분당선"]},{"name":"양천구청","area":"양천구","lat":37.512,"lng":126.8659,"lines":["2호선"]},{"name":"양천향교","area":"강서구","lat":37.5681,"lng":126.8418,"lines":["9호선"]},{"name":"양평","area":"영등포구","lat":37.52591,"lng":126.8866,"lines":["5호선"]},{"name":"어린이대공원","area":"광진구","lat":37.548,"lng":127.0746,"lines":["7호선"]},{"name":"언주","area":"강남구","lat":37.5071,"lng":127.0336,"lines":["9호선"]},{"name":"여의나루","area":"영등포구","lat":37.527056,"lng":126.932806,"lines":["5호선"]},{"name":"여의도","area":"영등포구","lat":37.5216,"lng":126.9241,"lines":["5호선","9호선"]},{"name":"역삼","area":"강남구","lat":37.5006,"lng":127.0364,"lines":["2호선"]},{"name":"역촌","area":"은평구","lat":37.6064,"lng":126.9226,"lines":["6호선"]},{"name":"연신내","area":"은평구","lat":37.619,"lng":126.9213,"lines":["3호선","6호선"]},{"name":"염창","area":"강서구","lat":37.5468,"lng":126.874,"lines":["9호선"]},{"name":"영등포","area":"영등포구","lat":37.515556,"lng":126.907778,"lines":["1호선"]},{"name":"영등포구청","area":"영등포구","lat":37.52497,"lng":126.896,"lines":["2호선","5호선"]},{"name":"영등포시장","area":"영등포구","lat":37.52267,"lng":126.9051,"lines":["5호선"]},{"name":"오금","area":"송파구","lat":37.5027,"lng":127.1288,"lines":["3호선","5호선"]},{"name":"오류동","area":"구로구","lat":37.494489,"lng":126.845333,"lines":["1호선"]},{"name":"오목교","area":"양천구","lat":37.5243,"lng":126.8744,"lines":["5호선"]},{"name":"옥수","area":"성동구","lat":37.5415,"lng":127.0174,"lines":["3호선","경의중앙선"]},{"name":"온수","area":"구로구","lat":37.492031,"lng":126.823039,"lines":["7호선"]},{"name":"올림픽공원","area":"송파구","lat":37.5159,"lng":127.1309,"lines":["5호선","9호선"]},{"name":"왕십리","area":"성동구","lat":37.5613,"lng":127.0377,"lines":["2호선","5호선","경의중앙선","수인분당선"]},{"name":"외대앞","area":"동대문구","lat":37.596073,"lng":127.063549,"lines":["1호선"]},{"name":"용답","area":"성동구","lat":37.5614,"lng":127.0507,"lines":["2호선"]},{"name":"용두","area":"동대문구","lat":37.574028,"lng":127.038091,"lines":["2호선"]},{"name":"용마산","area":"중랑구","lat":37.5738,"lng":127.0868,"lines":["7호선"]},{"name":"용산","area":"용산구","lat":37.5298,"lng":126.9658,"lines":["1호선","경의중앙선"]},{"name":"우장산","area":"강서구","lat":37.548,"lng":126.8364,"lines":["5호선"]},{"name":"월계","area":"노원구","lat":37.6331,"lng":127.0589,"lines":["1호선"]},{"name":"월곡","area":"성북구","lat":37.601,"lng":127.0412,"lines":["6호선"]},{"name":"월드컵경기장","area":"마포구","lat":37.5696,"lng":126.8992,"lines":["6호선"]},{"name":"을지로3가","area":"중구","lat":37.5663,"lng":126.9911,"lines":["2호선","3호선"]},{"name":"을지로4가","area":"중구","lat":37.5666,"lng":126.9977,"lines":["2호선","5호선"]},{"name":"을지로입구","area":"중구","lat":37.56601,"lng":126.9829,"lines":["2호선"]},{"name":"응봉","area":"성동구","lat":37.5498,"lng":127.0347,"lines":["경의중앙선"]},{"name":"응암","area":"은평구","lat":37.5986,"lng":126.9156,"lines":["6호선"]},{"name":"이대","area":"마포구","lat":37.5569,"lng":126.9461,"lines":["2호선"]},{"name":"이수","area":"동작구","lat":37.486,"lng":126.9816,"lines":["4호선","7호선"]},{"name":"이촌","area":"용산구","lat":37.5221,"lng":126.9743,"lines":["4호선","경의중앙선"]},{"name":"이태원","area":"용산구","lat":37.5345,"lng":126.9941,"lines":["6호선"]},{"name":"일원","area":"강남구","lat":37.483,"lng":127.084,"lines":["3호선"]},{"name":"자양","area":"광진구","lat":37.5316,"lng":127.0667,"lines":["7호선"]},{"name":"잠실","area":"송파구","lat":37.5133,"lng":127.1002,"lines":["2호선","8호선"]},{"name":"잠실나루","area":"송파구","lat":37.52073,"lng":127.1038,"lines":["2호선"]},{"name":"잠실새내","area":"송파구","lat":37.511389,"lng":127.086111,"lines":["2호선"]},{"name":"잠원","area":"서초구","lat":37.5124,"lng":127.0112,"lines":["3호선"]},{"name":"장승배기","area":"동작구","lat":37.5049,"lng":126.939,"lines":["7호선"]},{"name":"장지","area":"송파구","lat":37.4787,"lng":127.1262,"lines":["8호선"]},{"name":"장한평","area":"동대문구","lat":37.56144,"lng":127.064623,"lines":["5호선"]},{"name":"정릉","area":"성북구","lat":37.6027,"lng":127.0136,"lines":["우이신설선"]},{"name":"제기동","area":"동대문구","lat":37.578103,"lng":127.034893,"lines":["1호선"]},{"name":"종각","area":"종로구","lat":37.56933,"lng":126.9817,"lines":["1호선"]},{"name":"종로3가","area":"종로구","lat":37.57161,"lng":126.9898,"lines":["1호선","3호선","5호선"]},{"name":"종로5가","area":"종로구","lat":37.5717,"lng":126.9915,"lines":["1호선"]},{"name":"종합운동장","area":"송파구","lat":37.511,"lng":127.0736,"lines":["2호선","9호선"]},{"name":"중계","area":"노원구","lat":37.6451,"lng":127.0641,"lines":["7호선"]},{"name":"중곡","area":"광진구","lat":37.5656,"lng":127.0842,"lines":["7호선"]},{"name":"중랑","area":"중랑구","lat":37.5949,"lng":127.0758,"lines":["경의중앙선","경춘선"]},{"name":"중앙보훈병원","area":"강동구","lat":37.528807,"lng":127.148488,"lines":["9호선"]},{"name":"중화","area":"중랑구","lat":37.6026,"lng":127.0793,"lines":["7호선"]},{"name":"증미","area":"강서구","lat":37.5581,"lng":126.8607,"lines":["9호선"]},{"name":"증산","area":"은평구","lat":37.5832,"lng":126.9095,"lines":["6호선"]},{"name":"창동","area":"도봉구","lat":37.6532,"lng":127.0473,"lines":["1호선","4호선"]},{"name":"창신","area":"종로구","lat":37.5794,"lng":127.0152,"lines":["6호선"]},{"name":"천왕","area":"구로구","lat":37.486667,"lng":126.838611,"lines":["7호선"]},{"name":"천호","area":"강동구","lat":37.5384,"lng":127.1237,"lines":["5호선","8호선"]},{"name":"청계산입구","area":"서초구","lat":37.4483,"lng":127.0552,"lines":["신분당선"]},{"name":"청구","area":"중구","lat":37.5602,"lng":127.0138,"lines":["5호선","6호선"]},{"name":"청담","area":"강남구","lat":37.5193,"lng":127.0533,"lines":["7호선"]},{"name":"청량리","area":"동대문구","lat":37.580178,"lng":127.046835,"lines":["1호선","경의중앙선","수인분당선","경춘선"]},{"name":"충무로","area":"중구","lat":37.561,"lng":126.9947,"lines":["3호선","4호선"]},{"name":"충정로","area":"서대문구","lat":37.5599,"lng":126.9637,"lines":["2호선","5호선"]},{"name":"태릉입구","area":"노원구","lat":37.6173,"lng":127.0749,"lines":["6호선","7호선"]},{"name":"하계","area":"노원구","lat":37.6359,"lng":127.0682,"lines":["7호선"]},{"name":"학동","area":"강남구","lat":37.5142,"lng":127.0317,"lines":["7호선"]},{"name":"학여울","area":"강남구","lat":37.4963,"lng":127.07,"lines":["3호선"]},{"name":"한강진","area":"용산구","lat":37.5393,"lng":127.0017,"lines":["6호선"]},{"name":"한남","area":"용산구","lat":37.5294,"lng":127.0091,"lines":["경의중앙선"]},{"name":"한성대입구","area":"성북구","lat":37.5882,"lng":127.0065,"lines":["4호선"]},{"name":"한성백제","area":"송파구","lat":37.5164,"lng":127.1163,"lines":["9호선"]},{"name":"한양대","area":"성동구","lat":37.5552,"lng":127.0435,"lines":["2호선"]},{"name":"한티","area":"강남구","lat":37.4967,"lng":127.0524,"lines":["수인분당선"]},{"name":"합정","area":"마포구","lat":37.5495,"lng":126.9139,"lines":["2호선","6호선"]},{"name":"행당","area":"성동구","lat":37.557,"lng":127.0292,"lines":["5호선"]},{"name":"혜화","area":"종로구","lat":37.5822,"lng":127.0019,"lines":["4호선"]},{"name":"홍대입구","area":"마포구","lat":37.5572,"lng":126.9254,"lines":["2호선","경의중앙선","공항철도"]},{"name":"홍제","area":"서대문구","lat":37.589,"lng":126.9434,"lines":["3호선"]},{"name":"화계","area":"강북구","lat":37.6341,"lng":127.01743,"lines":["우이신설선"]},{"name":"화곡","area":"강서구","lat":37.541,"lng":126.84,"lines":["5호선"]},{"name":"화랑대","area":"노원구","lat":37.6202,"lng":127.0838,"lines":["6호선"]},{"name":"회기","area":"동대문구","lat":37.58946,"lng":127.057583,"lines":["1호선","경의중앙선","경춘선"]},{"name":"회현","area":"중구","lat":37.5588,"lng":126.9785,"lines":["4호선"]},{"name":"효창공원앞","area":"용산구","lat":37.5387,"lng":126.9615,"lines":["6호선","경의중앙선"]},{"name":"흑석","area":"동작구","lat":37.5088,"lng":126.9635,"lines":["9호선"]}],"sources":[{"label":"위키데이터 — 서울 지하철역 위치·노선 (CC0)","url":"https://www.wikidata.org/"},{"label":"공개 지하철역 목록 (CC0) — 역명·자치구·좌표","url":"https://gist.github.com/nemorize/ac5f39ff62b6bf82dc496d10c69b2b46"},{"label":"서울교통공사 노선 안내 — 노선명·노선 색","url":"https://www.seoulmetro.co.kr/kr/board.do?menuIdx=548"}],"lines":[{"name":"1호선","short":"1","color":"#0052A4"},{"name":"2호선","short":"2","color":"#00A84D"},{"name":"3호선","short":"3","color":"#EF7C1C"},{"name":"4호선","short":"4","color":"#00A5DE"},{"name":"5호선","short":"5","color":"#996CAC"},{"name":"6호선","short":"6","color":"#CD7C2F"},{"name":"7호선","short":"7","color":"#747F00"},{"name":"8호선","short":"8","color":"#E6186C"},{"name":"9호선","short":"9","color":"#BDB092"},{"name":"신분당선","short":"신분당선","color":"#D4003B"},{"name":"경의중앙선","short":"경의중앙선","color":"#77C4A3"},{"name":"수인분당선","short":"수인분당선","color":"#F5A200"},{"name":"공항철도","short":"공항철도","color":"#0090D2"},{"name":"경춘선","short":"경춘선","color":"#0C8E72"},{"name":"신림선","short":"신림선","color":"#6789CA"},{"name":"우이신설선","short":"우이신설선","color":"#B7C452"},{"name":"서해선","short":"서해선","color":"#81A914"},{"name":"김포골드라인","short":"김포골드라인","color":"#AD8605"}],"meta":{"answer":"송파나루","answerDate":"2026-11-24","maxTries":6,"dayIndex":20781,"answerLines":["9호선"],"answerArea":"송파구","answerChosung":"ㅅㅍㄴㄹ"},"build":{"pythonDayIndex":20781,"answerIndex":279}}</script>
+  <script>
+(function () {
+  // ---------- 화면 테마 ----------
+  var themeBtn = document.getElementById('themeToggle');
+  var moonIcon = document.getElementById('moonIcon');
+  var sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) { try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {} }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
+  var DATA;
+  try { DATA = JSON.parse(document.getElementById('swData').textContent); } catch (e) { return; }
+
+  var STORE_KEY = 'secjobs-subway-v1';
+  var MAX_TRIES = DATA.meta.maxTries || 6;
+  var BY_NAME = {};
+  var LINE_COLOR = {};
+  DATA.stations.forEach(function (station) { BY_NAME[station.name] = station; });
+  DATA.lines.forEach(function (line) { LINE_COLOR[line.name] = line.color; });
+
+  // ---------- 날짜 (KST 기준) ----------
+  function kstParts(now) {
+    var shifted = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
+    return { y: shifted.getFullYear(), m: shifted.getMonth(), d: shifted.getDate(), date: shifted };
+  }
+  function kstDateString(now) {
+    var part = kstParts(now);
+    return part.y + '-' + pad(part.m + 1) + '-' + pad(part.d);
+  }
+  function pad(value) { return value < 10 ? '0' + value : String(value); }
+  function dayNumber(now) {
+    var part = kstParts(now);
+    return Math.floor(Date.UTC(part.y, part.m, part.d) / 86400000);
+  }
+  function answerFor(now) {
+    var index = ((dayNumber(now) % DATA.deck.length) + DATA.deck.length) % DATA.deck.length;
+    return DATA.deck[index];
+  }
+
+  var today = kstDateString(new Date());
+  var dailyAnswer = answerFor(new Date());
+  var state = {
+    mode: 'daily',
+    answer: dailyAnswer,
+    attempts: [],
+    solved: false,
+    practiceAnswer: null
+  };
+
+  // ---------- 초성 ----------
+  var CHOSUNG = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  function chosung(text) {
+    var out = '';
+    for (var i = 0; i < text.length; i += 1) {
+      var code = text.charCodeAt(i);
+      if (code >= 0xAC00 && code <= 0xD7A3) out += CHOSUNG[Math.floor((code - 0xAC00) / 588)];
+      else out += text[i];
+    }
+    return out;
+  }
+
+  // ---------- 기록 ----------
+  function loadRecord() {
+    var empty = { streak: 0, best: 0, solved: 0, lastDate: '', lastResult: null, history: {} };
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { raw = null; }
+    if (!raw || typeof raw !== 'object') return empty;
+    return {
+      streak: Number(raw.streak) || 0,
+      best: Number(raw.best) || 0,
+      solved: Number(raw.solved) || 0,
+      lastDate: typeof raw.lastDate === 'string' ? raw.lastDate : '',
+      lastResult: raw.lastResult && typeof raw.lastResult === 'object' ? raw.lastResult : null,
+      history: raw.history && typeof raw.history === 'object' ? raw.history : {}
+    };
+  }
+  function saveRecord(record) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(record)); } catch (e) {}
+  }
+  var record = loadRecord();
+
+  function yesterdayOf(dateString) {
+    var parts = dateString.split('-');
+    var d = new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])));
+    d.setUTCDate(d.getUTCDate() - 1);
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+  }
+
+  function settleDaily(win) {
+    var todayString = kstDateString(new Date());
+    if (record.history[todayString]) return;
+    record.history[todayString] = { win: win, tries: state.attempts.length };
+    if (win) {
+      record.streak = record.lastDate === yesterdayOf(todayString) ? record.streak + 1 : 1;
+      record.solved += 1;
+      record.lastDate = todayString;
+      if (record.streak > record.best) record.best = record.streak;
+    } else {
+      record.streak = 0;
+    }
+    record.lastResult = { date: todayString, win: win, tries: state.attempts.length };
+    saveRecord(record);
+    renderRecord();
+  }
+
+  function renderRecord() {
+    document.getElementById('swStreak').textContent = String(record.streak);
+    document.getElementById('swBest').textContent = String(record.best);
+    document.getElementById('swSolved').textContent = String(record.solved);
+    document.getElementById('swTryCount').textContent = String(state.attempts.length);
+    var note = document.getElementById('swRecordNote');
+    if (record.lastResult && record.lastResult.date === kstDateString(new Date())) {
+      note.textContent = record.lastResult.win
+        ? '오늘 ' + record.lastResult.tries + '수 만에 맞혔습니다. 연속 ' + record.streak + '일째입니다.'
+        : '오늘은 아쉽게 놓쳤습니다. 연속 기록이 0으로 돌아갔습니다.';
+    } else if (record.lastDate) {
+      note.textContent = '마지막 정답 ' + record.lastDate + ' · 연속 ' + record.streak + '일 · 최고 ' + record.best + '일';
+    } else {
+      note.textContent = '오늘 처음 열었습니다. 정답을 맞히면 연속 기록이 올라갑니다.';
+    }
+  }
+
+  // ---------- 계산 ----------
+  function textOn(hex) {
+    var value = String(hex || '#888888').replace('#', '');
+    if (value.length === 3) value = value[0] + value[0] + value[1] + value[1] + value[2] + value[2];
+    var r = parseInt(value.slice(0, 2), 16) / 255;
+    var g = parseInt(value.slice(2, 4), 16) / 255;
+    var b = parseInt(value.slice(4, 6), 16) / 255;
+    function lin(c) { return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+    var lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    return lum > 0.62 ? '#111827' : '#ffffff';
+  }
+
+  function directionOf(from, to) {
+    var dlat = to.lat - from.lat;
+    var dlng = (to.lng - from.lng) * Math.cos((from.lat + to.lat) / 2 * Math.PI / 180);
+    var km = Math.sqrt(Math.pow(dlat * 111.32, 2) + Math.pow(dlng * 111.32, 2));
+    var angle = (Math.atan2(dlng, dlat) * 180 / Math.PI + 360) % 360;
+    var words = ['북', '북동', '동', '남동', '남', '남서', '서', '북서'];
+    return { word: words[Math.floor((angle + 22.5) / 45) % 8], km: km, angle: angle };
+  }
+
+  function charStates(guess, answer) {
+    var remaining = {};
+    for (var i = 0; i < answer.length; i += 1) {
+      if (i < guess.length && guess[i] === answer[i]) continue;
+      remaining[answer[i]] = (remaining[answer[i]] || 0) + 1;
+    }
+    var out = [];
+    for (var j = 0; j < guess.length; j += 1) {
+      if (j < answer.length && guess[j] === answer[j]) out.push('hit');
+      else if (remaining[guess[j]]) { remaining[guess[j]] -= 1; out.push('near'); }
+      else out.push('miss');
+    }
+    return out;
+  }
+
+  function lineOverlap(guessLines, answerLines) {
+    var hits = guessLines.filter(function (line) { return answerLines.indexOf(line) >= 0; });
+    return { hits: hits, exact: hits.length === answerLines.length && guessLines.length === answerLines.length };
+  }
+
+  // ---------- 렌더 ----------
+  var els = {
+    input: document.getElementById('swInput'),
+    submit: document.getElementById('swSubmit'),
+    suggest: document.getElementById('swSuggest'),
+    rows: document.getElementById('swRows'),
+    tries: document.getElementById('swTries'),
+    blanks: document.getElementById('swBlanks'),
+    chosungNote: document.getElementById('swChosungNote'),
+    result: document.getElementById('swResult'),
+    resultBadge: document.getElementById('swResultBadge'),
+    resultTitle: document.getElementById('swResultTitle'),
+    resultText: document.getElementById('swResultText'),
+    answerLine: document.getElementById('swAnswerLine'),
+    status: document.getElementById('swStatus'),
+    share: document.getElementById('swShare'),
+    hint: document.getElementById('swHint'),
+    inputStatus: document.getElementById('swInputStatus'),
+    streak: document.getElementById('swStreak'),
+    guide: document.getElementById('swGuideSteps')
+  };
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined && text !== null) node.textContent = text;
+    return node;
+  }
+
+  function chip(lineName, on) {
+    var node = el('span', 'sw-chip' + (on ? ' is-on' : ''), lineName.replace('호선', ''));
+    if (on) {
+      node.style.background = LINE_COLOR[lineName] || '#475569';
+      node.style.color = textOn(LINE_COLOR[lineName]);
+    }
+    node.title = lineName + (on ? ' · 정답에 있는 노선' : ' · 정답에 없음');
+    return node;
+  }
+
+  function arrowSvg(angle) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2.4');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M12 20V5');
+    var head = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    head.setAttribute('d', 'M6 11l6-6 6 6');
+    svg.appendChild(path);
+    svg.appendChild(head);
+    svg.style.transform = 'rotate(' + Math.round(angle) + 'deg)';
+    return svg;
+  }
+
+  function renderTries() {
+    els.tries.innerHTML = '';
+    for (var i = 0; i < MAX_TRIES; i += 1) {
+      var dot = el('span', 'sw-try-dot');
+      if (state.attempts.length > i) {
+        dot.classList.add('is-used');
+        if (state.solved && i === state.attempts.length - 1) dot.classList.add('is-win');
+        if (!state.solved && state.attempts.length >= MAX_TRIES) dot.classList.add('is-lose');
+      }
+      els.tries.appendChild(dot);
+    }
+    els.tries.setAttribute('aria-label', state.attempts.length + '회 시도 / 최대 ' + MAX_TRIES + '회');
+  }
+
+  function attemptRow(attempt) {
+    var answer = BY_NAME[state.answer];
+    var guess = attempt.station;
+    var row = el('div', 'sw-row');
+    row.setAttribute('role', 'listitem');
+    row.dataset.name = guess.name;
+
+    var nameCell = el('div', 'sw-cell sw-name-cell sw-name');
+    var states = charStates(guess.name, answer.name);
+    if (guess.name === answer.name) nameCell.classList.add('is-hit');
+    else if (states.indexOf('near') >= 0) nameCell.classList.add('is-near');
+    for (var i = 0; i < guess.name.length; i += 1) {
+      var char = el('span', 'sw-char is-' + states[i], guess.name[i]);
+      nameCell.appendChild(char);
+    }
+    row.appendChild(nameCell);
+
+    var lineCell = el('div', 'sw-cell sw-lines');
+    var chips = el('div', 'sw-chips');
+    var overlap = lineOverlap(guess.lines, answer.lines);
+    if (overlap.exact) lineCell.classList.add('is-hit');
+    else if (overlap.hits.length) lineCell.classList.add('is-near');
+    else lineCell.classList.add('is-miss');
+    guess.lines.forEach(function (line) { chips.appendChild(chip(line, answer.lines.indexOf(line) >= 0)); });
+    lineCell.appendChild(chips);
+    row.appendChild(lineCell);
+
+    var countCell = el('div', 'sw-cell sw-num');
+    var diff = guess.lines.length - answer.lines.length;
+    countCell.textContent = String(guess.lines.length);
+    var mark = el('span', diff === 0 ? '' : diff > 0 ? 'sw-arrow-up' : 'sw-arrow-down',
+      diff === 0 ? ' =' : diff > 0 ? ' ▲' : ' ▼');
+    mark.style.fontSize = '10px';
+    countCell.appendChild(mark);
+    if (diff === 0) countCell.classList.add('is-hit');
+    else countCell.classList.add('is-near');
+    countCell.title = '연계 노선 ' + guess.lines.length + '개 · 정답은 ' + (diff === 0 ? '같음' : diff > 0 ? '더 적음' : '더 많음');
+    row.appendChild(countCell);
+
+    var areaCell = el('div', 'sw-cell', guess.area);
+    if (guess.area === answer.area) areaCell.classList.add('is-hit');
+    else areaCell.classList.add('is-miss');
+    row.appendChild(areaCell);
+
+    var dir = directionOf(guess, answer);
+    var dirCell = el('div', 'sw-cell sw-dir');
+    if (guess.name === answer.name) {
+      dirCell.textContent = '정답';
+      dirCell.classList.add('is-hit');
+    } else {
+      dirCell.appendChild(arrowSvg(dir.angle));
+      dirCell.appendChild(el('span', '', dir.word));
+      if (dir.km < 1.5) dirCell.classList.add('is-near');
+    }
+    row.appendChild(dirCell);
+
+    var kmCell = el('div', 'sw-cell', guess.name === answer.name ? '0km' : (Math.round(dir.km * 10) / 10) + 'km');
+    if (guess.name === answer.name) kmCell.classList.add('is-hit');
+    else if (dir.km < 3) kmCell.classList.add('is-near');
+    row.appendChild(kmCell);
+
+    var chosungCell = el('div', 'sw-cell sw-chosung');
+    var guessCho = chosung(guess.name);
+    var answerCho = chosung(answer.name);
+    var same = 0;
+    for (var k = 0; k < Math.min(guessCho.length, answerCho.length); k += 1) {
+      if (guessCho[k] === answerCho[k]) same += 1;
+    }
+    chosungCell.textContent = same + '/' + answerCho.length;
+    if (same === answerCho.length && guess.name.length === answer.name.length) chosungCell.classList.add('is-hit');
+    else if (same) chosungCell.classList.add('is-near');
+    chosungCell.title = '초성 자리 일치 ' + same + '개 / 정답 ' + answerCho.length + '자';
+    row.appendChild(chosungCell);
+    return row;
+  }
+
+  function renderRows() {
+    els.rows.innerHTML = '';
+    if (!state.attempts.length) {
+      var empty = el('div', 'sw-empty-row', '첫 역을 넣어 보세요. 노선·연계·자치구·방향·초성 힌트가 바로 나옵니다.');
+      empty.setAttribute('role', 'listitem');
+      els.rows.appendChild(empty);
+      return;
+    }
+    state.attempts.forEach(function (attempt) { els.rows.appendChild(attemptRow(attempt)); });
+  }
+
+  function revealedChars() {
+    var answer = BY_NAME[state.answer].name;
+    var revealed = {};
+    state.attempts.forEach(function (attempt) {
+      charStates(attempt.station.name, answer).forEach(function (kind, index) {
+        if (kind !== 'miss') revealed[index] = attempt.station.name[index];
+      });
+    });
+    return revealed;
+  }
+
+  function renderChosung() {
+    var answer = BY_NAME[state.answer].name;
+    var answerCho = chosung(answer);
+    var revealed = revealedChars();
+    els.blanks.innerHTML = '';
+    for (var i = 0; i < answerCho.length; i += 1) {
+      var blank = el('span', 'sw-blank', revealed[i] ? answer[i] : answerCho[i]);
+      if (revealed[i]) {
+        blank.classList.add('is-revealed');
+        if (revealed[i] === answer[i]) blank.classList.add('is-correct');
+      }
+      els.blanks.appendChild(blank);
+    }
+    els.chosungNote.textContent = '초성 ' + answerCho.length + '자 · 맞힌 글자는 드러납니다';
+  }
+
+  function renderResult() {
+    var finished = state.solved || state.attempts.length >= MAX_TRIES;
+    if (!finished) {
+      els.result.hidden = true;
+      return;
+    }
+    var answer = BY_NAME[state.answer];
+    els.result.hidden = false;
+    els.result.className = 'sw-result ' + (state.solved ? 'is-win' : 'is-lose');
+    els.resultBadge.textContent = state.solved ? '정답' : '아쉬움';
+    els.resultTitle.textContent = state.solved
+      ? state.attempts.length + '수 만에 맞혔습니다'
+      : '오늘의 역은 ' + answer.name + '역입니다';
+    els.resultText.textContent = state.solved
+      ? answer.name + '역 · ' + answer.lines.join(' · ') + ' · ' + answer.area
+      : '내일 다시 도전해 보세요. 아래 정답 노선과 자치구를 기억해 두면 다음 판이 빨라집니다.';
+    els.answerLine.innerHTML = '';
+    answer.lines.forEach(function (line) { els.answerLine.appendChild(chip(line, true)); });
+    els.answerLine.appendChild(el('span', 'sw-chip', answer.area));
+    els.share.textContent = shareText();
+    els.submit.disabled = true;
+    els.input.disabled = true;
+    els.input.placeholder = state.solved ? '오늘은 마쳤습니다' : '오늘 기회를 모두 썼습니다';
+  }
+
+  function shareText() {
+    var lines = ['오늘의 지하철역 ' + kstDateString(new Date()) + (state.mode === 'practice' ? ' (연습)' : ''),
+                 state.attempts.length + '/' + MAX_TRIES];
+    var answer = BY_NAME[state.answer];
+    state.attempts.forEach(function (attempt) {
+      var guess = attempt.station;
+      var states = charStates(guess.name, answer.name);
+      var nameMark = guess.name === answer.name ? '■' : states.indexOf('near') >= 0 ? '▲' : '□';
+      var overlap = lineOverlap(guess.lines, answer.lines);
+      var lineMark = overlap.exact ? '■' : overlap.hits.length ? '▲' : '□';
+      var diff = guess.lines.length - answer.lines.length;
+      var countMark = diff === 0 ? '■' : diff > 0 ? '▲' : '▽';
+      var areaMark = guess.area === answer.area ? '■' : '□';
+      var km = directionOf(guess, answer).km;
+      var dirMark = km < 1.5 ? '■' : km < 5 ? '▲' : '□';
+      lines.push(nameMark + lineMark + countMark + areaMark + dirMark);
+    });
+    lines.push('http://bling9513-ship-it.github.io/project-1/subway.html');
+    return lines.join('\n');
+  }
+
+  function renderAll() {
+    renderTries();
+    renderRows();
+    renderChosung();
+    renderResult();
+    renderRecord();
+  }
+
+  // ---------- 입력 · 자동완성 ----------
+  var suggestItems = [];
+  var activeIndex = -1;
+
+  function search(query) {
+    var term = query.trim();
+    if (!term) return [];
+    var cho = chosung(term);
+    var out = [];
+    DATA.stations.forEach(function (station) {
+      if (state.attempts.some(function (attempt) { return attempt.station.name === station.name; })) return;
+      var nameCho = chosung(station.name);
+      if (station.name.indexOf(term) === 0 || nameCho.indexOf(cho) === 0
+          || station.name.indexOf(term) > 0 || nameCho.indexOf(cho) > 0) {
+        out.push({ station: station, start: station.name.indexOf(term) === 0 || nameCho.indexOf(cho) === 0 });
+      }
+    });
+    out.sort(function (a, b) {
+      if (a.start !== b.start) return a.start ? -1 : 1;
+      return a.station.name.length - b.station.name.length || a.station.name.localeCompare(b.station.name);
+    });
+    return out.slice(0, 8).map(function (row) { return row.station; });
+  }
+
+  function renderSuggest() {
+    var term = els.input.value;
+    var matches = search(term);
+    suggestItems = matches;
+    activeIndex = -1;
+    els.suggest.innerHTML = '';
+    if (!term.trim() || !matches.length || els.input.disabled) {
+      if (term.trim() && !matches.length) {
+        els.suggest.appendChild(el('div', 'sw-empty', '일치하는 역이 없습니다. 다른 이름이나 초성으로 찾아보세요.'));
+        els.suggest.hidden = false;
+        els.input.setAttribute('aria-expanded', 'true');
+      } else {
+        els.suggest.hidden = true;
+        els.input.setAttribute('aria-expanded', 'false');
+      }
+      return;
+    }
+    matches.forEach(function (station, index) {
+      var btn = el('button', '');
+      btn.type = 'button';
+      btn.setAttribute('role', 'option');
+      btn.dataset.index = String(index);
+      btn.dataset.name = station.name;
+      btn.appendChild(el('span', '', station.name));
+      btn.appendChild(el('span', '', station.lines.join(' · ') + ' · ' + station.area));
+      btn.addEventListener('click', function () { choose(station.name); });
+      els.suggest.appendChild(btn);
+    });
+    els.suggest.hidden = false;
+    els.input.setAttribute('aria-expanded', 'true');
+  }
+
+  function highlight(index) {
+    var buttons = els.suggest.querySelectorAll('button');
+    activeIndex = index;
+    Array.prototype.forEach.call(buttons, function (btn, i) {
+      btn.classList.toggle('is-active', i === index);
+    });
+  }
+
+  function choose(name) {
+    els.input.value = name;
+    els.suggest.hidden = true;
+    els.input.setAttribute('aria-expanded', 'false');
+    submitGuess();
+  }
+
+  function submitGuess() {
+    if (state.solved || state.attempts.length >= MAX_TRIES) return;
+    var name = els.input.value.trim();
+    var station = BY_NAME[name];
+    if (!station) {
+      var matches = search(name);
+      if (matches.length) { choose(matches[0].name); return; }
+      els.inputStatus.textContent = '역 목록에 없는 이름입니다. 제안 목록에서 골라 주세요.';
+      window.setTimeout(function () { if (els.inputStatus.textContent) els.inputStatus.textContent = ''; }, 3000);
+      return;
+    }
+    if (state.attempts.some(function (attempt) { return attempt.station.name === station.name; })) {
+      els.inputStatus.textContent = '이미 넣은 역입니다. 다른 역을 골라 주세요.';
+      window.setTimeout(function () { if (els.inputStatus.textContent) els.inputStatus.textContent = ''; }, 3000);
+      return;
+    }
+    state.attempts.push({ station: station });
+    if (station.name === state.answer) {
+      state.solved = true;
+      if (state.mode === 'daily') settleDaily(true);
+    } else if (state.attempts.length >= MAX_TRIES) {
+      if (state.mode === 'daily') settleDaily(false);
+    }
+    els.input.value = '';
+    els.suggest.hidden = true;
+    els.inputStatus.textContent = '';
+    renderAll();
+    if (state.mode === 'practice' && (state.solved || state.attempts.length >= MAX_TRIES)) {
+      els.status.textContent = state.solved ? '연습 판 정답입니다. 기록에는 반영하지 않습니다.' : '연습 판 정답은 ' + state.answer + '역이었습니다.';
+    }
+    if (!state.solved && state.attempts.length < MAX_TRIES) els.input.focus();
+  }
+
+  els.input.addEventListener('input', renderSuggest);
+  els.input.addEventListener('focus', renderSuggest);
+  els.input.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowDown' && suggestItems.length) {
+      event.preventDefault();
+      highlight(Math.min(suggestItems.length - 1, activeIndex + 1));
+    } else if (event.key === 'ArrowUp' && suggestItems.length) {
+      event.preventDefault();
+      highlight(Math.max(0, activeIndex - 1));
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (!els.suggest.hidden && suggestItems.length) {
+        choose(suggestItems[activeIndex >= 0 ? activeIndex : 0].name);
+      } else {
+        submitGuess();
+      }
+    } else if (event.key === 'Escape') {
+      els.suggest.hidden = true;
+      els.input.setAttribute('aria-expanded', 'false');
+    }
+  });
+  els.submit.addEventListener('click', submitGuess);
+  document.addEventListener('click', function (event) {
+    if (!event.target.closest || !event.target.closest('.sw-input-wrap')) {
+      els.suggest.hidden = true;
+      els.input.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // ---------- 모드 ----------
+  function startPractice() {
+    var pool = DATA.stations.filter(function (station) { return station.name !== state.answer; });
+    var pick = pool[Math.floor(Math.random() * pool.length)];
+    state = { mode: 'practice', answer: pick.name, attempts: [], solved: false, practiceAnswer: pick.name };
+    els.input.disabled = false;
+    els.submit.disabled = false;
+    els.input.value = '';
+    els.input.placeholder = '연습 · 역 이름을 입력하세요';
+    els.status.textContent = '';
+    document.querySelectorAll('.sw-mode button').forEach(function (btn) {
+      var on = btn.dataset.mode === 'practice';
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    renderAll();
+    els.input.focus();
+  }
+
+  function startDaily() {
+    state = { mode: 'daily', answer: dailyAnswer, attempts: [], solved: false, practiceAnswer: null };
+    els.input.disabled = false;
+    els.submit.disabled = false;
+    els.input.value = '';
+    els.input.placeholder = '역 이름을 입력하세요 (예: 강남, ㄱㄴ)';
+    els.status.textContent = '';
+    document.querySelectorAll('.sw-mode button').forEach(function (btn) {
+      var on = btn.dataset.mode === 'daily';
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    renderAll();
+  }
+
+  document.querySelectorAll('.sw-mode button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (btn.dataset.mode === 'practice') startPractice();
+      else startDaily();
+    });
+  });
+  document.getElementById('swPracticeStart').addEventListener('click', startPractice);
+  document.getElementById('swAgain').addEventListener('click', startPractice);
+
+  // ---------- 복사 ----------
+  function copyText(text) {
+    function done(ok) {
+      els.status.textContent = ok ? '결과를 복사했습니다. 스포일러 없는 그리드만 담았습니다.' : '복사에 실패했습니다. 브라우저 권한을 확인해 주세요.';
+      window.setTimeout(function () { if (els.status.textContent) els.status.textContent = ''; }, 4000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallbackCopy(text, done); });
+      return;
+    }
+    fallbackCopy(text, done);
+  }
+  function fallbackCopy(text, done) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', 'readonly');
+    area.style.position = 'fixed';
+    area.style.top = '-1000px';
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(area);
+    done(ok);
+  }
+  document.getElementById('swCopy').addEventListener('click', function () { copyText(shareText()); });
+
+  // ---------- 3단계 가이드 ----------
+  var steps = Array.prototype.slice.call(els.guide.querySelectorAll('.sw-step'));
+  var guideTimer = null;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var guideNote = document.getElementById('swGuideNote');
+  var guideState = document.getElementById('swGuideState');
+
+  function clearGuide() {
+    steps.forEach(function (step) { step.classList.remove('is-on'); });
+  }
+  function playGuide() {
+    if (guideTimer) { window.clearInterval(guideTimer); guideTimer = null; }
+    clearGuide();
+    if (reduceMotion) {
+      steps.forEach(function (step) { step.classList.add('is-on'); });
+      guideNote.textContent = '동작 줄이기 설정 · 정지 화면';
+      guideState.textContent = '세 단계를 한 번에 보여 줍니다';
+      return;
+    }
+    var index = 0;
+    steps[0].classList.add('is-on');
+    guideNote.textContent = '재생 중 1/3';
+    guideState.textContent = '자동 재생이 끝나면 멈춥니다';
+    guideTimer = window.setInterval(function () {
+      index += 1;
+      if (index >= steps.length) {
+        window.clearInterval(guideTimer);
+        guideTimer = null;
+        guideNote.textContent = '재생 완료 · 멈춤';
+        guideState.textContent = '다시 보려면 다시 보기를 누르세요';
+        return;
+      }
+      clearGuide();
+      steps[index].classList.add('is-on');
+      guideNote.textContent = '재생 중 ' + (index + 1) + '/3';
+    }, 1500);
+  }
+  document.getElementById('swReplay').addEventListener('click', playGuide);
+
+  // ---------- 시작 ----------
+  renderAll();
+  if (reduceMotion) {
+    playGuide();
+  } else if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          playGuide();
+        }
+      });
+    }, { threshold: 0.35 });
+    observer.observe(els.guide);
+  } else {
+    playGuide();
+  }
+
+  // 테스트·디버깅용 (정답은 페이지 안에서 채점하므로 어차피 소스에 있다)
+  window.SUBWAY_ANSWER = state.answer;
+  window.SUBWAY = {
+    data: DATA,
+    state: function () { return state; },
+    answer: function () { return state.answer; },
+    guess: function (name) { els.input.value = name; submitGuess(); },
+    share: shareText
+  };
+})();
+</script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab is-active" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="grocery.html"><span>장보기 타이밍</span><span class="ia-sheet-file">grocery.html</span></a><a class="ia-sheet-link" href="basket.html"><span>장바구니 리그</span><span class="ia-sheet-file">basket.html</span></a><a class="ia-sheet-link" href="paymeter.html"><span>월급 미터</span><span class="ia-sheet-file">paymeter.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link" href="recycle.html"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a><a class="ia-sheet-link" href="food.html"><span>식품 라벨 읽기</span><span class="ia-sheet-file">food.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a><a class="ia-sheet-link is-current" href="subway.html" aria-current="page"><span>지하철역 맞히기</span><span class="ia-sheet-file">subway.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>

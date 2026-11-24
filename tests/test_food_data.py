@@ -19,7 +19,7 @@
     4지선다·정답 인덱스 분산·근거 라벨 구역(발췌 안)·해설. 트랜스지방 문항은 100g 기준과
     '한 봉지 전체가 0g은 아니다'를 고른다.
   · 이모지 0 · 그라데이션 0 · 입력 필드 0 · 인라인 이벤트 핸들러 0.
-  · 공통 셸 23페이지 등록 · 하단 탭 바 · 100g당/총 내용량 전환 버튼 · 출처 6건(제2025-60호 +
+  · 공통 셸 26페이지 등록 · 하단 탭 바 · 100g당/총 내용량 전환 버튼 · 출처 6건(제2025-60호 +
     제2026-37호 전문 대조) · 확인일(2026-11-22).
   · food_data.json 과 food.html 에 심긴 데이터가 일치하는지.
 
@@ -33,7 +33,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FOOD_HTML = os.path.join(BASE_DIR, "food.html")
 FOOD_JSON = os.path.join(BASE_DIR, "food_data.json")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 23
+SHEET_PAGES = 26
 CHECKED_ON = "2026-11-22"
 CATEGORIES = ("전체", "영양성분", "소비기한·보관", "원재료·알레르기")
 BASELINE = {"sodium": 2000, "carbs": 324, "sugar": 100, "fat": 54,
