@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-t4vaYNcu2TEX9CjHIV+Hd6ZhP0VAazdk2MoVWyxOU+4=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infosec Archive · 오늘의 장바구니 리그</title>
+  <meta name="description" content="aT KAMIS 서울 소매가격 8품목으로 오늘의 미션(목표 예산·최소 품목·분류 조건)에 맞는 장바구니를 담아 S/A/B/C 등급을 받는 데일리 게임. 조사일·규격·등급을 함께 표시합니다.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
+  <style>
+    :root {
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --bg-page: #f8fafc;  --bg-surface: #ffffff;  --bg-subtle: #f1f5f9;  --bg-muted: #e2e8f0;
+      --border-subtle: #f1f5f9;  --border-default: #e2e8f0;  --border-strong: #cbd5e1;
+      --text-primary: #0f172a;  --text-secondary: #475569;  --text-muted: #94a3b8;
+      --accent-primary: #2563eb;  --accent-subtle: #eff6ff;
+      --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;  --ok-ink: #0f766e;
+      --warn-bg: #fffbeb;  --warn-text: #b45309;  --warn-border: #fde68a;
+      --miss-bg: #f8fafc;  --miss-text: #94a3b8;  --miss-border: #e2e8f0;
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    }
+    [data-theme="dark"] {
+      --bg-page: #09090b;  --bg-surface: #18181b;  --bg-subtle: #27272a;  --bg-muted: #3f3f46;
+      --border-subtle: #1f1f23;  --border-default: #27272a;  --border-strong: #3f3f46;
+      --text-primary: #f4f4f5;  --text-secondary: #a1a1aa;  --text-muted: #71717a;
+      --accent-primary: #3b82f6;  --accent-subtle: rgba(59, 130, 246, 0.15);
+      --ok-bg: rgba(16, 185, 129, 0.14);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.34);  --ok-ink: #5eead4;
+      --warn-bg: rgba(245, 158, 11, 0.14);  --warn-text: #fcd34d;  --warn-border: rgba(245, 158, 11, 0.34);
+      --miss-bg: #18181b;  --miss-text: #71717a;  --miss-border: #27272a;
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-primary);
+      line-height: 1.5; letter-spacing: -0.02em; min-height: 100vh; -webkit-font-smoothing: antialiased;
+      transition: background-color .2s ease, color .2s ease; }
+    .bk-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    .bk-wrap { max-width: 1180px; margin: 0 auto; padding: 20px 20px 96px; }
+    .bk-hero h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.045em; margin-top: 7px; }
+    .bk-hero p { margin-top: 6px; font-size: 13px; color: var(--text-secondary); max-width: 640px; word-break: keep-all; }
+    .bk-pill { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--accent-primary);
+      background: var(--accent-subtle); border-radius: 7px; padding: 3px 9px; }
+    .bk-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 10px;
+      font-size: 11.5px; color: var(--text-muted); }
+    .bk-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-strong); display: inline-block; }
+
+    .bk-main { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; margin-top: 16px; align-items: start; }
+    .bk-main > * { min-width: 0; }
+    .bk-panel { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 16px;
+      padding: 18px; box-shadow: var(--card-shadow); }
+    .bk-panel h2 { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+
+    .bk-rail { display: grid; gap: 12px; position: sticky; top: 76px; }
+    .bk-mission-list { margin: 10px 0 0; display: grid; gap: 7px; }
+    .bk-mission-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+      padding-bottom: 7px; border-bottom: 1px solid var(--border-subtle); }
+    .bk-mission-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .bk-mission-row span { font-size: 11px; color: var(--text-muted); }
+    .bk-mission-row b { font-size: 14px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .bk-mission-conds { margin: 10px 0 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+    .bk-mission-conds li { position: relative; padding-left: 16px; font-size: 11.5px; font-weight: 600;
+      color: var(--text-secondary); word-break: keep-all; }
+    .bk-mission-conds li::before { content: ""; position: absolute; left: 2px; top: 6px; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--text-muted); }
+
+    .bk-gauge-card { margin-top: 12px; }
+    .bk-gauge-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .bk-total { font-size: 27px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+    .bk-total small { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-left: 3px; }
+    .bk-diff { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .bk-diff.is-ok { color: var(--ok-ink); }
+    .bk-diff.is-over { color: var(--warn-text); }
+    .bk-diff.is-under { color: var(--accent-primary); }
+    .bk-gauge { position: relative; height: 14px; margin-top: 11px; border-radius: 999px; overflow: hidden;
+      background: var(--bg-subtle); border: 1px solid var(--border-default); }
+    .bk-band { position: absolute; top: -2px; bottom: -2px; border-left: 1px dashed var(--ok-ink);
+      border-right: 1px dashed var(--ok-ink); background: transparent; opacity: .75; }
+    .bk-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--text-primary); opacity: .82;
+      border-radius: 999px; transition: width .25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .bk-gauge-legend { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: var(--text-muted); }
+    .bk-count-line { display: flex; align-items: center; justify-content: space-between; margin-top: 11px;
+      font-size: 11.5px; color: var(--text-secondary); }
+    .bk-count-line b { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+    .bk-checks { margin-top: 10px; display: grid; gap: 6px; }
+    .bk-check { display: flex; align-items: flex-start; gap: 7px; font-size: 11.5px; font-weight: 600;
+      color: var(--text-secondary); }
+    .bk-check i { flex: 0 0 auto; width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--border-strong);
+      display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .bk-check.is-on { color: var(--text-primary); }
+    .bk-check.is-on i { background: var(--ok-ink); border-color: var(--ok-ink); }
+    .bk-check.is-on i::after { content: ""; width: 7px; height: 4px; border-left: 1.6px solid #fff;
+      border-bottom: 1.6px solid #fff; transform: rotate(-45deg) translate(1px, -1px); }
+    .bk-submit { width: 100%; margin-top: 13px; border: 1px solid var(--text-primary); background: var(--text-primary);
+      color: var(--bg-surface); border-radius: 12px; padding: 12px; font-family: inherit; font-size: 13.5px;
+      font-weight: 800; cursor: pointer; }
+    .bk-submit:hover { opacity: .9; }
+    .bk-submit:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .bk-submit:disabled { opacity: .45; cursor: default; }
+    .bk-ghost { width: 100%; margin-top: 7px; border: 1px solid var(--border-default); background: var(--bg-surface);
+      color: var(--text-secondary); border-radius: 12px; padding: 10px; font-family: inherit; font-size: 12px;
+      font-weight: 700; cursor: pointer; }
+    .bk-ghost:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .bk-status { min-height: 16px; margin-top: 7px; font-size: 11px; font-weight: 600; color: var(--ok-ink); }
+
+    /* ---------- 결과 ---------- */
+    .bk-result { margin-top: 12px; border-radius: 14px; padding: 14px; border: 1px solid var(--border-default);
+      background: var(--bg-surface); }
+    .bk-result.grade-S { border-color: var(--ok-border); background: var(--ok-bg); }
+    .bk-result.grade-A { border-color: var(--ok-border); background: var(--bg-subtle); }
+    .bk-result.grade-B { border-color: var(--warn-border); background: var(--warn-bg); }
+    .bk-result.grade-C { border-color: var(--miss-border); background: var(--miss-bg); }
+    .bk-result-top { display: flex; align-items: center; gap: 9px; }
+    .bk-grade { width: 42px; height: 42px; border-radius: 12px; display: inline-flex; align-items: center;
+      justify-content: center; font-size: 22px; font-weight: 800; background: var(--text-primary); color: var(--bg-surface); }
+    .bk-result.grade-S .bk-grade { background: var(--ok-ink); color: #fff; }
+    .bk-result.grade-B .bk-grade { background: var(--warn-text); color: #fff; }
+    .bk-result.grade-C .bk-grade { background: var(--text-muted); color: #fff; }
+    .bk-result-top h3 { font-size: 15.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .bk-result-top p { font-size: 11.5px; color: var(--text-secondary); }
+    .bk-result-body { margin-top: 10px; display: grid; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+    .bk-result-body b { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .bk-share { margin-top: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+      line-height: 1.55; white-space: pre-wrap; color: var(--text-secondary); background: var(--bg-subtle);
+      border: 1px solid var(--border-default); border-radius: 10px; padding: 9px 10px; }
+    .bk-best { margin-top: 10px; font-size: 11px; color: var(--text-muted); line-height: 1.55; }
+    .bk-best b { color: var(--text-primary); }
+
+    /* ---------- 품목 ---------- */
+    .bk-shelf-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .bk-shelf-head h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); }
+    .bk-shelf-head span { font-size: 11px; color: var(--text-muted); }
+    .bk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 11px; }
+    .bk-item { border: 1px solid var(--border-default); border-radius: 14px; padding: 13px; background: var(--bg-surface);
+      display: flex; flex-direction: column; gap: 7px; transition: border-color .15s ease, background-color .15s ease; }
+    .bk-item.is-in { border-color: var(--text-primary); background: var(--bg-subtle); }
+    .bk-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+    .bk-item h3 { font-size: 14.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .bk-cat { font-size: 10px; font-weight: 700; color: var(--text-muted); border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 2px 7px; }
+    .bk-price { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .bk-price small { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-left: 2px; }
+    .bk-item-meta { font-size: 10.5px; color: var(--text-muted); }
+    .bk-item-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
+    .bk-chip { font-size: 10px; font-weight: 700; border-radius: 6px; padding: 2px 6px; background: var(--bg-subtle);
+      color: var(--text-muted); }
+    .bk-chip.is-low { background: var(--ok-bg); color: var(--ok-text); }
+    .bk-chip.is-high { background: var(--warn-bg); color: var(--warn-text); }
+    .bk-stepper { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--border-default);
+      border-radius: 10px; padding: 2px; background: var(--bg-surface); }
+    .bk-step { width: 34px; height: 32px; border: 0; background: transparent; color: var(--text-secondary);
+      border-radius: 8px; font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .bk-step:hover { background: var(--bg-subtle); color: var(--text-primary); }
+    .bk-step:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+    .bk-step:disabled { opacity: .35; cursor: default; }
+    .bk-qty { min-width: 22px; text-align: center; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .bk-qty.is-zero { color: var(--text-muted); }
+    .bk-src { font-size: 10px; color: var(--text-muted); text-decoration: none; border-bottom: 1px solid var(--border-default); }
+    .bk-src:hover { color: var(--accent-primary); }
+
+    /* 모바일 전용 하단 미니 바 — 품목을 고르는 동안 합계와 제출을 계속 보여 준다. */
+    .bk-mini { display: none; }
+    @media (max-width: 900px) {
+      .bk-mini {
+        display: flex; align-items: center; gap: 10px; position: fixed; left: 10px; right: 10px;
+        bottom: calc(var(--ia-tabbar-h, 64px) + 10px); z-index: 40; padding: 8px 8px 8px 13px;
+        background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 14px;
+        box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.4);
+      }
+      .bk-mini-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
+      .bk-mini-info b { font-size: 16px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+      .bk-mini-info span { font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
+      .bk-mini-btn { flex: 0 0 auto; border: 1px solid var(--text-primary); background: var(--text-primary);
+        color: var(--bg-surface); border-radius: 10px; padding: 10px 16px; font-family: inherit; font-size: 13px;
+        font-weight: 800; cursor: pointer; }
+      .bk-mini-btn:disabled { opacity: .45; cursor: default; }
+    }
+
+    .bk-notes { margin-top: 22px; background: var(--bg-surface); border: 1px solid var(--border-default);
+      border-radius: 16px; padding: 17px 18px; box-shadow: var(--card-shadow); }
+    .bk-notes h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); }
+    .bk-notes ul { margin-top: 10px; display: grid; gap: 7px; padding-left: 16px; }
+    .bk-notes li { font-size: 11.5px; line-height: 1.62; color: var(--text-secondary); word-break: keep-all; }
+    .bk-notes li b { color: var(--text-primary); }
+    .bk-notes .bk-srcs { list-style: none; padding-left: 0; margin-top: 12px; padding-top: 11px;
+      border-top: 1px solid var(--border-subtle); }
+    .bk-notes .bk-srcs li { display: flex; flex-direction: column; gap: 1px; }
+    .bk-notes .bk-srcs a { font-weight: 700; color: var(--accent-primary); text-decoration: none; font-size: 11.5px; }
+    .bk-notes .bk-srcs span { font-size: 10.5px; color: var(--text-muted); }
+    .bk-foot { margin-top: 14px; font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      .bk-wrap { padding: 14px 13px 150px; }
+      .bk-hero h1 { font-size: 21px; }
+      .bk-hero p { font-size: 12px; }
+      .bk-main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 13px; }
+      .bk-rail { position: static; order: 1; }
+      .bk-shelf { order: 2; }
+      .bk-panel { padding: 14px; }
+      .bk-total { font-size: 24px; }
+      .bk-mission-row b { font-size: 13px; }
+      .bk-mission-conds li { font-size: 11px; }
+      .bk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .bk-item { padding: 11px; }
+      .bk-price { font-size: 17px; }
+      .bk-step { width: 32px; height: 32px; }
+      .bk-item-foot { flex-direction: column; align-items: stretch; gap: 6px; }
+      .bk-chip { text-align: center; white-space: nowrap; font-size: 9.5px; }
+      .bk-stepper { justify-content: space-between; }
+      .bk-step { flex: 0 0 34px; width: 34px; height: 34px; }
+      .bk-qty { flex: 1 1 auto; }
+    }
+    @media (max-width: 360px) {
+      .bk-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+</style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('secjobs-theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<style id="ia-shell-style">
+  /* ===== Infosec Archive 공통 셸 (ui_shell.py) ===== */
+  :root {
+    --ia-header-h: 60px;
+    --ia-tabbar-h: 64px;
+    --ia-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ia-press: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .ia-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  .ia-header-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--ia-header-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ia-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    transition: transform var(--ia-press), opacity var(--ia-press);
+  }
+  .ia-brand:active { transform: scale(0.98); opacity: 0.86; }
+
+  .ia-brand-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+    flex-shrink: 0;
+  }
+
+  .ia-brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .ia-current { display: none; }
+
+  .ia-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ia-menu-link,
+  .ia-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+
+  .ia-menu-link:hover,
+  .ia-menu-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-menu-link:active,
+  .ia-menu-btn:active { transform: scale(0.98); }
+
+  .ia-menu-link.is-active,
+  .ia-menu-btn.is-active {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+  }
+
+  .ia-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform var(--ia-press);
+  }
+  .ia-menu-group.is-open .ia-chevron { transform: rotate(180deg); }
+
+  .ia-menu-group { position: relative; }
+
+  .ia-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 214px;
+    padding: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28), 0 2px 8px rgba(15, 23, 42, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 150ms var(--ia-ease), transform 150ms var(--ia-ease), visibility 150ms;
+    z-index: 65;
+  }
+  .ia-menu-group.is-open .ia-drop { opacity: 1; visibility: visible; transform: none; }
+
+  .ia-drop-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ia-ease), color 140ms var(--ia-ease);
+  }
+  .ia-drop-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-drop-link.is-current { color: var(--accent-primary); font-weight: 600; background: var(--accent-subtle); }
+
+  .ia-drop-label {
+    margin: 7px 9px 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-drop-label:first-child { margin-top: 2px; }
+  .ia-drop-sep { height: 1px; margin: 6px 6px; background: var(--border-subtle); }
+
+  .ia-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; margin-left: auto; }
+
+  .ia-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .ia-meta::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .ia-icon-btn,
+  .ia-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ia-press), color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-icon-btn:hover,
+  .ia-icon-link:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .ia-icon-btn:active,
+  .ia-icon-link:active { transform: scale(0.94); }
+
+  /* ----- 모바일 하단 탭 바 ----- */
+  .ia-tabbar { display: none; }
+
+  .ia-tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 6px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-tab:active { transform: scale(0.96); }
+  .ia-tab-icon { display: inline-flex; width: 22px; height: 22px; }
+  .ia-tab-icon svg { width: 22px; height: 22px; }
+  .ia-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: -0.02em; }
+  .ia-tab.is-active { color: var(--accent-primary); }
+  .ia-tab.is-active .ia-tab-label { font-weight: 700; }
+
+  /* ----- 전체 메뉴 바텀 시트 ----- */
+  .ia-sheet-backdrop,
+  .ia-sheet { display: none; }
+
+  .ia-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.44);
+    opacity: 0;
+    transition: opacity 200ms var(--ia-ease);
+    z-index: 88;
+  }
+  .ia-sheet-backdrop.is-open { opacity: 1; }
+
+  .ia-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-surface);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -18px 40px -22px rgba(15, 23, 42, 0.4);
+    max-height: 84vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 18px calc(26px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 240ms var(--ia-ease);
+  }
+  .ia-sheet.is-open { transform: translateY(0); }
+
+  .ia-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--bg-surface);
+  }
+  .ia-sheet-title { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+  .ia-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--ia-press), transform var(--ia-press);
+  }
+  .ia-sheet-close svg { width: 18px; height: 18px; }
+  .ia-sheet-close:active { transform: scale(0.94); }
+
+  .ia-sheet-body { padding-bottom: 6px; }
+  .ia-sheet-group {
+    margin: 14px 0 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .ia-sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  .ia-sheet-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--ia-press), border-color var(--ia-press), background-color var(--ia-press);
+  }
+  .ia-sheet-link:active { transform: scale(0.98); }
+  .ia-sheet-link.is-current { border-color: var(--accent-primary); background: var(--accent-subtle); }
+  .ia-sheet-file { font-size: 10.5px; font-weight: 500; color: var(--text-muted); }
+  .ia-sheet-sub {
+    margin: 9px 0 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  body.ia-sheet-open { overflow: hidden; }
+
+  /* ----- 프레스 피드백(공통) ----- */
+  .job-card,
+  .arc-card,
+  .opt,
+  .stage,
+  .chip,
+  .btn,
+  .filter-pill,
+  .segment-btn,
+  .pad-btn {
+    transition: transform var(--ia-press), box-shadow var(--ia-press), border-color var(--ia-press),
+      background-color var(--ia-press), color var(--ia-press);
+  }
+  .job-card:active,
+  .arc-card:active,
+  .opt:active,
+  .stage:active,
+  .chip:active,
+  .btn:active,
+  .filter-pill:active,
+  .segment-btn:active,
+  .pad-btn:active { transform: scale(0.98); }
+
+  /* 태블릿 폭(769~1100px)에서는 안내 문구·GitHub 버튼을 접어 메뉴가 겹치지 않게 한다. */
+  @media (max-width: 1100px) {
+    .ia-header-inner { gap: 10px; padding: 0 16px; }
+    .ia-meta { display: none; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 9px; font-size: 13px; }
+  }
+
+  @media (max-width: 900px) {
+    .ia-icon-link { display: none; }
+    .ia-brand-name { font-size: 16px; }
+    .ia-menu-link,
+    .ia-menu-btn { padding: 7px 7px; font-size: 12.5px; }
+    .ia-chevron { width: 12px; height: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    .ia-header-inner { height: 54px; padding: 0 14px; gap: 8px; }
+    .ia-brand-img { width: 25px; height: 25px; border-radius: 7px; }
+    .ia-brand-name { display: none; }
+    .ia-current {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ia-menu { display: none; }
+    .ia-actions { margin-left: auto; gap: 8px; }
+    .ia-meta,
+    .ia-icon-link { display: none; }
+    .ia-icon-btn { width: 34px; height: 34px; }
+
+    .ia-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+      height: calc(var(--ia-tabbar-h) + env(safe-area-inset-bottom));
+      padding: 0 4px env(safe-area-inset-bottom);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-default);
+      box-shadow: 0 -1px 0 rgba(15, 23, 42, 0.02);
+      z-index: 80;
+    }
+
+    .ia-sheet-backdrop,
+    .ia-sheet { display: block; }
+    .ia-sheet-backdrop[hidden],
+    .ia-sheet[hidden] { display: none; }
+
+    body { padding-bottom: calc(var(--ia-tabbar-h) + 16px + env(safe-area-inset-bottom)); }
+  }
+
+  @media (max-width: 380px) {
+    .ia-header-inner { padding: 0 10px; }
+    .ia-current { font-size: 14px; }
+    .ia-sheet { padding-left: 14px; padding-right: 14px; }
+    .ia-sheet-links { gap: 6px; }
+    .ia-sheet-link { padding: 10px; font-size: 12.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ia-brand:active,
+    .ia-menu-link:active,
+    .ia-menu-btn:active,
+    .ia-icon-btn:active,
+    .ia-icon-link:active,
+    .ia-tab:active,
+    .ia-sheet-close:active,
+    .ia-sheet-link:active,
+    .job-card:active,
+    .arc-card:active,
+    .opt:active,
+    .stage:active,
+    .chip:active,
+    .btn:active,
+    .filter-pill:active,
+    .segment-btn:active,
+    .pad-btn:active { transform: none !important; }
+    .ia-drop,
+    .ia-sheet { transform: none !important; }
+    .ia-chevron { transition: none !important; }
+  }
+</style>
+</head>
+<body data-page="basket">
+
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">장바구니</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link is-current" role="menuitem" href="basket.html" aria-current="page">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">KAMIS 소매가격 2026-11-24 08:50 KST</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+
+  <main class="bk-wrap">
+    <section class="bk-hero">
+      <span class="bk-pill">생활 · 장바구니 리그</span>
+      <h1>오늘 예산에 딱 맞게 담아라</h1>
+      <p>aT KAMIS 서울 소매가격 8품목으로 오늘의 미션을 풉니다. 목표 예산과 허용 오차, 최소 품목 수, 분류 조건을 모두 만족하면 S등급입니다. 값은 조사일·규격과 함께 적혀 있습니다.</p>
+      <div class="bk-meta">
+        <span>서울 소매가격</span>
+        <span class="bk-dot"></span>
+        <span>조사 기간 2026-10-28 ~ 2026-11-24</span>
+        <span class="bk-dot"></span>
+        <span>수집 2026-11-24 08:50 KST</span>
+      </div>
+    </section>
+
+    <div class="bk-main">
+      <aside class="bk-rail" aria-label="오늘의 미션과 판정">
+        <section class="bk-panel">
+          <h2>오늘의 미션 · 2026-11-24</h2>
+          <div class="bk-mission-list">
+            <div class="bk-mission-row"><span>목표 예산</span><b>23,000원</b></div>
+            <div class="bk-mission-row"><span>허용 오차</span><b>± 1,000원</b></div>
+            <div class="bk-mission-row"><span>최소 품목</span><b>4가지</b></div>
+          </div>
+          <ul class="bk-mission-conds"><li>과일 1가지 담기</li><li>잎채소 1가지 이상 담기</li></ul>
+
+          <div class="bk-gauge-card">
+            <div class="bk-gauge-head">
+              <p class="bk-total" id="bkTotal">0<small>원</small></p>
+              <p class="bk-diff" id="bkDiff">0원</p>
+            </div>
+            <div class="bk-gauge" role="img" aria-labelledby="bkGaugeLabel">
+              <span class="bk-fill" id="bkFill"></span>
+              <span class="bk-band" id="bkBand"></span>
+            </div>
+            <p class="bk-sr" id="bkGaugeLabel">목표 예산 대비 담은 금액</p>
+            <div class="bk-gauge-legend"><span>0원</span><span id="bkGaugeGoal">목표 23,000원</span><span id="bkGaugeMax">최대</span></div>
+            <div class="bk-count-line">
+              <span>담은 품목 <b id="bkCount">0</b> / 최소 4가지</span>
+              <span id="bkScoreNow">예상 0점</span>
+            </div>
+            <div class="bk-checks" id="bkChecks"></div>
+          </div>
+
+          <button type="button" class="bk-submit" id="bkSubmit">장바구니 제출</button>
+          <button type="button" class="bk-ghost" id="bkReset">담은 것 비우기</button>
+          <p class="bk-status" id="bkStatus" role="status" aria-live="polite"></p>
+
+          <div class="bk-result" id="bkResult" hidden>
+            <div class="bk-result-top">
+              <span class="bk-grade" id="bkGrade">S</span>
+              <div>
+                <h3 id="bkResultTitle">S등급</h3>
+                <p id="bkResultSub">목표에 정확히 맞췄습니다</p>
+              </div>
+            </div>
+            <div class="bk-result-body" id="bkResultBody"></div>
+            <div class="bk-share" id="bkShare"></div>
+            <p class="bk-best" id="bkBestLine">오늘 가능한 최고 조합: <b>양파, 시금치, 애호박 3개, 사과 · 22,995원 · S등급 100점</b></p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="bk-shelf" aria-labelledby="bkShelfTitle">
+        <div class="bk-panel">
+          <div class="bk-shelf-head">
+            <h2 id="bkShelfTitle">오늘의 진열대 · 8품목</h2>
+            <span>서울 소매가격 · 수량 0~3</span>
+          </div>
+          <div class="bk-grid" id="bkGrid"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="bk-mini" id="bkMini">
+      <div class="bk-mini-info">
+        <b id="bkMiniTotal">0원</b>
+        <span id="bkMiniScore">담은 품목 0 · 예상 0점</span>
+      </div>
+      <button type="button" class="bk-mini-btn" id="bkMiniSubmit">제출</button>
+    </div>
+
+    <section class="bk-notes">
+      <h2>알아 두실 점</h2>
+      <ul>
+        <li><b>가격의 성격</b> — aT KAMIS가 대형마트·전통시장에서 조사한 서울 소매가격 평균입니다. 집 앞 마트의 실제 가격·할인가는 다를 수 있습니다.</li>
+        <li><b>규격</b> — 값은 카드에 적힌 규격(10구·1kg·1포기·1개·100g·10개) 기준입니다. 수량을 올리면 그 규격만큼 더 담는 것으로 계산합니다.</li>
+        <li><b>조사일</b> — KAMIS 소매가격은 주중에 조사되어 주말 값이 없습니다. 카드의 조사일을 함께 보세요.</li>
+        <li><b>등급 규칙</b> — 예산 정확도 60점(오차 1,000원 이내 60 · 2,000원 이내 40 · 4,000원 이내 20), 조건 충족 각 20점, 최소 품목 미달이면 20점 감점. 90점 이상 S, 70점 이상 A, 50점 이상 B, 그 아래 C입니다.</li>
+        <li><b>미션</b> — 날짜로만 정해집니다. 같은 날은 모두 같은 미션이고, 다음 날 0시(KST)에 바뀝니다.</li>
+      </ul>
+      <ul class="bk-srcs">
+        <li><a href="https://www.kamis.or.kr/" target="_blank" rel="noopener noreferrer">aT KAMIS — 농산물 유통정보</a><span>서울·수원 소매가격 조사값</span></li>
+        <li><a href="grocery.html">장보기 타이밍</a><span>같은 조사값을 4주 중앙값과 비교해 보는 페이지</span></li>
+      </ul>
+    </section>
+    <p class="bk-foot">가격은 aT KAMIS 조사값을 그대로 옮겼습니다 · 등급 계산과 화면 구성만 이 페이지에서 합니다.</p>
+  </main>
+
+  <script type="application/json" id="bkData">{"generated":"2026-11-24 08:50 KST","window":"2026-10-28 ~ 2026-11-24","region":{"id":"seoul","name":"서울"},"source":{"label":"aT 한국농수산식품유통공사 KAMIS 농산물유통정보 · 간편가격정보 소매가격","url":"https://www.kamis.or.kr/customer/info/retail/period.do","howtoUrl":"https://www.kamis.or.kr/customer/price/knowhow/knowhow.do","note":"KAMIS 공개 소매가격 페이지에서 기간·지역·품목을 지정해 받은 일별 조사값. 조사는 주중에 이뤄지며 축산물(계란)은 지역 구분 없이 전국 단일 조사다."},"items":[{"id":"egg","name":"계란","unit":"10구","grade":"일반란","kind":"XL10구","category":"달걀","price":3998,"date":"2026-11-23","median":4064,"gapPct":-1.6,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=500&itemcode=9903&kindcode=21&productrankcode=0&countycode=","stale":false},{"id":"greenonion","name":"대파","unit":"1kg","grade":"상품","kind":"대파","category":"잎채소","price":2446,"date":"2026-11-23","median":2583,"gapPct":-5.3,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=200&itemcode=246&productrankcode=0&countycode=1101","stale":false},{"id":"cabbage","name":"배추","unit":"1포기","grade":"상품","kind":"전체","category":"잎채소","price":2420,"date":"2026-11-23","median":2700,"gapPct":-10.4,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=200&itemcode=211&productrankcode=0&countycode=1101","stale":false},{"id":"radish","name":"무","unit":"1개","grade":"상품","kind":"전체","category":"뿌리채소","price":1904,"date":"2026-11-23","median":1904,"gapPct":0.0,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=200&itemcode=231&productrankcode=0&countycode=1101","stale":false},{"id":"onion","name":"양파","unit":"1kg","grade":"상품","kind":"전체","category":"뿌리채소","price":1689,"date":"2026-11-23","median":2004,"gapPct":-15.7,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=200&itemcode=245&productrankcode=0&countycode=1101","stale":false},{"id":"spinach","name":"시금치","unit":"100g","grade":"상품","kind":"시금치","category":"잎채소","price":1096,"date":"2026-11-23","median":933,"gapPct":17.5,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=200&itemcode=213&productrankcode=0&countycode=1101","stale":false},{"id":"zucchini","name":"애호박","unit":"1개","grade":"상품","kind":"애호박","category":"과채","price":1359,"date":"2026-11-23","median":1544,"gapPct":-12.0,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=200&itemcode=224&productrankcode=0&countycode=1101","stale":false},{"id":"apple","name":"사과","unit":"10개","grade":"상품","kind":"후지","category":"과일","price":16133,"date":"2026-11-23","median":18463,"gapPct":-12.6,"sourceUrl":"https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.28&endday=2026.11.24&itemcategorycode=400&itemcode=411&productrankcode=0&countycode=1101","stale":false}],"mission":{"date":"2026-11-24","seed":20781,"budget":23000,"tolerance":1000,"minItems":4,"conditions":[{"id":"fruit","label":"과일 1가지 담기"},{"id":"leaf","label":"잎채소 1가지 이상 담기"}]},"best":{"picks":{"onion":1,"spinach":1,"zucchini":3,"apple":1},"total":22995,"grade":"S","points":100,"count":4},"rules":{"maxQty":3,"budgets":[18000,19000,20000,21000,22000,23000,25000],"tolerance":1000,"minItemsChoices":[4,5],"budgetPoints":60,"conditionPoints":20,"conditions":[{"id":"leaf","label":"잎채소 1가지 이상 담기"},{"id":"fruit","label":"과일 1가지 담기"},{"id":"kinds3","label":"서로 다른 분류 3가지 이상 담기"},{"id":"egg","label":"달걀 담기"},{"id":"root","label":"뿌리채소 1가지 이상 담기"}]},"storeKey":"secjobs-basket-v1"}</script>
+  <script>
+(function () {
+  // ---------- 화면 테마 ----------
+  var themeBtn = document.getElementById('themeToggle');
+  var moonIcon = document.getElementById('moonIcon');
+  var sunIcon = document.getElementById('sunIcon');
+  function applyTheme(dark, persist) {
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    if (moonIcon) moonIcon.style.display = dark ? 'none' : 'block';
+    if (sunIcon) sunIcon.style.display = dark ? 'block' : 'none';
+    if (persist) { try { localStorage.setItem('secjobs-theme', dark ? 'dark' : 'light'); } catch (e) {} }
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+  (function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem('secjobs-theme'); } catch (e) {}
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches), false);
+  })();
+
+  var DATA;
+  try { DATA = JSON.parse(document.getElementById('bkData').textContent); } catch (e) { return; }
+
+  var MISSION = DATA.mission;
+  var RULES = DATA.rules;
+  var STORE_KEY = DATA.storeKey;
+  var ITEMS = DATA.items;
+  var BY_ID = {};
+  ITEMS.forEach(function (item) { BY_ID[item.id] = item; });
+  var CATEGORY = {};
+  ITEMS.forEach(function (item) { CATEGORY[item.id] = item.category; });
+  var MAX_QTY = RULES.maxQty;
+
+  // ---------- 날짜 (KST) ----------
+  function pad(v) { return v < 10 ? '0' + v : String(v); }
+  function kstDateString(now) {
+    var shifted = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
+    return shifted.getFullYear() + '-' + pad(shifted.getMonth() + 1) + '-' + pad(shifted.getDate());
+  }
+  function yesterdayOf(dateString) {
+    var p = dateString.split('-');
+    var d = new Date(Date.UTC(Number(p[0]), Number(p[1]) - 1, Number(p[2])));
+    d.setUTCDate(d.getUTCDate() - 1);
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+  }
+
+  // ---------- 오늘의 미션 (빌드와 같은 식) ----------
+  function dayNumber(now) {
+    var shifted = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
+    return Math.floor(Date.UTC(shifted.getFullYear(), shifted.getMonth(), shifted.getDate()) / 86400000);
+  }
+  function missionOf(seed) {
+    var budgetList = RULES.budgets;
+    var minList = RULES.minItemsChoices;
+    var conds = RULES.conditions;
+    var budget = budgetList[seed % budgetList.length];
+    var minItems = minList[Math.floor(seed / budgetList.length) % minList.length];
+    var first = conds[seed % conds.length];
+    var pool = conds.filter(function (c) { return c.id !== first.id; });
+    var second = pool[Math.floor(seed / conds.length) % pool.length];
+    return {
+      date: kstDateString(new Date(seed * 86400000)),
+      seed: seed,
+      budget: budget,
+      tolerance: RULES.tolerance,
+      minItems: minItems,
+      conditions: [{ id: first.id, label: first.label }, { id: second.id, label: second.label }]
+    };
+  }
+  var todayString = kstDateString(new Date());
+  var mission = MISSION;
+  var missionFromBuild = mission.date === todayString;
+  if (mission.date !== todayString) {
+    // 빌드한 날짜와 오늘(KST)이 다르면 화면에서 같은 식으로 다시 계산한다.
+    mission = missionOf(dayNumber(new Date()));
+    mission.date = todayString;
+  }
+
+  // ---------- 채점 (빌드와 같은 규칙) ----------
+  function budgetPoints(diff, tolerance) {
+    if (diff <= tolerance) return RULES.budgetPoints;
+    if (diff <= tolerance * 2) return 40;
+    if (diff <= tolerance * 4) return 20;
+    return 0;
+  }
+  function conditionMet(id, picks) {
+    var chosen = Object.keys(picks).filter(function (key) { return picks[key] > 0; });
+    function any(predicate) { return chosen.some(function (key) { return predicate(BY_ID[key]); }); }
+    if (id === 'leaf') return any(function (item) { return item.category === '잎채소'; });
+    if (id === 'fruit') return any(function (item) { return item.category === '과일'; });
+    if (id === 'egg') return any(function (item) { return item.id === 'egg'; });
+    if (id === 'root') return any(function (item) { return item.category === '뿌리채소'; });
+    if (id === 'kinds3') {
+      var kinds = {};
+      chosen.forEach(function (key) { kinds[BY_ID[key].category] = true; });
+      return Object.keys(kinds).length >= 3;
+    }
+    return false;
+  }
+  function gradeFor(points) {
+    if (points >= 90) return 'S';
+    if (points >= 70) return 'A';
+    if (points >= 50) return 'B';
+    return 'C';
+  }
+  function evaluate(picks) {
+    var total = 0;
+    var count = 0;
+    Object.keys(picks).forEach(function (key) {
+      var qty = picks[key] || 0;
+      if (!qty) return;
+      total += BY_ID[key].price * qty;
+      count += 1;
+    });
+    var diff = Math.abs(total - mission.budget);
+    var points = budgetPoints(diff, mission.tolerance);
+    var checks = mission.conditions.map(function (condition) {
+      var met = conditionMet(condition.id, picks);
+      if (met) points += RULES.conditionPoints;
+      return { id: condition.id, label: condition.label, met: met };
+    });
+    var countOk = count >= mission.minItems;
+    if (!countOk) points = Math.max(0, points - 20);
+    return {
+      total: total, count: count, diff: diff, points: points, grade: gradeFor(points),
+      countOk: countOk, checks: checks, budgetOk: diff <= mission.tolerance
+    };
+  }
+
+  // ---------- 기록 ----------
+  function loadRecord() {
+    var empty = { streak: 0, bestGrade: '', plays: 0, lastDate: '', history: {} };
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { raw = null; }
+    if (!raw || typeof raw !== 'object') return empty;
+    return {
+      streak: Number(raw.streak) || 0,
+      bestGrade: typeof raw.bestGrade === 'string' ? raw.bestGrade : '',
+      plays: Number(raw.plays) || 0,
+      lastDate: typeof raw.lastDate === 'string' ? raw.lastDate : '',
+      history: raw.history && typeof raw.history === 'object' ? raw.history : {}
+    };
+  }
+  var record = loadRecord();
+  function saveRecord() { try { localStorage.setItem(STORE_KEY, JSON.stringify(record)); } catch (e) {} }
+
+  var GRADE_ORDER = { '': 0, C: 1, B: 2, A: 3, S: 4 };
+  function settle(result) {
+    var today = kstDateString(new Date());
+    if (record.history[today]) return false;
+    record.history[today] = { grade: result.grade, total: result.total, points: result.points };
+    record.plays += 1;
+    record.streak = record.lastDate === yesterdayOf(today) ? record.streak + 1 : 1;
+    record.lastDate = today;
+    if (GRADE_ORDER[result.grade] > GRADE_ORDER[record.bestGrade]) record.bestGrade = result.grade;
+    saveRecord();
+    return true;
+  }
+
+  // ---------- 상태 ----------
+  var picks = {};
+  ITEMS.forEach(function (item) { picks[item.id] = 0; });
+  var submitted = false;
+
+  var els = {
+    grid: document.getElementById('bkGrid'),
+    total: document.getElementById('bkTotal'),
+    diff: document.getElementById('bkDiff'),
+    fill: document.getElementById('bkFill'),
+    band: document.getElementById('bkBand'),
+    gaugeMax: document.getElementById('bkGaugeMax'),
+    count: document.getElementById('bkCount'),
+    scoreNow: document.getElementById('bkScoreNow'),
+    checks: document.getElementById('bkChecks'),
+    submit: document.getElementById('bkSubmit'),
+    reset: document.getElementById('bkReset'),
+    status: document.getElementById('bkStatus'),
+    result: document.getElementById('bkResult'),
+    grade: document.getElementById('bkGrade'),
+    resultTitle: document.getElementById('bkResultTitle'),
+    resultSub: document.getElementById('bkResultSub'),
+    resultBody: document.getElementById('bkResultBody'),
+    share: document.getElementById('bkShare'),
+    bestLine: document.getElementById('bkBestLine'),
+    miniTotal: document.getElementById('bkMiniTotal'),
+    miniScore: document.getElementById('bkMiniScore'),
+    miniSubmit: document.getElementById('bkMiniSubmit')
+  };
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined && text !== null) node.textContent = text;
+    return node;
+  }
+  function won(value) { return Math.round(value).toLocaleString('ko-KR'); }
+
+  function chipOf(gap) {
+    if (gap <= -3) return { kind: 'low', label: '평소보다 ' + Math.round(Math.abs(gap)) + '% 낮음' };
+    if (gap >= 3) return { kind: 'high', label: '평소보다 ' + Math.round(gap) + '% 높음' };
+    return { kind: 'same', label: '평소와 비슷' };
+  }
+
+  function buildGrid() {
+    els.grid.innerHTML = '';
+    ITEMS.forEach(function (item) {
+      var card = el('article', 'bk-item');
+      card.dataset.id = item.id;
+      var top = el('div', 'bk-item-top');
+      var titleBox = el('div', '');
+      titleBox.appendChild(el('h3', '', item.name));
+      titleBox.appendChild(el('p', 'bk-item-meta', '/' + item.unit + (item.grade ? ' · ' + item.grade : '')));
+      top.appendChild(titleBox);
+      top.appendChild(el('span', 'bk-cat', item.category));
+      card.appendChild(top);
+
+      var price = el('p', 'bk-price', won(item.price));
+      price.appendChild(el('small', '', '원'));
+      card.appendChild(price);
+
+      card.appendChild(el('p', 'bk-item-meta', item.date.replace(/-/g, '.') + ' 조사' + (item.stale ? ' · 이전 수집값' : '')));
+
+      var foot = el('div', 'bk-item-foot');
+      var chip = chipOf(item.gapPct);
+      foot.appendChild(el('span', 'bk-chip' + (chip.kind === 'low' ? ' is-low' : chip.kind === 'high' ? ' is-high' : ''), chip.label));
+
+      var stepper = el('div', 'bk-stepper');
+      var minus = el('button', 'bk-step', '−');
+      minus.type = 'button';
+      minus.dataset.step = '-1';
+      minus.dataset.id = item.id;
+      minus.setAttribute('aria-label', item.name + ' 한 개 빼기');
+      var value = el('span', 'bk-qty is-zero', '0');
+      value.id = 'bkQty-' + item.id;
+      value.setAttribute('aria-live', 'polite');
+      var plus = el('button', 'bk-step', '+');
+      plus.type = 'button';
+      plus.dataset.step = '1';
+      plus.dataset.id = item.id;
+      plus.setAttribute('aria-label', item.name + ' 한 개 담기');
+      stepper.appendChild(minus);
+      stepper.appendChild(value);
+      stepper.appendChild(plus);
+      foot.appendChild(stepper);
+      card.appendChild(foot);
+
+      var src = el('a', 'bk-src', 'KAMIS 원문');
+      src.href = item.sourceUrl;
+      src.target = '_blank';
+      src.rel = 'noopener noreferrer';
+      card.appendChild(src);
+
+      els.grid.appendChild(card);
+    });
+  }
+
+  function renderChecks(result) {
+    els.checks.innerHTML = '';
+    mission.conditions.forEach(function (condition, index) {
+      var check = el('div', 'bk-check' + (result.checks[index].met ? ' is-on' : ''));
+      check.appendChild(el('i', ''));
+      check.appendChild(el('span', '', condition.label));
+      els.checks.appendChild(check);
+    });
+    var countCheck = el('div', 'bk-check' + (result.countOk ? ' is-on' : ''));
+    countCheck.appendChild(el('i', ''));
+    countCheck.appendChild(el('span', '', '최소 ' + mission.minItems + '가지 담기'));
+    els.checks.appendChild(countCheck);
+  }
+
+  function render() {
+    var result = evaluate(picks);
+    els.total.innerHTML = '';
+    els.total.appendChild(document.createTextNode(won(result.total)));
+    els.total.appendChild(el('small', '', '원'));
+
+    var diff = result.total - mission.budget;
+    els.diff.textContent = (diff === 0 ? '0원 · 목표와 같음' : (diff > 0 ? '+' : '−') + won(Math.abs(diff)) + '원');
+    els.diff.className = 'bk-diff' + (result.total === 0 ? '' : result.budgetOk ? ' is-ok' : diff > 0 ? ' is-over' : ' is-under');
+
+    // 게이지: 목표의 2배를 최대로 본다
+    var maxValue = Math.max(mission.budget * 2, result.total, mission.budget + mission.tolerance);
+    els.fill.style.width = Math.min(100, result.total / maxValue * 100).toFixed(2) + '%';
+    var bandStart = (mission.budget - mission.tolerance) / maxValue * 100;
+    var bandWidth = (mission.tolerance * 2) / maxValue * 100;
+    els.band.style.left = bandStart.toFixed(2) + '%';
+    els.band.style.width = bandWidth.toFixed(2) + '%';
+    els.gaugeMax.textContent = won(maxValue) + '원';
+
+    els.count.textContent = String(result.count);
+    els.scoreNow.textContent = '예상 ' + result.points + '점 · ' + result.grade + '등급';
+    els.miniTotal.textContent = won(result.total) + '원';
+    els.miniScore.textContent = '담은 품목 ' + result.count + ' · 예상 ' + result.points + '점 ' + result.grade + '등급';
+    renderChecks(result);
+
+    ITEMS.forEach(function (item) {
+      var card = els.grid.querySelector('[data-id="' + item.id + '"]');
+      var qty = picks[item.id];
+      card.classList.toggle('is-in', qty > 0);
+      var value = document.getElementById('bkQty-' + item.id);
+      value.textContent = String(qty);
+      value.classList.toggle('is-zero', qty === 0);
+      card.querySelector('[data-step="-1"]').disabled = qty <= 0;
+      card.querySelector('[data-step="1"]').disabled = qty >= MAX_QTY;
+    });
+    return result;
+  }
+
+  els.grid.addEventListener('click', function (event) {
+    var btn = event.target.closest ? event.target.closest('button[data-step]') : null;
+    if (!btn || submitted) return;
+    var id = btn.dataset.id;
+    var next = picks[id] + Number(btn.dataset.step);
+    picks[id] = Math.max(0, Math.min(MAX_QTY, next));
+    els.status.textContent = '';
+    render();
+  });
+
+  function resultLine(result) {
+    return '오늘의 장바구니 리그 · ' + kstDateString(new Date()) + '\n' +
+      result.grade + '등급 · ' + won(result.total) + '원 (목표 ' + won(mission.budget) + '원 ±' + won(mission.tolerance) + ')\n' +
+      result.count + '가지 · ' + result.points + '점 · 연속 ' + record.streak + '일';
+  }
+
+  function submitBasket() {
+    if (submitted) return;
+    var result = evaluate(picks);
+    submitted = true;
+    var isNewDay = settle(result);
+    els.result.hidden = false;
+    els.result.className = 'bk-result grade-' + result.grade;
+    els.grade.textContent = result.grade;
+    els.resultTitle.textContent = result.grade + '등급 · ' + result.points + '점';
+    els.resultSub.textContent = result.budgetOk
+      ? '목표 예산에 ' + (result.diff === 0 ? '정확히 맞췄습니다' : won(result.diff) + '원 차이로 들어왔습니다')
+      : (result.total > mission.budget ? '예산을 ' + won(result.diff) + '원 넘겼습니다' : '예산보다 ' + won(result.diff) + '원 적게 담았습니다');
+    els.resultBody.innerHTML = '';
+    function row(label, value) {
+      var p = el('p', '', label + ' ');
+      p.appendChild(el('b', '', value));
+      els.resultBody.appendChild(p);
+    }
+    row('합계', won(result.total) + '원 · ' + result.count + '가지');
+    row('목표', won(mission.budget) + '원 ±' + won(mission.tolerance) + '원');
+    mission.conditions.forEach(function (condition, index) {
+      row(condition.label, result.checks[index].met ? '충족' : '미충족');
+    });
+    row('최소 품목', result.countOk ? '충족' : '미달');
+    row('연속 참여', (isNewDay ? record.streak : Math.max(record.streak, 1)).toString() + '일 · 최고 ' + (record.bestGrade || '—'));
+    els.share.textContent = resultLine(result);
+    els.submit.disabled = true;
+    els.status.textContent = '결과를 기록했습니다. 다시 담으면 같은 날 기록은 유지됩니다.';
+    els.miniSubmit.disabled = true;
+    copyText(resultLine(result));
+  }
+
+  els.submit.addEventListener('click', submitBasket);
+  els.miniSubmit.addEventListener('click', submitBasket);
+
+  els.reset.addEventListener('click', function () {
+    ITEMS.forEach(function (item) { picks[item.id] = 0; });
+    els.status.textContent = '';
+    render();
+  });
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function () {});
+    }
+  }
+
+  buildGrid();
+  render();
+  if (record.lastDate === kstDateString(new Date())) {
+    els.status.textContent = '오늘 이미 참여했습니다. 최고 ' + (record.bestGrade || '—') + '등급 · 연속 ' + record.streak + '일.';
+  }
+
+  // 테스트·디버깅용
+  window.BASKET = {
+    data: DATA,
+    mission: mission,
+    missionFromBuild: missionFromBuild,
+    picks: function () { return picks; },
+    set: function (id, qty) { if (id in picks) { picks[id] = Math.max(0, Math.min(MAX_QTY, qty)); render(); } },
+    evaluate: function () { return evaluate(picks); },
+    submit: function () { els.submit.click(); },
+    best: DATA.best
+  };
+})();
+</script>
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab" href="today.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab is-active" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link" href="tools.html"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="grocery.html"><span>장보기 타이밍</span><span class="ia-sheet-file">grocery.html</span></a><a class="ia-sheet-link is-current" href="basket.html" aria-current="page"><span>장바구니 리그</span><span class="ia-sheet-file">basket.html</span></a><a class="ia-sheet-link" href="paymeter.html"><span>월급 미터</span><span class="ia-sheet-file">paymeter.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link" href="recycle.html"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a><a class="ia-sheet-link" href="food.html"><span>식품 라벨 읽기</span><span class="ia-sheet-file">food.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a><a class="ia-sheet-link" href="subway.html"><span>지하철역 맞히기</span><span class="ia-sheet-file">subway.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 데스크톱 드롭다운 ---------- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.ia-menu-group'));
+
+  function closeGroup(group) {
+    if (!group) return;
+    group.classList.remove('is-open');
+    var btn = group.querySelector('.ia-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeAllGroups(except) {
+    groups.forEach(function (group) {
+      if (group !== except) closeGroup(group);
+    });
+  }
+
+  groups.forEach(function (group) {
+    var btn = group.querySelector('.ia-menu-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      // 마우스 호버로 이미 열린 메뉴를 같은 클릭으로 닫아 버리지 않는다.
+      if (group.getAttribute('data-hover-open') === '1' && event.detail > 0) {
+        group.removeAttribute('data-hover-open');
+        return;
+      }
+      var willOpen = !group.classList.contains('is-open');
+      closeAllGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen) {
+        var first = group.querySelector('.ia-drop-link');
+        if (first && document.activeElement === btn) first.focus();
+      }
+    });
+
+    group.addEventListener('mouseenter', function () {
+      if (window.innerWidth > 768 && window.matchMedia('(hover: hover)').matches) {
+        closeAllGroups(group);
+        group.classList.add('is-open');
+        group.setAttribute('data-hover-open', '1');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    group.addEventListener('mouseleave', function () {
+      if (window.innerWidth > 768) {
+        closeGroup(group);
+        group.removeAttribute('data-hover-open');
+      }
+    });
+
+    group.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && group.classList.contains('is-open')) {
+        closeGroup(group);
+        btn.focus();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest || !target.closest('.ia-menu-group')) closeAllGroups(null);
+  });
+
+  /* ---------- 모바일 전체 메뉴 시트 ---------- */
+  var sheet = document.getElementById('iaSheet');
+  var backdrop = document.getElementById('iaSheetBackdrop');
+  var allBtn = document.getElementById('iaAllBtn');
+  var gameBtn = document.getElementById('iaGameBtn');
+  var sheetClose = document.getElementById('iaSheetClose');
+  var lastOpener = null;
+  var hideTimer = null;
+  var openRaf = null;   // is-open 을 붙이려고 예약한 프레임(열기→같은 프레임 닫기 경합 차단)
+  var isOpen = false;   // 실제 열림 상태 플래그(예약된 콜백이 이 값을 다시 확인한다)
+
+  function sheetItems() {
+    if (!sheet) return [];
+    return Array.prototype.slice.call(sheet.querySelectorAll('a[href], button:not([disabled])'));
+  }
+
+  function cancelOpenFrame() {
+    if (openRaf !== null) {
+      window.cancelAnimationFrame(openRaf);
+      openRaf = null;
+    }
+  }
+
+  // 시트 안 특정 그룹(예: 게임 목록)을 시트 상단으로 스크롤하고 그 제목에 포커스를 준다.
+  function focusSheetTarget(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var sheetBox = sheet.getBoundingClientRect();
+    var box = target.getBoundingClientRect();
+    sheet.scrollTop = Math.max(0, sheet.scrollTop + (box.top - sheetBox.top) - 10);
+    if (target.focus) {
+      try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    }
+  }
+
+  function openSheet(opener, targetId) {
+    if (!sheet || !backdrop || !allBtn) return;
+    if (hideTimer) { window.clearTimeout(hideTimer); hideTimer = null; }
+    lastOpener = opener || allBtn;
+    isOpen = true;
+    sheet.hidden = false;
+    backdrop.hidden = false;
+    document.body.classList.add('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'true');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'true');
+    cancelOpenFrame();
+    if (reduceMotion) {
+      sheet.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    } else {
+      openRaf = window.requestAnimationFrame(function () {
+        openRaf = window.requestAnimationFrame(function () {
+          openRaf = null;
+          // 예약된 프레임 사이에 닫혔다면(isOpen=false) 다시 열지 않는다.
+          if (!isOpen) return;
+          sheet.classList.add('is-open');
+          backdrop.classList.add('is-open');
+        });
+      });
+    }
+    if (targetId) {
+      focusSheetTarget(targetId);
+    } else if (sheetClose) {
+      sheetClose.focus();
+    }
+  }
+
+  function closeSheet() {
+    if (!sheet || !backdrop || !allBtn || sheet.hidden) return;
+    isOpen = false;
+    cancelOpenFrame();
+    sheet.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.classList.remove('ia-sheet-open');
+    allBtn.setAttribute('aria-expanded', 'false');
+    if (gameBtn) gameBtn.setAttribute('aria-expanded', 'false');
+    hideTimer = window.setTimeout(function () {
+      sheet.hidden = true;
+      backdrop.hidden = true;
+      hideTimer = null;
+    }, reduceMotion ? 0 : 240);
+    if (lastOpener && lastOpener.focus) lastOpener.focus();
+    else allBtn.focus();
+  }
+
+  if (allBtn) {
+    allBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) closeSheet();
+      else openSheet(allBtn);
+    });
+  }
+
+  if (gameBtn) {
+    gameBtn.addEventListener('click', function () {
+      if (sheet && !sheet.hidden) {
+        focusSheetTarget(gameBtn.getAttribute('data-sheet-target'));
+        return;
+      }
+      openSheet(gameBtn, gameBtn.getAttribute('data-sheet-target'));
+    });
+  }
+  if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (event) {
+    if (!sheet || sheet.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet();
+      return;
+    }
+    if (event.key === 'Tab') {
+      var items = sheetItems();
+      if (!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeAllGroups(null);
+      if (sheet && !sheet.hidden) closeSheet();
+    }
+  });
+})();
+</script>
+</body>
+</html>

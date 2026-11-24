@@ -13,7 +13,7 @@
       - 모든 출처 링크가 kamis.or.kr 도메인인지(값을 만든 곳이 KAMIS 뿐인지)
   · 수집 실패로 승계한 값(stale)이 실제 조사일 기준 경과일로 표시되는지
   · grocery.html 이 그 데이터를 그대로 심었는지
-      - data-page="grocery" · 23페이지 셸 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
+      - data-page="grocery" · 26페이지 셸 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
       - 품목 카드 8장 · 지역 버튼 2개 · localStorage 키 · 출처 표기
       - 임베드된 JSON == grocery_data.json (빌드 누락 검출)
 
@@ -41,7 +41,7 @@ import make_preview_pages
 HTML = os.path.join(BASE_DIR, "grocery.html")
 DATA = os.path.join(BASE_DIR, "grocery_data.json")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 23
+SHEET_PAGES = 26
 WINDOW_DAYS = 28
 NEUTRAL_PCT = 3.0
 ITEMS = ("egg", "greenonion", "cabbage", "radish", "onion", "spinach", "zucchini", "apple")

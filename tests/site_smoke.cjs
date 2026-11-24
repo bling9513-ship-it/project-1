@@ -3,12 +3,13 @@ const { spawn, execFileSync } = require('node:child_process');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food', 'grocery'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food', 'grocery', 'paymeter', 'subway', 'basket'];
 const root = path.join(__dirname, '..');
 
 const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'tools.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
-  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html', 'food.html', 'grocery.html'];
+  'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html', 'food.html', 'grocery.html',
+  'paymeter.html', 'subway.html', 'basket.html'];
 
 async function assertCveJump(page, cid, label) {
   await page.waitForFunction((id) => {
@@ -736,6 +737,206 @@ async function checkPick(page, width) {
   assert.equal(anchored.hash, '#outingPanel', `${tag}: 해시 ${anchored.hash}`);
   assert.ok(anchored.top >= -2 && anchored.top < 140, `${tag}: 나들이 섹션 위치 ${Math.round(anchored.top)}px`);
   console.log(`pick ${width}px passed (${drawn.pickName} · 후보 ${first.cand}개)`);
+}
+
+
+// ---- 월급 미터: 금액 변경 → 하루 총액·저장 · 복사/카드 버튼 ----
+async function checkPaymeter(page, width) {
+  const tag = `paymeter ${width}px`;
+  await page.locator('#pmEarned').waitFor({ state: 'attached' });
+  const earned = (await page.textContent('#pmEarned')).trim();
+  assert.ok(/^[\d,]+$/.test(earned), `${tag}: earned amount "${earned}" is not a number`);
+  const dailyBefore = (await page.textContent('#pmDaily')).trim();
+  assert.ok(/원$/.test(dailyBefore), `${tag}: daily pay "${dailyBefore}"`);
+
+  // 급여 방식 전환 → 하루 총액이 바뀌고 저장된다
+  await page.click('#pmModeSeg button[data-mode="monthly"]');
+  await page.fill('#pmAmount', '3000000');
+  await page.waitForTimeout(150);
+  const monthly = await page.evaluate(() => ({
+    pressed: document.querySelector('#pmModeSeg button[data-mode="monthly"]').getAttribute('aria-pressed'),
+    daily: document.getElementById('pmDaily').textContent.trim(),
+    stored: JSON.parse(localStorage.getItem('secjobs-paymeter-v1') || 'null'),
+  }));
+  assert.equal(monthly.pressed, 'true', `${tag}: mode button not pressed`);
+  assert.ok(monthly.stored && monthly.stored.mode === 'monthly' && monthly.stored.amount === 3000000,
+    `${tag}: settings not saved (${JSON.stringify(monthly.stored)})`);
+  // 300만원 ÷ 209시간 × 8시간 = 114,833원
+  assert.equal(monthly.daily, '114,833원', `${tag}: monthly daily pay ${monthly.daily}`);
+
+  // 점심 무급 체크 → 하루 총액이 1시간만큼 줄어든다
+  await page.check('#pmLunchPaid');
+  await page.waitForTimeout(120);
+  const paid = (await page.textContent('#pmDaily')).trim();
+  assert.equal(paid, '129,187원', `${tag}: paid lunch daily pay ${paid}`);
+  await page.uncheck('#pmLunchPaid');
+
+  // 영수증 복사 · 카드 이미지 버튼이 상태 문구를 남긴다
+  await page.click('#pmCopy');
+  await page.waitForTimeout(200);
+  assert.ok((await page.textContent('#pmActionStatus')).includes('복사'), `${tag}: copy status missing`);
+  await page.click('#pmCard');
+  await page.waitForTimeout(300);
+  assert.ok((await page.textContent('#pmActionStatus')).includes('카드'), `${tag}: card status missing`);
+
+  // 새로고침해도 설정이 남는다
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#pmEarned').waitFor({ state: 'attached' });
+  const restored = await page.evaluate(() => ({
+    amount: document.getElementById('pmAmount').value,
+    mode: document.querySelector('#pmModeSeg button.is-on').dataset.mode,
+  }));
+  assert.equal(restored.amount, '3,000,000', `${tag}: amount not restored (${restored.amount})`);
+  assert.equal(restored.mode, 'monthly', `${tag}: mode not restored`);
+  console.log(`paymeter ${width}px passed (${earned} → ${monthly.daily})`);
+}
+
+// ---- 지하철역: 자동완성 → 시도 → 정답 → 결과 그리드 ----
+async function checkSubway(page, width) {
+  const tag = `subway ${width}px`;
+  await page.evaluate(() => localStorage.removeItem('secjobs-subway-v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#swInput').waitFor({ state: 'attached' });
+  const answer = await page.evaluate(() => window.SUBWAY_ANSWER);
+  assert.ok(typeof answer === 'string' && answer.length > 0, `${tag}: no answer exposed`);
+
+  await page.fill('#swInput', '강남');
+  await page.waitForTimeout(150);
+  const suggestions = await page.evaluate(() => Array.from(document.querySelectorAll('#swSuggest button')).map((b) => b.dataset.name));
+  assert.ok(suggestions.includes('강남'), `${tag}: autocomplete missed 강남 (${suggestions.slice(0, 4)})`);
+  await page.fill('#swInput', '');
+  const firstGuess = answer === '강남' ? '홍대입구' : '강남';
+  await page.fill('#swInput', firstGuess);
+  await page.waitForTimeout(150);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(200);
+  const firstRow = await page.evaluate(() => {
+    const row = document.querySelector('#swRows .sw-row');
+    if (!row) return null;
+    return {
+      name: row.dataset.name,
+      cells: Array.from(row.children).length,
+      chips: row.querySelectorAll('.sw-chip').length,
+      chars: row.querySelectorAll('.sw-char').length,
+    };
+  });
+  assert.ok(firstRow, `${tag}: no attempt row`);
+  assert.equal(firstRow.name, firstGuess, `${tag}: attempt row name ${firstRow.name}`);
+  assert.equal(firstRow.cells, 7, `${tag}: attempt row has ${firstRow.cells} cells`);
+  assert.ok(firstRow.chips >= 1 && firstRow.chars === firstGuess.length,
+    `${tag}: line chips ${firstRow.chips} · chars ${firstRow.chars}`);
+
+  // 정답을 넣으면 결과 카드 + 복사 문구
+  await page.fill('#swInput', answer);
+  await page.waitForTimeout(120);
+  await page.keyboard.press('Enter');
+  await page.locator('#swResult:not([hidden])').waitFor({ timeout: 5000 });
+  const won = await page.evaluate(() => ({
+    badge: document.getElementById('swResultBadge').textContent.trim(),
+    title: document.getElementById('swResultTitle').textContent.trim(),
+    share: document.getElementById('swShare').textContent,
+    streak: document.getElementById('swStreak').textContent.trim(),
+    stored: localStorage.getItem('secjobs-subway-v1'),
+    disabled: document.getElementById('swInput').disabled,
+  }));
+  assert.equal(won.badge, '정답', `${tag}: result badge ${won.badge}`);
+  assert.ok(won.title.includes('맞혔습니다'), `${tag}: result title ${won.title}`);
+  assert.ok(won.share.includes('오늘의 지하철역'), `${tag}: share text missing title`);
+  assert.ok(!won.share.includes(answer), `${tag}: share text leaks the answer`);
+  const gridLines = won.share.split('\n').filter((line) => /^[■▲□▽]{5}$/.test(line));
+  assert.ok(gridLines.length >= 1, `${tag}: result grid lines ${JSON.stringify(won.share.split('\n'))}`);
+  assert.equal(won.streak, '1', `${tag}: streak ${won.streak}`);
+  assert.ok(won.stored && won.stored.includes('history'), `${tag}: record not stored`);
+  assert.equal(won.disabled, true, `${tag}: input must lock after the puzzle ends`);
+
+  // 연습 모드 → 입력이 다시 열린다
+  await page.click('#swPracticeStart');
+  await page.waitForTimeout(150);
+  const practice = await page.evaluate(() => ({
+    mode: window.SUBWAY.state().mode,
+    disabled: document.getElementById('swInput').disabled,
+    hidden: document.getElementById('swResult').hidden,
+  }));
+  assert.equal(practice.mode, 'practice', `${tag}: practice mode not started`);
+  assert.equal(practice.disabled, false, `${tag}: practice input disabled`);
+  assert.equal(practice.hidden, true, `${tag}: practice result not reset`);
+  console.log(`subway ${width}px passed (${answer} · ${won.share.split('\n')[1]})`);
+}
+
+// ---- 장바구니 리그: 미션 → 담기 → 제출 → 등급 ----
+async function checkBasket(page, width) {
+  const tag = `basket ${width}px`;
+  await page.evaluate(() => localStorage.removeItem('secjobs-basket-v1'));
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('#bkGrid .bk-item').first().waitFor({ state: 'attached' });
+  const cards = await page.evaluate(() => document.querySelectorAll('#bkGrid .bk-item').length);
+  assert.equal(cards, 8, `${tag}: shelf has ${cards} items`);
+  const mission = await page.evaluate(() => window.BASKET.mission);
+  const fromBuild = await page.evaluate(() => window.BASKET.missionFromBuild);
+  assert.ok(mission.budget > 0 && mission.conditions.length === 2, `${tag}: mission ${JSON.stringify(mission)}`);
+
+  // 품목 2개 담기 → 합계·품목 수 갱신
+  const ids = await page.evaluate(() => window.BASKET.data.items.map((item) => item.id));
+  await page.click(`[data-id="${ids[0]}"] [data-step="1"]`);
+  await page.click(`[data-id="${ids[1]}"] [data-step="1"]`);
+  await page.waitForTimeout(150);
+  const half = await page.evaluate(() => ({
+    count: document.getElementById('bkCount').textContent.trim(),
+    total: document.getElementById('bkTotal').textContent.trim(),
+    mini: document.getElementById('bkMiniTotal').textContent.trim(),
+  }));
+  assert.equal(half.count, '2', `${tag}: count ${half.count}`);
+  assert.ok(half.total !== '0원' && half.total === half.mini, `${tag}: total ${half.total} / mini ${half.mini}`);
+
+  // 최고 조합으로 담고 제출 → S등급
+  const best = await page.evaluate(() => window.BASKET.best);
+  await page.evaluate((picks) => {
+    window.BASKET.data.items.forEach((item) => window.BASKET.set(item.id, picks[item.id] || 0));
+  }, best.picks);
+  await page.waitForTimeout(120);
+  await page.click('#bkSubmit');
+  await page.waitForTimeout(250);
+  const result = await page.evaluate(() => ({
+    hidden: document.getElementById('bkResult').hidden,
+    grade: document.getElementById('bkGrade').textContent.trim(),
+    title: document.getElementById('bkResultTitle').textContent.trim(),
+    share: document.getElementById('bkShare').textContent,
+    stored: localStorage.getItem('secjobs-basket-v1'),
+    submitDisabled: document.getElementById('bkSubmit').disabled,
+  }));
+  assert.equal(result.hidden, false, `${tag}: result card hidden`);
+  if (fromBuild) assert.equal(result.grade, 'S', `${tag}: grade ${result.grade}`);
+  else assert.ok(/^[SABC]$/.test(result.grade), `${tag}: grade ${result.grade}`);
+  assert.ok(/^[SABC]등급 · \d+점$/.test(result.title), `${tag}: result title ${result.title}`);
+  assert.ok(result.share.includes('오늘의 장바구니 리그'), `${tag}: share text missing`);
+  assert.ok(result.stored && result.stored.includes('streak'), `${tag}: record not stored`);
+  assert.equal(result.submitDisabled, true, `${tag}: submit must lock after one entry`);
+  console.log(`basket ${width}px passed (${best.grade} · ${best.total}원)`);
+}
+
+// ---- 새 페이지 레이아웃(320·768px): 넘침 0 · 핵심 조작부 노출 ----
+async function checkNewPageLayout(page, width, name) {
+  const tag = `${name} layout ${width}px`;
+  const state = await page.evaluate((pageName) => {
+    const pick = {
+      paymeter: ['#pmEarned', '#pmCopy', '#pmAmount'],
+      subway: ['#swInput', '#swSubmit', '#swRows'],
+      basket: ['#bkGrid', '#bkSubmit', '#bkTotal'],
+    }[pageName];
+    const visible = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
+      const box = el.getBoundingClientRect();
+      return box.width > 0 && box.height > 0;
+    };
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      all: pick.every(visible),
+      missing: pick.filter((sel) => !visible(sel)),
+    };
+  }, name);
+  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
+  assert.equal(state.all, true, `${tag}: controls not visible (${state.missing.join(', ')})`);
 }
 
 // ---- 공통 셸: PC 드롭다운 내비 · 모바일 하단 탭 바 ----
@@ -6375,6 +6576,9 @@ async function checkPage(context, base, name, width) {  const page = await conte
     if (name === 'food') await checkFoodLayout(page, width);
     if (name === 'food' && (width === 390 || width === 1280)) await checkFoodFlow(page, width);
     if (name === 'grocery') await checkGrocery(page, width);
+    if (name === 'paymeter') await checkPaymeter(page, width);
+    if (name === 'subway') await checkSubway(page, width);
+    if (name === 'basket') await checkBasket(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -6892,6 +7096,7 @@ async function main() {
           if (name === 'wash') await checkWashLayout(page, width);
           if (name === 'recycle') await checkRecycleLayout(page, width);
           if (name === 'food') await checkFoodLayout(page, width);
+          if (name === 'paymeter' || name === 'subway' || name === 'basket') await checkNewPageLayout(page, width, name);
         } finally {
           await page.close();
         }
