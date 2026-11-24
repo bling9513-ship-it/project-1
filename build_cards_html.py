@@ -39,6 +39,7 @@ NCMH = "국립정신건강센터"
 PIPC = "개인정보보호위원회"
 KMCC = "방송미디어통신위원회"
 GOOGLE = "Google 계정 고객센터"
+ANDROID_HELP = "Google Android 고객센터"
 
 # 카드별 원문 주소. 모두 실제로 열리는 페이지이며, 카드 문구의 근거 문장이 그 안에 있다.
 KDCA_URL = ("https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/"
@@ -54,6 +55,8 @@ URL_APP_PERMISSION = ("https://www.kmcc.go.kr/user.do?boardId=1099&boardSeq=4458
                       "&page=A02030700")
 URL_PUBLIC_WIFI = "https://m.blog.naver.com/pipcpr/223924781140"
 URL_BACKUP_CODES = "https://support.google.com/accounts/answer/1187538?hl=ko"
+URL_ANDROID_NOTICE = "https://support.google.com/android/answer/9079661?hl=ko"
+URL_ANDROID_DND = "https://support.google.com/android/answer/9069335?hl=ko"
 
 
 def card(cid, headline, summary, action, art, source=None):
@@ -169,13 +172,16 @@ THEMES = {
             "cards": [
                 card("dig-notify-1", "알림은 사람만 남기기",
                      "광고와 프로모션 알림을 끄면 진짜 연락이 눈에 들어와요. 앱마다 종류를 골라 끌 수 있습니다.",
-                     "지난 하루 알림 중 광고 세 개 끄기", "notify-flood"),
+                     "지난 하루 알림 중 광고 세 개 끄기", "notify-flood",
+                     _source(ANDROID_HELP, "Android에서 알림 제어", URL_ANDROID_NOTICE)),
                 card("dig-notify-2", "잘 때는 방해 금지",
                      "자는 동안 알림을 막으면 깨지 않고 잠을 이어 갈 수 있어요. 급한 연락만 예외로 둘 수 있습니다.",
-                     "취침 시간에 맞춰 방해 금지 예약", "notify-mute"),
+                     "취침 시간에 맞춰 방해 금지 예약", "notify-mute",
+                     _source(ANDROID_HELP, "Android에서 모드 및 방해 금지 모드로 알림 제한", URL_ANDROID_DND)),
                 card("dig-notify-3", "일주일에 한 번 알림 점검",
                      "새로 깐 앱은 알림을 기본으로 켜 두는 경우가 많아요. 목록을 훑어 안 쓰는 것부터 끄세요.",
-                     "설정에서 안 쓰는 앱 알림 두 개 끄기", "notify-list"),
+                     "설정에서 안 쓰는 앱 알림 두 개 끄기", "notify-list",
+                     _source(ANDROID_HELP, "Android에서 알림 제어", URL_ANDROID_NOTICE)),
             ],
         },
         {

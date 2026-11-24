@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-24 08:52 KST",
+  "generated": "2026-11-24 09:01 KST",
   "checkedOn": "2026-11-22",
   "rotation": {
     "condition": "eyes",
@@ -254,21 +254,39 @@
               "headline": "알림은 사람만 남기기",
               "summary": "광고와 프로모션 알림을 끄면 진짜 연락이 눈에 들어와요. 앱마다 종류를 골라 끌 수 있습니다.",
               "action": "지난 하루 알림 중 광고 세 개 끄기",
-              "art": "notify-flood"
+              "art": "notify-flood",
+              "source": {
+                "org": "Google Android 고객센터",
+                "topic": "Android에서 알림 제어",
+                "checked": "2026-11-22",
+                "url": "https://support.google.com/android/answer/9079661?hl=ko"
+              }
             },
             {
               "id": "dig-notify-2",
               "headline": "잘 때는 방해 금지",
               "summary": "자는 동안 알림을 막으면 깨지 않고 잠을 이어 갈 수 있어요. 급한 연락만 예외로 둘 수 있습니다.",
               "action": "취침 시간에 맞춰 방해 금지 예약",
-              "art": "notify-mute"
+              "art": "notify-mute",
+              "source": {
+                "org": "Google Android 고객센터",
+                "topic": "Android에서 모드 및 방해 금지 모드로 알림 제한",
+                "checked": "2026-11-22",
+                "url": "https://support.google.com/android/answer/9069335?hl=ko"
+              }
             },
             {
               "id": "dig-notify-3",
               "headline": "일주일에 한 번 알림 점검",
               "summary": "새로 깐 앱은 알림을 기본으로 켜 두는 경우가 많아요. 목록을 훑어 안 쓰는 것부터 끄세요.",
               "action": "설정에서 안 쓰는 앱 알림 두 개 끄기",
-              "art": "notify-list"
+              "art": "notify-list",
+              "source": {
+                "org": "Google Android 고객센터",
+                "topic": "Android에서 알림 제어",
+                "checked": "2026-11-22",
+                "url": "https://support.google.com/android/answer/9079661?hl=ko"
+              }
             }
           ]
         },
