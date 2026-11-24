@@ -191,7 +191,8 @@
     .sw-rail { display: grid; gap: 12px; position: sticky; top: 76px; }
     .sw-stat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
     .sw-stat div { border: 1px solid var(--border-default); border-radius: 11px; padding: 9px 10px; background: var(--bg-subtle); }
-    .sw-stat span { display: block; font-size: 10px; color: var(--text-muted); }
+    .sw-stat > div > span { display: block; font-size: 10px; color: var(--text-muted); }
+    .sw-stat b span { display: inline; font-size: inherit; color: inherit; }
     .sw-stat b { display: block; margin-top: 2px; font-size: 18px; font-weight: 800; letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums; white-space: nowrap; }
     .sw-stat b small { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-left: 2px; }
