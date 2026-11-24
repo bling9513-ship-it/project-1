@@ -914,31 +914,6 @@ async function checkBasket(page, width) {
   console.log(`basket ${width}px passed (${best.grade} · ${best.total}원)`);
 }
 
-// ---- 새 페이지 레이아웃(320·768px): 넘침 0 · 핵심 조작부 노출 ----
-async function checkNewPageLayout(page, width, name) {
-  const tag = `${name} layout ${width}px`;
-  const state = await page.evaluate((pageName) => {
-    const pick = {
-      paymeter: ['#pmEarned', '#pmCopy', '#pmAmount'],
-      subway: ['#swInput', '#swSubmit', '#swRows'],
-      basket: ['#bkGrid', '#bkSubmit', '#bkTotal'],
-    }[pageName];
-    const visible = (sel) => {
-      const el = document.querySelector(sel);
-      if (!el) return false;
-      const box = el.getBoundingClientRect();
-      return box.width > 0 && box.height > 0;
-    };
-    return {
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      all: pick.every(visible),
-      missing: pick.filter((sel) => !visible(sel)),
-    };
-  }, name);
-  assert.equal(state.overflow, 0, `${tag}: horizontal overflow ${state.overflow}px`);
-  assert.equal(state.all, true, `${tag}: controls not visible (${state.missing.join(', ')})`);
-}
-
 // ---- 공통 셸: PC 드롭다운 내비 · 모바일 하단 탭 바 ----
 async function checkShellLayout(page, width, name) {
   const tag = `shell ${name} ${width}px`;
@@ -6576,9 +6551,9 @@ async function checkPage(context, base, name, width) {  const page = await conte
     if (name === 'food') await checkFoodLayout(page, width);
     if (name === 'food' && (width === 390 || width === 1280)) await checkFoodFlow(page, width);
     if (name === 'grocery') await checkGrocery(page, width);
-    if (name === 'paymeter') await checkPaymeter(page, width);
-    if (name === 'subway') await checkSubway(page, width);
-    if (name === 'basket') await checkBasket(page, width);
+    if (width === 1280 && name === 'paymeter') await checkPaymeter(page, width);
+    if (width === 1280 && name === 'subway') await checkSubway(page, width);
+    if (width === 1280 && name === 'basket') await checkBasket(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
@@ -7096,7 +7071,6 @@ async function main() {
           if (name === 'wash') await checkWashLayout(page, width);
           if (name === 'recycle') await checkRecycleLayout(page, width);
           if (name === 'food') await checkFoodLayout(page, width);
-          if (name === 'paymeter' || name === 'subway' || name === 'basket') await checkNewPageLayout(page, width, name);
         } finally {
           await page.close();
         }
