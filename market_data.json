@@ -1,10 +1,10 @@
 {
   "meta": {
-    "collectedAt": "2026-11-26 01:23:29 KST",
-    "collectedAtIso": "2026-11-26T01:23:29+09:00",
+    "collectedAt": "2026-11-26 08:48:17 KST",
+    "collectedAtIso": "2026-11-26T08:48:17+09:00",
     "ai": {
       "used": true,
-      "analyzed": 29,
+      "analyzed": 31,
       "fallback": 0,
       "model": "k-exaone_v2.5"
     },
@@ -14,7 +14,7 @@
         "kind": "뉴스",
         "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
         "status": "ok",
-        "count": 17
+        "count": 16
       },
       {
         "name": "CNBC Markets",
@@ -35,14 +35,14 @@
         "kind": "뉴스",
         "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
         "status": "ok",
-        "count": 5
+        "count": 6
       },
       {
         "name": "연방준비제도 보도자료",
         "kind": "공식 발표",
         "url": "https://www.federalreserve.gov/feeds/press_all.xml",
         "status": "ok",
-        "count": 1
+        "count": 3
       },
       {
         "name": "연준(FOMC)",
@@ -95,7 +95,7 @@
       "장 상태는 거래소 캘린더(휴장·조기 마감) 기준입니다. 임시 휴장·거래시간 변경은 거래소 공지를 확인하세요.",
       "일정의 한국시간은 서머타임에 따라 1시간 달라질 수 있습니다(현지 시각을 함께 적었습니다)."
     ],
-    "newsCount": 29,
+    "newsCount": 31,
     "calendarCount": 8
   },
   "sessions": {
@@ -106,7 +106,7 @@
       "marketName": "한국거래소(KRX)",
       "timezone": "Asia/Seoul",
       "tzLabel": "KST",
-      "localNow": "11-26 01:23",
+      "localNow": "11-26 08:48",
       "localDate": "2026-11-26",
       "sessionText": "09:00~15:30",
       "earlyClose": false,
@@ -119,13 +119,13 @@
       "calendarUrl": "https://www.krx.co.kr/main/main.jsp"
     },
     "global": {
-      "state": "open",
-      "stateLabel": "장 진행 중",
+      "state": "closed",
+      "stateLabel": "오늘 장 마감",
       "reason": "",
       "marketName": "NYSE·Nasdaq",
       "timezone": "America/New_York",
       "tzLabel": "ET",
-      "localNow": "11-25 11:23",
+      "localNow": "11-25 18:48",
       "localDate": "2026-11-25",
       "sessionText": "09:30~16:00",
       "earlyClose": false,
@@ -195,18 +195,120 @@
     },
     "global": {
       "issues": [
-        "CNBC: 10년물 국채금리, 끈적한 인플레이션에도 하락",
-        "CNBC: Anthropic 주가, IPO 후 부진…AI 거래에 왜 중요한가",
-        "CNBC: 미국, 중국·EU 포함 14개 교역국에 새 관세 제안"
+        "MarketWatch: 66세 간호사, 500달러 저축 후 은퇴 직면…누구 탓?",
+        "MarketWatch: 젠슨 황의 NVIDIA 복귀는 싫지만 내 401(k)에 도움…내가 위선자?",
+        "MarketWatch: 엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험"
       ],
       "next": [
-        "현재 장 진행 중 · 거래 시간 09:30~16:00 ET",
+        "현재 오늘 장 마감 · 거래 시간 09:30~16:00 ET",
         "다음 일정 12/02 시간 미정 Marvell Technology, Inc. 실적 발표",
         "그다음 일정 12/03 시간 미정 Salesforce, Inc. 실적 발표"
       ]
     }
   },
   "issues": [
+    {
+      "id": "bf85fd7789048a46",
+      "market": "global",
+      "title": "66세 간호사, 500달러 저축 후 은퇴 직면…누구 탓?",
+      "titleOriginal": "A 66-year-old nurse is facing down retirement with just $500 saved. Who’s to blame?",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "금융"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/a-66-year-old-nurse-faces-retirement-with-just-500-saved-whos-to-blame-4249a0fd?mod=mw_rss_topstories",
+      "publishedKst": "11-26 08:30",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "1f3e45bae58bb634",
+      "market": "global",
+      "title": "젠슨 황의 NVIDIA 복귀는 싫지만 내 401(k)에 도움…내가 위선자?",
+      "titleOriginal": "I hate that Jensen Huang is back at Nvidia, but I love what it’s done for my 401(k). Am I a hypocrite?",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories",
+      "publishedKst": "11-26 07:45",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "0610f2e3a1ebeab5",
+      "market": "global",
+      "title": "엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험",
+      "titleOriginal": "We are living in perilous times if Nvidia’s Jensen Huang dictates your 401(k) balance",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories",
+      "publishedKst": "11-26 07:31",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "dbad53d81b1bbe74",
+      "market": "global",
+      "title": "오라클·코어위브 등 기술주, 매도세 후 반등",
+      "titleOriginal": "Oracle, CoreWeave and other tech stocks bounce back after selloff",
+      "why": "매도세 이후 기술주 반등",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/oracles-stock-sinks-toward-a-3-year-low-as-the-ai-trade-continues-to-unravel-d4698d77?mod=mw_rss_topstories",
+      "publishedKst": "11-26 07:16",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "18b79aecd994d2b9",
+      "market": "global",
+      "title": "엔비디아, 월요일 랠리분 상당 부분 반납…저가 매수 차익 실현",
+      "titleOriginal": "Nvidia’s stock has given back a big chunk of Monday’s rally as dip buyers cash in",
+      "why": "저가 매수 차익 실현으로 월요일 랠리분 반납",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/nvidias-stock-is-giving-back-more-than-half-of-mondays-rally-as-dip-buyers-cash-in-ee4fa52c?mod=mw_rss_topstories",
+      "publishedKst": "11-26 07:11",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "4cd19bb201322a05",
+      "market": "global",
+      "title": "HP, 기술주 약세 속 실적 호조로 두각",
+      "titleOriginal": "HP’s stock is a standout gainer in the tech selloff, as an earnings beat still matters",
+      "why": "기술주 매도세 속 실적 호조가 주가 상승 요인으로 제시됨",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/hps-stock-is-a-standout-gainer-in-the-tech-rout-as-an-earnings-beat-still-matters-8f6c76ad?mod=mw_rss_topstories",
+      "publishedKst": "11-26 06:36",
+      "analyzedBy": "exaone"
+    },
     {
       "id": "789f0210c16bfb09",
       "market": "global",
@@ -221,7 +323,92 @@
       "sourceSection": "Top News",
       "official": false,
       "url": "https://www.cnbc.com/2026/11/25/treasury-yields-bonds-inflation.html",
-      "publishedKst": "11-26 01:20",
+      "publishedKst": "11-26 06:02",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "d3ed57317f9a6d92",
+      "market": "global",
+      "title": "연방기관, 소비자 신용·리스 규정 적용 금액 기준 발표",
+      "titleOriginal": "Agencies announce dollar thresholds for applicability of truth in lending and consumer leasing rules for consumer credit and lease transactions",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "금융"
+      ],
+      "source": "연방준비제도",
+      "sourceSection": "보도자료",
+      "official": true,
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261125b.htm",
+      "publishedKst": "11-26 05:00",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "38362f45862e14df",
+      "market": "global",
+      "title": "연방기관, 고가 주택담보대출 감정평가 면제 기준 금액 발표",
+      "titleOriginal": "Agencies announce dollar thresholds for smaller loan exemption from appraisal requirements for higher-priced mortgage loans",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "금융"
+      ],
+      "source": "연방준비제도",
+      "sourceSection": "보도자료",
+      "official": true,
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261125a.htm",
+      "publishedKst": "11-26 05:00",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "255d1970e80f3f46",
+      "market": "global",
+      "title": "7월 고점 대비 급락한 주식 더 매수 중",
+      "titleOriginal": "We're buying more of a stock down big from its July highs",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/investingclub/2026/11/25/were-buying-more-of-a-stock-down-big-from-its-july-highs.html",
+      "publishedKst": "11-26 04:55",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "a4c47c22a36c29ad",
+      "market": "global",
+      "title": "OpenAI 도청 사건 사우디인, 보석으로 석방",
+      "titleOriginal": "Saudi national in OpenAI bugging case is out on bond after DOJ tries to block release",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/25/openai-bugging-aflozan-bond-release-saudi.html",
+      "publishedKst": "11-26 04:11",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "4b8a6d03d07c9124",
+      "market": "global",
+      "title": "예측시장, OpenAI IPO 기대 시점 2027년으로 미뤄",
+      "titleOriginal": "Prediction markets push OpenAI IPO expectations later into 2027",
+      "why": "예측시장이 OpenAI IPO 기대 시점을 2027년 이후로 밀어냈다",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/25/openai-ipo-odds-2027-prediction-markets.html",
+      "publishedKst": "11-26 02:08",
       "analyzedBy": "exaone"
     },
     {
@@ -239,7 +426,7 @@
       "official": false,
       "url": "https://www.cnbc.com/investingclub/2026/11/25/anthropics-stock-has-been-a-clunker-post-ipo-why-that-matters-for-the-ai-trade.html",
       "publishedKst": "11-26 01:05",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "d93c2165c40609b3",
@@ -273,74 +460,6 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/25/investors-led-by-todd-boehly-to-buy-lukoil-oil-and-gas-assets-outside-russia.html",
       "publishedKst": "11-26 01:00",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "9a46b7a3ce356081",
-      "market": "global",
-      "title": "사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방",
-      "titleOriginal": "Saudi national charged in OpenAI bugging to be released on $1 million bond",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html",
-      "publishedKst": "11-26 00:55",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "0d2fe17e8e9ed778",
-      "market": "global",
-      "title": "엔비디아 주가, 월요일 랠리 절반 이상 반납",
-      "titleOriginal": "Nvidia’s stock is giving back more than half of Monday’s rally as dip buyers cash in",
-      "why": "딥바이어 현금화로 월요일 랠리 절반 이상 반납",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/nvidias-stock-is-giving-back-more-than-half-of-mondays-rally-as-dip-buyers-cash-in-ee4fa52c?mod=mw_rss_topstories",
-      "publishedKst": "11-26 00:43",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "95e6ae5ccd66da5f",
-      "market": "global",
-      "title": "인플레이션 악화에 연준, 미국 금리 인상 불가피",
-      "titleOriginal": "Inflation gets worse. Now the Fed no choice but to raise U.S. interest rates.",
-      "why": "인플레이션 악화로 연준의 미국 금리 인상이 불가피하다는 내용",
-      "confidence": "원문 근거",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/inflation-gets-worse-now-the-fed-no-choice-but-to-raise-u-s-interest-rates-8b0c2c1f?mod=mw_rss_topstories",
-      "publishedKst": "11-26 00:08",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "0610f2e3a1ebeab5",
-      "market": "global",
-      "title": "엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험",
-      "titleOriginal": "We are living in perilous times if Nvidia’s Jensen Huang dictates your 401(k) balance",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories",
-      "publishedKst": "11-26 00:03",
       "analyzedBy": "cache"
     },
     {
@@ -358,40 +477,6 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/25/wealthy-investors-seek-tax-savings-from-municipal-bonds.html",
       "publishedKst": "11-26 00:00",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "ebd848f5e21385a2",
-      "market": "global",
-      "title": "3분기 GDP는 이미 훌륭했고 이제 더 좋아 보인다",
-      "titleOriginal": "Third-quarter GDP already looked great. Now it looks even better.",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/third-quarter-gdp-already-looked-great-now-it-looks-even-better-12057da5?mod=mw_rss_topstories",
-      "publishedKst": "11-25 23:47",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "076dd8ec67b043dd",
-      "market": "global",
-      "title": "Dell, 매출 2배 이상 전망에도 주가 하락",
-      "titleOriginal": "Dell sees sales more than double — but its stock falls anyway",
-      "why": "Dell 매출 2배 이상 전망에도 주가가 하락",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/dells-stock-rises-as-the-ai-boom-helps-sales-more-than-double-cfb8cf65?mod=mw_rss_topstories",
-      "publishedKst": "11-25 23:40",
       "analyzedBy": "cache"
     },
     {
@@ -422,7 +507,7 @@
         "AI·반도체"
       ],
       "source": "CNBC",
-      "sourceSection": "Top News",
+      "sourceSection": "World Markets",
       "official": false,
       "url": "https://www.cnbc.com/2026/11/25/jensen-huang-nvidia-ai-talent-race.html",
       "publishedKst": "11-25 23:29",
@@ -439,7 +524,7 @@
         "매크로"
       ],
       "source": "CNBC",
-      "sourceSection": "Markets",
+      "sourceSection": "Top News",
       "official": false,
       "url": "https://www.cnbc.com/2026/11/25/pce-inflation-report-october-2026.html",
       "publishedKst": "11-25 23:18",
@@ -525,7 +610,7 @@
         "매크로"
       ],
       "source": "CNBC",
-      "sourceSection": "Top News",
+      "sourceSection": "Markets",
       "official": false,
       "url": "https://www.cnbc.com/2026/11/25/uae-iran-war-economy-oil.html",
       "publishedKst": "11-25 13:06",
@@ -583,24 +668,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "9a23a97eb15272de",
-      "market": "global",
-      "title": "메타, 인스타그램으로 Muse 개인 AI 에이전트 광고 효과 노린다",
-      "titleOriginal": "How Meta is using Instagram to get an ad boost from its Muse personal AI agent",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "인터넷·플랫폼",
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/24/meta-instagram-muse-ad-revenue.html",
-      "publishedKst": "11-25 05:37",
-      "analyzedBy": "cache"
-    },
-    {
       "id": "eb0c9116020f7ee2",
       "market": "global",
       "title": "연준, 2026년 10월 19·28일 할인율 회의 의사록",
@@ -632,23 +699,6 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/24/consumer-confidence-november-election-midterm.html",
       "publishedKst": "11-25 03:34",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "372a098b603a7126",
-      "market": "global",
-      "title": "젠슨 황, NVIDIA 신제품 공개일 의회 청문회 출석",
-      "titleOriginal": "Jensen Huang to face DC grilling the same day Nvidia releases new products at GTC",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/24/jensen-huang-nvidia-congress-gtc.html",
-      "publishedKst": "11-25 02:51",
       "analyzedBy": "cache"
     },
     {
@@ -684,24 +734,6 @@
       "url": "https://www.cnbc.com/2026/11/24/france-recession-risk-pmi.html",
       "publishedKst": "11-24 20:15",
       "analyzedBy": "cache"
-    },
-    {
-      "id": "d592516bd838850c",
-      "market": "global",
-      "title": "‘바닥 확인’ 젠슨 황 복귀, 매도세 멈출 듯",
-      "titleOriginal": "‘This establishes a bottom’: Jensen Huang’s return seen as likely to stop market sell-off, for now",
-      "why": "젠슨 황 복귀가 시장 매도세를 멈출 것으로 보인다는 관측",
-      "confidence": "추정",
-      "sectors": [
-        "AI·반도체",
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "World Markets",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo-market-rally.html",
-      "publishedKst": "11-24 03:00",
-      "analyzedBy": "cache"
     }
   ],
   "sectors": [
@@ -710,19 +742,19 @@
       "count": 14,
       "items": [
         {
-          "title": "Anthropic 주가, IPO 후 부진…AI 거래에 왜 중요한가",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/investingclub/2026/11/25/anthropics-stock-has-been-a-clunker-post-ipo-why-that-matters-for-the-ai-trade.html"
-        },
-        {
-          "title": "사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html"
-        },
-        {
-          "title": "엔비디아 주가, 월요일 랠리 절반 이상 반납",
+          "title": "젠슨 황의 NVIDIA 복귀는 싫지만 내 401(k)에 도움…내가 위선자?",
           "source": "MarketWatch",
-          "url": "https://www.marketwatch.com/story/nvidias-stock-is-giving-back-more-than-half-of-mondays-rally-as-dip-buyers-cash-in-ee4fa52c?mod=mw_rss_topstories"
+          "url": "https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories"
+        },
+        {
+          "title": "엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories"
+        },
+        {
+          "title": "오라클·코어위브 등 기술주, 매도세 후 반등",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/oracles-stock-sinks-toward-a-3-year-low-as-the-ai-trade-continues-to-unravel-d4698d77?mod=mw_rss_topstories"
         }
       ]
     },
@@ -743,22 +775,22 @@
     },
     {
       "name": "금융",
-      "count": 3,
+      "count": 6,
       "items": [
         {
-          "title": "부유층, 높은 지방채 수익률에 절세 모색",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/25/wealthy-investors-seek-tax-savings-from-municipal-bonds.html"
+          "title": "66세 간호사, 500달러 저축 후 은퇴 직면…누구 탓?",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/a-66-year-old-nurse-faces-retirement-with-just-500-saved-whos-to-blame-4249a0fd?mod=mw_rss_topstories"
         },
         {
-          "title": "Kalshi 'perps' 거래량, 예측시장 거래량 추월 시작",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/24/kalshi-perps-volume-prediction-markets.html"
+          "title": "연방기관, 소비자 신용·리스 규정 적용 금액 기준 발표",
+          "source": "연방준비제도",
+          "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261125b.htm"
         },
         {
-          "title": "트럼프 계좌 친구·가족 기여금 10억 달러 돌파",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/24/trump-accounts-family-contributions-billion.html"
+          "title": "연방기관, 고가 주택담보대출 감정평가 면제 기준 금액 발표",
+          "source": "연방준비제도",
+          "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261125a.htm"
         }
       ]
     },
@@ -795,23 +827,18 @@
     },
     {
       "name": "인터넷·플랫폼",
-      "count": 2,
+      "count": 1,
       "items": [
         {
           "title": "엔비디아 반등이 빅테크 지출 긴축 가려…AI 부채 우려 확대",
           "source": "CNBC",
           "url": "https://www.cnbc.com/2026/11/25/ai-debt-big-tech-spending-nvidia.html"
-        },
-        {
-          "title": "메타, 인스타그램으로 Muse 개인 AI 에이전트 광고 효과 노린다",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/24/meta-instagram-muse-ad-revenue.html"
         }
       ]
     },
     {
       "name": "매크로",
-      "count": 11,
+      "count": 9,
       "items": [
         {
           "title": "10년물 국채금리, 끈적한 인플레이션에도 하락",
@@ -819,14 +846,14 @@
           "url": "https://www.cnbc.com/2026/11/25/treasury-yields-bonds-inflation.html"
         },
         {
+          "title": "7월 고점 대비 급락한 주식 더 매수 중",
+          "source": "CNBC",
+          "url": "https://www.cnbc.com/investingclub/2026/11/25/were-buying-more-of-a-stock-down-big-from-its-july-highs.html"
+        },
+        {
           "title": "미국, 중국·EU 포함 14개 교역국에 새 관세 제안",
           "source": "CNBC",
           "url": "https://www.cnbc.com/2026/11/25/us-tariffs-trump-section-301.html"
-        },
-        {
-          "title": "인플레이션 악화에 연준, 미국 금리 인상 불가피",
-          "source": "MarketWatch",
-          "url": "https://www.marketwatch.com/story/inflation-gets-worse-now-the-fed-no-choice-but-to-raise-u-s-interest-rates-8b0c2c1f?mod=mw_rss_topstories"
         }
       ]
     }
