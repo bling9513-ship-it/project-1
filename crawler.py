@@ -216,6 +216,130 @@ def location_group(location):
             return label
     return "전국·기타"
 
+# ---------------------------------------------------------------- 경력 정규화
+# 플랫폼마다 제각각인 경력 표기('경력 8년 ↑', '경력무관', '신입·경력', min/max 연차)를
+# 카드에 한 줄로 읽히는 짧은 라벨('신입', '신입·경력', '경력무관', '인턴',
+# '경력 3년↑', '경력 2~5년', '경력')로 정리하고, 화면 필터용 그룹으로 묶는다.
+EXPERIENCE_GROUPS = ("신입", "신입·경력", "경력", "경력무관", "인턴", "미표기")
+EXPERIENCE_EMPTY_LABEL = "경력 미표기"
+# 플랫폼이 'N년 이상'(상한 없음)을 표현할 때 넣는 상한 자리값. 이 이상이면 상한 없음으로 본다.
+EXPERIENCE_OPEN_ENDED = 90
+
+
+def experience_from_years(low=None, high=None, newcomer=False, intern=False):
+    """연차 하한·상한(플랫폼 API 값) → 표시용 경력 라벨.
+
+    · (0, 0) 또는 상한 1년 이하 → '신입'
+    · 하한 0 + 상한 있음 → '신입·경력' (신입부터 상한 연차까지)
+    · 상한 없음/자리값 → '경력 N년↑', 하한=상한 → '경력 N년', 그 외 → '경력 N~M년'
+    """
+    if intern:
+        return "인턴"
+
+    def _num(value):
+        try:
+            if value is None or (isinstance(value, str) and not value.strip()):
+                return None
+            number = int(float(value))
+            return number if number >= 0 else None
+        except (TypeError, ValueError):
+            return None
+
+    lo = _num(low)
+    hi = _num(high)
+    open_ended = False
+    if hi is not None and hi >= EXPERIENCE_OPEN_ENDED:
+        # 원티드의 annual_to=100 처럼 '상한 없음'을 큰 수로 주는 플랫폼이 있다.
+        hi = None
+        open_ended = True
+    if lo is None and hi is None:
+        if newcomer:
+            return "신입"
+        return "경력무관" if open_ended else ""
+    if lo is None:
+        lo = 0
+    if lo == 0:
+        if hi is None:
+            return "신입" if newcomer else ("경력무관" if open_ended else "신입·경력")
+        return "신입" if hi <= 1 else "신입·경력"
+    if hi is None:
+        return f"경력 {lo}년↑"
+    if hi == lo:
+        return f"경력 {lo}년"
+    if hi < lo:
+        return f"경력 {lo}년↑"
+    return f"경력 {lo}~{hi}년"
+
+
+def _experience_from_text_years(compact, numbers):
+    """'경력 3년↑ / 2~5년 / 8년 이상' 같은 원문 + 추출 연차 → 표시용 라벨."""
+    if len(numbers) >= 2:
+        lo, hi = numbers[0], numbers[1]
+        if hi < lo:
+            lo, hi = hi, lo
+        return f"경력 {lo}년" if lo == hi else f"경력 {lo}~{hi}년"
+    years = numbers[0]
+    if re.search(r"이상|이하\s*없|↑|\+|이상\s*~", compact) and "이하" not in compact:
+        return f"경력 {years}년↑"
+    return f"경력 {years}년"
+
+
+def normalize_experience(raw):
+    """경력 원문(플랫폼 표기·상세 페이지 문구) → 짧은 표시 라벨.
+
+    확인할 수 없는 값(빈 문자열·숫자 없는 잡음)은 "" 를 돌려주고 화면에서는
+    '경력 미표기'로 그린다. 같은 라벨을 다시 넣어도 결과가 바뀌지 않는다(멱등).
+    """
+    if raw is None:
+        return ""
+    compact = re.sub(r"\s+", " ", clean_text(str(raw)).replace("\xa0", " ")).strip()
+    if not compact:
+        return ""
+    if "인턴" in compact:
+        return "인턴"
+    if re.fullmatch(r"(경력\s*)?무관|경력무관|무관", compact):
+        return "경력무관"
+
+    # '경력 2~5년' · '5년~10년'처럼 범위를 한 번에 읽고, 범위 표기가 없으면 연차 숫자를 모은다.
+    range_m = re.search(r"(\d{1,2})\s*년?\s*[~∼\-–—]\s*(\d{1,2})\s*년", compact)
+    if range_m:
+        numbers = [int(range_m.group(1)), int(range_m.group(2))]
+    else:
+        numbers = [int(m.group(1)) for m in re.finditer(r"(\d{1,2})\s*년", compact)][:2]
+    has_new = "신입" in compact
+    has_career = "경력" in compact
+
+    if has_new:
+        if has_career or (numbers and max(numbers) > 1):
+            return "신입·경력"
+        return "신입"
+    if numbers:
+        return _experience_from_text_years(compact, numbers)
+    if has_career:
+        return "경력"
+    if "무관" in compact:
+        return "경력무관"
+    return ""
+
+
+def experience_group(experience):
+    """표시용 경력 라벨 → 화면 경력 필터 그룹(빈 값은 '미표기')."""
+    label = (experience or "").strip()
+    if not label:
+        return "미표기"
+    if label.startswith("인턴"):
+        return "인턴"
+    if label.startswith("경력무관"):
+        return "경력무관"
+    if label.startswith("신입·경력"):
+        return "신입·경력"
+    if label.startswith("신입"):
+        return "신입"
+    if label.startswith("경력"):
+        return "경력"
+    return "미표기"
+
+
 def count_urgent_jobs(jobs):
     """마감 임박 공고 수 — DB가 판정한 deadline_status(D_DAY/URGENT)를 우선한다.
 
@@ -321,6 +445,8 @@ def _merge_same_posting(target, job):
         target["platforms"].append(job["platform"])
     if not target["location"] and job["location"]:
         target["location"] = job["location"]
+    if not target.get("experience") and job.get("experience"):
+        target["experience"] = job["experience"]
     curr_dl = target.get("deadline", "상시채용")
     new_dl = job.get("deadline", "상시채용")
     if ("상시" in curr_dl or "채용시" in curr_dl) and ("D-" in new_dl or "D-Day" in new_dl):
@@ -408,6 +534,8 @@ def fetch_jumpit(today_date):
                             "title": title,
                             "url": f"https://www.jumpit.co.kr/position/{jid}",
                             "location": clean_text(p.get("location", "")),
+                            "experience": experience_from_years(
+                                p.get("minCareer"), p.get("maxCareer"), newcomer=bool(p.get("newcomer"))),
                             "deadline": deadline
                         })
             except Exception as e:
@@ -467,6 +595,9 @@ def fetch_wanted():
                         "title": pos,
                         "url": f"https://www.wanted.co.kr/wd/{jid}",
                         "location": location,
+                        # 원티드는 연차를 annual_from ~ annual_to 로 준다(0~12 = 신입부터).
+                        "experience": experience_from_years(
+                            item.get("annual_from"), item.get("annual_to")),
                         "deadline": "상시채용"
                     })
         except Exception as e:
@@ -495,6 +626,9 @@ def fetch_saramin(today_date):
                     # 근무지는 job_condition 첫 span 안의 지역 링크 묶음('경기' + '성남시 분당구')이다.
                     cond_m = re.search(r'<div class="job_condition">(.*?)</div>', it, re.DOTALL)
                     loc_m = re.search(r'<span>(.*?)</span>', cond_m.group(1), re.DOTALL) if cond_m else None
+                    # job_condition 두 번째 span 이 경력이다('경력무관' · '경력 3~5년' · '신입').
+                    cond_spans = re.findall(r'<span[^>]*>(.*?)</span>', cond_m.group(1), re.DOTALL) if cond_m else []
+                    experience = normalize_experience(cond_spans[1]) if len(cond_spans) > 1 else ""
                     
                     if not tit_m or not corp_m:
                         continue
@@ -519,6 +653,7 @@ def fetch_saramin(today_date):
                         "title": title,
                         "url": link,
                         "location": normalize_location(loc_m.group(1)) if loc_m else "",
+                        "experience": experience,
                         "deadline": deadline
                     })
         except Exception as e:
@@ -581,6 +716,8 @@ def fetch_remember(today_date):
                             "title": title,
                             "url": f"https://career.rememberapp.co.kr/job/posting/{jid}",
                             "location": location,
+                            "experience": experience_from_years(
+                                it.get("min_experience"), it.get("max_experience")),
                             "deadline": deadline
                         })
             except Exception:
@@ -605,7 +742,10 @@ def fetch_jobkorea(today_date):
                         comp_m = re.search(r'class="item-corp_name"[^>]*>(.*?)</(?:span|div)>', it, re.DOTALL)
                         tit_m = re.search(r'class="item-title"[^>]*>(.*?)</(?:span|div)>', it, re.DOTALL)
                         dday_m = re.search(r'class="item-condition_dday"[^>]*>(.*?)</span>', it, re.DOTALL)
-                        loc_m = re.search(r'class="item-condition_location"[^>]*>(.*?)</span>', it, re.DOTALL)
+                        # 잡코리아는 모바일 통합검색(item-condition-applicants)과 일반 목록(item-condition_applicants)
+                        # 두 가지 마크업을 번갈아 내려준다. 밑줄·하이픈 모두 받는다.
+                        loc_m = re.search(r'class="item-condition[-_]location"[^>]*>(.*?)</span>', it, re.DOTALL)
+                        appl_m = re.search(r'class="item-condition[-_]applicants"[^>]*>(.*?)</span>', it, re.DOTALL)
                         
                         if comp_m and tit_m and link_m:
                             title = clean_text(tit_m.group(1))
@@ -635,6 +775,7 @@ def fetch_jobkorea(today_date):
                                 "title": title,
                                 "url": link,
                                 "location": normalize_location(loc_m.group(1)) if loc_m else "",
+                                "experience": normalize_experience(appl_m.group(1)) if appl_m else "",
                                 "deadline": deadline
                             })
             except Exception:
@@ -658,8 +799,12 @@ def fetch_incruit(today_date):
                         cp_m = re.search(r'class="cpname"[^>]*>(.*?)</a>', it)
                         tit_m = re.search(r'<div class="cell_mid">.*?<div class="cl_top">.*?<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', it, re.DOTALL)
                         date_m = re.search(r'<div class="cell_last">.*?<div class="cl_btm"><span>(.*?)</span>', it, re.DOTALL)
-                        # cl_md 안의 첫 span 이 근무지('서울 금천구')이고, 이어서 경력·학력·고용형태가 온다.
+                        # cl_md 안의 span 이 차례대로 근무지·경력·학력·고용형태다.
                         md_m = re.search(r'class="cl_md"[^>]*>(.*?)</div>', it, re.DOTALL)
+                        md_spans = ([clean_text(sp) for sp in re.findall(r'<span[^>]*>(.*?)</span>', md_m.group(1), re.DOTALL)]
+                                    if md_m else [])
+                        location = next((normalize_location(sp) for sp in md_spans if normalize_location(sp)), "")
+                        experience = normalize_experience(md_spans[1]) if len(md_spans) > 1 else ""
                         
                         if cp_m and tit_m:
                             title = clean_text(tit_m.group(2))
@@ -716,9 +861,8 @@ def fetch_incruit(today_date):
                                 "company": comp,
                                 "title": title,
                                 "url": link,
-                                "location": (next((normalize_location(clean_text(sp))
-                                                   for sp in re.findall(r'<span[^>]*>(.*?)</span>', md_m.group(1), re.DOTALL)
-                                                   if normalize_location(clean_text(sp))), "") if md_m else ""),
+                                "location": location,
+                                "experience": experience,
                                 "deadline": deadline
                             })
             except Exception:
@@ -786,6 +930,7 @@ def collect_all_jobs():
                 "external_id": job.get("external_id", ""),
                 "keywords": assign_keywords(job["title"]),
                 "location": job["location"],
+                "experience": job.get("experience", ""),
                 "deadline": job.get("deadline", "상시채용"),
             }
             order.append(key)
@@ -830,6 +975,8 @@ def collect_all_jobs():
                     primary["platforms"].append(platform)
             if not primary["location"] and other["location"]:
                 primary["location"] = other["location"]
+            if not primary.get("experience") and other.get("experience"):
+                primary["experience"] = other["experience"]
             curr_dl = primary.get("deadline", "상시채용")
             new_dl = other.get("deadline", "상시채용")
             if ("상시" in curr_dl or "채용시" in curr_dl) and ("D-" in new_dl or "D-Day" in new_dl):
@@ -1368,6 +1515,7 @@ _WATCH_JS = """
         keyword: selectedKeyword,
         platform: selectedPlatform,
         region: selectedRegion,
+        experience: selectedExperience,
         deadline: selectedDeadline,
         sort: sortBy,
         watch: selectedWatch
@@ -1380,6 +1528,7 @@ _WATCH_JS = """
       if (state.keyword && state.keyword !== 'all') parts.push(state.keyword);
       if (state.platform && state.platform !== 'all') parts.push(state.platform);
       if (state.region && state.region !== 'all') parts.push(state.region);
+      if (state.experience && state.experience !== 'all') parts.push(state.experience);
       if (state.deadline === 'urgent') parts.push('마감임박');
       else if (state.deadline === 'always') parts.push('상시');
       if (state.watch === 'watch') parts.push('관심만');
@@ -1468,6 +1617,7 @@ _WATCH_JS = """
         var value = pill.getAttribute('data-val');
         if (type === 'platform') pill.classList.toggle('active', value === selectedPlatform);
         else if (type === 'region') pill.classList.toggle('active', value === selectedRegion);
+        else if (type === 'experience') pill.classList.toggle('active', value === selectedExperience);
         else if (type === 'deadline') pill.classList.toggle('active', value === selectedDeadline);
         else if (type === 'watch') pill.classList.toggle('active', value === selectedWatch);
       });
@@ -1481,6 +1631,7 @@ _WATCH_JS = """
       selectedKeyword = typeof state.keyword === 'string' ? state.keyword : 'all';
       selectedPlatform = typeof state.platform === 'string' ? state.platform : 'all';
       selectedRegion = typeof state.region === 'string' ? state.region : 'all';
+      selectedExperience = typeof state.experience === 'string' ? state.experience : 'all';
       selectedDeadline = typeof state.deadline === 'string' ? state.deadline : 'all';
       selectedWatch = state.watch === 'watch' ? 'watch' : 'all';
       sortBy = typeof state.sort === 'string' ? state.sort : 'deadline';
@@ -1583,6 +1734,38 @@ def generate_html(jobs, update_time_str):
             f'<button class="filter-pill" data-filter="region" data-val="미표기">'
             f'미표기<span class="filter-pill-count">{_unknown_region}</span></button>'
         )
+
+    # 경력 현황: 실제 분포가 있는 그룹만 칩·바로 그린다(0건 그룹은 지역 필터와 같은 규칙으로 숨김).
+    experience_counts = {}
+    for _job in jobs:
+        _xp_label = experience_group(_job.get("experience") or "")
+        experience_counts[_xp_label] = experience_counts.get(_xp_label, 0) + 1
+    _xp_total = sum(experience_counts.values()) or 1
+    _xp_pill_html = "".join(
+        f'<button class="filter-pill" data-filter="experience" data-val="{_label}">'
+        f'{_label}<span class="filter-pill-count">{experience_counts.get(_label, 0)}</span></button>'
+        for _label in EXPERIENCE_GROUPS if experience_counts.get(_label)
+    )
+    _xp_legend_html = "".join(
+        f'<button type="button" class="filter-pill xp-chip" data-filter="experience" data-val="{_label}">'
+        f'{_label}<span class="filter-pill-count">{experience_counts.get(_label, 0)}</span>'
+        f'<span class="xp-chip-pct">{experience_counts.get(_label, 0) * 100 / _xp_total:.0f}%</span></button>'
+        for _label in EXPERIENCE_GROUPS if experience_counts.get(_label)
+    )
+    _XP_BAR_COLORS = {
+        "신입": "#93c5fd", "신입·경력": "#60a5fa", "경력": "#2563eb",
+        "경력무관": "#cbd5e1", "인턴": "#a78bfa", "미표기": "#e2e8f0",
+    }
+    _xp_bar_html = "".join(
+        f'<span class="xp-bar-seg" style="width:{experience_counts.get(_label, 0) * 100 / _xp_total:.4f}%;'
+        f'background:{_XP_BAR_COLORS.get(_label, "#e2e8f0")}" title="{_label} {experience_counts.get(_label, 0)}건"></span>'
+        for _label in EXPERIENCE_GROUPS if experience_counts.get(_label)
+    )
+    _xp_missing = experience_counts.get("미표기", 0)
+    _xp_note = f"전체 {len(jobs)}건"
+    if _xp_missing:
+        _xp_note += f" · 경력 미표기 {_xp_missing}건"
+    _xp_note += " · 칩을 누르면 해당 경력만 보입니다"
         
     urgent_count = count_urgent_jobs(jobs)
 
@@ -2371,6 +2554,24 @@ def generate_html(jobs, update_time_str):
     .job-loc .loc-icon {{ flex: 0 0 auto; opacity: 0.8; }}
     .job-loc.is-empty {{ opacity: 0.75; }}
 
+    /* 제목 아래 메타 줄: 근무지 + 경력 라벨을 한 줄에 두어 배지·원문 링크와 겹치지 않게 한다. */
+    .job-meta {{ display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: -8px 0 10px; }}
+    .job-meta .job-loc {{ margin: 0; }}
+    .job-exp {{
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      border: 1px solid var(--border-default);
+      border-radius: 5px;
+      background: var(--bg-subtle);
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }}
+    .job-exp.is-empty {{ border-style: dashed; background: transparent; font-weight: 500; color: var(--text-muted); }}
+
     .job-summary {{
       font-size: 13px;
       color: var(--text-secondary);
@@ -2522,6 +2723,17 @@ def generate_html(jobs, update_time_str):
     }}
 
     .list-location .loc-icon {{ flex: 0 0 auto; opacity: 0.8; }}
+
+    .list-meta {{ display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin-top: 3px; }}
+    .list-meta .list-location {{ margin-top: 0; }}
+    .list-exp {{
+      flex: 0 0 auto;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }}
+    .list-exp.is-empty {{ font-weight: 500; color: var(--text-muted); }}
 
     .list-platforms {{
       display: flex;
@@ -2808,6 +3020,39 @@ def generate_html(jobs, update_time_str):
     .ia-kpi-unit {{ font-size: 11px; font-weight: 600; color: var(--text-muted); margin-left: 2px; }}
     .ia-kpi.is-urgent .ia-kpi-value {{ color: #dc2626; }}
 
+    /* ---- 경력 현황 요약 바 · 경력 필터 칩 ---- */
+    .xp-summary {{
+      margin: 0 0 14px;
+      padding: 14px 16px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+    }}
+    .xp-head {{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }}
+    .xp-title {{ font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }}
+    .xp-note {{ font-size: 11.5px; color: var(--text-muted); }}
+    .xp-bar {{
+      display: flex;
+      width: 100%;
+      height: 8px;
+      gap: 2px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--bg-subtle);
+    }}
+    .xp-bar-seg {{ display: block; height: 100%; min-width: 2px; }}
+    .xp-legend {{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }}
+    .xp-chip {{ cursor: pointer; }}
+    .xp-chip-pct {{ margin-left: 5px; font-size: 10px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }}
+    .xp-chip.active .xp-chip-pct {{ color: var(--accent-primary); }}
+
     .ia-jobs-layout {{ display: grid; grid-template-columns: 278px minmax(0, 1fr); gap: 26px; align-items: start; }}
     .ia-results {{ min-width: 0; }}
 
@@ -3075,6 +3320,16 @@ def generate_html(jobs, update_time_str):
       </div>
     </section>
 
+    <!-- 경력 현황: 전체 활성 공고의 경력 분포를 한 줄 바로 보여 주고, 칩을 누르면 해당 경력만 본다. -->
+    <section class="xp-summary" aria-label="경력 현황">
+      <div class="xp-head">
+        <strong class="xp-title">경력 현황</strong>
+        <span class="xp-note">{_xp_note}</span>
+      </div>
+      <div class="xp-bar" role="img" aria-label="경력 분포">{_xp_bar_html}</div>
+      <div class="xp-legend">{_xp_legend_html}</div>
+    </section>
+
     <div class="ia-jobs-layout">
       <!-- 필터: PC 좌측 고정 레일 / 모바일 바텀 시트 -->
       <aside class="ia-rail" id="filterRail" aria-label="공고 필터">
@@ -3092,7 +3347,7 @@ def generate_html(jobs, update_time_str):
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="회사명, 포지션명, 근무지, 키워드 검색">
+            <input type="text" id="searchInput" class="search-input" placeholder="회사명, 포지션명, 근무지, 경력, 키워드 검색">
             <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
           </div>
         </div>
@@ -3113,6 +3368,14 @@ def generate_html(jobs, update_time_str):
           <div class="filter-pills-scroll">
             <button class="filter-pill active" data-filter="region" data-val="all">전체</button>
             {_region_pill_html}
+          </div>
+        </div>
+
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">경력</p>
+          <div class="filter-pills-scroll">
+            <button class="filter-pill active" data-filter="experience" data-val="all">전체</button>
+            {_xp_pill_html}
           </div>
         </div>
 
@@ -3235,6 +3498,7 @@ def generate_html(jobs, update_time_str):
     let selectedKeyword = 'all';
     let selectedPlatform = 'all';
     let selectedRegion = 'all';
+    let selectedExperience = 'all';
     let selectedDeadline = 'all';
     let selectedWatch = 'all';
     let sortBy = 'deadline';
@@ -3425,6 +3689,24 @@ def generate_html(jobs, update_time_str):
         const countEl = btn.querySelector('.count');
         if (countEl) countEl.textContent = kw === 'all' ? live.length : (kwCounts[kw] || 0);
       }});
+
+      // 경력 칩 건수·비율을 실시간 마감 반영값으로 맞추고, 0건 그룹은 숨긴다.
+      const xpCounts = {{}};
+      live.forEach(job => {{
+        const group = xpGroup(job.experience);
+        xpCounts[group] = (xpCounts[group] || 0) + 1;
+      }});
+      document.querySelectorAll('.filter-pill[data-filter="experience"]').forEach(btn => {{
+        const val = btn.getAttribute('data-val');
+        if (val === 'all') return;
+        const count = xpCounts[val] || 0;
+        const countEl = btn.querySelector('.filter-pill-count');
+        if (countEl) countEl.textContent = count;
+        const pctEl = btn.querySelector('.xp-chip-pct');
+        if (pctEl) pctEl.textContent = Math.round(count * 100 / Math.max(1, live.length)) + '%';
+        const isActive = selectedExperience === val || btn.classList.contains('active');
+        btn.hidden = count === 0 && !isActive;
+      }});
     }}
 
     // 근무지 → 지역 필터 그룹 (파이썬 location_group() 과 동일한 규칙)
@@ -3452,6 +3734,23 @@ def generate_html(jobs, update_time_str):
     function jobLocationText(job) {{
       const text = String((job && job.location) || '').trim();
       return text || '지역 미표기';
+    }}
+
+    // 경력 라벨 → 경력 필터 그룹 (파이썬 experience_group() 과 동일한 규칙)
+    function xpGroup(experience) {{
+      const label = String(experience || '').trim();
+      if (!label) return '미표기';
+      if (label.indexOf('인턴') === 0) return '인턴';
+      if (label.indexOf('경력무관') === 0) return '경력무관';
+      if (label.indexOf('신입·경력') === 0) return '신입·경력';
+      if (label.indexOf('신입') === 0) return '신입';
+      if (label.indexOf('경력') === 0) return '경력';
+      return '미표기';
+    }}
+
+    function jobExperienceText(job) {{
+      const text = String((job && job.experience) || '').trim();
+      return text || '경력 미표기';
     }}
 
     function locIcon() {{
@@ -3502,6 +3801,9 @@ def generate_html(jobs, update_time_str):
         if (selectedRegion !== 'all' && locGroup(job.location) !== selectedRegion) {{
           return false;
         }}
+        if (selectedExperience !== 'all' && xpGroup(job.experience) !== selectedExperience) {{
+          return false;
+        }}
         const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
         if (dlMeta.expired) return false;   // 현재 KST 시각 기준 이미 마감된 공고는 숨김
         if (selectedDeadline === 'urgent' && !dlMeta.isUrgent) return false;
@@ -3514,7 +3816,9 @@ def generate_html(jobs, update_time_str):
           const matchTitle = (job.title || '').toLowerCase().includes(term);
           const matchKeywords = (job.keywords || []).some(k => k.toLowerCase().includes(term));
           const matchLocation = (job.location || '').toLowerCase().includes(term);
-          if (!matchCompany && !matchTitle && !matchKeywords && !matchLocation) return false;
+          const matchExperience = (job.experience || '').toLowerCase().includes(term)
+            || xpGroup(job.experience).toLowerCase().includes(term);
+          if (!matchCompany && !matchTitle && !matchKeywords && !matchLocation && !matchExperience) return false;
         }}
         return true;
       }});
@@ -3560,7 +3864,7 @@ def generate_html(jobs, update_time_str):
             `<span class="keyword-tag ai-tag">${{escapeHtml(t)}}</span>`
           ).join('');
           const summaryHtml = job.summary ? `<div class="job-summary">${{escapeHtml(job.summary)}}</div>` : '';
-          const locHtml = `<div class="job-loc${{job.location ? '' : ' is-empty'}}" title="근무지">${{locIcon()}}<span>${{escapeHtml(jobLocationText(job))}}</span></div>`;
+          const metaHtml = `<div class="job-meta"><div class="job-loc${{job.location ? '' : ' is-empty'}}" title="근무지">${{locIcon()}}<span>${{escapeHtml(jobLocationText(job))}}</span></div><span class="job-exp${{job.experience ? '' : ' is-empty'}}" title="경력">${{escapeHtml(jobExperienceText(job))}}</span></div>`;
 
           html += `
             <article class="job-card${{watchlist[job.job_key] ? ' is-watched' : ''}}" data-key="${{escapeHtml(job.job_key)}}" data-watch-for="${{escapeHtml(job.job_key)}}">
@@ -3574,7 +3878,7 @@ def generate_html(jobs, update_time_str):
                   </div>
                 </div>
                 <div class="job-title">${{escapeHtml(job.title)}}</div>
-                ${{locHtml}}
+                ${{metaHtml}}
                 ${{summaryHtml}}
               </div>
               <div class="card-footer">
@@ -3605,7 +3909,7 @@ def generate_html(jobs, update_time_str):
           ).join('');
 
           const listSummaryHtml = job.summary ? `<div class="list-summary" title="${{escapeHtml(job.summary)}}">${{escapeHtml(job.summary)}}</div>` : '';
-          const listLocHtml = `<div class="list-location${{job.location ? '' : ' is-empty'}}" title="근무지">${{locIcon()}}<span>${{escapeHtml(jobLocationText(job))}}</span></div>`;
+          const listMetaHtml = `<div class="list-meta"><div class="list-location${{job.location ? '' : ' is-empty'}}" title="근무지">${{locIcon()}}<span>${{escapeHtml(jobLocationText(job))}}</span></div><span class="list-exp${{job.experience ? '' : ' is-empty'}}" title="경력">${{escapeHtml(jobExperienceText(job))}}</span></div>`;
 
           html += `
             <div class="list-item" data-key="${{escapeHtml(job.job_key)}}" data-watch-for="${{escapeHtml(job.job_key)}}">
@@ -3613,7 +3917,7 @@ def generate_html(jobs, update_time_str):
               <div class="list-company" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</div>
               <div class="list-title">
                 <div>${{escapeHtml(job.title)}}</div>
-                ${{listLocHtml}}
+                ${{listMetaHtml}}
                 ${{listSummaryHtml}}
               </div>
               <div class="list-deadline">${{dlBadge}}</div>
@@ -3642,6 +3946,7 @@ def generate_html(jobs, update_time_str):
       selectedKeyword = 'all';
       selectedPlatform = 'all';
       selectedRegion = 'all';
+      selectedExperience = 'all';
       selectedDeadline = 'all';
       selectedWatch = 'all';
       searchTerm = '';
@@ -3651,6 +3956,7 @@ def generate_html(jobs, update_time_str):
       document.querySelectorAll('#keywordNav .segment-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-kw') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="platform"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="region"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
+      document.querySelectorAll('.filter-pill[data-filter="experience"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="deadline"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="watch"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
 
@@ -3676,9 +3982,12 @@ def generate_html(jobs, update_time_str):
 
         if (filterType === 'platform') selectedPlatform = val;
         if (filterType === 'region') selectedRegion = val;
+        if (filterType === 'experience') selectedExperience = val;
         if (filterType === 'deadline') selectedDeadline = val;
         if (filterType === 'watch') selectedWatch = val;
         renderFeed();
+        // 현황 바 요약 칩과 좌측 레일 칩이 같은 필터 상태를 함께 보여 주도록 맞춘다.
+        syncFilterButtons();
       }});
     }});
 
@@ -3762,6 +4071,7 @@ def generate_html(jobs, update_time_str):
       let n = 0;
       if (selectedPlatform !== 'all') n += 1;
       if (selectedRegion !== 'all') n += 1;
+      if (selectedExperience !== 'all') n += 1;
       if (selectedDeadline !== 'all') n += 1;
       if (selectedKeyword !== 'all') n += 1;
       if (selectedWatch === 'watch') n += 1;
@@ -3855,6 +4165,14 @@ def generate_readme(jobs, update_time_str):
 
     urgent_count = count_urgent_jobs(jobs)
 
+    experience_counts = {}
+    for _job in jobs:
+        _label = experience_group(_job.get("experience") or "")
+        experience_counts[_label] = experience_counts.get(_label, 0) + 1
+    experience_summary = " · ".join(
+        f"{_label} {experience_counts[_label]}건" for _label in EXPERIENCE_GROUPS if experience_counts.get(_label)
+    )
+
     lines = [
         "# 🛡️ Infosec Archive · 정보보안 포지션 아카이브",
         "",
@@ -3862,6 +4180,7 @@ def generate_readme(jobs, update_time_str):
         f"> **마지막 업데이트**: `{update_time_str}` (매일 08:00 KST 자동 수집)",
         f"> **아카이빙된 보안 공고**: 총 **{len(jobs)}**개 (직무 검증 및 중복 제거 완료)",
         f"> **마감 임박 공고**: 총 **{urgent_count}**개 (D-Day 및 마감 기한 순 정렬)",
+        f"> **경력 분포**: {experience_summary}",
         "> **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)",
         "> **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)",
         "> **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)",
@@ -3892,8 +4211,8 @@ def generate_readme(jobs, update_time_str):
             lines.append("")
             continue
 
-        lines.append("| 회사명 | 공고명 | 근무지 | 플랫폼 | 마감 일정 | 상세 분야 |")
-        lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
+        lines.append("| 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |")
+        lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
         for job in kw_list:
             platforms_str = ", ".join(job["platforms"])
             keywords_str = ", ".join([f"`{k}`" for k in job["keywords"]])
@@ -3901,7 +4220,8 @@ def generate_readme(jobs, update_time_str):
             title_escaped = job["title"].replace("|", "\\|")
             company_escaped = job["company"].replace("|", "\\|")
             location_escaped = (job.get("location") or "지역 미표기").replace("|", "\\|")
-            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {location_escaped} | {platforms_str} | **{dl}** | {keywords_str} |")
+            experience_escaped = (job.get("experience") or EXPERIENCE_EMPTY_LABEL).replace("|", "\\|")
+            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {location_escaped} | {experience_escaped} | {platforms_str} | **{dl}** | {keywords_str} |")
         
         lines.append("")
         lines.append("[맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)")
@@ -3983,14 +4303,15 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
         cur.execute("""
         INSERT INTO jobs (
             job_key, company, title, url, platforms, keywords,
-            location, deadline, deadline_status, status,
+            location, experience, deadline, deadline_status, status,
             summary, tags, first_seen_at, last_seen_at,
             created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(job_key) DO UPDATE SET
             platforms = excluded.platforms,
             keywords = excluded.keywords,
             location = CASE WHEN excluded.location != '' THEN excluded.location ELSE jobs.location END,
+            experience = CASE WHEN excluded.experience != '' THEN excluded.experience ELSE jobs.experience END,
             deadline = excluded.deadline,
             deadline_status = excluded.deadline_status,
             status = excluded.status,
@@ -4002,7 +4323,7 @@ def sync_jobs_to_db(jobs, now_dt=None, db_path=None):
             key, job["company"], job["title"], job["url"],
             json.dumps(job.get("platforms", []), ensure_ascii=False),
             json.dumps(job.get("keywords", []), ensure_ascii=False),
-            job.get("location", ""), raw_deadline, dl_status, status,
+            job.get("location", ""), job.get("experience", ""), raw_deadline, dl_status, status,
             job.get("summary", ""), json.dumps(job.get("tags", []), ensure_ascii=False),
             now_kst, now_kst, now_kst, now_kst
         ))
