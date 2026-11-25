@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-29개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+30개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
 - 데스크톱(>768px): 브랜드 + 대표 5개 진입점(채용공고·시험 공부 + 3개 드롭다운)
 - 모바일(<=768px): 간결한 헤더(로고·현재 페이지·테마) + 하단 고정 5탭 바 + 전체 메뉴 시트
 - 게임 메뉴는 '챌린지 / 미니게임' 소제목으로 묶는다(데스크톱 드롭다운·모바일 시트 공통).
-- 시트: 카테고리별 26개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
+- 시트: 카테고리별 27개 페이지, 딤 클릭·닫기 버튼·Escape 로 닫기, 포커스 이동/복귀,
   배경 스크롤 잠금, 슬라이드 업. `prefers-reduced-motion` 에서는 모두 즉시 전환.
 - 모바일 `게임` 탭은 wargame.html 로 이동하지 않고 시트의 게임 목록으로 스크롤·포커스한다.
 """
@@ -19,6 +19,7 @@ import monetization
 # key, 파일, 표시 이름, 짧은 이름(모바일 헤더)
 PAGES = [
     ("today", "today.html", "오늘", "오늘"),
+    ("market", "market.html", "증시 이슈", "증시 이슈"),
     ("index", "index.html", "채용공고", "채용공고"),
     ("study", "study.html", "시험 공부", "시험 공부"),
     ("ai", "ai.html", "AI 트렌드", "AI 트렌드"),
@@ -70,14 +71,14 @@ DAILY_KEYS = ["outfit", "pick", "grocery", "basket", "paymeter", "movein", "near
 # 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
 GROUPS = [
     ("보안·채용", ["index", "study"]),
-    ("브리핑·유틸", ["today", "ai", "cve", "tools", "radar"]),
+    ("브리핑·유틸", ["today", "market", "ai", "cve", "tools", "radar"]),
     ("데일리·생활", DAILY_KEYS),
     ("게임", GAME_GROUPS),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
-    ("브리핑·트렌드", ["today", "ai", "cve", "tools", "radar"]),
+    ("브리핑·트렌드", ["today", "market", "ai", "cve", "tools", "radar"]),
     ("데일리·생활", DAILY_KEYS),
     ("게임", GAME_GROUPS),
 ]
@@ -86,7 +87,7 @@ DESKTOP_DROPDOWNS = [
 MOBILE_TABS = [
     ("jobs", "채용", "index.html", ["index"], "briefcase"),
     ("study", "학습", "study.html", ["study"], "book"),
-    ("brief", "브리핑", "today.html", ["today", "ai", "cve", "tools", "radar"], "chart"),
+    ("brief", "브리핑", "today.html", ["today", "market", "ai", "cve", "tools", "radar"], "chart"),
     # href 가 None 이면 이동 대신 전체 시트의 게임 목록을 열어 준다.
     ("game", "게임", None, ["wargame", "clue", "mystery90", "mission", "chart", "subway", "ops", "seat", "load", "arcade", "hangul"], "game"),
 ]

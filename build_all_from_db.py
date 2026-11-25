@@ -10,7 +10,8 @@ AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(c
 실시간 Canvas 아케이드(arcade.html), 한글 한 칸 변신(hangul.html), 오늘의 카드(cards.html), 세탁 라벨 읽기(wash.html),
 재질 표시·분리배출(recycle.html), 식품 라벨·영양성분표 읽기(food.html), 장보기 타이밍(grocery.html),
 실시간 월급·퇴근 미터(paymeter.html), 오늘의 지하철역 맞히기(subway.html), 오늘의 장바구니 리그(basket.html),
-90초 생활 추리(mystery90.html), 자취방 입주 점검 카드(movein.html), 우리 동네 지금 갈 곳(nearby.html)을
+90초 생활 추리(mystery90.html), 자취방 입주 점검 카드(movein.html), 우리 동네 지금 갈 곳(nearby.html),
+국내·해외 증시 이슈 요약(market.html, market_data.json)을
 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
@@ -188,6 +189,10 @@ def build_all():
     from build_nearby_html import build as build_nearby
     nearby_total = build_nearby()
 
+    # 34. market.html 재생성 (증시 이슈: market_crawler.py 가 만든 market_data.json 기반 · 지연 시세·공식 일정)
+    from build_market_html import build as build_market
+    market_total = build_market()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -221,6 +226,8 @@ def build_all():
     print(f"  - 90초 생활 추리: 사건 {mystery90_total['cases']}건 · 오늘 {mystery90_total['daily']} · 90초")
     print(f"  - 입주 점검 카드: 구역 {movein_total['sections']}개 · 항목 {movein_total['items']}개 (3상태 · Canvas 리포트)")
     print(f"  - 지금 갈 곳: 자치구 {nearby_total['districts']}개 · 장소 {nearby_total['places']}곳 (자료 확인 {nearby_total['checkedOn']})")
+    print(f"  - 증시 이슈: 기사 {market_total['issues']}건 · 지수 {market_total['indices']}개 · 일정 {market_total['calendar']}건 "
+          f"(수집 {market_total['collectedAt']} · AI {'사용' if market_total['ai'] else '폴백'})")
     print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
           f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 

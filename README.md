@@ -1,10 +1,10 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-25 14:54:55 KST` (매일 08:00 KST 자동 수집)
-> **아카이빙된 보안 공고**: 총 **616**개 (직무 검증 및 중복 제거 완료)
-> **마감 임박 공고**: 총 **157**개 (D-Day 및 마감 기한 순 정렬)
-> **경력 분포**: 신입 21건 · 신입·경력 32건 · 경력 514건 · 경력무관 35건 · 미표기 14건
+> **마지막 업데이트**: `2026-11-25 20:29:29 KST` (매일 08:00 KST 자동 수집)
+> **아카이빙된 보안 공고**: 총 **613**개 (직무 검증 및 중복 제거 완료)
+> **마감 임박 공고**: 총 **154**개 (D-Day 및 마감 기한 순 정렬)
+> **경력 분포**: 신입 20건 · 신입·경력 31건 · 경력 514건 · 경력무관 34건 · 미표기 14건
 > **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
 > **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)
@@ -15,14 +15,14 @@
 ### 분야별 바로가기
 | 분야 | 등록 공고 | 바로가기 |
 | :--- | :---: | :--- |
-| **정보보안** | **444개** | [목록 바로가기](#정보보안-444건) |
-| **정보보호** | **185개** | [목록 바로가기](#정보보호-185건) |
+| **정보보안** | **442개** | [목록 바로가기](#정보보안-442건) |
+| **정보보호** | **184개** | [목록 바로가기](#정보보호-184건) |
 | **취약점 진단** | **84개** | [목록 바로가기](#취약점-진단-84건) |
-| **모의해킹** | **67개** | [목록 바로가기](#모의해킹-67건) |
+| **모의해킹** | **65개** | [목록 바로가기](#모의해킹-65건) |
 
 ---
 
-## 정보보안 (444건)
+## 정보보안 (442건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -33,9 +33,7 @@
 | **(주)인싸이트에이치알지** | [우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897) | 서울 | 경력 3~15년 | 인크루트 | **D-Day (~11/25 수) 23시 마감** | `정보보안` |
 | **(주)우리카드** | [[우리카드] 정보보안 경력직 채용](https://career.rememberapp.co.kr/job/posting/354554) | 서울 종로구 | 경력 3년↑ | 리멤버, 인크루트 | **D-Day (~11/25 수)** | `정보보안` |
 | **AXA손해보험(주)** | [보안&위기대응팀 정보보호 관리자 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611140000260) | 서울 용산구 | 경력 10년↑ | 인크루트 | **D-Day (~11/25 수) 23시 마감** | `정보보호`, `정보보안` |
-| **(주)글로벌에잇** | [글로벌에잇 보안 컨설팅(모의해킹) 채용 - 신입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55580388&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 구로구 | 신입 | 사람인, 잡코리아 | **17시마감** | `모의해킹`, `정보보안` |
 | **(주)교원프라퍼티** | [[교원그룹] 정보보안기획 직무 모집 (경력)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611180003511) | 서울 종로구 | 경력 4~12년 | 인크루트 | **D-Day (~11/25 수) 23시 마감** | `정보보안` |
-| **㈜글로벌에잇** | [글로벌에잇 보안 컨설팅(모의해킹) 채용 - 경력](https://www.jobkorea.co.kr/Recruit/GI_Read/50371117) | 서울 구로구 | 경력무관 | 잡코리아, 사람인 | **17시마감** | `모의해킹`, `정보보안` |
 | **(주)모닝인** | [[정규직/구미] 정보보안 담당자(경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55536096&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 경북 구미시 | 경력 5년↑ | 사람인 | **D-Day (~ 11/25(수))** | `정보보안` |
 | **웍스피어(유)** | [[웍스피어] 보안 엔지니어 (3년이상)](https://www.jobkorea.co.kr/Recruit/GI_Read/50176196) | 서울 서초구 | 경력 3년↑ | 잡코리아 | **D-6 (~ 12/01(화))** | `정보보안` |
 | **(주)세스코** | [(주)세스코 정보보안기획 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55453211&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강동구 | 경력 8년↑ | 잡코리아, 사람인 | **D-5** | `정보보안` |
@@ -475,7 +473,7 @@
 
 ---
 
-## 정보보호 (185건)
+## 정보보호 (184건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -484,7 +482,6 @@
 | **(주)알스퀘어** | [[라이프매니지먼트] 개인정보보호 담당자](https://career.rememberapp.co.kr/job/posting/342101) | 서울 서초구 | 경력 5~10년 | 리멤버 | **D-Day (~11/25 수)** | `정보보호` |
 | **AXA손해보험(주)** | [보안&위기대응팀 정보보호 관리자 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611140000260) | 서울 용산구 | 경력 10년↑ | 인크루트 | **D-Day (~11/25 수) 23시 마감** | `정보보호`, `정보보안` |
 | **(주)씨드젠** | [[신입/경력]정보보호 및 개인정보보호 컨설턴트 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55387528&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 영등포구 | 신입·경력 | 사람인 | **D-Day (~ 11/25(수))** | `정보보호` |
-| **전남대학교병원** | [11월 직원(지원직) 공개채용 공고(정보보호 최고책임자)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55594357&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 전남 | 신입·경력 | 사람인 | **17시마감** | `정보보호` |
 | **(주)진영정기** | [㈜진영정기 구매팀 정보보호·전산 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55467391&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 화성시 | 신입·경력 | 사람인 | **D-7 (~ 12/02(수))** | `정보보호` |
 | **(주)카카오** | [개인정보보호 담당자 (경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55482452&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 성남시 분당구 | 경력 2년↑ | 사람인, 잡코리아 | **D-5 (~ 11/30(월))** | `정보보호` |
 | **한화오션(주)** | [[경영지원] 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경남 거제시 | 경력 5년↑ | 사람인, 잡코리아, 인크루트 | **D-5 (~ 11/30(월))** | `정보보호` |
@@ -762,7 +759,7 @@
 
 ---
 
-## 모의해킹 (67건)
+## 모의해킹 (65건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -771,8 +768,6 @@
 | **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 서울 | 경력 5~11년 | 원티드, 사람인 | **D-Day (오늘 마감)** | `모의해킹`, `취약점 진단` |
 | **(주)고른** | [[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 경기 화성시 동탄구 | 경력 1~3년 | 사람인, 잡코리아 | **D-Day (오늘 마감)** | `모의해킹`, `취약점 진단` |
 | **에스케이쉴더스(주)** | [모의해킹 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 경기 성남시 분당구 | 경력 3년↑ | 사람인, 잡코리아 | **D-Day (오늘 마감)** | `모의해킹` |
-| **(주)글로벌에잇** | [글로벌에잇 보안 컨설팅(모의해킹) 채용 - 신입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55580388&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 구로구 | 신입 | 사람인, 잡코리아 | **17시마감** | `모의해킹`, `정보보안` |
-| **㈜글로벌에잇** | [글로벌에잇 보안 컨설팅(모의해킹) 채용 - 경력](https://www.jobkorea.co.kr/Recruit/GI_Read/50371117) | 서울 구로구 | 경력무관 | 잡코리아, 사람인 | **17시마감** | `모의해킹`, `정보보안` |
 | **현대오토에버(주)** | [[보안]모의 해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/236690) | 서울 강남구 | 경력 2~12년 | 리멤버, 잡코리아 | **D-1 (~11/26 목)** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **현대오토에버㈜** | [DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영](https://www.jobkorea.co.kr/Recruit/GI_Read/50301974) | 서울 강남구 | 경력 2년↑ | 잡코리아 | **D-1 (내일 마감)** | `모의해킹`, `취약점 진단` |
 | **갓루트(GOTROOT)** | [[경력 무관] Offensive Security 컨설턴트 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50253569) | 서울 금천구 | 경력무관 | 잡코리아 | **D-2** | `모의해킹`, `정보보안` |

@@ -41,7 +41,7 @@ import make_preview_pages
 HTML = os.path.join(BASE_DIR, "grocery.html")
 DATA = os.path.join(BASE_DIR, "grocery_data.json")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 29
+SHEET_PAGES = 30
 WINDOW_DAYS = 28
 NEUTRAL_PCT = 3.0
 ITEMS = ("egg", "greenonion", "cabbage", "radish", "onion", "spinach", "zucchini", "apple")
