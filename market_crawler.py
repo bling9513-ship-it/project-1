@@ -128,7 +128,7 @@ EARNINGS_WATCH = {
 
 MAX_NEWS = 46           # market_data.json 에 담을 기사 상한
 CACHE_VERSION = "v2"   # 프롬프트 규칙을 바꾸면 올린다(예전 분석은 쓰지 않음)
-AI_ITEM_LIMIT = 18      # 이번 실행에서 EXAONE 으로 정리할 기사 수(최근 기사 우선)
+AI_ITEM_LIMIT = 12      # 이번 실행에서 EXAONE 으로 정리할 기사 수(최근 기사 우선 · 하루 100회 한도 보호)
 AI_BATCH = 3            # EXAONE 한 번에 분석할 기사 수(추론 토큰이 많아 3건이 안정적)
 AI_MAX_CALLS = 12       # EXAONE 분석 호출 상한(일일 100회 한도 보호)
 NEWS_WINDOW_HOURS = 48  # 이 시간 안에 올라온 기사만
