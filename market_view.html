@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>market 미리보기</title>
+  <style>
+    html, body { margin: 0; background: #ffffff; }
+    #frame { display: block; border: 0; }
+  </style>
+</head>
+<body>
+  <iframe id="frame" src="market.html" title="증시 이슈 미리보기"></iframe>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var width = Number(params.get('w')) || 1280;
+      var frame = document.getElementById('frame');
+      frame.style.width = width + 'px';
+      frame.style.height = '1500px';
+    })();
+  </script>
+</body>
+</html>
