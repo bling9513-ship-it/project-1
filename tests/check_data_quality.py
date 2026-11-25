@@ -167,7 +167,8 @@ def run_unit_tests():
                "tests/test_mystery90_puzzles.py", "tests/test_movein_report.py", "tests/test_nearby_data.py",
                "tests/test_monetization.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
-               "tests/test_job_dedup.py", "tests/test_job_dedup_active.py"]
+               "tests/test_job_dedup.py", "tests/test_job_dedup_active.py",
+               "tests/test_location_normalize.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)
         if not os.path.exists(path):

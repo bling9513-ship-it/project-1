@@ -73,6 +73,149 @@ def clean_text(text):
     text = re.sub(r"<[^>]+>", "", text)
     return re.sub(r"\s+", " ", text).strip()
 
+
+# ---------------------------------------------------------------- 근무지 정규화
+# 플랫폼마다 제각각인 근무지 표기('서울특별시 강남구 역삼동 …', '경기 > 성남시 분당구 외',
+# '서울시 강남구 선릉로 92길 36, 대동빌딩 6층')를 '서울 강남구' · '경기 성남시 분당구' ·
+# '재택·원격' 처럼 비교·필터가 가능한 두세 토큰으로 정리한다.
+LOCATION_SIDO = {
+    "서울특별시": "서울", "서울시": "서울", "서울": "서울",
+    "경기도": "경기", "경기": "경기",
+    "인천광역시": "인천", "인천시": "인천", "인천": "인천",
+    "부산광역시": "부산", "부산시": "부산", "부산": "부산",
+    "대구광역시": "대구", "대구시": "대구", "대구": "대구",
+    "광주광역시": "광주", "광주시": "광주", "광주": "광주",
+    "울산광역시": "울산", "울산시": "울산", "울산": "울산",
+    "대전광역시": "대전", "대전시": "대전", "대전": "대전",
+    "세종특별자치시": "세종", "세종시": "세종", "세종": "세종",
+    "충청북도": "충북", "충북": "충북",
+    "충청남도": "충남", "충남": "충남",
+    "전북특별자치도": "전북", "전라북도": "전북", "전북": "전북",
+    "전라남도": "전남", "전남": "전남",
+    "경상북도": "경북", "경북": "경북",
+    "경상남도": "경남", "경남": "경남",
+    "강원특별자치도": "강원", "강원도": "강원", "강원": "강원",
+    "제주특별자치도": "제주", "제주도": "제주", "제주": "제주",
+}
+_SIDO_ALIASES_LONG_FIRST = sorted(LOCATION_SIDO, key=len, reverse=True)
+_LOCATION_DROP_TOKENS = {"외", "등", "전체", "전지역", "근무", "근무지", "가능", "일부", "병행", "겸", "및", "~"}
+_REMOTE_RE = re.compile(r"재택|원격|리모트|remote", re.IGNORECASE)
+
+# 화면 지역 필터 그룹 — 실제 분포(서울·경기·인천 중심)에 맞춘 묶음
+LOCATION_GROUPS = (
+    ("서울", ("서울",)),
+    ("경기·인천", ("경기", "인천")),
+    ("대전·세종·충청", ("대전", "세종", "충북", "충남")),
+    ("부산·울산·경남", ("부산", "울산", "경남")),
+    ("대구·경북", ("대구", "경북")),
+    ("광주·전라", ("광주", "전북", "전남")),
+    ("강원·제주", ("강원", "제주")),
+    ("재택·원격", ("재택·원격",)),
+    ("전국·기타", ("전국", "해외")),
+)
+
+
+def normalize_location(raw):
+    """원문 근무지 → '서울 강남구' / '경기 성남시 분당구' / '재택·원격' 표준 표기.
+
+    상세 주소(도로명·건물·층)는 버리고 시/도 + 시·군·구까지만 남긴다.
+    근무지를 확인할 수 없는 값('경력무관', 빈 문자열 등)은 "" 를 돌려준다.
+    """
+    if not raw:
+        return ""
+    text = html.unescape(str(raw))
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = text.replace("\xa0", " ").replace("&gt;", " > ").replace("＞", " > ")
+    text = re.sub(r"(근무지역|근무지|근무\s*지역)\s*[:：]?", " ", text)
+    text = re.sub(r"[\[\](){}]", " ", text)
+    # 여러 지역을 나열한 표기는 첫 지역만 대표로 남긴다 ('서울/경기', '부산 > 전지역 외')
+    parts = [p for p in re.split(r"[,/|·>]", text) if p.strip()]
+    if not parts:
+        return ""
+    primary = parts[0]
+
+    tokens = []
+    for tok in re.split(r"\s+", primary):
+        tok = tok.strip().strip("\"'")
+        if not tok:
+            continue
+        if len(tok) > 2 and re.search(r"(전지역|전체|일대|인근)$", tok):
+            tok = re.sub(r"(전지역|전체|일대|인근)$", "", tok)
+        if not tok:
+            continue
+        split_done = False
+        for alias in _SIDO_ALIASES_LONG_FIRST:
+            if tok.startswith(alias) and len(tok) > len(alias) and tok not in LOCATION_SIDO:
+                rest = tok[len(alias):]
+                # '서울강남구' 뿐 아니라 사람인이 쓰는 '전남광주'(전남·광주 공통)도 분리한다.
+                if rest in LOCATION_SIDO:
+                    tokens.extend([alias, rest])
+                    split_done = True
+                    break
+                if re.match(r"^[가-힣]{1,6}(시|군|구)$", rest):
+                    tokens.extend([alias, rest])
+                    split_done = True
+                    break
+        if not split_done:
+            tokens.append(tok)
+
+    sido_idx = None
+    sido = ""
+    for idx, tok in enumerate(tokens):
+        canon = LOCATION_SIDO.get(tok)
+        if canon:
+            sido_idx, sido = idx, canon
+            break
+
+    if not sido:
+        joined = " ".join(tokens)
+        if "전국" in joined:
+            return "전국"
+        if "해외" in joined:
+            return "해외"
+        if _REMOTE_RE.search(primary):
+            return "재택·원격"
+        for tok in tokens:
+            if re.match(r"^[가-힣]{2,6}(시|군|구)$", tok):
+                return tok
+        return ""
+
+    detail = []
+    for tok in tokens[sido_idx + 1:]:
+        if not tok or tok in _LOCATION_DROP_TOKENS:
+            continue
+        if not detail and re.match(r"^[가-힣]{1,6}시$", tok):
+            detail.append(tok)
+            continue
+        if len(detail) <= 1 and re.match(r"^[가-힣]{1,6}(구|군)$", tok):
+            detail.append(tok)
+            continue
+        break
+    return " ".join([sido] + detail)
+
+
+SEOUL_DISTRICTS = {
+    "종로구", "중구", "용산구", "성동구", "광진구", "동대문구", "중랑구", "성북구", "강북구",
+    "도봉구", "노원구", "은평구", "서대문구", "마포구", "양천구", "강서구", "구로구", "금천구",
+    "영등포구", "동작구", "관악구", "서초구", "강남구", "송파구", "강동구",
+}
+
+
+def location_group(location):
+    """정규화된 근무지를 화면 지역 필터 그룹명으로 변환한다(빈 값은 "")."""
+    loc = (location or "").strip()
+    if not loc:
+        return ""
+    head = loc.split(" ")[0]
+    if head in ("재택", "원격", "재택·원격"):
+        return "재택·원격"
+    if head in SEOUL_DISTRICTS:
+        return "서울"
+    for label, members in LOCATION_GROUPS:
+        if head in members:
+            return label
+    return "전국·기타"
+
 def count_urgent_jobs(jobs):
     """마감 임박 공고 수 — DB가 판정한 deadline_status(D_DAY/URGENT)를 우선한다.
 
@@ -269,6 +412,22 @@ def fetch_jumpit(today_date):
                         })
             except Exception as e:
                 pass
+    # 목록 API에는 근무지가 없다 — 상세 API의 location(도로명 포함)을 병렬로 받아 정리한다.
+    def _jumpit_location(jid):
+        try:
+            req = urllib.request.Request(f"https://api.jumpit.co.kr/api/position/{jid}", headers=JUMPIT_HEADERS)
+            with urllib.request.urlopen(req, timeout=10) as res:
+                payload = json.loads(read_limited(res).decode("utf-8"))
+            detail = payload.get("result") or {}
+            return normalize_location(detail.get("location") or "")
+        except Exception:
+            return ""
+
+    if results:
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            locations = list(executor.map(_jumpit_location, [r["external_id"] for r in results]))
+        for row, loc in zip(results, locations):
+            row["location"] = loc
     return results
 
 def fetch_wanted():
@@ -295,13 +454,19 @@ def fetch_wanted():
                         continue
                         
                     comp = clean_text(item.get("company", {}).get("name", "") if isinstance(item.get("company"), dict) else item.get("company", ""))
+                    addr = item.get("address") if isinstance(item.get("address"), dict) else {}
+                    # 원티드는 시/도(location)와 구(district)가 나뉘어 온다 — 합쳐 '서울 강남구'로 만든다.
+                    location = normalize_location(" ".join([
+                        str(addr.get("location") or ""),
+                        str(addr.get("district") or ""),
+                    ]))
                     results.append({
                         "platform": "원티드",
                         "external_id": jid,
                         "company": comp,
                         "title": pos,
                         "url": f"https://www.wanted.co.kr/wd/{jid}",
-                        "location": clean_text(item.get("address", {}).get("location", "")),
+                        "location": location,
                         "deadline": "상시채용"
                     })
         except Exception as e:
@@ -327,6 +492,9 @@ def fetch_saramin(today_date):
                     tit_m = re.search(r'<h2 class="job_tit"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span>(.*?)</span>', it, re.DOTALL)
                     corp_m = re.search(r'<strong class="corp_name"[^>]*>.*?<a[^>]*>(.*?)</a>', it, re.DOTALL)
                     date_m = re.search(r'<div class="job_date">\s*<span class="date">(.*?)</span>', it, re.DOTALL)
+                    # 근무지는 job_condition 첫 span 안의 지역 링크 묶음('경기' + '성남시 분당구')이다.
+                    cond_m = re.search(r'<div class="job_condition">(.*?)</div>', it, re.DOTALL)
+                    loc_m = re.search(r'<span>(.*?)</span>', cond_m.group(1), re.DOTALL) if cond_m else None
                     
                     if not tit_m or not corp_m:
                         continue
@@ -350,7 +518,7 @@ def fetch_saramin(today_date):
                         "company": corp,
                         "title": title,
                         "url": link,
-                        "location": "",
+                        "location": normalize_location(loc_m.group(1)) if loc_m else "",
                         "deadline": deadline
                     })
         except Exception as e:
@@ -379,6 +547,16 @@ def fetch_remember(today_date):
                         if not is_security(title):
                             continue
                         comp = clean_text((it.get("company") or {}).get("name") or (it.get("organization") or {}).get("name") or "")
+                        # 리멤버는 normalized_address(level1 시/도 · level2 구) 또는 addresses 배열로 근무지를 준다.
+                        na = it.get("normalized_address") if isinstance(it.get("normalized_address"), dict) else {}
+                        location = normalize_location(" ".join([
+                            str(na.get("level1") or ""), str(na.get("level2") or ""),
+                        ]))
+                        if not location and isinstance(it.get("addresses"), list) and it["addresses"]:
+                            addr = it["addresses"][0] if isinstance(it["addresses"][0], dict) else {}
+                            location = normalize_location(" ".join([
+                                str(addr.get("address_level1") or ""), str(addr.get("address_level2") or ""),
+                            ]))
                         deadline = "상시채용"
                         if it.get("explicit_due") and it.get("ends_at"):
                             try:
@@ -402,7 +580,7 @@ def fetch_remember(today_date):
                             "company": comp,
                             "title": title,
                             "url": f"https://career.rememberapp.co.kr/job/posting/{jid}",
-                            "location": "",
+                            "location": location,
                             "deadline": deadline
                         })
             except Exception:
@@ -456,7 +634,7 @@ def fetch_jobkorea(today_date):
                                 "company": comp,
                                 "title": title,
                                 "url": link,
-                                "location": clean_text(loc_m.group(1)) if loc_m else "",
+                                "location": normalize_location(loc_m.group(1)) if loc_m else "",
                                 "deadline": deadline
                             })
             except Exception:
@@ -480,7 +658,8 @@ def fetch_incruit(today_date):
                         cp_m = re.search(r'class="cpname"[^>]*>(.*?)</a>', it)
                         tit_m = re.search(r'<div class="cell_mid">.*?<div class="cl_top">.*?<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', it, re.DOTALL)
                         date_m = re.search(r'<div class="cell_last">.*?<div class="cl_btm"><span>(.*?)</span>', it, re.DOTALL)
-                        loc_m = re.search(r'<div class="cl_md"><span>(.*?)</span>', it, re.DOTALL)
+                        # cl_md 안의 첫 span 이 근무지('서울 금천구')이고, 이어서 경력·학력·고용형태가 온다.
+                        md_m = re.search(r'class="cl_md"[^>]*>(.*?)</div>', it, re.DOTALL)
                         
                         if cp_m and tit_m:
                             title = clean_text(tit_m.group(2))
@@ -537,7 +716,9 @@ def fetch_incruit(today_date):
                                 "company": comp,
                                 "title": title,
                                 "url": link,
-                                "location": clean_text(loc_m.group(1)) if loc_m else "",
+                                "location": (next((normalize_location(clean_text(sp))
+                                                   for sp in re.findall(r'<span[^>]*>(.*?)</span>', md_m.group(1), re.DOTALL)
+                                                   if normalize_location(clean_text(sp))), "") if md_m else ""),
                                 "deadline": deadline
                             })
             except Exception:
@@ -1186,6 +1367,7 @@ _WATCH_JS = """
         query: searchTerm,
         keyword: selectedKeyword,
         platform: selectedPlatform,
+        region: selectedRegion,
         deadline: selectedDeadline,
         sort: sortBy,
         watch: selectedWatch
@@ -1197,6 +1379,7 @@ _WATCH_JS = """
       if (state.query) parts.push('"' + state.query + '"');
       if (state.keyword && state.keyword !== 'all') parts.push(state.keyword);
       if (state.platform && state.platform !== 'all') parts.push(state.platform);
+      if (state.region && state.region !== 'all') parts.push(state.region);
       if (state.deadline === 'urgent') parts.push('마감임박');
       else if (state.deadline === 'always') parts.push('상시');
       if (state.watch === 'watch') parts.push('관심만');
@@ -1284,6 +1467,7 @@ _WATCH_JS = """
         var type = pill.getAttribute('data-filter');
         var value = pill.getAttribute('data-val');
         if (type === 'platform') pill.classList.toggle('active', value === selectedPlatform);
+        else if (type === 'region') pill.classList.toggle('active', value === selectedRegion);
         else if (type === 'deadline') pill.classList.toggle('active', value === selectedDeadline);
         else if (type === 'watch') pill.classList.toggle('active', value === selectedWatch);
       });
@@ -1296,6 +1480,7 @@ _WATCH_JS = """
       clearSearchBtn.style.display = searchTerm ? 'block' : 'none';
       selectedKeyword = typeof state.keyword === 'string' ? state.keyword : 'all';
       selectedPlatform = typeof state.platform === 'string' ? state.platform : 'all';
+      selectedRegion = typeof state.region === 'string' ? state.region : 'all';
       selectedDeadline = typeof state.deadline === 'string' ? state.deadline : 'all';
       selectedWatch = state.watch === 'watch' ? 'watch' : 'all';
       sortBy = typeof state.sort === 'string' ? state.sort : 'deadline';
@@ -1380,6 +1565,24 @@ def generate_html(jobs, update_time_str):
     kw_counts = {}
     for kw in KEYWORDS:
         kw_counts[kw] = sum(1 for j in jobs if kw in j.get("keywords", []))
+
+    # 지역 필터: 실제 분포에 있는 그룹만 칩으로 그린다(서울·경기·인천 중심).
+    region_counts = {}
+    for _job in jobs:
+        _label = location_group(_job.get("location") or "")
+        if _label:
+            region_counts[_label] = region_counts.get(_label, 0) + 1
+    _region_pill_html = "".join(
+        f'<button class="filter-pill" data-filter="region" data-val="{_label}">'
+        f'{_label}<span class="filter-pill-count">{region_counts.get(_label, 0)}</span></button>'
+        for _label, _members in LOCATION_GROUPS if region_counts.get(_label)
+    )
+    _unknown_region = sum(1 for _job in jobs if not location_group(_job.get("location") or ""))
+    if _unknown_region:
+        _region_pill_html += (
+            f'<button class="filter-pill" data-filter="region" data-val="미표기">'
+            f'미표기<span class="filter-pill-count">{_unknown_region}</span></button>'
+        )
         
     urgent_count = count_urgent_jobs(jobs)
 
@@ -2154,6 +2357,20 @@ def generate_html(jobs, update_time_str):
       transition: color 0.15s ease;
     }}
 
+    .job-loc {{
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      max-width: 100%;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-muted);
+      margin: -8px 0 10px;
+      word-break: keep-all;
+    }}
+    .job-loc .loc-icon {{ flex: 0 0 auto; opacity: 0.8; }}
+    .job-loc.is-empty {{ opacity: 0.75; }}
+
     .job-summary {{
       font-size: 13px;
       color: var(--text-secondary);
@@ -2235,7 +2452,7 @@ def generate_html(jobs, update_time_str):
 
     .list-row {{
       display: grid;
-      grid-template-columns: 140px 1fr 110px 70px auto;
+      grid-template-columns: 140px minmax(0, 1fr) 96px 110px 70px auto;
       align-items: center;
       gap: 12px;
       padding: 13px 18px;
@@ -2291,6 +2508,20 @@ def generate_html(jobs, update_time_str):
       text-align: right;
     }}
 
+    .list-location {{
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }}
+
+    .list-location .loc-icon {{ flex: 0 0 auto; opacity: 0.8; }}
+
     .list-platforms {{
       display: flex;
       gap: 4px;
@@ -2327,6 +2558,11 @@ def generate_html(jobs, update_time_str):
       .list-platforms {{
         grid-column: 2;
         grid-row: 2;
+      }}
+      .list-location {{
+        grid-column: 1;
+        grid-row: 3;
+        font-size: 11.5px;
       }}
       .list-outlink {{
         display: none;
@@ -2855,7 +3091,7 @@ def generate_html(jobs, update_time_str):
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="회사명, 포지션명, 키워드 검색">
+            <input type="text" id="searchInput" class="search-input" placeholder="회사명, 포지션명, 근무지, 키워드 검색">
             <button id="clearSearch" class="clear-search-btn" aria-label="검색 지우기">✕</button>
           </div>
         </div>
@@ -2868,6 +3104,14 @@ def generate_html(jobs, update_time_str):
             <button class="segment-btn" data-kw="정보보호">정보보호 <span class="count">{kw_counts.get("정보보호", 0)}</span></button>
             <button class="segment-btn" data-kw="취약점 진단">취약점 진단 <span class="count">{kw_counts.get("취약점 진단", 0)}</span></button>
             <button class="segment-btn" data-kw="모의해킹">모의해킹 <span class="count">{kw_counts.get("모의해킹", 0)}</span></button>
+          </div>
+        </div>
+
+        <div class="ia-rail-section">
+          <p class="ia-rail-label">지역</p>
+          <div class="filter-pills-scroll">
+            <button class="filter-pill active" data-filter="region" data-val="all">전체</button>
+            {_region_pill_html}
           </div>
         </div>
 
@@ -2989,6 +3233,7 @@ def generate_html(jobs, update_time_str):
 
     let selectedKeyword = 'all';
     let selectedPlatform = 'all';
+    let selectedRegion = 'all';
     let selectedDeadline = 'all';
     let selectedWatch = 'all';
     let sortBy = 'deadline';
@@ -3181,6 +3426,37 @@ def generate_html(jobs, update_time_str):
       }});
     }}
 
+    // 근무지 → 지역 필터 그룹 (파이썬 location_group() 과 동일한 규칙)
+    const SEOUL_DISTRICTS = ['종로구','중구','용산구','성동구','광진구','동대문구','중랑구','성북구','강북구','도봉구','노원구','은평구','서대문구','마포구','양천구','강서구','구로구','금천구','영등포구','동작구','관악구','서초구','강남구','송파구','강동구'];
+    const LOCATION_GROUP_MAP = {{
+      '서울': '서울',
+      '경기': '경기·인천', '인천': '경기·인천',
+      '대전': '대전·세종·충청', '세종': '대전·세종·충청', '충북': '대전·세종·충청', '충남': '대전·세종·충청',
+      '부산': '부산·울산·경남', '울산': '부산·울산·경남', '경남': '부산·울산·경남',
+      '대구': '대구·경북', '경북': '대구·경북',
+      '광주': '광주·전라', '전북': '광주·전라', '전남': '광주·전라',
+      '강원': '강원·제주', '제주': '강원·제주',
+      '전국': '전국·기타', '해외': '전국·기타'
+    }};
+
+    function locGroup(location) {{
+      const text = String(location || '').trim();
+      if (!text) return '미표기';
+      const head = text.split(' ')[0];
+      if (head === '재택' || head === '원격' || head === '재택·원격') return '재택·원격';
+      if (SEOUL_DISTRICTS.indexOf(head) >= 0) return '서울';
+      return LOCATION_GROUP_MAP[head] || '전국·기타';
+    }}
+
+    function jobLocationText(job) {{
+      const text = String((job && job.location) || '').trim();
+      return text || '지역 미표기';
+    }}
+
+    function locIcon() {{
+      return '<svg class="loc-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>';
+    }}
+
     function escapeHtml(str) {{
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }}
@@ -3222,6 +3498,9 @@ def generate_html(jobs, update_time_str):
         if (selectedPlatform !== 'all' && (!job.platforms || !job.platforms.includes(selectedPlatform))) {{
           return false;
         }}
+        if (selectedRegion !== 'all' && locGroup(job.location) !== selectedRegion) {{
+          return false;
+        }}
         const dlMeta = getDeadlineMeta(job.deadline, job.last_seen_at, job.deadline_label);
         if (dlMeta.expired) return false;   // 현재 KST 시각 기준 이미 마감된 공고는 숨김
         if (selectedDeadline === 'urgent' && !dlMeta.isUrgent) return false;
@@ -3233,7 +3512,8 @@ def generate_html(jobs, update_time_str):
           const matchCompany = (job.company || '').toLowerCase().includes(term);
           const matchTitle = (job.title || '').toLowerCase().includes(term);
           const matchKeywords = (job.keywords || []).some(k => k.toLowerCase().includes(term));
-          if (!matchCompany && !matchTitle && !matchKeywords) return false;
+          const matchLocation = (job.location || '').toLowerCase().includes(term);
+          if (!matchCompany && !matchTitle && !matchKeywords && !matchLocation) return false;
         }}
         return true;
       }});
@@ -3279,6 +3559,7 @@ def generate_html(jobs, update_time_str):
             `<span class="keyword-tag ai-tag">${{escapeHtml(t)}}</span>`
           ).join('');
           const summaryHtml = job.summary ? `<div class="job-summary">${{escapeHtml(job.summary)}}</div>` : '';
+          const locHtml = `<div class="job-loc${{job.location ? '' : ' is-empty'}}" title="근무지">${{locIcon()}}<span>${{escapeHtml(jobLocationText(job))}}</span></div>`;
 
           html += `
             <article class="job-card${{watchlist[job.job_key] ? ' is-watched' : ''}}" data-key="${{escapeHtml(job.job_key)}}" data-watch-for="${{escapeHtml(job.job_key)}}">
@@ -3292,6 +3573,7 @@ def generate_html(jobs, update_time_str):
                   </div>
                 </div>
                 <div class="job-title">${{escapeHtml(job.title)}}</div>
+                ${{locHtml}}
                 ${{summaryHtml}}
               </div>
               <div class="card-footer">
@@ -3322,6 +3604,7 @@ def generate_html(jobs, update_time_str):
           ).join('');
 
           const listSummaryHtml = job.summary ? `<div class="list-summary" title="${{escapeHtml(job.summary)}}">${{escapeHtml(job.summary)}}</div>` : '';
+          const listLocHtml = `<div class="list-location${{job.location ? '' : ' is-empty'}}" title="근무지">${{locIcon()}}<span>${{escapeHtml(jobLocationText(job))}}</span></div>`;
 
           html += `
             <div class="list-item" data-key="${{escapeHtml(job.job_key)}}" data-watch-for="${{escapeHtml(job.job_key)}}">
@@ -3331,6 +3614,7 @@ def generate_html(jobs, update_time_str):
                 <div>${{escapeHtml(job.title)}}</div>
                 ${{listSummaryHtml}}
               </div>
+              ${{listLocHtml}}
               <div class="list-deadline">${{dlBadge}}</div>
               <div class="list-platforms">${{platformBadges}}</div>
               <div class="list-outlink" title="원문 열기: ${{escapeHtml(job.url)}}">
@@ -3356,6 +3640,7 @@ def generate_html(jobs, update_time_str):
     function resetFilters() {{
       selectedKeyword = 'all';
       selectedPlatform = 'all';
+      selectedRegion = 'all';
       selectedDeadline = 'all';
       selectedWatch = 'all';
       searchTerm = '';
@@ -3364,6 +3649,7 @@ def generate_html(jobs, update_time_str):
 
       document.querySelectorAll('#keywordNav .segment-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-kw') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="platform"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
+      document.querySelectorAll('.filter-pill[data-filter="region"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="deadline"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
       document.querySelectorAll('.filter-pill[data-filter="watch"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === 'all'));
 
@@ -3388,6 +3674,7 @@ def generate_html(jobs, update_time_str):
         pill.classList.add('active');
 
         if (filterType === 'platform') selectedPlatform = val;
+        if (filterType === 'region') selectedRegion = val;
         if (filterType === 'deadline') selectedDeadline = val;
         if (filterType === 'watch') selectedWatch = val;
         renderFeed();
@@ -3473,6 +3760,7 @@ def generate_html(jobs, update_time_str):
     function activeFilterCount() {{
       let n = 0;
       if (selectedPlatform !== 'all') n += 1;
+      if (selectedRegion !== 'all') n += 1;
       if (selectedDeadline !== 'all') n += 1;
       if (selectedKeyword !== 'all') n += 1;
       if (selectedWatch === 'watch') n += 1;

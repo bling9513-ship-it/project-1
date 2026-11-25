@@ -1106,6 +1106,28 @@ async function checkIndexLayout(page, width, tag) {
     assert.equal(rail.visible, true, `${tag}: filter rail missing`);
     assert.equal(rail.aside, true, `${tag}: filter rail is not an aside`);
     assert.equal(rail.position, 'sticky', `${tag}: filter rail is not a sticky side rail`);
+
+    // 근무지: 카드마다 근무지 라벨이 보이고, 대부분 실제 지역으로 채워져 있다.
+    const locLabels = await page.evaluate(() => Array.from(document.querySelectorAll('#jobsContainer .job-card .job-loc span'))
+      .map((el) => el.textContent.trim()));
+    assert.ok(locLabels.length > 0, `${tag}: job location label missing on cards`);
+    assert.ok(locLabels.every((text) => text.length > 0), `${tag}: empty location label`);
+    const filledRatio = locLabels.filter((text) => text !== '지역 미표기').length / locLabels.length;
+    assert.ok(filledRatio >= 0.9, `${tag}: location fill ratio ${filledRatio.toFixed(2)}`);
+
+    // 지역 필터: 서울만 남기면 서울 카드만 보인다(카드 라벨을 화면의 locGroup 으로 되짚어 확인).
+    const beforeRegion = await count();
+    await page.click('.filter-pill[data-filter="region"][data-val="서울"]');
+    await page.waitForTimeout(120);
+    assert.ok(await count() < beforeRegion, `${tag}: region filter did not narrow the feed`);
+    const groups = await page.evaluate(() => Array.from(document.querySelectorAll('#jobsContainer .job-card .job-loc span'))
+      .map((el) => locGroup(el.textContent.trim())));
+    assert.ok(groups.length > 0 && groups.every((group) => group === '서울'),
+      `${tag}: 서울 filter shows ${Array.from(new Set(groups)).join(',')}`);
+    await page.click('.filter-pill[data-filter="region"][data-val="all"]');
+    await page.waitForTimeout(120);
+    assert.equal(await count(), beforeRegion, `${tag}: region filter reset did not restore the feed`);
+
     const before = await count();
     await page.click('.filter-pill[data-filter="platform"][data-val="원티드"]');
     assert.ok(await count() < before, `${tag}: platform filter did not narrow the feed`);
