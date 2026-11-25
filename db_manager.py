@@ -195,6 +195,7 @@ def init_db(db_path=DB_PATH):
         platforms TEXT NOT NULL,  -- JSON Array
         keywords TEXT NOT NULL,   -- JSON Array
         location TEXT,
+        experience TEXT,          -- 표시용 경력 라벨('신입' · '신입·경력' · '경력무관' · '인턴' · '경력 3년↑' · '경력 2~5년')
         deadline TEXT NOT NULL,
         deadline_status TEXT NOT NULL, -- D_DAY, URGENT, UPCOMING, ALWAYS, WHEN_FILLED, EXPIRED
         status TEXT NOT NULL,          -- ACTIVE, EXPIRED
@@ -209,6 +210,11 @@ def init_db(db_path=DB_PATH):
     cur.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_jobs_deadline_status ON jobs(deadline_status);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company);")
+
+    # 기존 DB 안전 마이그레이션 — 경력(experience) 열이 없으면 추가한다(데이터는 보존).
+    job_columns = {row[1] for row in cur.execute("PRAGMA table_info(jobs)")}
+    if "experience" not in job_columns:
+        cur.execute("ALTER TABLE jobs ADD COLUMN experience TEXT")
     
     # 2. 시험 공부 문제 테이블
     cur.execute("""
@@ -898,7 +904,7 @@ def deduplicate_active_jobs(db_path=DB_PATH, today_date=None, now_dt=None, dry_r
     cur = conn.cursor()
     cur.execute("""
     SELECT id, job_key, company, title, url, platforms, keywords, location,
-           deadline, summary, tags, first_seen_at, last_seen_at
+           experience, deadline, summary, tags, first_seen_at, last_seen_at
     FROM jobs
     WHERE status = 'ACTIVE'
     ORDER BY id ASC;
@@ -919,6 +925,7 @@ def deduplicate_active_jobs(db_path=DB_PATH, today_date=None, now_dt=None, dry_r
             return (
                 1 if (row["summary"] or "").strip() else 0,
                 1 if (row["location"] or "").strip() else 0,
+                1 if (row["experience"] or "").strip() else 0,
                 -(parse_seen_date(row["first_seen_at"]) or today_date).toordinal(),
                 -int(row["id"]),
             )
@@ -931,6 +938,7 @@ def deduplicate_active_jobs(db_path=DB_PATH, today_date=None, now_dt=None, dry_r
         keywords = _union_json_lists([m["keywords"] for m in ordered])
         tags = _union_json_lists([m["tags"] for m in ordered])
         location = next((m["location"] for m in ordered if (m["location"] or "").strip()), "")
+        experience = next((m["experience"] for m in ordered if (m["experience"] or "").strip()), "")
         summary = next((m["summary"] for m in ordered if (m["summary"] or "").strip()), "")
 
         # 마감 표기: 살아 있는(ACTIVE) 표기 중 가장 구체적·최근·임박한 것.
@@ -966,7 +974,7 @@ def deduplicate_active_jobs(db_path=DB_PATH, today_date=None, now_dt=None, dry_r
 
         cur.execute("""
         UPDATE jobs
-        SET platforms = ?, keywords = ?, tags = ?, location = ?, deadline = ?,
+        SET platforms = ?, keywords = ?, tags = ?, location = ?, experience = ?, deadline = ?,
             deadline_status = ?, summary = ?, first_seen_at = ?, last_seen_at = ?,
             updated_at = ?
         WHERE id = ?;
@@ -975,6 +983,7 @@ def deduplicate_active_jobs(db_path=DB_PATH, today_date=None, now_dt=None, dry_r
             json.dumps(keywords, ensure_ascii=False),
             json.dumps(tags, ensure_ascii=False),
             location,
+            experience,
             deadline,
             deadline_status,
             summary,
@@ -1058,7 +1067,7 @@ def get_active_jobs(db_path=DB_PATH, today_date=None):
     conn = get_connection(db_path)
     cur = conn.cursor()
     cur.execute("""
-    SELECT job_key, company, title, url, platforms, keywords, location, deadline, summary, tags, deadline_status, last_seen_at, first_seen_at
+    SELECT job_key, company, title, url, platforms, keywords, location, experience, deadline, summary, tags, deadline_status, last_seen_at, first_seen_at
     FROM jobs
     WHERE status = 'ACTIVE'
     ORDER BY
@@ -1083,6 +1092,7 @@ def get_active_jobs(db_path=DB_PATH, today_date=None):
             "platforms": json.loads(r["platforms"]),
             "keywords": json.loads(r["keywords"]),
             "location": r["location"] or "",
+            "experience": (r["experience"] or "").strip(),
             "deadline": r["deadline"],
             "deadline_label": normalize_deadline_label(r["deadline"], today_date, r["last_seen_at"]),
             "summary": r["summary"] or "",

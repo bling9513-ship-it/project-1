@@ -10,6 +10,8 @@
        · tests/test_paymeter_logic.py · tests/test_subway_data.py · tests/test_basket_mission.py
        · tests/test_mystery90_puzzles.py · tests/test_movein_report.py · tests/test_nearby_data.py
        · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
+       · tests/test_job_dedup.py · tests/test_job_dedup_active.py · tests/test_location_normalize.py
+       · tests/test_experience_normalize.py (경력 정규화·현황 바·경력 필터)
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
        - meta.total 과 실제 건수 불일치
@@ -168,7 +170,7 @@ def run_unit_tests():
                "tests/test_monetization.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py", "tests/test_job_dedup_active.py",
-               "tests/test_location_normalize.py"]
+               "tests/test_location_normalize.py", "tests/test_experience_normalize.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)
         if not os.path.exists(path):

@@ -1128,6 +1128,62 @@ async function checkIndexLayout(page, width, tag) {
     await page.waitForTimeout(120);
     assert.equal(await count(), beforeRegion, `${tag}: region filter reset did not restore the feed`);
 
+    // 경력 현황: 요약 바·칩이 보이고, 칩 건수 합이 현재 목록과 같다.
+    const xpSummary = await page.evaluate(() => {
+      const box = document.querySelector('.xp-summary');
+      if (!box) return null;
+      const chips = Array.from(box.querySelectorAll('.filter-pill[data-filter="experience"]')).map((el) => ({
+        val: el.getAttribute('data-val'),
+        count: parseInt(el.querySelector('.filter-pill-count').textContent.trim(), 10),
+        text: el.textContent.replace(/\s+/g, ' ').trim(),
+      }));
+      return {
+        visible: box.getBoundingClientRect().height > 0,
+        segments: box.querySelectorAll('.xp-bar .xp-bar-seg').length,
+        chips,
+      };
+    });
+    assert.ok(xpSummary && xpSummary.visible, `${tag}: experience summary bar missing`);
+    assert.ok(xpSummary.segments >= 3, `${tag}: experience bar segments ${xpSummary.segments}`);
+    assert.ok(xpSummary.chips.length >= 3, `${tag}: experience chips ${xpSummary.chips.length}`);
+    assert.equal(xpSummary.chips.reduce((sum, chip) => sum + chip.count, 0), await count(),
+      `${tag}: experience chip counts do not add up to the feed size`);
+    assert.ok(xpSummary.chips.every((chip) => chip.val && Number.isFinite(chip.count)),
+      `${tag}: experience chip label/count broken`);
+
+    // 카드 경력 라벨: 모든 카드에 한 줄로 붙고, 대부분 실제 경력을 보여 준다.
+    const expLabels = await page.evaluate(() => Array.from(document.querySelectorAll('#jobsContainer .job-card .job-exp'))
+      .map((el) => el.textContent.trim()));
+    assert.ok(expLabels.length > 0, `${tag}: job experience label missing on cards`);
+    assert.ok(expLabels.every((text) => text.length > 0), `${tag}: empty experience label`);
+    const expFilled = expLabels.filter((text) => text !== '경력 미표기').length / expLabels.length;
+    assert.ok(expFilled >= 0.9, `${tag}: experience fill ratio ${expFilled.toFixed(2)}`);
+
+    // 경력 필터: '경력'만 남기면 경력 그룹 카드만 보인다(카드 라벨을 화면의 xpGroup 으로 되짚어 확인).
+    const beforeExp = await count();
+    await page.click('#filterRail .filter-pill[data-filter="experience"][data-val="경력"]');
+    await page.waitForTimeout(120);
+    assert.ok(await count() < beforeExp, `${tag}: experience filter did not narrow the feed`);
+    const expGroups = await page.evaluate(() => Array.from(document.querySelectorAll('#jobsContainer .job-card .job-exp'))
+      .map((el) => xpGroup(el.textContent.trim())));
+    assert.ok(expGroups.length > 0 && expGroups.every((group) => group === '경력'),
+      `${tag}: 경력 filter shows ${Array.from(new Set(expGroups)).join(',')}`);
+    assert.equal(await page.evaluate(() => document.querySelector('.xp-chip.active') ? document.querySelector('.xp-chip.active').getAttribute('data-val') : null),
+      '경력', `${tag}: summary chip did not follow the rail filter`);
+    await page.click('#filterRail .filter-pill[data-filter="experience"][data-val="all"]');
+    await page.waitForTimeout(120);
+    assert.equal(await count(), beforeExp, `${tag}: experience filter reset did not restore the feed`);
+
+    // 리스트 뷰에서도 경력 라벨이 제목 아래 메타 줄에 붙는다.
+    await page.click('#btnList');
+    await page.waitForTimeout(120);
+    const listExp = await page.evaluate(() => Array.from(document.querySelectorAll('#jobsContainer .list-item .list-exp'))
+      .map((el) => el.textContent.trim()));
+    assert.ok(listExp.length > 0 && listExp.every((text) => text.length > 0),
+      `${tag}: list experience label missing`);
+    await page.click('#btnGrid');
+    await page.waitForTimeout(120);
+
     const before = await count();
     await page.click('.filter-pill[data-filter="platform"][data-val="원티드"]');
     assert.ok(await count() < before, `${tag}: platform filter did not narrow the feed`);
@@ -1167,6 +1223,27 @@ async function checkIndexLayout(page, width, tag) {
   await page.waitForTimeout(150);
   assert.ok(await count() <= before, `${tag}: deadline filter widened the feed`);
   assert.equal((await railState()).badge, '1', `${tag}: filter badge`);
+
+  // 경력: 모바일 필터 시트에도 경력 칩이 건수와 함께 있고, 누르면 해당 경력만 남는다.
+  await page.click('.filter-pill[data-filter="deadline"][data-val="all"]');
+  await page.waitForTimeout(120);
+  const xpChips = await page.evaluate(() => Array.from(document.querySelectorAll('#filterRail .filter-pill[data-filter="experience"]'))
+    .filter((el) => el.getAttribute('data-val') !== 'all')
+    .map((el) => ({ val: el.getAttribute('data-val'), count: parseInt(el.querySelector('.filter-pill-count').textContent.trim(), 10) })));
+  assert.ok(xpChips.length >= 3, `${tag}: mobile experience chips ${xpChips.length}`);
+  assert.ok(xpChips.every((chip) => chip.val && Number.isFinite(chip.count)), `${tag}: mobile experience chip count broken`);
+  const beforeXp = await count();
+  await page.click('#filterRail .filter-pill[data-filter="experience"][data-val="경력"]');
+  await page.waitForTimeout(150);
+  assert.ok(await count() < beforeXp, `${tag}: mobile experience filter did not narrow the feed`);
+  assert.equal((await railState()).badge, '1', `${tag}: experience filter badge`);
+  const mobileGroups = await page.evaluate(() => Array.from(document.querySelectorAll('#jobsContainer .job-card .job-exp'))
+    .map((el) => xpGroup(el.textContent.trim())));
+  assert.ok(mobileGroups.length > 0 && mobileGroups.every((group) => group === '경력'),
+    `${tag}: mobile 경력 filter shows ${Array.from(new Set(mobileGroups)).join(',')}`);
+  await page.click('#filterRail .filter-pill[data-filter="experience"][data-val="all"]');
+  await page.waitForTimeout(120);
+  assert.equal(await count(), beforeXp, `${tag}: mobile experience filter reset did not restore the feed`);
 
   await page.keyboard.press('Escape');
   await page.waitForTimeout(320);
