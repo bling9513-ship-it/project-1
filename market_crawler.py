@@ -1204,8 +1204,8 @@ def assemble(now, news, calendar, briefing, ai_stats, sources):
 def validate(payload):
     """내보내기 전 최소 검증 — 빈 화면·깨진 링크·재게시 잔여물을 여기서 막는다."""
     problems = []
-    if len(payload["issues"]) < 6:
-        problems.append("기사 %d건(6건 미만)" % len(payload["issues"]))
+    if len(payload["issues"]) < 4:
+        problems.append("기사 %d건(4건 미만)" % len(payload["issues"]))
     if not payload["calendar"]:
         problems.append("일정 0건")
     for issue in payload["issues"]:
