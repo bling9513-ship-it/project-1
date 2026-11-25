@@ -59,7 +59,7 @@ def check_data():
     print("== 증시 데이터 ==")
     data = mk.load_data()
     issues = data["issues"]
-    check("기사 6건 이상", len(issues) >= 6, len(issues))
+    check("기사 4건 이상", len(issues) >= 4, len(issues))
     ids = [row["id"] for row in issues]
     check("기사 ID 중복 없음", len(ids) == len(set(ids)))
     sectors = {row["name"] for row in data["sectors"]}

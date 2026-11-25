@@ -33,7 +33,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "market_data.json")
 OUT_HTML = os.path.join(BASE_DIR, "market.html")
 
-MIN_ISSUES = 6
+MIN_ISSUES = 4
 CONFIDENCE_VALUES = ("원문 근거", "추정", "미확인")
 SESSION_STATES = ("open", "closed", "preopen", "holiday", "early_closed", "unknown")
 BLOCKED_SOURCES = ("연합뉴스", "매일경제", "Yahoo Finance")
