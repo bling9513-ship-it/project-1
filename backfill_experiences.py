@@ -179,7 +179,10 @@ def external_id_of(job_key, url=""):
 
 
 def load_rows(conn, only_empty=True):
-    sql = "SELECT job_key, url, experience FROM jobs WHERE status='ACTIVE'"
+    # dry-run 으로 아직 열이 없는 DB를 볼 때도 죽지 않게 빈 값으로 대신 읽는다.
+    columns = {r[1] for r in conn.execute("PRAGMA table_info(jobs)")}
+    experience_expr = "experience" if "experience" in columns else "'' AS experience"
+    sql = f"SELECT job_key, url, {experience_expr} FROM jobs WHERE status='ACTIVE'"
     if only_empty:
         sql += " AND trim(coalesce(experience,''))=''"
     return conn.execute(sql).fetchall()
@@ -310,7 +313,7 @@ def main():
     active = conn.execute(
         "SELECT count(*) n, sum(case when trim(coalesce(experience,''))<>'' then 1 else 0 end) f FROM jobs WHERE status='ACTIVE'"
     ).fetchone()
-    ratio = active["f"] / max(1, active["n"])
+    ratio = (active["f"] or 0) / max(1, active["n"])
     print(f"-> 활성 공고 경력 보유: {active['f']}/{active['n']}건 ({ratio:.1%})")
 
     groups = Counter()
