@@ -2452,7 +2452,7 @@ def generate_html(jobs, update_time_str):
 
     .list-row {{
       display: grid;
-      grid-template-columns: 140px minmax(0, 1fr) 96px 110px 70px auto;
+      grid-template-columns: 140px minmax(0, 1fr) 110px max-content auto;
       align-items: center;
       gap: 12px;
       padding: 13px 18px;
@@ -2513,7 +2513,8 @@ def generate_html(jobs, update_time_str):
       align-items: center;
       gap: 4px;
       min-width: 0;
-      font-size: 12px;
+      margin-top: 3px;
+      font-size: 11.5px;
       color: var(--text-muted);
       white-space: nowrap;
       overflow: hidden;
@@ -2525,6 +2526,8 @@ def generate_html(jobs, update_time_str):
     .list-platforms {{
       display: flex;
       gap: 4px;
+      min-width: 0;
+      overflow: hidden;
     }}
 
     .list-outlink {{
@@ -2560,9 +2563,7 @@ def generate_html(jobs, update_time_str):
         grid-row: 2;
       }}
       .list-location {{
-        grid-column: 1;
-        grid-row: 3;
-        font-size: 11.5px;
+        margin-top: 2px;
       }}
       .list-outlink {{
         display: none;
@@ -3612,9 +3613,9 @@ def generate_html(jobs, update_time_str):
               <div class="list-company" title="${{escapeHtml(job.company)}}">${{escapeHtml(job.company)}}</div>
               <div class="list-title">
                 <div>${{escapeHtml(job.title)}}</div>
+                ${{listLocHtml}}
                 ${{listSummaryHtml}}
               </div>
-              ${{listLocHtml}}
               <div class="list-deadline">${{dlBadge}}</div>
               <div class="list-platforms">${{platformBadges}}</div>
               <div class="list-outlink" title="원문 열기: ${{escapeHtml(job.url)}}">
