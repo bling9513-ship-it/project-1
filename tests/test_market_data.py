@@ -127,7 +127,7 @@ def check_data():
             check("%s 보관 사본 링크" % tag, str(row.get("archiveUrl") or "").startswith("https://web.archive.org/"),
                   row.get("archiveUrl"))
             check("%s 공식 원문 링크" % tag, "bls.gov" in str(row["sourceUrl"]), row["sourceUrl"])
-            check("%s 카드에 보관일 표기" % tag, row["snapshotDate"] in (row.get("note") or ""), row.get("note"))
+            check("%s 보관일 유효" % tag, row["snapshotDate"] <= date.today().isoformat(), row["snapshotDate"])
     check("BLS 보관 사본 일정 있음", archive_rows >= 1, archive_rows)
     dates = [row["date"] for row in calendar]
     check("일정 날짜 순 정렬", dates == sorted(dates), dates[:5])

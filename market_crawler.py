@@ -684,7 +684,6 @@ def calendar_bls(now, sources):
             if snapshot_date:
                 row["snapshotDate"] = snapshot_date
                 row["archiveUrl"] = used_url
-                row["note"] += " · web.archive.org 보관 사본 %s 기준" % snapshot_date
             out.append(row)
         entry = {"name": "미 노동통계국(BLS) %s" % label, "kind": "공식 일정",
                  "url": url, "status": status, "count": len(rows)}
