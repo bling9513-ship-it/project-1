@@ -9,6 +9,7 @@
        · tests/test_recycle_data.py · tests/test_food_data.py · tests/test_grocery_data.py
        · tests/test_paymeter_logic.py · tests/test_subway_data.py · tests/test_basket_mission.py
        · tests/test_mystery90_puzzles.py · tests/test_movein_report.py · tests/test_nearby_data.py
+       · tests/test_market_data.py (증시 이슈: 기사·지수·일정·브리핑)
        · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
        · tests/test_job_dedup.py · tests/test_job_dedup_active.py · tests/test_location_normalize.py
        · tests/test_experience_normalize.py (경력 정규화·현황 바·경력 필터)
@@ -167,6 +168,7 @@ def run_unit_tests():
                "tests/test_recycle_data.py", "tests/test_food_data.py", "tests/test_grocery_data.py",
                "tests/test_paymeter_logic.py", "tests/test_subway_data.py", "tests/test_basket_mission.py",
                "tests/test_mystery90_puzzles.py", "tests/test_movein_report.py", "tests/test_nearby_data.py",
+               "tests/test_market_data.py",
                "tests/test_monetization.py",
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py", "tests/test_job_dedup_active.py",
@@ -461,6 +463,26 @@ def check_pages():
             check("custom_study.js 단원 수", len(js) == len(units), "%d vs %d" % (len(js), len(units)))
         else:
             check("custom_study.js 데이터 블록", False, "window.CUSTOM_STUDIES 파싱 실패")
+
+    # 증시 이슈: market_data.json 과 market.html 에 심긴 JSON 이 같은지
+    market = load_json("market_data.json")
+    if isinstance(market, dict):
+        embedded = embedded_json("market.html", 'id="mkData">')
+        if isinstance(embedded, dict):
+            check("market.html 기사 수", len(embedded.get("issues") or []) == len(market.get("issues") or []),
+                  "%s vs %s" % (len(embedded.get("issues") or []), len(market.get("issues") or [])))
+            check("market.html 지수 수", len(embedded.get("indices") or []) == len(market.get("indices") or []),
+                  len(embedded.get("indices") or []))
+            check("market.html 일정 수", len(embedded.get("calendar") or []) == len(market.get("calendar") or []),
+                  len(embedded.get("calendar") or []))
+            paths = {row.get("url") for row in embedded.get("issues") or []}
+            check("market.html 기사 링크 https", all(str(path).startswith("https://") for path in paths),
+                  len([p for p in paths if not str(p).startswith("https://")]))
+            check("market.html 수집 시각",
+                  (embedded.get("meta") or {}).get("collectedAt") == (market.get("meta") or {}).get("collectedAt"),
+                  (embedded.get("meta") or {}).get("collectedAt"))
+        else:
+            check("market.html 데이터 블록", False, 'id="mkData" 파싱 실패')
 
     # 옷차림·오늘 뭐 먹지: 카드 수 = 데이터 수
     outfit_cards = count_articles("outfit.html", "outfit-card")

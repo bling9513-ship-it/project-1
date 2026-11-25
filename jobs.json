@@ -419,61 +419,6 @@
     "first_seen_at": "2026-11-16 06:34:21 KST"
   },
   {
-    "job_key": "saramin:55580388:ff61cb1a",
-    "company": "(주)글로벌에잇",
-    "title": "글로벌에잇 보안 컨설팅(모의해킹) 채용 - 신입",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55580388&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹",
-      "정보보안"
-    ],
-    "location": "서울 구로구",
-    "experience": "신입",
-    "deadline": "17시마감",
-    "deadline_label": "17시마감",
-    "summary": "보안 컨설팅 신입으로 모의해킹 수행 및 취약점 분석 지원",
-    "tags": [
-      "#보안컨설팅",
-      "#모의해킹",
-      "#취약점분석",
-      "#정보보안",
-      "#신입채용"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-17 06:31:46 KST"
-  },
-  {
-    "job_key": "saramin:55594357:0add78c7",
-    "company": "전남대학교병원",
-    "title": "11월 직원(지원직) 공개채용 공고(정보보호 최고책임자)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55594357&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "전남",
-    "experience": "신입·경력",
-    "deadline": "17시마감",
-    "deadline_label": "17시마감",
-    "summary": "병원 정보보호 최고책임자로 보안 정책 수립과 거버넌스·개인정보보호 총괄",
-    "tags": [
-      "#정보보호최고책임자",
-      "#보안거버넌스",
-      "#개인정보보호",
-      "#CISO"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-17 18:47:44 KST"
-  },
-  {
     "job_key": "incruit:2611180003511:23199441",
     "company": "(주)교원프라퍼티",
     "title": "[교원그룹] 정보보안기획 직무 모집 (경력)",
@@ -498,34 +443,6 @@
     "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-19 08:01:43 KST"
-  },
-  {
-    "job_key": "jobkorea:50371117:1859e40c",
-    "company": "㈜글로벌에잇",
-    "title": "글로벌에잇 보안 컨설팅(모의해킹) 채용 - 경력",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50371117",
-    "platforms": [
-      "잡코리아",
-      "사람인"
-    ],
-    "keywords": [
-      "모의해킹",
-      "정보보안"
-    ],
-    "location": "서울 구로구",
-    "experience": "경력무관",
-    "deadline": "17시마감",
-    "deadline_label": "17시마감",
-    "summary": "글로벌에잇 보안 컨설팅(모의해킹) 직무로 고객 대상 침투테스트 수행 경력자를 채용합니다.",
-    "tags": [
-      "#모의해킹",
-      "#보안컨설팅",
-      "#침투테스트",
-      "#취약점분석"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-22 08:06:09 KST"
   },
   {
     "job_key": "saramin:55536096:d7306666",

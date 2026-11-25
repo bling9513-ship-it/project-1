@@ -26,3 +26,5 @@ cve_run_items.json
 node_modules/
 _preview_*.html
 _preview_*.json
+market_cache.json
+market_run.log

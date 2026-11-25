@@ -173,7 +173,7 @@ def main():
     check("그라데이션 없음", "gradient" not in src.lower())
     check("공통 셸 하단 탭 바", src.count('class="ia-tabbar"') == 1, src.count('class="ia-tabbar"'))
     sheet_links = src.count('class="ia-sheet-link') - src.count('class="ia-sheet-links"')
-    check("전체 메뉴 29개", sheet_links == 29, sheet_links)
+    check("전체 메뉴 30개", sheet_links == 30, sheet_links)
     check("내비게이션에 load.html 등록", src.count('href="load.html"') >= 2, src.count('href="load.html"'))
     check("게임 하단 탭이 게임 목록 시트로 열림", 'id="iaGameBtn"' in src and 'data-sheet-target="iaSheetGroupGame"' in src)
     check("미니게임 소제목", 'ia-sheet-sub">미니게임' in src)
