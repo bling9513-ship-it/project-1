@@ -1,417 +1,329 @@
 [
   {
-    "job_key": "saramin:55502807:713ddf88",
-    "company": "교보디티에스(주)",
-    "title": "교보DTS 경력 채용공고 (보안운영, 보안관제, 모의해킹)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502807&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
+    "job_key": "jumpit:55417954:00be1dd5",
+    "company": "위드네트웍스",
+    "title": "보안 연구소 솔루션 개발자(신입)",
+    "url": "https://www.jumpit.co.kr/position/55417954",
     "platforms": [
-      "사람인"
+      "점핏"
     ],
     "keywords": [
-      "모의해킹",
       "정보보안"
     ],
-    "location": "서울 종로구",
-    "experience": "경력 3년↑",
-    "deadline": "D-Day (오늘 마감)",
-    "deadline_label": "D-Day (오늘 마감)",
-    "summary": "보안관제와 보안운영, 모의해킹을 수행하며 기업 보안 위협 탐지·대응 체계를 운영",
+    "location": "서울 강서구",
+    "experience": "신입",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "위드네트웍스 보안 연구소에서 신규 보안 솔루션을 개발하고 구현할 신입 개발자를 채용합니다",
     "tags": [
+      "#보안솔루션개발",
+      "#신입개발자",
+      "#보안연구",
+      "#솔루션엔지니어링"
+    ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "jumpit:55404385:c24dd3a9",
+    "company": "이너버스",
+    "title": "통합보안관리 엔지니어(신입)",
+    "url": "https://www.jumpit.co.kr/position/55404385",
+    "platforms": [
+      "점핏"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 영등포구",
+    "experience": "신입",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "이너버스에서 통합보안관리 시스템을 구축하고 운영하며 관제할 신입 보안 엔지니어를 채용합니다",
+    "tags": [
+      "#통합보안관리",
       "#보안관제",
-      "#보안운영",
-      "#모의해킹",
-      "#정보보안"
+      "#SIEM",
+      "#신입채용"
     ],
     "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
-    "job_key": "jobkorea:50346024:100d5de5",
-    "company": "포스켄㈜",
-    "title": "증권사 인프라 취약점진단 운영",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50346024",
+    "job_key": "jumpit:55402895:e2b998eb",
+    "company": "대진정보통신",
+    "title": "PIA자격/개인정보보호컨설팅(1~3년)",
+    "url": "https://www.jumpit.co.kr/position/55402895",
     "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "취약점 진단"
-    ],
-    "location": "서울 중구",
-    "experience": "경력 6년↑",
-    "deadline": "D-Day (~ 11/25(수))",
-    "deadline_label": "D-Day (~ 11/25(수))",
-    "summary": "증권사 인프라를 대상으로 취약점 진단 및 운영 업무 수행",
-    "tags": [
-      "#취약점진단",
-      "#인프라보안",
-      "#증권사",
-      "#보안운영"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jobkorea:50319019:8ef32a18",
-    "company": "교보DTS",
-    "title": "교보DTS 경력 채용공고 (모의해킹)",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50319019",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹"
-    ],
-    "location": "서울 종로구",
-    "experience": "경력 3년↑",
-    "deadline": "D-Day (오늘 마감)",
-    "deadline_label": "D-Day (오늘 마감)",
-    "summary": "모의해킹 경력자를 채용해 보안 취약점을 진단하고 모의해킹을 수행하는 직무",
-    "tags": [
-      "#모의해킹",
-      "#취약점분석",
-      "#정보보안",
-      "#경력채용"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "wanted:361467:d94a705c",
-    "company": "넷마블",
-    "title": "취약점 진단 및 모의해킹 담당자",
-    "url": "https://www.wanted.co.kr/wd/361467",
-    "platforms": [
-      "원티드",
-      "사람인"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단"
-    ],
-    "location": "서울",
-    "experience": "경력 5~11년",
-    "deadline": "D-Day (오늘 마감)",
-    "deadline_label": "D-Day (오늘 마감)",
-    "summary": "웹·시스템 취약점 진단과 모의해킹을 수행해 보안 약점을 분석·보고하는 직무",
-    "tags": [
-      "#모의해킹",
-      "#취약점진단",
-      "#취약점분석",
-      "#보안진단",
-      "#게임보안",
-      "#정보보안"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55393373:93b445f3",
-    "company": "(주)한진",
-    "title": "(주)한진 정보보안팀 경력 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393373&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울 중구",
-    "experience": "경력 10년↑",
-    "deadline": "D-Day (~ 11/25(수))",
-    "deadline_label": "D-Day (~ 11/25(수))",
-    "summary": "한진 정보보안팀에서 기업 정보자산 보호와 운영 보안 전반을 담당하는 경력직",
-    "tags": [
-      "#정보보안",
-      "#보안운영",
-      "#정보자산보호",
-      "#보안관리"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-24 08:04:52 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55388492:2af3a33d",
-    "company": "(주)리드엔지니어링",
-    "title": "총무(총무,산업안전,정보보안) 경력직 모집",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55388492&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "충북 청주시 청원구",
-    "experience": "경력 2년↑",
-    "deadline": "D-Day (~ 11/25(수))",
-    "deadline_label": "D-Day (~ 11/25(수))",
-    "summary": "총무·산업안전·정보보안 업무를 겸임하며 사내 운영과 보안 관리를 지원하는 직무",
-    "tags": [
-      "#총무",
-      "#산업안전",
-      "#정보보안",
-      "#사내보안관리"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-18 20:34:23 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55361802:a53a1148",
-    "company": "(주)현대그린푸드",
-    "title": "현대그린푸드 정보보호 경력사원 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55361802&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
+      "점핏"
     ],
     "keywords": [
       "정보보호"
     ],
-    "location": "경기 용인시 수지구",
-    "experience": "경력 3년↑",
-    "deadline": "23시마감",
-    "deadline_label": "23시마감",
-    "summary": "현대그린푸드 정보보호 정책·시스템 운영 등 기업 정보보호 전반을 담당하는 경력직",
-    "tags": [
-      "#정보보호",
-      "#보안운영",
-      "#보안정책",
-      "#정보보안"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55403681:39d16d52",
-    "company": "넷마블(주)",
-    "title": "개인정보보호 관리체계 운영",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403681&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 구로구",
-    "experience": "경력 7년↑",
-    "deadline": "D-Day (오늘 마감)",
-    "deadline_label": "D-Day (오늘 마감)",
-    "summary": "넷마블의 개인정보보호 관리체계를 운영하며 보호 정책 수립과 관리 업무를 담당한다.",
-    "tags": [
-      "#개인정보보호",
-      "#ISMS-P",
-      "#보안정책"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55394123:d6f83695",
-    "company": "(주)고른",
-    "title": "[경력직] 웹 취약점 진단 및 모의해킹 담당자 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55394123&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단"
-    ],
-    "location": "경기 화성시 동탄구",
+    "location": "서울 관악구",
     "experience": "경력 1~3년",
-    "deadline": "D-Day (오늘 마감)",
-    "deadline_label": "D-Day (오늘 마감)",
-    "summary": "고른에서 웹 서비스 취약점을 진단하고 모의해킹을 수행할 경력직 보안 담당자를 채용한다.",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "대진정보통신에서 PIA 자격을 바탕으로 개인정보보호 컨설팅을 수행할 1~3년 경력자를 채용합니다",
     "tags": [
-      "#모의해킹",
-      "#취약점진단",
-      "#웹보안"
+      "#PIA",
+      "#개인정보보호",
+      "#개인정보영향평가",
+      "#정보보호컨설팅"
     ],
     "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
-    "job_key": "saramin:55553090:b0164dd0",
-    "company": "에스케이쉴더스(주)",
-    "title": "모의해킹 경력직 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9",
-    "platforms": [
-      "사람인",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹"
-    ],
-    "location": "경기 성남시 분당구",
-    "experience": "경력 3년↑",
-    "deadline": "D-Day (오늘 마감)",
-    "deadline_label": "D-Day (오늘 마감)",
-    "summary": "경력자 대상 모의해킹 진단 수행 및 취약점 분석·보고",
-    "tags": [
-      "#모의해킹",
-      "#취약점분석",
-      "#보안진단",
-      "#정보보안"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:342101:ba6873ea",
-    "company": "(주)알스퀘어",
-    "title": "[라이프매니지먼트] 개인정보보호 담당자",
-    "url": "https://career.rememberapp.co.kr/job/posting/342101",
+    "job_key": "remember:353918:175e7994",
+    "company": "한화에어로스페이스(주)",
+    "title": "[한화에어로스페이스] 해외사업 정보보호 담당자",
+    "url": "https://career.rememberapp.co.kr/job/posting/353918",
     "platforms": [
       "리멤버"
     ],
     "keywords": [
       "정보보호"
     ],
-    "location": "서울 서초구",
-    "experience": "경력 5~10년",
-    "deadline": "D-Day (~11/25 수)",
-    "deadline_label": "D-Day (~11/25 수)",
-    "summary": "알스퀘어 라이프매니지먼트 서비스의 개인정보보호 담당자로서 보호 정책과 관리 업무를 수행한다.",
+    "location": "서울 중구",
+    "experience": "경력 5년↑",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "한화에어로스페이스에서 해외사업 관련 정보보호 정책을 수립하고 대응을 담당할 정보보호 담당자를 채용합니다",
     "tags": [
-      "#개인정보보호",
-      "#컴플라이언스",
-      "#정보보호"
+      "#정보보호",
+      "#해외사업보안",
+      "#보안정책",
+      "#정보보호거버넌스"
     ],
     "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
-    "job_key": "incruit:2610260000535:2595774b",
-    "company": "HR컨설팅(주)",
-    "title": "국내 최대 대기업 AI서비스 확산/ERP개발운영/정보보안 각 담당자 1명씩 3명 신규충원",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000535",
+    "job_key": "remember:347418:f3df5484",
+    "company": "현대오토에버(주)",
+    "title": "클라우드 보안성 검토 및 관리",
+    "url": "https://career.rememberapp.co.kr/job/posting/347418",
     "platforms": [
-      "인크루트"
+      "리멤버"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "서울",
+    "experience": "경력 6년↑",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "현대오토에버에서 클라우드 보안성 검토와 보안 관리 업무를 수행할 클라우드 보안 담당자를 채용합니다",
+    "tags": [
+      "#클라우드보안",
+      "#보안성검토",
+      "#클라우드보안관리",
+      "#CSPM"
+    ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-23 08:14:02 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "remember:333894:83958328",
+    "company": "현대오토에버(주)",
+    "title": "북미 기술 보안 주재원 (Endpoint)",
+    "url": "https://career.rememberapp.co.kr/job/posting/333894",
+    "platforms": [
+      "리멤버"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "서울",
-    "experience": "경력 1~6년",
-    "deadline": "D-Day (~11/25 수) 23시 마감",
-    "deadline_label": "D-Day (~11/25 수) 23시 마감",
-    "summary": "국내 대기업 대상 AI서비스 확산, ERP 개발운영, 정보보안 담당자를 각 1명씩 신규 충원한다.",
+    "location": "해외",
+    "experience": "경력 7~15년",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "북미 현지 법인에서 Endpoint 보안 기술 지원과 보안 체계 운영을 담당",
     "tags": [
-      "#정보보안",
-      "#AI서비스",
-      "#ERP",
-      "#IT컨설팅"
+      "#엔드포인트보안",
+      "#해외주재원",
+      "#기술보안",
+      "#보안운영"
     ],
     "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "last_seen_at": "2026-11-20 08:02:49 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
-    "job_key": "incruit:2610260000897:9325bd2e",
-    "company": "(주)인싸이트에이치알지",
-    "title": "우량 B2B IT 보안 솔루션기업 기술엔지니어(대리~과장급)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2610260000897",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "experience": "경력 3~15년",
-    "deadline": "D-Day (~11/25 수) 23시 마감",
-    "deadline_label": "D-Day (~11/25 수) 23시 마감",
-    "summary": "우량 B2B IT 보안 솔루션 기업에서 대리~과장급 기술엔지니어로 제품 기술지원을 담당한다.",
-    "tags": [
-      "#보안솔루션",
-      "#기술엔지니어",
-      "#IT보안",
-      "#기술지원"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:354554:ce88f99b",
-    "company": "(주)우리카드",
-    "title": "[우리카드] 정보보안 경력직 채용",
-    "url": "https://career.rememberapp.co.kr/job/posting/354554",
+    "job_key": "remember:236690:c4ce1e88",
+    "company": "현대오토에버(주)",
+    "title": "[보안]모의 해킹 및 취약점 진단",
+    "url": "https://career.rememberapp.co.kr/job/posting/236690",
     "platforms": [
       "리멤버",
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "experience": "경력 2~12년",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "모의해킹과 취약점 진단으로 시스템 보안 약점을 분석하고 개선",
+    "tags": [
+      "#모의해킹",
+      "#취약점진단",
+      "#보안진단",
+      "#정보보안"
+    ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "remember:342314:a9a0ea82",
+    "company": "현대오토에버(주)",
+    "title": "정보보안 솔루션 구축/운영 (금융)",
+    "url": "https://career.rememberapp.co.kr/job/posting/342314",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "experience": "경력 10~15년",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "금융권 정보보안 솔루션 구축과 운영 전반을 담당",
+    "tags": [
+      "#정보보안",
+      "#솔루션구축",
+      "#보안운영",
+      "#금융보안"
+    ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "jobkorea:50248199:ea559965",
+    "company": "㈜선익시스템",
+    "title": "[선익시스템] IT팀 정보보안 경력 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50248199",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 수원시 권선구",
+    "experience": "경력 9년↑",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "IT팀 정보보안 전반 운영과 보안 관리 업무를 수행",
+    "tags": [
+      "#정보보안",
+      "#IT보안",
+      "#보안운영",
+      "#보안관리"
+    ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "jobkorea:50354257:b3c5c58d",
+    "company": "한화에어로스페이스㈜",
+    "title": "지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50354257",
+    "platforms": [
+      "사람인",
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 중구",
+    "experience": "경력",
+    "deadline": "D-1 (~ 11/26(목))",
+    "deadline_label": "D-Day (~ 11/26(목))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "jobkorea:50301974:9c065b0d",
+    "company": "현대오토에버㈜",
+    "title": "DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301974",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "모의해킹",
+      "취약점 진단"
+    ],
+    "location": "서울 강남구",
+    "experience": "경력 2년↑",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "DAST 솔루션과 피싱 모의해킹 플랫폼을 운영·관리",
+    "tags": [
+      "#DAST",
+      "#피싱모의해킹",
+      "#보안솔루션운영",
+      "#플랫폼운영"
+    ],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "incruit:2611120000241:cb2648df",
+    "company": "시니어앤파트너즈",
+    "title": "[화성.정남] 네트워크/보안 엔지니어(사원-대리급)",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120000241",
+    "platforms": [
       "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "서울 종로구",
-    "experience": "경력 3년↑",
-    "deadline": "D-Day (~11/25 수)",
-    "deadline_label": "D-Day (~11/25 수)",
-    "summary": "우리카드 정보보안 경력직을 채용하여 금융 보안 운영과 관리 전반을 담당하게 합니다.",
-    "tags": [
-      "#정보보안",
-      "#금융보안",
-      "#보안운영",
-      "#정보보호",
-      "#경력채용"
-    ],
+    "location": "경기",
+    "experience": "경력 3~10년",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "",
+    "tags": [],
     "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-14 06:30:52 KST"
+    "last_seen_at": "2026-11-24 08:04:52 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
-    "job_key": "incruit:2611140000260:706756f9",
-    "company": "AXA손해보험(주)",
-    "title": "보안&위기대응팀 정보보호 관리자 채용",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611140000260",
+    "job_key": "saramin:55403110:953aa71b",
+    "company": "(주)퀸텟시스템즈",
+    "title": "정보보호(보안) 담당자 경력 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403110&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "인크루트"
+      "사람인"
     ],
     "keywords": [
       "정보보호",
       "정보보안"
     ],
-    "location": "서울 용산구",
-    "experience": "경력 10년↑",
-    "deadline": "D-Day (~11/25 수) 23시 마감",
-    "deadline_label": "D-Day (~11/25 수) 23시 마감",
-    "summary": "AXA손해보험에서 보안 및 위기대응팀 정보보호 관리자 업무를 수행할 인재를 채용합니다",
-    "tags": [
-      "#정보보호",
-      "#위기대응",
-      "#보안관리자",
-      "#손해보험보안"
-    ],
-    "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-15 06:31:00 KST"
-  },
-  {
-    "job_key": "saramin:55387528:6f67cd44",
-    "company": "(주)씨드젠",
-    "title": "[신입/경력]정보보호 및 개인정보보호 컨설턴트 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55387528&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
     "location": "서울 영등포구",
-    "experience": "신입·경력",
-    "deadline": "D-Day (~ 11/25(수))",
-    "deadline_label": "D-Day (~ 11/25(수))",
+    "experience": "경력 5년↑",
+    "deadline": "D-1 (~ 11/26(목))",
+    "deadline_label": "D-Day (~ 11/26(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "D_DAY",
@@ -419,56 +331,155 @@
     "first_seen_at": "2026-11-16 06:34:21 KST"
   },
   {
-    "job_key": "incruit:2611180003511:23199441",
-    "company": "(주)교원프라퍼티",
-    "title": "[교원그룹] 정보보안기획 직무 모집 (경력)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611180003511",
+    "job_key": "remember:354883:3f01492e",
+    "company": "현대오토에버(주)",
+    "title": "[Tech] Infra Security Engineer - 퍼블릭클라우드 보안 Technical Architect",
+    "url": "https://career.rememberapp.co.kr/job/posting/354883",
+    "platforms": [
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "experience": "경력 3~10년",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-17 06:31:46 KST"
+  },
+  {
+    "job_key": "wanted:337266:f80e30ff",
+    "company": "다우기술",
+    "title": "정보보호관리",
+    "url": "https://www.wanted.co.kr/wd/337266",
+    "platforms": [
+      "원티드",
+      "점핏",
+      "사람인",
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "경기",
+    "experience": "경력 5년↑",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-19 08:01:43 KST"
+  },
+  {
+    "job_key": "jumpit:55607445:44d8705c",
+    "company": "다우기술",
+    "title": "AI 보안 엔지니어",
+    "url": "https://www.jumpit.co.kr/position/55607445",
+    "platforms": [
+      "점핏",
+      "리멤버"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "경기 성남시 수정구",
+    "experience": "경력 3~10년",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-19 08:01:43 KST"
+  },
+  {
+    "job_key": "jobkorea:50384970:5bb43fbd",
+    "company": "한영회계법인",
+    "title": "금융컨설팅본부 AITS팀 정보보호 분야 경력직",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50384970",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 영등포구",
+    "experience": "경력 8년↑",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-19 08:01:43 KST"
+  },
+  {
+    "job_key": "incruit:2611200002753:fc18aeb8",
+    "company": "에스케이쉴더스",
+    "title": "OT 사이버보안 아키텍트/컨설턴트 경력직 채용",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611200002753",
     "platforms": [
       "인크루트"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "서울 종로구",
-    "experience": "경력 4~12년",
-    "deadline": "D-Day (~11/25 수) 23시 마감",
-    "deadline_label": "D-Day (~11/25 수) 23시 마감",
-    "summary": "교원프라퍼티에서 교원그룹 정보보안 정책·전략 기획을 담당할 경력직 보안 인재를 모집합니다",
-    "tags": [
-      "#정보보안기획",
-      "#정보보호정책",
-      "#보안전략",
-      "#경력채용"
-    ],
+    "location": "경기 성남시",
+    "experience": "경력 3년↑",
+    "deadline": "D-1 (내일 마감)",
+    "deadline_label": "D-Day (오늘 마감)",
+    "summary": "",
+    "tags": [],
     "deadline_status": "D_DAY",
     "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-19 08:01:43 KST"
+    "first_seen_at": "2026-11-21 08:01:42 KST"
   },
   {
-    "job_key": "saramin:55536096:d7306666",
-    "company": "(주)모닝인",
-    "title": "[정규직/구미] 정보보안 담당자(경력)",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55536096&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "job_key": "jumpit:55417960:08399b5c",
+    "company": "위드네트웍스",
+    "title": "보안 연구소 솔루션 개발자(경력)",
+    "url": "https://www.jumpit.co.kr/position/55417960",
     "platforms": [
-      "사람인"
+      "점핏"
     ],
     "keywords": [
       "정보보안"
     ],
-    "location": "경북 구미시",
-    "experience": "경력 5년↑",
-    "deadline": "D-Day (~ 11/25(수))",
-    "deadline_label": "D-Day (~ 11/25(수))",
-    "summary": "구미 지역 기반 정보보안 담당자로 보안 정책·운영·점검 업무를 수행합니다.",
-    "tags": [
-      "#정보보안",
-      "#보안담당자",
-      "#구미",
-      "#보안운영"
-    ],
+    "location": "서울 강서구",
+    "experience": "경력 1~3년",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "",
+    "tags": [],
     "deadline_status": "D_DAY",
-    "last_seen_at": "2026-11-23 08:14:02 KST",
-    "first_seen_at": "2026-11-23 08:02:33 KST"
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-22 08:06:09 KST"
+  },
+  {
+    "job_key": "jumpit:55402907:23e22f50",
+    "company": "대진정보통신",
+    "title": "PIA자격/개인정보보호컨설팅(4~7년)",
+    "url": "https://www.jumpit.co.kr/position/55402907",
+    "platforms": [
+      "점핏"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "서울 관악구",
+    "experience": "경력 4~7년",
+    "deadline": "D-1 (~11/26 목)",
+    "deadline_label": "D-Day (~11/26 목)",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "D_DAY",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-22 08:06:09 KST"
   },
   {
     "job_key": "jobkorea:50176196:89f5e5ad",
@@ -484,7 +495,7 @@
     "location": "서울 서초구",
     "experience": "경력 3년↑",
     "deadline": "D-6 (~ 12/01(화))",
-    "deadline_label": "D-6 (~ 12/01(화))",
+    "deadline_label": "D-5 (~ 12/01(화))",
     "summary": "3년 이상 경력 기반 보안 시스템 구축·운영과 취약점 대응을 수행하는 보안 엔지니어",
     "tags": [
       "#보안엔지니어",
@@ -511,7 +522,7 @@
     "location": "서울 강동구",
     "experience": "경력 8년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "세스코의 정보보안 기획 업무를 담당하며 보안 정책·체계 수립과 운영 지원을 수행합니다.",
     "tags": [
       "#정보보안기획",
@@ -537,7 +548,7 @@
     "location": "경기 화성시",
     "experience": "신입·경력",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "진영정기 구매팀에서 정보보호와 전산 운영을 담당하며 관련 업무를 지원합니다.",
     "tags": [
       "#정보보호",
@@ -564,7 +575,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 2년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "카카오에서 개인정보보호 업무를 담당할 경력자를 채용하며 관련 법규 준수와 대응을 수행합니다.",
     "tags": [
       "#개인정보보호",
@@ -592,7 +603,7 @@
     "location": "경남 거제시",
     "experience": "경력 5년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "한화오션 경영지원 부문 정보보호 경력으로 보안 정책 수립과 정보보호 체계 운영을 수행",
     "tags": [
       "#정보보호",
@@ -620,7 +631,7 @@
     "location": "서울 강남구",
     "experience": "경력 3~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "비바리퍼블리카에서 정보보안 정책 수립과 관리 체계 운영을 담당하는 매니저",
     "tags": [
       "#보안정책",
@@ -646,7 +657,7 @@
     "location": "부산 해운대구",
     "experience": "경력 3년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "부울경 지역 정보보호서비스 경력 채용으로 보안 운영 및 지원 업무 수행",
     "tags": [
       "#정보보호",
@@ -673,7 +684,7 @@
     "location": "경기 수원시 영통구",
     "experience": "경력 3년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "윈스테크넷 클라우드 보안관제·분석 정보보호 서비스 경력 채용",
     "tags": [
       "#클라우드보안",
@@ -701,7 +712,7 @@
     "location": "부산",
     "experience": "경력 3년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "부울경 지역 정보보호서비스 경력자로 관제·진단·개인정보 보호 업무를 담당하는 채용",
     "tags": [
       "#정보보호",
@@ -728,7 +739,7 @@
     "location": "경기",
     "experience": "경력 3년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "윈스테크넷에서 클라우드 관제와 분석 중심 정보보호서비스 경력자를 집중 채용하는 공고입니다",
     "tags": [
       "#클라우드보안",
@@ -756,7 +767,7 @@
     "location": "경기 성남시 수정구",
     "experience": "경력무관",
     "deadline": "D-2 (~ 11/27(금))",
-    "deadline_label": "D-2 (~ 11/27(금))",
+    "deadline_label": "D-1 (~ 11/27(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -779,7 +790,7 @@
     "location": "서울 영등포구",
     "experience": "경력 1~6년",
     "deadline": "D-2 (~ 11/27(금))",
-    "deadline_label": "D-2 (~ 11/27(금))",
+    "deadline_label": "D-1 (~ 11/27(금))",
     "summary": "소스코드 취약점 진단(SAST) 경력 2년 이상을 대상으로 애플리케이션 보안 취약점 분석·진단 수행",
     "tags": [
       "#SAST",
@@ -807,7 +818,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 7년↑",
     "deadline": "D-4",
-    "deadline_label": "D-4",
+    "deadline_label": "D-3",
     "summary": "숲의 SOOP 서비스에서 보안솔루션을 운영하며 시스템 취약점을 진단·조치합니다.",
     "tags": [
       "#보안솔루션",
@@ -834,7 +845,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 3년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "웹·애플리케이션 보안 경력직으로 취약점 분석·점검과 보안 아키텍처 진단 및 대응 업무 수행",
     "tags": [
       "#웹보안",
@@ -844,315 +855,6 @@
     ],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jumpit:55417954:00be1dd5",
-    "company": "위드네트웍스",
-    "title": "보안 연구소 솔루션 개발자(신입)",
-    "url": "https://www.jumpit.co.kr/position/55417954",
-    "platforms": [
-      "점핏"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울 강서구",
-    "experience": "신입",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "위드네트웍스 보안 연구소에서 신규 보안 솔루션을 개발하고 구현할 신입 개발자를 채용합니다",
-    "tags": [
-      "#보안솔루션개발",
-      "#신입개발자",
-      "#보안연구",
-      "#솔루션엔지니어링"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jumpit:55404385:c24dd3a9",
-    "company": "이너버스",
-    "title": "통합보안관리 엔지니어(신입)",
-    "url": "https://www.jumpit.co.kr/position/55404385",
-    "platforms": [
-      "점핏"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울 영등포구",
-    "experience": "신입",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "이너버스에서 통합보안관리 시스템을 구축하고 운영하며 관제할 신입 보안 엔지니어를 채용합니다",
-    "tags": [
-      "#통합보안관리",
-      "#보안관제",
-      "#SIEM",
-      "#신입채용"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jumpit:55402895:e2b998eb",
-    "company": "대진정보통신",
-    "title": "PIA자격/개인정보보호컨설팅(1~3년)",
-    "url": "https://www.jumpit.co.kr/position/55402895",
-    "platforms": [
-      "점핏"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 관악구",
-    "experience": "경력 1~3년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "대진정보통신에서 PIA 자격을 바탕으로 개인정보보호 컨설팅을 수행할 1~3년 경력자를 채용합니다",
-    "tags": [
-      "#PIA",
-      "#개인정보보호",
-      "#개인정보영향평가",
-      "#정보보호컨설팅"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:353918:175e7994",
-    "company": "한화에어로스페이스(주)",
-    "title": "[한화에어로스페이스] 해외사업 정보보호 담당자",
-    "url": "https://career.rememberapp.co.kr/job/posting/353918",
-    "platforms": [
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 중구",
-    "experience": "경력 5년↑",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
-    "summary": "한화에어로스페이스에서 해외사업 관련 정보보호 정책을 수립하고 대응을 담당할 정보보호 담당자를 채용합니다",
-    "tags": [
-      "#정보보호",
-      "#해외사업보안",
-      "#보안정책",
-      "#정보보호거버넌스"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:347418:f3df5484",
-    "company": "현대오토에버(주)",
-    "title": "클라우드 보안성 검토 및 관리",
-    "url": "https://career.rememberapp.co.kr/job/posting/347418",
-    "platforms": [
-      "리멤버"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "서울",
-    "experience": "경력 6년↑",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "현대오토에버에서 클라우드 보안성 검토와 보안 관리 업무를 수행할 클라우드 보안 담당자를 채용합니다",
-    "tags": [
-      "#클라우드보안",
-      "#보안성검토",
-      "#클라우드보안관리",
-      "#CSPM"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-23 08:14:02 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:333894:83958328",
-    "company": "현대오토에버(주)",
-    "title": "북미 기술 보안 주재원 (Endpoint)",
-    "url": "https://career.rememberapp.co.kr/job/posting/333894",
-    "platforms": [
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "해외",
-    "experience": "경력 7~15년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "북미 현지 법인에서 Endpoint 보안 기술 지원과 보안 체계 운영을 담당",
-    "tags": [
-      "#엔드포인트보안",
-      "#해외주재원",
-      "#기술보안",
-      "#보안운영"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-20 08:02:49 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:236690:c4ce1e88",
-    "company": "현대오토에버(주)",
-    "title": "[보안]모의 해킹 및 취약점 진단",
-    "url": "https://career.rememberapp.co.kr/job/posting/236690",
-    "platforms": [
-      "리멤버",
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "서울 강남구",
-    "experience": "경력 2~12년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "모의해킹과 취약점 진단으로 시스템 보안 약점을 분석하고 개선",
-    "tags": [
-      "#모의해킹",
-      "#취약점진단",
-      "#보안진단",
-      "#정보보안"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "remember:342314:a9a0ea82",
-    "company": "현대오토에버(주)",
-    "title": "정보보안 솔루션 구축/운영 (금융)",
-    "url": "https://career.rememberapp.co.kr/job/posting/342314",
-    "platforms": [
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "experience": "경력 10~15년",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
-    "summary": "금융권 정보보안 솔루션 구축과 운영 전반을 담당",
-    "tags": [
-      "#정보보안",
-      "#솔루션구축",
-      "#보안운영",
-      "#금융보안"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jobkorea:50248199:ea559965",
-    "company": "㈜선익시스템",
-    "title": "[선익시스템] IT팀 정보보안 경력 채용",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50248199",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "경기 수원시 권선구",
-    "experience": "경력 9년↑",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
-    "summary": "IT팀 정보보안 전반 운영과 보안 관리 업무를 수행",
-    "tags": [
-      "#정보보안",
-      "#IT보안",
-      "#보안운영",
-      "#보안관리"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jobkorea:50354257:b3c5c58d",
-    "company": "한화에어로스페이스㈜",
-    "title": "지원실 정보보호팀 해외사업 정보보호 담당자 경력직 채용",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50354257",
-    "platforms": [
-      "사람인",
-      "잡코리아",
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 중구",
-    "experience": "경력",
-    "deadline": "D-1 (~ 11/26(목))",
-    "deadline_label": "D-1 (~ 11/26(목))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jobkorea:50301974:9c065b0d",
-    "company": "현대오토에버㈜",
-    "title": "DAST 솔루션 운영 및 피싱 모의해킹 플랫폼 운영",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301974",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "모의해킹",
-      "취약점 진단"
-    ],
-    "location": "서울 강남구",
-    "experience": "경력 2년↑",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
-    "summary": "DAST 솔루션과 피싱 모의해킹 플랫폼을 운영·관리",
-    "tags": [
-      "#DAST",
-      "#피싱모의해킹",
-      "#보안솔루션운영",
-      "#플랫폼운영"
-    ],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "incruit:2611120000241:cb2648df",
-    "company": "시니어앤파트너즈",
-    "title": "[화성.정남] 네트워크/보안 엔지니어(사원-대리급)",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120000241",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "경기",
-    "experience": "경력 3~10년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-24 08:04:52 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
@@ -1171,7 +873,7 @@
     "location": "서울",
     "experience": "경력 2~5년",
     "deadline": "D-2",
-    "deadline_label": "D-2",
+    "deadline_label": "D-1 (내일 마감)",
     "summary": "ISMS 인증 대응과 보안 운영·컴플라이언스 전반을 담당하는 정보보안 담당자",
     "tags": [
       "#ISMS",
@@ -1198,7 +900,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 3년↑",
     "deadline": "D-2 (~ 11/27(금))",
-    "deadline_label": "D-2 (~ 11/27(금))",
+    "deadline_label": "D-1 (~ 11/27(금))",
     "summary": "SK(주)에서 정보보안 운영 전반을 관리하고 보안 체계를 유지할 전문가를 영입",
     "tags": [
       "#정보보안운영",
@@ -1206,6 +908,29 @@
       "#정보보호",
       "#SK"
     ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "saramin:55554726:0849320b",
+    "company": "(주) 케인앤클루컨설팅",
+    "title": "보안진단(취약점진단/보안성검토) 대리급 경력사원 모집",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554726&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
+    "platforms": [
+      "사람인",
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "서울 중구",
+    "experience": "경력 4~8년",
+    "deadline": "D-8 (~ 12/03(목))",
+    "deadline_label": "D-7 (~ 12/03(목))",
+    "summary": "",
+    "tags": [],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
@@ -1225,7 +950,7 @@
     "location": "서울 금천구",
     "experience": "경력무관",
     "deadline": "D-2",
-    "deadline_label": "D-2",
+    "deadline_label": "D-1 (내일 마감)",
     "summary": "갓루트에서 경력 무관으로 모의해킹·취약점 진단을 수행할 Offensive Security 컨설턴트 모집",
     "tags": [
       "#모의해킹",
@@ -1251,7 +976,7 @@
     "location": "서울",
     "experience": "경력 3년↑",
     "deadline": "D-2 (~11/27 금)",
-    "deadline_label": "D-2 (~11/27 금)",
+    "deadline_label": "D-1 (~11/27 금)",
     "summary": "에스케이에서 정보보안 운영 전문가를 영입해 기업 보안 체계 운영과 대응을 담당",
     "tags": [
       "#정보보안운영",
@@ -1279,7 +1004,7 @@
     "location": "서울",
     "experience": "경력 4~12년",
     "deadline": "D-2 (~11/27 금)",
-    "deadline_label": "D-2 (~11/27 금)",
+    "deadline_label": "D-1 (~11/27 금)",
     "summary": "금융그룹 ICT 환경에서 정보보호 보안기획·진단을 수행할 4~12년 경력자 모집",
     "tags": [
       "#정보보호",
@@ -1305,7 +1030,7 @@
     "location": "서울 강남구",
     "experience": "경력 5년↑",
     "deadline": "D-3",
-    "deadline_label": "D-3",
+    "deadline_label": "D-2",
     "summary": "웹·애플리케이션 보안 취약점 점검과 보안 아키텍처 강화를 수행하는 경력자",
     "tags": [
       "#웹보안",
@@ -1331,7 +1056,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 10년↑",
     "deadline": "D-3",
-    "deadline_label": "D-3",
+    "deadline_label": "D-2",
     "summary": "서버·네트워크·시스템 등 인프라 환경의 보안 체계를 구축·운영하는 경력직",
     "tags": [
       "#인프라보안",
@@ -1357,7 +1082,7 @@
     "location": "서울 영등포구",
     "experience": "경력 10년↑",
     "deadline": "D-3 (~ 11/28(토))",
-    "deadline_label": "D-3 (~ 11/28(토))",
+    "deadline_label": "D-2 (~ 11/28(토))",
     "summary": "서비스 전반의 보안 요구사항을 설계·검증하고 보안 엔지니어링을 리드하는 팀장급",
     "tags": [
       "#서비스보안",
@@ -1383,7 +1108,7 @@
     "location": "서울",
     "experience": "경력무관",
     "deadline": "D-3 (~11/28 토)",
-    "deadline_label": "D-3 (~11/28 토)",
+    "deadline_label": "D-2 (~11/28 토)",
     "summary": "보안 이벤트 모니터링과 침해 대응을 수행하는 보안관제 인력",
     "tags": [
       "#보안관제",
@@ -1409,7 +1134,7 @@
     "location": "서울 영등포구",
     "experience": "경력 1년↑",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "정보보호 컨설팅 수행을 지원하며 보안 요구사항 분석과 문서화를 담당하는 경력자",
     "tags": [
       "#정보보호컨설팅",
@@ -1437,7 +1162,7 @@
     "location": "서울 종로구",
     "experience": "",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -1458,7 +1183,7 @@
     "location": "서울 송파구",
     "experience": "경력 10~20년",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "외국계 기업 블루팀 Cyber Security Lead로 보안 전략 수립과 운영 총괄",
     "tags": [
       "#사이버보안",
@@ -1485,7 +1210,7 @@
     "location": "서울 강남구",
     "experience": "경력",
     "deadline": "D-2 (~11/27 금)",
-    "deadline_label": "D-2 (~11/27 금)",
+    "deadline_label": "D-1 (~11/27 금)",
     "summary": "티빙의 개인정보보호 리드로 정책·프로세스 총괄 및 개인정보 리스크 관리 수행",
     "tags": [
       "#개인정보보호",
@@ -1511,7 +1236,7 @@
     "location": "서울 강남구",
     "experience": "경력 2년↑",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "기업 대상 정보보안 컨설팅 컨설턴트로 프리랜서 수행하며 보안 진단·자문 및 개선 지원",
     "tags": [
       "#정보보안컨설팅",
@@ -1537,7 +1262,7 @@
     "location": "서울",
     "experience": "경력 5~12년",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "금융그룹 ICT 환경 EDR 기반 보안관제 경력자로 탐지·대응 및 관제 운영 수행",
     "tags": [
       "#EDR",
@@ -1564,7 +1289,7 @@
     "location": "서울",
     "experience": "",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -1586,7 +1311,7 @@
     "location": "경기",
     "experience": "",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -1608,7 +1333,7 @@
     "location": "서울 송파구",
     "experience": "경력 8~15년",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "경영지원 조직 내 정보보호 리더로서 보안 전략과 거버넌스 수립·운영을 총괄하는 경력직",
     "tags": [
       "#정보보호리더",
@@ -1634,7 +1359,7 @@
     "location": "서울 강남구",
     "experience": "경력무관",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "준법경영본부 정보보호팀에서 3개월 계약직으로 정보보호 업무와 컴플라이언스 대응 수행",
     "tags": [
       "#정보보호",
@@ -1662,7 +1387,7 @@
     "location": "서울 동작구",
     "experience": "신입·경력",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "기업의 취약점 분석과 정보보안 모의해킹 컨설팅을 수행하는 전문 인력",
     "tags": [
       "#취약점분석",
@@ -1689,7 +1414,7 @@
     "location": "경기 과천시",
     "experience": "경력 8년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "정보보호 및 개인정보보호 체계를 구축·운영하는 보안 담당 업무",
     "tags": [
       "#정보보호",
@@ -1715,7 +1440,7 @@
     "location": "서울 금천구",
     "experience": "경력 1~4년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "보안 시스템을 설계·운영하며 보안 엔지니어링 업무를 수행하는 Security Engineer",
     "tags": [
       "#보안엔지니어",
@@ -1741,7 +1466,7 @@
     "location": "경기 안양시",
     "experience": "경력 7~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "SW 품질경영과 전사 정보보안 거버넌스를 총괄하며 품질 조직을 이끄는 리더 역할",
     "tags": [
       "#SW품질경영",
@@ -1768,7 +1493,7 @@
     "location": "경기 성남시",
     "experience": "경력 8~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "정보보안 관리체계와 보안정책을 수립·운영하며 시니어로 관리하는 담당자",
     "tags": [
       "#정보보안정책",
@@ -1794,7 +1519,7 @@
     "location": "경기 화성시",
     "experience": "경력 5~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "화장품 ODM 상장사의 IT 인프라와 정보보안 운영 전반을 담당하는 직무",
     "tags": [
       "#IT보안",
@@ -1820,7 +1545,7 @@
     "location": "서울 마포구",
     "experience": "경력 5~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "정보보안 전반의 보안 운영과 관리 업무를 수행할 인재를 채용하는 공고",
     "tags": [
       "#정보보안",
@@ -1847,7 +1572,7 @@
     "location": "경기 성남시",
     "experience": "경력 5년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "선박 보안 시스템 대상 모의해킹과 보안 테스트를 수행하여 취약점 점검 및 개선을 지원합니다.",
     "tags": [
       "#모의해킹",
@@ -1873,7 +1598,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 7년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "정보보안 분석 업무를 총괄하며 보안 위협 분석·대응 체계 운영을 담당합니다.",
     "tags": [
       "#정보보안",
@@ -1899,7 +1624,7 @@
     "location": "서울 송파구",
     "experience": "경력 6년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -1920,7 +1645,7 @@
     "location": "서울 송파구",
     "experience": "경력 3년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -1941,7 +1666,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 7년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "게임 보안 강화를 위한 보안 SDK 설계 및 개발을 담당합니다.",
     "tags": [
       "#게임보안",
@@ -1967,7 +1692,7 @@
     "location": "서울 강서구",
     "experience": "신입·경력",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "정보보안 관리체계 운영과 보안 정책·점검·교육 등 관리 업무를 수행합니다.",
     "tags": [
       "#정보보안",
@@ -1994,7 +1719,7 @@
     "location": "서울 중구",
     "experience": "경력",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "레드팀 경력자로 모의해킹과 공격 시나리오 기반 보안 취약점 진단 및 대응 전략 수립",
     "tags": [
       "#레드팀",
@@ -2020,7 +1745,7 @@
     "location": "경기 과천시",
     "experience": "경력 6년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "정보보호 체계 운영과 개인정보보호 관리·기술 대응을 총괄하는 경력직",
     "tags": [
       "#정보보호",
@@ -2046,7 +1771,7 @@
     "location": "서울 서초구",
     "experience": "경력 4년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "애플리케이션 보안 취약점 진단과 시큐어코딩 기반 보안 아키텍처 개선 수행",
     "tags": [
       "#AppSecurity",
@@ -2073,7 +1798,7 @@
     "location": "서울 중구",
     "experience": "경력 7년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "레드팀 경력자로 모의해킹과 공격 시나리오 기반 보안 취약점 진단 및 대응 전략 수립",
     "tags": [
       "#레드팀",
@@ -2099,7 +1824,7 @@
     "location": "경기",
     "experience": "경력무관",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2120,7 +1845,7 @@
     "location": "서울",
     "experience": "경력 7~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "대기업 지주사 AI 보안 전반을 담당하며 보안 체계와 기술 대응을 수행",
     "tags": [
       "#AI보안",
@@ -2146,7 +1871,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 8~15년",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "기업 전반의 정보보안 정책 수립과 운영 및 보안 관리 체계 담당",
     "tags": [
       "#기업보안",
@@ -2172,7 +1897,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 8~15년",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "제품 개발 전 과정의 보안 점검과 취약점 대응 및 보안성 강화 담당",
     "tags": [
       "#제품보안",
@@ -2199,7 +1924,7 @@
     "location": "서울 강남구",
     "experience": "신입·경력",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "문화체육관광부 정보보호와 개인정보보호 정책 및 운영 업무 담당",
     "tags": [
       "#정보보호",
@@ -2225,7 +1950,7 @@
     "location": "나주시",
     "experience": "경력 2~5년",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "한전 정보보호시스템 개발 및 PM 수행과 보안 시스템 구축·운영 담당",
     "tags": [
       "#정보보호시스템",
@@ -2235,6 +1960,113 @@
     ],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-18 20:34:23 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "saramin:55472614:f6791932",
+    "company": "휴젤(주)",
+    "title": "[보안1팀] 정보보안 운영/개인정보보호 경력",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
+    "platforms": [
+      "사람인",
+      "잡코리아",
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "experience": "경력 4~9년",
+    "deadline": "D-8 (~ 12/03(목))",
+    "deadline_label": "D-7 (~ 12/03(목))",
+    "summary": "정보보안 운영과 개인정보보호 업무를 담당할 경력자를 채용합니다.",
+    "tags": [
+      "#정보보안운영",
+      "#개인정보보호",
+      "#보안컴플라이언스"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "jobkorea:50297500:c12d5018",
+    "company": "㈜에스앤케이인스티튜트",
+    "title": "정보보안솔루션 경력개발자",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50297500",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울 서초구",
+    "experience": "경력 1년↑",
+    "deadline": "D-8",
+    "deadline_label": "D-7",
+    "summary": "정보보안 솔루션 개발 경력자를 채용하여 보안 제품 개발 업무를 수행합니다.",
+    "tags": [
+      "#정보보안솔루션",
+      "#보안개발",
+      "#경력개발자",
+      "#소프트웨어개발"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "incruit:2611030002809:d8be2eb4",
+    "company": "그레이스앤파트너스",
+    "title": "보안관제/(3~ 12년) - 금융그룹 ICT",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002809",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "정보보안"
+    ],
+    "location": "서울",
+    "experience": "경력 3~12년",
+    "deadline": "D-8 (~12/03 목)",
+    "deadline_label": "D-7 (~12/03 목)",
+    "summary": "금융그룹 ICT 환경에서 보안관제 경력자를 채용해 모니터링과 대응을 담당합니다.",
+    "tags": [
+      "#보안관제",
+      "#금융보안",
+      "#ICT보안",
+      "#보안모니터링"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-13 16:48:44 KST"
+  },
+  {
+    "job_key": "incruit:2611030002810:666a553a",
+    "company": "그레이스앤파트너스",
+    "title": "보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT",
+    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810",
+    "platforms": [
+      "인크루트"
+    ],
+    "keywords": [
+      "취약점 진단",
+      "정보보안"
+    ],
+    "location": "서울",
+    "experience": "경력 3~8년",
+    "deadline": "D-8 (~12/03 목)",
+    "deadline_label": "D-7 (~12/03 목)",
+    "summary": "금융그룹 ICT 대상 취약점 진단과 보안성 검토 경력자를 채용합니다.",
+    "tags": [
+      "#취약점진단",
+      "#보안성검토",
+      "#보안진단",
+      "#금융보안"
+    ],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-13 16:48:44 KST"
   },
   {
@@ -2252,7 +2084,7 @@
     "location": "",
     "experience": "",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2274,7 +2106,7 @@
     "location": "서울",
     "experience": "경력 5~15년",
     "deadline": "D-3 (~11/28 토)",
-    "deadline_label": "D-3 (~11/28 토)",
+    "deadline_label": "D-2 (~11/28 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2298,7 +2130,7 @@
     "location": "서울",
     "experience": "경력 3~10년",
     "deadline": "D-4",
-    "deadline_label": "D-4",
+    "deadline_label": "D-3",
     "summary": "3년 이상 경력으로 개인정보보호 정책 수립과 컴플라이언스 대응을 담당",
     "tags": [
       "#개인정보보호",
@@ -2325,7 +2157,7 @@
     "location": "서울 종로구",
     "experience": "경력 4년↑",
     "deadline": "D-2",
-    "deadline_label": "D-2",
+    "deadline_label": "D-1 (내일 마감)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2346,7 +2178,7 @@
     "location": "서울 영등포구",
     "experience": "경력 5년↑",
     "deadline": "D-2 (~ 11/27(금))",
-    "deadline_label": "D-2 (~ 11/27(금))",
+    "deadline_label": "D-1 (~ 11/27(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2368,7 +2200,7 @@
     "location": "서울 송파구",
     "experience": "경력 2년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "AI 통합보안센터에서 취약점 진단 경력자로 보안 취약점 분석과 진단 업무 수행",
     "tags": [
       "#취약점진단",
@@ -2395,7 +2227,7 @@
     "location": "서울 영등포구",
     "experience": "신입",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2416,7 +2248,7 @@
     "location": "",
     "experience": "",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2438,34 +2270,12 @@
     "location": "경기 의왕시",
     "experience": "경력 3년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-15 06:31:00 KST"
-  },
-  {
-    "job_key": "saramin:55403110:953aa71b",
-    "company": "(주)퀸텟시스템즈",
-    "title": "정보보호(보안) 담당자 경력 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55403110&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "서울 영등포구",
-    "experience": "경력 5년↑",
-    "deadline": "D-1 (~ 11/26(목))",
-    "deadline_label": "D-1 (~ 11/26(목))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-18 20:34:23 KST",
-    "first_seen_at": "2026-11-16 06:34:21 KST"
   },
   {
     "job_key": "remember:353605:a5e5daf8",
@@ -2481,7 +2291,7 @@
     "location": "충남 아산시",
     "experience": "경력 5~20년",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2502,7 +2312,7 @@
     "location": "경기 안양시 동안구",
     "experience": "경력 5년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2523,7 +2333,7 @@
     "location": "경기 성남시 수정구",
     "experience": "경력",
     "deadline": "D-6 (~ 12/01(화))",
-    "deadline_label": "D-6 (~ 12/01(화))",
+    "deadline_label": "D-5 (~ 12/01(화))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2544,7 +2354,7 @@
     "location": "서울 구로구",
     "experience": "경력 3~10년",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2552,25 +2362,47 @@
     "first_seen_at": "2026-11-16 06:34:21 KST"
   },
   {
-    "job_key": "remember:354883:3f01492e",
-    "company": "현대오토에버(주)",
-    "title": "[Tech] Infra Security Engineer - 퍼블릭클라우드 보안 Technical Architect",
-    "url": "https://career.rememberapp.co.kr/job/posting/354883",
+    "job_key": "saramin:55470203:8cd75c06",
+    "company": "(주)하이퍼코퍼레이션",
+    "title": "[코스닥상장사] 하이퍼코퍼레이션 CISO 정보보호최고책임자 채용",
+    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55470203&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
     "platforms": [
-      "리멤버"
+      "사람인"
     ],
     "keywords": [
-      "정보보안"
+      "정보보호"
     ],
     "location": "서울 강남구",
-    "experience": "경력 3~10년",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
+    "experience": "경력 10년↑",
+    "deadline": "D-8 (~ 12/03(목))",
+    "deadline_label": "D-7 (~ 12/03(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-17 06:31:46 KST"
+    "last_seen_at": "2026-11-18 20:34:23 KST",
+    "first_seen_at": "2026-11-16 06:34:21 KST"
+  },
+  {
+    "job_key": "jobkorea:50297759:bbb99f10",
+    "company": "㈜에스지시큐리티컨설팅",
+    "title": "[신입/경력] 정보보호컨설턴트 채용 (기술보안·관리보안)",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50297759",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호",
+      "정보보안"
+    ],
+    "location": "서울 강남구",
+    "experience": "신입",
+    "deadline": "D-8 (~ 12/03(목))",
+    "deadline_label": "D-7 (~ 12/03(목))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-24 08:04:52 KST",
+    "first_seen_at": "2026-11-16 06:34:21 KST"
   },
   {
     "job_key": "incruit:2611130002237:3a8281dd",
@@ -2586,7 +2418,7 @@
     "location": "서울",
     "experience": "경력 5년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2607,7 +2439,7 @@
     "location": "서울",
     "experience": "신입",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2628,7 +2460,7 @@
     "location": "서울 서초구",
     "experience": "",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2649,7 +2481,7 @@
     "location": "서울 강서구",
     "experience": "경력 5년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2670,7 +2502,7 @@
     "location": "서울 영등포구",
     "experience": "경력 5년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2691,7 +2523,7 @@
     "location": "경기 성남시",
     "experience": "경력 9~17년",
     "deadline": "D-7 (~12/02 수)",
-    "deadline_label": "D-7 (~12/02 수)",
+    "deadline_label": "D-6 (~12/02 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2713,7 +2545,7 @@
     "location": "서울 강서구",
     "experience": "경력",
     "deadline": "D-4",
-    "deadline_label": "D-4",
+    "deadline_label": "D-3",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2734,7 +2566,7 @@
     "location": "경기 성남시",
     "experience": "경력 1~3년",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2756,7 +2588,7 @@
     "location": "서울 서초구",
     "experience": "신입",
     "deadline": "D-6 (~ 12/01(화))",
-    "deadline_label": "D-6 (~ 12/01(화))",
+    "deadline_label": "D-5 (~ 12/01(화))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2778,7 +2610,7 @@
     "location": "서울 서초구",
     "experience": "경력",
     "deadline": "D-6",
-    "deadline_label": "D-6",
+    "deadline_label": "D-5",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2799,79 +2631,12 @@
     "location": "충북 청주시 청원구",
     "experience": "경력 3년↑",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-19 08:01:43 KST",
     "first_seen_at": "2026-11-18 06:31:43 KST"
-  },
-  {
-    "job_key": "wanted:337266:f80e30ff",
-    "company": "다우기술",
-    "title": "정보보호관리",
-    "url": "https://www.wanted.co.kr/wd/337266",
-    "platforms": [
-      "원티드",
-      "점핏",
-      "사람인",
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "경기",
-    "experience": "경력 5년↑",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-19 08:01:43 KST"
-  },
-  {
-    "job_key": "jumpit:55607445:44d8705c",
-    "company": "다우기술",
-    "title": "AI 보안 엔지니어",
-    "url": "https://www.jumpit.co.kr/position/55607445",
-    "platforms": [
-      "점핏",
-      "리멤버"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "경기 성남시 수정구",
-    "experience": "경력 3~10년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-19 08:01:43 KST"
-  },
-  {
-    "job_key": "jobkorea:50384970:5bb43fbd",
-    "company": "한영회계법인",
-    "title": "금융컨설팅본부 AITS팀 정보보호 분야 경력직",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50384970",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 영등포구",
-    "experience": "경력 8년↑",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-19 08:01:43 KST"
   },
   {
     "job_key": "saramin:55607972:c13c9cc1",
@@ -2887,7 +2652,7 @@
     "location": "서울 강남구",
     "experience": "경력 1년↑",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2908,7 +2673,7 @@
     "location": "서울 강남구",
     "experience": "경력무관",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2929,7 +2694,7 @@
     "location": "서울 강남구",
     "experience": "경력 5~8년",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2952,7 +2717,7 @@
     "location": "서울 강남구",
     "experience": "신입·경력",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2973,7 +2738,7 @@
     "location": "서울",
     "experience": "경력 3~8년",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -2994,7 +2759,7 @@
     "location": "인천 남동구",
     "experience": "경력 5년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3015,7 +2780,7 @@
     "location": "경기 과천시",
     "experience": "경력 8~12년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3036,7 +2801,7 @@
     "location": "서울 강남구",
     "experience": "경력 7~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3058,7 +2823,7 @@
     "location": "서울 영등포구",
     "experience": "경력 7~15년",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3080,7 +2845,7 @@
     "location": "서울 강남구",
     "experience": "경력 7년↑",
     "deadline": "D-6 (~12/01 화)",
-    "deadline_label": "D-6 (~12/01 화)",
+    "deadline_label": "D-5 (~12/01 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3101,7 +2866,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 3~6년",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3123,7 +2888,7 @@
     "location": "서울 강남구",
     "experience": "신입·경력",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "문화체육관광부 정보보호와 개인정보보호 정책 및 운영 업무 담당",
     "tags": [
       "#정보보호",
@@ -3149,7 +2914,7 @@
     "location": "충남 논산시",
     "experience": "경력 2~8년",
     "deadline": "D-6 (~ 12/01(화))",
-    "deadline_label": "D-6 (~ 12/01(화))",
+    "deadline_label": "D-5 (~ 12/01(화))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3170,7 +2935,7 @@
     "location": "서울 중구",
     "experience": "경력 5~10년",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3191,7 +2956,7 @@
     "location": "서울 영등포구",
     "experience": "경력 3년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3213,7 +2978,7 @@
     "location": "서울 영등포구",
     "experience": "경력 5년↑",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3234,7 +2999,7 @@
     "location": "서울 중구",
     "experience": "경력 3년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3256,33 +3021,12 @@
     "location": "서울 강남구",
     "experience": "경력 6년↑",
     "deadline": "D-7",
-    "deadline_label": "D-7",
+    "deadline_label": "D-6",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-20 08:02:49 KST"
-  },
-  {
-    "job_key": "incruit:2611200002753:fc18aeb8",
-    "company": "에스케이쉴더스",
-    "title": "OT 사이버보안 아키텍트/컨설턴트 경력직 채용",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611200002753",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "경기 성남시",
-    "experience": "경력 3년↑",
-    "deadline": "D-1 (내일 마감)",
-    "deadline_label": "D-1 (내일 마감)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-21 08:01:42 KST"
   },
   {
     "job_key": "saramin:55621444:a90c07c3",
@@ -3298,7 +3042,7 @@
     "location": "서울 금천구",
     "experience": "경력 3년↑",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3321,54 +3065,12 @@
     "location": "서울",
     "experience": "경력 5~11년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-21 08:01:42 KST"
-  },
-  {
-    "job_key": "jumpit:55417960:08399b5c",
-    "company": "위드네트웍스",
-    "title": "보안 연구소 솔루션 개발자(경력)",
-    "url": "https://www.jumpit.co.kr/position/55417960",
-    "platforms": [
-      "점핏"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울 강서구",
-    "experience": "경력 1~3년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-22 08:06:09 KST"
-  },
-  {
-    "job_key": "jumpit:55402907:23e22f50",
-    "company": "대진정보통신",
-    "title": "PIA자격/개인정보보호컨설팅(4~7년)",
-    "url": "https://www.jumpit.co.kr/position/55402907",
-    "platforms": [
-      "점핏"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 관악구",
-    "experience": "경력 4~7년",
-    "deadline": "D-1 (~11/26 목)",
-    "deadline_label": "D-1 (~11/26 목)",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "URGENT",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-22 08:06:09 KST"
   },
   {
     "job_key": "jobkorea:50403550:fd769a48",
@@ -3386,7 +3088,7 @@
     "location": "서울 서초구",
     "experience": "경력 3년↑",
     "deadline": "D-2",
-    "deadline_label": "D-2",
+    "deadline_label": "D-1 (내일 마감)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3407,7 +3109,7 @@
     "location": "서울 종로구",
     "experience": "신입·경력",
     "deadline": "D-4 (~ 11/29(일))",
-    "deadline_label": "D-4 (~ 11/29(일))",
+    "deadline_label": "D-3 (~ 11/29(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3428,7 +3130,7 @@
     "location": "서울",
     "experience": "신입",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3449,7 +3151,7 @@
     "location": "서울",
     "experience": "경력 5~15년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3470,7 +3172,7 @@
     "location": "서울",
     "experience": "경력 3~10년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3491,7 +3193,7 @@
     "location": "서울 강남구",
     "experience": "경력 1~3년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3512,7 +3214,7 @@
     "location": "부산 해운대구",
     "experience": "경력 3년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3533,7 +3235,7 @@
     "location": "서울 송파구",
     "experience": "경력 2년↑",
     "deadline": "D-5",
-    "deadline_label": "D-5",
+    "deadline_label": "D-4",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3554,7 +3256,7 @@
     "location": "서울 금천구",
     "experience": "경력 1~4년",
     "deadline": "D-5 (~11/30 월)",
-    "deadline_label": "D-5 (~11/30 월)",
+    "deadline_label": "D-4 (~11/30 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3575,7 +3277,7 @@
     "location": "서울",
     "experience": "경력 3년↑",
     "deadline": "D-7 (~ 12/02(수))",
-    "deadline_label": "D-7 (~ 12/02(수))",
+    "deadline_label": "D-6 (~ 12/02(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3596,7 +3298,7 @@
     "location": "서울 서초구",
     "experience": "경력",
     "deadline": "D-6 (~ 12/01(화))",
-    "deadline_label": "D-6 (~ 12/01(화))",
+    "deadline_label": "D-5 (~ 12/01(화))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3617,7 +3319,7 @@
     "location": "서울",
     "experience": "경력무관",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3640,7 +3342,7 @@
     "location": "서울 서초구",
     "experience": "경력 5~9년",
     "deadline": "D-2 (~ 11/27(금))",
-    "deadline_label": "D-2 (~ 11/27(금))",
+    "deadline_label": "D-1 (~ 11/27(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3661,7 +3363,7 @@
     "location": "경기 과천시",
     "experience": "경력 3년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3682,7 +3384,7 @@
     "location": "경기 성남시",
     "experience": "경력 4년↑",
     "deadline": "D-4 (~11/29 일)",
-    "deadline_label": "D-4 (~11/29 일)",
+    "deadline_label": "D-3 (~11/29 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -3704,7 +3406,28 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 3년↑",
     "deadline": "D-5 (~ 11/30(월))",
-    "deadline_label": "D-5 (~ 11/30(월))",
+    "deadline_label": "D-4 (~ 11/30(월))",
+    "summary": "",
+    "tags": [],
+    "deadline_status": "URGENT",
+    "last_seen_at": "2026-11-25 08:02:12 KST",
+    "first_seen_at": "2026-11-25 08:02:12 KST"
+  },
+  {
+    "job_key": "jobkorea:50425410:122e347c",
+    "company": "롯데바이오로직스",
+    "title": "2026년 11월 경력사원 채용(정규직 일반직군) - 정보보호",
+    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50425410",
+    "platforms": [
+      "잡코리아"
+    ],
+    "keywords": [
+      "정보보호"
+    ],
+    "location": "인천 연수구",
+    "experience": "경력",
+    "deadline": "D-8",
+    "deadline_label": "D-7",
     "summary": "",
     "tags": [],
     "deadline_status": "URGENT",
@@ -9559,7 +9282,7 @@
     "location": "서울",
     "experience": "신입·경력",
     "deadline": "D-18 (~ 12/13(일))",
-    "deadline_label": "D-18 (~ 12/13(일))",
+    "deadline_label": "D-17 (~ 12/13(일))",
     "summary": "정보보호팀에서 기술보안 전반을 담당하며 보안 시스템 운영과 취약점 분석 수행",
     "tags": [
       "#정보보호",
@@ -9585,7 +9308,7 @@
     "location": "서울 금천구",
     "experience": "경력 3~13년",
     "deadline": "D-18 (~12/13 일)",
-    "deadline_label": "D-18 (~12/13 일)",
+    "deadline_label": "D-17 (~12/13 일)",
     "summary": "파이오링크의 웹 방화벽 WEBFRONT-K 웹보안 기능과 시그니처 개발 담당",
     "tags": [
       "#웹방화벽",
@@ -9611,7 +9334,7 @@
     "location": "서울 서초구",
     "experience": "경력 7~20년",
     "deadline": "D-20 (~12/15 화)",
-    "deadline_label": "D-20 (~12/15 화)",
+    "deadline_label": "D-19 (~12/15 화)",
     "summary": "네트워크 보안 기술 연구개발과 보안 제품 기능 개발을 담당하는 R&D 인력",
     "tags": [
       "#네트워크보안",
@@ -9637,7 +9360,7 @@
     "location": "경기 화성시 동탄구",
     "experience": "경력 5년↑",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "바텍이우홀딩스 정보보안 담당으로 기업 정보보안 정책·운영 총괄",
     "tags": [
       "#정보보안",
@@ -9665,7 +9388,7 @@
     "location": "서울 중구",
     "experience": "경력 4~8년",
     "deadline": "D-23 (~12/18 금)",
-    "deadline_label": "D-23 (~12/18 금)",
+    "deadline_label": "D-22 (~12/18 금)",
     "summary": "시스템·서비스 취약점 진단과 보안성 검토를 수행해 보안 약점을 식별·개선",
     "tags": [
       "#취약점진단",
@@ -9691,7 +9414,7 @@
     "location": "서울 관악구",
     "experience": "경력",
     "deadline": "D-22 (~ 12/17(목))",
-    "deadline_label": "D-22 (~ 12/17(목))",
+    "deadline_label": "D-21 (~ 12/17(목))",
     "summary": "개인정보보호 컨설팅을 통해 개인정보 처리 현황 진단과 보호대책 수립을 지원",
     "tags": [
       "#개인정보보호",
@@ -9717,7 +9440,7 @@
     "location": "서울 관악구",
     "experience": "경력 3년↑",
     "deadline": "D-22 (~ 12/17(목))",
-    "deadline_label": "D-22 (~ 12/17(목))",
+    "deadline_label": "D-21 (~ 12/17(목))",
     "summary": "PIA 자격 기반으로 개인정보보호 컨설팅과 개인정보 영향평가 등 전문 업무를 수행",
     "tags": [
       "#PIA",
@@ -9743,7 +9466,7 @@
     "location": "서울 강남구",
     "experience": "경력 5년↑",
     "deadline": "D-15 (~ 12/10(목))",
-    "deadline_label": "D-15 (~ 12/10(목))",
+    "deadline_label": "D-14 (~ 12/10(목))",
     "summary": "알바천국 본사의 정보보안 기술 엔지니어로서 보안 인프라 운영과 기술 지원을 담당",
     "tags": [
       "#정보보안",
@@ -9770,7 +9493,7 @@
     "location": "경기",
     "experience": "",
     "deadline": "D-25 (~12/20 일)",
-    "deadline_label": "D-25 (~12/20 일)",
+    "deadline_label": "D-24 (~12/20 일)",
     "summary": "차바이오텍 IT사업본부에서 정보보안 시스템 구축·운영과 보안 인프라 관리를 담당한다",
     "tags": [
       "#정보보안",
@@ -9796,7 +9519,7 @@
     "location": "서울 강남구",
     "experience": "경력 5년↑",
     "deadline": "D-23 (~12/18 금)",
-    "deadline_label": "D-23 (~12/18 금)",
+    "deadline_label": "D-22 (~12/18 금)",
     "summary": "채널코퍼레이션 채널톡의 CISO로서 정보보안 전략 수립, 보안 거버넌스 구축 및 리스크 관리 총괄",
     "tags": [
       "#CISO",
@@ -9825,7 +9548,7 @@
     "location": "서울",
     "experience": "경력 5~12년",
     "deadline": "D-28 (~12/23 수)",
-    "deadline_label": "D-28 (~12/23 수)",
+    "deadline_label": "D-27 (~12/23 수)",
     "summary": "정보보안 전반을 담당하며 보안 정책 수립과 점검·운영을 수행하는 담당자",
     "tags": [
       "#정보보안",
@@ -9852,30 +9575,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 4~10년",
     "deadline": "D-12 (~ 12/07(월))",
-    "deadline_label": "D-12 (~ 12/07(월))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55554726:0849320b",
-    "company": "(주) 케인앤클루컨설팅",
-    "title": "보안진단(취약점진단/보안성검토) 대리급 경력사원 모집",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554726&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8",
-    "platforms": [
-      "사람인",
-      "인크루트"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "서울 중구",
-    "experience": "경력 4~8년",
-    "deadline": "D-8 (~ 12/03(목))",
-    "deadline_label": "D-8 (~ 12/03(목))",
+    "deadline_label": "D-11 (~ 12/07(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -9898,120 +9598,13 @@
     "location": "경남 진주시",
     "experience": "경력 3~9년",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "코스닥 기업을 대상으로 정보보안 취약점 진단 프로젝트를 총괄하는 경력직 PL",
     "tags": [
       "#취약점진단",
       "#정보보안",
       "#프로젝트관리",
       "#코스닥"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "saramin:55472614:f6791932",
-    "company": "휴젤(주)",
-    "title": "[보안1팀] 정보보안 운영/개인정보보호 경력",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88",
-    "platforms": [
-      "사람인",
-      "잡코리아",
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "서울 강남구",
-    "experience": "경력 4~9년",
-    "deadline": "D-8 (~ 12/03(목))",
-    "deadline_label": "D-8 (~ 12/03(목))",
-    "summary": "정보보안 운영과 개인정보보호 업무를 담당할 경력자를 채용합니다.",
-    "tags": [
-      "#정보보안운영",
-      "#개인정보보호",
-      "#보안컴플라이언스"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "jobkorea:50297500:c12d5018",
-    "company": "㈜에스앤케이인스티튜트",
-    "title": "정보보안솔루션 경력개발자",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50297500",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울 서초구",
-    "experience": "경력 1년↑",
-    "deadline": "D-8",
-    "deadline_label": "D-8",
-    "summary": "정보보안 솔루션 개발 경력자를 채용하여 보안 제품 개발 업무를 수행합니다.",
-    "tags": [
-      "#정보보안솔루션",
-      "#보안개발",
-      "#경력개발자",
-      "#소프트웨어개발"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "incruit:2611030002809:d8be2eb4",
-    "company": "그레이스앤파트너스",
-    "title": "보안관제/(3~ 12년) - 금융그룹 ICT",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002809",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "정보보안"
-    ],
-    "location": "서울",
-    "experience": "경력 3~12년",
-    "deadline": "D-8 (~12/03 목)",
-    "deadline_label": "D-8 (~12/03 목)",
-    "summary": "금융그룹 ICT 환경에서 보안관제 경력자를 채용해 모니터링과 대응을 담당합니다.",
-    "tags": [
-      "#보안관제",
-      "#금융보안",
-      "#ICT보안",
-      "#보안모니터링"
-    ],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-13 16:48:44 KST"
-  },
-  {
-    "job_key": "incruit:2611030002810:666a553a",
-    "company": "그레이스앤파트너스",
-    "title": "보안진단(취약점진단/보안성검토)/(3~ 8년) - 금융그룹 ICT",
-    "url": "https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030002810",
-    "platforms": [
-      "인크루트"
-    ],
-    "keywords": [
-      "취약점 진단",
-      "정보보안"
-    ],
-    "location": "서울",
-    "experience": "경력 3~8년",
-    "deadline": "D-8 (~12/03 목)",
-    "deadline_label": "D-8 (~12/03 목)",
-    "summary": "금융그룹 ICT 대상 취약점 진단과 보안성 검토 경력자를 채용합니다.",
-    "tags": [
-      "#취약점진단",
-      "#보안성검토",
-      "#보안진단",
-      "#금융보안"
     ],
     "deadline_status": "UPCOMING",
     "last_seen_at": "2026-11-25 08:02:12 KST",
@@ -10031,7 +9624,7 @@
     "location": "경기 광명시",
     "experience": "경력 3년↑",
     "deadline": "D-9 (~ 12/04(금))",
-    "deadline_label": "D-9 (~ 12/04(금))",
+    "deadline_label": "D-8 (~ 12/04(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10052,7 +9645,7 @@
     "location": "서울 구로구",
     "experience": "신입·경력",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "재택근무 기반으로 풀스택·정보보안·PE 분야 대규모 튜터 모집 및 교육 운영 직무",
     "tags": [
       "#풀스택",
@@ -10078,7 +9671,7 @@
     "location": "서울 종로구",
     "experience": "경력 5년↑",
     "deadline": "D-9",
-    "deadline_label": "D-9",
+    "deadline_label": "D-8",
     "summary": "기업 대상 정보보안 컨설팅과 보안 체계 수립을 수행할 경력 컨설턴트 채용",
     "tags": [
       "#정보보안컨설팅",
@@ -10106,7 +9699,7 @@
     "location": "서울",
     "experience": "",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10127,7 +9720,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 1~10년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "AI 시스템 대상 모의해킹과 취약점 분석을 수행하는 AI 펜테스터 채용",
     "tags": [
       "#AI보안",
@@ -10153,7 +9746,7 @@
     "location": "서울 영등포구",
     "experience": "경력 3~8년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "보안 엔지니어링 팀을 리드하며 보안 시스템 구축·운영과 취약점 관리 체계를 총괄하는 매니저",
     "tags": [
       "#보안엔지니어링",
@@ -10179,7 +9772,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 1~15년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "사이버 위협 정보를 수집·분석하고 공격 동향과 위협 인텔리전스를 제공하는 위협 분석가 역할",
     "tags": [
       "#위협분석",
@@ -10205,7 +9798,7 @@
     "location": "서울 마포구",
     "experience": "경력 3~5년",
     "deadline": "D-10 (~ 12/05(토))",
-    "deadline_label": "D-10 (~ 12/05(토))",
+    "deadline_label": "D-9 (~ 12/05(토))",
     "summary": "사내 정보보안과 개인정보보호 업무를 담당하며 보안 정책·점검·컴플라이언스 운영을 수행",
     "tags": [
       "#정보보안",
@@ -10232,7 +9825,7 @@
     "location": "서울 금천구",
     "experience": "경력 3~10년",
     "deadline": "D-10 (~ 12/05(토))",
-    "deadline_label": "D-10 (~ 12/05(토))",
+    "deadline_label": "D-9 (~ 12/05(토))",
     "summary": "모의해킹과 보안 컨설팅을 수행하며 취약점 진단 및 보안 개선안을 제시하는 경력직",
     "tags": [
       "#모의해킹",
@@ -10259,7 +9852,7 @@
     "location": "서울 종로구",
     "experience": "경력 5~10년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "고려아연 개인정보 보안기획 직무로 보호정책 수립과 컴플라이언스 대응을 담당",
     "tags": [
       "#개인정보보호",
@@ -10286,7 +9879,7 @@
     "location": "서울 종로구",
     "experience": "경력 12~18년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "고려아연 보안기획팀의 보안진단 직무로 시스템 취약점 점검과 보안성 검토를 수행",
     "tags": [
       "#보안진단",
@@ -10314,7 +9907,7 @@
     "location": "경기 용인시 기흥구",
     "experience": "경력 1년↑",
     "deadline": "D-10",
-    "deadline_label": "D-10",
+    "deadline_label": "D-9",
     "summary": "아도스에서 모의해킹과 취약점 진단, 보안용 AI 에이전트 개발을 수행하는 경력직",
     "tags": [
       "#모의해킹",
@@ -10340,7 +9933,7 @@
     "location": "경기",
     "experience": "경력 1~7년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "그레이스앤파트너스 반도체 분야 주니어 사이버보안 담당으로 보안 운영과 대응을 수행",
     "tags": [
       "#사이버보안",
@@ -10366,7 +9959,7 @@
     "location": "경기 화성시 동탄구",
     "experience": "신입·경력",
     "deadline": "D-11 (~ 12/06(일))",
-    "deadline_label": "D-11 (~ 12/06(일))",
+    "deadline_label": "D-10 (~ 12/06(일))",
     "summary": "에스에프에이 2026년 수시채용 정보보안 직무로 보안 정책과 운영 관리 전반을 담당",
     "tags": [
       "#정보보안",
@@ -10392,7 +9985,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 7년↑",
     "deadline": "D-11 (~ 12/06(일))",
-    "deadline_label": "D-11 (~ 12/06(일))",
+    "deadline_label": "D-10 (~ 12/06(일))",
     "summary": "판교에서 IT 인프라와 정보보안 시스템을 안정적으로 운영·관리하는 담당자",
     "tags": [
       "#IT인프라",
@@ -10418,7 +10011,7 @@
     "location": "서울 강남구",
     "experience": "경력 2년↑",
     "deadline": "D-11 (~ 12/06(일))",
-    "deadline_label": "D-11 (~ 12/06(일))",
+    "deadline_label": "D-10 (~ 12/06(일))",
     "summary": "건설부문 플랫폼 환경의 정보보안 체계를 구축·운영하는 정보보안 직무",
     "tags": [
       "#플랫폼보안",
@@ -10445,7 +10038,7 @@
     "location": "경기 성남시",
     "experience": "경력 8~20년",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10466,7 +10059,7 @@
     "location": "서울",
     "experience": "경력 3~16년",
     "deadline": "D-12 (~12/07 월)",
-    "deadline_label": "D-12 (~12/07 월)",
+    "deadline_label": "D-11 (~12/07 월)",
     "summary": "SI 프로젝트 기반 정보보안 컨설팅과 보안 아키텍처 자문을 수행하는 경력직",
     "tags": [
       "#정보보안컨설팅",
@@ -10493,7 +10086,7 @@
     "location": "서울 송파구",
     "experience": "경력 3~7년",
     "deadline": "D-13 (~ 12/08(화))",
-    "deadline_label": "D-13 (~ 12/08(화))",
+    "deadline_label": "D-12 (~ 12/08(화))",
     "summary": "개인정보보호 정책 수립과 컴플라이언스 대응을 담당하는 경력사원",
     "tags": [
       "#개인정보보호",
@@ -10519,7 +10112,7 @@
     "location": "경기 평택시",
     "experience": "경력 3년↑",
     "deadline": "D-14 (~ 12/09(수))",
-    "deadline_label": "D-14 (~ 12/09(수))",
+    "deadline_label": "D-13 (~ 12/09(수))",
     "summary": "기술보안과 정보보안 운영 업무를 함께 수행하는 담당자",
     "tags": [
       "#기술보안",
@@ -10545,7 +10138,7 @@
     "location": "서울 강남구",
     "experience": "경력",
     "deadline": "D-14 (~ 12/09(수))",
-    "deadline_label": "D-14 (~ 12/09(수))",
+    "deadline_label": "D-13 (~ 12/09(수))",
     "summary": "핀다뱅크 및 대원저축 관련 개인정보보호 정책 수립과 개인정보 처리 전 과정 관리를 수행",
     "tags": [
       "#개인정보보호",
@@ -10573,7 +10166,7 @@
     "location": "경기 의왕시",
     "experience": "경력 2년↑",
     "deadline": "D-14 (~ 12/09(수))",
-    "deadline_label": "D-14 (~ 12/09(수))",
+    "deadline_label": "D-13 (~ 12/09(수))",
     "summary": "기업의 보안 체계를 진단하고 취약점 개선과 보안 전략 수립을 지원하는 컨설팅 업무",
     "tags": [
       "#사이버보안컨설팅",
@@ -10600,7 +10193,7 @@
     "location": "서울",
     "experience": "경력 3~7년",
     "deadline": "D-15 (~12/10 목)",
-    "deadline_label": "D-15 (~12/10 목)",
+    "deadline_label": "D-14 (~12/10 목)",
     "summary": "AI 기반 보안 자동화를 설계·개발해 보안 엔지니어링 효율을 높이는 엔지니어",
     "tags": [
       "#보안자동화",
@@ -10626,7 +10219,7 @@
     "location": "경기 부천시 원미구",
     "experience": "경력 8~12년",
     "deadline": "D-15 (~12/10 목)",
-    "deadline_label": "D-15 (~12/10 목)",
+    "deadline_label": "D-14 (~12/10 목)",
     "summary": "전기차 충전기 소프트웨어 개발과 보안 요구사항 구현을 담당하는 융합형 보안 엔지니어",
     "tags": [
       "#SW보안",
@@ -10653,7 +10246,7 @@
     "location": "서울 영등포구",
     "experience": "경력무관",
     "deadline": "D-15 (~ 12/10(목))",
-    "deadline_label": "D-15 (~ 12/10(목))",
+    "deadline_label": "D-14 (~ 12/10(목))",
     "summary": "기업의 보안 수준을 진단하고 모의해킹을 통해 취약점을 분석하는 정보보안 컨설턴트 직무",
     "tags": [
       "#정보보안컨설팅",
@@ -10679,7 +10272,7 @@
     "location": "서울 중구",
     "experience": "신입·경력",
     "deadline": "D-15 (~ 12/10(목))",
-    "deadline_label": "D-15 (~ 12/10(목))",
+    "deadline_label": "D-14 (~ 12/10(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10701,7 +10294,7 @@
     "location": "서울",
     "experience": "신입·경력",
     "deadline": "D-16 (~12/11 금)",
-    "deadline_label": "D-16 (~12/11 금)",
+    "deadline_label": "D-15 (~12/11 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10722,7 +10315,7 @@
     "location": "서울 서초구",
     "experience": "경력 5년↑",
     "deadline": "D-16 (~12/11 금)",
-    "deadline_label": "D-16 (~12/11 금)",
+    "deadline_label": "D-15 (~12/11 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10744,7 +10337,7 @@
     "location": "경기",
     "experience": "경력 5~12년",
     "deadline": "D-17 (~12/12 토)",
-    "deadline_label": "D-17 (~12/12 토)",
+    "deadline_label": "D-16 (~12/12 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10765,7 +10358,7 @@
     "location": "서울",
     "experience": "경력 5년↑",
     "deadline": "D-23 (~12/18 금)",
-    "deadline_label": "D-23 (~12/18 금)",
+    "deadline_label": "D-22 (~12/18 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10786,7 +10379,7 @@
     "location": "서울",
     "experience": "경력 5년↑",
     "deadline": "D-28 (~12/23 수)",
-    "deadline_label": "D-28 (~12/23 수)",
+    "deadline_label": "D-27 (~12/23 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10807,7 +10400,7 @@
     "location": "서울 용산구",
     "experience": "경력 7년↑",
     "deadline": "D-18 (~ 12/13(일))",
-    "deadline_label": "D-18 (~ 12/13(일))",
+    "deadline_label": "D-17 (~ 12/13(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -10830,7 +10423,7 @@
     "location": "서울 송파구",
     "experience": "경력무관",
     "deadline": "D-18 (~ 12/13(일))",
-    "deadline_label": "D-18 (~ 12/13(일))",
+    "deadline_label": "D-17 (~ 12/13(일))",
     "summary": "기업의 보안 취약점 진단과 모의해킹을 수행하는 정보보안 컨설팅 직무로 신입·경력·프리랜서를 채용",
     "tags": [
       "#정보보안컨설팅",
@@ -10857,7 +10450,7 @@
     "location": "서울 구로구",
     "experience": "신입",
     "deadline": "D-19 (~ 12/14(월))",
-    "deadline_label": "D-19 (~ 12/14(월))",
+    "deadline_label": "D-18 (~ 12/14(월))",
     "summary": "개인정보 보호와 정보보호 체계를 운영하며 시스템 취약점 진단 및 보안 점검을 수행",
     "tags": [
       "#개인정보보호",
@@ -10883,7 +10476,7 @@
     "location": "서울 중구",
     "experience": "경력 1년↑",
     "deadline": "D-20",
-    "deadline_label": "D-20",
+    "deadline_label": "D-19",
     "summary": "한국의학연구소 재단본부의 정보보호 담당자로 보안 정책 수립과 관리 업무를 수행",
     "tags": [
       "#정보보호",
@@ -10910,7 +10503,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 1년↑",
     "deadline": "D-20",
-    "deadline_label": "D-20",
+    "deadline_label": "D-19",
     "summary": "정보보안 취약점 진단과 보안 컨설팅을 수행하며 개선 방안을 제시하는 역할",
     "tags": [
       "#취약점진단",
@@ -10937,7 +10530,7 @@
     "location": "서울 영등포구",
     "experience": "경력 2~12년",
     "deadline": "D-22 (~12/17 목)",
-    "deadline_label": "D-22 (~12/17 목)",
+    "deadline_label": "D-21 (~12/17 목)",
     "summary": "안진회계법인 T&T부문에서 정보보안 및 개인정보보호 컨설팅을 담당하는 경력직",
     "tags": [
       "#정보보안컨설팅",
@@ -10964,7 +10557,7 @@
     "location": "",
     "experience": "",
     "deadline": "D-22 (~12/17 목)",
-    "deadline_label": "D-22 (~12/17 목)",
+    "deadline_label": "D-21 (~12/17 목)",
     "summary": "T&T부문에서 정보보안 컨설팅 실무를 보조하며 인증 및 보안 체계 자문 지원",
     "tags": [
       "#정보보안컨설팅",
@@ -10990,7 +10583,7 @@
     "location": "서울 영등포구",
     "experience": "경력 3~12년",
     "deadline": "D-22 (~12/17 목)",
-    "deadline_label": "D-22 (~12/17 목)",
+    "deadline_label": "D-21 (~12/17 목)",
     "summary": "정보보안 관련 인증 서비스 부문 컨설턴트 경력직으로 인증 심사와 보안 자문 수행",
     "tags": [
       "#정보보안인증",
@@ -11016,7 +10609,7 @@
     "location": "서울 영등포구",
     "experience": "경력 2~12년",
     "deadline": "D-22 (~12/17 목)",
-    "deadline_label": "D-22 (~12/17 목)",
+    "deadline_label": "D-21 (~12/17 목)",
     "summary": "T&T부문 인증보안 컨설턴트로 기업 보안 인증 체계 구축과 자문 담당",
     "tags": [
       "#인증보안",
@@ -11044,7 +10637,7 @@
     "location": "서울 금천구",
     "experience": "경력 3년↑",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "경력 3년 이상 모의해킹·보안 취약점 진단 컨설턴트로 취약점 분석과 보고서 작성",
     "tags": [
       "#모의해킹",
@@ -11070,7 +10663,7 @@
     "location": "경기 용인시 기흥구",
     "experience": "신입·경력",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "2026년 코드벡터 모의해킹 신입사원으로 취약점 진단과 보안 평가 업무 수행",
     "tags": [
       "#모의해킹",
@@ -11096,7 +10689,7 @@
     "location": "서울 성동구",
     "experience": "경력 3~10년",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "모의해킹 경력자를 채용해 웹·시스템 등 대상의 보안 취약점을 진단하고 침투 테스트를 수행",
     "tags": [
       "#모의해킹",
@@ -11122,7 +10715,7 @@
     "location": "경기 용인시 기흥구",
     "experience": "신입",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "인프라 취약점 진단 신입사원을 채용해 네트워크·서버·시스템 보안 점검을 수행",
     "tags": [
       "#취약점진단",
@@ -11148,7 +10741,7 @@
     "location": "서울 금천구",
     "experience": "경력 10년↑",
     "deadline": "D-25",
-    "deadline_label": "D-25",
+    "deadline_label": "D-24",
     "summary": "정보보안 팀장을 채용해 조직 보안 정책·체계 수립과 운영 전반을 총괄",
     "tags": [
       "#정보보안",
@@ -11174,7 +10767,7 @@
     "location": "서울 영등포구",
     "experience": "경력무관",
     "deadline": "D-26 (~ 12/21(월))",
-    "deadline_label": "D-26 (~ 12/21(월))",
+    "deadline_label": "D-25 (~ 12/21(월))",
     "summary": "신입·경력자를 대상으로 오펜시브 모의해킹을 수행해 공격 관점 보안 취약점을 진단",
     "tags": [
       "#오펜시브보안",
@@ -11200,7 +10793,7 @@
     "location": "서울 강서구",
     "experience": "신입·경력",
     "deadline": "D-30 (~ 12/25(금))",
-    "deadline_label": "D-30 (~ 12/25(금))",
+    "deadline_label": "D-29 (~ 12/25(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11222,7 +10815,7 @@
     "location": "서울 금천구",
     "experience": "경력 3년↑",
     "deadline": "D-32 (~ 12/27(일))",
-    "deadline_label": "D-32 (~ 12/27(일))",
+    "deadline_label": "D-31 (~ 12/27(일))",
     "summary": "정보자산 관리 체계를 운영하고 정보보호 정책 수립 및 인증 대응을 담당하는 관리 직무",
     "tags": [
       "#정보보호관리",
@@ -11248,7 +10841,7 @@
     "location": "경기 과천시",
     "experience": "경력 5년↑",
     "deadline": "D-34 (~ 12/29(화))",
-    "deadline_label": "D-34 (~ 12/29(화))",
+    "deadline_label": "D-33 (~ 12/29(화))",
     "summary": "레저사업본부 IT기획과 정보보호 업무를 함께 수행하는 융합형 보안 담당 직무",
     "tags": [
       "#IT기획",
@@ -11275,7 +10868,7 @@
     "location": "대전",
     "experience": "경력 3년↑",
     "deadline": "D-36 (~12/31 목)",
-    "deadline_label": "D-36 (~12/31 목)",
+    "deadline_label": "D-35 (~12/31 목)",
     "summary": "정보보안 전반 운영과 보안 정책·기술 대응을 수행하는 정보보안 담당자",
     "tags": [
       "#정보보안",
@@ -11302,7 +10895,7 @@
     "location": "서울 강남구",
     "experience": "경력 5년↑",
     "deadline": "D-36 (~12/31 목)",
-    "deadline_label": "D-36 (~12/31 목)",
+    "deadline_label": "D-35 (~12/31 목)",
     "summary": "경력 보안 엔지니어로 시스템 취약점 분석·평가 및 보안 강화를 수행하는 직무",
     "tags": [
       "#취약점분석",
@@ -11328,7 +10921,7 @@
     "location": "서울 강남구",
     "experience": "경력",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "신세계I&C 보안기획 인재로 정보보호 전략·정책 수립 및 보안 체계 기획 담당",
     "tags": [
       "#보안기획",
@@ -11354,7 +10947,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "두산에너빌리티 정보보안 경력직으로 기업 정보자산 보호를 위한 보안 정책 수립과 운영 전반 담당",
     "tags": [
       "#정보보안",
@@ -11381,7 +10974,7 @@
     "location": "서울 송파구",
     "experience": "신입·경력",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "이글루코퍼레이션 정보보호 컨설팅으로 관리체계 점검과 인프라 취약점 진단 및 모의해킹 수행",
     "tags": [
       "#정보보호컨설팅",
@@ -11407,7 +11000,7 @@
     "location": "서울 종로구",
     "experience": "경력무관",
     "deadline": "D-36 (~12/31 목)",
-    "deadline_label": "D-36 (~12/31 목)",
+    "deadline_label": "D-35 (~12/31 목)",
     "summary": "김앤장 법률사무소 IT 부문 상시 채용으로 정보보안을 포함한 개발·운영·지원 업무 담당",
     "tags": [
       "#IT채용",
@@ -11433,7 +11026,7 @@
     "location": "경기 성남시",
     "experience": "경력",
     "deadline": "D-36 (~12/31 화)",
-    "deadline_label": "D-36 (~12/31 화)",
+    "deadline_label": "D-35 (~12/31 화)",
     "summary": "NHN Japan 보안 엔지니어로 서비스 보안 환경 구축과 운영, 보안 이슈 대응 수행",
     "tags": [
       "#보안엔지니어",
@@ -11461,7 +11054,7 @@
     "location": "서울 서초구",
     "experience": "신입·경력",
     "deadline": "D-39 (~ 01/03(일))",
-    "deadline_label": "D-39 (~ 01/03(일))",
+    "deadline_label": "D-38 (~ 01/03(일))",
     "summary": "인더포레스트 보안 컨설팅에서 고수준 취약점 진단과 모의해킹 수행",
     "tags": [
       "#보안컨설팅",
@@ -11487,7 +11080,7 @@
     "location": "서울 서초구",
     "experience": "경력 5년↑",
     "deadline": "D-39",
-    "deadline_label": "D-39",
+    "deadline_label": "D-38",
     "summary": "동원홈푸드 정보보호실에서 정보보호 정책 수립과 시스템 운영 등 정보보호 전반을 담당",
     "tags": [
       "#정보보호",
@@ -11513,7 +11106,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력무관",
     "deadline": "D-43",
-    "deadline_label": "D-43",
+    "deadline_label": "D-42",
     "summary": "케이엠파크 정보보안팀에서 보안 운영과 점검 등 정보보안 실무 전반을 담당",
     "tags": [
       "#정보보안",
@@ -11540,7 +11133,7 @@
     "location": "서울",
     "experience": "경력 8년↑",
     "deadline": "D-44",
-    "deadline_label": "D-44",
+    "deadline_label": "D-43",
     "summary": "컬리에서 정보보호 정책 수립과 개선 및 보안 컴플라이언스 관련 업무를 담당",
     "tags": [
       "#정보보호정책",
@@ -11566,7 +11159,7 @@
     "location": "서울 광진구",
     "experience": "경력 10년↑",
     "deadline": "D-44 (~ 01/08(금))",
-    "deadline_label": "D-44 (~ 01/08(금))",
+    "deadline_label": "D-43 (~ 01/08(금))",
     "summary": "쿠팡 글로벌 개인정보보호와 리스크 관리 Principal 역할로 프라이버시 업무를 총괄",
     "tags": [
       "#개인정보보호",
@@ -11593,7 +11186,7 @@
     "location": "서울 구로구",
     "experience": "경력무관",
     "deadline": "D-44 (~ 01/08(금))",
-    "deadline_label": "D-44 (~ 01/08(금))",
+    "deadline_label": "D-43 (~ 01/08(금))",
     "summary": "웹 애플리케이션 모의해킹을 수행하며 취약점 진단과 보안성 평가를 담당",
     "tags": [
       "#모의해킹",
@@ -11621,7 +11214,7 @@
     "location": "서울 구로구",
     "experience": "경력무관",
     "deadline": "D-45 (~ 01/09(토))",
-    "deadline_label": "D-45 (~ 01/09(토))",
+    "deadline_label": "D-44 (~ 01/09(토))",
     "summary": "정보보안 컨설팅 분야에서 모의해킹과 취약점 점검을 수행할 신입 및 경력 인력을 채용합니다.",
     "tags": [
       "#정보보안",
@@ -11647,7 +11240,7 @@
     "location": "경기 안산시 단원구",
     "experience": "경력 5년↑",
     "deadline": "D-45 (~ 01/09(토))",
-    "deadline_label": "D-45 (~ 01/09(토))",
+    "deadline_label": "D-44 (~ 01/09(토))",
     "summary": "IT 인프라 운영과 정보보안 체계 관리 전반을 담당할 정규직 정보보안 인력을 채용합니다.",
     "tags": [
       "#IT인프라",
@@ -11674,7 +11267,7 @@
     "location": "서울 중구",
     "experience": "경력 5년↑",
     "deadline": "D-45",
-    "deadline_label": "D-45",
+    "deadline_label": "D-44",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11697,7 +11290,7 @@
     "location": "서울 영등포구",
     "experience": "경력 2~15년",
     "deadline": "D-46 (~ 01/10(일))",
-    "deadline_label": "D-46 (~ 01/10(일))",
+    "deadline_label": "D-45 (~ 01/10(일))",
     "summary": "보안컨설팅 관리 업무와 취약점 진단 및 모의해킹을 수행할 경력 보안 전문 인력을 채용합니다.",
     "tags": [
       "#보안컨설팅",
@@ -11723,7 +11316,7 @@
     "location": "서울 서초구",
     "experience": "신입·경력",
     "deadline": "D-21 (~ 12/16(수))",
-    "deadline_label": "D-21 (~ 12/16(수))",
+    "deadline_label": "D-20 (~ 12/16(수))",
     "summary": "관리체계와 인프라 정보보호 컨설팅을 수행하며 보안 정책·기술 자문을 제공합니다",
     "tags": [
       "#정보보호컨설팅",
@@ -11750,7 +11343,7 @@
     "location": "서울",
     "experience": "경력 3~8년",
     "deadline": "D-17 (~12/12 토)",
-    "deadline_label": "D-17 (~12/12 토)",
+    "deadline_label": "D-16 (~12/12 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11773,7 +11366,7 @@
     "location": "서울",
     "experience": "",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11796,7 +11389,7 @@
     "location": "서울",
     "experience": "경력 5~10년",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11818,7 +11411,7 @@
     "location": "서울 구로구",
     "experience": "경력 2년↑",
     "deadline": "D-45",
-    "deadline_label": "D-45",
+    "deadline_label": "D-44",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11839,7 +11432,7 @@
     "location": "대전 유성구",
     "experience": "경력 1년↑",
     "deadline": "D-17 (~ 12/12(토))",
-    "deadline_label": "D-17 (~ 12/12(토))",
+    "deadline_label": "D-16 (~ 12/12(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11860,7 +11453,7 @@
     "location": "서울 서초구",
     "experience": "경력 3~10년",
     "deadline": "D-18 (~ 12/13(일))",
-    "deadline_label": "D-18 (~ 12/13(일))",
+    "deadline_label": "D-17 (~ 12/13(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11881,7 +11474,7 @@
     "location": "서울 강남구",
     "experience": "경력 1년↑",
     "deadline": "D-18 (~ 12/13(일))",
-    "deadline_label": "D-18 (~ 12/13(일))",
+    "deadline_label": "D-17 (~ 12/13(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -11903,55 +11496,12 @@
     "location": "서울 금천구",
     "experience": "신입",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-15 06:31:00 KST"
-  },
-  {
-    "job_key": "saramin:55470203:8cd75c06",
-    "company": "(주)하이퍼코퍼레이션",
-    "title": "[코스닥상장사] 하이퍼코퍼레이션 CISO 정보보호최고책임자 채용",
-    "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55470203&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8",
-    "platforms": [
-      "사람인"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "서울 강남구",
-    "experience": "경력 10년↑",
-    "deadline": "D-8 (~ 12/03(목))",
-    "deadline_label": "D-8 (~ 12/03(목))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-18 20:34:23 KST",
-    "first_seen_at": "2026-11-16 06:34:21 KST"
-  },
-  {
-    "job_key": "jobkorea:50297759:bbb99f10",
-    "company": "㈜에스지시큐리티컨설팅",
-    "title": "[신입/경력] 정보보호컨설턴트 채용 (기술보안·관리보안)",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50297759",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보호",
-      "정보보안"
-    ],
-    "location": "서울 강남구",
-    "experience": "신입",
-    "deadline": "D-8 (~ 12/03(목))",
-    "deadline_label": "D-8 (~ 12/03(목))",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-24 08:04:52 KST",
-    "first_seen_at": "2026-11-16 06:34:21 KST"
   },
   {
     "job_key": "remember:340369:cde4c439",
@@ -11967,7 +11517,7 @@
     "location": "해외",
     "experience": "경력 8년↑",
     "deadline": "D-15 (~12/10 목)",
-    "deadline_label": "D-15 (~12/10 목)",
+    "deadline_label": "D-14 (~12/10 목)",
     "summary": "국내외 정보보호 컨설팅 프로젝트에서 PM/PA로 일정과 산출물을 관리하며 고객 대응을 수행하는 직무",
     "tags": [
       "#정보보호컨설팅",
@@ -11993,7 +11543,7 @@
     "location": "서울 구로구",
     "experience": "신입·경력",
     "deadline": "D-16 (~ 12/11(금))",
-    "deadline_label": "D-16 (~ 12/11(금))",
+    "deadline_label": "D-15 (~ 12/11(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12014,7 +11564,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 8~12년",
     "deadline": "D-23 (~ 12/18(금))",
-    "deadline_label": "D-23 (~ 12/18(금))",
+    "deadline_label": "D-22 (~ 12/18(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12036,7 +11586,7 @@
     "location": "서울 송파구",
     "experience": "경력무관",
     "deadline": "D-15",
-    "deadline_label": "D-15",
+    "deadline_label": "D-14",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12057,7 +11607,7 @@
     "location": "서울 마포구",
     "experience": "경력 5년↑",
     "deadline": "D-21 (~ 12/16(수))",
-    "deadline_label": "D-21 (~ 12/16(수))",
+    "deadline_label": "D-20 (~ 12/16(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12079,7 +11629,7 @@
     "location": "서울 강남구",
     "experience": "경력 2~10년",
     "deadline": "D-21 (~ 12/16(수))",
-    "deadline_label": "D-21 (~ 12/16(수))",
+    "deadline_label": "D-20 (~ 12/16(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12101,7 +11651,7 @@
     "location": "서울 관악구",
     "experience": "경력 5년↑",
     "deadline": "D-21 (~ 12/16(수))",
-    "deadline_label": "D-21 (~ 12/16(수))",
+    "deadline_label": "D-20 (~ 12/16(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12122,7 +11672,7 @@
     "location": "서울 서초구",
     "experience": "신입",
     "deadline": "D-49 (~ 01/13(수))",
-    "deadline_label": "D-49 (~ 01/13(수))",
+    "deadline_label": "D-48 (~ 01/13(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12144,7 +11694,7 @@
     "location": "서울 서초구",
     "experience": "경력",
     "deadline": "D-49 (~ 01/13(수))",
-    "deadline_label": "D-49 (~ 01/13(수))",
+    "deadline_label": "D-48 (~ 01/13(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12165,7 +11715,7 @@
     "location": "서울 서초구",
     "experience": "경력",
     "deadline": "D-49 (~ 01/13(수))",
-    "deadline_label": "D-49 (~ 01/13(수))",
+    "deadline_label": "D-48 (~ 01/13(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12186,7 +11736,7 @@
     "location": "경기 안산시 단원구",
     "experience": "경력 5~12년",
     "deadline": "D-21 (~ 12/16(수))",
-    "deadline_label": "D-21 (~ 12/16(수))",
+    "deadline_label": "D-20 (~ 12/16(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12208,7 +11758,7 @@
     "location": "경기 용인시 기흥구",
     "experience": "경력",
     "deadline": "D-22 (~ 12/17(목))",
-    "deadline_label": "D-22 (~ 12/17(목))",
+    "deadline_label": "D-21 (~ 12/17(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12229,7 +11779,7 @@
     "location": "서울",
     "experience": "경력 6년↑",
     "deadline": "D-23 (~12/18 금)",
-    "deadline_label": "D-23 (~12/18 금)",
+    "deadline_label": "D-22 (~12/18 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12252,7 +11802,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 5년↑",
     "deadline": "D-20",
-    "deadline_label": "D-20",
+    "deadline_label": "D-19",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12273,7 +11823,7 @@
     "location": "서울 강남구",
     "experience": "신입·경력",
     "deadline": "D-21",
-    "deadline_label": "D-21",
+    "deadline_label": "D-20",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12294,7 +11844,7 @@
     "location": "서울 서초구",
     "experience": "경력 8~12년",
     "deadline": "D-22 (~ 12/17(목))",
-    "deadline_label": "D-22 (~ 12/17(목))",
+    "deadline_label": "D-21 (~ 12/17(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12315,7 +11865,7 @@
     "location": "경남 창원시 성산구",
     "experience": "신입·경력",
     "deadline": "D-22 (~ 12/17(목))",
-    "deadline_label": "D-22 (~ 12/17(목))",
+    "deadline_label": "D-21 (~ 12/17(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12336,7 +11886,7 @@
     "location": "서울",
     "experience": "신입",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12357,7 +11907,7 @@
     "location": "서울 강남구",
     "experience": "경력 2년↑",
     "deadline": "D-26",
-    "deadline_label": "D-26",
+    "deadline_label": "D-25",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12379,7 +11929,7 @@
     "location": "서울 용산구",
     "experience": "경력",
     "deadline": "D-12",
-    "deadline_label": "D-12",
+    "deadline_label": "D-11",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12401,7 +11951,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 5년↑",
     "deadline": "D-20",
-    "deadline_label": "D-20",
+    "deadline_label": "D-19",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12422,7 +11972,7 @@
     "location": "서울 중구",
     "experience": "경력 1~5년",
     "deadline": "D-22 (~ 12/17(목))",
-    "deadline_label": "D-22 (~ 12/17(목))",
+    "deadline_label": "D-21 (~ 12/17(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12443,7 +11993,7 @@
     "location": "경기 성남시",
     "experience": "경력 7년↑",
     "deadline": "D-36 (~12/31 목)",
-    "deadline_label": "D-36 (~12/31 목)",
+    "deadline_label": "D-35 (~12/31 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12464,7 +12014,7 @@
     "location": "서울 종로구",
     "experience": "경력 3~6년",
     "deadline": "D-52 (~ 01/16(토))",
-    "deadline_label": "D-52 (~ 01/16(토))",
+    "deadline_label": "D-51 (~ 01/16(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12485,7 +12035,7 @@
     "location": "서울 용산구",
     "experience": "경력",
     "deadline": "D-19",
-    "deadline_label": "D-19",
+    "deadline_label": "D-18",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12507,7 +12057,7 @@
     "location": "서울 영등포구",
     "experience": "경력 2년↑",
     "deadline": "D-24 (~ 12/19(토))",
-    "deadline_label": "D-24 (~ 12/19(토))",
+    "deadline_label": "D-23 (~ 12/19(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12528,7 +12078,7 @@
     "location": "서울 영등포구",
     "experience": "경력 3년↑",
     "deadline": "D-24 (~ 12/19(토))",
-    "deadline_label": "D-24 (~ 12/19(토))",
+    "deadline_label": "D-23 (~ 12/19(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12550,7 +12100,7 @@
     "location": "세종",
     "experience": "경력",
     "deadline": "D-24 (~ 12/19(토))",
-    "deadline_label": "D-24 (~ 12/19(토))",
+    "deadline_label": "D-23 (~ 12/19(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12571,7 +12121,7 @@
     "location": "서울 송파구",
     "experience": "경력 2년↑",
     "deadline": "D-24",
-    "deadline_label": "D-24",
+    "deadline_label": "D-23",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12592,7 +12142,7 @@
     "location": "서울 영등포구",
     "experience": "경력 3년↑",
     "deadline": "D-54 (~ 01/18(월))",
-    "deadline_label": "D-54 (~ 01/18(월))",
+    "deadline_label": "D-53 (~ 01/18(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12613,7 +12163,7 @@
     "location": "서울 영등포구",
     "experience": "경력 3년↑",
     "deadline": "D-9 (~12/04 금)",
-    "deadline_label": "D-9 (~12/04 금)",
+    "deadline_label": "D-8 (~12/04 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12634,7 +12184,7 @@
     "location": "서울 강남구",
     "experience": "경력 1년↑",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12655,7 +12205,7 @@
     "location": "서울 강동구",
     "experience": "경력 5년↑",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12677,7 +12227,7 @@
     "location": "경기 수원시 장안구",
     "experience": "경력 2년↑",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12698,7 +12248,7 @@
     "location": "서울 강남구",
     "experience": "경력 1년↑",
     "deadline": "D-25 (~12/20 일)",
-    "deadline_label": "D-25 (~12/20 일)",
+    "deadline_label": "D-24 (~12/20 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12719,7 +12269,7 @@
     "location": "서울 중구",
     "experience": "경력 5~12년",
     "deadline": "D-25 (~12/20 일)",
-    "deadline_label": "D-25 (~12/20 일)",
+    "deadline_label": "D-24 (~12/20 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12740,7 +12290,7 @@
     "location": "서울 강남구",
     "experience": "경력 3년↑",
     "deadline": "D-55 (~ 01/19(화))",
-    "deadline_label": "D-55 (~ 01/19(화))",
+    "deadline_label": "D-54 (~ 01/19(화))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12761,7 +12311,7 @@
     "location": "서울 구로구",
     "experience": "경력 3~5년",
     "deadline": "D-56 (~01/20 수)",
-    "deadline_label": "D-56 (~01/20 수)",
+    "deadline_label": "D-55 (~01/20 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12783,7 +12333,7 @@
     "location": "서울 영등포구",
     "experience": "경력 1~3년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12804,7 +12354,7 @@
     "location": "경기",
     "experience": "경력 7~12년",
     "deadline": "D-10 (~12/05 토)",
-    "deadline_label": "D-10 (~12/05 토)",
+    "deadline_label": "D-9 (~12/05 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12825,7 +12375,7 @@
     "location": "서울 강남구",
     "experience": "신입",
     "deadline": "D-17 (~12/12 토)",
-    "deadline_label": "D-17 (~12/12 토)",
+    "deadline_label": "D-16 (~12/12 토)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12846,7 +12396,7 @@
     "location": "서울 강남구",
     "experience": "경력 10년↑",
     "deadline": "D-17 (~ 12/12(토))",
-    "deadline_label": "D-17 (~ 12/12(토))",
+    "deadline_label": "D-16 (~ 12/12(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12870,7 +12420,7 @@
     "location": "서울",
     "experience": "경력 5년↑",
     "deadline": "D-18",
-    "deadline_label": "D-18",
+    "deadline_label": "D-17",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12891,7 +12441,7 @@
     "location": "서울 강남구",
     "experience": "경력 5~10년",
     "deadline": "D-21 (~12/16 수)",
-    "deadline_label": "D-21 (~12/16 수)",
+    "deadline_label": "D-20 (~12/16 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12913,7 +12463,7 @@
     "location": "세종",
     "experience": "경력",
     "deadline": "D-24",
-    "deadline_label": "D-24",
+    "deadline_label": "D-23",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12936,7 +12486,7 @@
     "location": "서울 강서구",
     "experience": "경력 6년↑",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12958,7 +12508,7 @@
     "location": "경기 수원시 장안구",
     "experience": "경력 2년↑",
     "deadline": "D-25",
-    "deadline_label": "D-25",
+    "deadline_label": "D-24",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -12981,7 +12531,7 @@
     "location": "서울 동작구",
     "experience": "신입",
     "deadline": "D-25",
-    "deadline_label": "D-25",
+    "deadline_label": "D-24",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13002,7 +12552,7 @@
     "location": "서울 서초구",
     "experience": "경력 3~5년",
     "deadline": "D-26 (~12/21 월)",
-    "deadline_label": "D-26 (~12/21 월)",
+    "deadline_label": "D-25 (~12/21 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13023,7 +12573,7 @@
     "location": "서울 서초구",
     "experience": "경력 10년↑",
     "deadline": "D-28",
-    "deadline_label": "D-28",
+    "deadline_label": "D-27",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13045,7 +12595,7 @@
     "location": "서울 강남구",
     "experience": "경력 7년↑",
     "deadline": "D-36 (~12/31 목)",
-    "deadline_label": "D-36 (~12/31 목)",
+    "deadline_label": "D-35 (~12/31 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13066,7 +12616,7 @@
     "location": "경기 수원시 영통구",
     "experience": "경력무관",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13088,7 +12638,7 @@
     "location": "서울 강남구",
     "experience": "경력",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13109,7 +12659,7 @@
     "location": "서울 강남구",
     "experience": "경력",
     "deadline": "D-36",
-    "deadline_label": "D-36",
+    "deadline_label": "D-35",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13130,7 +12680,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 8년↑",
     "deadline": "D-54 (~ 01/18(월))",
-    "deadline_label": "D-54 (~ 01/18(월))",
+    "deadline_label": "D-53 (~ 01/18(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13151,7 +12701,7 @@
     "location": "경기 성남시 분당구",
     "experience": "경력 7년↑",
     "deadline": "D-16 (~ 12/11(금))",
-    "deadline_label": "D-16 (~ 12/11(금))",
+    "deadline_label": "D-15 (~ 12/11(금))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13172,7 +12722,7 @@
     "location": "서울 은평구",
     "experience": "경력 5~12년",
     "deadline": "D-24 (~ 12/19(토))",
-    "deadline_label": "D-24 (~ 12/19(토))",
+    "deadline_label": "D-23 (~ 12/19(토))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13193,7 +12743,7 @@
     "location": "경기 성남시",
     "experience": "경력 3년↑",
     "deadline": "D-26 (~12/21 월)",
-    "deadline_label": "D-26 (~12/21 월)",
+    "deadline_label": "D-25 (~12/21 월)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13215,7 +12765,7 @@
     "location": "서울",
     "experience": "경력 5~8년",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13237,7 +12787,7 @@
     "location": "서울 서초구",
     "experience": "경력 5년↑",
     "deadline": "D-11 (~ 12/06(일))",
-    "deadline_label": "D-11 (~ 12/06(일))",
+    "deadline_label": "D-10 (~ 12/06(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13258,7 +12808,7 @@
     "location": "서울 금천구",
     "experience": "경력 3~12년",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13279,7 +12829,7 @@
     "location": "서울 서초구",
     "experience": "경력 8~12년",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13300,7 +12850,7 @@
     "location": "서울 구로구",
     "experience": "경력 7년↑",
     "deadline": "D-11 (~ 12/06(일))",
-    "deadline_label": "D-11 (~ 12/06(일))",
+    "deadline_label": "D-10 (~ 12/06(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13321,7 +12871,7 @@
     "location": "경기 성남시",
     "experience": "경력 3년↑",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13343,7 +12893,7 @@
     "location": "서울 영등포구",
     "experience": "경력 5년↑",
     "deadline": "D-16 (~ 12/11(금))",
-    "deadline_label": "D-16 (~ 12/11(금))",
+    "deadline_label": "D-15 (~ 12/11(금))",
     "summary": "모의해킹 전문 컨설턴트로 웹·앱 등 다양한 대상 취약점 진단 및 보안 컨설팅 수행",
     "tags": [
       "#모의해킹",
@@ -13370,7 +12920,7 @@
     "location": "경기 안양시 동안구",
     "experience": "신입·경력",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13391,7 +12941,7 @@
     "location": "서울",
     "experience": "경력 2년↑",
     "deadline": "D-25 (~12/20 일)",
-    "deadline_label": "D-25 (~12/20 일)",
+    "deadline_label": "D-24 (~12/20 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13412,7 +12962,7 @@
     "location": "서울 구로구",
     "experience": "경력 5~7년",
     "deadline": "D-26 (~ 12/21(월))",
-    "deadline_label": "D-26 (~ 12/21(월))",
+    "deadline_label": "D-25 (~ 12/21(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13433,7 +12983,7 @@
     "location": "서울 서초구",
     "experience": "신입",
     "deadline": "D-27 (~12/22 화)",
-    "deadline_label": "D-27 (~12/22 화)",
+    "deadline_label": "D-26 (~12/22 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13454,7 +13004,7 @@
     "location": "서울 서초구",
     "experience": "신입",
     "deadline": "D-27 (~12/22 화)",
-    "deadline_label": "D-27 (~12/22 화)",
+    "deadline_label": "D-26 (~12/22 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13476,7 +13026,7 @@
     "location": "서울 중구",
     "experience": "경력 3년↑",
     "deadline": "D-28 (~ 12/23(수))",
-    "deadline_label": "D-28 (~ 12/23(수))",
+    "deadline_label": "D-27 (~ 12/23(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13497,7 +13047,7 @@
     "location": "서울 영등포구",
     "experience": "경력무관",
     "deadline": "D-28 (~ 12/23(수))",
-    "deadline_label": "D-28 (~ 12/23(수))",
+    "deadline_label": "D-27 (~ 12/23(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13518,7 +13068,7 @@
     "location": "서울 강남구",
     "experience": "경력 2년↑",
     "deadline": "D-28 (~ 12/23(수))",
-    "deadline_label": "D-28 (~ 12/23(수))",
+    "deadline_label": "D-27 (~ 12/23(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13539,7 +13089,7 @@
     "location": "경기 과천시",
     "experience": "경력 2~7년",
     "deadline": "D-28 (~ 12/23(수))",
-    "deadline_label": "D-28 (~ 12/23(수))",
+    "deadline_label": "D-27 (~ 12/23(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13563,7 +13113,7 @@
     "location": "서울 서초구",
     "experience": "경력무관",
     "deadline": "D-28 (~ 12/23(수))",
-    "deadline_label": "D-28 (~ 12/23(수))",
+    "deadline_label": "D-27 (~ 12/23(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13584,7 +13134,7 @@
     "location": "경기",
     "experience": "경력 20년↑",
     "deadline": "D-28 (~12/23 수)",
-    "deadline_label": "D-28 (~12/23 수)",
+    "deadline_label": "D-27 (~12/23 수)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13608,33 +13158,12 @@
     "location": "서울",
     "experience": "경력 5~10년",
     "deadline": "D-58",
-    "deadline_label": "D-58",
+    "deadline_label": "D-57",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
     "last_seen_at": "2026-11-25 08:02:12 KST",
     "first_seen_at": "2026-11-24 08:04:52 KST"
-  },
-  {
-    "job_key": "jobkorea:50425410:122e347c",
-    "company": "롯데바이오로직스",
-    "title": "2026년 11월 경력사원 채용(정규직 일반직군) - 정보보호",
-    "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50425410",
-    "platforms": [
-      "잡코리아"
-    ],
-    "keywords": [
-      "정보보호"
-    ],
-    "location": "인천 연수구",
-    "experience": "경력",
-    "deadline": "D-8",
-    "deadline_label": "D-8",
-    "summary": "",
-    "tags": [],
-    "deadline_status": "UPCOMING",
-    "last_seen_at": "2026-11-25 08:02:12 KST",
-    "first_seen_at": "2026-11-25 08:02:12 KST"
   },
   {
     "job_key": "remember:356395:ce60d6f1",
@@ -13650,7 +13179,7 @@
     "location": "서울 영등포구",
     "experience": "경력 5~10년",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13673,7 +13202,7 @@
     "location": "서울 서초구",
     "experience": "경력 2년↑",
     "deadline": "D-11 (~ 12/06(일))",
-    "deadline_label": "D-11 (~ 12/06(일))",
+    "deadline_label": "D-10 (~ 12/06(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13694,7 +13223,7 @@
     "location": "경기 용인시",
     "experience": "경력 1년↑",
     "deadline": "D-11 (~12/06 일)",
-    "deadline_label": "D-11 (~12/06 일)",
+    "deadline_label": "D-10 (~12/06 일)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13716,7 +13245,7 @@
     "location": "서울 강남구",
     "experience": "경력 7년↑",
     "deadline": "D-12 (~ 12/07(월))",
-    "deadline_label": "D-12 (~ 12/07(월))",
+    "deadline_label": "D-11 (~ 12/07(월))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13737,7 +13266,7 @@
     "location": "서울",
     "experience": "경력 5년↑",
     "deadline": "D-13 (~12/08 화)",
-    "deadline_label": "D-13 (~12/08 화)",
+    "deadline_label": "D-12 (~12/08 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13758,7 +13287,7 @@
     "location": "서울 영등포구",
     "experience": "경력 4년↑",
     "deadline": "D-13 (~12/08 화)",
-    "deadline_label": "D-13 (~12/08 화)",
+    "deadline_label": "D-12 (~12/08 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13779,7 +13308,7 @@
     "location": "서울",
     "experience": "경력무관",
     "deadline": "D-13 (~12/08 화)",
-    "deadline_label": "D-13 (~12/08 화)",
+    "deadline_label": "D-12 (~12/08 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13800,7 +13329,7 @@
     "location": "서울",
     "experience": "경력무관",
     "deadline": "D-20 (~12/15 화)",
-    "deadline_label": "D-20 (~12/15 화)",
+    "deadline_label": "D-19 (~12/15 화)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13821,7 +13350,7 @@
     "location": "경기 화성시",
     "experience": "경력 10~14년",
     "deadline": "D-22 (~12/17 목)",
-    "deadline_label": "D-22 (~12/17 목)",
+    "deadline_label": "D-21 (~12/17 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13842,7 +13371,7 @@
     "location": "서울 강남구",
     "experience": "",
     "deadline": "D-23 (~12/18 금)",
-    "deadline_label": "D-23 (~12/18 금)",
+    "deadline_label": "D-22 (~12/18 금)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13863,7 +13392,7 @@
     "location": "서울 강서구",
     "experience": "경력 6년↑",
     "deadline": "D-25 (~ 12/20(일))",
-    "deadline_label": "D-25 (~ 12/20(일))",
+    "deadline_label": "D-24 (~ 12/20(일))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13884,7 +13413,7 @@
     "location": "서울 구로구",
     "experience": "경력 7~20년",
     "deadline": "D-27 (~ 12/22(화))",
-    "deadline_label": "D-27 (~ 12/22(화))",
+    "deadline_label": "D-26 (~ 12/22(화))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13905,7 +13434,7 @@
     "location": "경기 안양시 동안구",
     "experience": "경력 4~12년",
     "deadline": "D-28 (~ 12/23(수))",
-    "deadline_label": "D-28 (~ 12/23(수))",
+    "deadline_label": "D-27 (~ 12/23(수))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13926,7 +13455,7 @@
     "location": "부산 남구",
     "experience": "경력무관",
     "deadline": "D-29 (~ 12/24(목))",
-    "deadline_label": "D-29 (~ 12/24(목))",
+    "deadline_label": "D-28 (~ 12/24(목))",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13947,7 +13476,7 @@
     "location": "경기",
     "experience": "경력 10년↑",
     "deadline": "D-29 (~12/24 목)",
-    "deadline_label": "D-29 (~12/24 목)",
+    "deadline_label": "D-28 (~12/24 목)",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",
@@ -13972,7 +13501,7 @@
     "location": "서울",
     "experience": "경력 3~10년",
     "deadline": "D-59",
-    "deadline_label": "D-59",
+    "deadline_label": "D-58",
     "summary": "",
     "tags": [],
     "deadline_status": "UPCOMING",

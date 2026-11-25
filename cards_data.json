@@ -1,16 +1,16 @@
 {
-  "generated": "2026-11-25 20:29 KST",
+  "generated": "2026-11-26 00:59 KST",
   "checkedOn": "2026-11-22",
   "rotation": {
-    "condition": "neck",
-    "digital": "wifi"
+    "condition": "winter",
+    "digital": "backup"
   },
   "decks": [
     {
       "id": "condition",
       "title": "컨디션 키워드",
       "subtitle": "몸의 리듬을 가볍게 맞추는 3장",
-      "todayTheme": "neck",
+      "todayTheme": "winter",
       "themes": [
         {
           "id": "sleep",
@@ -198,7 +198,7 @@
       "id": "digital",
       "title": "1분 디지털 생활",
       "subtitle": "오늘 바로 바꿀 수 있는 설정 3장",
-      "todayTheme": "wifi",
+      "todayTheme": "backup",
       "themes": [
         {
           "id": "permission",
