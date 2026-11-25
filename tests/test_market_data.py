@@ -183,7 +183,7 @@ def check_sessions():
     # 휴장·개장 전·마감
     thanksgiving = state("global", datetime(2026, 11, 26, 11, 0, tzinfo=et))
     check("추수감사절 휴장", thanksgiving["state"] == "holiday", thanksgiving["state"])
-    check("추수감사절 사유", "Thanksgiving" in thanksgiving["reason"], thanksgiving["reason"])
+    check("추수감사절 사유", "추수감사절" in thanksgiving["reason"], thanksgiving["reason"])
     weekend = state("global", datetime(2026, 11, 28, 11, 0, tzinfo=et))
     check("주말 휴장", weekend["state"] == "holiday", weekend["state"])
     preopen = state("domestic", datetime(2026, 11, 26, 8, 0, tzinfo=kst))

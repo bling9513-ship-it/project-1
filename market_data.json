@@ -1,10 +1,10 @@
 {
   "meta": {
-    "collectedAt": "2026-11-26 00:55:13 KST",
-    "collectedAtIso": "2026-11-26T00:55:13+09:00",
+    "collectedAt": "2026-11-26 01:02:27 KST",
+    "collectedAtIso": "2026-11-26T01:02:27+09:00",
     "ai": {
       "used": true,
-      "analyzed": 4,
+      "analyzed": 29,
       "fallback": 0,
       "model": "k-exaone_v2.5"
     },
@@ -35,7 +35,7 @@
         "kind": "뉴스",
         "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
         "status": "ok",
-        "count": 7
+        "count": 6
       },
       {
         "name": "연방준비제도 보도자료",
@@ -95,7 +95,7 @@
       "장 상태는 거래소 캘린더(휴장·조기 마감) 기준입니다. 임시 휴장·거래시간 변경은 거래소 공지를 확인하세요.",
       "일정의 한국시간은 서머타임에 따라 1시간 달라질 수 있습니다(현지 시각을 함께 적었습니다)."
     ],
-    "newsCount": 30,
+    "newsCount": 29,
     "calendarCount": 8
   },
   "sessions": {
@@ -106,7 +106,7 @@
       "marketName": "한국거래소(KRX)",
       "timezone": "Asia/Seoul",
       "tzLabel": "KST",
-      "localNow": "11-26 00:55",
+      "localNow": "11-26 01:02",
       "localDate": "2026-11-26",
       "sessionText": "09:00~15:30",
       "earlyClose": false,
@@ -125,7 +125,7 @@
       "marketName": "NYSE·Nasdaq",
       "timezone": "America/New_York",
       "tzLabel": "ET",
-      "localNow": "11-25 10:55",
+      "localNow": "11-25 11:02",
       "localDate": "2026-11-25",
       "sessionText": "09:30~16:00",
       "earlyClose": false,
@@ -195,9 +195,9 @@
     },
     "global": {
       "issues": [
+        "CNBC: 사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방",
         "MarketWatch: 엔비디아 주가, 월요일 랠리 절반 이상 반납",
-        "MarketWatch: 인플레이션 악화에 연준, 미국 금리 인상 불가피",
-        "MarketWatch: 엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험"
+        "MarketWatch: 인플레이션 악화에 연준, 미국 금리 인상 불가피"
       ],
       "next": [
         "현재 장 진행 중 · 거래 시간 09:30~16:00 ET",
@@ -207,6 +207,23 @@
     }
   },
   "issues": [
+    {
+      "id": "9a46b7a3ce356081",
+      "market": "global",
+      "title": "사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방",
+      "titleOriginal": "Saudi national charged in OpenAI bugging to be released on $1 million bond",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html",
+      "publishedKst": "11-26 00:55",
+      "analyzedBy": "cache"
+    },
     {
       "id": "0d2fe17e8e9ed778",
       "market": "global",
@@ -395,23 +412,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "25ff25af4c544c60",
-      "market": "global",
-      "title": "미국, 중국 등에 신규 관세 제안…트럼프 무역무기 고수",
-      "titleOriginal": "U.S. proposes fresh tariffs on China and others as Trump doubles down on his favorite trade weapon",
-      "why": "미국이 중국 등에 신규 관세를 제안하고 트럼프가 무역무기를 강화해서",
-      "confidence": "원문 근거",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/u-s-proposes-fresh-tariffs-on-china-others-as-trump-doubles-down-on-his-favorite-trade-weapon-cd9a1df9?mod=mw_rss_topstories",
-      "publishedKst": "11-25 23:14",
-      "analyzedBy": "cache"
-    },
-    {
       "id": "d93c2165c40609b3",
       "market": "global",
       "title": "미국, 중국·EU 포함 14개 교역국에 새 관세 제안",
@@ -566,23 +566,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "9a46b7a3ce356081",
-      "market": "global",
-      "title": "사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방",
-      "titleOriginal": "Saudi national charged in OpenAI bugging to be released on $1 million bond",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html",
-      "publishedKst": "11-25 07:03",
-      "analyzedBy": "cache"
-    },
-    {
       "id": "8721ce188376c76e",
       "market": "global",
       "title": "제약사 Insmed, Sanofi 인수 합의 후 주가 14% 급등…3년래 최대 거래",
@@ -666,7 +649,7 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/24/jensen-huang-nvidia-congress-gtc.html",
       "publishedKst": "11-25 02:51",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "e66d5c9d94a429bc",
@@ -683,7 +666,7 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/23/john-williams-fed-inflation-rate-hikes.html",
       "publishedKst": "11-24 22:33",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "5faadd6088be1c14",
@@ -700,7 +683,7 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/24/france-recession-risk-pmi.html",
       "publishedKst": "11-24 20:15",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "d592516bd838850c",
@@ -718,7 +701,7 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo-market-rally.html",
       "publishedKst": "11-24 03:00",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     }
   ],
   "sectors": [
@@ -726,6 +709,11 @@
       "name": "AI·반도체",
       "count": 13,
       "items": [
+        {
+          "title": "사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방",
+          "source": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html"
+        },
         {
           "title": "엔비디아 주가, 월요일 랠리 절반 이상 반납",
           "source": "MarketWatch",
@@ -735,11 +723,6 @@
           "title": "엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험",
           "source": "MarketWatch",
           "url": "https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories"
-        },
-        {
-          "title": "Dell, 매출 2배 이상 전망에도 주가 하락",
-          "source": "MarketWatch",
-          "url": "https://www.marketwatch.com/story/dells-stock-rises-as-the-ai-boom-helps-sales-more-than-double-cfb8cf65?mod=mw_rss_topstories"
         }
       ]
     },
@@ -835,7 +818,7 @@
     },
     {
       "name": "매크로",
-      "count": 12,
+      "count": 11,
       "items": [
         {
           "title": "인플레이션 악화에 연준, 미국 금리 인상 불가피",

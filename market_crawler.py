@@ -131,6 +131,21 @@ NYSE_HOLIDAYS = {
     "2027-12-24": "Christmas Day(observed)",
 }
 
+NYSE_HOLIDAY_KO = {
+    "New Year's Day": "신정",
+    "Martin Luther King, Jr. Day": "마틴 루터 킹 데이",
+    "Washington's Birthday": "대통령의 날",
+    "Good Friday": "성금요일",
+    "Memorial Day": "메모리얼 데이",
+    "Juneteenth": "준틴스의 날",
+    "Juneteenth(observed)": "준틴스의 날(대체)",
+    "Independence Day(observed)": "독립기념일(대체)",
+    "Labor Day": "노동절",
+    "Thanksgiving Day": "추수감사절",
+    "Christmas Day": "크리스마스",
+    "Christmas Day(observed)": "크리스마스(대체)",
+}
+
 CALENDARS = {
     "domestic": {
         "name": "한국거래소(KRX)",
@@ -140,6 +155,7 @@ CALENDARS = {
         "open": (9, 0),
         "close": (15, 30),
         "holidays": KRX_HOLIDAYS_2026,
+        "holidayLabels": {},
         # 늦은 개장·늦은 마감(수능일 등) — 거래소 공지 기준
         "specialSessions": {"2026-11-19": ((10, 0), (16, 30))},
         "earlyCloses": {},
@@ -155,6 +171,7 @@ CALENDARS = {
         "open": (9, 30),
         "close": (16, 0),
         "holidays": NYSE_HOLIDAYS,
+        "holidayLabels": NYSE_HOLIDAY_KO,
         "specialSessions": {},
         "earlyCloses": {"2026-11-27": (13, 0), "2026-12-24": (13, 0), "2027-11-26": (13, 0)},
         "coverage": ("2026-01-01", "2027-12-31"),
@@ -355,6 +372,7 @@ def market_session(market, now):
     coverage_start, coverage_end = cal["coverage"]
     outside = not (coverage_start <= key <= coverage_end)
     holiday_reason = cal["holidays"].get(key, "")
+    holiday_reason = cal.get("holidayLabels", {}).get(holiday_reason, holiday_reason)
 
     if today.weekday() >= 5:
         state, label, reason = "holiday", "휴장", "주말"
@@ -983,9 +1001,12 @@ def analyze_news(items, api_key, cache, max_calls=AI_MAX_CALLS):
             item.update(fallback_analysis(item))
 
     pending = [item for item in items if item.get("analyzed_by") == "fallback"][:AI_ITEM_LIMIT]
-    if not api_key or not pending:
-        print("  [요약] EXAONE 호출 없음(키 %s, 대기 %d건) — 폴백 사용"
-              % ("있음" if api_key else "없음/꺼짐", len(pending)))
+    if not pending:
+        cached = sum(1 for item in items if item.get("analyzed_by") == "cache")
+        print("  [요약] 새로 분석할 기사 없음(캐시 %d건) — 호출 생략" % cached)
+        return {"used": False, "analyzed": 0, "fallback": 0}
+    if not api_key:
+        print("  [요약] EXAONE 키 없음/꺼짐 — 대기 %d건은 폴백" % len(pending))
         return {"used": False, "analyzed": 0, "fallback": len(pending)}
 
     print("  [요약] EXAONE 분석 대기 %d건 (호출 상한 %d회)" % (len(pending), max_calls))
@@ -1228,8 +1249,10 @@ def crawl(use_ai=True, out_path=None, now=None):
         print("  [캐시] 예전 형식 분석 %d건 제거(연합뉴스·매일경제 설명 기반 포함)" % dropped)
         save_cache(cache)  # 공개 산출물로 흘러갈 수 있는 예전 요약문을 파일에서도 없앤다
     ai_stats = analyze_news(news, api_key, cache)
-    if ai_stats.get("analyzed"):
-        ai_stats["used"] = True
+    # 캐시로 이미 정리된 기사까지 합쳐 실제 상태를 적는다.
+    analyzed = sum(1 for item in news if item.get("analyzed_by") in ("exaone", "cache"))
+    ai_stats.update({"used": analyzed > 0, "analyzed": analyzed,
+                     "fallback": sum(1 for item in news if item.get("analyzed_by") == "fallback")})
     ai_stats["model"] = "k-exaone_v2.5" if ai_stats.get("used") else ""
 
     print("[4/4] 조립")
