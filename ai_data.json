@@ -1,50 +1,180 @@
 {
-  "updated_at": "2026-11-25 08:10:37 KST",
-  "total": 326,
-  "briefing": "오늘 목록에서 가장 두드러진 흐름은 LLM·AI 에이전트를 겨냥한 보안 도구와 에이전트 개발·운영 툴킷이 대거 등장했다는 점이다. 보안 쟁점으로는 앱·웹·API 취약점 탐지와 수정, LLM·에이전트 레드팀 테스트, MCP·에이전트 이그레스 보안, 런타임 가드레일, AI 인프라 레드팀 플랫폼 등이 주목받았고 FBI의 NCIC 해킹 의심 조사와 Backblaze 개인정보 판매·공유 우려 같은 사건·정책 이슈도 함께 보인다. 도구·서비스 측면에서는 Kagi Mail 공개 베타, google/adk-python, ToolHive, LLM 서브에이전트 게임, AWS FPGA에서 코딩 에이전트로 LLM 추론을 33배 최적화한 사례가 눈에 띄며 각각 개인정보 보호 이메일·캘린더, 에이전트 구축·평가·배포, MCP 서버 운영, 게임 실험, 추론 최적화에 활용될 수 있다. 실무자는 에이전트·MCP·LLM 파이프라인에 취약점 스캔, 레드팀 테스트, 가드레일, 이그레스 보안 적용을 검토하고 관련 개인정보·정책 변경 동향도 확인할 필요가 있다.",
+  "updated_at": "2026-11-26 08:26:31 KST",
+  "total": 365,
+  "briefing": "제공된 목록 기준으로 오늘은 AI 에이전트·워크플로 자동화가 앱 자동화, 역설계, 사무 지원, 시각 창작, 연구·평가로 확장되는 흐름이 가장 두드러진다. 보안 쟁점으로는 Pixel 취약점 95건 신고와 Google 보상 절차 문제, 1Password 고객 계정 일부 유출이 눈에 띄고, LLM·에이전트 레드팀 테스트, 취약점 스캐너, 가드레일, 보안 운영센터 도구가 대거 등장해 에이전트 리스크 관리가 부각됐다. 도구·서비스 측면에서는 n8n, Dify, open-we",
   "top_keywords": [
     {
       "keyword": "#오픈소스",
-      "count": 60
-    },
-    {
-      "keyword": "#AI보안",
-      "count": 46
-    },
-    {
-      "keyword": "#AI에이전트",
-      "count": 42
+      "count": 63
     },
     {
       "keyword": "#에이전트",
-      "count": 39
+      "count": 56
+    },
+    {
+      "keyword": "#AI보안",
+      "count": 52
+    },
+    {
+      "keyword": "#AI에이전트",
+      "count": 43
     },
     {
       "keyword": "#LLM",
-      "count": 25
+      "count": 33
     }
   ],
   "categories": {
-    "AI 보안 툴": 37,
-    "AI 보안·안전": 104,
-    "AI 툴·서비스": 80,
-    "LLM·에이전트": 24,
-    "모델·논문": 52,
-    "산업·트렌드": 29
+    "AI 보안 툴": 38,
+    "AI 보안·안전": 114,
+    "AI 툴·서비스": 97,
+    "LLM·에이전트": 29,
+    "모델·논문": 55,
+    "산업·트렌드": 32
   },
   "sources": {
-    "Hugging Face": 37,
-    "arXiv": 57,
-    "Hacker News": 30,
-    "Show HN": 56,
-    "GitHub": 67,
-    "GeekNews": 43,
-    "The Hacker News": 16,
-    "Dark Reading": 17,
+    "Hugging Face": 41,
+    "arXiv": 64,
+    "Hacker News": 35,
+    "Show HN": 68,
+    "GitHub": 70,
+    "GeekNews": 47,
+    "The Hacker News": 19,
+    "Dark Reading": 18,
     "Embrace the Red": 2,
     "Simon Willison": 1
   },
   "items": [
+    {
+      "item_key": "77ea1a82b9cac1e9",
+      "source": "GeekNews",
+      "title_ko": "1Password 보안 사고, 고객 계정 정보 일부 유출",
+      "title_orig": "1Password 보안 사고",
+      "url": "https://news.hada.io/topic?id=37847&utm_source=geeknews&utm_medium=rss&utm_campaign=news",
+      "category": "산업·트렌드",
+      "summary": "공격자가 직원 업무용 GitHub 계정을 통해 소스 코드에 접근하고 백엔드 서비스에 악성 코드를 삽입해 일부 고객의 이름과 이메일 주소 등 계정 정보를 복사했다. 1Password는 보관함 내용과 보호 키는 영향받지 않았고 공격자가 보관함에 접근한 시점도 없었다고 밝혔다. 공격자의 접근을 차단하고 영향을 받은 서비스를 정상 버전으로 복원했으며, 유출 기록에는 식별자·로그인 시각·공개 키·일부 초대/복구 토큰이 포함됐지만 해당 토큰만으로 계정 접근은 불가능하다.",
+      "tech_insight": "직원 계정 탈취가 소스 코드 접근과 백엔드 코드 주입으로 이어진 사례로, 최소 권한·MFA·코드 리뷰·비밀정보 스캔·이상 징후 모니터링과 신속한 사고 대응이 중요하다.",
+      "tags": [
+        "#1Password",
+        "#보안사고",
+        "#GitHub",
+        "#소스코드"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "41fd686b4f1345c5",
+      "source": "GeekNews",
+      "title_ko": "LLM으로 문서 없는 9달러 AliExpress YP3에 Rockbox 포팅",
+      "title_orig": "LLM으로 문서 없는 9달러 AliExpress ‘YP3’ MP3 플레이어에 Rockbox 포팅하기",
+      "url": "https://news.hada.io/topic?id=37853&utm_source=geeknews&utm_medium=rss&utm_campaign=news",
+      "category": "LLM·에이전트",
+      "summary": "RAM 512KiB의 9달러 AliExpress YP3 MP3 플레이어에 오픈소스 Rockbox 펌웨어를 이식했다. LLM이 코드를 작성하고 사람이 개발 방향과 테스트를 맡았으며, 에이전트는 플래시 도구·Ghidra·웹캠·오디오 입력·Bluetooth 어댑터로 기기를 관찰·제어해 분해나 납땜 없이 역공학과 하드웨어 검증을 수행했다. 약 일주일 만에 부팅과 음악 재생에 성공한 뒤 한 달가량 최적화·버그 수정을 거쳐 MP3·AAC·Opus·FLAC·Bluetooth 재생을 지원했지만, 메모리 제약으로 일부 기능을 줄였고 코덱·플러그인이 같은 메모리 공간을 써 게임 플러그인 실행 시 음악이 중단된다.",
+      "tech_insight": "제한된 임베디드 환경에서도 LLM·에이전트가 코드 생성과 도구 기반 검증을 결합해 펌웨어 포팅 속도를 높일 수 있음을 보여준다. 다만 메모리·자원 경합과 펌웨어 변경의 신뢰성·보안 검증을 함께 관리해야 한다.",
+      "tags": [
+        "#LLM",
+        "#에이전트",
+        "#펌웨어",
+        "#Rockbox"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "853e259c968148f3",
+      "source": "GeekNews",
+      "title_ko": "Just a Few Bugs - Pixel 취약점 95건 신고와 Google 보상 절차의 문제",
+      "title_orig": "Just a Few Bugs - Pixel 취약점 95건 신고와 Google 보상 절차의 문제",
+      "url": "https://news.hada.io/topic?id=37843&utm_source=geeknews&utm_medium=rss&utm_campaign=news",
+      "category": "AI 보안·안전",
+      "summary": "한 보안 연구자가 12개월 동안 Google에 취약점 95건 을 신고하고 약 95%에 작동하는 개념 증명을 첨부했지만, 받은 보상은 단 한 차례 250달러 였음 연구자의 출하 바이너리 비교 결과, 중복이나 취약점 아님 등의 사유로 종료된 신고 중 10건에 수정이 반영 됐으며, 해당 건들은 보상과 기여자 표기 없이 종료 상태로 남음 중복, 실현 불가능, 재현 불가로 종료된 여러 신고에서 결함 코드가 그대로 남아 있음 을 확인함. 다만 일부는 정적 분석에 기반하며 실제 공격 재현까지 완료한 것은 아님 Google이 서면 승인한 Safety Center 보상 …",
+      "tech_insight": "공격 경로를 확인한 뒤 프롬프트·도구 권한, 입출력 검증, 탐지·모니터링을 함께 점검해야 함을 시사합니다. (GeekNews 원문 기준 자동 정제)",
+      "tags": [
+        "#AI보안"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "861092e8ac8ce66b",
+      "source": "GitHub",
+      "title_ko": "morluto/rea: 에이전트로 앱 동작부터 네이티브 바이너리까지 역설계",
+      "title_orig": "morluto/rea",
+      "url": "https://github.com/morluto/rea",
+      "category": "AI 툴·서비스",
+      "summary": "GitHub 저장소 morluto/rea는 에이전트를 활용해 앱 동작부터 네이티브 바이너리까지 리버스 엔지니어링하는 도구다. TypeScript 기반이며 agent-skills, ai, android, claude-code, cli, cpp 토픽과 ★459,972 스타가 표시돼 있다.",
+      "tech_insight": "스타 수가 매우 높아 관심도가 크지만, 제공된 정보에는 최근 업데이트가 없어 성숙도 판단에는 유지보수 이력 확인이 필요하다. 리버스 엔지니어링·보안 도구는 라이선스와 악용·공급망 리스크 검토 후 도입해야 한다.",
+      "tags": [
+        "#morluto/rea",
+        "#리버스엔지니어링",
+        "#에이전트",
+        "#CLI"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "127ebbc3051d266b",
+      "source": "GitHub",
+      "title_ko": "n8n-io/n8n, AI 내장 워크플로 자동화 플랫폼",
+      "title_orig": "n8n-io/n8n",
+      "url": "https://github.com/n8n-io/n8n",
+      "category": "AI 툴·서비스",
+      "summary": "n8n-io/n8n은 시각적 빌더와 커스텀 코드를 결합해 워크플로를 구성하는 fair-code 자동화 플랫폼이다. AI 기능을 기본 제공하며 셀프호스팅 또는 클라우드, 400개 이상 연동을 지원한다. 개발자·실무자가 다양한 API와 AI를 조합해 자동화 작업을 만드는 데 활용할 수 있다.",
+      "tech_insight": "실무에서는 LLM·API·데이터 흐름을 노드로 연결해 반복 업무를 자동화하는 데 적합하다. 셀프호스팅·클라우드 모두 가능하므로 자격 증명, 웹훅, 외부 연동 권한, 설치·공급망 리스크를 점검해야 한다. 제공된 정보상 스타 21만+와 TypeScript 기반은 높은 성숙도를 시사하나 최근 업데이트 주기와 보안 정책은 별도 확인이 필요하다.",
+      "tags": [
+        "#n8n",
+        "#워크플로자동화",
+        "#AI통합",
+        "#셀프호스팅"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "0679691c95f67527",
+      "source": "GitHub",
+      "title_ko": "Dify 기반 에이전트·RAG 워크플로 협업 플랫폼",
+      "title_orig": "langgenius/dify",
+      "url": "https://github.com/langgenius/dify",
+      "category": "AI 툴·서비스",
+      "summary": "Dify는 에이전트 워크플로와 RAG 파이프라인을 하나의 협업 워크스페이스에서 구축하도록 지원한다. 다양한 AI 모델과 도구를 연동하고 클라우드·VPC·셀프호스팅 배포를 지원해, 팀이 프로토타입에서 프로덕션으로 갈 때 스택을 다시 만들 필요를 줄인다. Python 기반 오픈소스 저장소로 GitHub 스타 161,166개를 기록했다.",
+      "tech_insight": "기술적으로는 에이전트 오케스트레이션과 RAG 구성을 협업형 인터페이스로 통합하고 배포 유연성을 제공한 점이 핵심이다. 실무에서는 워크플로 프로토타입을 빠르게 운영하는 데 쓸 수 있으나, 에이전트 도구 권한·데이터 노출·셀프호스팅/설치 공급망 리스크를 점검하고 최근 업데이트와 유지보수 상태를 확인해야 한다.",
+      "tags": [
+        "#Dify",
+        "#에이전트",
+        "#RAG",
+        "#오픈소스"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "fa987afb9161a13a",
+      "source": "GitHub",
+      "title_ko": "open-webui, Ollama·OpenAI API 연동되는 사용자 친화적 LLM 웹 UI",
+      "title_orig": "open-webui/open-webui",
+      "url": "https://github.com/open-webui/open-webui",
+      "category": "AI 툴·서비스",
+      "summary": "GitHub 저장소 open-webui/open-webui는 Ollama, OpenAI API 등을 연동해 LLM을 웹 인터페이스로 쉽게 사용하게 해주는 도구다. Svelte 기반이며 스타 158,672개, 토픽 ai·llm·llm-ui·mcp 등으로 LLM 사용자 인터페이스 성격이 드러난다. 생성일은 2023-10-06으로, 다양한 백엔드와 연동하는 오픈소스 웹 UI로 확산된 사례다.",
+      "tech_insight": "기술적으로는 여러 LLM 백엔드를 단일 웹 UI로 추상화해 접근성을 높이는 점이 핵심이다. 실무 도입 시 API 키·대화 데이터 노출, 외부 접속 범위, 설치·업데이트 공급망 리스크를 점검하고 권한·네트워크 접근을 최소화해야 한다.",
+      "tags": [
+        "#오픈소스",
+        "#LLM",
+        "#WebUI",
+        "#Ollama"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
     {
       "item_key": "9f086ac99e50cf6e",
       "source": "GitHub",
@@ -61,7 +191,7 @@
         "#취약점점검"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -80,7 +210,7 @@
         "#오픈소스"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -99,7 +229,7 @@
         "#CI/CD"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -118,7 +248,26 @@
         "#오픈소스"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "eb68c88968ba8836",
+      "source": "GitHub",
+      "title_ko": "Claude-BugHunter: Claude Code 기반 버그헌팅·외부 레드팀 스킬 번들",
+      "title_orig": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "category": "AI 보안 툴",
+      "summary": "Claude-BugHunter는 Claude Code에서 버그헌팅과 외부 레드팀 작업을 지원하는 스킬 번들로, 82개 스킬과 15개 슬래시 명령을 제공한다. 24개 핵심 취약점 클래스별 681개 공개 보고서 패턴과 엔터프라이즈 아이덴티티·인프라 공격 매트릭스를 큐레이션해 취약점 리서치·레드팀 준비를 돕는다. 원문상 프롬프트 인젝션·탈옥·MCP 오남용·에이전트 권한·모델 유출 대응을 직접 표방하지는 않고 애플리케이션·인프라 보안 취약점에 초점을 둔다.",
+      "tech_insight": "Claude Code 기반 버그헌팅·외부 레드팀 워크플로를 스킬·슬래시 명령으로 지원해 레드팀 자동화와 취약점 리서치 준비에 활용할 수 있다. 다만 실제 스캔·프록시·가드레일 실행 도구라기보다 패턴·지식 번들에 가까우므로 대상 권한과 법적 승인, 생성되는 명령·코드의 검증이 필요하다.",
+      "tags": [
+        "#Claude-BugHunter",
+        "#버그헌팅",
+        "#레드팀",
+        "#AI보안"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -137,7 +286,25 @@
         "#보안도구"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "49c3c064b1ddf0b1",
+      "source": "GitHub",
+      "title_ko": "NVIDIA/garak: LLM 취약점 스캐너",
+      "title_orig": "NVIDIA/garak",
+      "url": "https://github.com/NVIDIA/garak",
+      "category": "AI 보안 툴",
+      "summary": "NVIDIA/garak은 LLM 보안 취약점을 점검하는 오픈소스 스캐너다. 프롬프트 인젝션·탈옥 등 LLM 취약점 탐지를 자동화해 모델 배포 전 평가에 활용할 수 있다. Python 기반이며 Apache-2.0 라이선스다.",
+      "tech_insight": "2026-11 공개 기준 Python 기반 ★10,029 규모로 성숙도가 높고, CI·배포 파이프라인의 LLM 보안 게이트로 붙이기 좋다. 스캔 결과를 릴리스 전 점검 항목으로 운영하려면 탐지 범위와 오탐 처리 정책을 함께 정해야 한다.",
+      "tags": [
+        "#LLM보안",
+        "#취약점스캐너",
+        "#오픈소스"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -156,7 +323,7 @@
         "#MITREATT&CK"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -175,7 +342,7 @@
         "#MCP"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -194,7 +361,45 @@
         "#NVIDIA-NeMo"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "b8b96b9e27f47b9c",
+      "source": "GitHub",
+      "title_ko": "Giskard-AI/giskard-oss LLM 에이전트 평가·테스트 라이브러리",
+      "title_orig": "Giskard-AI/giskard-oss",
+      "url": "https://github.com/Giskard-AI/giskard-oss",
+      "category": "AI 보안 툴",
+      "summary": "Giskard-AI/giskard-oss는 LLM 에이전트를 평가·테스트하기 위한 오픈소스 라이브러리다. Python 기반 Apache-2.0 프로젝트로, 2022-03-06 생성됐고 agent-evaluation, ai-red-team, ai-security, ai-testing, fairness-ai, llm 토픽을 다룬다. 스타 5,951개로 LLM 에이전트 평가·보안 테스트 용도의 오픈소스 도구로 활용될 수 있다.",
+      "tech_insight": "평가·테스트 라이브러리 성격상 CI/배포 파이프라인에서 LLM 에이전트 회귀·보안 테스트 게이트로 쓰기 적합하다. 스타 5,951·Python·Apache-2.0은 성숙도 판단에 도움되지만, 런타임 방어 도구는 아니므로 실제 테스트 커버리지와 유지보수 상태를 확인해야 한다.",
+      "tags": [
+        "#LLM에이전트",
+        "#AI보안",
+        "#오픈소스",
+        "#평가테스트"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "213ba631d8c8ba81",
+      "source": "GitHub",
+      "title_ko": "AISafetyHot, AI 안전 뉴스·논문·사건 매일 수집",
+      "title_orig": "wuyoscar/AISafetyHot",
+      "url": "https://github.com/wuyoscar/AISafetyHot",
+      "category": "AI 보안·안전",
+      "summary": "wuyoscar/AISafetyHot은 AI 안전 관련 뉴스, 논문, 사건을 매일 한곳에 모아 보여주는 GitHub 저장소다. 웹사이트와 데일리 다이제스트, RSS, MCP를 제공하며 jailbreak, 프롬프트 인젝션, 정렬, 평가, 거버넌스 주제를 다룬다. 스타 약 2,125개로 AI 안전 동향 추적용 컬렉션 성격이 강하다.",
+      "tech_insight": "최신 AI 공격·취약점과 거버넌스 동향을 모니터링하는 데 유용하다. 다만 수집 정보의 출처 신뢰도를 확인하고, MCP 연동 시 접근 범위와 데이터 노출을 최소화해야 한다.",
+      "tags": [
+        "#AI안전",
+        "#프롬프트인젝션",
+        "#AI거버넌스",
+        "#모니터링"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -213,7 +418,7 @@
         "#hol-guard"
       ],
       "is_featured": true,
-      "published_at": "2026-11-24",
+      "published_at": "2026-11-25",
       "analyzed_by": "cache"
     },
     {
@@ -230,6 +435,500 @@
         "#MCP",
         "#이그레스통제",
         "#오픈소스"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "d254ab633e30292a",
+      "source": "Hugging Face",
+      "title_ko": "Nemotron-Labs-VisualCreation: 시각 창작 에이전트 프레임워크",
+      "title_orig": "Nemotron-Labs-VisualCreation: Pixel as Code for Agentic Visual Creation",
+      "url": "https://huggingface.co/papers/2611.31358",
+      "category": "LLM·에이전트",
+      "summary": "Nemotron-Labs-VisualCreation은 표현력 있는 이미지와 텍스트·레이아웃·구조의 정밀 제어를 함께 달성하기 위한 에이전트 기반 시각 창작 프레임워크를 제안한다. 래스터 이미지는 학습된 이산 시각 토큰으로, 구조화 산출물은 명시적 프로그램으로 표현하며, 공유 생성·렌더링 인터페이스가 이미지·벡터 그래픽·웹페이지·문서의 시각 피드백을 연결한다. Nemotron 네이티브 하네스가 계획과 래스터 후보 선택을 조정하고, 편집 가능한 구조화·하이브리드 산출물에는 표적 수리를 적용한다.",
+      "tech_insight": "시각 창작을 토큰화, 프로그램 표현, 렌더링 피드백으로 결합해 에이전트가 계획-생성-수정 루프를 수행하도록 한 점이 핵심이다. 실무에서는 편집 가능한 산출물 파이프라인과 시각 피드백 자동화에 활용될 수 있으나, 생성 결과 검증·재현성·데이터 및 모델 사용 권한 관리가 필요하다.",
+      "tags": [
+        "#에이전트",
+        "#시각창작",
+        "#멀티모달"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "1e0c1df597347752",
+      "source": "Hugging Face",
+      "title_ko": "ICLWorld: 디지털·물리 세계 에이전트 인컨텍스트 학습 벤치마크",
+      "title_orig": "ICLWorld: Benchmarking In-Context Learning of Agents from Digital to Physical Worlds",
+      "url": "https://huggingface.co/papers/2611.32649",
+      "category": "모델·논문",
+      "summary": "ICLWorld는 디지털과 물리 세계에서 에이전트의 인컨텍스트 학습을 평가하는 온라인 벤치마크다. 컴퓨터 사용과 로봇 사용을 아우르며, 모든 환경을 UI로 전환하는 UIverse 통합 하네스를 제공한다. 기존 벤치마크의 오프라인·텍스트/정적 이미지 의존과 학습데이터 오염 위험, 로봇 평가의 방법 수준 아블레이션 한계를 보완하려는 시도다.",
+      "tech_insight": "온라인 평가와 UIverse 하네스는 에이전트의 맥락 학습 능력을 디지털·물리 환경별로 비교하게 하며, 학습데이터 오염을 줄이는 평가 설계의 중요성을 보여준다. 컴퓨터·로봇 에이전트 도입 시 실제 환경 기반 검증과 재현 가능한 벤치마크 확보가 실무 판단에 도움이 된다.",
+      "tags": [
+        "#ICLWorld",
+        "#에이전트",
+        "#인컨텍스트학습",
+        "#벤치마크"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "772fa697f4010c49",
+      "source": "Hugging Face",
+      "title_ko": "CoT-Proxy: 장기 지평 정책의 교차 포맷 증류",
+      "title_orig": "CoT-Proxy: Cross-Format Transfer for Distilling Long-Horizon Policies",
+      "url": "https://huggingface.co/papers/2611.33148",
+      "category": "모델·논문",
+      "summary": "장기 지평 에이전트 정책을 강화학습 대신 강한 교사의 궤적 미세조정으로 증류하는 연구를 제시한다. 교사 체인오브소트(CoT)가 API 뒤에 숨겨진 폐쇄 모델이어도 행동만으로 정책을 증류할 수 있음을 보인다. 학생 모델은 추론 블록을 비운 궤적으로 학습하고 자체 생성 리플레이 버퍼에 KL 손실을 적용한다.",
+      "tech_insight": "CoT 없이 행동 궤적만으로 장기 정책을 전이하면 폐쇄 교사 모델 활용 비용과 의존성을 낮출 수 있다. 다만 증류 정책의 추론 과정 해석 가능성과 배포 안전성 검증은 별도 과제다.",
+      "tags": [
+        "#CoT",
+        "#증류",
+        "#장기에이전트",
+        "#정책학습"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "exaone"
+    },
+    {
+      "item_key": "b58ef45498bed072",
+      "source": "Dark Reading",
+      "title_ko": "사이버 보험사, AI 방어 격차로 기존 보험 모델 압박 전망",
+      "title_orig": "Cyber Insurers See New Divide: AI Defense 'Haves' & 'Have Nots'",
+      "url": "https://www.darkreading.com/cybersecurity-operations/cyber-insurers-see-new-ai-divide",
+      "category": "AI 보안·안전",
+      "summary": "Dark Reading은 사이버 보험사들이 AI 기반 위협 환경과 정책 양측의 압박을 논의한 Confidential Episode 23을 공개했다. AI 방어 역량 격차가 커지며 기존 보험 모델이 지속 불가능해지고 있다는 시각을 전했다.",
+      "tech_insight": "AI 위협 대응 격차가 보험 인수·요율·보장 범위 같은 시장 조건에 반영될 수 있음을 보여준다. 기업은 AI 보안 통제와 사고 대응 증적을 관리해 보험 리스크를 낮출 필요가 있다.",
+      "tags": [
+        "#사이버보험",
+        "#AI보안",
+        "#산업트렌드"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "18196fe04c9029db",
+      "source": "The Hacker News",
+      "title_ko": "AI 기반 공격 도구로 Check Point 관리 서버 24대 침해 의심 캠페인",
+      "title_orig": "Hackers Compromise 24 Check Point Management Servers in Suspected AI-Driven Attack Campaign",
+      "url": "https://thehackernews.com/2026/11/hackers-compromise-24-check-point.html",
+      "category": "AI 보안·안전",
+      "summary": "미상의 위협 행위자가 AI 기반 공격 도구를 사용해 Check Point Security Management 서버를 대상으로 캠페인을 벌였고, 24대 서버가 침해된 것으로 보이며 22개 조직이 영향을 받은 것으로 전해졌다. GreyNoise는 이를 GT13으로 추적하며 금융, 에너지, 정부 등 여러 부문을 겨냥한 것으로 평가했다.",
+      "tech_insight": "AI 기반 공격 도구는 정찰·취약점 탐색·익스플로잇을 자동화·가속해 관리 서버 침해 가능성을 높일 수 있다. Check Point 관리 서버는 중앙 관리·정책 배포 지점이므로 패치 적용, 관리 인터페이스 접근 제한, 최소 권한, 이상 접근 모니터링으로 완화해야 한다.",
+      "tags": [
+        "#CheckPoint",
+        "#AI공격",
+        "#GT13",
+        "#GreyNoise"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "3e473c5afc18a02e",
+      "source": "GitHub",
+      "title_ko": "nono, AI 에이전트용 제로트러스트 런타임 샌드박스",
+      "title_orig": "nolabs-ai/nono",
+      "url": "https://github.com/nolabs-ai/nono",
+      "category": "AI 보안 툴",
+      "summary": "AI 에이전트 실행 자체를 격리하는 런타임 보안 도구로, 별도 설정 없이 지연 없이 샌드박싱을 적용하는 것을 목표로 한다. 에이전트가 실행하는 명령·도구 호출이 호스트 파일과 비밀에 닿는 경로를 런타임에서 차단하는 것이 핵심이다.",
+      "tech_insight": "코딩 에이전트를 로컬·CI에서 돌릴 때 최소 권한 실행 환경으로 감싸는 용도가 실무적이다. 2026년 초 공개된 Rust 구현이라 도입 전 유지보수 활성도와 정책 설정 범위를 확인해야 한다.",
+      "tags": [
+        "#에이전트샌드박스",
+        "#런타임보안",
+        "#제로트러스트",
+        "#Rust"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "eb3517ce984e90e4",
+      "source": "GitHub",
+      "title_ko": "Microsoft PyRIT, 생성형 AI 레드팀 자동화 툴킷",
+      "title_orig": "microsoft/PyRIT",
+      "url": "https://github.com/microsoft/PyRIT",
+      "category": "AI 보안 툴",
+      "summary": "마이크로소프트가 공개한 오픈소스 AI 레드팀 툴킷으로, 자동 스캔과 여러 턴에 걸친 적응형 공격, 웹 UI를 제공한다. 생성형 AI 시스템의 탈옥·프롬프트 인젝션·유해 출력 같은 취약 동작을 반복 실행해 드러내는 것이 핵심 기능이다.",
+      "tech_insight": "레드팀 시나리오를 코드로 정의해 CI나 배포 전 게이트에서 자동 실행하는 활용이 적합하다. 공격 프롬프트와 응답 로그에 민감정보가 남지 않도록 저장소·권한을 분리하고, 오탐 판정 기준을 함께 정해야 한다.",
+      "tags": [
+        "#AI레드팀",
+        "#프롬프트인젝션",
+        "#오픈소스",
+        "#CI게이트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "78bd60a4aacb4e89",
+      "source": "GitHub",
+      "title_ko": "simplexai-labs/linger",
+      "title_orig": "simplexai-labs/linger",
+      "url": "https://github.com/simplexai-labs/linger",
+      "category": "AI 툴·서비스",
+      "summary": "Linger is An Open-Source Personal Agent That Runs Fully on Your PC. We aim to break Big Tech’s grip on AI by bringing powerful local AI to everyday computers through efficient model–harness co-design, so everyone can run their own. (언어 TypeScript · ★ 4,675 · 토픽 agent-teams, local-llm, memory, personal-agent, proactive-…",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (GitHub 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트",
+        "#LLM",
+        "#경량모델"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "ad1fda5a25eed777",
+      "source": "GitHub",
+      "title_ko": "UsefulSoftwareCo/executor",
+      "title_orig": "UsefulSoftwareCo/executor",
+      "url": "https://github.com/UsefulSoftwareCo/executor",
+      "category": "AI 툴·서비스",
+      "summary": "The missing integration layer for AI agents. Let them call any OpenAPI / MCP / GraphQL / custom js functions in secure environment. (언어 TypeScript · ★ 4,599 · 생성 2026-02-07)",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (GitHub 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "9fe1b7ac7d97bae5",
+      "source": "GitHub",
+      "title_ko": "Snyk agent-scan, AI 에이전트·MCP 서버 보안 스캐너",
+      "title_orig": "snyk/agent-scan",
+      "url": "https://github.com/snyk/agent-scan",
+      "category": "AI 보안 툴",
+      "summary": "AI 에이전트와 MCP 서버, 에이전트 스킬 구성을 설치·실행 전에 검사하는 스캐너로, 위험한 도구 권한과 취약한 설정을 찾아낸다. 에이전트가 외부 도구를 호출하는 경로 자체를 점검 대상으로 삼는 것이 특징이다.",
+      "tech_insight": "MCP 서버나 스킬을 사내에 배포하기 전 파이프라인 단계에 넣어 공급망 점검 게이트로 쓰기 좋다. 스캔 결과를 통과/차단 규칙으로 자동화하려면 위험도 기준과 예외 승인 절차를 함께 정해야 한다.",
+      "tags": [
+        "#MCP보안",
+        "#에이전트보안",
+        "#공급망",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "1013302f98cebb5d",
+      "source": "GitHub",
+      "title_ko": "DeepTeam, LLM·AI 에이전트 레드팀 프레임워크",
+      "title_orig": "confident-ai/deepteam",
+      "url": "https://github.com/confident-ai/deepteam",
+      "category": "AI 보안 툴",
+      "summary": "LLM과 AI 에이전트를 레드팀하기 위한 파이썬 프레임워크로, 취약점 시나리오와 공격 템플릿을 조합해 자동 평가한다. 탈옥·프롬프트 인젝션·편향 같은 위험 범주를 테스트 케이스로 만들어 결과를 점수화한다.",
+      "tech_insight": "모델·에이전트 버전이 바뀔 때마다 같은 레드팀 케이스를 회귀 테스트로 돌려 안전성 저하를 조기에 잡는 활용이 적합하다. 공격 케이스 자체가 민감하므로 저장·공유 범위를 제한해야 한다.",
+      "tags": [
+        "#레드팀",
+        "#LLM평가",
+        "#탈옥",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "299d3443f0c7b242",
+      "source": "GitHub",
+      "title_ko": "ToolHive, MCP 서버 실행·관리 플랫폼",
+      "title_orig": "stacklok/toolhive",
+      "url": "https://github.com/stacklok/toolhive",
+      "category": "AI 보안 툴",
+      "summary": "MCP 서버를 컨테이너로 격리해 실행하고 권한·구성을 일관되게 관리하는 플랫폼이다. 어떤 MCP 서버가 어떤 권한과 비밀에 접근하는지를 통제하는 것이 보안 관점의 핵심 기능이다.",
+      "tech_insight": "에이전트에 붙이는 MCP 서버를 개별 설치 대신 격리된 표준 런타임으로 운영하면 도구 권한과 공급망 위험을 한 곳에서 관리할 수 있다. 쿠버네티스 환경이면 기존 정책·시크릿 관리와 어떻게 겹치는지 먼저 정리해야 한다.",
+      "tags": [
+        "#MCP",
+        "#컨테이너격리",
+        "#권한관리",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "209ef7c05447898b",
+      "source": "GitHub",
+      "title_ko": "agentic_security, 에이전트 LLM 취약점 스캐너",
+      "title_orig": "msoedov/agentic_security",
+      "url": "https://github.com/msoedov/agentic_security",
+      "category": "AI 보안 툴",
+      "summary": "에이전트형 LLM 애플리케이션의 취약점을 퍼징과 공격 시나리오로 탐색하는 스캐너 겸 AI 레드팀 키트다. 프롬프트 인젝션·탈옥·도구 오남용 같은 실패 모드를 자동으로 시도하고 결과를 리포트한다.",
+      "tech_insight": "API 엔드포인트 단위로 스캔을 돌려 배포 전후 회귀 점검에 쓰기 좋다. 자동 공격은 대상 서비스 비용과 로그를 크게 늘리므로 테스트 전용 키·격리된 환경에서 실행해야 한다.",
+      "tags": [
+        "#취약점스캐너",
+        "#퍼징",
+        "#레드팀",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "5307c53ae9c09112",
+      "source": "GitHub",
+      "title_ko": "OpenAPPA, 에이전트를 막지 않는 결정적 가드레일",
+      "title_orig": "archestra-ai/OpenAPPA",
+      "url": "https://github.com/archestra-ai/OpenAPPA",
+      "category": "AI 보안 툴",
+      "summary": "확률적 모델 판단에 기대지 않고 결정적으로 동작하는 에이전트 가드레일을 지향하는 오픈소스 도구다. 에이전트의 도구 호출과 출력을 정책으로 검증해, 가드레일이 정상 작업을 과도하게 차단하지 않도록 설계한 점이 특징이다.",
+      "tech_insight": "정책이 명확한 업무(권한 범위, 금지 행동, 출력 형식)에 가드레일을 붙일 때 오탐으로 인한 업무 중단을 줄이는 용도로 적합하다. 2026년 공개된 초기 프로젝트라 정책 표현력과 운영 성숙도는 직접 검증해야 한다.",
+      "tags": [
+        "#가드레일",
+        "#정책검증",
+        "#에이전트보안",
+        "#Rust"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "4654094f81c2dde4",
+      "source": "GitHub",
+      "title_ko": "Akto, AI 에이전트·MCP·LLM 보안 테스트 플랫폼",
+      "title_orig": "akto-api-security/akto",
+      "url": "https://github.com/akto-api-security/akto",
+      "category": "AI 보안 툴",
+      "summary": "조직의 AI 에이전트와 MCP, LLM, 에이전트 스킬, 생성형 AI 앱을 점검하는 AI 보안 플랫폼이다. 실제 트래픽을 관찰해 프롬프트 인젝션·민감정보 노출·권한 오남용 같은 취약점을 테스트하는 것이 핵심 기능이다.",
+      "tech_insight": "이미 운영 중인 LLM API 트래픽에 붙여 취약점을 지속적으로 찾는 방식이라, 배포 전 테스트가 어려운 서비스에 특히 맞는다. 트래픽 미러링 범위에 개인정보가 포함되므로 수집·보관 정책을 먼저 확인해야 한다.",
+      "tags": [
+        "#AI보안테스트",
+        "#프롬프트인젝션",
+        "#MCP",
+        "#API보안"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "62092d50a122ba87",
+      "source": "GitHub",
+      "title_ko": "simpsoka/zigzag",
+      "title_orig": "simpsoka/zigzag",
+      "url": "https://github.com/simpsoka/zigzag",
+      "category": "AI 툴·서비스",
+      "summary": "Free, open-source embroidery software for Mac and Windows. Turn SVG artwork into machine embroidery, edit stitches visually, and create designs with AI agents via MCP. (언어 Rust · ★ 1,142 · 토픽 brother-skitch, embroidery, embroidery-digitizing, embroidery-software, machine-embroidery, macos · 생성 2026-10-30)",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (GitHub 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "defdb393a6519bd4",
+      "source": "Hacker News",
+      "title_ko": "Marginalia Search·Money·C++·Rust·AI를 다룬 HN 글",
+      "title_orig": "Marginalia Search, Money, C++, Rust, AI, Stuff",
+      "url": "https://www.marginalia.nu/log/a_141_marginalia_update/",
+      "category": "산업·트렌드",
+      "summary": "Hacker News에서 공유된 'Marginalia Search, Money, C++, Rust, AI, Stuff' 글이다. 원문 요약이 제공되지 않아 내용·주장·기술적 세부는 확인할 수 없다.",
+      "tech_insight": "원문 요약이 없어 AI 기술·보안·산업 관점의 구체적 시사점을 도출하기 어렵다. HN 점수 215점·댓글 81개는 관심도를 보여주지만 기술 분석에는 원문 확인이 필요하다.",
+      "tags": [
+        "#HackerNews",
+        "#Marginalia",
+        "#C++",
+        "#Rust"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "exaone"
+    },
+    {
+      "item_key": "6140c3794d61117b",
+      "source": "Show HN",
+      "title_ko": "Carry, Gemini·ChatGPT·Claude·Grok 대화를 로컬 Markdown으로 저장",
+      "title_orig": "Show HN: Carry – Save every AI conversations as Markdown, in a folder you Own",
+      "url": "https://carry.md/",
+      "category": "AI 툴·서비스",
+      "summary": "Carry는 여러 AI 대화 서비스의 채팅 기록을 자동으로 로컬 폴더에 Markdown 파일로 저장한다. Gemini, ChatGPT, Claude, Grok 대화를 한곳에서 검색하고 필요할 때 다른 도구로 한 번에 넘길 수 있다.",
+      "tech_insight": "대화 기록을 로컬 Markdown으로 모아 검색·이관하는 워크플로에 활용할 수 있지만, 민감한 프롬프트와 대화 내용이 로컬 파일 및 연동 도구에 남을 수 있어 접근 권한·백업·이관 대상의 보안을 확인해야 한다.",
+      "tags": [
+        "#AI툴",
+        "#Markdown",
+        "#대화저장",
+        "#로컬저장"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "5fe590bcf57fac85",
+      "source": "Hugging Face",
+      "title_ko": "Mega-MMDF and DeepfakeBench-MM: Benchmarking Multimodal Deepfake Detection Across Diverse Forgery Pipelines",
+      "title_orig": "Mega-MMDF and DeepfakeBench-MM: Benchmarking Multimodal Deepfake Detection Across Diverse Forgery Pipelines",
+      "url": "https://huggingface.co/papers/2510.22622",
+      "category": "AI 보안·안전",
+      "summary": "Audio-visual deepfakes can spread misinformation and enable impersonation, undermining trust in digital media. However, existing datasets provide limited coverage of forgery operations and their combinations, constraining detector development and systematic evaluation. We introduce Mega-MMDF, containing 100,000 real an…",
+      "tech_insight": "공격 경로를 확인한 뒤 프롬프트·도구 권한, 입출력 검증, 탐지·모니터링을 함께 점검해야 함을 시사합니다. (Hugging Face 원문 기준 자동 정제)",
+      "tags": [
+        "#멀티모달",
+        "#벤치마크"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "2c0c8d9170b83abe",
+      "source": "Show HN",
+      "title_ko": "Lightscale AI, LLM용 비즈니스 소프트웨어 작성 언어 제안",
+      "title_orig": "Show HN: Lightscale AI – A language for LLMs to write business software",
+      "url": "https://lightscale.ai/",
+      "category": "AI 툴·서비스",
+      "summary": "Lightscale AI는 LLM이 작성한 코드를 사람이 충분히 검토하기 어려운 문제에 대응해, LLM을 저자로 가정하고 처음부터 설계한 프로그래밍 언어와 컴파일러·런타임을 제시했다. 언어 설계로 일부 오류 클래스를 제거하고 컴파일러·런타임이 해당 기능을 구현하게 해 보안과 안정성을 높이는 것이 목표다. 제공된 원문 요약이 중간에 잘려 세부 결과와 나머지 목표는 확인되지 않는다.",
+      "tech_insight": "LLM 생성 코드의 검토 부담을 줄이기 위해 언어·컴파일러·런타임 수준에서 안전성과 불변식을 강제하는 접근이 기술적 포인트다. 실무에서는 AI 작성 코드베이스에 이런 언어 수준 보장을 통합하는 방안을 검토할 수 있으나, 새 언어 도입 비용과 생태계 성숙도, 컴파일러 자체의 신뢰성 검증이 필요하다.",
+      "tags": [
+        "#LLM",
+        "#AI코드생성",
+        "#프로그래밍언어",
+        "#개발자도구"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "30b2d214e4250e54",
+      "source": "Show HN",
+      "title_ko": "Show HN: Sightline – Windows CLI for AI agents to capture UI and map DPI coords",
+      "title_orig": "Show HN: Sightline – Windows CLI for AI agents to capture UI and map DPI coords",
+      "url": "https://github.com/sao-coding/sightline",
+      "category": "AI 툴·서비스",
+      "summary": "Show HN: Sightline – Windows CLI for AI agents to capture UI and map DPI coords — Show HN 4점 · 댓글 0에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "c5ff362ecba19211",
+      "source": "Show HN",
+      "title_ko": "Show HN: Avva – Compress your expertise available to AI agent via MCP",
+      "title_orig": "Show HN: Avva – Compress your expertise available to AI agent via MCP",
+      "url": "https://avva.chat/",
+      "category": "AI 툴·서비스",
+      "summary": "Hi HN! After we launched our public beta, some of our ex-colleagues tested the approach of creating decision models based on their work artefacts and noticed that it led to fewer back-and-forth cycles to clarify details and greater productivity in their daily routine. The market for professionals has a downside: the pr…",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "8c79d755f58b0709",
+      "source": "GeekNews",
+      "title_ko": "Show GN: 아크릴 – 브라우저와 내 컴퓨터에서 일하는 사무용 AI 에이전트",
+      "title_orig": "Show GN: 아크릴 – 브라우저와 내 컴퓨터에서 일하는 사무용 AI 에이전트",
+      "url": "https://news.hada.io/topic?id=37833&utm_source=geeknews&utm_medium=rss&utm_campaign=news",
+      "category": "LLM·에이전트",
+      "summary": "안녕하세요. 아크릴 공동창업자 권우성입니다. 마이크로소프트에서 엔지니어로 일했던 동료와 함께 만든 사무용 AI 에이전트, 아크릴을 오늘 공개합니다. 한글, 워드, 엑셀, 파워포인트 파일을 무료로 편집할 수 있어요. 쓰던 파일을 열어 직접 고치다가 “이 표에 이번 달 실적도 넣어 줘” 하고 AI에게 맡길 수 있습니다. AI가 표와 문단, 셀을 구분해서 필요한 곳을 고칠 수 있도록 편집기부터 다시 설계했어요. 자료가 많을 땐 폴더째 맡기면 돼요. 파일을 하나씩 올릴 필요 없이 내 컴퓨터에서 작업할 폴더를 고르면 됩니다. 예를 들어 견적서가 여러 개 들어 있는 폴더를 열고…",
+      "tech_insight": "에이전트·LLM 활용 구조를 설계할 때 참고할 만한 구현 포인트를 담고 있습니다. (GeekNews 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-25",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "4b806da82294cb35",
+      "source": "arXiv",
+      "title_ko": "LLM은 중고거래 선입금 사기 판매자를 연기할 수 있나",
+      "title_orig": "\"I Do Intend to Deliver\": Will LLMs Run a Marketplace Advance-Fee Scam?",
+      "url": "https://arxiv.org/abs/2611.32957v1",
+      "category": "AI 보안·안전",
+      "summary": "평문 시스템 프롬프트만으로 10개 상용 LLM이 중고거래의 '무료 아이템, 배송비 지불' 선입금 사기 판매자를 연기할 수 있는지 실험한 연구다. 각 모델은 4개 구매자 페르소나와 30회씩 총 1,200회 대화를 수행했고, 구매자 금전 피해 여부 라벨을 인간 코더 2명과 검증했다. 별도 탈옥 없이 LLM이 사기 대화 노동을 제공할 가능성을 보여준다.",
+      "tech_insight": "LLM 기반 사기 자동화는 탈옥 없이도 사회적 공학 공격의 규모와 비용을 바꿀 수 있다. 대응으로 사기 패턴 모니터링, 모델 사용 정책·레이트리밋, 플랫폼 결제·신고 검증, 출력 가드레일이 필요하다.",
+      "tags": [
+        "#LLM사기",
+        "#선입금사기",
+        "#사회적공학",
+        "#AI보안"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-24",
+      "analyzed_by": "exaone"
+    },
+    {
+      "item_key": "c91a575bcde48c63",
+      "source": "The Hacker News",
+      "title_ko": "OpenAI·Cisco, 패치 전 취약점 차단 AI Linux 보안 도구 Shirudo 공개",
+      "title_orig": "OpenAI and Cisco Unveil AI-Assisted Linux Security Tool to Block Exploits Before Patching",
+      "url": "https://thehackernews.com/2026/11/openai-and-cisco-unveil-ai-assisted.html",
+      "category": "AI 보안 툴",
+      "summary": "OpenAI와 Cisco가 AI 에이전트 기반 Linux 런타임 보안 도구 Shirudo를 공개했다. 에이전트가 동적 eBPF 컨트롤을 작성해 시스템 다운타임 없이 익스플로잇을 차단함으로써, 방어자가 패치를 테스트하고 배포할 시간을 벌어준다.",
+      "tech_insight": "런타임 eBPF 기반 방어를 패치 전 임시 완화책으로 쓸 수 있으나, 에이전트가 생성한 컨트롤의 검증·최소 권한·롤백 절차가 필요하다. 배포 파이프라인과 런타임 게이트에서 통제 적용 전후 검증을 자동화하는 접근이 유효하다.",
+      "tags": [
+        "#OpenAI",
+        "#Cisco",
+        "#eBPF",
+        "#AI에이전트"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-24",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "cdafa5a8d037db77",
+      "source": "arXiv",
+      "title_ko": "행동 검증만으로 충분: HPC AI 에이전트 제로트러스트 아키텍처",
+      "title_orig": "Attestation is All You Need: Toward a Zero-Trust Architecture for HPC AI Agents",
+      "url": "https://arxiv.org/abs/2611.32958v1",
+      "category": "AI 보안·안전",
+      "summary": "HPC 환경에서 AI 에이전트가 데이터 분석·오케스트레이션·시뮬레이션 제어를 자동화하면서 프롬프트 인젝션, 오염된 공유 데이터, 손상된 도구, 다중 에이전트 협업을 통한 승인된 에이전트 탈취 문제를 지적한다. 저자들은 작업 기반 행동 제약을 컴파일하고 eBPF 기반 시스템 콜 가로채기로 에이전트 행동을 모니터링·검증하는 런타임 방어 체계 AEGIS를 제안한다. 정당한 암호화 LLM API 트래픽을 악용한 민감 데이터 유출을 막는 것이 목표다.",
+      "tech_insight": "기술적으로는 작업별 행동 제약을 선언적으로 컴파일하고 eBPF로 시스템 콜을 관찰해 정상 행위 증명을 확인하는 런타임 무결성 검증이 핵심이다. 실무에서는 HPC 에이전트에 최소 권한과 도구·데이터 입력 검증을 적용하고, 암호화된 LLM API 트래픽도 행동 기준선 모니터링과 가드레일로 감시해야 한다.",
+      "tags": [
+        "#AI보안",
+        "#HPC",
+        "#에이전트보안",
+        "#eBPF"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-24",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "bdcf28b4bb1eec2a",
+      "source": "arXiv",
+      "title_ko": "SALSA: 학습 분포 기반 샘플링으로 LLM 탈옥 공격 평가",
+      "title_orig": "SALSA: Sampling Adversarial Suffixes from Learned Distributions for LLM Safety Assessment",
+      "url": "https://arxiv.org/abs/2611.33030v1",
+      "category": "AI 보안·안전",
+      "summary": "LLM은 안전 정렬을 우회하는 탈옥 공격에 취약하다. SALSA는 최적화 기반 공격 코퍼스로부터 탈옥 접미사 분포를 학습해 샘플링 기반 공격을 생성하는 프레임워크다. 오픈소스 타깃에서 최신 최적화 기준선과 유사한 공격 성공률을 보고하며 추론 비용 부담과 낮은 전이성을 완화하려 한다.",
+      "tech_insight": "공격 생성 비용을 낮춰 탈옥 평가와 레드팀 자동화 범위를 넓힐 수 있으나, 방어 측은 입력 검증·모니터링·가드레일과 함께 전이성 높은 샘플링 공격을 포함한 적응형 평가로 대응해야 한다.",
+      "tags": [
+        "#LLM",
+        "#탈옥",
+        "#AI안전",
+        "#적대적공격"
       ],
       "is_featured": true,
       "published_at": "2026-11-24",
@@ -311,82 +1010,6 @@
       "analyzed_by": "cache"
     },
     {
-      "item_key": "eb3517ce984e90e4",
-      "source": "GitHub",
-      "title_ko": "Microsoft PyRIT, 생성형 AI 레드팀 자동화 툴킷",
-      "title_orig": "microsoft/PyRIT",
-      "url": "https://github.com/microsoft/PyRIT",
-      "category": "AI 보안 툴",
-      "summary": "마이크로소프트가 공개한 오픈소스 AI 레드팀 툴킷으로, 자동 스캔과 여러 턴에 걸친 적응형 공격, 웹 UI를 제공한다. 생성형 AI 시스템의 탈옥·프롬프트 인젝션·유해 출력 같은 취약 동작을 반복 실행해 드러내는 것이 핵심 기능이다.",
-      "tech_insight": "레드팀 시나리오를 코드로 정의해 CI나 배포 전 게이트에서 자동 실행하는 활용이 적합하다. 공격 프롬프트와 응답 로그에 민감정보가 남지 않도록 저장소·권한을 분리하고, 오탐 판정 기준을 함께 정해야 한다.",
-      "tags": [
-        "#AI레드팀",
-        "#프롬프트인젝션",
-        "#오픈소스",
-        "#CI게이트"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-24",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "9fe1b7ac7d97bae5",
-      "source": "GitHub",
-      "title_ko": "Snyk agent-scan, AI 에이전트·MCP 서버 보안 스캐너",
-      "title_orig": "snyk/agent-scan",
-      "url": "https://github.com/snyk/agent-scan",
-      "category": "AI 보안 툴",
-      "summary": "AI 에이전트와 MCP 서버, 에이전트 스킬 구성을 설치·실행 전에 검사하는 스캐너로, 위험한 도구 권한과 취약한 설정을 찾아낸다. 에이전트가 외부 도구를 호출하는 경로 자체를 점검 대상으로 삼는 것이 특징이다.",
-      "tech_insight": "MCP 서버나 스킬을 사내에 배포하기 전 파이프라인 단계에 넣어 공급망 점검 게이트로 쓰기 좋다. 스캔 결과를 통과/차단 규칙으로 자동화하려면 위험도 기준과 예외 승인 절차를 함께 정해야 한다.",
-      "tags": [
-        "#MCP보안",
-        "#에이전트보안",
-        "#공급망",
-        "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-24",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "1013302f98cebb5d",
-      "source": "GitHub",
-      "title_ko": "DeepTeam, LLM·AI 에이전트 레드팀 프레임워크",
-      "title_orig": "confident-ai/deepteam",
-      "url": "https://github.com/confident-ai/deepteam",
-      "category": "AI 보안 툴",
-      "summary": "LLM과 AI 에이전트를 레드팀하기 위한 파이썬 프레임워크로, 취약점 시나리오와 공격 템플릿을 조합해 자동 평가한다. 탈옥·프롬프트 인젝션·편향 같은 위험 범주를 테스트 케이스로 만들어 결과를 점수화한다.",
-      "tech_insight": "모델·에이전트 버전이 바뀔 때마다 같은 레드팀 케이스를 회귀 테스트로 돌려 안전성 저하를 조기에 잡는 활용이 적합하다. 공격 케이스 자체가 민감하므로 저장·공유 범위를 제한해야 한다.",
-      "tags": [
-        "#레드팀",
-        "#LLM평가",
-        "#탈옥",
-        "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-24",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "299d3443f0c7b242",
-      "source": "GitHub",
-      "title_ko": "ToolHive, MCP 서버 실행·관리 플랫폼",
-      "title_orig": "stacklok/toolhive",
-      "url": "https://github.com/stacklok/toolhive",
-      "category": "AI 보안 툴",
-      "summary": "MCP 서버를 컨테이너로 격리해 실행하고 권한·구성을 일관되게 관리하는 플랫폼이다. 어떤 MCP 서버가 어떤 권한과 비밀에 접근하는지를 통제하는 것이 보안 관점의 핵심 기능이다.",
-      "tech_insight": "에이전트에 붙이는 MCP 서버를 개별 설치 대신 격리된 표준 런타임으로 운영하면 도구 권한과 공급망 위험을 한 곳에서 관리할 수 있다. 쿠버네티스 환경이면 기존 정책·시크릿 관리와 어떻게 겹치는지 먼저 정리해야 한다.",
-      "tags": [
-        "#MCP",
-        "#컨테이너격리",
-        "#권한관리",
-        "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-24",
-      "analyzed_by": "manual"
-    },
-    {
       "item_key": "95becfab66f0331e",
       "source": "GitHub",
       "title_ko": "Uber ADR, 기업 AI 에이전트 관측·위협 탐지",
@@ -406,80 +1029,276 @@
       "analyzed_by": "manual"
     },
     {
-      "item_key": "209ef7c05447898b",
-      "source": "GitHub",
-      "title_ko": "agentic_security, 에이전트 LLM 취약점 스캐너",
-      "title_orig": "msoedov/agentic_security",
-      "url": "https://github.com/msoedov/agentic_security",
-      "category": "AI 보안 툴",
-      "summary": "에이전트형 LLM 애플리케이션의 취약점을 퍼징과 공격 시나리오로 탐색하는 스캐너 겸 AI 레드팀 키트다. 프롬프트 인젝션·탈옥·도구 오남용 같은 실패 모드를 자동으로 시도하고 결과를 리포트한다.",
-      "tech_insight": "API 엔드포인트 단위로 스캔을 돌려 배포 전후 회귀 점검에 쓰기 좋다. 자동 공격은 대상 서비스 비용과 로그를 크게 늘리므로 테스트 전용 키·격리된 환경에서 실행해야 한다.",
+      "item_key": "5e9f1cac743c3cb6",
+      "source": "Hacker News",
+      "title_ko": "LLM agents work for their parent companies, not for you",
+      "title_orig": "LLM agents work for their parent companies, not for you",
+      "url": "https://michaelharley.net/posts/2026/11/01/llm-agents-work-for-their-parent-companies-not-for-you/",
+      "category": "LLM·에이전트",
+      "summary": "LLM agents work for their parent companies, not for you — HN 998점 · 댓글 410에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "에이전트·LLM 활용 구조를 설계할 때 참고할 만한 구현 포인트를 담고 있습니다. (Hacker News 원문 기준 자동 정제)",
       "tags": [
-        "#취약점스캐너",
-        "#퍼징",
-        "#레드팀",
+        "#에이전트",
+        "#LLM"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "08635edff84b05b3",
+      "source": "Hacker News",
+      "title_ko": "GPT-6 models demonstrate intrinsic protein-design capabilities",
+      "title_orig": "GPT-6 models demonstrate intrinsic protein-design capabilities",
+      "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/",
+      "category": "LLM·에이전트",
+      "summary": "GPT-6 models demonstrate intrinsic protein-design capabilities — HN 350점 · 댓글 95에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "에이전트·LLM 활용 구조를 설계할 때 참고할 만한 구현 포인트를 담고 있습니다. (Hacker News 원문 기준 자동 정제)",
+      "tags": [
+        "#LLM에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "3c8456f561432132",
+      "source": "Hacker News",
+      "title_ko": "Tidal bans AI-generated music",
+      "title_orig": "Tidal bans AI-generated music",
+      "url": "https://variety.com/2026/music/news/tidal-bans-ai-generated-music-1236956924/",
+      "category": "산업·트렌드",
+      "summary": "Tidal bans AI-generated music — HN 334점 · 댓글 330에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "시장·조직 차원의 AI 활용 흐름을 판단하는 데 참고할 만합니다. (Hacker News 원문 기준 자동 정제)",
+      "tags": [
+        "#산업트렌드"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "8f53d0dc5cd9674a",
+      "source": "Show HN",
+      "title_ko": "Genesis Map, 에이전트 코드 변경을 흐름도로 시각화",
+      "title_orig": "Show HN: Genesis Map – Visualize your agent's changes. See where they can break",
+      "url": "https://github.com/GenesisAgentInfra/genesis",
+      "category": "AI 툴·서비스",
+      "summary": "Genesis Map은 코딩 에이전트가 만든 변경사항을 이해하기 쉽게 비즈니스 흐름도로 그려주는 스킬이다. 에이전트가 빠르게 코드를 배포할수록 사람이 전부 검토하기 어렵고, 에이전트 설명만 믿기 어려운 문제를 완화하는 데 초점을 둔다.",
+      "tech_insight": "실무에서는 에이전트 변경 리뷰 보조로 쓸 수 있지만, 스킬 설치·저장소 공급망과 생성된 흐름도의 정확성을 검증해야 한다. 에이전트 권한 범위와 코드 변경 추적성을 함께 관리하는 것이 안전하다.",
+      "tags": [
+        "#에이전트",
+        "#코드리뷰",
+        "#시각화",
+        "#개발도구"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "6dbd6c2deabcfa75",
+      "source": "Show HN",
+      "title_ko": "Show HN: Horus – Turn an old Android phone into a box for coding agents",
+      "title_orig": "Show HN: Horus – Turn an old Android phone into a box for coding agents",
+      "url": "https://github.com/scarif-labs/horus",
+      "category": "AI 툴·서비스",
+      "summary": "Show HN: Horus – Turn an old Android phone into a box for coding agents — Show HN 5점 · 댓글 2에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "01cdc1a0c8166a5b",
+      "source": "Show HN",
+      "title_ko": "Cloudflare 기반 경량 에이전트 CMS: API·MCP·CLI·Web",
+      "title_orig": "Show HN: Lightweight Agentic CMS on Cloudflare – API, MCP, CLI, Web",
+      "url": "https://docs.microfeed.org/",
+      "category": "AI 툴·서비스",
+      "summary": "Show HN에 공개된 Cloudflare 기반 경량 에이전트 CMS로, 제목상 API·MCP·CLI·Web 인터페이스를 제공한다. 에이전트와 개발자가 콘텐츠·사이트 기능을 다양한 접점에서 호출·확장하는 방향을 표방한다. 원문 요약이 없어 구현 세부·성능·보안 모델은 확인되지 않는다.",
+      "tech_insight": "API·MCP·CLI를 통한 에이전트 작업 자동화가 가능하다면 권한 최소화, 데이터 노출 범위, API 키 관리, MCP 서버·의존성 공급망 리스크를 함께 점검해야 한다. 경량 배포라도 에이전트 도구 호출 권한과 감사 로그를 확인하는 운영 설계가 필요하다.",
+      "tags": [
+        "#Cloudflare",
+        "#AgenticCMS",
+        "#MCP",
+        "#CLI"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "320e95adf3c89e3b",
+      "source": "Show HN",
+      "title_ko": "Show HN: Rhebok – free local RAG for your coding agent",
+      "title_orig": "Show HN: Rhebok – free local RAG for your coding agent",
+      "url": "https://github.com/Stellenbosch-Technologies/rhebok",
+      "category": "AI 툴·서비스",
+      "summary": "Show HN: Rhebok – free local RAG for your coding agent — Show HN 4점 · 댓글 0에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트",
+        "#RAG"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "67c276cabd6626be",
+      "source": "Show HN",
+      "title_ko": "Show HN: CheckMyApp – checks your live app with each deploy from coding agent",
+      "title_orig": "Show HN: CheckMyApp – checks your live app with each deploy from coding agent",
+      "url": "https://checkmyapp.dev",
+      "category": "AI 툴·서비스",
+      "summary": "No human in the loop is the new dream. CheckMyApp is the first half of the loop I believe every solo founder should have. It clicks through your changes in production (or PR preview urls if you like) and files tickets with screenshots of bugs. Hook those tickets to claude/codex and the loop closes. I've tasted agentic…",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "2555b0643c84b16f",
+      "source": "Show HN",
+      "title_ko": "Show HN: Wakeshift – Open-Source MCP Events for Claude Code, Codex and More",
+      "title_orig": "Show HN: Wakeshift – Open-Source MCP Events for Claude Code, Codex and More",
+      "url": "https://github.com/wakeshift/server",
+      "category": "AI 툴·서비스",
+      "summary": "tl;dr: We just open-sourced Wakeshift, which lets any MCP server serve interoperable events via MCP Events or harness-specific bridges. This allows MCP servers to push events to harnesses that don't support MCP Events today, including Claude Code, Codex and Cursor. Hi folks! The MCP Events spec was approved and merged…",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트",
         "#오픈소스"
       ],
       "is_featured": false,
       "published_at": "2026-11-24",
-      "analyzed_by": "manual"
+      "analyzed_by": "fallback"
     },
     {
-      "item_key": "5307c53ae9c09112",
-      "source": "GitHub",
-      "title_ko": "OpenAPPA, 에이전트를 막지 않는 결정적 가드레일",
-      "title_orig": "archestra-ai/OpenAPPA",
-      "url": "https://github.com/archestra-ai/OpenAPPA",
-      "category": "AI 보안 툴",
-      "summary": "확률적 모델 판단에 기대지 않고 결정적으로 동작하는 에이전트 가드레일을 지향하는 오픈소스 도구다. 에이전트의 도구 호출과 출력을 정책으로 검증해, 가드레일이 정상 작업을 과도하게 차단하지 않도록 설계한 점이 특징이다.",
-      "tech_insight": "정책이 명확한 업무(권한 범위, 금지 행동, 출력 형식)에 가드레일을 붙일 때 오탐으로 인한 업무 중단을 줄이는 용도로 적합하다. 2026년 공개된 초기 프로젝트라 정책 표현력과 운영 성숙도는 직접 검증해야 한다.",
-      "tags": [
-        "#가드레일",
-        "#정책검증",
-        "#에이전트보안",
-        "#Rust"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-24",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "4654094f81c2dde4",
-      "source": "GitHub",
-      "title_ko": "Akto, AI 에이전트·MCP·LLM 보안 테스트 플랫폼",
-      "title_orig": "akto-api-security/akto",
-      "url": "https://github.com/akto-api-security/akto",
-      "category": "AI 보안 툴",
-      "summary": "조직의 AI 에이전트와 MCP, LLM, 에이전트 스킬, 생성형 AI 앱을 점검하는 AI 보안 플랫폼이다. 실제 트래픽을 관찰해 프롬프트 인젝션·민감정보 노출·권한 오남용 같은 취약점을 테스트하는 것이 핵심 기능이다.",
-      "tech_insight": "이미 운영 중인 LLM API 트래픽에 붙여 취약점을 지속적으로 찾는 방식이라, 배포 전 테스트가 어려운 서비스에 특히 맞는다. 트래픽 미러링 범위에 개인정보가 포함되므로 수집·보관 정책을 먼저 확인해야 한다.",
-      "tags": [
-        "#AI보안테스트",
-        "#프롬프트인젝션",
-        "#MCP",
-        "#API보안"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-24",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "861092e8ac8ce66b",
-      "source": "GitHub",
-      "title_ko": "morluto/rea: 에이전트로 앱 동작부터 네이티브 바이너리까지 역설계",
-      "title_orig": "morluto/rea",
-      "url": "https://github.com/morluto/rea",
+      "item_key": "45c6c524ef2f5d60",
+      "source": "Show HN",
+      "title_ko": "Show HN: Harny – AI coding agent for VSCodium/VS Code tuned for small/local LLMs",
+      "title_orig": "Show HN: Harny – AI coding agent for VSCodium/VS Code tuned for small/local LLMs",
+      "url": "https://harny.dev/",
       "category": "AI 툴·서비스",
-      "summary": "GitHub 저장소 morluto/rea는 에이전트를 활용해 앱 동작부터 네이티브 바이너리까지 리버스 엔지니어링하는 도구다. TypeScript 기반이며 agent-skills, ai, android, claude-code, cli, cpp 토픽과 ★459,972 스타가 표시돼 있다.",
-      "tech_insight": "스타 수가 매우 높아 관심도가 크지만, 제공된 정보에는 최근 업데이트가 없어 성숙도 판단에는 유지보수 이력 확인이 필요하다. 리버스 엔지니어링·보안 도구는 라이선스와 악용·공급망 리스크 검토 후 도입해야 한다.",
+      "summary": "Show HN: Harny – AI coding agent for VSCodium/VS Code tuned for small/local LLMs — Show HN 4점 · 댓글 0에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
       "tags": [
-        "#morluto/rea",
-        "#리버스엔지니어링",
-        "#에이전트",
-        "#CLI"
+        "#에이전트"
       ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "d70fbcd129df380b",
+      "source": "Show HN",
+      "title_ko": "Show HN: Game that determines which LLMs you can beat at Language Processing",
+      "title_orig": "Show HN: Game that determines which LLMs you can beat at Language Processing",
+      "url": "https://wordspies.com/",
+      "category": "AI 툴·서비스",
+      "summary": "Show HN: Game that determines which LLMs you can beat at Language Processing — Show HN 3점 · 댓글 2에서 수집된 자료입니다. 상세 내용은 원문에서 확인할 수 있습니다.",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (Show HN 원문 기준 자동 정제)",
+      "tags": [
+        "#AI툴서비스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "6a5eccbc3381fc40",
+      "source": "arXiv",
+      "title_ko": "Draft Calibration for Speculative Decoding: Accelerating LLM Serving by Matching Draft and Target Distributions",
+      "title_orig": "Draft Calibration for Speculative Decoding: Accelerating LLM Serving by Matching Draft and Target Distributions",
+      "url": "https://arxiv.org/abs/2611.33111v1",
+      "category": "AI 툴·서비스",
+      "summary": "Speculative decoding accelerates large language model (LLM) inference by employing a lightweight draft model to propose draft tokens and allowing the target model to verify the new tokens in parallel to improve inference-time compute utilization. The speedup relies on the acceptance probability of draft tokens in targe…",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (arXiv 원문 기준 자동 정제)",
+      "tags": [
+        "#LLM",
+        "#오픈소스",
+        "#인프라"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "8ebaca72a99f8e6d",
+      "source": "arXiv",
+      "title_ko": "MetaFORGE: A Meta-Learning Framework for Harness Optimization in Automated Code Generation for Parallel Computing",
+      "title_orig": "MetaFORGE: A Meta-Learning Framework for Harness Optimization in Automated Code Generation for Parallel Computing",
+      "url": "https://arxiv.org/abs/2611.33119v1",
+      "category": "AI 툴·서비스",
+      "summary": "Large language models (LLMs) can generate parallel programs, but their correctness and performance depend strongly on the instructions that guide generation. We present \\textsc{MetaFORGE}, an execution-grounded meta-learning framework that iteratively optimizes persistent natural-language skill specifications for MPI C…",
+      "tech_insight": "실무에 바로 검토할 수 있는 도구로, 도입 시 에이전트 권한·데이터 노출·공급망 신뢰를 함께 확인해야 합니다. (arXiv 원문 기준 자동 정제)",
+      "tags": [
+        "#RAG",
+        "#LLM",
+        "#경량모델"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "55dcbdf89f700a85",
+      "source": "arXiv",
+      "title_ko": "OmniAct: One Policy, One Million Embodiments",
+      "title_orig": "OmniAct: One Policy, One Million Embodiments",
+      "url": "https://arxiv.org/abs/2611.33158v1",
+      "category": "모델·논문",
+      "summary": "A single policy that controls diverse robots must not only transfer task knowledge across embodiments, but also adapt its behavior to each robot's capabilities. Existing approaches facilitate transfer through shared action representations, but these representations do not necessarily capture how differences in robot mo…",
+      "tech_insight": "모델 구조·학습 방식의 변화로 실무 적용 가능성을 판단할 근거가 됩니다. (arXiv 원문 기준 자동 정제)",
+      "tags": [
+        "#모델논문"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "40091e3a6a21d7cf",
+      "source": "arXiv",
+      "title_ko": "Fresh Keys, Stale Secrets: Numeric Leakage across Linked LLM Prompts",
+      "title_orig": "Fresh Keys, Stale Secrets: Numeric Leakage across Linked LLM Prompts",
+      "url": "https://arxiv.org/abs/2611.32864v1",
+      "category": "AI 보안·안전",
+      "summary": "Small businesses repeatedly ask cloud language models about the same confidential prices, unit costs and margins. Numeric prompt disguises for such numbers are evaluated one prompt at a time, but a provider sees a firm's history, in which each fresh secret gives a new, independent view of the same numbers. Since real c…",
+      "tech_insight": "공격 경로를 확인한 뒤 프롬프트·도구 권한, 입출력 검증, 탐지·모니터링을 함께 점검해야 함을 시사합니다. (arXiv 원문 기준 자동 정제)",
+      "tags": [
+        "#AI보안",
+        "#LLM",
+        "#벤치마크"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
+    },
+    {
+      "item_key": "a318906fd489b65f",
+      "source": "The Hacker News",
+      "title_ko": "Hackers Exploit N-able MailAssure Flaw While AI Agents Exploit MONAI Label Zero-Day",
+      "title_orig": "Hackers Exploit N-able MailAssure Flaw While AI Agents Exploit MONAI Label Zero-Day",
+      "url": "https://thehackernews.com/2026/11/hackers-exploit-n-able-mailassure-flaw.html",
+      "category": "AI 보안·안전",
+      "summary": "The U.S. Cybersecurity and Infrastructure Security Agency (CISA) on Monday added two flaws impacting N-able MailAssure and MONAI Label to its Known Exploited Vulnerabilities (KEV) catalog, citing evidence of active exploitation. The critical vulnerabilities are listed below - CVE-2026-134624 (CVSS score: 9.3) - A serve…",
+      "tech_insight": "공격 경로를 확인한 뒤 프롬프트·도구 권한, 입출력 검증, 탐지·모니터링을 함께 점검해야 함을 시사합니다. (The Hacker News 원문 기준 자동 정제)",
+      "tags": [
+        "#에이전트",
+        "#AI보안"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-24",
+      "analyzed_by": "fallback"
     },
     {
       "item_key": "36374e6ef148d0d4",
@@ -495,63 +1314,6 @@
         "#오픈소스도구",
         "#개발자도구",
         "#ClaudeCode"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "127ebbc3051d266b",
-      "source": "GitHub",
-      "title_ko": "n8n-io/n8n, AI 내장 워크플로 자동화 플랫폼",
-      "title_orig": "n8n-io/n8n",
-      "url": "https://github.com/n8n-io/n8n",
-      "category": "AI 툴·서비스",
-      "summary": "n8n-io/n8n은 시각적 빌더와 커스텀 코드를 결합해 워크플로를 구성하는 fair-code 자동화 플랫폼이다. AI 기능을 기본 제공하며 셀프호스팅 또는 클라우드, 400개 이상 연동을 지원한다. 개발자·실무자가 다양한 API와 AI를 조합해 자동화 작업을 만드는 데 활용할 수 있다.",
-      "tech_insight": "실무에서는 LLM·API·데이터 흐름을 노드로 연결해 반복 업무를 자동화하는 데 적합하다. 셀프호스팅·클라우드 모두 가능하므로 자격 증명, 웹훅, 외부 연동 권한, 설치·공급망 리스크를 점검해야 한다. 제공된 정보상 스타 21만+와 TypeScript 기반은 높은 성숙도를 시사하나 최근 업데이트 주기와 보안 정책은 별도 확인이 필요하다.",
-      "tags": [
-        "#n8n",
-        "#워크플로자동화",
-        "#AI통합",
-        "#셀프호스팅"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "0679691c95f67527",
-      "source": "GitHub",
-      "title_ko": "Dify 기반 에이전트·RAG 워크플로 협업 플랫폼",
-      "title_orig": "langgenius/dify",
-      "url": "https://github.com/langgenius/dify",
-      "category": "AI 툴·서비스",
-      "summary": "Dify는 에이전트 워크플로와 RAG 파이프라인을 하나의 협업 워크스페이스에서 구축하도록 지원한다. 다양한 AI 모델과 도구를 연동하고 클라우드·VPC·셀프호스팅 배포를 지원해, 팀이 프로토타입에서 프로덕션으로 갈 때 스택을 다시 만들 필요를 줄인다. Python 기반 오픈소스 저장소로 GitHub 스타 161,166개를 기록했다.",
-      "tech_insight": "기술적으로는 에이전트 오케스트레이션과 RAG 구성을 협업형 인터페이스로 통합하고 배포 유연성을 제공한 점이 핵심이다. 실무에서는 워크플로 프로토타입을 빠르게 운영하는 데 쓸 수 있으나, 에이전트 도구 권한·데이터 노출·셀프호스팅/설치 공급망 리스크를 점검하고 최근 업데이트와 유지보수 상태를 확인해야 한다.",
-      "tags": [
-        "#Dify",
-        "#에이전트",
-        "#RAG",
-        "#오픈소스"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "fa987afb9161a13a",
-      "source": "GitHub",
-      "title_ko": "open-webui, Ollama·OpenAI API 연동되는 사용자 친화적 LLM 웹 UI",
-      "title_orig": "open-webui/open-webui",
-      "url": "https://github.com/open-webui/open-webui",
-      "category": "AI 툴·서비스",
-      "summary": "GitHub 저장소 open-webui/open-webui는 Ollama, OpenAI API 등을 연동해 LLM을 웹 인터페이스로 쉽게 사용하게 해주는 도구다. Svelte 기반이며 스타 158,672개, 토픽 ai·llm·llm-ui·mcp 등으로 LLM 사용자 인터페이스 성격이 드러난다. 생성일은 2023-10-06으로, 다양한 백엔드와 연동하는 오픈소스 웹 UI로 확산된 사례다.",
-      "tech_insight": "기술적으로는 여러 LLM 백엔드를 단일 웹 UI로 추상화해 접근성을 높이는 점이 핵심이다. 실무 도입 시 API 키·대화 데이터 노출, 외부 접속 범위, 설치·업데이트 공급망 리스크를 점검하고 권한·네트워크 접근을 최소화해야 한다.",
-      "tags": [
-        "#오픈소스",
-        "#LLM",
-        "#WebUI",
-        "#Ollama"
       ],
       "is_featured": true,
       "published_at": "2026-11-23",
@@ -615,43 +1377,6 @@
       "analyzed_by": "cache"
     },
     {
-      "item_key": "eb68c88968ba8836",
-      "source": "GitHub",
-      "title_ko": "Claude-BugHunter: Claude Code 기반 버그헌팅·외부 레드팀 스킬 번들",
-      "title_orig": "elementalsouls/Claude-BugHunter",
-      "url": "https://github.com/elementalsouls/Claude-BugHunter",
-      "category": "AI 보안 툴",
-      "summary": "Claude-BugHunter는 Claude Code에서 버그헌팅과 외부 레드팀 작업을 지원하는 스킬 번들로, 82개 스킬과 15개 슬래시 명령을 제공한다. 24개 핵심 취약점 클래스별 681개 공개 보고서 패턴과 엔터프라이즈 아이덴티티·인프라 공격 매트릭스를 큐레이션해 취약점 리서치·레드팀 준비를 돕는다. 원문상 프롬프트 인젝션·탈옥·MCP 오남용·에이전트 권한·모델 유출 대응을 직접 표방하지는 않고 애플리케이션·인프라 보안 취약점에 초점을 둔다.",
-      "tech_insight": "Claude Code 기반 버그헌팅·외부 레드팀 워크플로를 스킬·슬래시 명령으로 지원해 레드팀 자동화와 취약점 리서치 준비에 활용할 수 있다. 다만 실제 스캔·프록시·가드레일 실행 도구라기보다 패턴·지식 번들에 가까우므로 대상 권한과 법적 승인, 생성되는 명령·코드의 검증이 필요하다.",
-      "tags": [
-        "#Claude-BugHunter",
-        "#버그헌팅",
-        "#레드팀",
-        "#AI보안"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "49c3c064b1ddf0b1",
-      "source": "GitHub",
-      "title_ko": "NVIDIA/garak: LLM 취약점 스캐너",
-      "title_orig": "NVIDIA/garak",
-      "url": "https://github.com/NVIDIA/garak",
-      "category": "AI 보안 툴",
-      "summary": "NVIDIA/garak은 LLM 보안 취약점을 점검하는 오픈소스 스캐너다. 프롬프트 인젝션·탈옥 등 LLM 취약점 탐지를 자동화해 모델 배포 전 평가에 활용할 수 있다. Python 기반이며 Apache-2.0 라이선스다.",
-      "tech_insight": "2026-11 공개 기준 Python 기반 ★10,029 규모로 성숙도가 높고, CI·배포 파이프라인의 LLM 보안 게이트로 붙이기 좋다. 스캔 결과를 릴리스 전 점검 항목으로 운영하려면 탐지 범위와 오탐 처리 정책을 함께 정해야 한다.",
-      "tags": [
-        "#LLM보안",
-        "#취약점스캐너",
-        "#오픈소스"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
       "item_key": "e44fb23280173feb",
       "source": "GitHub",
       "title_ko": "nightly-labs/openbot: 로컬 우선 AI 팀원 데스크톱 워크스페이스",
@@ -671,25 +1396,6 @@
       "analyzed_by": "cache"
     },
     {
-      "item_key": "b8b96b9e27f47b9c",
-      "source": "GitHub",
-      "title_ko": "Giskard-AI/giskard-oss LLM 에이전트 평가·테스트 라이브러리",
-      "title_orig": "Giskard-AI/giskard-oss",
-      "url": "https://github.com/Giskard-AI/giskard-oss",
-      "category": "AI 보안 툴",
-      "summary": "Giskard-AI/giskard-oss는 LLM 에이전트를 평가·테스트하기 위한 오픈소스 라이브러리다. Python 기반 Apache-2.0 프로젝트로, 2022-03-06 생성됐고 agent-evaluation, ai-red-team, ai-security, ai-testing, fairness-ai, llm 토픽을 다룬다. 스타 5,951개로 LLM 에이전트 평가·보안 테스트 용도의 오픈소스 도구로 활용될 수 있다.",
-      "tech_insight": "평가·테스트 라이브러리 성격상 CI/배포 파이프라인에서 LLM 에이전트 회귀·보안 테스트 게이트로 쓰기 적합하다. 스타 5,951·Python·Apache-2.0은 성숙도 판단에 도움되지만, 런타임 방어 도구는 아니므로 실제 테스트 커버리지와 유지보수 상태를 확인해야 한다.",
-      "tags": [
-        "#LLM에이전트",
-        "#AI보안",
-        "#오픈소스",
-        "#평가테스트"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
       "item_key": "8b0e4eb8bf4140cc",
       "source": "GitHub",
       "title_ko": "Vercel Workflow SDK, TypeScript 기반 내구성·관측 가능 AI 에이전트 워크플로",
@@ -703,25 +1409,6 @@
         "#WorkflowSDK",
         "#AI에이전트",
         "#TypeScript"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-23",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "213ba631d8c8ba81",
-      "source": "GitHub",
-      "title_ko": "AISafetyHot, AI 안전 뉴스·논문·사건 매일 수집",
-      "title_orig": "wuyoscar/AISafetyHot",
-      "url": "https://github.com/wuyoscar/AISafetyHot",
-      "category": "AI 보안·안전",
-      "summary": "wuyoscar/AISafetyHot은 AI 안전 관련 뉴스, 논문, 사건을 매일 한곳에 모아 보여주는 GitHub 저장소다. 웹사이트와 데일리 다이제스트, RSS, MCP를 제공하며 jailbreak, 프롬프트 인젝션, 정렬, 평가, 거버넌스 주제를 다룬다. 스타 약 2,125개로 AI 안전 동향 추적용 컬렉션 성격이 강하다.",
-      "tech_insight": "최신 AI 공격·취약점과 거버넌스 동향을 모니터링하는 데 유용하다. 다만 수집 정보의 출처 신뢰도를 확인하고, MCP 연동 시 접근 범위와 데이터 노출을 최소화해야 한다.",
-      "tags": [
-        "#AI안전",
-        "#프롬프트인젝션",
-        "#AI거버넌스",
-        "#모니터링"
       ],
       "is_featured": true,
       "published_at": "2026-11-23",
@@ -798,6 +1485,25 @@
         "#메모리아키텍처",
         "#KV캐시",
         "#모델연구"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-23",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "aca22684a902fed4",
+      "source": "Hacker News",
+      "title_ko": "주 정부들, SpaceX 상대 Grok 딥페이크 소송 제기",
+      "title_orig": "States Sue SpaceX Over Grok Deepfakes",
+      "url": "https://www.wired.com/story/states-sue-spacex-over-grok-deepfakes/",
+      "category": "AI 보안·안전",
+      "summary": "제목 기준으로 여러 미국 주 정부가 SpaceX의 Grok과 관련된 딥페이크 문제로 소송을 제기했다. 원문 요약은 제공되지 않아 구체적 청구·당사자·일정은 확인되지 않는다.",
+      "tech_insight": "생성형 AI의 합성 미디어가 법적 책임·규제 쟁점으로 확산되는 사례로, 배포 시 합성 콘텐츠 식별·라벨링·모니터링과 정책 대응이 필요하다.",
+      "tags": [
+        "#딥페이크",
+        "#Grok",
+        "#규제",
+        "#AI법"
       ],
       "is_featured": true,
       "published_at": "2026-11-23",
@@ -916,25 +1622,6 @@
       "is_featured": true,
       "published_at": "2026-11-23",
       "analyzed_by": "cache"
-    },
-    {
-      "item_key": "3e473c5afc18a02e",
-      "source": "GitHub",
-      "title_ko": "nono, AI 에이전트용 제로트러스트 런타임 샌드박스",
-      "title_orig": "nolabs-ai/nono",
-      "url": "https://github.com/nolabs-ai/nono",
-      "category": "AI 보안 툴",
-      "summary": "AI 에이전트 실행 자체를 격리하는 런타임 보안 도구로, 별도 설정 없이 지연 없이 샌드박싱을 적용하는 것을 목표로 한다. 에이전트가 실행하는 명령·도구 호출이 호스트 파일과 비밀에 닿는 경로를 런타임에서 차단하는 것이 핵심이다.",
-      "tech_insight": "코딩 에이전트를 로컬·CI에서 돌릴 때 최소 권한 실행 환경으로 감싸는 용도가 실무적이다. 2026년 초 공개된 Rust 구현이라 도입 전 유지보수 활성도와 정책 설정 범위를 확인해야 한다.",
-      "tags": [
-        "#에이전트샌드박스",
-        "#런타임보안",
-        "#제로트러스트",
-        "#Rust"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-23",
-      "analyzed_by": "manual"
     },
     {
       "item_key": "c194fb8ceb132e0f",
