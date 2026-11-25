@@ -226,8 +226,9 @@ def build_all():
     print(f"  - 90초 생활 추리: 사건 {mystery90_total['cases']}건 · 오늘 {mystery90_total['daily']} · 90초")
     print(f"  - 입주 점검 카드: 구역 {movein_total['sections']}개 · 항목 {movein_total['items']}개 (3상태 · Canvas 리포트)")
     print(f"  - 지금 갈 곳: 자치구 {nearby_total['districts']}개 · 장소 {nearby_total['places']}곳 (자료 확인 {nearby_total['checkedOn']})")
-    print(f"  - 증시 이슈: 기사 {market_total['issues']}건 · 지수 {market_total['indices']}개 · 일정 {market_total['calendar']}건 "
-          f"(수집 {market_total['collectedAt']} · AI {'사용' if market_total['ai'] else '폴백'})")
+    print(f"  - 증시 이슈: 기사 {market_total['issues']}건 · 일정 {market_total['calendar']}건 "
+          f"(장 상태 {market_total['sessions']} · 수집 {market_total['collectedAt']} "
+          f"· AI {'사용' if market_total['ai'] else '폴백'})")
     print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
           f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 

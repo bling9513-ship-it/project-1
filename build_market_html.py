@@ -5,18 +5,22 @@
 무엇을 하나
   · `market_data.json`(market_crawler.py 산출물)을 화면에 심는다. 브라우저는 그 JSON 만 읽는다.
   · 위에서부터
-      1) 지수 스냅샷 — 코스피·코스닥·나스닥·S&P500·다우·반도체(지연 시세) + 원/달러
-      2) 국내 / 해외 탭 — 현지 거래일·휴장 여부·마지막 갱신(KST) + 마감 시황 3줄 + 아침 점검 3줄
+      1) 시장 장 상태 — 국내(KRX)·해외(NYSE·Nasdaq)의 개장·마감·휴장·조기 마감과 현지 시각,
+         공식 시세 확인 링크(KRX 정보데이터시스템·네이버 증권·Nasdaq 등)
+      2) 국내 / 해외 탭 — 오늘의 이슈 3줄 + 다음 거래일 점검 3줄
       3) 왜 움직였을까 — 기사별 한 줄 원인 카드 + 근거 신뢰도 + 섹터 + 원문 링크
-      4) 오늘의 돈 몰린 테마·섹터 — 섹터별 기사 묶음(누르면 아래 카드가 걸러진다)
+      4) 돈 몰린 테마·섹터 — 섹터별 기사 묶음(누르면 위 카드가 걸러진다)
       5) 이번 주 시장 일정 — FOMC·CPI·고용·금통위·주요 실적을 KST D-Day 로
+         (BLS 보관 사본에서 읽은 항목은 보관일과 bls.gov 원문 링크를 카드에 함께 적는다)
   · D-Day 는 화면에서 오늘 날짜(KST)로 다시 계산한다. 시간이 없는 일정은 '시간 미정'으로 적는다.
 
 지키는 것
+  · 지수·종목·환율 수치를 게시하지 않는다(Yahoo Finance 등 시세 재배포 금지). 원문 확인 링크만 둔다.
+  · 기사는 제목·매체·시각·섹터·원문 링크만. RSS 설명·요약문은 싣지 않는다.
+  · 연합뉴스·매일경제처럼 자동 수집·AI 활용을 제한하는 매체는 넣지 않는다(검증에서 막는다).
   · 이모지 0 · 그라데이션 0 · 인라인 이벤트 핸들러 0 · unsafe-inline 미사용(html_guard CSP 해시)
-  · PC(1180px) 3열 카드 / 모바일(390px) 1열·가로 스크롤 스냅샷 — 가로 넘침 없음
+  · PC(1180px) 3열 카드 / 모바일(390px) 1열 — 가로 넘침 없음
   · 원인이 확인되지 않은 움직임은 '뚜렷한 원인 미확인'으로 그대로 보여 준다(추측으로 채우지 않음)
-  · 시세는 지연 값임을 화면에 밝히고, 뉴스는 제목·한 줄 요약·원문 링크만 쓴다.
 """
 import json
 import os
@@ -31,6 +35,9 @@ OUT_HTML = os.path.join(BASE_DIR, "market.html")
 
 MIN_ISSUES = 6
 CONFIDENCE_VALUES = ("원문 근거", "추정", "미확인")
+SESSION_STATES = ("open", "closed", "preopen", "holiday", "early_closed", "unknown")
+BLOCKED_SOURCES = ("연합뉴스", "매일경제", "Yahoo Finance")
+BANNED_FIELDS = ("summary", "summary_orig")
 
 
 def load_data(path=None):
@@ -44,15 +51,24 @@ def load_data(path=None):
             raise SystemExit("기사 링크가 올바르지 않습니다: %r" % issue.get("id"))
         if issue.get("confidence") not in CONFIDENCE_VALUES:
             raise SystemExit("신뢰도 값이 올바르지 않습니다: %r" % issue.get("confidence"))
-    if not data.get("indices"):
-        raise SystemExit("지수 시세가 없습니다.")
+        if issue.get("source") in BLOCKED_SOURCES:
+            raise SystemExit("재배포 제한 매체가 남아 있습니다: %r" % issue.get("source"))
+        for field in BANNED_FIELDS:
+            if str(issue.get(field) or "").strip():
+                raise SystemExit("기사 %r 에 RSS 설명·요약이 남아 있습니다(%s)." % (issue.get("id"), field))
     if not data.get("calendar"):
         raise SystemExit("시장 일정이 없습니다.")
+    sessions = data.get("sessions") or {}
+    for market in ("domestic", "global"):
+        if not sessions.get(market):
+            raise SystemExit("장 상태가 없습니다: %s" % market)
+        if sessions[market].get("state") not in SESSION_STATES:
+            raise SystemExit("장 상태 값이 올바르지 않습니다: %r" % sessions[market].get("state"))
     return data
 
 
 def build_payload(data):
-    """화면이 쓰는 최소 필드만 남긴다(원문 제목·출처·링크·요약)."""
+    """화면이 쓰는 최소 필드만 남긴다(제목·매체·링크·장 상태)."""
     issues = []
     for issue in data["issues"]:
         issues.append({
@@ -63,15 +79,15 @@ def build_payload(data):
             "why": issue["why"],
             "confidence": issue["confidence"],
             "sectors": issue.get("sectors") or ["매크로"],
-            "summary": issue.get("summary") or "",
             "source": issue["source"],
+            "official": bool(issue.get("official")),
             "url": issue["url"],
             "publishedKst": issue.get("publishedKst") or "",
             "analyzedBy": issue.get("analyzedBy") or "fallback",
         })
     calendar = []
     for row in data["calendar"]:
-        calendar.append({
+        entry = {
             "id": row["id"],
             "date": row["date"],
             "timeKst": row.get("timeKst") or "",
@@ -80,15 +96,18 @@ def build_payload(data):
             "region": row["region"],
             "note": row.get("note") or "",
             "source": row["source"],
-            "sourceUrl": safe_url(row.get("sourceUrl"), "#"),
+            "sourceUrl": safe_url(row.get("sourceUrl"), ""),
             "localDate": row.get("localDate") or "",
-        })
+        }
+        if row.get("snapshotDate"):
+            entry["snapshotDate"] = row["snapshotDate"]
+        if row.get("archiveUrl"):
+            entry["archiveUrl"] = safe_url(row["archiveUrl"], "")
+        calendar.append(entry)
     return {
         "meta": data["meta"],
         "sessions": data["sessions"],
-        "indices": data["indices"],
-        "bigtech": data["bigtech"],
-        "fx": data["fx"],
+        "marketLinks": data.get("marketLinks") or {},
         "briefing": data["briefing"],
         "issues": issues,
         "sectors": data["sectors"],
@@ -113,12 +132,13 @@ def build(out_path=None, data=None):
     with open(out_path or OUT_HTML, "w", encoding="utf-8") as handle:
         handle.write(harden_html(ui_shell.apply(html, "market")))
 
-    print("-> 'market.html' 생성 완료 (기사 %d건 · 지수 %d · 종목 %d · 일정 %d건 · AI %s)"
-          % (len(payload["issues"]), len(payload["indices"]), len(payload["bigtech"]),
-             len(payload["calendar"]),
+    print("-> 'market.html' 생성 완료 (기사 %d건 · 일정 %d건 · AI %s)"
+          % (len(payload["issues"]), len(payload["calendar"]),
              "사용" if meta.get("ai", {}).get("used") else "폴백"))
-    return {"issues": len(payload["issues"]), "indices": len(payload["indices"]),
+    return {"issues": len(payload["issues"]),
             "calendar": len(payload["calendar"]),
+            "sessions": "국내 %s · 해외 %s" % (payload["sessions"]["domestic"]["stateLabel"],
+                                            payload["sessions"]["global"]["stateLabel"]),
             "ai": bool(meta.get("ai", {}).get("used")),
             "collectedAt": meta["collectedAt"]}
 
@@ -130,9 +150,6 @@ CSS = """
       --border-subtle: #f1f5f9;  --border-default: #e2e8f0;  --border-strong: #cbd5e1;
       --text-primary: #0f172a;  --text-secondary: #475569;  --text-muted: #94a3b8;
       --accent-primary: #2563eb;  --accent-subtle: #eff6ff;
-      --up: #e11900;  --up-bg: #fff1f0;  --up-border: #ffd6d1;
-      --down: #1b64da;  --down-bg: #eff4ff;  --down-border: #d6e3ff;
-      --flat: #64748b;  --flat-bg: #f8fafc;  --flat-border: #e2e8f0;
       --warn-bg: #fffbeb;  --warn-text: #b45309;  --warn-border: #fde68a;
       --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
       --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
@@ -142,9 +159,6 @@ CSS = """
       --border-subtle: #1f1f23;  --border-default: #27272a;  --border-strong: #3f3f46;
       --text-primary: #f4f4f5;  --text-secondary: #a1a1aa;  --text-muted: #71717a;
       --accent-primary: #3b82f6;  --accent-subtle: rgba(59, 130, 246, 0.15);
-      --up: #ff6b5e;  --up-bg: rgba(255, 107, 94, 0.12);  --up-border: rgba(255, 107, 94, 0.32);
-      --down: #6f9dff;  --down-bg: rgba(111, 157, 255, 0.12);  --down-border: rgba(111, 157, 255, 0.32);
-      --flat: #a1a1aa;  --flat-bg: #141417;  --flat-border: #27272a;
       --warn-bg: rgba(245, 158, 11, 0.14);  --warn-text: #fcd34d;  --warn-border: rgba(245, 158, 11, 0.34);
       --ok-bg: rgba(16, 185, 129, 0.14);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.34);
       --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
@@ -170,25 +184,28 @@ CSS = """
       border-radius: 999px; padding: 3px 10px 3px 8px; font-variant-numeric: tabular-nums; }
     .mk-stamp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10b981; }
 
-    /* 지수 스냅샷 */
-    .mk-snapshot { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
-    .mk-quote { display: flex; flex-direction: column; gap: 5px; padding: 12px 13px; min-width: 0;
-      background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 14px;
+    /* 시장 장 상태 */
+    .mk-status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+    .mk-market { display: flex; flex-direction: column; gap: 10px; padding: 15px 16px; min-width: 0;
+      background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 16px;
       box-shadow: var(--card-shadow); }
-    .mk-quote-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .mk-quote-name { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; }
-    .mk-quote-market { font-size: 9.5px; font-weight: 700; color: var(--text-muted); border: 1px solid var(--border-default);
-      border-radius: 999px; padding: 0 5px; flex: 0 0 auto; }
-    .mk-quote-value { font-size: 18px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
-      white-space: nowrap; }
-    .mk-quote-change { display: inline-flex; align-items: center; gap: 3px; align-self: flex-start;
-      font-size: 11.5px; font-weight: 800; border-radius: 7px; padding: 1px 6px; font-variant-numeric: tabular-nums; }
-    .mk-up { color: var(--up); background: var(--up-bg); border: 1px solid var(--up-border); }
-    .mk-down { color: var(--down); background: var(--down-bg); border: 1px solid var(--down-border); }
-    .mk-flat { color: var(--flat); background: var(--flat-bg); border: 1px solid var(--flat-border); }
-    .mk-quote-foot { font-size: 9.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden;
-      text-overflow: ellipsis; }
+    .mk-market-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .mk-market-head h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .mk-market-head .mk-badge { flex: 0 0 auto; }
+    .mk-market-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 12px; }
+    .mk-market-row { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .mk-market-row span { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .mk-market-row b { font-size: 12.5px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary);
+      font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mk-market-note { font-size: 10.5px; color: var(--text-muted); word-break: keep-all; }
+    .mk-links { display: flex; flex-wrap: wrap; gap: 5px; }
+    .mk-link-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700;
+      color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 3px 9px; background: var(--bg-page); transition: border-color .15s ease,
+      color .15s ease, background-color .15s ease; }
+    .mk-link-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .mk-link-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .mk-link-chip svg { width: 9px; height: 9px; }
 
     /* 탭 */
     .mk-tabs { display: flex; align-items: center; gap: 6px; margin-top: 18px; }
@@ -222,7 +239,6 @@ CSS = """
     .mk-brief-line { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 7px;
       font-size: 12.5px; line-height: 1.55; color: var(--text-primary); word-break: keep-all; }
     .mk-brief-num { font-size: 10.5px; font-weight: 800; color: var(--text-muted); padding-top: 2px; }
-    .mk-brief-card.is-muted .mk-brief-line { color: var(--text-secondary); }
 
     /* 카드 목록 */
     .mk-section { margin-top: 20px; }
@@ -253,6 +269,7 @@ CSS = """
     .mk-issue-top { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
     .mk-src { font-size: 10px; font-weight: 800; color: var(--text-secondary); border: 1px solid var(--border-default);
       border-radius: 999px; padding: 1px 7px; }
+    .mk-src.is-official { color: var(--accent-primary); border-color: var(--accent-subtle); background: var(--accent-subtle); }
     .mk-conf { font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 7px; }
     .mk-conf.is-strong { color: var(--ok-text); background: var(--ok-bg); border: 1px solid var(--ok-border); }
     .mk-conf.is-guess { color: var(--warn-text); background: var(--warn-bg); border: 1px solid var(--warn-border); }
@@ -261,8 +278,6 @@ CSS = """
     .mk-issue h3 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.42; word-break: keep-all; }
     .mk-why { font-size: 12px; line-height: 1.55; color: var(--text-secondary); word-break: keep-all; }
     .mk-why b { font-weight: 800; color: var(--text-primary); }
-    .mk-issue-sum { font-size: 11px; line-height: 1.5; color: var(--text-muted); word-break: keep-all;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .mk-issue-foot { display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 3px; }
     .mk-sector-tag { font-size: 10px; font-weight: 700; color: var(--accent-primary); background: var(--accent-subtle);
       border-radius: 6px; padding: 1px 6px; }
@@ -307,6 +322,11 @@ CSS = """
       overflow: hidden; text-overflow: ellipsis; }
     .mk-cal-sub { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden;
       text-overflow: ellipsis; }
+    .mk-cal-src { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 3px;
+      font-size: 10px; color: var(--text-muted); }
+    .mk-cal-src a { color: var(--text-secondary); font-weight: 700; text-decoration: none;
+      border-bottom: 1px solid var(--border-strong); }
+    .mk-cal-src a:hover { color: var(--accent-primary); }
     .mk-cal-time { font-size: 11px; font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums;
       text-align: right; white-space: nowrap; }
     .mk-cal-time.is-tbd { color: var(--text-muted); font-weight: 600; }
@@ -326,7 +346,6 @@ CSS = """
     .mk-foot { margin-top: 14px; font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.6; }
 
     @media (max-width: 1080px) {
-      .mk-snapshot { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .mk-issues { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .mk-sectors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -334,10 +353,8 @@ CSS = """
       .mk-wrap { padding: 14px 13px 110px; }
       .mk-hero h1 { font-size: 21px; }
       .mk-hero p { font-size: 12px; }
-      .mk-snapshot { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: none; }
-      .mk-snapshot::-webkit-scrollbar { display: none; }
-      .mk-quote { flex: 0 0 132px; padding: 11px 12px; }
-      .mk-quote-value { font-size: 16.5px; }
+      .mk-status { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+      .mk-market { padding: 13px 14px; }
       .mk-tabs { margin-top: 14px; }
       .mk-tab { padding: 7px 14px; font-size: 12.5px; }
       .mk-tab-note { display: none; }
@@ -349,9 +366,9 @@ CSS = """
       .mk-sectors { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
       .mk-cal { grid-template-columns: minmax(0, 1fr); gap: 7px; }
       .mk-cal-row { grid-template-columns: 44px minmax(0, 1fr) auto; padding: 10px 12px; gap: 8px; }
+      .mk-cal-sub, .mk-cal-src { white-space: normal; }
     }
     @media (max-width: 380px) {
-      .mk-quote { flex: 0 0 120px; }
       .mk-sector { padding: 11px 12px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -365,7 +382,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 증시 이슈 요약</title>
-  <meta name="description" content="국내(코스피·코스닥)와 해외(나스닥·S&amp;P500·빅테크) 증시 이슈를 아침·마감 3줄 브리핑, 한 줄 원인 카드, 섹터별 묶음, FOMC·CPI·고용·금통위·실적 일정(D-Day)으로 정리합니다. 시세는 지연 값이며 뉴스는 원문 링크로 연결합니다.">
+  <meta name="description" content="국내(KRX)·해외(NYSE·Nasdaq) 장 상태와 오늘의 증시 이슈를 3줄 브리핑, 한 줄 원인 카드, 섹터별 묶음, FOMC·CPI·고용·금통위·실적 일정(D-Day)으로 정리합니다. 시세 수치는 게시하지 않고 공식·원문 확인 링크만 안내합니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
@@ -406,19 +423,19 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
   <main class="mk-wrap">
     <section class="mk-hero">
-      <span class="mk-pill">증시 · 마감 시황</span>
+      <span class="mk-pill">증시 · 이슈 정리</span>
       <h1>오늘 시장, 왜 움직였나</h1>
-      <p>국내(코스피·코스닥)와 해외(나스닥·S&amp;P500·빅테크) 이슈를 마감·아침 3줄로 정리했습니다. 기사마다 한 줄 원인과 원문 링크를 붙이고, 원인이 확인되지 않으면 그대로 밝힙니다.</p>
+      <p>장이 열렸는지부터 봅니다. 국내(KRX)·해외(NYSE·Nasdaq) 장 상태를 거래소 캘린더로 계산하고, 오늘의 이슈를 한 줄 원인과 원문 링크로 정리합니다. 지수·종목 수치는 싣지 않고 공식·원문에서 확인하도록 링크만 둡니다.</p>
       <div class="mk-meta">
         <span class="mk-stamp">수집 __COLLECTED__</span>
         <span class="mk-dot"></span>
         <span>기사 __NEWS_COUNT__건 · 일정 __CAL_COUNT__건</span>
         <span class="mk-dot"></span>
-        <span>지수·종목은 지연 시세</span>
+        <span>시세 수치 미게시 · 원문 링크 안내</span>
       </div>
     </section>
 
-    <section class="mk-snapshot" id="mkSnapshot" aria-label="지수 스냅샷"></section>
+    <section class="mk-status" id="mkStatus" aria-label="시장 장 상태"></section>
 
     <div class="mk-tabs" role="tablist" aria-label="시장 선택">
       <button type="button" class="mk-tab" id="mkTabDomestic" role="tab" aria-selected="true"
@@ -432,12 +449,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <div class="mk-session" id="mkSessionDomestic"></div>
       <div class="mk-brief">
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>마감 시황 3줄</h2><span id="mkCloseStampDomestic"></span></div>
-          <div class="mk-brief-list" id="mkCloseDomestic"></div>
+          <div class="mk-brief-head"><h2>오늘의 이슈 3줄</h2><span id="mkIssueStampDomestic"></span></div>
+          <div class="mk-brief-list" id="mkTodayDomestic"></div>
         </article>
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>아침 점검 3줄</h2><span>다음 거래일</span></div>
-          <div class="mk-brief-list" id="mkMorningDomestic"></div>
+          <div class="mk-brief-head"><h2>다음 거래일 점검</h2><span>장 상태 · 일정</span></div>
+          <div class="mk-brief-list" id="mkNextDomestic"></div>
         </article>
       </div>
     </section>
@@ -446,15 +463,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <div class="mk-session" id="mkSessionGlobal"></div>
       <div class="mk-brief">
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>마감 시황 3줄</h2><span id="mkCloseStampGlobal"></span></div>
-          <div class="mk-brief-list" id="mkCloseGlobal"></div>
+          <div class="mk-brief-head"><h2>오늘의 이슈 3줄</h2><span id="mkIssueStampGlobal"></span></div>
+          <div class="mk-brief-list" id="mkTodayGlobal"></div>
         </article>
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>아침 점검 3줄</h2><span>다음 거래일</span></div>
-          <div class="mk-brief-list" id="mkMorningGlobal"></div>
+          <div class="mk-brief-head"><h2>다음 거래일 점검</h2><span>장 상태 · 일정</span></div>
+          <div class="mk-brief-list" id="mkNextGlobal"></div>
         </article>
       </div>
-      <div class="mk-session" id="mkBigtechLine" style="margin-top:10px"></div>
     </section>
 
     <section class="mk-section" aria-labelledby="mkIssueTitle">
@@ -473,7 +489,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <section class="mk-section" aria-labelledby="mkSectorTitle">
       <div class="mk-section-head">
         <div>
-          <h2 id="mkSectorTitle">오늘의 돈 몰린 테마·섹터</h2>
+          <h2 id="mkSectorTitle">돈 몰린 테마·섹터</h2>
           <p>섹터를 누르면 위 카드가 그 섹터만 남깁니다</p>
         </div>
         <span id="mkSectorCount"></span>
@@ -496,7 +512,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <h2>알아 두실 점</h2>
       <ul id="mkNotes"></ul>
       <div class="mk-src-list" id="mkSources" aria-label="수집 출처"></div>
-      <p class="mk-foot">각 기사·지표의 저작권과 해석은 원문 매체·기관에 있습니다 · 지수·종목 값은 지연 시세입니다.</p>
+      <p class="mk-foot">각 기사·지표의 저작권과 해석은 원문 매체·기관에 있습니다 · 시세 수치는 게시하지 않습니다.</p>
     </section>
   </main>
 
@@ -557,101 +573,94 @@ JS = r"""
   }
   function dayDiff(a, b) { return Math.round((a.getTime() - b.getTime()) / 86400000); }
 
-  // ---------- 지수 스냅샷 ----------
-  function changeClass(value) {
-    if (value === null || value === undefined) return 'mk-flat';
-    if (value > 0) return 'mk-up';
-    if (value < 0) return 'mk-down';
-    return 'mk-flat';
+  // ---------- 시장 장 상태 ----------
+  function stateClass(session) {
+    var cls = 'mk-badge';
+    if (session.state === 'open' || session.state === 'closed') cls += ' is-live';
+    if (session.state === 'early_closed' || session.state === 'holiday' || session.state === 'unknown') cls += ' is-warn';
+    return cls;
   }
-  function numberText(value) {
-    if (value === null || value === undefined) return '-';
-    var fixed = Math.abs(value) >= 1000 ? value.toFixed(2) : value.toFixed(2);
-    return fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  function marketRow(label, value) {
+    var row = el('div', 'mk-market-row');
+    row.appendChild(el('span', '', label));
+    row.appendChild(el('b', '', value || '-'));
+    return row;
   }
-  function pctText(value) {
-    if (value === null || value === undefined) return '-';
-    return (value > 0 ? '+' : '') + value.toFixed(2) + '%';
-  }
+  var statusGrid = document.getElementById('mkStatus');
+  ['domestic', 'global'].forEach(function (market) {
+    var session = DATA.sessions[market];
+    if (!session) return;
+    var card = el('article', 'mk-market');
+    var head = el('div', 'mk-market-head');
+    var title = el('h2', '', (market === 'domestic' ? '국내 · ' : '해외 · ') + session.marketName);
+    head.appendChild(title);
+    head.appendChild(el('span', stateClass(session), session.stateLabel));
+    card.appendChild(head);
+    var rows = el('div', 'mk-market-rows');
+    rows.appendChild(marketRow('현지 시각', session.localNow + ' ' + session.tzLabel));
+    rows.appendChild(marketRow('거래 시간', session.sessionText));
+    rows.appendChild(marketRow('최근 거래일', session.lastTradingLabel));
+    rows.appendChild(marketRow('다음 거래일', session.nextTradingLabel));
+    card.appendChild(rows);
+    if (session.reason) card.appendChild(el('p', 'mk-market-note', '휴장·조기 마감 사유: ' + session.reason));
+    if (session.outsideCalendar) {
+      card.appendChild(el('p', 'mk-market-note', '거래소 캘린더 반영 범위 밖입니다. ' + session.calendarName + '에서 확인하세요.'));
+    }
+    var links = el('div', 'mk-links');
+    (DATA.marketLinks[market] || []).forEach(function (link) {
+      var a = el('a', 'mk-link-chip');
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.innerHTML = EXTERNAL;
+      a.appendChild(document.createTextNode(' ' + link.label));
+      links.appendChild(a);
+    });
+    card.appendChild(links);
+    statusGrid.appendChild(card);
+  });
 
-  function quoteCard(row) {
-    var card = el('article', 'mk-quote');
-    var top = el('div', 'mk-quote-top');
-    top.appendChild(el('span', 'mk-quote-name', row.name));
-    top.appendChild(el('span', 'mk-quote-market', row.market === 'domestic' ? '국내' : (row.market === 'fx' ? '환율' : '해외')));
-    card.appendChild(top);
-    card.appendChild(el('span', 'mk-quote-value', numberText(row.value)));
-    var change = el('span', 'mk-quote-change ' + changeClass(row.changePct), pctText(row.changePct));
-    card.appendChild(change);
-    var foot = el('div', 'mk-quote-foot');
-    foot.textContent = row.lastTradingDate ? row.lastTradingDate.slice(5).replace('-', '/') + ' 종가 · 지연' : '지연 시세';
-    card.appendChild(foot);
-    return card;
-  }
-
-  var snapshot = document.getElementById('mkSnapshot');
-  DATA.indices.concat(DATA.fx).forEach(function (row) { snapshot.appendChild(quoteCard(row)); });
-
-  // ---------- 세션(현지 거래일·휴장) ----------
-  function sessionLine(target, session, market) {
+  // ---------- 세션 줄 ----------
+  function sessionLine(target, session) {
     target.innerHTML = '';
     if (!session) return;
-    var stateClass = 'mk-badge';
-    if (session.state === 'open' || session.state === 'closed') stateClass += ' is-live';
-    if (session.state === 'holiday' || session.state === 'unknown') stateClass += ' is-warn';
-    target.appendChild(el('span', stateClass, session.stateLabel || '-'));
-    target.appendChild(el('span', '', '현지 ' + (session.lastTradingLabel || '-') + ' 종가'));
+    target.appendChild(el('span', stateClass(session), session.stateLabel));
+    target.appendChild(el('span', '', '현지 ' + session.localNow + ' ' + session.tzLabel + ' · 거래 시간 ' + session.sessionText));
     target.appendChild(el('span', 'mk-dot'));
-    target.appendChild(el('span', '', '현지 시각 ' + (session.localNow || '-') + (market === 'domestic' ? ' KST' : ' ET')));
+    target.appendChild(el('span', '', '최근 거래일 ' + (session.lastTradingLabel || '-')));
     target.appendChild(el('span', 'mk-dot'));
     target.appendChild(el('span', '', '갱신 ' + DATA.meta.collectedAt.replace(' KST', '') + ' KST'));
   }
-  sessionLine(document.getElementById('mkSessionDomestic'), DATA.sessions.domestic, 'domestic');
-  sessionLine(document.getElementById('mkSessionGlobal'), DATA.sessions.global, 'global');
-
-  var bigtechLine = document.getElementById('mkBigtechLine');
-  if (bigtechLine) {
-    bigtechLine.innerHTML = '';
-    bigtechLine.appendChild(el('span', '', '빅테크'));
-    var sorted = DATA.bigtech.slice().sort(function (a, b) {
-      return Math.abs(b.changePct || 0) - Math.abs(a.changePct || 0);
-    });
-    sorted.forEach(function (row) {
-      var chipClass = 'mk-badge ' + (row.changePct > 0 ? 'is-warn' : '');
-      var chip = el('span', chipClass, row.name + ' ' + pctText(row.changePct));
-      bigtechLine.appendChild(chip);
-    });
-    bigtechLine.appendChild(el('span', 'mk-dot'));
-    bigtechLine.appendChild(el('span', '', '전일 미국장 종가 기준'));
-  }
+  sessionLine(document.getElementById('mkSessionDomestic'), DATA.sessions.domestic);
+  sessionLine(document.getElementById('mkSessionGlobal'), DATA.sessions.global);
 
   // ---------- 브리핑 ----------
-  function fillBriefing(listId, stampId, market, kind) {
+  function fillLines(listId, lines) {
     var list = document.getElementById(listId);
-    if (!list) return;
-    var block = (DATA.briefing[market] || {})[kind] || [];
+    if (!list) return 0;
     list.innerHTML = '';
-    block.forEach(function (line, index) {
+    (lines || []).forEach(function (line, index) {
       var row = el('div', 'mk-brief-line');
       row.appendChild(el('span', 'mk-brief-num', String(index + 1)));
       row.appendChild(el('span', '', line));
       list.appendChild(row);
     });
-    if (!block.length) {
+    if (!(lines || []).length) {
       var empty = el('div', 'mk-brief-line');
       empty.appendChild(el('span', 'mk-brief-num', '-'));
       empty.appendChild(el('span', '', '정리된 내용이 없습니다'));
       list.appendChild(empty);
     }
-    if (stampId) {
-      var stamp = document.getElementById(stampId);
-      if (stamp) stamp.textContent = (DATA.briefing.analyzed_by || {})[market] === 'exaone' ? 'EXAONE 요약' : '템플릿 요약';
-    }
+    return (lines || []).length;
   }
-  fillBriefing('mkCloseDomestic', 'mkCloseStampDomestic', 'domestic', 'close');
-  fillBriefing('mkMorningDomestic', null, 'domestic', 'morning');
-  fillBriefing('mkCloseGlobal', 'mkCloseStampGlobal', 'global', 'close');
-  fillBriefing('mkMorningGlobal', null, 'global', 'morning');
+  ['domestic', 'global'].forEach(function (market) {
+    var block = DATA.briefing[market] || {};
+    var cap = market === 'domestic' ? 'Domestic' : 'Global';
+    fillLines('mkToday' + cap, block.issues);
+    fillLines('mkNext' + cap, block.next);
+    var stamp = document.getElementById('mkIssueStamp' + cap);
+    if (stamp) stamp.textContent = '제목 기준';
+  });
 
   // ---------- 탭 ----------
   var state = { market: 'domestic', sector: 'all' };
@@ -661,11 +670,11 @@ JS = r"""
   function setMarket(market) {
     state.market = market;
     tabs.forEach(function (tab) {
+      if (!tab) return;
       var on = tab.dataset.market === market;
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
       if (panels[tab.dataset.market]) panels[tab.dataset.market].hidden = !on;
     });
-    renderIssues();
   }
   tabs.forEach(function (tab) {
     if (!tab) return;
@@ -726,7 +735,7 @@ JS = r"""
     card.dataset.sectors = (row.sectors || []).join('|');
 
     var top = el('div', 'mk-issue-top');
-    top.appendChild(el('span', 'mk-src', row.source));
+    top.appendChild(el('span', 'mk-src' + (row.official ? ' is-official' : ''), row.source));
     var conf = confidenceText(row.confidence);
     top.appendChild(el('span', conf.cls, conf.text));
     top.appendChild(el('span', 'mk-issue-time', row.publishedKst || ''));
@@ -737,7 +746,7 @@ JS = r"""
     var why = el('p', 'mk-why');
     if (row.confidence === '미확인') {
       why.appendChild(el('b', '', '뚜렷한 원인 미확인'));
-      why.appendChild(document.createTextNode(' — 원문에서 원인을 확인하지 못했습니다'));
+      why.appendChild(document.createTextNode(' — 제목에서 원인을 확인하지 못했습니다'));
     } else {
       why.textContent = row.why;
     }
@@ -751,7 +760,7 @@ JS = r"""
     link.rel = 'noopener noreferrer';
     link.innerHTML = EXTERNAL;
     link.appendChild(document.createTextNode(' 원문'));
-    link.setAttribute('aria-label', row.source + ' 기사 원문 열기');
+    link.setAttribute('aria-label', row.source + ' 원문 열기');
     foot.appendChild(link);
     card.appendChild(foot);
     return card;
@@ -759,7 +768,6 @@ JS = r"""
 
   function renderIssues() {
     var rows = DATA.issues.filter(function (row) {
-      if (row.market !== state.market) return false;
       if (state.sector !== 'all' && (row.sectors || []).indexOf(state.sector) < 0) return false;
       return true;
     });
@@ -768,7 +776,7 @@ JS = r"""
     issueCount.textContent = rows.length + '건';
     if (!rows.length) {
       issueEmpty.hidden = false;
-      issueEmpty.innerHTML = '<b>이 조건의 기사가 없습니다.</b><br>다른 섹터를 고르거나 시장 탭을 바꿔 보세요.';
+      issueEmpty.innerHTML = '<b>이 조건의 기사가 없습니다.</b><br>다른 섹터를 골라 보세요.';
     } else {
       issueEmpty.hidden = true;
     }
@@ -830,6 +838,25 @@ JS = r"""
       var sub = row.date.slice(5).replace('-', '/') + ' (' + row.region + ')';
       if (row.note) sub += ' · ' + row.note;
       body.appendChild(el('div', 'mk-cal-sub', sub));
+      if (row.snapshotDate) {
+        var src = el('div', 'mk-cal-src');
+        src.appendChild(el('span', '', '보관 사본 ' + row.snapshotDate + ' 기준'));
+        if (row.sourceUrl) {
+          var official = el('a', '', 'bls.gov 원문');
+          official.href = row.sourceUrl;
+          official.target = '_blank';
+          official.rel = 'noopener noreferrer';
+          src.appendChild(official);
+        }
+        if (row.archiveUrl) {
+          var archive = el('a', '', '보관 사본 열기');
+          archive.href = row.archiveUrl;
+          archive.target = '_blank';
+          archive.rel = 'noopener noreferrer';
+          src.appendChild(archive);
+        }
+        body.appendChild(src);
+      }
       wrap.appendChild(body);
       wrap.appendChild(el('span', 'mk-cal-time' + (row.timeKst ? '' : ' is-tbd'), row.timeKst ? row.timeKst + ' KST' : '시간 미정'));
       calGrid.appendChild(wrap);
@@ -837,6 +864,7 @@ JS = r"""
     calCount.textContent = DATA.calendar.length + '건 · 기준 ' + today.getFullYear() + '.' + pad(today.getMonth() + 1) + '.' + pad(today.getDate());
   }
   renderCalendar();
+  renderIssues();
 
   // ---------- 안내·출처 ----------
   var notes = document.getElementById('mkNotes');
@@ -852,8 +880,6 @@ JS = r"""
     sources.appendChild(item);
   });
 
-  setMarket('domestic');
-
   // 테스트·확인용
   window.MARKET = {
     data: DATA,
@@ -863,14 +889,16 @@ JS = r"""
     counts: function () {
       return {
         cards: document.querySelectorAll('#mkIssues .mk-issue').length,
-        quotes: document.querySelectorAll('#mkSnapshot .mk-quote').length,
+        markets: document.querySelectorAll('#mkStatus .mk-market').length,
         sectors: document.querySelectorAll('#mkSectors .mk-sector').length,
         calendar: document.querySelectorAll('#mkCalendar .mk-cal-row').length,
+        archived: document.querySelectorAll('#mkCalendar .mk-cal-src').length,
         dday: Array.prototype.map.call(document.querySelectorAll('#mkCalendar .mk-dday'), function (node) {
           return node.textContent.trim();
         }),
       };
     },
+    sessionFor: function (market) { return DATA.sessions[market] || null; },
     ddayFor: function (isoDate) {
       var date = parseDate(isoDate);
       if (!date) return null;
