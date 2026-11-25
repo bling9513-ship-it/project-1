@@ -6785,12 +6785,14 @@ async function checkMarket(page, width) {
     await page.click(`#mkSectorChips .mk-chip[data-sector="${sector}"]`);
     const filtered = await page.evaluate(() => ({
       cards: MARKET.counts().cards,
-      tags: Array.from(document.querySelectorAll('#mkIssues .mk-sector-tag')).map((node) => node.textContent.trim()),
+      sectors: Array.from(document.querySelectorAll('#mkIssues .mk-issue')).map((node) => node.dataset.sectors || ''),
       pressed: document.querySelector('#mkSectorChips .mk-chip[aria-pressed="true"]').dataset.sector,
     }));
     const expected = domestic.filter((row) => row.sectors.includes(sector)).length;
     assert.equal(filtered.cards, expected, `${tag}: ${sector} 카드 ${filtered.cards}/${expected}`);
-    assert.ok(filtered.tags.every((name) => name === sector), `${tag}: 다른 섹터 카드가 섞임`);
+    // 카드는 섹터를 2개까지 가질 수 있으므로, 고른 섹터가 없는 카드만 걸러졌는지 본다.
+    assert.ok(filtered.sectors.every((value) => value.split('|').includes(sector)),
+      `${tag}: 다른 섹터 카드가 섞임`);
     assert.equal(filtered.pressed, sector, `${tag}: 칩 눌림 상태`);
     await page.click('#mkSectorChips .mk-chip[data-sector="all"]');
     const restored = await page.evaluate(() => MARKET.counts().cards);
