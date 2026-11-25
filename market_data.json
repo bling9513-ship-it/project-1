@@ -1,11 +1,11 @@
 {
   "meta": {
-    "collectedAt": "2026-11-25 19:26:08 KST",
-    "collectedAtIso": "2026-11-25T19:26:08+09:00",
+    "collectedAt": "2026-11-25 20:35:33 KST",
+    "collectedAtIso": "2026-11-25T20:35:33+09:00",
     "ai": {
       "used": true,
-      "analyzed": 46,
-      "fallback": 0,
+      "analyzed": 29,
+      "fallback": 17,
       "model": "k-exaone_v2.5"
     },
     "sources": [
@@ -21,14 +21,14 @@
         "kind": "뉴스",
         "url": "https://www.yna.co.kr/rss/market.xml",
         "status": "ok",
-        "count": 104
+        "count": 82
       },
       {
         "name": "연합뉴스",
         "kind": "뉴스",
         "url": "https://www.yna.co.kr/rss/economy.xml",
         "status": "ok",
-        "count": 59
+        "count": 58
       },
       {
         "name": "매일경제",
@@ -56,7 +56,7 @@
         "kind": "뉴스",
         "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
         "status": "ok",
-        "count": 5
+        "count": 4
       },
       {
         "name": "연준(FOMC)",
@@ -91,7 +91,7 @@
         "kind": "공식 일정",
         "url": "https://www.nasdaq.com/market-activity/earnings",
         "status": "ok",
-        "count": 8
+        "count": 4
       }
     ],
     "notes": [
@@ -101,7 +101,7 @@
       "일정의 한국시간은 서머타임에 따라 1시간 달라질 수 있습니다(현지 시각을 함께 적었습니다)."
     ],
     "newsCount": 46,
-    "calendarCount": 12
+    "calendarCount": 8
   },
   "sessions": {
     "domestic": {
@@ -109,7 +109,7 @@
       "stateLabel": "오늘 장 마감",
       "lastTradingDate": "2026-11-25",
       "lastTradingLabel": "11월 25일(수)",
-      "localNow": "11-25 19:26",
+      "localNow": "11-25 20:35",
       "timezone": "Asia/Seoul"
     },
     "global": {
@@ -117,7 +117,7 @@
       "stateLabel": "개장 전",
       "lastTradingDate": "2026-11-24",
       "lastTradingLabel": "11월 24일(화)",
-      "localNow": "11-25 05:26",
+      "localNow": "11-25 06:35",
       "timezone": "America/New_York"
     }
   },
@@ -354,9 +354,9 @@
   "briefing": {
     "domestic": {
       "close": [
-        "현지 2026-11-25 기준 코스피는 4,697.51로 6.16% 하락했고, 코스닥은 650.64로 2.29% 하락했다.",
-        "오늘 시장을 움직인 이슈는 제공된 기사 제목만으로 원인이 드러나지 않아 뚜렷한 원인 미확인.",
-        "2026-11-25 시간 미정 Deere & Company 실적 발표가 현지 장 시작 전으로 예정돼 있다."
+        "코스피 4,697.51 (-6.16%)로 마감",
+        "코스닥 650.64 (-2.29%)로 마감",
+        "주요 기사: EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진"
       ],
       "morning": [
         "코스피 4,697.51(-6.16%) · 코스닥 650.64(-2.29%) 종가에서 출발",
@@ -366,9 +366,9 @@
     },
     "global": {
       "close": [
-        "나스닥 23,733.53(-1.48%), S&P500 7,201.09(-0.50%), 다우 50,018.70(+0.85%) 마감",
-        "오늘 시장에서는 젠슨 황 엔비디아 복귀와 미·중 AI 경쟁, Fed 둔화 관련 기사가 주요 이슈로 제시됐다",
-        "2026-11-25 현지 장 시작 전 Deere & Company 실적 발표가 예정됐고 시가총액은 1706억 달러다"
+        "나스닥 23,733.53 (-1.48%)로 마감",
+        "S&P500 7,201.09 (-0.50%)로 마감",
+        "주요 기사: The S&P 500 is headed to 8,200 — and downturns like this one"
       ],
       "morning": [
         "나스닥 23,733.53(-1.48%) · S&P500 7,201.09(-0.50%) 종가에서 출발",
@@ -377,26 +377,60 @@
       ]
     },
     "analyzed_by": {
-      "domestic": "exaone",
-      "global": "exaone"
+      "domestic": "fallback",
+      "global": "fallback"
     }
   },
   "issues": [
     {
-      "id": "c96a141ef0bf2fa3",
+      "id": "eeaeb0381bcd307b",
       "market": "domestic",
-      "title": "EU, 74조원 기술펀드 추진",
-      "titleOriginal": "美中 맞서는 EU … 74조원 기술펀드 추진",
-      "why": "미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 기업 투자 위해 최대 500억유로 펀드 추진",
+      "title": "EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진",
+      "titleOriginal": "EU, 美·中에 맞설 500억 유로 '소버린 기술펀드' 추진(종합)",
+      "why": "EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 등 소버린 기술펀드 추진",
       "confidence": "원문 근거",
       "sectors": [
         "AI·반도체"
       ],
-      "summary": "EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 기업에 최대 500억유로(약 73조5000억원) 규모 펀드를 추진한다.",
+      "summary": "EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 등 500억 유로 소버린 기술펀드를 추진한다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125125351009",
+      "publishedKst": "11-25 20:15",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "8086e54e4bfe8e9b",
+      "market": "global",
+      "title": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason why, says JPMorgan",
+      "titleOriginal": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason why, says JPMorgan",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "While artificial intelligence is still being assessed based on capital expenditure, strate…",
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "url": "https://www.marketwatch.com/story/the-s-p-500-is-headed-to-8-200-and-downturns-like-this-one-are-actually-part-of-the-reason-why-says-jpmorgan-b6acae4b?mod=mw_rss_topstories",
+      "publishedKst": "11-25 20:27",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "440cb64fc33853b4",
+      "market": "domestic",
+      "title": "이틀에 한 번 꼴 사이드카…널뛰는 코스피에 개미 공황",
+      "titleOriginal": "이틀에 한 번 꼴로 사이드카 울렸다…널뛰는 코스피에 개미들 ‘공황’",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "코스피 급변동에 사이드카·서킷브레이커가 빈발했고 올해 서킷브레이커는 11회 발동돼 투자자 패닉이 커졌다.",
       "source": "매일경제",
       "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/world/12218547",
-      "publishedKst": "11-25 19:14",
+      "url": "https://www.mk.co.kr/news/stock/12218652",
+      "publishedKst": "11-25 20:09",
       "analyzedBy": "cache"
     },
     {
@@ -417,20 +451,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "5c9d4c068bc36304",
+      "id": "b5e6e99e3bc3b77a",
       "market": "domestic",
-      "title": "삼성전기, 1조7000억원 자사주 전량 소각",
-      "titleOriginal": "삼성전기, 1조7000억원 자사주 전량 소각",
-      "why": "삼성전기의 1조7000억원 규모 자기주식 전량 소각 결정",
+      "title": "하이닉스 2028년 이익 급감 전망…반도체 저승사자 예측",
+      "titleOriginal": "“하이닉스 2028년 이익 급감”…반도체 저승사자의 섬뜩한 예측[머니닥터 시장진단]",
+      "why": "젠슨 황 엔비디아 CEO 복귀 소식에 AI 관련주·반도체주 반등",
       "confidence": "원문 근거",
       "sectors": [
-        "금융"
+        "AI·반도체"
       ],
-      "summary": "삼성전기가 1조7000억원 규모 자기주식을 전량 소각하며 보통주 200만주·우선주 5만3430주 등을 포함한다.",
+      "summary": "젠슨 황 엔비디아 CEO 복귀로 AI·반도체주가 반등했지만, 하이닉스 2028년 이익 급감 전망이 제기됐다.",
       "source": "매일경제",
       "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/stock/12218546",
-      "publishedKst": "11-25 19:13",
+      "url": "https://www.mk.co.kr/news/stock/12218640",
+      "publishedKst": "11-25 20:06",
       "analyzedBy": "cache"
     },
     {
@@ -451,20 +485,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "0f829655ca328a4c",
+      "id": "ce012bcfc3253ba9",
       "market": "domestic",
-      "title": "삼일·안진·한영 회계사 3명 제재…감사 정보 외부 누설",
-      "titleOriginal": "삼일·안진·한영 회계사 3명 제재…감사 정보 외부 누설",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
+      "title": "젠슨 황 귀환에도 AI 랠리서 소외",
+      "titleOriginal": "‘젠슨 황 귀환’에도 AI 랠리에서 소외…앤트로픽은 홀로 부진한 이유[이슈 플러스]",
+      "why": "젠슨 황 복귀 후 월가 전망치가 상향됐지만 앤트로픽은 홀로 부진",
+      "confidence": "원문 근거",
       "sectors": [
-        "금융"
+        "AI·반도체"
       ],
-      "summary": "증권선물위원회가 감사 정보 외부 누설로 삼일·안진·한영 소속 회계사 3명을 제재했다.",
-      "source": "연합뉴스",
-      "sourceSection": "마켓+",
-      "url": "https://www.yna.co.kr/view/AKR20261125171000002",
-      "publishedKst": "11-25 19:06",
+      "summary": "젠슨 황 복귀 후 월가 전망치가 상향됐지만 앤트로픽은 홀로 부진해 향후 과제가 만만치 않음을 보여줬다",
+      "source": "매일경제",
+      "sourceSection": "헤드라인",
+      "url": "https://www.mk.co.kr/news/stock/12218621",
+      "publishedKst": "11-25 19:56",
       "analyzedBy": "cache"
     },
     {
@@ -485,20 +519,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "a7a65a497491de13",
+      "id": "c96a141ef0bf2fa3",
       "market": "domestic",
-      "title": "한국투자저축은행 해킹…8.6만 고객 정보 유출",
-      "titleOriginal": "업계서 최대규모 해킹…8.6만 고객 정보 유출된 한국투자저축은행",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
+      "title": "EU, 74조원 기술펀드 추진",
+      "titleOriginal": "美中 맞서는 EU … 74조원 기술펀드 추진",
+      "why": "미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 기업 투자 위해 최대 500억유로 펀드 추진",
+      "confidence": "원문 근거",
       "sectors": [
-        "금융"
+        "AI·반도체"
       ],
-      "summary": "한국투자저축은행 해킹으로 고객 8만6000여명 개인정보가 유출됐다. 저축은행 업권 최대 규모.",
+      "summary": "EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 기업에 최대 500억유로(약 73조5000억원) 규모 펀드를 추진한다.",
       "source": "매일경제",
       "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/economy/12218530",
-      "publishedKst": "11-25 19:05",
+      "url": "https://www.mk.co.kr/news/world/12218547",
+      "publishedKst": "11-25 19:14",
       "analyzedBy": "cache"
     },
     {
@@ -519,88 +553,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "5cca747dfcb21f65",
+      "id": "5c9d4c068bc36304",
       "market": "domestic",
-      "title": "미공개정보 1.8억 부당이득…코스닥사 임직원 중수청 통보",
-      "titleOriginal": "미공개중요정보로 1.8억 부당이득…코스닥社 임직원 중수청 통보",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
+      "title": "삼성전기, 1조7000억원 자사주 전량 소각",
+      "titleOriginal": "삼성전기, 1조7000억원 자사주 전량 소각",
+      "why": "삼성전기의 1조7000억원 규모 자기주식 전량 소각 결정",
+      "confidence": "원문 근거",
       "sectors": [
         "금융"
       ],
-      "summary": "증권선물위원회가 미공개중요정보로 1억8000만원 부당이득을 취한 코스닥사 임직원을 중수청에 통보했다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125167400002",
-      "publishedKst": "11-25 18:25",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "3f70f50849bba80c",
-      "market": "global",
-      "title": "럭셔리 어드벤트 캘린더, 가격 통제 벗어나나",
-      "titleOriginal": "12 days of sardines and Croc charms: Are Advent calendars getting out of control?",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "유통·소비"
-      ],
-      "summary": "럭셔리 어드벤트 캘린더가 수백 달러에 달할 수 있다는 내용을 다룬다.",
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "url": "https://www.marketwatch.com/story/12-days-of-sardines-and-croc-charms-are-advent-calendars-getting-out-of-control-81f24548?mod=mw_rss_topstories",
-      "publishedKst": "11-25 06:53",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "a77f8f703d1bc11e",
-      "market": "domestic",
-      "title": "'국내 와인 수입사 첫 상장' 나라셀라, 소주 진출",
-      "titleOriginal": "'국내 와인 수입사 첫 상장' 나라셀라, 소주 시장 진출",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "유통·소비"
-      ],
-      "summary": "국내 와인 수입사 첫 상장 나라셀라가 소주 시장에 진출한다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125166800030",
-      "publishedKst": "11-25 18:25",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "d9c63679a3334be2",
-      "market": "global",
-      "title": "Anthropic 주가, IPO 가격 아래로 처음 하락",
-      "titleOriginal": "Anthropic’s stock just broke below its IPO price for the first time",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "Anthropic 주가가 상장 일주일 미만 만에 IPO 가격 83달러를 밑돌았다.",
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "url": "https://www.marketwatch.com/story/anthropics-stock-just-broke-below-its-ipo-price-for-the-first-time-5dc82668?mod=mw_rss_topstories",
-      "publishedKst": "11-25 06:46",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "986b4b8c99247346",
-      "market": "domestic",
-      "title": "삼성전기, 1.7조원 자사주 소각…주가 상승에 규모 12배↑",
-      "titleOriginal": "삼성전기, 1.7조원 자사주 소각…주가 상승에 규모 12배↑",
-      "why": "주주가치 제고를 위한 자사주 소각 결정",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "삼성전기가 주주가치 제고를 위해 보통주 200만주·우선주 5만3천430주 자사주 소각을 결정했다.",
-      "source": "연합뉴스",
-      "sourceSection": "마켓+",
-      "url": "https://www.yna.co.kr/view/AKR20261125166100003",
-      "publishedKst": "11-25 18:16",
+      "summary": "삼성전기가 1조7000억원 규모 자기주식을 전량 소각하며 보통주 200만주·우선주 5만3430주 등을 포함한다.",
+      "source": "매일경제",
+      "sourceSection": "헤드라인",
+      "url": "https://www.mk.co.kr/news/stock/12218546",
+      "publishedKst": "11-25 19:13",
       "analyzedBy": "cache"
     },
     {
@@ -621,20 +587,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "aba9df3eb0fbe8ea",
+      "id": "5cca747dfcb21f65",
       "market": "domestic",
-      "title": "한국투자저축은행 8만6천여명 개인정보 유출…업권 최대 규모",
-      "titleOriginal": "한국투자저축은행 8만6천여명 개인정보 유출…업권 최대 규모",
-      "why": "해킹으로 고객 개인정보 유출",
-      "confidence": "원문 근거",
+      "title": "미공개정보 1.8억 부당이득…코스닥사 임직원 중수청 통보",
+      "titleOriginal": "미공개중요정보로 1.8억 부당이득…코스닥社 임직원 중수청 통보",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
       "sectors": [
         "금융"
       ],
-      "summary": "한국투자금융지주 자회사 한국투자저축은행에서 해킹으로 고객 8만6천433명 개인정보가 유출됐다.",
+      "summary": "증권선물위원회가 미공개중요정보로 1억8000만원 부당이득을 취한 코스닥사 임직원을 중수청에 통보했다.",
       "source": "연합뉴스",
-      "sourceSection": "마켓+",
-      "url": "https://www.yna.co.kr/view/AKR20261125165600002",
-      "publishedKst": "11-25 18:11",
+      "sourceSection": "경제",
+      "url": "https://www.yna.co.kr/view/AKR20261125167400002",
+      "publishedKst": "11-25 18:25",
       "analyzedBy": "cache"
     },
     {
@@ -655,20 +621,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "559e0575a85a3be5",
+      "id": "a77f8f703d1bc11e",
       "market": "domestic",
-      "title": "법무부, 전자주주총회 준비 가이드라인 발표",
-      "titleOriginal": "전자주주총회 어떻게 준비할까…법무부, 가이드라인 발표",
-      "why": "상법 개정으로 내년부터 자산총액 2조원 이상 상장사 전자주주총회 의무화, 법무부 실무기준 제시",
-      "confidence": "원문 근거",
+      "title": "'국내 와인 수입사 첫 상장' 나라셀라, 소주 진출",
+      "titleOriginal": "'국내 와인 수입사 첫 상장' 나라셀라, 소주 시장 진출",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
       "sectors": [
-        "금융"
+        "유통·소비"
       ],
-      "summary": "상법 개정으로 내년부터 자산총액 2조원 이상 상장사 전자주주총회 의무화, 법무부가 실무기준 제시",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/society/12218505",
-      "publishedKst": "11-25 18:07",
+      "summary": "국내 와인 수입사 첫 상장 나라셀라가 소주 시장에 진출한다.",
+      "source": "연합뉴스",
+      "sourceSection": "경제",
+      "url": "https://www.yna.co.kr/view/AKR20261125166800030",
+      "publishedKst": "11-25 18:25",
       "analyzedBy": "cache"
     },
     {
@@ -689,20 +655,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "c818375cf5d8b50a",
+      "id": "986b4b8c99247346",
       "market": "domestic",
-      "title": "안전문화 우수사례 대상에 KT…성심당·제주노사민정협 최우수상",
-      "titleOriginal": "안전문화 우수사례 대상에 KT…성심당·제주노사민정협 최우수상",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
+      "title": "삼성전기, 1.7조원 자사주 소각…주가 상승에 규모 12배↑",
+      "titleOriginal": "삼성전기, 1.7조원 자사주 소각…주가 상승에 규모 12배↑",
+      "why": "주주가치 제고를 위한 자사주 소각 결정",
+      "confidence": "원문 근거",
       "sectors": [
-        "인터넷·플랫폼"
+        "AI·반도체"
       ],
-      "summary": "고용노동부와 한국산업안전보건공단이 안전문화실천추진단 우수사례를 발표했고 KT가 대상을 받았다.",
+      "summary": "삼성전기가 주주가치 제고를 위해 보통주 200만주·우선주 5만3천430주 자사주 소각을 결정했다.",
       "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125165100530",
-      "publishedKst": "11-25 18:05",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125166100003",
+      "publishedKst": "11-25 18:16",
       "analyzedBy": "cache"
     },
     {
@@ -723,37 +689,20 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "392e9aa856d03cb7",
+      "id": "559e0575a85a3be5",
       "market": "domestic",
-      "title": "[연합뉴스 이 시각 헤드라인] - 18:00",
-      "titleOriginal": "[연합뉴스 이 시각 헤드라인] - 18:00",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
+      "title": "법무부, 전자주주총회 준비 가이드라인 발표",
+      "titleOriginal": "전자주주총회 어떻게 준비할까…법무부, 가이드라인 발표",
+      "why": "상법 개정으로 내년부터 자산총액 2조원 이상 상장사 전자주주총회 의무화, 법무부 실무기준 제시",
+      "confidence": "원문 근거",
       "sectors": [
-        "매크로"
+        "금융"
       ],
-      "summary": "코스피가 6%대 급락해 4,697을 기록하며 전날 급등분을 모두 반납했다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125155400011",
-      "publishedKst": "11-25 18:00",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "5b76ae6ad91c365d",
-      "market": "domestic",
-      "title": "KT, 안전문화 확산 공로로 고용노동부 장관상 수상",
-      "titleOriginal": "KT, 안전문화 확산 공로로 고용노동부 장관상 수상",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "인터넷·플랫폼"
-      ],
-      "summary": "KT가 안전문화 확산 공로로 고용노동부 장관상을 수상했다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125161500017",
-      "publishedKst": "11-25 18:00",
+      "summary": "상법 개정으로 내년부터 자산총액 2조원 이상 상장사 전자주주총회 의무화, 법무부가 실무기준 제시",
+      "source": "매일경제",
+      "sourceSection": "헤드라인",
+      "url": "https://www.mk.co.kr/news/society/12218505",
+      "publishedKst": "11-25 18:07",
       "analyzedBy": "cache"
     },
     {
@@ -788,57 +737,6 @@
       "sourceSection": "헤드라인",
       "url": "https://www.mk.co.kr/news/stock/12218503",
       "publishedKst": "11-25 17:59",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "b14cf38141489af6",
-      "market": "domestic",
-      "title": "20년 넘게 낸 세금, 은행원들 환급받아",
-      "titleOriginal": "[단독] 20년 넘게 낸 세금, 안 내도 됐었다…끝까지 따져 돌려받은 은행원들",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "금융"
-      ],
-      "summary": "국책은행 직원들이 식대 비과세를 받지 못해 20년 넘게 낸 세금 환급을 뒤늦게 요청했다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/economy/12218500",
-      "publishedKst": "11-25 17:57",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "09ba0496b4ad1009",
-      "market": "domestic",
-      "title": "영천시, 내년 예산 1조1800억원 편성",
-      "titleOriginal": "영천시 ‘교통·산업·관광·복지’ 대전환…내년 예산 1조 1800억원 편성",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "매크로"
-      ],
-      "summary": "영천시가 도시철도 연장, 산단 조성, 출산 지원, 탄약창 이전 등을 담은 내년 예산 1조1800억원을 편성했다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/politics/12218494",
-      "publishedKst": "11-25 17:54",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "2d8d5c3eac26e21d",
-      "market": "domestic",
-      "title": "은행원 직감으로 보이스피싱 840만원 피해 막아",
-      "titleOriginal": "통화내용 듣고 보이스피싱 직감…은행원이 840만원 피해 막아",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "금융"
-      ],
-      "summary": "ATM 앞 70대 고객의 통화 내용을 들은 은행원이 보이스피싱을 직감해 840만원 피해를 막았다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125152300054",
-      "publishedKst": "11-25 17:52",
       "analyzedBy": "cache"
     },
     {
@@ -910,23 +808,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "7573a18971c5419e",
-      "market": "domestic",
-      "title": "중국 YMTC 물량 공세에 낸드 가격 하락론 확산",
-      "titleOriginal": "中 YMTC가 물량 쏟아내자 … 예상보다 빨리 온 '낸드의 겨울'",
-      "why": "중국 YMTC의 물량 공세와 중국 CSP 투자 속도 조절로 낸드 가격 하락론에 불이 붙었다",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "중국 YMTC의 물량 공세와 중국 CSP 투자 속도 조절로 낸드 가격 하락론에 불이 붙었다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/business/12218467",
-      "publishedKst": "11-25 17:39",
-      "analyzedBy": "cache"
-    },
-    {
       "id": "a7af092b357b2407",
       "market": "domestic",
       "title": "항공사들, 방한 외국인 겨냥 항공권 할인 경쟁",
@@ -941,57 +822,6 @@
       "sourceSection": "헤드라인",
       "url": "https://www.mk.co.kr/news/business/12218463",
       "publishedKst": "11-25 17:39",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "6c9df003308d36fb",
-      "market": "domestic",
-      "title": "동서울변환소 증설 '물꼬'…반도체 전력 공급 기대",
-      "titleOriginal": "수도권 전력 길목 뚫리나 … 동서울변환소 증설 '물꼬'",
-      "why": "용인 반도체 클러스터 전력 공급 핵심인 동서울변환소 증설이 표류 끝에 돌파구를 찾음",
-      "confidence": "추정",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "용인 반도체 클러스터 전력 공급 핵심인 경기 하남시 동서울변환소 증설 사업이 2년 넘는 표류 끝에 돌파구를 찾았다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/economy/12218461",
-      "publishedKst": "11-25 17:38",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "1939370c4c36424e",
-      "market": "domestic",
-      "title": "김정관 \"韓 1년, 中 3개월\"…반도체 메가프로젝트 속도",
-      "titleOriginal": "김정관 \"韓 1년 걸릴 사업, 中선 석달\"",
-      "why": "반도체 팹 등 메가프로젝트를 위해 초광역특구법에 R&D 인력 주52시간제 특례를 담는 속도가 필요하다는 주장",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "김정관 산업통상부 장관이 반도체 공장 등 메가프로젝트를 위해 초광역특구법에 R&D 인력 주52시간제 특례를 담는 데 속도를 내야 한다고 강조했다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/economy/12218459",
-      "publishedKst": "11-25 17:38",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "57826fc7dcce3acb",
-      "market": "domestic",
-      "title": "기업은행, 20년간 안 내도 될 식비 세금 냈다",
-      "titleOriginal": "[단독] 기업銀, 안내도 될 식비 세금 20년간 냈다",
-      "why": "국책은행 직원들이 기본급 포함 식대 비과세를 적용받지 못해 20년 넘게 불필요한 세금을 낸 사실 확인",
-      "confidence": "원문 근거",
-      "sectors": [
-        "금융"
-      ],
-      "summary": "국책은행 직원들이 기본급에 포함된 식대에 비과세를 적용받지 못해 20년 넘게 내지 않아도 될 세금을 내온 것으로 확인됐다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/economy/12218456",
-      "publishedKst": "11-25 17:38",
       "analyzedBy": "cache"
     },
     {
@@ -1013,23 +843,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "78e422b27b6dbdc2",
-      "market": "domestic",
-      "title": "낸드·D램까지 메모리값 정점론 고개",
-      "titleOriginal": "낸드이어 D램까지 … 메모리값 정점론 고개",
-      "why": "낸드플래시 가격 하락 전망 확산으로 메모리 반도체 가격 정점론 우려 확대",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "낸드플래시 가격 하락 전망이 확산하며 메모리 반도체 가격 정점론 우려가 커지고 있다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/business/12218453",
-      "publishedKst": "11-25 17:38",
-      "analyzedBy": "cache"
-    },
-    {
       "id": "5c714d208ab1fcb4",
       "market": "domestic",
       "title": "올해 사이드카 102회…이틀에 한번꼴",
@@ -1047,91 +860,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "129bba3f0794ef54",
-      "market": "domestic",
-      "title": "예탁자금 5개월새 88조 줄어",
-      "titleOriginal": "예탁자금 5개월새 88조 줄어",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "금융"
-      ],
-      "summary": "주식·선물·옵션 거래용 증권사 예탁자금이 5개월 새 88조원 넘게 줄었다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/stock/12218445",
-      "publishedKst": "11-25 17:36",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "20d8f5deedf1b0ce",
-      "market": "domestic",
-      "title": "내신 최상위권 수험생…반도체학과 지원율 2배",
-      "titleOriginal": "내신 최상위권 수험생…반도체학과 지원율 2배",
-      "why": "2027학년도 수시에서 자연계 최상위권 반도체 계약학과 지원율이 전년 대비 2배 이상 높아졌다",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "2027학년도 수시에서 자연계 최상위권 반도체 계약학과 지원율이 전년 대비 2배 이상 높아졌다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/society/12218435",
-      "publishedKst": "11-25 17:32",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "0a74346e476c086b",
-      "market": "domestic",
-      "title": "교실 5.5만개인데 … 금속탐지기는 8000개뿐",
-      "titleOriginal": "교실 5.5만개인데 … 금속탐지기는 8000개뿐",
-      "why": "교육부가 중고교 내신시험 부정행위 방지 대책을 적용하기로 했지만 금속탐지기는 8000개뿐이다",
-      "confidence": "원문 근거",
-      "sectors": [
-        "매크로"
-      ],
-      "summary": "교육부가 중고교 내신시험 부정행위 방지 대책을 적용하기로 했지만 금속탐지기는 8000개뿐이다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/society/12218431",
-      "publishedKst": "11-25 17:32",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "ca5685d800ae7039",
-      "market": "domestic",
-      "title": "농식품부, K-뷰티·그린바이오 협력 확대",
-      "titleOriginal": "농식품부, K-뷰티·그린바이오 협력 확대…소재 산업화 지원",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "바이오"
-      ],
-      "summary": "농식품부가 화장품 산업과 그린바이오 산업 간 협력 확대 및 소재 산업화 지원을 추진한다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125149000030",
-      "publishedKst": "11-25 17:30",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "6f0c16ce19a1cea3",
-      "market": "domestic",
-      "title": "전남광주 반도체 건설인력 주거대책 마련",
-      "titleOriginal": "전남광주 반도체 건설인력 주거대책 마련…모듈러 주택도 검토",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "summary": "전남광주통합특별시가 반도체 클러스터 조성에 유입될 건설인력 주거 대책을 조만간 마련하고 모듈러 주택도 검토한다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125157200054",
-      "publishedKst": "11-25 17:22",
-      "analyzedBy": "exaone"
-    },
-    {
       "id": "7779ac670f22a2f7",
       "market": "domestic",
       "title": "다올증권, 경영권 매각 추진…회사측 \"결정사항 없어\"",
@@ -1146,7 +874,7 @@
       "sourceSection": "마켓+",
       "url": "https://www.yna.co.kr/view/AKR20261125151500008",
       "publishedKst": "11-25 17:08",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "ae5b9070cbbe0c54",
@@ -1163,7 +891,279 @@
       "sourceSection": "마켓+",
       "url": "https://www.yna.co.kr/view/AKR20261125149151008",
       "publishedKst": "11-25 17:05",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "6c6eccbdf3b198a8",
+      "market": "domestic",
+      "title": "SK아이이테크놀로지, 애프터마켓서 10%대 급등",
+      "titleOriginal": "SK아이이테크놀로지, 애프터마켓서 10%대 급등",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 코스피 상장사 SK아이이테크놀로지[361610]가 25일 애프터마켓에서 10%대 급등 중이다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125153100008",
+      "publishedKst": "11-25 17:01",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "f676bcce532f2365",
+      "market": "domestic",
+      "title": "日증시, 젠슨 황 효과 하루 만에 증발…닛케이 2.78% 급락 마감(종합)",
+      "titleOriginal": "日증시, 젠슨 황 효과 하루 만에 증발…닛케이 2.78% 급락 마감(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "summary": "(서울·도쿄=연합뉴스) 김병규 기자 이도연 특파원 = 젠슨 황 최고경영자(CEO)의 엔비디아 복귀 후 급등했던 일본 증시가 하루 만에 급락세로 ...",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125096051009",
+      "publishedKst": "11-25 16:56",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "d55ff15f29248547",
+      "market": "domestic",
+      "title": "국고채 금리 일제히 하락…3년물 연 3.583%",
+      "titleOriginal": "국고채 금리 일제히 하락…3년물 연 3.583%",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 25일 국고채 금리가 일제히 하락했다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125149100008",
+      "publishedKst": "11-25 16:40",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "e68e898a0cb2e29d",
+      "market": "domestic",
+      "title": "반도체주 급락에 인버스 ETF 수익률 상위권 장악…화장품도 강세",
+      "titleOriginal": "반도체주 급락에 인버스 ETF 수익률 상위권 장악…화장품도 강세",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "summary": "(서울=연합뉴스) 강수지 기자 = 반도체주가 큰 폭으로 조정받으면서 최근 일주일간 상장지수펀드(ETF) 수익률 상위권을 인버스 상품이 휩쓸었다....",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125143100008",
+      "publishedKst": "11-25 16:23",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "38d5364b95b0103e",
+      "market": "domestic",
+      "title": "[특징주] 보안주, 국내외 잇단 해킹 피해에 급등(종합)",
+      "titleOriginal": "[특징주] 보안주, 국내외 잇단 해킹 피해에 급등(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 임은진 기자 = 보안주가 25일 국내외에서 해킹 피해가 잇단 영향에 급등했다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125075151008",
+      "publishedKst": "11-25 16:18",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "68f7bb3265d40024",
+      "market": "domestic",
+      "title": "'젠슨황 랠리' 하루만에 끝?…메모리과잉·관세우려 투심 냉기(종합)",
+      "titleOriginal": "'젠슨황 랠리' 하루만에 끝?…메모리과잉·관세우려 투심 냉기(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "summary": "(서울=연합뉴스) 임은진 기자 = 젠슨 황 엔비디아 최고경영자(CEO) 복귀 소식에 전날 급등했던 주가가 하루 만에 6% 넘게 급락하며 상승분을...",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125066951008",
+      "publishedKst": "11-25 16:14",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "867a09170a4b3eb1",
+      "market": "domestic",
+      "title": "코스피, 6%대 급락 4,697…전날 급등분 모두 반납(종합)",
+      "titleOriginal": "코스피, 6%대 급락 4,697…전날 급등분 모두 반납(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 곽윤아 기자 = 코스피가 25일 6% 넘게 급락해 4,600대로 밀려났다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125133251008",
+      "publishedKst": "11-25 16:11",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "e18a1fa84f36b0fd",
+      "market": "domestic",
+      "title": "인천경제자유구역 올해 외국인투자 실적 저조…작년 절반 수준",
+      "titleOriginal": "인천경제자유구역 올해 외국인투자 실적 저조…작년 절반 수준",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(인천=연합뉴스) 홍현기 기자 = 올해 인천경제자유구역 외국인직접투자(FDI) 신고 실적이 지난해의 절반 수준에도 못 미치는 것으로 나타났다.",
+      "source": "연합뉴스",
+      "sourceSection": "경제",
+      "url": "https://www.yna.co.kr/view/AKR20261125138900065",
+      "publishedKst": "11-25 16:10",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "ea2e118fc666d0f6",
+      "market": "domestic",
+      "title": "한국거래소, 상장사 이사회 대상 기업 밸류업 설명회 개최",
+      "titleOriginal": "한국거래소, 상장사 이사회 대상 기업 밸류업 설명회 개최",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 김유아 기자 = 한국거래소는 25일 서울 여의도 사옥에서 상장사 이사들을 대상으로 기업 밸류업 설명회를 개최했다고 밝혔다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125139300008",
+      "publishedKst": "11-25 16:05",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "880a7777ddb4b627",
+      "market": "domestic",
+      "title": "삼전닉스 9∼11% 급락…삼전, 시총 1천조원 하회(종합)",
+      "titleOriginal": "삼전닉스 9∼11% 급락…삼전, 시총 1천조원 하회(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "summary": "(서울=연합뉴스) 김유향 임은진 기자 = 미국 증시에서 AI 기술주가 하락한 영향에 25일 국내 증시에서도 반도체주가 급락했다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125043951008",
+      "publishedKst": "11-25 16:03",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "8dfe7cea9639496b",
+      "market": "domestic",
+      "title": "한국내화 \"미국 법인 주식 13억원어치 취득…지분율 100%\"",
+      "titleOriginal": "한국내화 \"미국 법인 주식 13억원어치 취득…지분율 100%\"",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 코스피 상장사 한국내화[010040]는 미국의 건설축로, 조업정비, 내화물 공급 업체(KRC AMERICA)의 주식 100만주...",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125138400008",
+      "publishedKst": "11-25 15:56",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "b2144dce4c743842",
+      "market": "domestic",
+      "title": "환율, 미국 기술주 조정·외국인 순매도에 소폭 상승…1,343.2원",
+      "titleOriginal": "환율, 미국 기술주 조정·외국인 순매도에 소폭 상승…1,343.2원",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 이도흔 기자 = 미국 기술주 조정이 재개되고 외국인 투자자들이 국내 주식을 순매도하면서 원/달러 환율이 소폭 상승했다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125137900002",
+      "publishedKst": "11-25 15:55",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "8981bffc4acb12b6",
+      "market": "domestic",
+      "title": "[특징주] 화장품주, 연말 성수기 매출성장 기대감에 강세 마감(종합)",
+      "titleOriginal": "[특징주] 화장품주, 연말 성수기 매출성장 기대감에 강세 마감(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 김유아 기자 = 화장품 관련주가 25일 국내 증시의 급락 속에서도 연말 성수기에 진입하며 매출 성장 기대감에 강세로 마감했다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125048251008",
+      "publishedKst": "11-25 15:53",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "9ff678ee5e47b5f1",
+      "market": "domestic",
+      "title": "삼성디스플레이, 3천억원 투자해 오스람 최대주주 된다",
+      "titleOriginal": "삼성디스플레이, 3천억원 투자해 오스람 최대주주 된다",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 박초롱 기자 = 삼성디스플레이가 2억1천만유로(약 3천100억원)을 투자해 글로벌 발광다이오드(LED) 기업 ams오스람의 최...",
+      "source": "연합뉴스",
+      "sourceSection": "경제",
+      "url": "https://www.yna.co.kr/view/AKR20261125134400003",
+      "publishedKst": "11-25 15:39",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "67171e065638762b",
+      "market": "domestic",
+      "title": "KT스카이라이프 노조 \"HCN 합병 중단\"…사측 \"고용 승계\"(종합)",
+      "titleOriginal": "KT스카이라이프 노조 \"HCN 합병 중단\"…사측 \"고용 승계\"(종합)",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 유현민 기자 = KT스카이라이프[053210] 노동조합이 KT[030200]의 HCN 합병 추진을 비판하며 합병 중단과 계열사...",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125110551017",
+      "publishedKst": "11-25 15:39",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "5820bb12c9269abd",
+      "market": "domestic",
+      "title": "코스피, 6%대 급락 4,697…전날 급등분 모두 반납",
+      "titleOriginal": "코스피, 6%대 급락 4,697…전날 급등분 모두 반납",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 곽윤아 기자 = 코스피가 25일 6% 넘게 급락해 4,600대로 밀려났다.",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125133200008",
+      "publishedKst": "11-25 15:37",
+      "analyzedBy": "fallback"
     }
   ],
   "sectors": [
@@ -1172,19 +1172,19 @@
       "count": 17,
       "items": [
         {
-          "title": "EU, 74조원 기술펀드 추진",
+          "title": "EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진",
+          "source": "연합뉴스",
+          "url": "https://www.yna.co.kr/view/AKR20261125125351009"
+        },
+        {
+          "title": "하이닉스 2028년 이익 급감 전망…반도체 저승사자 예측",
           "source": "매일경제",
-          "url": "https://www.mk.co.kr/news/world/12218547"
+          "url": "https://www.mk.co.kr/news/stock/12218640"
         },
         {
           "title": "젠슨 황 엔비디아 복귀와 401(k) 수혜 논란",
           "source": "MarketWatch",
           "url": "https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories"
-        },
-        {
-          "title": "젠슨 황 Nvidia 복귀, 미·중 AI 경쟁은 반도체 이상",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/25/jensen-huang-nvidia-ai-talent-race.html"
         }
       ]
     },
@@ -1200,18 +1200,12 @@
     },
     {
       "name": "바이오",
-      "count": 1,
-      "items": [
-        {
-          "title": "농식품부, K-뷰티·그린바이오 협력 확대",
-          "source": "연합뉴스",
-          "url": "https://www.yna.co.kr/view/AKR20261125149000030"
-        }
-      ]
+      "count": 0,
+      "items": []
     },
     {
       "name": "금융",
-      "count": 13,
+      "count": 6,
       "items": [
         {
           "title": "삼성전기, 1조7000억원 자사주 전량 소각",
@@ -1219,14 +1213,14 @@
           "url": "https://www.mk.co.kr/news/stock/12218546"
         },
         {
-          "title": "삼일·안진·한영 회계사 3명 제재…감사 정보 외부 누설",
+          "title": "미공개정보 1.8억 부당이득…코스닥사 임직원 중수청 통보",
           "source": "연합뉴스",
-          "url": "https://www.yna.co.kr/view/AKR20261125171000002"
+          "url": "https://www.yna.co.kr/view/AKR20261125167400002"
         },
         {
-          "title": "한국투자저축은행 해킹…8.6만 고객 정보 유출",
+          "title": "법무부, 전자주주총회 준비 가이드라인 발표",
           "source": "매일경제",
-          "url": "https://www.mk.co.kr/news/economy/12218530"
+          "url": "https://www.mk.co.kr/news/society/12218505"
         }
       ]
     },
@@ -1247,13 +1241,8 @@
     },
     {
       "name": "유통·소비",
-      "count": 5,
+      "count": 4,
       "items": [
-        {
-          "title": "럭셔리 어드벤트 캘린더, 가격 통제 벗어나나",
-          "source": "MarketWatch",
-          "url": "https://www.marketwatch.com/story/12-days-of-sardines-and-croc-charms-are-advent-calendars-getting-out-of-control-81f24548?mod=mw_rss_topstories"
-        },
         {
           "title": "'국내 와인 수입사 첫 상장' 나라셀라, 소주 진출",
           "source": "연합뉴스",
@@ -1263,43 +1252,37 @@
           "title": "외국인 관광객이 가장 많이 선택한 산 2위 설악산… 1위는",
           "source": "매일경제",
           "url": "https://www.mk.co.kr/news/culture/12218464"
+        },
+        {
+          "title": "코웨이, 글로벌 펀드매니저 유망종목으로 ‘픽’",
+          "source": "매일경제",
+          "url": "https://www.mk.co.kr/news/stock/12218503"
         }
       ]
     },
     {
       "name": "인터넷·플랫폼",
-      "count": 2,
-      "items": [
-        {
-          "title": "안전문화 우수사례 대상에 KT…성심당·제주노사민정협 최우수상",
-          "source": "연합뉴스",
-          "url": "https://www.yna.co.kr/view/AKR20261125165100530"
-        },
-        {
-          "title": "KT, 안전문화 확산 공로로 고용노동부 장관상 수상",
-          "source": "연합뉴스",
-          "url": "https://www.yna.co.kr/view/AKR20261125161500017"
-        }
-      ]
+      "count": 0,
+      "items": []
     },
     {
       "name": "매크로",
-      "count": 9,
+      "count": 20,
       "items": [
+        {
+          "title": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason why, says JPMorgan",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/the-s-p-500-is-headed-to-8-200-and-downturns-like-this-one-are-actually-part-of-the-reason-why-says-jpmorgan-b6acae4b?mod=mw_rss_topstories"
+        },
+        {
+          "title": "이틀에 한 번 꼴 사이드카…널뛰는 코스피에 개미 공황",
+          "source": "매일경제",
+          "url": "https://www.mk.co.kr/news/stock/12218652"
+        },
         {
           "title": "이 전략가의 채권거래 모델, 크게 앞서…Fed 둔화는 좋은 일",
           "source": "MarketWatch",
           "url": "https://www.marketwatch.com/story/this-strategists-bond-trading-model-is-outperforming-by-a-wide-margin-the-fed-slowing-the-economy-is-a-good-thing-he-argues-f39dfc5f?mod=mw_rss_topstories"
-        },
-        {
-          "title": "민주당 중간선거 승리 후 소비자신뢰 급등…인플레이션 우려 지속",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/24/consumer-confidence-november-election-midterm.html"
-        },
-        {
-          "title": "윌리엄스, 인플레이션 대응 금리 인상 '시간이 지나며' 시사",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/23/john-williams-fed-inflation-rate-hikes.html"
         }
       ]
     }
@@ -1342,30 +1325,6 @@
       "localDate": "2026-12-01"
     },
     {
-      "id": "earn-2026-12-02-BMO",
-      "date": "2026-12-02",
-      "timeKst": "",
-      "title": "Bank Of Montreal 실적 발표",
-      "category": "실적",
-      "region": "해외",
-      "note": "현지 장 시작 전 · 시가총액 1115억 달러",
-      "source": "Nasdaq 실적 캘린더",
-      "sourceUrl": "https://www.nasdaq.com/market-activity/earnings",
-      "localDate": "2026-12-02"
-    },
-    {
-      "id": "earn-2026-12-02-BNS",
-      "date": "2026-12-02",
-      "timeKst": "",
-      "title": "Bank of Nova Scotia (The) 실적 발표",
-      "category": "실적",
-      "region": "해외",
-      "note": "현지 장 시작 전 · 시가총액 1048억 달러",
-      "source": "Nasdaq 실적 캘린더",
-      "sourceUrl": "https://www.nasdaq.com/market-activity/earnings",
-      "localDate": "2026-12-02"
-    },
-    {
       "id": "earn-2026-12-02-CRM",
       "date": "2026-12-03",
       "timeKst": "",
@@ -1376,30 +1335,6 @@
       "source": "Nasdaq 실적 캘린더",
       "sourceUrl": "https://www.nasdaq.com/market-activity/earnings",
       "localDate": "2026-12-02"
-    },
-    {
-      "id": "earn-2026-12-03-RY",
-      "date": "2026-12-03",
-      "timeKst": "",
-      "title": "Royal Bank Of Canada 실적 발표",
-      "category": "실적",
-      "region": "해외",
-      "note": "현지 장 시작 전 · 시가총액 2604억 달러",
-      "source": "Nasdaq 실적 캘린더",
-      "sourceUrl": "https://www.nasdaq.com/market-activity/earnings",
-      "localDate": "2026-12-03"
-    },
-    {
-      "id": "earn-2026-12-03-TD",
-      "date": "2026-12-03",
-      "timeKst": "",
-      "title": "Toronto Dominion Bank (The) 실적 발표",
-      "category": "실적",
-      "region": "해외",
-      "note": "현지 장 시작 전 · 시가총액 1889억 달러",
-      "source": "Nasdaq 실적 캘린더",
-      "sourceUrl": "https://www.nasdaq.com/market-activity/earnings",
-      "localDate": "2026-12-03"
     },
     {
       "id": "jobs-2026-12-04",

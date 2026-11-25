@@ -97,22 +97,38 @@ FEEDS = [
     ("MarketWatch", "Top Stories", "https://feeds.content.dowjones.io/public/rss/mw_topstories", "en"),
 ]
 
-# 시장 관련 기사만 남기는 키워드(제목+요약). 너무 좁히면 기사가 비므로 느슨하게 둔다.
+# 시장 관련 기사만 남기는 키워드.
+#  · 강한 신호(주가·지수·수급·공시·금리 등)가 하나라도 있어야 증시 기사로 본다.
+#    '반도체' '은행' 같은 업종 단어만 있는 기사(수상·채용·관광 뉴스)는 걸러진다.
+#  · 그래도 남는 기사가 너무 적으면 업종 단어만 있는 기사를 뒤에 붙인다.
+DOMESTIC_STRONG = re.compile(
+    r"(코스피|코스닥|증시|주가|주식시장|지수|시가총액|순매수|순매도|외국인|공모주|상장|IPO|"
+    r"실적|영업이익|영업손실|어닝|배당|자사주|공매도|유상증자|무상증자|액면분할|전환사채|"
+    r"합병|인수|매각|환율|금리|국고채|채권|증안펀드|사이드카|예탁금|투자심리|주주총회|공시|"
+    r"펀드|수주|가이던스|증권사|자산운용|공매도|주가조작|미공개정보|대주주)")
 DOMESTIC_TERMS = re.compile(
-    r"(코스피|코스닥|증시|주가|지수|외국인|기관|개인|순매수|순매도|상승|하락|급등|급락|반도체|삼성전자|"
-    r"SK하이닉스|환율|원화|금리|한은|한국은행|금통위|실적|영업이익|공모주|상장|IPO|배당|자사주|"
-    r"공매도|유상증자|M&A|인수|합병|수출|무역|관세|물가|소비자물가|고용|반도체|2차전지|배터리|방산|"
-    r"바이오|제약|조선|자동차|증권|은행|보험|부동산|국채|채권|펀드|ETF|코인|비트코인)")
+    r"(반도체|삼성전자|SK하이닉스|2차전지|배터리|방산|바이오|제약|조선|자동차|은행|보험|"
+    r"부동산|ETF|코인|비트코인|수출|무역|관세|물가|소비자물가|고용|소비|유통|플랫폼)")
 GLOBAL_TERMS = re.compile(
     r"(stock|stocks|wall street|nasdaq|s&p|dow|futures|rally|selloff|sell-off|fed|federal reserve|"
     r"rate cut|rate hike|treasury|yield|bond|dollar|oil|gold|earnings|revenue|profit|guidance|"
     r"chip|chips|semiconductor|nvidia|apple|microsoft|google|alphabet|amazon|meta|tesla|ai |"
     r"artificial intelligence|inflation|cpi|jobs report|payroll|tariff|trade deal|ipo|merger|"
     r"acquisition|kospi|nikkei|hang seng|bitcoin|crypto|shares|valuation|dividend|buyback)", re.I)
+# 헤드라인 모음·포토 같은 목록 기사는 이슈 카드로 쓰지 않는다.
+NEWS_EXCLUDE = re.compile(r"(이 시각 헤드라인|주요 뉴스|헤드라인\]|포토\]|화보\]|종합\]|만평|오늘의 날씨|^\[표\]|\[게시판\]|시세표|럭셔리 어드벤트|부동산 시세|연예|advent calendar|mansion|celebrity|relists|real estate|luxury|home price)", re.I)
+
+# 실적 일정은 '주요 기업'만 — 미국 대형주 위주 관심 목록(시가총액 조건과 함께 본다).
+EARNINGS_WATCH = {
+    "NVDA", "AAPL", "MSFT", "GOOGL", "GOOG", "AMZN", "META", "TSLA", "AVGO", "AMD", "TSM", "MU",
+    "ORCL", "CRM", "ADBE", "NFLX", "COST", "WMT", "JPM", "BAC", "GS", "MS", "C", "XOM", "CVX",
+    "JNJ", "PFE", "LLY", "UNH", "KO", "PEP", "DIS", "INTC", "QCOM", "MRVL", "SNPS", "ADSK", "NOW",
+    "INTU", "DE", "CAT", "BA", "NKE", "SBUX", "PYPL", "UBER", "ABNB", "PLTR", "SMCI", "ARM", "TXN",
+}
 
 MAX_NEWS = 46           # market_data.json 에 담을 기사 상한
 CACHE_VERSION = "v2"   # 프롬프트 규칙을 바꾸면 올린다(예전 분석은 쓰지 않음)
-AI_ITEM_LIMIT = 20      # 이번 실행에서 EXAONE 으로 정리할 기사 수(최근 기사 우선)
+AI_ITEM_LIMIT = 18      # 이번 실행에서 EXAONE 으로 정리할 기사 수(최근 기사 우선)
 AI_BATCH = 3            # EXAONE 한 번에 분석할 기사 수(추론 토큰이 많아 3건이 안정적)
 AI_MAX_CALLS = 12       # EXAONE 분석 호출 상한(일일 100회 한도 보호)
 NEWS_WINDOW_HOURS = 48  # 이 시간 안에 올라온 기사만
@@ -160,6 +176,12 @@ def clean_text(text, limit=None):
 
 def norm_title(title):
     return re.sub(r"[^0-9a-z가-힣]+", "", (title or "").lower())
+
+
+def dedupe_key(title):
+    """같은 기사 판별용 키 — 대괄호 머리표·(종합) 꼬리표를 떼고 비교한다."""
+    cleaned = re.sub(r"[\[（(][^\]）)]{0,12}[\]）)]", "", title or "")
+    return norm_title(cleaned)[:36]
 
 
 def item_id(source, title, url):
@@ -230,13 +252,25 @@ def collect_news(now, sources):
         for row in rows:
             if row["published"] and row["published"] < window_start:
                 continue
-            blob = row["title"] + " " + row["summary_orig"]
-            pattern = DOMESTIC_TERMS if row["lang"] == "ko" else GLOBAL_TERMS
-            if not pattern.search(blob):
+            if NEWS_EXCLUDE.search(row["title"]):
                 continue
+            blob = row["title"] + " " + row["summary_orig"]
+            if row["lang"] == "ko":
+                score = 0
+                if DOMESTIC_STRONG.search(blob):
+                    score = 2
+                elif DOMESTIC_TERMS.search(blob):
+                    score = 1
+                if not score:
+                    continue
+            else:
+                if not GLOBAL_TERMS.search(blob):
+                    continue
+                score = 2
             row["id"] = item_id(row["source"], row["title"], row["url"])
             row["market"] = "domestic" if row["lang"] == "ko" else "global"
             row["published_kst"] = row["published"].strftime("%m-%d %H:%M") if row["published"] else ""
+            row["score"] = score
             collected.append(row)
             kept += 1
         entry["count"] = kept
@@ -244,10 +278,13 @@ def collect_news(now, sources):
         print("  [뉴스] %s %s %d건" % (source, section, kept))
 
     # 같은 기사(제목 앞부분 동일) 중복 제거 — 연합뉴스 마켓+/경제 양쪽에 뜨는 경우가 흔하다.
+    strong = [row for row in collected if row.get("score", 0) >= 2]
+    if len(strong) >= 12:
+        collected = strong  # 증시 신호가 분명한 기사만 쓴다
     seen = set()
     unique = []
     for row in sorted(collected, key=lambda r: r["published"] or datetime(1970, 1, 1, tzinfo=KST), reverse=True):
-        key = norm_title(row["title"])[:40]
+        key = dedupe_key(row["title"])
         if key in seen:
             continue
         seen.add(key)
@@ -607,9 +644,13 @@ def calendar_bok(now, sources):
 
 
 def calendar_earnings(now, sources):
-    """주요 기업 실적 — api.nasdaq.com 실적 캘린더, 시가총액 500억 달러 이상만."""
-    out = []
-    count = 0
+    """주요 기업 실적 — api.nasdaq.com 실적 캘린더에서 미국 대형주(관심 목록)만.
+
+    시가총액 1,000억 달러 이상 + EARNINGS_WATCH(미국 대형주) 조건을 함께 본다.
+    관심 목록에 걸린 기업이 한 주에 없으면 시가총액 상위 4건으로 대신한다.
+    """
+    picked = []
+    candidates = []
     status = "ok"
     for offset in range(0, 15):
         day = now.date() + timedelta(days=offset)
@@ -627,8 +668,7 @@ def calendar_earnings(now, sources):
             digits = re.sub(r"[^0-9]", "", cap_text)
             if not digits or int(digits) < 100_000_000_000:
                 continue
-            symbol = (row.get("symbol") or "").strip()
-            name = clean_text(row.get("name") or symbol)
+            symbol = (row.get("symbol") or "").strip().upper()
             timing = (row.get("time") or "").strip()
             if timing == "time-pre-market":
                 note = "현지 장 시작 전"
@@ -640,24 +680,30 @@ def calendar_earnings(now, sources):
             else:
                 note = "발표 시각 미정"
                 kst_date = day
-            out.append({
+            entry = {
                 "id": "earn-%s-%s" % (day.isoformat(), symbol),
                 "date": kst_date.isoformat(),
                 "timeKst": "",
-                "title": "%s 실적 발표" % name,
+                "title": "%s 실적 발표" % clean_text(row.get("name") or symbol),
                 "category": "실적",
                 "region": "해외",
                 "note": note + " · 시가총액 %d억 달러" % (int(digits) // 100_000_000),
                 "source": "Nasdaq 실적 캘린더",
                 "sourceUrl": "https://www.nasdaq.com/market-activity/earnings",
                 "localDate": day.isoformat(),
-            })
-            count += 1
+            }
+            candidates.append((int(digits), entry))
+            if symbol in EARNINGS_WATCH:
+                picked.append((int(digits), entry))
         time.sleep(0.25)
+    rows = picked
+    if not rows:
+        rows = sorted(candidates, key=lambda item: item[0], reverse=True)[:4]
+    out = [entry for _cap, entry in sorted(rows, key=lambda item: (item[1]["date"], -item[0]))]
     sources.append({"name": "Nasdaq 실적 캘린더", "kind": "공식 일정",
                     "url": "https://www.nasdaq.com/market-activity/earnings",
-                    "status": status, "count": count})
-    print("  [일정] 주요 기업 실적 %d건" % count)
+                    "status": status, "count": len(out)})
+    print("  [일정] 주요 기업 실적 %d건" % len(out))
     return out
 
 
