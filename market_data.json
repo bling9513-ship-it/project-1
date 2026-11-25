@@ -1,12 +1,12 @@
 {
   "meta": {
-    "collectedAt": "2026-11-25 20:35:33 KST",
-    "collectedAtIso": "2026-11-25T20:35:33+09:00",
+    "collectedAt": "2026-11-25 20:56:02 KST",
+    "collectedAtIso": "2026-11-25T20:56:02+09:00",
     "ai": {
-      "used": true,
-      "analyzed": 29,
-      "fallback": 17,
-      "model": "k-exaone_v2.5"
+      "used": false,
+      "analyzed": 0,
+      "fallback": 18,
+      "model": ""
     },
     "sources": [
       {
@@ -21,21 +21,21 @@
         "kind": "뉴스",
         "url": "https://www.yna.co.kr/rss/market.xml",
         "status": "ok",
-        "count": 82
+        "count": 76
       },
       {
         "name": "연합뉴스",
         "kind": "뉴스",
         "url": "https://www.yna.co.kr/rss/economy.xml",
         "status": "ok",
-        "count": 58
+        "count": 56
       },
       {
         "name": "매일경제",
         "kind": "뉴스",
         "url": "https://www.mk.co.kr/rss/30000001/",
         "status": "ok",
-        "count": 22
+        "count": 20
       },
       {
         "name": "CNBC",
@@ -109,7 +109,7 @@
       "stateLabel": "오늘 장 마감",
       "lastTradingDate": "2026-11-25",
       "lastTradingLabel": "11월 25일(수)",
-      "localNow": "11-25 20:35",
+      "localNow": "11-25 20:56",
       "timezone": "Asia/Seoul"
     },
     "global": {
@@ -117,7 +117,7 @@
       "stateLabel": "개장 전",
       "lastTradingDate": "2026-11-24",
       "lastTradingLabel": "11월 24일(화)",
-      "localNow": "11-25 06:35",
+      "localNow": "11-25 06:56",
       "timezone": "America/New_York"
     }
   },
@@ -356,7 +356,7 @@
       "close": [
         "코스피 4,697.51 (-6.16%)로 마감",
         "코스닥 650.64 (-2.29%)로 마감",
-        "주요 기사: EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진"
+        "헤드라인: 이틀에 한 번 꼴 사이드카…널뛰는 코스피에 개미 공황"
       ],
       "morning": [
         "코스피 4,697.51(-6.16%) · 코스닥 650.64(-2.29%) 종가에서 출발",
@@ -368,7 +368,7 @@
       "close": [
         "나스닥 23,733.53 (-1.48%)로 마감",
         "S&P500 7,201.09 (-0.50%)로 마감",
-        "주요 기사: The S&P 500 is headed to 8,200 — and downturns like this one"
+        "헤드라인: 젠슨 황 Nvidia 복귀, 미·중 AI 경쟁은 반도체 이상"
       ],
       "morning": [
         "나스닥 23,733.53(-1.48%) · S&P500 7,201.09(-0.50%) 종가에서 출발",
@@ -402,8 +402,8 @@
     {
       "id": "8086e54e4bfe8e9b",
       "market": "global",
-      "title": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason why, says JPMorgan",
-      "titleOriginal": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason why, says JPMorgan",
+      "title": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason, says JPMorgan",
+      "titleOriginal": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason, says JPMorgan",
       "why": "뚜렷한 원인 미확인",
       "confidence": "미확인",
       "sectors": [
@@ -706,23 +706,6 @@
       "analyzedBy": "cache"
     },
     {
-      "id": "2f74bd7a4e65331b",
-      "market": "domestic",
-      "title": "외국인 관광객이 가장 많이 선택한 산 2위 설악산… 1위는",
-      "titleOriginal": "외국인 관광객이 가장 많이 선택한 산 2위 설악산… 1위는",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "유통·소비"
-      ],
-      "summary": "K-트레킹 챌린지에서 북한산이 1위, 설악산이 2위였고 신청 국가 1위는 미국이었다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/culture/12218464",
-      "publishedKst": "11-25 18:00",
-      "analyzedBy": "cache"
-    },
-    {
       "id": "878d5daf069f4b18",
       "market": "domestic",
       "title": "코웨이, 글로벌 펀드매니저 유망종목으로 ‘픽’",
@@ -805,23 +788,6 @@
       "sourceSection": "헤드라인",
       "url": "https://www.mk.co.kr/news/stock/12218468",
       "publishedKst": "11-25 17:40",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "a7af092b357b2407",
-      "market": "domestic",
-      "title": "항공사들, 방한 외국인 겨냥 항공권 할인 경쟁",
-      "titleOriginal": "“국제선 항공권 최대 97% 할인”…항공사들, 방한 외국인 겨냥 세일 경쟁",
-      "why": "K팝 등 한류 열풍으로 방한 외국인이 늘자 국내 항공사들이 국제선 항공권 할인 경쟁에 나섰다",
-      "confidence": "원문 근거",
-      "sectors": [
-        "유통·소비"
-      ],
-      "summary": "K팝 등 한류 열풍으로 방한 외국인이 늘자 국내 항공사들이 국제선 항공권 할인 경쟁에 나섰다.",
-      "source": "매일경제",
-      "sourceSection": "헤드라인",
-      "url": "https://www.mk.co.kr/news/business/12218463",
-      "publishedKst": "11-25 17:39",
       "analyzedBy": "cache"
     },
     {
@@ -1013,23 +979,6 @@
       "analyzedBy": "fallback"
     },
     {
-      "id": "e18a1fa84f36b0fd",
-      "market": "domestic",
-      "title": "인천경제자유구역 올해 외국인투자 실적 저조…작년 절반 수준",
-      "titleOriginal": "인천경제자유구역 올해 외국인투자 실적 저조…작년 절반 수준",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "매크로"
-      ],
-      "summary": "(인천=연합뉴스) 홍현기 기자 = 올해 인천경제자유구역 외국인직접투자(FDI) 신고 실적이 지난해의 절반 수준에도 못 미치는 것으로 나타났다.",
-      "source": "연합뉴스",
-      "sourceSection": "경제",
-      "url": "https://www.yna.co.kr/view/AKR20261125138900065",
-      "publishedKst": "11-25 16:10",
-      "analyzedBy": "fallback"
-    },
-    {
       "id": "ea2e118fc666d0f6",
       "market": "domestic",
       "title": "한국거래소, 상장사 이사회 대상 기업 밸류업 설명회 개최",
@@ -1061,6 +1010,23 @@
       "sourceSection": "마켓+",
       "url": "https://www.yna.co.kr/view/AKR20261125043951008",
       "publishedKst": "11-25 16:03",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "74bb69b2de14a390",
+      "market": "domestic",
+      "title": "금감원장이 종목 추천?…\"유명인 투자 권유 가짜영상 유의해야\"",
+      "titleOriginal": "금감원장이 종목 추천?…\"유명인 투자 권유 가짜영상 유의해야\"",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "summary": "(서울=연합뉴스) 김지연 기자 = \"제가 요즘 주목하는 종목은 야자수반도체입니다.\"",
+      "source": "연합뉴스",
+      "sourceSection": "경제",
+      "url": "https://www.yna.co.kr/view/AKR20261125082100002",
+      "publishedKst": "11-25 16:00",
       "analyzedBy": "fallback"
     },
     {
@@ -1149,27 +1115,61 @@
       "analyzedBy": "fallback"
     },
     {
-      "id": "5820bb12c9269abd",
+      "id": "441c6af326f02653",
       "market": "domestic",
-      "title": "코스피, 6%대 급락 4,697…전날 급등분 모두 반납",
-      "titleOriginal": "코스피, 6%대 급락 4,697…전날 급등분 모두 반납",
+      "title": "[IPO챗] 항공 복합재 기업 ANH스트럭쳐 \"수주 확대로 수익성 개선\"",
+      "titleOriginal": "[IPO챗] 항공 복합재 기업 ANH스트럭쳐 \"수주 확대로 수익성 개선\"",
       "why": "뚜렷한 원인 미확인",
       "confidence": "미확인",
       "sectors": [
         "매크로"
       ],
-      "summary": "(서울=연합뉴스) 곽윤아 기자 = 코스피가 25일 6% 넘게 급락해 4,600대로 밀려났다.",
+      "summary": "(서울=연합뉴스) 정회인 기자 = \"그동안 확보한 설계, 제작, 인증 역량을 바탕으로 수주를 매출로 전환하고 수익성을 높이는 데 집중하겠습니다....",
       "source": "연합뉴스",
       "sourceSection": "마켓+",
-      "url": "https://www.yna.co.kr/view/AKR20261125133200008",
-      "publishedKst": "11-25 15:37",
+      "url": "https://www.yna.co.kr/view/AKR20261125120800008",
+      "publishedKst": "11-25 15:03",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "c99d3283b47ffced",
+      "market": "domestic",
+      "title": "고금리·AI 공격속 금융사 무너지면…당국 위기대응 점검 훈련",
+      "titleOriginal": "고금리·AI 공격속 금융사 무너지면…당국 위기대응 점검 훈련",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "summary": "(서울=연합뉴스) 김지연 기자 = 금융위원회는 25일 금융감독원, 예금보험공사, 한국은행 및 10개 '금융체계상 중요한 금융기관(SIFI)'과 ...",
+      "source": "연합뉴스",
+      "sourceSection": "경제",
+      "url": "https://www.yna.co.kr/view/AKR20261125074300002",
+      "publishedKst": "11-25 15:00",
+      "analyzedBy": "fallback"
+    },
+    {
+      "id": "eb476342f83eb9f0",
+      "market": "domestic",
+      "title": "스카이라이프 노조 \"KT, HCN '졸속 합병' 중단해야\"",
+      "titleOriginal": "스카이라이프 노조 \"KT, HCN '졸속 합병' 중단해야\"",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "summary": "(서울=연합뉴스) 유현민 기자 = KT스카이라이프[053210] 노동조합이 KT[030200]의 HCN 합병 추진을 비판하며 합병 중단과 계열사...",
+      "source": "연합뉴스",
+      "sourceSection": "마켓+",
+      "url": "https://www.yna.co.kr/view/AKR20261125110500017",
+      "publishedKst": "11-25 14:55",
       "analyzedBy": "fallback"
     }
   ],
   "sectors": [
     {
       "name": "AI·반도체",
-      "count": 17,
+      "count": 19,
       "items": [
         {
           "title": "EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진",
@@ -1241,17 +1241,12 @@
     },
     {
       "name": "유통·소비",
-      "count": 4,
+      "count": 2,
       "items": [
         {
           "title": "'국내 와인 수입사 첫 상장' 나라셀라, 소주 진출",
           "source": "연합뉴스",
           "url": "https://www.yna.co.kr/view/AKR20261125166800030"
-        },
-        {
-          "title": "외국인 관광객이 가장 많이 선택한 산 2위 설악산… 1위는",
-          "source": "매일경제",
-          "url": "https://www.mk.co.kr/news/culture/12218464"
         },
         {
           "title": "코웨이, 글로벌 펀드매니저 유망종목으로 ‘픽’",
@@ -1270,7 +1265,7 @@
       "count": 20,
       "items": [
         {
-          "title": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason why, says JPMorgan",
+          "title": "The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason, says JPMorgan",
           "source": "MarketWatch",
           "url": "https://www.marketwatch.com/story/the-s-p-500-is-headed-to-8-200-and-downturns-like-this-one-are-actually-part-of-the-reason-why-says-jpmorgan-b6acae4b?mod=mw_rss_topstories"
         },

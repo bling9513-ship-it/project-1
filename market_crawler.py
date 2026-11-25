@@ -102,10 +102,10 @@ FEEDS = [
 #    '반도체' '은행' 같은 업종 단어만 있는 기사(수상·채용·관광 뉴스)는 걸러진다.
 #  · 그래도 남는 기사가 너무 적으면 업종 단어만 있는 기사를 뒤에 붙인다.
 DOMESTIC_STRONG = re.compile(
-    r"(코스피|코스닥|증시|주가|주식시장|지수|시가총액|순매수|순매도|외국인|공모주|상장|IPO|"
-    r"실적|영업이익|영업손실|어닝|배당|자사주|공매도|유상증자|무상증자|액면분할|전환사채|"
-    r"합병|인수|매각|환율|금리|국고채|채권|증안펀드|사이드카|예탁금|투자심리|주주총회|공시|"
-    r"펀드|수주|가이던스|증권사|자산운용|공매도|주가조작|미공개정보|대주주)")
+    r"(코스피|코스닥|증시|주가|주식시장|지수|시가총액|순매수|순매도|공모주|상장|IPO|"
+    r"영업이익|영업손실|잠정실적|실적 발표|어닝|배당|자사주|공매도|유상증자|무상증자|액면분할|"
+    r"전환사채|합병|인수|매각|환율|금리|국고채|채권|증안펀드|사이드카|예탁금|투자심리|주주총회|"
+    r"공시|펀드|수주|가이던스|증권사|자산운용|주가조작|미공개정보|대주주|종목|특징주)")
 DOMESTIC_TERMS = re.compile(
     r"(반도체|삼성전자|SK하이닉스|2차전지|배터리|방산|바이오|제약|조선|자동차|은행|보험|"
     r"부동산|ETF|코인|비트코인|수출|무역|관세|물가|소비자물가|고용|소비|유통|플랫폼)")
@@ -116,7 +116,7 @@ GLOBAL_TERMS = re.compile(
     r"artificial intelligence|inflation|cpi|jobs report|payroll|tariff|trade deal|ipo|merger|"
     r"acquisition|kospi|nikkei|hang seng|bitcoin|crypto|shares|valuation|dividend|buyback)", re.I)
 # 헤드라인 모음·포토 같은 목록 기사는 이슈 카드로 쓰지 않는다.
-NEWS_EXCLUDE = re.compile(r"(이 시각 헤드라인|주요 뉴스|헤드라인\]|포토\]|화보\]|종합\]|만평|오늘의 날씨|^\[표\]|\[게시판\]|시세표|럭셔리 어드벤트|부동산 시세|연예|advent calendar|mansion|celebrity|relists|real estate|luxury|home price)", re.I)
+NEWS_EXCLUDE = re.compile(r"(이 시각 헤드라인|주요 뉴스|헤드라인\]|포토\]|화보\]|종합\]|만평|오늘의 날씨|^\[표\]|\[게시판\]|시세표|럭셔리 어드벤트|부동산 시세|연예|advent calendar|mansion|celebrity|relists|real estate|luxury|home price|^\[(코스피|코스닥|외환|증시|주요지수)\]|장종료\)$)", re.I)
 
 # 실적 일정은 '주요 기업'만 — 미국 대형주 위주 관심 목록(시가총액 조건과 함께 본다).
 EARNINGS_WATCH = {
@@ -1027,6 +1027,16 @@ def morning_lines(market, indices, calendar, fx, bigtech):
     return lines[:3]
 
 
+def key_headline(news_rows):
+    """마감 시황 3줄에 넣을 대표 헤드라인 — 지수·반도체가 제목에 있는 기사를 먼저 고른다."""
+    markers = ("코스피", "코스닥", "나스닥", "S&P500", "반도체", "증시")
+    for row in news_rows:
+        title = row.get("title_ko") or row["title"]
+        if any(marker in title for marker in markers):
+            return title
+    return (news_rows[0].get("title_ko") or news_rows[0]["title"]) if news_rows else ""
+
+
 def fallback_briefing(market_label, index_rows, news_rows):
     close = []
     for row in index_rows[:2]:
@@ -1034,8 +1044,9 @@ def fallback_briefing(market_label, index_rows, news_rows):
             continue
         close.append("%s %s (%+.2f%%)로 마감" % (row["name"], format_value(row["value"]),
                                                 row["changePct"] or 0))
-    if news_rows:
-        close.append("주요 기사: %s" % (news_rows[0].get("title_ko") or news_rows[0]["title"])[:60])
+    headline = key_headline(news_rows)
+    if headline:
+        close.append("헤드라인: %s" % headline[:60])
     while len(close) < 3:
         close.append("수집된 기사로 확인된 추가 시황 없음")
     return close[:3]
