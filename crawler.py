@@ -3892,15 +3892,16 @@ def generate_readme(jobs, update_time_str):
             lines.append("")
             continue
 
-        lines.append("| 회사명 | 공고명 | 플랫폼 | 마감 일정 | 상세 분야 |")
-        lines.append("| :--- | :--- | :--- | :--- | :--- |")
+        lines.append("| 회사명 | 공고명 | 근무지 | 플랫폼 | 마감 일정 | 상세 분야 |")
+        lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
         for job in kw_list:
             platforms_str = ", ".join(job["platforms"])
             keywords_str = ", ".join([f"`{k}`" for k in job["keywords"]])
             dl = job_deadline_label(job)
             title_escaped = job["title"].replace("|", "\\|")
             company_escaped = job["company"].replace("|", "\\|")
-            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {platforms_str} | **{dl}** | {keywords_str} |")
+            location_escaped = (job.get("location") or "지역 미표기").replace("|", "\\|")
+            lines.append(f"| **{company_escaped}** | [{title_escaped}]({job['url']}) | {location_escaped} | {platforms_str} | **{dl}** | {keywords_str} |")
         
         lines.append("")
         lines.append("[맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)")
