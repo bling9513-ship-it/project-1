@@ -2,10 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-FY/xagSR7YfDcyxhFVlU4IdvyG4Auzib0aeJKiauP7E=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-Qtz/iXUpaaQd5iKU3QcdaTm9oTRM1qHdwLVJP34vmaw=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 증시 이슈 요약</title>
-  <meta name="description" content="국내(코스피·코스닥)와 해외(나스닥·S&amp;P500·빅테크) 증시 이슈를 아침·마감 3줄 브리핑, 한 줄 원인 카드, 섹터별 묶음, FOMC·CPI·고용·금통위·실적 일정(D-Day)으로 정리합니다. 시세는 지연 값이며 뉴스는 원문 링크로 연결합니다.">
+  <meta name="description" content="국내(KRX)·해외(NYSE·Nasdaq) 장 상태와 오늘의 증시 이슈를 3줄 브리핑, 한 줄 원인 카드, 섹터별 묶음, FOMC·CPI·고용·금통위·실적 일정(D-Day)으로 정리합니다. 시세 수치는 게시하지 않고 공식·원문 확인 링크만 안내합니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
@@ -16,9 +16,6 @@
       --border-subtle: #f1f5f9;  --border-default: #e2e8f0;  --border-strong: #cbd5e1;
       --text-primary: #0f172a;  --text-secondary: #475569;  --text-muted: #94a3b8;
       --accent-primary: #2563eb;  --accent-subtle: #eff6ff;
-      --up: #e11900;  --up-bg: #fff1f0;  --up-border: #ffd6d1;
-      --down: #1b64da;  --down-bg: #eff4ff;  --down-border: #d6e3ff;
-      --flat: #64748b;  --flat-bg: #f8fafc;  --flat-border: #e2e8f0;
       --warn-bg: #fffbeb;  --warn-text: #b45309;  --warn-border: #fde68a;
       --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
       --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
@@ -28,9 +25,6 @@
       --border-subtle: #1f1f23;  --border-default: #27272a;  --border-strong: #3f3f46;
       --text-primary: #f4f4f5;  --text-secondary: #a1a1aa;  --text-muted: #71717a;
       --accent-primary: #3b82f6;  --accent-subtle: rgba(59, 130, 246, 0.15);
-      --up: #ff6b5e;  --up-bg: rgba(255, 107, 94, 0.12);  --up-border: rgba(255, 107, 94, 0.32);
-      --down: #6f9dff;  --down-bg: rgba(111, 157, 255, 0.12);  --down-border: rgba(111, 157, 255, 0.32);
-      --flat: #a1a1aa;  --flat-bg: #141417;  --flat-border: #27272a;
       --warn-bg: rgba(245, 158, 11, 0.14);  --warn-text: #fcd34d;  --warn-border: rgba(245, 158, 11, 0.34);
       --ok-bg: rgba(16, 185, 129, 0.14);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.34);
       --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
@@ -56,25 +50,28 @@
       border-radius: 999px; padding: 3px 10px 3px 8px; font-variant-numeric: tabular-nums; }
     .mk-stamp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10b981; }
 
-    /* 지수 스냅샷 */
-    .mk-snapshot { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
-    .mk-quote { display: flex; flex-direction: column; gap: 5px; padding: 12px 13px; min-width: 0;
-      background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 14px;
+    /* 시장 장 상태 */
+    .mk-status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+    .mk-market { display: flex; flex-direction: column; gap: 10px; padding: 15px 16px; min-width: 0;
+      background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 16px;
       box-shadow: var(--card-shadow); }
-    .mk-quote-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .mk-quote-name { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; }
-    .mk-quote-market { font-size: 9.5px; font-weight: 700; color: var(--text-muted); border: 1px solid var(--border-default);
-      border-radius: 999px; padding: 0 5px; flex: 0 0 auto; }
-    .mk-quote-value { font-size: 18px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
-      white-space: nowrap; }
-    .mk-quote-change { display: inline-flex; align-items: center; gap: 3px; align-self: flex-start;
-      font-size: 11.5px; font-weight: 800; border-radius: 7px; padding: 1px 6px; font-variant-numeric: tabular-nums; }
-    .mk-up { color: var(--up); background: var(--up-bg); border: 1px solid var(--up-border); }
-    .mk-down { color: var(--down); background: var(--down-bg); border: 1px solid var(--down-border); }
-    .mk-flat { color: var(--flat); background: var(--flat-bg); border: 1px solid var(--flat-border); }
-    .mk-quote-foot { font-size: 9.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden;
-      text-overflow: ellipsis; }
+    .mk-market-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .mk-market-head h2 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; }
+    .mk-market-head .mk-badge { flex: 0 0 auto; }
+    .mk-market-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 12px; }
+    .mk-market-row { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .mk-market-row span { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .mk-market-row b { font-size: 12.5px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary);
+      font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mk-market-note { font-size: 10.5px; color: var(--text-muted); word-break: keep-all; }
+    .mk-links { display: flex; flex-wrap: wrap; gap: 5px; }
+    .mk-link-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700;
+      color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border-default);
+      border-radius: 999px; padding: 3px 9px; background: var(--bg-page); transition: border-color .15s ease,
+      color .15s ease, background-color .15s ease; }
+    .mk-link-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .mk-link-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .mk-link-chip svg { width: 9px; height: 9px; }
 
     /* 탭 */
     .mk-tabs { display: flex; align-items: center; gap: 6px; margin-top: 18px; }
@@ -108,7 +105,6 @@
     .mk-brief-line { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 7px;
       font-size: 12.5px; line-height: 1.55; color: var(--text-primary); word-break: keep-all; }
     .mk-brief-num { font-size: 10.5px; font-weight: 800; color: var(--text-muted); padding-top: 2px; }
-    .mk-brief-card.is-muted .mk-brief-line { color: var(--text-secondary); }
 
     /* 카드 목록 */
     .mk-section { margin-top: 20px; }
@@ -139,6 +135,7 @@
     .mk-issue-top { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
     .mk-src { font-size: 10px; font-weight: 800; color: var(--text-secondary); border: 1px solid var(--border-default);
       border-radius: 999px; padding: 1px 7px; }
+    .mk-src.is-official { color: var(--accent-primary); border-color: var(--accent-subtle); background: var(--accent-subtle); }
     .mk-conf { font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 7px; }
     .mk-conf.is-strong { color: var(--ok-text); background: var(--ok-bg); border: 1px solid var(--ok-border); }
     .mk-conf.is-guess { color: var(--warn-text); background: var(--warn-bg); border: 1px solid var(--warn-border); }
@@ -147,8 +144,6 @@
     .mk-issue h3 { font-size: 13.5px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.42; word-break: keep-all; }
     .mk-why { font-size: 12px; line-height: 1.55; color: var(--text-secondary); word-break: keep-all; }
     .mk-why b { font-weight: 800; color: var(--text-primary); }
-    .mk-issue-sum { font-size: 11px; line-height: 1.5; color: var(--text-muted); word-break: keep-all;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .mk-issue-foot { display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 3px; }
     .mk-sector-tag { font-size: 10px; font-weight: 700; color: var(--accent-primary); background: var(--accent-subtle);
       border-radius: 6px; padding: 1px 6px; }
@@ -193,6 +188,11 @@
       overflow: hidden; text-overflow: ellipsis; }
     .mk-cal-sub { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden;
       text-overflow: ellipsis; }
+    .mk-cal-src { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 3px;
+      font-size: 10px; color: var(--text-muted); }
+    .mk-cal-src a { color: var(--text-secondary); font-weight: 700; text-decoration: none;
+      border-bottom: 1px solid var(--border-strong); }
+    .mk-cal-src a:hover { color: var(--accent-primary); }
     .mk-cal-time { font-size: 11px; font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums;
       text-align: right; white-space: nowrap; }
     .mk-cal-time.is-tbd { color: var(--text-muted); font-weight: 600; }
@@ -212,7 +212,6 @@
     .mk-foot { margin-top: 14px; font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.6; }
 
     @media (max-width: 1080px) {
-      .mk-snapshot { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .mk-issues { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .mk-sectors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -220,10 +219,8 @@
       .mk-wrap { padding: 14px 13px 110px; }
       .mk-hero h1 { font-size: 21px; }
       .mk-hero p { font-size: 12px; }
-      .mk-snapshot { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: none; }
-      .mk-snapshot::-webkit-scrollbar { display: none; }
-      .mk-quote { flex: 0 0 132px; padding: 11px 12px; }
-      .mk-quote-value { font-size: 16.5px; }
+      .mk-status { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+      .mk-market { padding: 13px 14px; }
       .mk-tabs { margin-top: 14px; }
       .mk-tab { padding: 7px 14px; font-size: 12.5px; }
       .mk-tab-note { display: none; }
@@ -235,9 +232,9 @@
       .mk-sectors { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
       .mk-cal { grid-template-columns: minmax(0, 1fr); gap: 7px; }
       .mk-cal-row { grid-template-columns: 44px minmax(0, 1fr) auto; padding: 10px 12px; gap: 8px; }
+      .mk-cal-sub, .mk-cal-src { white-space: normal; }
     }
     @media (max-width: 380px) {
-      .mk-quote { flex: 0 0 120px; }
       .mk-sector { padding: 11px 12px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -702,23 +699,23 @@
 </head>
 <body data-page="market">
 
-  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">증시 이슈</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link is-current" role="menuitem" href="market.html" aria-current="page">증시 이슈</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">기사 46건 · 일정 8건</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">증시 이슈</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link is-current" role="menuitem" href="market.html" aria-current="page">증시 이슈</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">기사 29건 · 일정 8건</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
 
   <main class="mk-wrap">
     <section class="mk-hero">
-      <span class="mk-pill">증시 · 마감 시황</span>
+      <span class="mk-pill">증시 · 이슈 정리</span>
       <h1>오늘 시장, 왜 움직였나</h1>
-      <p>국내(코스피·코스닥)와 해외(나스닥·S&amp;P500·빅테크) 이슈를 마감·아침 3줄로 정리했습니다. 기사마다 한 줄 원인과 원문 링크를 붙이고, 원인이 확인되지 않으면 그대로 밝힙니다.</p>
+      <p>장이 열렸는지부터 봅니다. 국내(KRX)·해외(NYSE·Nasdaq) 장 상태를 거래소 캘린더로 계산하고, 오늘의 이슈를 한 줄 원인과 원문 링크로 정리합니다. 지수·종목 수치는 싣지 않고 공식·원문에서 확인하도록 링크만 둡니다.</p>
       <div class="mk-meta">
-        <span class="mk-stamp">수집 2026-11-25 20:56:02 KST</span>
+        <span class="mk-stamp">수집 2026-11-26 01:02:27 KST</span>
         <span class="mk-dot"></span>
-        <span>기사 46건 · 일정 8건</span>
+        <span>기사 29건 · 일정 8건</span>
         <span class="mk-dot"></span>
-        <span>지수·종목은 지연 시세</span>
+        <span>시세 수치 미게시 · 원문 링크 안내</span>
       </div>
     </section>
 
-    <section class="mk-snapshot" id="mkSnapshot" aria-label="지수 스냅샷"></section>
+    <section class="mk-status" id="mkStatus" aria-label="시장 장 상태"></section>
 
     <div class="mk-tabs" role="tablist" aria-label="시장 선택">
       <button type="button" class="mk-tab" id="mkTabDomestic" role="tab" aria-selected="true"
@@ -732,12 +729,12 @@
       <div class="mk-session" id="mkSessionDomestic"></div>
       <div class="mk-brief">
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>마감 시황 3줄</h2><span id="mkCloseStampDomestic"></span></div>
-          <div class="mk-brief-list" id="mkCloseDomestic"></div>
+          <div class="mk-brief-head"><h2>오늘의 이슈 3줄</h2><span id="mkIssueStampDomestic"></span></div>
+          <div class="mk-brief-list" id="mkTodayDomestic"></div>
         </article>
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>아침 점검 3줄</h2><span>다음 거래일</span></div>
-          <div class="mk-brief-list" id="mkMorningDomestic"></div>
+          <div class="mk-brief-head"><h2>다음 거래일 점검</h2><span>장 상태 · 일정</span></div>
+          <div class="mk-brief-list" id="mkNextDomestic"></div>
         </article>
       </div>
     </section>
@@ -746,15 +743,14 @@
       <div class="mk-session" id="mkSessionGlobal"></div>
       <div class="mk-brief">
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>마감 시황 3줄</h2><span id="mkCloseStampGlobal"></span></div>
-          <div class="mk-brief-list" id="mkCloseGlobal"></div>
+          <div class="mk-brief-head"><h2>오늘의 이슈 3줄</h2><span id="mkIssueStampGlobal"></span></div>
+          <div class="mk-brief-list" id="mkTodayGlobal"></div>
         </article>
         <article class="mk-brief-card">
-          <div class="mk-brief-head"><h2>아침 점검 3줄</h2><span>다음 거래일</span></div>
-          <div class="mk-brief-list" id="mkMorningGlobal"></div>
+          <div class="mk-brief-head"><h2>다음 거래일 점검</h2><span>장 상태 · 일정</span></div>
+          <div class="mk-brief-list" id="mkNextGlobal"></div>
         </article>
       </div>
-      <div class="mk-session" id="mkBigtechLine" style="margin-top:10px"></div>
     </section>
 
     <section class="mk-section" aria-labelledby="mkIssueTitle">
@@ -773,7 +769,7 @@
     <section class="mk-section" aria-labelledby="mkSectorTitle">
       <div class="mk-section-head">
         <div>
-          <h2 id="mkSectorTitle">오늘의 돈 몰린 테마·섹터</h2>
+          <h2 id="mkSectorTitle">돈 몰린 테마·섹터</h2>
           <p>섹터를 누르면 위 카드가 그 섹터만 남깁니다</p>
         </div>
         <span id="mkSectorCount"></span>
@@ -796,11 +792,11 @@
       <h2>알아 두실 점</h2>
       <ul id="mkNotes"></ul>
       <div class="mk-src-list" id="mkSources" aria-label="수집 출처"></div>
-      <p class="mk-foot">각 기사·지표의 저작권과 해석은 원문 매체·기관에 있습니다 · 지수·종목 값은 지연 시세입니다.</p>
+      <p class="mk-foot">각 기사·지표의 저작권과 해석은 원문 매체·기관에 있습니다 · 시세 수치는 게시하지 않습니다.</p>
     </section>
   </main>
 
-  <script type="application/json" id="mkData">{"meta":{"collectedAt":"2026-11-25 20:56:02 KST","collectedAtIso":"2026-11-25T20:56:02+09:00","ai":{"used":false,"analyzed":0,"fallback":18,"model":""},"sources":[{"name":"Yahoo Finance","kind":"지연 시세","url":"https://finance.yahoo.com/","status":"ok","count":14},{"name":"연합뉴스","kind":"뉴스","url":"https://www.yna.co.kr/rss/market.xml","status":"ok","count":76},{"name":"연합뉴스","kind":"뉴스","url":"https://www.yna.co.kr/rss/economy.xml","status":"ok","count":56},{"name":"매일경제","kind":"뉴스","url":"https://www.mk.co.kr/rss/30000001/","status":"ok","count":20},{"name":"CNBC","kind":"뉴스","url":"https://www.cnbc.com/id/20910258/device/rss/rss.html","status":"ok","count":2},{"name":"CNBC","kind":"뉴스","url":"https://www.cnbc.com/id/10000664/device/rss/rss.html","status":"ok","count":3},{"name":"MarketWatch","kind":"뉴스","url":"https://feeds.content.dowjones.io/public/rss/mw_topstories","status":"ok","count":4},{"name":"연준(FOMC)","kind":"공식 일정","url":"https://www.federalreserve.gov/json/calendar.json","status":"ok","count":2},{"name":"미 노동통계국(BLS) 미 소비자물가지수(CPI)","kind":"공식 일정","url":"http://web.archive.org/web/20261124115522/https://www.bls.gov/schedule/news_release/cpi.htm","status":"보관 사본","count":14},{"name":"미 노동통계국(BLS) 미 고용보고서(비농업 고용)","kind":"공식 일정","url":"http://web.archive.org/web/20261115120556/https://www.bls.gov/schedule/news_release/empsit.htm","status":"보관 사본","count":14},{"name":"한국은행 금통위","kind":"공식 일정","url":"https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755&mtgSe=A&pYear=2026","status":"ok","count":1},{"name":"Nasdaq 실적 캘린더","kind":"공식 일정","url":"https://www.nasdaq.com/market-activity/earnings","status":"ok","count":4}],"notes":["지수·종목 값은 Yahoo Finance 지연 시세이며 참고용입니다. 실제 주문·판단의 근거로 쓰지 마세요.","뉴스는 제목·한 줄 요약·원문 링크만 보여 줍니다. 기사 전문과 저작권은 각 매체에 있습니다.","원인이 원문에 없으면 '뚜렷한 원인 미확인'으로 표시합니다. 추측으로 채우지 않습니다.","일정의 한국시간은 서머타임에 따라 1시간 달라질 수 있습니다(현지 시각을 함께 적었습니다)."],"newsCount":46,"calendarCount":8},"sessions":{"domestic":{"state":"closed","stateLabel":"오늘 장 마감","lastTradingDate":"2026-11-25","lastTradingLabel":"11월 25일(수)","localNow":"11-25 20:56","timezone":"Asia/Seoul"},"global":{"state":"preopen","stateLabel":"개장 전","lastTradingDate":"2026-11-24","lastTradingLabel":"11월 24일(화)","localNow":"11-25 06:56","timezone":"America/New_York"}},"indices":[{"id":"kospi","name":"코스피","symbol":"^KS11","market":"domestic","currency":"KRW","exchange":"KSE","value":4697.51,"prevClose":5006.03,"changePct":-6.16,"lastTradingDate":"2026-11-25","timezone":"Asia/Seoul","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/%5EKS11","delayed":true},{"id":"kosdaq","name":"코스닥","symbol":"^KQ11","market":"domestic","currency":"KRW","exchange":"KOSDAQ","value":650.64,"prevClose":665.88,"changePct":-2.29,"lastTradingDate":"2026-11-25","timezone":"Asia/Seoul","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/%5EKQ11","delayed":true},{"id":"nasdaq","name":"나스닥","symbol":"^IXIC","market":"global","currency":"USD","exchange":"Nasdaq GIDS","value":23733.53,"prevClose":24089.56,"changePct":-1.48,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/%5EIXIC","delayed":true},{"id":"sp500","name":"S&P500","symbol":"^GSPC","market":"global","currency":"USD","exchange":"SNP","value":7201.09,"prevClose":7237.17,"changePct":-0.5,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/%5EGSPC","delayed":true},{"id":"dow","name":"다우","symbol":"^DJI","market":"global","currency":"USD","exchange":"DJI","value":50018.7,"prevClose":49595.31,"changePct":0.85,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/%5EDJI","delayed":true},{"id":"sox","name":"필라델피아 반도체","symbol":"^SOX","market":"global","currency":"USD","exchange":"Nasdaq GIDS","value":8832.5,"prevClose":9588.05,"changePct":-7.88,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/%5ESOX","delayed":true}],"bigtech":[{"id":"nvda","name":"엔비디아","symbol":"NVDA","market":"global","currency":"USD","exchange":"NasdaqGS","value":155.38,"prevClose":165.05,"changePct":-5.86,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/NVDA","delayed":true},{"id":"aapl","name":"애플","symbol":"AAPL","market":"global","currency":"USD","exchange":"NasdaqGS","value":354.07,"prevClose":349.08,"changePct":1.43,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/AAPL","delayed":true},{"id":"msft","name":"마이크로소프트","symbol":"MSFT","market":"global","currency":"USD","exchange":"NasdaqGS","value":496.13,"prevClose":492.5,"changePct":0.74,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/MSFT","delayed":true},{"id":"googl","name":"알파벳","symbol":"GOOGL","market":"global","currency":"USD","exchange":"NasdaqGS","value":279.05,"prevClose":282.1,"changePct":-1.08,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/GOOGL","delayed":true},{"id":"amzn","name":"아마존","symbol":"AMZN","market":"global","currency":"USD","exchange":"NasdaqGS","value":252.29,"prevClose":255.39,"changePct":-1.21,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/AMZN","delayed":true},{"id":"meta","name":"메타","symbol":"META","market":"global","currency":"USD","exchange":"NasdaqGS","value":589.82,"prevClose":597.6,"changePct":-1.3,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/META","delayed":true},{"id":"tsla","name":"테슬라","symbol":"TSLA","market":"global","currency":"USD","exchange":"NasdaqGS","value":384.68,"prevClose":385.46,"changePct":-0.2,"lastTradingDate":"2026-11-24","timezone":"America/New_York","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/TSLA","delayed":true}],"fx":[{"id":"usdkrw","name":"원/달러","symbol":"KRW=X","market":"fx","currency":"KRW","exchange":"CCY","value":1343.0,"prevClose":1341.02,"changePct":0.14,"lastTradingDate":"2026-11-25","timezone":"Europe/London","source":"Yahoo Finance","sourceUrl":"https://finance.yahoo.com/quote/KRW%3DX","delayed":true}],"briefing":{"domestic":{"close":["코스피 4,697.51 (-6.16%)로 마감","코스닥 650.64 (-2.29%)로 마감","헤드라인: 이틀에 한 번 꼴 사이드카…널뛰는 코스피에 개미 공황"],"morning":["코스피 4,697.51(-6.16%) · 코스닥 650.64(-2.29%) 종가에서 출발","11/26 시간 미정 한국은행 금통위 기준금리 결정","원/달러 1,343.00원(+0.14%) · 지연 시세"]},"global":{"close":["나스닥 23,733.53 (-1.48%)로 마감","S&P500 7,201.09 (-0.50%)로 마감","헤드라인: 젠슨 황 Nvidia 복귀, 미·중 AI 경쟁은 반도체 이상"],"morning":["나스닥 23,733.53(-1.48%) · S&P500 7,201.09(-0.50%) 종가에서 출발","11/25 시간 미정 Deere & Company 실적 발표","빅테크 엔비디아 -5.86% (전일 미국장 종가)"]},"analyzed_by":{"domestic":"fallback","global":"fallback"}},"issues":[{"id":"eeaeb0381bcd307b","market":"domestic","title":"EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진","titleOriginal":"EU, 美·中에 맞설 500억 유로 '소버린 기술펀드' 추진(종합)","why":"EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 등 소버린 기술펀드 추진","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 등 500억 유로 소버린 기술펀드를 추진한다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125125351009","publishedKst":"11-25 20:15","analyzedBy":"cache"},{"id":"8086e54e4bfe8e9b","market":"global","title":"The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason, says JPMorgan","titleOriginal":"The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason, says JPMorgan","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"While artificial intelligence is still being assessed based on capital expenditure, strate…","source":"MarketWatch","url":"https://www.marketwatch.com/story/the-s-p-500-is-headed-to-8-200-and-downturns-like-this-one-are-actually-part-of-the-reason-why-says-jpmorgan-b6acae4b?mod=mw_rss_topstories","publishedKst":"11-25 20:27","analyzedBy":"fallback"},{"id":"440cb64fc33853b4","market":"domestic","title":"이틀에 한 번 꼴 사이드카…널뛰는 코스피에 개미 공황","titleOriginal":"이틀에 한 번 꼴로 사이드카 울렸다…널뛰는 코스피에 개미들 ‘공황’","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"코스피 급변동에 사이드카·서킷브레이커가 빈발했고 올해 서킷브레이커는 11회 발동돼 투자자 패닉이 커졌다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218652","publishedKst":"11-25 20:09","analyzedBy":"cache"},{"id":"6e187a681989517b","market":"global","title":"이 전략가의 채권거래 모델, 크게 앞서…Fed 둔화는 좋은 일","titleOriginal":"This strategist’s bond-trading model is outperforming by a wide margin. The Fed slowing the economy is a good thing, he argues","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"마이클 다다는 인플레이션·명목성장률이 너무 높고 길었다고 보며 채권거래 모델이 크게 앞서고 Fed 경기 둔화를 좋은 일로 평가한다.","source":"MarketWatch","url":"https://www.marketwatch.com/story/this-strategists-bond-trading-model-is-outperforming-by-a-wide-margin-the-fed-slowing-the-economy-is-a-good-thing-he-argues-f39dfc5f?mod=mw_rss_topstories","publishedKst":"11-25 19:12","analyzedBy":"cache"},{"id":"b5e6e99e3bc3b77a","market":"domestic","title":"하이닉스 2028년 이익 급감 전망…반도체 저승사자 예측","titleOriginal":"“하이닉스 2028년 이익 급감”…반도체 저승사자의 섬뜩한 예측[머니닥터 시장진단]","why":"젠슨 황 엔비디아 CEO 복귀 소식에 AI 관련주·반도체주 반등","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"젠슨 황 엔비디아 CEO 복귀로 AI·반도체주가 반등했지만, 하이닉스 2028년 이익 급감 전망이 제기됐다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218640","publishedKst":"11-25 20:06","analyzedBy":"cache"},{"id":"1f3e45bae58bb634","market":"global","title":"젠슨 황 엔비디아 복귀와 401(k) 수혜 논란","titleOriginal":"I hate that Jensen Huang is back at Nvidia, but I love what it’s done for my 401(k). Am I a hypocrite?","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"젠슨 황의 엔비디아 복귀를 두고 401(k) 수혜와 위선 논란을 언급한 개인 경험담.","source":"MarketWatch","url":"https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories","publishedKst":"11-25 19:05","analyzedBy":"cache"},{"id":"ce012bcfc3253ba9","market":"domestic","title":"젠슨 황 귀환에도 AI 랠리서 소외","titleOriginal":"‘젠슨 황 귀환’에도 AI 랠리에서 소외…앤트로픽은 홀로 부진한 이유[이슈 플러스]","why":"젠슨 황 복귀 후 월가 전망치가 상향됐지만 앤트로픽은 홀로 부진","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"젠슨 황 복귀 후 월가 전망치가 상향됐지만 앤트로픽은 홀로 부진해 향후 과제가 만만치 않음을 보여줬다","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218621","publishedKst":"11-25 19:56","analyzedBy":"cache"},{"id":"52488453af4067e8","market":"global","title":"젠슨 황 Nvidia 복귀, 미·중 AI 경쟁은 반도체 이상","titleOriginal":"Jensen Huang's Nvidia return shows the U.S.-China AI race is about more than chips","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"젠슨 황의 Nvidia CEO 복귀가 미·중 AI 경쟁이 반도체 이상임을 보여준다고 보도.","source":"CNBC","url":"https://www.cnbc.com/2026/11/25/jensen-huang-nvidia-ai-talent-race.html","publishedKst":"11-25 10:13","analyzedBy":"cache"},{"id":"c96a141ef0bf2fa3","market":"domestic","title":"EU, 74조원 기술펀드 추진","titleOriginal":"美中 맞서는 EU … 74조원 기술펀드 추진","why":"미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 기업 투자 위해 최대 500억유로 펀드 추진","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"EU가 미국·중국 기술 패권에 맞서 AI·양자컴퓨팅 기업에 최대 500억유로(약 73조5000억원) 규모 펀드를 추진한다.","source":"매일경제","url":"https://www.mk.co.kr/news/world/12218547","publishedKst":"11-25 19:14","analyzedBy":"cache"},{"id":"346141f8f12c85c6","market":"global","title":"Dell 주가, AI 붐에 매출 두 배 이상 증가","titleOriginal":"Dell’s stock rises as the AI boom helps sales more than double","why":"AI 붐으로 매출이 두 배 이상 증가한 점이 주가 상승 배경","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"Dell 주가가 AI 붐에 따른 매출 두 배 이상 증가로 상승했다.","source":"MarketWatch","url":"https://www.marketwatch.com/story/dells-stock-rises-as-the-ai-boom-helps-sales-more-than-double-cfb8cf65?mod=mw_rss_topstories","publishedKst":"11-25 10:11","analyzedBy":"cache"},{"id":"5c9d4c068bc36304","market":"domestic","title":"삼성전기, 1조7000억원 자사주 전량 소각","titleOriginal":"삼성전기, 1조7000억원 자사주 전량 소각","why":"삼성전기의 1조7000억원 규모 자기주식 전량 소각 결정","confidence":"원문 근거","sectors":["금융"],"summary":"삼성전기가 1조7000억원 규모 자기주식을 전량 소각하며 보통주 200만주·우선주 5만3430주 등을 포함한다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218546","publishedKst":"11-25 19:13","analyzedBy":"cache"},{"id":"5a68064344de947f","market":"global","title":"민주당 중간선거 승리 후 소비자신뢰 급등…인플레이션 우려 지속","titleOriginal":"Consumer confidence shoots up after Democrats' midterm victories — though inflation worries persist","why":"중간선거 승리 후 소비자신뢰지수 개선, 인플레이션 우려 지속","confidence":"원문 근거","sectors":["매크로"],"summary":"컨퍼런스보드 소비자신뢰지수가 중간선거 승리 후 개선됐으나 인플레이션 우려는 지속됐다.","source":"CNBC","url":"https://www.cnbc.com/2026/11/24/consumer-confidence-november-election-midterm.html","publishedKst":"11-25 03:34","analyzedBy":"cache"},{"id":"5cca747dfcb21f65","market":"domestic","title":"미공개정보 1.8억 부당이득…코스닥사 임직원 중수청 통보","titleOriginal":"미공개중요정보로 1.8억 부당이득…코스닥社 임직원 중수청 통보","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["금융"],"summary":"증권선물위원회가 미공개중요정보로 1억8000만원 부당이득을 취한 코스닥사 임직원을 중수청에 통보했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125167400002","publishedKst":"11-25 18:25","analyzedBy":"cache"},{"id":"e66d5c9d94a429bc","market":"global","title":"윌리엄스, 인플레이션 대응 금리 인상 '시간이 지나며' 시사","titleOriginal":"Fed's John Williams indicates higher interest rates likely 'over time' to address inflation","why":"존 윌리엄스가 인플레이션 대응 위해 금리 인상이 시간이 지나며 필요할 수 있다고 언급","confidence":"원문 근거","sectors":["매크로"],"summary":"연준 윌리엄스, 인플레이션 대응 위한 금리 인상 가능성을 시간이 지나며 언급","source":"CNBC","url":"https://www.cnbc.com/2026/11/23/john-williams-fed-inflation-rate-hikes.html","publishedKst":"11-24 22:33","analyzedBy":"cache"},{"id":"a77f8f703d1bc11e","market":"domestic","title":"'국내 와인 수입사 첫 상장' 나라셀라, 소주 진출","titleOriginal":"'국내 와인 수입사 첫 상장' 나라셀라, 소주 시장 진출","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["유통·소비"],"summary":"국내 와인 수입사 첫 상장 나라셀라가 소주 시장에 진출한다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125166800030","publishedKst":"11-25 18:25","analyzedBy":"cache"},{"id":"76dc7901f2e943be","market":"global","title":"피터슨: 베센트의 젠슨 황 입장 변화, 트럼프·중국 함의 드러내","titleOriginal":"Peterson: Here’s what Bessent’s about-face on Jensen Huang reveals about Trump and China","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"피터슨, 베센트의 젠슨 황에 대한 입장 변화가 트럼프·중국 관련 함의를 드러낸다고 분석","source":"CNBC","url":"https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-trump-bessent-china.html","publishedKst":"11-24 06:00","analyzedBy":"cache"},{"id":"986b4b8c99247346","market":"domestic","title":"삼성전기, 1.7조원 자사주 소각…주가 상승에 규모 12배↑","titleOriginal":"삼성전기, 1.7조원 자사주 소각…주가 상승에 규모 12배↑","why":"주주가치 제고를 위한 자사주 소각 결정","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"삼성전기가 주주가치 제고를 위해 보통주 200만주·우선주 5만3천430주 자사주 소각을 결정했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125166100003","publishedKst":"11-25 18:16","analyzedBy":"cache"},{"id":"d592516bd838850c","market":"global","title":"젠슨 황 복귀, '바닥 형성'하며 매도세 멈출 듯","titleOriginal":"‘This establishes a bottom’: Jensen Huang’s return seen as likely to stop market sell-off, for now","why":"월가 전략가들은 젠슨 황의 엔비디아 복귀가 AI 거래를 안정시켜 시장 매도세를 멈출 수 있다고 봤다","confidence":"추정","sectors":["AI·반도체"],"summary":"월가 전략가들은 젠슨 황의 엔비디아 복귀가 AI 거래를 안정시켜 시장 매도세를 멈출 수 있다고 봤다.","source":"CNBC","url":"https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo-market-rally.html","publishedKst":"11-24 03:00","analyzedBy":"cache"},{"id":"559e0575a85a3be5","market":"domestic","title":"법무부, 전자주주총회 준비 가이드라인 발표","titleOriginal":"전자주주총회 어떻게 준비할까…법무부, 가이드라인 발표","why":"상법 개정으로 내년부터 자산총액 2조원 이상 상장사 전자주주총회 의무화, 법무부 실무기준 제시","confidence":"원문 근거","sectors":["금융"],"summary":"상법 개정으로 내년부터 자산총액 2조원 이상 상장사 전자주주총회 의무화, 법무부가 실무기준 제시","source":"매일경제","url":"https://www.mk.co.kr/news/society/12218505","publishedKst":"11-25 18:07","analyzedBy":"cache"},{"id":"878d5daf069f4b18","market":"domestic","title":"코웨이, 글로벌 펀드매니저 유망종목으로 ‘픽’","titleOriginal":"코웨이, 글로벌 펀드매니저 유망종목으로 ‘픽’","why":"호주 파이낸셜 리뷰가 손 콘퍼런스에서 코웨이를 글로벌 유망종목으로 보도했고 3분기 매출은 13.7% 증가","confidence":"원문 근거","sectors":["유통·소비"],"summary":"호주 파이낸셜 리뷰가 손 콘퍼런스에서 코웨이를 글로벌 유망종목으로 보도했고, 3분기 매출은 13.7% 증가했다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218503","publishedKst":"11-25 17:59","analyzedBy":"cache"},{"id":"bc12e0a0942b5a6f","market":"domestic","title":"코스피 6% 폭락에 채권시장으로? 금통위 전날 국고채 금리 하락","titleOriginal":"코스피 6% 폭락하자 채권시장으로?…금통위 전날 국고채 금리 일제히 하락","why":"금통위 기준금리 결정 하루 앞둔 25일 국고채 금리가 일제히 하락했다","confidence":"원문 근거","sectors":["금융"],"summary":"금통위 기준금리 결정 하루 전 국고채 금리가 일제히 하락했다.","source":"매일경제","url":"https://www.mk.co.kr/news/economy/12218490","publishedKst":"11-25 17:51","analyzedBy":"cache"},{"id":"4ea9795c82a80637","market":"domestic","title":"광화문 오피스 케이트윈타워, 1조원에 이지스운용 인수","titleOriginal":"광화문 오피스 케이트윈타워, 1조원에 이지스운용이 인수","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["금융"],"summary":"서울 광화문 인근 프라임 오피스 케이트윈타워가 1조원에 이지스자산운용에 인수됐다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125155300003","publishedKst":"11-25 17:43","analyzedBy":"cache"},{"id":"57c09aec597f31d5","market":"domestic","title":"박현주, 코스피 하락에 증안펀드 100조 확대 제안","titleOriginal":"[단독] 박현주, 코스피 무너진날 “10조 증안펀드, 100조로 키우자” 제안","why":"젠슨 황 엔비디아 CEO 복귀 효과가 하루 만에 사라지며 코스피가 4700선 아래로 주저앉았다","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"젠슨 황 엔비디아 CEO 복귀 효과가 하루 만에 사라지며 코스피가 4700선 아래로 하락했다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218470","publishedKst":"11-25 17:41","analyzedBy":"cache"},{"id":"6c2a295f0f18a6be","market":"domestic","title":"AI 투자심리 위축…앤트로픽 주가 공모가 하회","titleOriginal":"AI투심 하루 만에 꽁꽁 … 앤트로픽 주가, 상장 나흘만에 공모가 하회","why":"젠슨 황 엔비디아 CEO 복귀에도 AI 투자심리가 살아나지 않아","confidence":"원문 근거","sectors":["AI·반도체"],"summary":"젠슨 황 엔비디아 CEO 복귀에도 AI 투자심리가 살아나지 않으며 앤트로픽 주가가 상장 나흘 만에 공모가를 밑돌았다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218468","publishedKst":"11-25 17:40","analyzedBy":"cache"},{"id":"04f3f5fcea298af8","market":"domestic","title":"증안펀드 10조→100조 확대 제안","titleOriginal":"[단독] \"現10조 증안펀드 100조로 키우자\"","why":"젠슨 황 엔비디아 CEO 복귀 효과 소멸로 코스피 4700선 아래 하락, AI 투자 의구심 지속","confidence":"원문 근거","sectors":["AI·반도체","매크로"],"summary":"젠슨 황 엔비디아 CEO 복귀 효과가 하루 만에 사라지며 코스피가 4700선 아래로 주저앉았고 AI 투자 의구심이 이어졌다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218454","publishedKst":"11-25 17:38","analyzedBy":"cache"},{"id":"5c714d208ab1fcb4","market":"domestic","title":"올해 사이드카 102회…이틀에 한번꼴","titleOriginal":"작년 5회였는데…올해 102회, 이틀에 한번꼴 울린 사이드카","why":"국내 주식시장 급격한 변동성으로 사이드카가 올해 102회 발동","confidence":"원문 근거","sectors":["매크로"],"summary":"국내 주식시장 급격한 변동성으로 사이드카가 올해 102회 발동하며 이틀에 한번꼴로 울렸다.","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218444","publishedKst":"11-25 17:36","analyzedBy":"cache"},{"id":"7779ac670f22a2f7","market":"domestic","title":"다올증권, 경영권 매각 추진…회사측 \"결정사항 없어\"","titleOriginal":"다올증권, 경영권 매각 추진…회사측은 \"구체적 결정사항 없어\"","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["금융"],"summary":"다올투자증권이 경영권 매각을 추진한다는 소식이 전해졌으나 회사측은 구체적 결정사항이 없다고 밝혔다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125151500008","publishedKst":"11-25 17:08","analyzedBy":"cache"},{"id":"ae5b9070cbbe0c54","market":"domestic","title":"금통위 D-1, 국고채 금리 일제히 하락…3년물 3.583%","titleOriginal":"'금통위 D-1' 국고채 금리 일제히 하락…3년물 연 3.583%(종합)","why":"금통위 기준금리 인상 여부를 하루 앞두고 국고채 금리가 일제히 하락","confidence":"원문 근거","sectors":["매크로"],"summary":"금통위 기준금리 인상 여부를 하루 앞두고 25일 국고채 금리가 일제히 하락, 3년물 연 3.583%.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125149151008","publishedKst":"11-25 17:05","analyzedBy":"cache"},{"id":"6c6eccbdf3b198a8","market":"domestic","title":"SK아이이테크놀로지, 애프터마켓서 10%대 급등","titleOriginal":"SK아이이테크놀로지, 애프터마켓서 10%대 급등","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 코스피 상장사 SK아이이테크놀로지[361610]가 25일 애프터마켓에서 10%대 급등 중이다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125153100008","publishedKst":"11-25 17:01","analyzedBy":"fallback"},{"id":"f676bcce532f2365","market":"domestic","title":"日증시, 젠슨 황 효과 하루 만에 증발…닛케이 2.78% 급락 마감(종합)","titleOriginal":"日증시, 젠슨 황 효과 하루 만에 증발…닛케이 2.78% 급락 마감(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"(서울·도쿄=연합뉴스) 김병규 기자 이도연 특파원 = 젠슨 황 최고경영자(CEO)의 엔비디아 복귀 후 급등했던 일본 증시가 하루 만에 급락세로 ...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125096051009","publishedKst":"11-25 16:56","analyzedBy":"fallback"},{"id":"d55ff15f29248547","market":"domestic","title":"국고채 금리 일제히 하락…3년물 연 3.583%","titleOriginal":"국고채 금리 일제히 하락…3년물 연 3.583%","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 25일 국고채 금리가 일제히 하락했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125149100008","publishedKst":"11-25 16:40","analyzedBy":"fallback"},{"id":"e68e898a0cb2e29d","market":"domestic","title":"반도체주 급락에 인버스 ETF 수익률 상위권 장악…화장품도 강세","titleOriginal":"반도체주 급락에 인버스 ETF 수익률 상위권 장악…화장품도 강세","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"(서울=연합뉴스) 강수지 기자 = 반도체주가 큰 폭으로 조정받으면서 최근 일주일간 상장지수펀드(ETF) 수익률 상위권을 인버스 상품이 휩쓸었다....","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125143100008","publishedKst":"11-25 16:23","analyzedBy":"fallback"},{"id":"38d5364b95b0103e","market":"domestic","title":"[특징주] 보안주, 국내외 잇단 해킹 피해에 급등(종합)","titleOriginal":"[특징주] 보안주, 국내외 잇단 해킹 피해에 급등(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 임은진 기자 = 보안주가 25일 국내외에서 해킹 피해가 잇단 영향에 급등했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125075151008","publishedKst":"11-25 16:18","analyzedBy":"fallback"},{"id":"68f7bb3265d40024","market":"domestic","title":"'젠슨황 랠리' 하루만에 끝?…메모리과잉·관세우려 투심 냉기(종합)","titleOriginal":"'젠슨황 랠리' 하루만에 끝?…메모리과잉·관세우려 투심 냉기(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"(서울=연합뉴스) 임은진 기자 = 젠슨 황 엔비디아 최고경영자(CEO) 복귀 소식에 전날 급등했던 주가가 하루 만에 6% 넘게 급락하며 상승분을...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125066951008","publishedKst":"11-25 16:14","analyzedBy":"fallback"},{"id":"867a09170a4b3eb1","market":"domestic","title":"코스피, 6%대 급락 4,697…전날 급등분 모두 반납(종합)","titleOriginal":"코스피, 6%대 급락 4,697…전날 급등분 모두 반납(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 곽윤아 기자 = 코스피가 25일 6% 넘게 급락해 4,600대로 밀려났다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125133251008","publishedKst":"11-25 16:11","analyzedBy":"fallback"},{"id":"ea2e118fc666d0f6","market":"domestic","title":"한국거래소, 상장사 이사회 대상 기업 밸류업 설명회 개최","titleOriginal":"한국거래소, 상장사 이사회 대상 기업 밸류업 설명회 개최","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 김유아 기자 = 한국거래소는 25일 서울 여의도 사옥에서 상장사 이사들을 대상으로 기업 밸류업 설명회를 개최했다고 밝혔다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125139300008","publishedKst":"11-25 16:05","analyzedBy":"fallback"},{"id":"880a7777ddb4b627","market":"domestic","title":"삼전닉스 9∼11% 급락…삼전, 시총 1천조원 하회(종합)","titleOriginal":"삼전닉스 9∼11% 급락…삼전, 시총 1천조원 하회(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"(서울=연합뉴스) 김유향 임은진 기자 = 미국 증시에서 AI 기술주가 하락한 영향에 25일 국내 증시에서도 반도체주가 급락했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125043951008","publishedKst":"11-25 16:03","analyzedBy":"fallback"},{"id":"74bb69b2de14a390","market":"domestic","title":"금감원장이 종목 추천?…\"유명인 투자 권유 가짜영상 유의해야\"","titleOriginal":"금감원장이 종목 추천?…\"유명인 투자 권유 가짜영상 유의해야\"","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"(서울=연합뉴스) 김지연 기자 = \"제가 요즘 주목하는 종목은 야자수반도체입니다.\"","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125082100002","publishedKst":"11-25 16:00","analyzedBy":"fallback"},{"id":"8dfe7cea9639496b","market":"domestic","title":"한국내화 \"미국 법인 주식 13억원어치 취득…지분율 100%\"","titleOriginal":"한국내화 \"미국 법인 주식 13억원어치 취득…지분율 100%\"","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 코스피 상장사 한국내화[010040]는 미국의 건설축로, 조업정비, 내화물 공급 업체(KRC AMERICA)의 주식 100만주...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125138400008","publishedKst":"11-25 15:56","analyzedBy":"fallback"},{"id":"b2144dce4c743842","market":"domestic","title":"환율, 미국 기술주 조정·외국인 순매도에 소폭 상승…1,343.2원","titleOriginal":"환율, 미국 기술주 조정·외국인 순매도에 소폭 상승…1,343.2원","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 이도흔 기자 = 미국 기술주 조정이 재개되고 외국인 투자자들이 국내 주식을 순매도하면서 원/달러 환율이 소폭 상승했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125137900002","publishedKst":"11-25 15:55","analyzedBy":"fallback"},{"id":"8981bffc4acb12b6","market":"domestic","title":"[특징주] 화장품주, 연말 성수기 매출성장 기대감에 강세 마감(종합)","titleOriginal":"[특징주] 화장품주, 연말 성수기 매출성장 기대감에 강세 마감(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 김유아 기자 = 화장품 관련주가 25일 국내 증시의 급락 속에서도 연말 성수기에 진입하며 매출 성장 기대감에 강세로 마감했다.","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125048251008","publishedKst":"11-25 15:53","analyzedBy":"fallback"},{"id":"9ff678ee5e47b5f1","market":"domestic","title":"삼성디스플레이, 3천억원 투자해 오스람 최대주주 된다","titleOriginal":"삼성디스플레이, 3천억원 투자해 오스람 최대주주 된다","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 박초롱 기자 = 삼성디스플레이가 2억1천만유로(약 3천100억원)을 투자해 글로벌 발광다이오드(LED) 기업 ams오스람의 최...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125134400003","publishedKst":"11-25 15:39","analyzedBy":"fallback"},{"id":"67171e065638762b","market":"domestic","title":"KT스카이라이프 노조 \"HCN 합병 중단\"…사측 \"고용 승계\"(종합)","titleOriginal":"KT스카이라이프 노조 \"HCN 합병 중단\"…사측 \"고용 승계\"(종합)","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 유현민 기자 = KT스카이라이프[053210] 노동조합이 KT[030200]의 HCN 합병 추진을 비판하며 합병 중단과 계열사...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125110551017","publishedKst":"11-25 15:39","analyzedBy":"fallback"},{"id":"441c6af326f02653","market":"domestic","title":"[IPO챗] 항공 복합재 기업 ANH스트럭쳐 \"수주 확대로 수익성 개선\"","titleOriginal":"[IPO챗] 항공 복합재 기업 ANH스트럭쳐 \"수주 확대로 수익성 개선\"","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 정회인 기자 = \"그동안 확보한 설계, 제작, 인증 역량을 바탕으로 수주를 매출로 전환하고 수익성을 높이는 데 집중하겠습니다....","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125120800008","publishedKst":"11-25 15:03","analyzedBy":"fallback"},{"id":"c99d3283b47ffced","market":"domestic","title":"고금리·AI 공격속 금융사 무너지면…당국 위기대응 점검 훈련","titleOriginal":"고금리·AI 공격속 금융사 무너지면…당국 위기대응 점검 훈련","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"summary":"(서울=연합뉴스) 김지연 기자 = 금융위원회는 25일 금융감독원, 예금보험공사, 한국은행 및 10개 '금융체계상 중요한 금융기관(SIFI)'과 ...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125074300002","publishedKst":"11-25 15:00","analyzedBy":"fallback"},{"id":"eb476342f83eb9f0","market":"domestic","title":"스카이라이프 노조 \"KT, HCN '졸속 합병' 중단해야\"","titleOriginal":"스카이라이프 노조 \"KT, HCN '졸속 합병' 중단해야\"","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"summary":"(서울=연합뉴스) 유현민 기자 = KT스카이라이프[053210] 노동조합이 KT[030200]의 HCN 합병 추진을 비판하며 합병 중단과 계열사...","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125110500017","publishedKst":"11-25 14:55","analyzedBy":"fallback"}],"sectors":[{"name":"AI·반도체","count":19,"items":[{"title":"EU, 미국·중국 맞설 500억 유로 소버린 기술펀드 추진","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125125351009"},{"title":"하이닉스 2028년 이익 급감 전망…반도체 저승사자 예측","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218640"},{"title":"젠슨 황 엔비디아 복귀와 401(k) 수혜 논란","source":"MarketWatch","url":"https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories"}]},{"name":"2차전지","count":0,"items":[]},{"name":"방산","count":0,"items":[]},{"name":"바이오","count":0,"items":[]},{"name":"금융","count":6,"items":[{"title":"삼성전기, 1조7000억원 자사주 전량 소각","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218546"},{"title":"미공개정보 1.8억 부당이득…코스닥사 임직원 중수청 통보","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125167400002"},{"title":"법무부, 전자주주총회 준비 가이드라인 발표","source":"매일경제","url":"https://www.mk.co.kr/news/society/12218505"}]},{"name":"자동차","count":0,"items":[]},{"name":"조선","count":0,"items":[]},{"name":"에너지·화학","count":0,"items":[]},{"name":"유통·소비","count":2,"items":[{"title":"'국내 와인 수입사 첫 상장' 나라셀라, 소주 진출","source":"연합뉴스","url":"https://www.yna.co.kr/view/AKR20261125166800030"},{"title":"코웨이, 글로벌 펀드매니저 유망종목으로 ‘픽’","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218503"}]},{"name":"인터넷·플랫폼","count":0,"items":[]},{"name":"매크로","count":20,"items":[{"title":"The S&P 500 is headed to 8,200 — and downturns like this one are actually part of the reason, says JPMorgan","source":"MarketWatch","url":"https://www.marketwatch.com/story/the-s-p-500-is-headed-to-8-200-and-downturns-like-this-one-are-actually-part-of-the-reason-why-says-jpmorgan-b6acae4b?mod=mw_rss_topstories"},{"title":"이틀에 한 번 꼴 사이드카…널뛰는 코스피에 개미 공황","source":"매일경제","url":"https://www.mk.co.kr/news/stock/12218652"},{"title":"이 전략가의 채권거래 모델, 크게 앞서…Fed 둔화는 좋은 일","source":"MarketWatch","url":"https://www.marketwatch.com/story/this-strategists-bond-trading-model-is-outperforming-by-a-wide-margin-the-fed-slowing-the-economy-is-a-good-thing-he-argues-f39dfc5f?mod=mw_rss_topstories"}]}],"calendar":[{"id":"earn-2026-11-25-DE","date":"2026-11-25","timeKst":"","title":"Deere & Company 실적 발표","category":"실적","region":"해외","note":"현지 장 시작 전 · 시가총액 1706억 달러","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-11-25"},{"id":"bok-2026-11-26","date":"2026-11-26","timeKst":"","title":"한국은행 금통위 기준금리 결정","category":"금리","region":"국내","note":"결정문 발표 시각은 당일 공지(보통 오전)","source":"한국은행","sourceUrl":"https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755","localDate":"2026-11-26"},{"id":"earn-2026-12-01-MRVL","date":"2026-12-02","timeKst":"","title":"Marvell Technology, Inc. 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽) · 시가총액 1269억 달러","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-01"},{"id":"earn-2026-12-02-CRM","date":"2026-12-03","timeKst":"","title":"Salesforce, Inc. 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽) · 시가총액 1526억 달러","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-02"},{"id":"jobs-2026-12-04","date":"2026-12-04","timeKst":"22:30","title":"미 고용보고서(비농업 고용)","category":"고용","region":"해외","note":"현지 08:30 발표","source":"미 노동통계국(BLS)","sourceUrl":"https://www.bls.gov/schedule/news_release/empsit.htm","localDate":"2026-12-04"},{"id":"fomc-2026-12-9","date":"2026-12-10","timeKst":"04:00","title":"FOMC 회의·금리 결정","category":"금리","region":"해외","note":"이틀 회의 마지막 날 결정 발표(현지 14:00)","source":"연방준비제도(Federal Reserve)","sourceUrl":"https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm","localDate":"2026-12-09"},{"id":"cpi-2026-12-10","date":"2026-12-10","timeKst":"22:30","title":"미 소비자물가지수(CPI)","category":"물가","region":"해외","note":"현지 08:30 발표","source":"미 노동통계국(BLS)","sourceUrl":"https://www.bls.gov/schedule/news_release/cpi.htm","localDate":"2026-12-10"},{"id":"earn-2026-12-09-AVGO","date":"2026-12-10","timeKst":"","title":"Broadcom Inc. 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽) · 시가총액 14967억 달러","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-09"}]}</script>
+  <script type="application/json" id="mkData">{"meta":{"collectedAt":"2026-11-26 01:02:27 KST","collectedAtIso":"2026-11-26T01:02:27+09:00","ai":{"used":true,"analyzed":29,"fallback":0,"model":"k-exaone_v2.5"},"sources":[{"name":"CNBC Top News","kind":"뉴스","url":"https://www.cnbc.com/id/100003114/device/rss/rss.html","status":"ok","count":17},{"name":"CNBC Markets","kind":"뉴스","url":"https://www.cnbc.com/id/20910258/device/rss/rss.html","status":"ok","count":4},{"name":"CNBC World Markets","kind":"뉴스","url":"https://www.cnbc.com/id/10000664/device/rss/rss.html","status":"ok","count":5},{"name":"MarketWatch Top Stories","kind":"뉴스","url":"https://feeds.content.dowjones.io/public/rss/mw_topstories","status":"ok","count":6},{"name":"연방준비제도 보도자료","kind":"공식 발표","url":"https://www.federalreserve.gov/feeds/press_all.xml","status":"ok","count":1},{"name":"연준(FOMC)","kind":"공식 일정","url":"https://www.federalreserve.gov/json/calendar.json","status":"ok","count":2},{"name":"미 노동통계국(BLS) 미 소비자물가지수(CPI)","kind":"공식 일정","url":"https://www.bls.gov/schedule/news_release/cpi.htm","status":"보관 사본","count":14,"archiveUrl":"https://web.archive.org/web/20261124115522/https://www.bls.gov/schedule/news_release/cpi.htm","snapshotDate":"2026-11-24","note":"bls.gov 직접 접속 차단 → web.archive.org 보관 사본 사용"},{"name":"미 노동통계국(BLS) 미 고용보고서(비농업 고용)","kind":"공식 일정","url":"https://www.bls.gov/schedule/news_release/empsit.htm","status":"보관 사본","count":14,"archiveUrl":"https://web.archive.org/web/20261115120556/https://www.bls.gov/schedule/news_release/empsit.htm","snapshotDate":"2026-11-15","note":"bls.gov 직접 접속 차단 → web.archive.org 보관 사본 사용"},{"name":"한국은행 금통위","kind":"공식 일정","url":"https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755&mtgSe=A&pYear=2026","status":"ok","count":1},{"name":"Nasdaq 실적 캘린더","kind":"공식 일정","url":"https://www.nasdaq.com/market-activity/earnings","status":"ok","count":4}],"notes":["지수·종목·환율 수치는 이 페이지에 게시하지 않습니다. 위 '공식 시세 확인' 링크(KRX 정보데이터시스템·네이버 증권·Nasdaq 등)에서 직접 확인하세요.","기사는 제목·매체·시각·원문 링크만 보여 줍니다. 전문과 저작권은 각 매체에 있습니다.","연합뉴스·매일경제처럼 자동 수집·AI 활용을 제한하는 매체는 수집하지 않습니다.","원인이 제목만으로 확인되지 않으면 '뚜렷한 원인 미확인'으로 표시하고 추측으로 채우지 않습니다.","BLS 일정 중 web.archive.org 보관 사본에서 읽은 항목은 카드에 보관일과 bls.gov 원문 링크를 함께 표기합니다.","장 상태는 거래소 캘린더(휴장·조기 마감) 기준입니다. 임시 휴장·거래시간 변경은 거래소 공지를 확인하세요.","일정의 한국시간은 서머타임에 따라 1시간 달라질 수 있습니다(현지 시각을 함께 적었습니다)."],"newsCount":29,"calendarCount":8},"sessions":{"domestic":{"state":"preopen","stateLabel":"개장 전","reason":"","marketName":"한국거래소(KRX)","timezone":"Asia/Seoul","tzLabel":"KST","localNow":"11-26 01:02","localDate":"2026-11-26","sessionText":"09:00~15:30","earlyClose":false,"lastTradingDate":"2026-11-25","lastTradingLabel":"11월 25일(수)","nextTradingDate":"2026-11-26","nextTradingLabel":"11월 26일(목)","outsideCalendar":false,"calendarName":"한국거래소 증시일정(휴장일)","calendarUrl":"https://www.krx.co.kr/main/main.jsp"},"global":{"state":"open","stateLabel":"장 진행 중","reason":"","marketName":"NYSE·Nasdaq","timezone":"America/New_York","tzLabel":"ET","localNow":"11-25 11:02","localDate":"2026-11-25","sessionText":"09:30~16:00","earlyClose":false,"lastTradingDate":"2026-11-25","lastTradingLabel":"11월 25일(수)","nextTradingDate":"2026-11-27","nextTradingLabel":"11월 27일(금)","outsideCalendar":false,"calendarName":"NYSE 거래시간·휴장일","calendarUrl":"https://www.nyse.com/trade/hours-calendars"}},"marketLinks":{"domestic":[{"label":"KRX 정보데이터시스템","url":"https://data.krx.co.kr/"},{"label":"네이버 증권","url":"https://finance.naver.com/"},{"label":"서울외국환중개(원/달러)","url":"https://www.smbs.biz/"},{"label":"한국은행 ECOS","url":"https://ecos.bok.or.kr/"}],"global":[{"label":"Nasdaq","url":"https://www.nasdaq.com/market-activity"},{"label":"Yahoo Finance","url":"https://finance.yahoo.com/"},{"label":"CNBC Markets","url":"https://www.cnbc.com/markets/"},{"label":"MarketWatch","url":"https://www.marketwatch.com/"}]},"briefing":{"analyzed_by":{"domestic":"template","global":"template"},"domestic":{"issues":["국내 기사는 재배포·AI 활용이 허용된 공식 피드가 없어 제목을 싣지 않습니다.","국내 시세·수급은 KRX 정보데이터시스템과 네이버 증권에서 직접 확인하세요.","국내 공식 발표(한국은행) 일정은 아래 '이번 주 시장 일정'에 정리했습니다."],"next":["현재 개장 전 · 거래 시간 09:00~15:30 KST","다음 일정 11/26 시간 미정 한국은행 금통위 기준금리 결정","시세는 이 페이지에 싣지 않습니다. 위 '공식 시세 확인' 링크를 쓰세요."]},"global":{"issues":["CNBC: 사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방","MarketWatch: 엔비디아 주가, 월요일 랠리 절반 이상 반납","MarketWatch: 인플레이션 악화에 연준, 미국 금리 인상 불가피"],"next":["현재 장 진행 중 · 거래 시간 09:30~16:00 ET","다음 일정 12/02 시간 미정 Marvell Technology, Inc. 실적 발표","그다음 일정 12/03 시간 미정 Salesforce, Inc. 실적 발표"]}},"issues":[{"id":"9a46b7a3ce356081","market":"global","title":"사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방","titleOriginal":"Saudi national charged in OpenAI bugging to be released on $1 million bond","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html","publishedKst":"11-26 00:55","analyzedBy":"cache"},{"id":"0d2fe17e8e9ed778","market":"global","title":"엔비디아 주가, 월요일 랠리 절반 이상 반납","titleOriginal":"Nvidia’s stock is giving back more than half of Monday’s rally as dip buyers cash in","why":"딥바이어 현금화로 월요일 랠리 절반 이상 반납","confidence":"원문 근거","sectors":["AI·반도체"],"source":"MarketWatch","official":false,"url":"https://www.marketwatch.com/story/nvidias-stock-is-giving-back-more-than-half-of-mondays-rally-as-dip-buyers-cash-in-ee4fa52c?mod=mw_rss_topstories","publishedKst":"11-26 00:43","analyzedBy":"cache"},{"id":"95e6ae5ccd66da5f","market":"global","title":"인플레이션 악화에 연준, 미국 금리 인상 불가피","titleOriginal":"Inflation gets worse. Now the Fed no choice but to raise U.S. interest rates.","why":"인플레이션 악화로 연준의 미국 금리 인상이 불가피하다는 내용","confidence":"원문 근거","sectors":["매크로"],"source":"MarketWatch","official":false,"url":"https://www.marketwatch.com/story/inflation-gets-worse-now-the-fed-no-choice-but-to-raise-u-s-interest-rates-8b0c2c1f?mod=mw_rss_topstories","publishedKst":"11-26 00:08","analyzedBy":"cache"},{"id":"0610f2e3a1ebeab5","market":"global","title":"엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험","titleOriginal":"We are living in perilous times if Nvidia’s Jensen Huang dictates your 401(k) balance","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"MarketWatch","official":false,"url":"https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories","publishedKst":"11-26 00:03","analyzedBy":"cache"},{"id":"f3e9fefcc0616d8d","market":"global","title":"부유층, 높은 지방채 수익률에 절세 모색","titleOriginal":"Wealthy investors seek tax savings from municipal bonds as yields remain elevated","why":"지방채 수익률이 높은 가운데 절세를 위해 지방채를 찾는다는 내용","confidence":"원문 근거","sectors":["금융"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/wealthy-investors-seek-tax-savings-from-municipal-bonds.html","publishedKst":"11-26 00:00","analyzedBy":"cache"},{"id":"ebd848f5e21385a2","market":"global","title":"3분기 GDP는 이미 훌륭했고 이제 더 좋아 보인다","titleOriginal":"Third-quarter GDP already looked great. Now it looks even better.","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"MarketWatch","official":false,"url":"https://www.marketwatch.com/story/third-quarter-gdp-already-looked-great-now-it-looks-even-better-12057da5?mod=mw_rss_topstories","publishedKst":"11-25 23:47","analyzedBy":"cache"},{"id":"076dd8ec67b043dd","market":"global","title":"Dell, 매출 2배 이상 전망에도 주가 하락","titleOriginal":"Dell sees sales more than double — but its stock falls anyway","why":"Dell 매출 2배 이상 전망에도 주가가 하락","confidence":"원문 근거","sectors":["AI·반도체"],"source":"MarketWatch","official":false,"url":"https://www.marketwatch.com/story/dells-stock-rises-as-the-ai-boom-helps-sales-more-than-double-cfb8cf65?mod=mw_rss_topstories","publishedKst":"11-25 23:40","analyzedBy":"cache"},{"id":"c6e15c58f8627b5a","market":"global","title":"GameStop, 트레이딩카드·Rolex 덕에 살아났다는 월가 강세론","titleOriginal":"GameStop has been saved by trading cards and even Rolex watches, say Wall Street’s newest bulls","why":"트레이딩 카드와 Rolex 시계가 GameStop을 살렸다는 월가 강세론","confidence":"추정","sectors":["유통·소비"],"source":"MarketWatch","official":false,"url":"https://www.marketwatch.com/story/gamestop-has-been-saved-by-trading-cards-and-even-rolex-watches-say-wall-streets-newest-bulls-a932d74c?mod=mw_rss_topstories","publishedKst":"11-25 23:32","analyzedBy":"cache"},{"id":"45c2c09128cd4253","market":"global","title":"젠슨 황, 엔비디아 승계 계획 불필요","titleOriginal":"Jensen Huang tells staff that Nvidia doesn't need a succession plan","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/jensen-huang-nvidia-employee-meeting.html","publishedKst":"11-25 23:29","analyzedBy":"cache"},{"id":"52488453af4067e8","market":"global","title":"젠슨 황 엔비디아 복귀, 미중 AI 경쟁은 칩 이상","titleOriginal":"Jensen Huang's Nvidia return shows the U.S.-China AI race is about more than chips","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/jensen-huang-nvidia-ai-talent-race.html","publishedKst":"11-25 23:29","analyzedBy":"cache"},{"id":"9f86a802bb7bd6d0","market":"global","title":"연준 선호 물가 지표 10월 3.8%로 가속","titleOriginal":"Fed’s preferred inflation gauge accelerated to 3.8% in October, raising the 2027 stakes for the central bank","why":"연준 선호 물가 지표가 10월 3.8%로 가속해 2027년 연준 부담 제기","confidence":"원문 근거","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/pce-inflation-report-october-2026.html","publishedKst":"11-25 23:18","analyzedBy":"cache"},{"id":"8c655b5073fc26cd","market":"global","title":"증시 수요일 주요 관전 포인트 10가지","titleOriginal":"Our top 10 things to watch in the stock market Wednesday","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/investingclub/2026/11/25/our-top-10-things-to-watch-in-the-stock-market-wednesday.html","publishedKst":"11-25 23:15","analyzedBy":"cache"},{"id":"d93c2165c40609b3","market":"global","title":"미국, 중국·EU 포함 14개 교역국에 새 관세 제안","titleOriginal":"U.S. proposes new tariffs on 14 trading partners, including China and the EU","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/us-tariffs-trump-section-301.html","publishedKst":"11-25 22:37","analyzedBy":"cache"},{"id":"0a7ca804c76eb356","market":"global","title":"리즈먼: 엔비디아 급등락, 워시의 시장 신호 판독 시험대","titleOriginal":"Liesman: Nvidia whiplash tests Kevin Warsh’s push to read market signals","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/nvidia-kevin-warsh-fed-market-signals.html","publishedKst":"11-25 21:26","analyzedBy":"cache"},{"id":"7a51bc34fc38771c","market":"global","title":"우크라, 푸틴에 정유공장 공격 '불평 중단' 촉구…러 보복 예고","titleOriginal":"Ukraine tells Putin to ‘stop complaining’ over oil refinery attacks as Russia promises retaliation","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["에너지·화학"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/ukraine-putin-russia-oil-refinery-attacks.html","publishedKst":"11-25 18:18","analyzedBy":"cache"},{"id":"43a374bf83724c27","market":"global","title":"엔비디아 반등이 빅테크 지출 긴축 가려…AI 부채 우려 확대","titleOriginal":"AI debt worries grow as Nvidia rebound masks Big Tech spending squeeze","why":"엔비디아 반등이 빅테크 지출 긴축을 가리며 AI 부채 우려 확대","confidence":"원문 근거","sectors":["AI·반도체","인터넷·플랫폼"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/ai-debt-big-tech-spending-nvidia.html","publishedKst":"11-25 15:29","analyzedBy":"cache"},{"id":"53137a3151a0bf44","market":"global","title":"아서 헤이스: AI 붕괴하면 암호화폐 인재 복귀할 것","titleOriginal":"Crypto talent will return ‘when AI implodes,’ Arthur Hayes says","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/talents-crypto-ai-investment.html","publishedKst":"11-25 15:09","analyzedBy":"cache"},{"id":"877fa681998dce9d","market":"global","title":"UAE 장관, IMF 전망 상향에 경제 낙관","titleOriginal":"‘Ready for any storm’: UAE minister optimistic on economy as IMF lifts forecast","why":"IMF가 전망을 상향해 UAE 장관이 경제에 낙관적","confidence":"원문 근거","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/25/uae-iran-war-economy-oil.html","publishedKst":"11-25 13:06","analyzedBy":"cache"},{"id":"01228f489491c2c3","market":"global","title":"Kalshi 'perps' 거래량, 예측시장 거래량 추월 시작","titleOriginal":"Kalshi daily volume of ‘perps’ trading begins to top its prediction markets","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["금융"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/kalshi-perps-volume-prediction-markets.html","publishedKst":"11-25 08:03","analyzedBy":"cache"},{"id":"6a524fef2eee25c5","market":"global","title":"트럼프 계좌 친구·가족 기여금 10억 달러 돌파","titleOriginal":"Trump Account contributions from friends and family pass $1 billion mark, Treasury says","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["금융"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/trump-accounts-family-contributions-billion.html","publishedKst":"11-25 07:18","analyzedBy":"cache"},{"id":"27c68776710fc448","market":"global","title":"Dell, AI 강세로 실적 예상 상회…250억 달러 자사주 매입 승인","titleOriginal":"Dell earnings beat on AI strength, company authorizes $25 billion buyback","why":"AI 강세로 실적이 예상 상회하고 250억 달러 자사주 매입을 승인한 영향","confidence":"원문 근거","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/dell-earnings-report-q3-2027.html","publishedKst":"11-25 07:07","analyzedBy":"cache"},{"id":"8721ce188376c76e","market":"global","title":"제약사 Insmed, Sanofi 인수 합의 후 주가 14% 급등…3년래 최대 거래","titleOriginal":"Drugmaker Insmed shares rally 14% after Sanofi agrees to buy it in pharma’s biggest deal in three years","why":"Sanofi의 Insmed 인수 합의 후 주가가 14% 급등한 영향","confidence":"원문 근거","sectors":["바이오"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/insmed-sanofi-deal-stock-pharma.html","publishedKst":"11-25 06:07","analyzedBy":"cache"},{"id":"9a23a97eb15272de","market":"global","title":"메타, 인스타그램으로 Muse 개인 AI 에이전트 광고 효과 노린다","titleOriginal":"How Meta is using Instagram to get an ad boost from its Muse personal AI agent","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["인터넷·플랫폼","AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/meta-instagram-muse-ad-revenue.html","publishedKst":"11-25 05:37","analyzedBy":"cache"},{"id":"eb0c9116020f7ee2","market":"global","title":"연준, 2026년 10월 19·28일 할인율 회의 의사록","titleOriginal":"Minutes of the Board's discount rate meetings on October 19 and October 28, 2026","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"연방준비제도","official":true,"url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20261124a.htm","publishedKst":"11-25 04:00","analyzedBy":"cache"},{"id":"5a68064344de947f","market":"global","title":"민주당 중간선거 승리 후 소비자신뢰 급등…인플레이션 우려 지속","titleOriginal":"Consumer confidence shoots up after Democrats' midterm victories — though inflation worries persist","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/consumer-confidence-november-election-midterm.html","publishedKst":"11-25 03:34","analyzedBy":"cache"},{"id":"372a098b603a7126","market":"global","title":"젠슨 황, NVIDIA 신제품 공개일 의회 청문회 출석","titleOriginal":"Jensen Huang to face DC grilling the same day Nvidia releases new products at GTC","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["AI·반도체"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/jensen-huang-nvidia-congress-gtc.html","publishedKst":"11-25 02:51","analyzedBy":"cache"},{"id":"e66d5c9d94a429bc","market":"global","title":"Fed 존 윌리엄스, 인플레이션 대응 위해 금리 인상 가능성 시사","titleOriginal":"Fed's John Williams indicates higher interest rates likely 'over time' to address inflation","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/23/john-williams-fed-inflation-rate-hikes.html","publishedKst":"11-24 22:33","analyzedBy":"cache"},{"id":"5faadd6088be1c14","market":"global","title":"프랑스 경기침체 위험 이유와 회피 요인","titleOriginal":"Why France is at risk of recession — and what could keep it out of one","why":"뚜렷한 원인 미확인","confidence":"미확인","sectors":["매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/24/france-recession-risk-pmi.html","publishedKst":"11-24 20:15","analyzedBy":"cache"},{"id":"d592516bd838850c","market":"global","title":"‘바닥 확인’ 젠슨 황 복귀, 매도세 멈출 듯","titleOriginal":"‘This establishes a bottom’: Jensen Huang’s return seen as likely to stop market sell-off, for now","why":"젠슨 황 복귀가 시장 매도세를 멈출 것으로 보인다는 관측","confidence":"추정","sectors":["AI·반도체","매크로"],"source":"CNBC","official":false,"url":"https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo-market-rally.html","publishedKst":"11-24 03:00","analyzedBy":"cache"}],"sectors":[{"name":"AI·반도체","count":13,"items":[{"title":"사우디 국적자, OpenAI 도청 혐의 기소…100만 달러 보석 석방","source":"CNBC","url":"https://www.cnbc.com/2026/11/24/openai-bugging-aflozan-release-saudi.html"},{"title":"엔비디아 주가, 월요일 랠리 절반 이상 반납","source":"MarketWatch","url":"https://www.marketwatch.com/story/nvidias-stock-is-giving-back-more-than-half-of-mondays-rally-as-dip-buyers-cash-in-ee4fa52c?mod=mw_rss_topstories"},{"title":"엔비디아 젠슨 황이 401(k) 잔고 좌우하면 위험","source":"MarketWatch","url":"https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories"}]},{"name":"2차전지","count":0,"items":[]},{"name":"방산","count":0,"items":[]},{"name":"바이오","count":1,"items":[{"title":"제약사 Insmed, Sanofi 인수 합의 후 주가 14% 급등…3년래 최대 거래","source":"CNBC","url":"https://www.cnbc.com/2026/11/24/insmed-sanofi-deal-stock-pharma.html"}]},{"name":"금융","count":3,"items":[{"title":"부유층, 높은 지방채 수익률에 절세 모색","source":"CNBC","url":"https://www.cnbc.com/2026/11/25/wealthy-investors-seek-tax-savings-from-municipal-bonds.html"},{"title":"Kalshi 'perps' 거래량, 예측시장 거래량 추월 시작","source":"CNBC","url":"https://www.cnbc.com/2026/11/24/kalshi-perps-volume-prediction-markets.html"},{"title":"트럼프 계좌 친구·가족 기여금 10억 달러 돌파","source":"CNBC","url":"https://www.cnbc.com/2026/11/24/trump-accounts-family-contributions-billion.html"}]},{"name":"자동차","count":0,"items":[]},{"name":"조선","count":0,"items":[]},{"name":"에너지·화학","count":1,"items":[{"title":"우크라, 푸틴에 정유공장 공격 '불평 중단' 촉구…러 보복 예고","source":"CNBC","url":"https://www.cnbc.com/2026/11/25/ukraine-putin-russia-oil-refinery-attacks.html"}]},{"name":"유통·소비","count":1,"items":[{"title":"GameStop, 트레이딩카드·Rolex 덕에 살아났다는 월가 강세론","source":"MarketWatch","url":"https://www.marketwatch.com/story/gamestop-has-been-saved-by-trading-cards-and-even-rolex-watches-say-wall-streets-newest-bulls-a932d74c?mod=mw_rss_topstories"}]},{"name":"인터넷·플랫폼","count":2,"items":[{"title":"엔비디아 반등이 빅테크 지출 긴축 가려…AI 부채 우려 확대","source":"CNBC","url":"https://www.cnbc.com/2026/11/25/ai-debt-big-tech-spending-nvidia.html"},{"title":"메타, 인스타그램으로 Muse 개인 AI 에이전트 광고 효과 노린다","source":"CNBC","url":"https://www.cnbc.com/2026/11/24/meta-instagram-muse-ad-revenue.html"}]},{"name":"매크로","count":11,"items":[{"title":"인플레이션 악화에 연준, 미국 금리 인상 불가피","source":"MarketWatch","url":"https://www.marketwatch.com/story/inflation-gets-worse-now-the-fed-no-choice-but-to-raise-u-s-interest-rates-8b0c2c1f?mod=mw_rss_topstories"},{"title":"3분기 GDP는 이미 훌륭했고 이제 더 좋아 보인다","source":"MarketWatch","url":"https://www.marketwatch.com/story/third-quarter-gdp-already-looked-great-now-it-looks-even-better-12057da5?mod=mw_rss_topstories"},{"title":"연준 선호 물가 지표 10월 3.8%로 가속","source":"CNBC","url":"https://www.cnbc.com/2026/11/25/pce-inflation-report-october-2026.html"}]}],"calendar":[{"id":"bok-2026-11-26","date":"2026-11-26","timeKst":"","title":"한국은행 금통위 기준금리 결정","category":"금리","region":"국내","note":"결정문 발표 시각은 당일 공지(보통 오전)","source":"한국은행","sourceUrl":"https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755","localDate":"2026-11-26"},{"id":"earn-2026-12-01-MRVL","date":"2026-12-02","timeKst":"","title":"Marvell Technology, Inc. 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽)","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-01"},{"id":"earn-2026-12-02-CRM","date":"2026-12-03","timeKst":"","title":"Salesforce, Inc. 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽)","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-02"},{"id":"jobs-2026-12-04","date":"2026-12-04","timeKst":"22:30","title":"미 고용보고서(비농업 고용)","category":"고용","region":"해외","note":"현지 08:30 발표 · web.archive.org 보관 사본 2026-11-15 기준","source":"미 노동통계국(BLS)","sourceUrl":"https://www.bls.gov/schedule/news_release/empsit.htm","localDate":"2026-12-04","snapshotDate":"2026-11-15","archiveUrl":"https://web.archive.org/web/20261115120556/https://www.bls.gov/schedule/news_release/empsit.htm"},{"id":"fomc-2026-12-9","date":"2026-12-10","timeKst":"04:00","title":"FOMC 회의·금리 결정","category":"금리","region":"해외","note":"이틀 회의 마지막 날 결정 발표(현지 14:00)","source":"연방준비제도(Federal Reserve)","sourceUrl":"https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm","localDate":"2026-12-09"},{"id":"cpi-2026-12-10","date":"2026-12-10","timeKst":"22:30","title":"미 소비자물가지수(CPI)","category":"물가","region":"해외","note":"현지 08:30 발표 · web.archive.org 보관 사본 2026-11-24 기준","source":"미 노동통계국(BLS)","sourceUrl":"https://www.bls.gov/schedule/news_release/cpi.htm","localDate":"2026-12-10","snapshotDate":"2026-11-24","archiveUrl":"https://web.archive.org/web/20261124115522/https://www.bls.gov/schedule/news_release/cpi.htm"},{"id":"earn-2026-12-09-AVGO","date":"2026-12-10","timeKst":"","title":"Broadcom Inc. 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽)","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-09"},{"id":"earn-2026-12-10-COST","date":"2026-12-11","timeKst":"","title":"Costco Wholesale Corporation 실적 발표","category":"실적","region":"해외","note":"현지 장 마감 후(한국 다음 날 새벽)","source":"Nasdaq 실적 캘린더","sourceUrl":"https://www.nasdaq.com/market-activity/earnings","localDate":"2026-12-10"}]}</script>
   <script>
 (function () {
   'use strict';
@@ -852,101 +848,94 @@
   }
   function dayDiff(a, b) { return Math.round((a.getTime() - b.getTime()) / 86400000); }
 
-  // ---------- 지수 스냅샷 ----------
-  function changeClass(value) {
-    if (value === null || value === undefined) return 'mk-flat';
-    if (value > 0) return 'mk-up';
-    if (value < 0) return 'mk-down';
-    return 'mk-flat';
+  // ---------- 시장 장 상태 ----------
+  function stateClass(session) {
+    var cls = 'mk-badge';
+    if (session.state === 'open' || session.state === 'closed') cls += ' is-live';
+    if (session.state === 'early_closed' || session.state === 'holiday' || session.state === 'unknown') cls += ' is-warn';
+    return cls;
   }
-  function numberText(value) {
-    if (value === null || value === undefined) return '-';
-    var fixed = Math.abs(value) >= 1000 ? value.toFixed(2) : value.toFixed(2);
-    return fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  function marketRow(label, value) {
+    var row = el('div', 'mk-market-row');
+    row.appendChild(el('span', '', label));
+    row.appendChild(el('b', '', value || '-'));
+    return row;
   }
-  function pctText(value) {
-    if (value === null || value === undefined) return '-';
-    return (value > 0 ? '+' : '') + value.toFixed(2) + '%';
-  }
+  var statusGrid = document.getElementById('mkStatus');
+  ['domestic', 'global'].forEach(function (market) {
+    var session = DATA.sessions[market];
+    if (!session) return;
+    var card = el('article', 'mk-market');
+    var head = el('div', 'mk-market-head');
+    var title = el('h2', '', (market === 'domestic' ? '국내 · ' : '해외 · ') + session.marketName);
+    head.appendChild(title);
+    head.appendChild(el('span', stateClass(session), session.stateLabel));
+    card.appendChild(head);
+    var rows = el('div', 'mk-market-rows');
+    rows.appendChild(marketRow('현지 시각', session.localNow + ' ' + session.tzLabel));
+    rows.appendChild(marketRow('거래 시간', session.sessionText));
+    rows.appendChild(marketRow('최근 거래일', session.lastTradingLabel));
+    rows.appendChild(marketRow('다음 거래일', session.nextTradingLabel));
+    card.appendChild(rows);
+    if (session.reason) card.appendChild(el('p', 'mk-market-note', '휴장·조기 마감 사유: ' + session.reason));
+    if (session.outsideCalendar) {
+      card.appendChild(el('p', 'mk-market-note', '거래소 캘린더 반영 범위 밖입니다. ' + session.calendarName + '에서 확인하세요.'));
+    }
+    var links = el('div', 'mk-links');
+    (DATA.marketLinks[market] || []).forEach(function (link) {
+      var a = el('a', 'mk-link-chip');
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.innerHTML = EXTERNAL;
+      a.appendChild(document.createTextNode(' ' + link.label));
+      links.appendChild(a);
+    });
+    card.appendChild(links);
+    statusGrid.appendChild(card);
+  });
 
-  function quoteCard(row) {
-    var card = el('article', 'mk-quote');
-    var top = el('div', 'mk-quote-top');
-    top.appendChild(el('span', 'mk-quote-name', row.name));
-    top.appendChild(el('span', 'mk-quote-market', row.market === 'domestic' ? '국내' : (row.market === 'fx' ? '환율' : '해외')));
-    card.appendChild(top);
-    card.appendChild(el('span', 'mk-quote-value', numberText(row.value)));
-    var change = el('span', 'mk-quote-change ' + changeClass(row.changePct), pctText(row.changePct));
-    card.appendChild(change);
-    var foot = el('div', 'mk-quote-foot');
-    foot.textContent = row.lastTradingDate ? row.lastTradingDate.slice(5).replace('-', '/') + ' 종가 · 지연' : '지연 시세';
-    card.appendChild(foot);
-    return card;
-  }
-
-  var snapshot = document.getElementById('mkSnapshot');
-  DATA.indices.concat(DATA.fx).forEach(function (row) { snapshot.appendChild(quoteCard(row)); });
-
-  // ---------- 세션(현지 거래일·휴장) ----------
-  function sessionLine(target, session, market) {
+  // ---------- 세션 줄 ----------
+  function sessionLine(target, session) {
     target.innerHTML = '';
     if (!session) return;
-    var stateClass = 'mk-badge';
-    if (session.state === 'open' || session.state === 'closed') stateClass += ' is-live';
-    if (session.state === 'holiday' || session.state === 'unknown') stateClass += ' is-warn';
-    target.appendChild(el('span', stateClass, session.stateLabel || '-'));
-    target.appendChild(el('span', '', '현지 ' + (session.lastTradingLabel || '-') + ' 종가'));
+    target.appendChild(el('span', stateClass(session), session.stateLabel));
+    target.appendChild(el('span', '', '현지 ' + session.localNow + ' ' + session.tzLabel + ' · 거래 시간 ' + session.sessionText));
     target.appendChild(el('span', 'mk-dot'));
-    target.appendChild(el('span', '', '현지 시각 ' + (session.localNow || '-') + (market === 'domestic' ? ' KST' : ' ET')));
+    target.appendChild(el('span', '', '최근 거래일 ' + (session.lastTradingLabel || '-')));
     target.appendChild(el('span', 'mk-dot'));
     target.appendChild(el('span', '', '갱신 ' + DATA.meta.collectedAt.replace(' KST', '') + ' KST'));
   }
-  sessionLine(document.getElementById('mkSessionDomestic'), DATA.sessions.domestic, 'domestic');
-  sessionLine(document.getElementById('mkSessionGlobal'), DATA.sessions.global, 'global');
-
-  var bigtechLine = document.getElementById('mkBigtechLine');
-  if (bigtechLine) {
-    bigtechLine.innerHTML = '';
-    bigtechLine.appendChild(el('span', '', '빅테크'));
-    var sorted = DATA.bigtech.slice().sort(function (a, b) {
-      return Math.abs(b.changePct || 0) - Math.abs(a.changePct || 0);
-    });
-    sorted.forEach(function (row) {
-      var chipClass = 'mk-badge ' + (row.changePct > 0 ? 'is-warn' : '');
-      var chip = el('span', chipClass, row.name + ' ' + pctText(row.changePct));
-      bigtechLine.appendChild(chip);
-    });
-    bigtechLine.appendChild(el('span', 'mk-dot'));
-    bigtechLine.appendChild(el('span', '', '전일 미국장 종가 기준'));
-  }
+  sessionLine(document.getElementById('mkSessionDomestic'), DATA.sessions.domestic);
+  sessionLine(document.getElementById('mkSessionGlobal'), DATA.sessions.global);
 
   // ---------- 브리핑 ----------
-  function fillBriefing(listId, stampId, market, kind) {
+  function fillLines(listId, lines) {
     var list = document.getElementById(listId);
-    if (!list) return;
-    var block = (DATA.briefing[market] || {})[kind] || [];
+    if (!list) return 0;
     list.innerHTML = '';
-    block.forEach(function (line, index) {
+    (lines || []).forEach(function (line, index) {
       var row = el('div', 'mk-brief-line');
       row.appendChild(el('span', 'mk-brief-num', String(index + 1)));
       row.appendChild(el('span', '', line));
       list.appendChild(row);
     });
-    if (!block.length) {
+    if (!(lines || []).length) {
       var empty = el('div', 'mk-brief-line');
       empty.appendChild(el('span', 'mk-brief-num', '-'));
       empty.appendChild(el('span', '', '정리된 내용이 없습니다'));
       list.appendChild(empty);
     }
-    if (stampId) {
-      var stamp = document.getElementById(stampId);
-      if (stamp) stamp.textContent = (DATA.briefing.analyzed_by || {})[market] === 'exaone' ? 'EXAONE 요약' : '템플릿 요약';
-    }
+    return (lines || []).length;
   }
-  fillBriefing('mkCloseDomestic', 'mkCloseStampDomestic', 'domestic', 'close');
-  fillBriefing('mkMorningDomestic', null, 'domestic', 'morning');
-  fillBriefing('mkCloseGlobal', 'mkCloseStampGlobal', 'global', 'close');
-  fillBriefing('mkMorningGlobal', null, 'global', 'morning');
+  ['domestic', 'global'].forEach(function (market) {
+    var block = DATA.briefing[market] || {};
+    var cap = market === 'domestic' ? 'Domestic' : 'Global';
+    fillLines('mkToday' + cap, block.issues);
+    fillLines('mkNext' + cap, block.next);
+    var stamp = document.getElementById('mkIssueStamp' + cap);
+    if (stamp) stamp.textContent = '제목 기준';
+  });
 
   // ---------- 탭 ----------
   var state = { market: 'domestic', sector: 'all' };
@@ -956,11 +945,11 @@
   function setMarket(market) {
     state.market = market;
     tabs.forEach(function (tab) {
+      if (!tab) return;
       var on = tab.dataset.market === market;
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
       if (panels[tab.dataset.market]) panels[tab.dataset.market].hidden = !on;
     });
-    renderIssues();
   }
   tabs.forEach(function (tab) {
     if (!tab) return;
@@ -1021,7 +1010,7 @@
     card.dataset.sectors = (row.sectors || []).join('|');
 
     var top = el('div', 'mk-issue-top');
-    top.appendChild(el('span', 'mk-src', row.source));
+    top.appendChild(el('span', 'mk-src' + (row.official ? ' is-official' : ''), row.source));
     var conf = confidenceText(row.confidence);
     top.appendChild(el('span', conf.cls, conf.text));
     top.appendChild(el('span', 'mk-issue-time', row.publishedKst || ''));
@@ -1032,7 +1021,7 @@
     var why = el('p', 'mk-why');
     if (row.confidence === '미확인') {
       why.appendChild(el('b', '', '뚜렷한 원인 미확인'));
-      why.appendChild(document.createTextNode(' — 원문에서 원인을 확인하지 못했습니다'));
+      why.appendChild(document.createTextNode(' — 제목에서 원인을 확인하지 못했습니다'));
     } else {
       why.textContent = row.why;
     }
@@ -1046,7 +1035,7 @@
     link.rel = 'noopener noreferrer';
     link.innerHTML = EXTERNAL;
     link.appendChild(document.createTextNode(' 원문'));
-    link.setAttribute('aria-label', row.source + ' 기사 원문 열기');
+    link.setAttribute('aria-label', row.source + ' 원문 열기');
     foot.appendChild(link);
     card.appendChild(foot);
     return card;
@@ -1054,7 +1043,6 @@
 
   function renderIssues() {
     var rows = DATA.issues.filter(function (row) {
-      if (row.market !== state.market) return false;
       if (state.sector !== 'all' && (row.sectors || []).indexOf(state.sector) < 0) return false;
       return true;
     });
@@ -1063,7 +1051,7 @@
     issueCount.textContent = rows.length + '건';
     if (!rows.length) {
       issueEmpty.hidden = false;
-      issueEmpty.innerHTML = '<b>이 조건의 기사가 없습니다.</b><br>다른 섹터를 고르거나 시장 탭을 바꿔 보세요.';
+      issueEmpty.innerHTML = '<b>이 조건의 기사가 없습니다.</b><br>다른 섹터를 골라 보세요.';
     } else {
       issueEmpty.hidden = true;
     }
@@ -1125,6 +1113,25 @@
       var sub = row.date.slice(5).replace('-', '/') + ' (' + row.region + ')';
       if (row.note) sub += ' · ' + row.note;
       body.appendChild(el('div', 'mk-cal-sub', sub));
+      if (row.snapshotDate) {
+        var src = el('div', 'mk-cal-src');
+        src.appendChild(el('span', '', '보관 사본 ' + row.snapshotDate + ' 기준'));
+        if (row.sourceUrl) {
+          var official = el('a', '', 'bls.gov 원문');
+          official.href = row.sourceUrl;
+          official.target = '_blank';
+          official.rel = 'noopener noreferrer';
+          src.appendChild(official);
+        }
+        if (row.archiveUrl) {
+          var archive = el('a', '', '보관 사본 열기');
+          archive.href = row.archiveUrl;
+          archive.target = '_blank';
+          archive.rel = 'noopener noreferrer';
+          src.appendChild(archive);
+        }
+        body.appendChild(src);
+      }
       wrap.appendChild(body);
       wrap.appendChild(el('span', 'mk-cal-time' + (row.timeKst ? '' : ' is-tbd'), row.timeKst ? row.timeKst + ' KST' : '시간 미정'));
       calGrid.appendChild(wrap);
@@ -1132,6 +1139,7 @@
     calCount.textContent = DATA.calendar.length + '건 · 기준 ' + today.getFullYear() + '.' + pad(today.getMonth() + 1) + '.' + pad(today.getDate());
   }
   renderCalendar();
+  renderIssues();
 
   // ---------- 안내·출처 ----------
   var notes = document.getElementById('mkNotes');
@@ -1147,8 +1155,6 @@
     sources.appendChild(item);
   });
 
-  setMarket('domestic');
-
   // 테스트·확인용
   window.MARKET = {
     data: DATA,
@@ -1158,14 +1164,16 @@
     counts: function () {
       return {
         cards: document.querySelectorAll('#mkIssues .mk-issue').length,
-        quotes: document.querySelectorAll('#mkSnapshot .mk-quote').length,
+        markets: document.querySelectorAll('#mkStatus .mk-market').length,
         sectors: document.querySelectorAll('#mkSectors .mk-sector').length,
         calendar: document.querySelectorAll('#mkCalendar .mk-cal-row').length,
+        archived: document.querySelectorAll('#mkCalendar .mk-cal-src').length,
         dday: Array.prototype.map.call(document.querySelectorAll('#mkCalendar .mk-dday'), function (node) {
           return node.textContent.trim();
         }),
       };
     },
+    sessionFor: function (market) { return DATA.sessions[market] || null; },
     ddayFor: function (isoDate) {
       var date = parseDate(isoDate);
       if (!date) return null;

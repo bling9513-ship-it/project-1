@@ -9,7 +9,7 @@
        · tests/test_recycle_data.py · tests/test_food_data.py · tests/test_grocery_data.py
        · tests/test_paymeter_logic.py · tests/test_subway_data.py · tests/test_basket_mission.py
        · tests/test_mystery90_puzzles.py · tests/test_movein_report.py · tests/test_nearby_data.py
-       · tests/test_market_data.py (증시 이슈: 기사·지수·일정·브리핑)
+       · tests/test_market_data.py (증시 이슈: 기사·장 상태·일정·브리핑)
        · tests/test_wargame_rotate.py · tests/test_wargame_spread.py
        · tests/test_job_dedup.py · tests/test_job_dedup_active.py · tests/test_location_normalize.py
        · tests/test_experience_normalize.py (경력 정규화·현황 바·경력 필터)
@@ -471,8 +471,13 @@ def check_pages():
         if isinstance(embedded, dict):
             check("market.html 기사 수", len(embedded.get("issues") or []) == len(market.get("issues") or []),
                   "%s vs %s" % (len(embedded.get("issues") or []), len(market.get("issues") or [])))
-            check("market.html 지수 수", len(embedded.get("indices") or []) == len(market.get("indices") or []),
-                  len(embedded.get("indices") or []))
+            check("market.html 장 상태",
+                  (embedded.get("sessions") or {}).get("domestic", {}).get("state")
+                  == (market.get("sessions") or {}).get("domestic", {}).get("state"),
+                  (embedded.get("sessions") or {}).get("domestic", {}).get("state"))
+            check("market.html 시세 수치 미게시",
+                  not any(field in embedded for field in ("indices", "bigtech", "fx")),
+                  [field for field in ("indices", "bigtech", "fx") if field in embedded])
             check("market.html 일정 수", len(embedded.get("calendar") or []) == len(market.get("calendar") or []),
                   len(embedded.get("calendar") or []))
             paths = {row.get("url") for row in embedded.get("issues") or []}

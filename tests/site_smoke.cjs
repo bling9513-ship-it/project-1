@@ -6722,18 +6722,25 @@ async function checkMovein(page, width) {
 }
 
 // ---- 지금 갈 곳: 지금 시각 계산 · 자치구/남은 시간 필터 · 찜 · 휴관 분리 ----
-// ---- 증시 이슈: 국내/해외 탭 · 섹터 필터 · D-Day · 원인 미확인 표기 ----
+// ---- 증시 이슈: 국내/해외 탭 · 장 상태 · 섹터 필터 · D-Day · 보관 사본 표기 ----
 async function checkMarket(page, width) {
   const tag = `market ${width}px`;
   await page.waitForFunction(() => typeof MARKET !== 'undefined', null, { timeout: 5000 });
   const data = await page.evaluate(() => MARKET.data);
-  const domestic = data.issues.filter((row) => row.market === 'domestic');
-  const globalRows = data.issues.filter((row) => row.market === 'global');
   const counts = await page.evaluate(() => MARKET.counts());
-  assert.equal(counts.quotes, data.indices.length + data.fx.length, `${tag}: 지수 카드 ${counts.quotes}`);
-  assert.equal(counts.cards, domestic.length, `${tag}: 국내 카드 ${counts.cards}/${domestic.length}`);
+  assert.equal(counts.markets, 2, `${tag}: 장 상태 카드 ${counts.markets}`);
+  assert.equal(counts.cards, data.issues.length, `${tag}: 기사 카드 ${counts.cards}/${data.issues.length}`);
   assert.equal(counts.calendar, data.calendar.length, `${tag}: 일정 ${counts.calendar}`);
   assert.equal(counts.sectors, data.sectors.length, `${tag}: 섹터 ${counts.sectors}`);
+
+  // 시세 수치를 싣지 않는다 — 수치 대신 공식 확인 링크와 장 상태만.
+  assert.ok(!data.indices && !data.bigtech && !data.fx, `${tag}: 시세 수치 필드가 남아 있습니다`);
+  const stateBadges = await page.evaluate(() => Array.from(document.querySelectorAll('#mkStatus .mk-market'))
+    .map((card) => (card.querySelector('.mk-badge') || {}).textContent || ''));
+  assert.equal(stateBadges.length, 2, `${tag}: 장 상태 배지 ${stateBadges.length}`);
+  Object.values(data.sessions).forEach((session) => {
+    assert.ok(stateBadges.includes(session.stateLabel), `${tag}: ${session.stateLabel} 배지 없음`);
+  });
 
   // D-Day 는 오늘(KST) 기준으로 다시 계산된다.
   const ddays = await page.evaluate((rows) => rows.map((row) => MARKET.ddayFor(row.date)), data.calendar);
@@ -6745,16 +6752,20 @@ async function checkMarket(page, width) {
     assert.equal(labels[index], expected, `${tag}: ${row.date} D-Day ${labels[index]} != ${expected}`);
   });
 
+  // BLS 보관 사본 일정은 카드에 보관일과 링크를 함께 보여 준다.
+  const archived = data.calendar.filter((row) => row.snapshotDate).length;
+  assert.equal(counts.archived, archived, `${tag}: 보관 사본 표기 ${counts.archived}/${archived}`);
+
   // 브리핑 3줄
-  const briefLines = await page.evaluate(() => document.querySelectorAll('#mkCloseDomestic .mk-brief-line').length);
-  assert.equal(briefLines, data.briefing.domestic.close.length, `${tag}: 마감 3줄 ${briefLines}`);
-  assert.ok(briefLines >= 3, `${tag}: 마감 줄 수 ${briefLines}`);
+  const briefLines = await page.evaluate(() => document.querySelectorAll('#mkTodayDomestic .mk-brief-line').length);
+  assert.equal(briefLines, data.briefing.domestic.issues.length, `${tag}: 국내 이슈 3줄 ${briefLines}`);
+  assert.ok(briefLines >= 3, `${tag}: 국내 이슈 줄 수 ${briefLines}`);
 
   // 원인 미확인 카드는 정직하게 그 문구를 보여 준다.
-  const unknownDomestic = domestic.filter((row) => row.confidence === '미확인').length;
+  const unknownAll = data.issues.filter((row) => row.confidence === '미확인').length;
   const shownUnknown = await page.evaluate(() => Array.from(document.querySelectorAll('#mkIssues .mk-why'))
     .filter((node) => node.textContent.includes('뚜렷한 원인 미확인')).length);
-  assert.equal(shownUnknown, unknownDomestic, `${tag}: 원인 미확인 표기 ${shownUnknown}/${unknownDomestic}`);
+  assert.equal(shownUnknown, unknownAll, `${tag}: 원인 미확인 표기 ${shownUnknown}/${unknownAll}`);
 
   // 원문 링크는 새 창 + noopener
   const links = await page.evaluate(() => Array.from(document.querySelectorAll('#mkIssues .mk-link'))
@@ -6764,15 +6775,15 @@ async function checkMarket(page, width) {
   // 해외 탭으로 전환
   await page.click('#mkTabGlobal');
   const swapped = await page.evaluate(() => ({
-    cards: MARKET.counts().cards,
     selected: document.getElementById('mkTabGlobal').getAttribute('aria-selected'),
     hidden: document.getElementById('mkPanelDomestic').hidden,
-    lines: document.querySelectorAll('#mkCloseGlobal .mk-brief-line').length,
+    lines: document.querySelectorAll('#mkTodayGlobal .mk-brief-line').length,
   }));
-  assert.equal(swapped.cards, globalRows.length, `${tag}: 해외 카드 ${swapped.cards}/${globalRows.length}`);
   assert.equal(swapped.selected, 'true', `${tag}: 탭 선택 상태`);
   assert.equal(swapped.hidden, true, `${tag}: 국내 패널이 닫히지 않음`);
-  assert.ok(swapped.lines >= 3, `${tag}: 해외 마감 줄 ${swapped.lines}`);
+  assert.ok(swapped.lines >= 3, `${tag}: 해외 이슈 줄 ${swapped.lines}`);
+  const afterTab = await page.evaluate(() => MARKET.counts().cards);
+  assert.equal(afterTab, counts.cards, `${tag}: 탭 전환 후 카드 수가 달라졌습니다`);
 
   // 국내 탭으로 돌아와 섹터 필터
   await page.click('#mkTabDomestic');
@@ -6788,7 +6799,7 @@ async function checkMarket(page, width) {
       sectors: Array.from(document.querySelectorAll('#mkIssues .mk-issue')).map((node) => node.dataset.sectors || ''),
       pressed: document.querySelector('#mkSectorChips .mk-chip[aria-pressed="true"]').dataset.sector,
     }));
-    const expected = domestic.filter((row) => row.sectors.includes(sector)).length;
+    const expected = data.issues.filter((row) => row.sectors.includes(sector)).length;
     assert.equal(filtered.cards, expected, `${tag}: ${sector} 카드 ${filtered.cards}/${expected}`);
     // 카드는 섹터를 2개까지 가질 수 있으므로, 고른 섹터가 없는 카드만 걸러졌는지 본다.
     assert.ok(filtered.sectors.every((value) => value.split('|').includes(sector)),
@@ -6796,7 +6807,7 @@ async function checkMarket(page, width) {
     assert.equal(filtered.pressed, sector, `${tag}: 칩 눌림 상태`);
     await page.click('#mkSectorChips .mk-chip[data-sector="all"]');
     const restored = await page.evaluate(() => MARKET.counts().cards);
-    assert.equal(restored, domestic.length, `${tag}: 전체 복원 ${restored}`);
+    assert.equal(restored, data.issues.length, `${tag}: 전체 복원 ${restored}`);
   }
 
   // 시간 미정 일정 표기
@@ -6809,7 +6820,7 @@ async function checkMarket(page, width) {
   if (width >= 1024) assert.equal(columns, 3, `${tag}: 카드 ${columns}열`);
   if (width <= 768) assert.equal(columns, 1, `${tag}: 카드 ${columns}열`);
 
-  console.log(`${tag} passed (국내 ${domestic.length} · 해외 ${globalRows.length} · 일정 ${data.calendar.length})`);
+  console.log(`${tag} passed (기사 ${data.issues.length} · 일정 ${data.calendar.length} · 장 상태 ${stateBadges.join('/')})`);
 }
 
 async function checkNearby(page, width) {
