@@ -105,7 +105,7 @@ async def check_width(browser, base, width):
     assert layout["svgRight"] <= layout["bodyRight"], "%dpx 차트가 화면을 넘습니다" % width
 
     start = await read_state(page)
-    assert start["total"] >= 14, "차트가 14개 미만입니다"
+    assert start["total"] == 16, "차트가 16개가 아닙니다: %d" % start["total"]
     assert start["open"] == 0 and start["dots"] == 0, "처음에는 단서가 닫혀 있어야 합니다"
     assert start["futureBars"] == 0, "정답 전에 가려진 구간이 그려졌습니다"
     assert start["maLine"] == 0, "정답 전에 이동평균선이 그려졌습니다"
@@ -133,8 +133,8 @@ async def check_width(browser, base, width):
     won = await read_state(page)
     assert won["badge"] == "정답" and won["title"] == "정답입니다", (won["badge"], won["title"])
     assert won["name"] and won["period"] and won["future"], "공개 정보 누락"
-    assert won["href"].startswith("https://"), "출처 링크가 없습니다"
-    assert won["source"] in ("Yahoo Finance 일별 시세", "Yahoo Finance 주별 시세") or won["source"].startswith("Yahoo Finance")
+    assert won["source"].startswith("합성 학습 데이터"), "합성 데이터 표기가 없습니다: %s" % won["source"]
+    assert "실제 시세 아님" in won["source"], "실제 시세 아님 표기가 없습니다"
     assert won["futureBars"] > 0, "정답 후 가려진 구간이 보이지 않습니다"
     assert won["correctMarks"] == 1 and won["locked"] == 4, "정답 표시·선택 잠금"
     assert won["solved"] == "1 / %d" % won["total"], won["solved"]
@@ -193,12 +193,10 @@ async def check_width(browser, base, width):
     assert "?id=" + start["id"] in page.url, "아카이브 이동 후 URL 이 갱신되지 않았습니다"
 
     # 분야 필터
-    await page.click("#catFilter .chip[data-cat='domestic']")
-    visible = await page.evaluate("""() => Array.from(document.querySelectorAll('#arcGrid .arc-card')).filter(c => !c.hidden).length""")
-    assert visible == 4, "분야 필터 결과가 %d개입니다" % visible
-    await page.click("#catFilter .chip[data-cat='bigtech']")
-    visible = await page.evaluate("""() => Array.from(document.querySelectorAll('#arcGrid .arc-card')).filter(c => !c.hidden).length""")
-    assert visible == 4, "분야 필터 결과가 %d개입니다" % visible
+    for key in ("trend", "breakout", "level", "volume"):
+        await page.click("#catFilter .chip[data-cat='%s']" % key)
+        visible = await page.evaluate("""() => Array.from(document.querySelectorAll('#arcGrid .arc-card')).filter(c => !c.hidden).length""")
+        assert visible == 4, "%s 필터 결과가 %d개입니다" % (key, visible)
 
     # 테마 전환
     before = await page.get_attribute("html", "data-theme")

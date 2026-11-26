@@ -438,7 +438,7 @@ async function checkChartGame(page, base, width) {
       period: document.getElementById('revealPeriod').textContent.trim(),
       name: document.getElementById('revealName').textContent.trim(),
       future: document.getElementById('revealFuture').textContent.trim(),
-      href: document.getElementById('revealSource').getAttribute('href'),
+      source: document.getElementById('revealSource').textContent.trim(),
       answer: ep.quiz.answer,
       answerText: ep.quiz.choices[ep.quiz.answer],
       share: document.getElementById('sharePreview').textContent,
@@ -480,7 +480,7 @@ async function checkChartGame(page, base, width) {
   assert.equal(won.badge, '정답', `${tag}: result badge`);
   assert.ok(won.name.length > 0 && won.period.length > 0 && won.future.length > 0,
     `${tag}: revealed period/name/future missing`);
-  assert.ok(won.href && won.href.startsWith('https://'), `${tag}: source link missing`);
+  assert.ok(won.source.includes('합성 학습 데이터'), `${tag}: synthetic data note missing`);
   assert.ok(won.futureBars > 0, `${tag}: hidden bars not drawn after the answer`);
   assert.equal(won.correctMarks, 1, `${tag}: correct option not highlighted`);
   assert.equal(won.locked, 4, `${tag}: options not locked after the answer`);

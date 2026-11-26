@@ -117,7 +117,7 @@ def build_all():
     from build_mission_html import build as build_mission
     daily_total, practice_total = build_mission()
 
-    # 16. chart.html 재생성 (차트 추리실: 과거 시세 블라인드 차트 + 단서 3단계 + 정답 공개)
+    # 16. chart.html 재생성 (차트 추리실: 합성 OHLCV 블라인드 차트 + 단서 3단계 + 정답 공개)
     from build_chart_html import build as build_chart
     chart_total = build_chart()
 
@@ -207,7 +207,7 @@ def build_all():
     print(f"  - 오늘 뭐 먹지: 메뉴 {pick_total}종 · 나들이 코스 16곳 (날씨 모드 3종 + 자동)")
     print(f"  - 하루 한 판 3단서 추리: 문제 {clue_total}개 (단서 3단계 · 4지선다 · 분야 6종)")
     print(f"  - 퇴근길 미션: 오늘의 지도 {daily_total}개 풀 · 연습 {practice_total}개 (최단 경로 BFS 검증)")
-    print(f"  - 차트 추리실: 과거 차트 {chart_total}개 (단서 3단계 · 4지선다 · 18페이지 내비게이션)")
+    print(f"  - 차트 추리실: 합성 차트 {chart_total}개 (단서 3단계 · 4지선다 · 18페이지 내비게이션)")
     print(f"  - 퇴근 전 60초 관제실: 경보 {ops_total}건 풀 · 오늘 6건 (실전 60초 + 연습 · 18페이지)")
     print(f"  - 막차 자리 배치: 일일 {seat_total['daily']}판 · 연습 {seat_total['practice']}판 (오늘 {seat_total['today']} · 기준 이동 수 검증)")
     print(f"  - 한 번 더 싣기: 일일 {load_total['daily']}일치 · 연습 {load_total['practice']}판 (오늘 {load_total['today']} · 목표 {load_total['goal']}점 · 최적 {load_total['optimal']}점)")
