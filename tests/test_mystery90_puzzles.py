@@ -13,7 +13,7 @@
   · 오늘의 사건
       - 날짜만으로 결정 · 14일 동안 14건이 모두 다른 사건
   · mystery90.html
-      - data-page="mystery90" · 전체 메뉴 30페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
+      - data-page="mystery90" · 전체 메뉴 31페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
       - 사건 14건 임베드 · 제한 90초 · 스트릭 저장 키 · 가이드 재생 키 · 결과/힌트 요소
 
 실행: python3 tests/test_mystery90_puzzles.py
@@ -32,7 +32,7 @@ from mystery90_data import CASES
 
 HTML = os.path.join(BASE_DIR, "mystery90.html")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 30
+SHEET_PAGES = 31
 
 failures = []
 
@@ -109,7 +109,7 @@ def check_html():
     check("이모지 0", not EMOJI_RE.search(html), EMOJI_RE.findall(html)[:3])
     check("그라데이션 0", "linear-gradient" not in html and "radial-gradient" not in html)
     check("인라인 핸들러 0", not re.search(r'\son(click|load|change|input|submit|keydown)=', html, re.I))
-    check("전체 메뉴 30페이지", html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"') == SHEET_PAGES,
+    check("전체 메뉴 31페이지", html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"') == SHEET_PAGES,
           html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"'))
     check("제한 90초", '"limit":90' in html, "limit")
     check("스트릭 저장 키", m9.STORE_KEY in html)

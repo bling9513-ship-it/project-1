@@ -25,7 +25,7 @@ import ui_shell
 
 HTML = os.path.join(BASE_DIR, "paymeter.html")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 30
+SHEET_PAGES = 31
 KST = timezone(timedelta(hours=9))
 
 failures = []

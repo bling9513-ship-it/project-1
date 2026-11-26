@@ -11,7 +11,7 @@
   · 대표 휴관 규칙
       - 서울도서관 월요일 휴관 · 서울숲 연중무휴 24시간 · 남산골 월요일 휴관
   · nearby.html
-      - data-page="nearby" · 전체 메뉴 30페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
+      - data-page="nearby" · 전체 메뉴 31페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
       - 자치구 칩(전체 + 9) · 남은 시간 3종 · 찜 저장 키 · 지도/공식 링크 · 데이터 기준일
       - 장소 30곳 임베드 · 무료/유료 배지 · 마감 임박 · 3분류 그리드
 
@@ -30,7 +30,7 @@ import build_nearby_html as nb
 
 HTML = os.path.join(BASE_DIR, "nearby.html")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 30
+SHEET_PAGES = 31
 
 
 def check(name, cond, detail=""):
@@ -112,7 +112,7 @@ def check_html():
     check("이모지 0", not EMOJI_RE.search(html), EMOJI_RE.findall(html)[:3])
     check("그라데이션 0", "linear-gradient" not in html and "radial-gradient" not in html)
     check("인라인 핸들러 0", not re.search(r'\son(click|load|change|input|submit|keydown)=', html, re.I))
-    check("전체 메뉴 30페이지", html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"') == SHEET_PAGES,
+    check("전체 메뉴 31페이지", html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"') == SHEET_PAGES,
           html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"'))
     check("임베드 장소 수", len(payload["places"]) == len(nb.load_data()["places"]), len(payload["places"]))
     chips = re.findall(r'class="nb-chip[^"]*" data-district="[^"]+"', html)

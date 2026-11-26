@@ -68,6 +68,23 @@ def cmd_tool_label(cmd):
             return label
     return text.split()[0] if text else "shell"
 
+# 치트시트 → 점검 백과사전(security-reference.html) 항목 ID 매핑.
+# 카드의 'ref' 값은 백과사전 항목 ID와 같고, 양쪽 페이지가 같은 ID로 서로를 가리킨다.
+REFERENCE_ITEMS = {
+    "net-asset-inventory": "승인 자산 인벤토리 점검",
+    "net-nmap-output": "Nmap 결과 파일 판독",
+    "web-security-headers": "보안 응답 헤더·CORS 확인",
+    "web-methods-auth": "HTTP 메서드·인증 응답 코드",
+    "tls-openssl": "인증서·체인·유효기간 판독",
+    "dns-dig": "TXT·SPF·DMARC 레코드 확인",
+    "pcap-tshark": "PCAP 필터링과 핸드셰이크 판독",
+    "pcap-tcpdump": "저장 캐시 플래그·재전송 판독",
+    "container-trivy": "이미지·SBOM·IaC 스캔 결과 검토",
+    "code-semgrep": "코드 패턴·시크릿 탐지 결과 검토",
+    "os-lynis": "로컬 시스템 감사 보고서 판독",
+    "os-ad-logs": "정책·감사 이벤트 로그 검토",
+}
+
 CATS = [
     {"key": "all", "label": "전체"},
     {"key": "nmap", "label": "Nmap"},
@@ -84,6 +101,7 @@ CHEATS = [
     {
         "cat": "nmap",
         "title": "살아 있는 호스트만 추리기",
+        "ref": "net-asset-inventory",
         "desc": "점검 대역에서 응답하는 호스트를 먼저 확정합니다. 포트 스캔 전에 자산 범위를 좁힐 때 씁니다.",
         "cmd": "nmap -sn 10.0.1.0/24 -oG - | awk '/Up$/{print $2}'",
         "tip": "ICMP를 막는 망에서는 `-sn`이 아무것도 못 찾습니다. `-PS22,80,443 -PE`를 함께 주거나 ARP 기반(`-PR`)으로 확인하세요.",
@@ -92,6 +110,7 @@ CHEATS = [
     {
         "cat": "nmap",
         "title": "서비스·버전 핑거프린팅",
+        "ref": "net-nmap-output",
         "desc": "상위 1000개 포트에서 열린 서비스의 제품·버전과 기본 스크립트 결과를 한 번에 모읍니다.",
         "cmd": "nmap -sV -sC -T4 --top-ports 1000 10.0.1.10 -oN sv_scan.txt",
         "tip": "`-sC`는 기본 NSE 스크립트를 돌리므로 로그에 흔적이 남습니다. 운영 중인 서버라면 점검 허가 범위와 시간 창을 먼저 확인하세요.",
@@ -165,6 +184,7 @@ CHEATS = [
     {
         "cat": "linux",
         "title": "리슨 포트와 소유 프로세스",
+        "ref": "os-lynis",
         "desc": "지금 외부에서 접근 가능한 포트와 그 포트를 잡고 있는 프로세스를 매핑합니다.",
         "cmd": "sudo ss -tulpn",
         "tip": "`0.0.0.0:*`·`[::]:*`는 모든 인터페이스에 열린 상태입니다. 방화벽으로 막혀 있어도 내부에서는 노출되므로 `127.0.0.1:` 바인딩이 필요한 서비스를 구분하세요.",
@@ -190,6 +210,7 @@ CHEATS = [
     {
         "cat": "web",
         "title": "보안 응답 헤더 한눈에 보기",
+        "ref": "web-security-headers",
         "desc": "CSP·HSTS·X-Frame-Options·nosniff가 실제 응답에 실려 있는지 확인합니다.",
         "cmd": "curl -sSI https://target.example.com | grep -iE '^(server|content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy)'",
         "tip": "헤더가 없다고 곧 취약점은 아니지만, XSS·클릭재킹 대응 수준을 판단하는 근거가 됩니다. 리다이렉트되는 도메인마다 따로 확인하세요.",
@@ -214,6 +235,7 @@ CHEATS = [
     {
         "cat": "web",
         "title": "허용 HTTP 메서드 확인",
+        "ref": "web-methods-auth",
         "desc": "OPTIONS 응답으로 서버가 열어 둔 메서드를 확인합니다. PUT·DELETE·TRACE는 설정 실수를 드러냅니다.",
         "cmd": "curl -sS -i -X OPTIONS https://target.example.com/ | head -20",
         "tip": "Allow 헤더에 TRACE가 있으면 XST(Cross-Site Tracing) 위험이 있고, PUT이 열려 있으면 업로드 경로를 우선 점검하세요.",
@@ -287,6 +309,7 @@ CHEATS = [
     {
         "cat": "win",
         "title": "로그온 실패 4625 집계",
+        "ref": "os-ad-logs",
         "desc": "보안 로그에서 로그온 실패(4625)를 모아 무차별 대입·자격증명 스터핑 시도를 확인합니다.",
         "cmd": "Get-WinEvent -FilterHashtable @{LogName='Security';Id=4625} -MaxEvents 50 | Group-Object {$_.Properties[5].Value} | Sort-Object Count -Descending | Select-Object Count,Name",
         "tip": "4625는 기본 감사 정책에서 켜져 있어야 기록됩니다. 짧은 시간에 여러 계정으로 퍼지는 실패는 password spray 패턴입니다.",
@@ -304,6 +327,7 @@ CHEATS = [
     {
         "cat": "net",
         "title": "특정 호스트 트래픽 저장",
+        "ref": "pcap-tcpdump",
         "desc": "대상 호스트와 오가는 패킷을 파일로 남겨 나중에 Wireshark로 분석합니다.",
         "cmd": "sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap",
         "tip": "`-s 0`은 패킷 전체를 저장합니다(기본은 262144바이트로 충분하지만 명시가 안전). 캡처 파일에는 개인정보·자격증명이 담길 수 있어 보관 기한과 접근 권한을 정해 두세요.",
@@ -320,6 +344,7 @@ CHEATS = [
     {
         "cat": "net",
         "title": "DNS 질의 감시",
+        "ref": "dns-dig",
         "desc": "내부 호스트가 어떤 도메인을 조회하는지 확인합니다. 악성 도메인·터널링 징후를 찾는 기본 수단입니다.",
         "cmd": "sudo tcpdump -i any -nn -vv 'udp port 53' -c 100",
         "tip": "`-vv`로 질의 이름까지 보입니다. 길고 무작위한 서브도메인이 반복되면 DNS 터널링을 의심하고, 같은 이름의 응답 TTL·레코드 타입(TXT)도 함께 보세요.",
@@ -328,6 +353,7 @@ CHEATS = [
     {
         "cat": "net",
         "title": "pcap에서 SYN 패킷만 추출",
+        "ref": "pcap-tcpdump",
         "desc": "저장한 캡처에서 연결 시도(SYN)만 걸러 스캔·접속 시도를 빠르게 추립니다.",
         "cmd": "tcpdump -nn -r cap.pcap 'tcp[13] & 2 != 0' -c 50",
         "tip": "같은 출발지에서 여러 포트로 SYN만 뿌리고 ACK가 없으면 스캔입니다. `-c`로 개수를 제한해 출력이 넘치지 않게 하세요.",
@@ -345,6 +371,7 @@ CHEATS = [
     {
         "cat": "crypto",
         "title": "인증서 만료일·SAN 확인",
+        "ref": "tls-openssl",
         "desc": "서버가 실제로 내미는 인증서의 주체, 발급자, 유효기간, 대체 이름(SAN)을 확인합니다.",
         "cmd": "echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2>/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName",
         "tip": "`-servername`을 빼면 SNI 없이 접속해 다른 인증서를 받을 수 있습니다. 만료가 임박했거나 SAN에 실제 도메인이 빠져 있으면 브라우저 경고로 이어집니다.",
@@ -353,6 +380,7 @@ CHEATS = [
     {
         "cat": "crypto",
         "title": "TLS 버전·암호 스위트 확인",
+        "ref": "tls-openssl",
         "desc": "구버전 TLS(1.0/1.1)나 취약 암호 스위트가 아직 허용되는지 확인합니다.",
         "cmd": "openssl s_client -connect target.example.com:443 -tls1_2 </dev/null 2>&1 | grep -E 'Protocol|Cipher|Verify return code'",
         "tip": "TLS 1.0/1.1은 폐기 대상입니다. `Verify return code: 0`이 아니면 체인 문제이므로 중간 인증서 누락 여부를 확인하세요.",
@@ -1133,6 +1161,29 @@ CSS = """
     }
 
     .cheat-card.hide { display: none; }
+    .cheat-card { scroll-margin-top: 110px; }
+    .cheat-card.is-focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+    }
+
+    .cheat-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      padding: 5px 10px;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      background: var(--bg-page);
+      color: var(--accent-primary);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+    .cheat-ref:hover { background: var(--accent-subtle); border-color: var(--accent-primary); }
 
     .cheat-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 
@@ -2986,8 +3037,25 @@ JS = r"""
         });
       });
 
+      /* 다른 페이지의 '백과사전에서 보기'가 tools.html#cheat-NN 으로 들어온다.
+         모바일에서는 먼저 치트시트 보기로 전환한 뒤 해당 카드로 이동한다. */
+      function focusHashCheat() {
+        const hash = decodeURIComponent(location.hash || '');
+        if (hash.indexOf('#cheat-') !== 0) return;
+        const card = document.querySelector(hash);
+        if (!card) return;
+        if (window.innerWidth < 1024) show('cheat', false, false);
+        window.requestAnimationFrame(function () {
+          card.scrollIntoView({ block: 'start', behavior: 'instant' });
+          card.classList.add('is-focus');
+          window.setTimeout(function () { card.classList.remove('is-focus'); }, 2200);
+        });
+      }
+      window.addEventListener('hashchange', focusHashCheat);
+
       window.addEventListener('resize', function () { apply(false); });
       apply(true);
+      focusHashCheat();
     })();
 """
 
@@ -3016,8 +3084,13 @@ def build():
         ]).replace("`", "")
         search_blob = " ".join(search_blob.split()).lower()
         cmd_id = "cmd-%02d" % i
+        ref = item.get("ref")
+        ref_html = ""
+        if ref:
+            ref_html = ('\n      <a class="cheat-ref" href="security-reference.html#%s">'
+                        '백과사전에서 보기 · %s</a>' % (esc_attr(ref), esc(REFERENCE_ITEMS[ref])))
         cards.append(
-            '<article class="cheat-card" data-cat="%s" data-search="%s">\n'
+            '<article class="cheat-card" id="cheat-%02d" data-cat="%s" data-search="%s">\n'
             '      <div class="cheat-head">\n'
             '        <h3 class="cheat-title">%s</h3>\n'
             '        <span class="cheat-cat">%s</span>\n'
@@ -3028,8 +3101,9 @@ def build():
             '<button class="cmd-copy" type="button" data-copy="%s">복사</button></div>\n'
             '        <pre id="%s">%s</pre>\n'
             '      </div>\n'
-            '      <p class="tip"><span class="tip-tag">주의</span><span>%s</span></p>\n'
+            '      <p class="tip"><span class="tip-tag">주의</span><span>%s</span></p>%s\n'
             '    </article>' % (
+                i,
                 cat,
                 esc_attr(search_blob),
                 esc(item["title"]),
@@ -3040,6 +3114,7 @@ def build():
                 cmd_id,
                 esc(item["cmd"]),
                 render_tip(item["tip"]),
+                ref_html,
             )
         )
 
