@@ -1,8 +1,8 @@
 {
-  "generated": "2026-11-26 08:53 KST",
+  "generated": "2026-11-27 08:41 KST",
   "window": {
-    "start": "2026-10-30",
-    "end": "2026-11-26",
+    "start": "2026-10-31",
+    "end": "2026-11-27",
     "days": 28
   },
   "regionList": [
@@ -35,11 +35,11 @@
       "byRegion": {
         "seoul": {
           "latest": {
-            "date": "2026-11-25",
+            "date": "2026-11-26",
             "price": 3995
           },
           "prev": {
-            "date": "2026-11-24",
+            "date": "2026-11-25",
             "price": 3995
           },
           "median": 4055,
@@ -54,10 +54,6 @@
           },
           "observations": 27,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 4055
-            },
             {
               "d": "2026-10-31",
               "p": 4055
@@ -161,6 +157,10 @@
             {
               "d": "2026-11-25",
               "p": 3995
+            },
+            {
+              "d": "2026-11-26",
+              "p": 3995
             }
           ],
           "compare": {
@@ -169,19 +169,19 @@
             "avgYear": null
           },
           "compareRaw": {},
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=500&itemcode=9903&kindcode=21&productrankcode=0&countycode="
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=500&itemcode=9903&kindcode=21&productrankcode=0&countycode="
         },
         "suwon": {
           "latest": {
-            "date": "2026-11-25",
+            "date": "2026-11-26",
             "price": 3995
           },
           "prev": {
-            "date": "2026-11-24",
+            "date": "2026-11-25",
             "price": 3995
           },
           "median": 4055,
@@ -196,10 +196,6 @@
           },
           "observations": 27,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 4055
-            },
             {
               "d": "2026-10-31",
               "p": 4055
@@ -303,6 +299,10 @@
             {
               "d": "2026-11-25",
               "p": 3995
+            },
+            {
+              "d": "2026-11-26",
+              "p": 3995
             }
           ],
           "compare": {
@@ -311,11 +311,11 @@
             "avgYear": null
           },
           "compareRaw": {},
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=500&itemcode=9903&kindcode=21&productrankcode=0&countycode="
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=500&itemcode=9903&kindcode=21&productrankcode=0&countycode="
         }
       }
     },
@@ -330,29 +330,25 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 2864
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 2678
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 2456
-          },
           "median": 2456,
-          "gapPct": 9.0,
+          "gapPct": 16.6,
           "min": {
             "date": "2026-11-18",
             "price": 2199
           },
           "max": {
-            "date": "2026-11-03",
-            "price": 2682
+            "date": "2026-11-26",
+            "price": 2864
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 2639
-            },
             {
               "d": "2026-11-02",
               "p": 2359
@@ -424,6 +420,10 @@
             {
               "d": "2026-11-25",
               "p": 2678
+            },
+            {
+              "d": "2026-11-26",
+              "p": 2864
             }
           ],
           "compare": {
@@ -436,37 +436,33 @@
             "전년순": 3319,
             "순평년": 3374
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=246&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=246&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 2170
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1920
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1920
-          },
           "median": 1885,
-          "gapPct": 1.9,
+          "gapPct": 15.1,
           "min": {
-            "date": "2026-10-30",
+            "date": "2026-11-02",
             "price": 1815
           },
           "max": {
-            "date": "2026-11-19",
-            "price": 1920
+            "date": "2026-11-26",
+            "price": 2170
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1815
-            },
             {
               "d": "2026-11-02",
               "p": 1815
@@ -538,6 +534,10 @@
             {
               "d": "2026-11-25",
               "p": 1920
+            },
+            {
+              "d": "2026-11-26",
+              "p": 2170
             }
           ],
           "compare": {
@@ -550,11 +550,11 @@
             "전년순": 2285,
             "순평년": 2704
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=246&kindcode=00&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=246&kindcode=00&productrankcode=0&countycode=3111"
         }
       }
     },
@@ -569,29 +569,25 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 2510
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 2311
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 2269
-          },
           "median": 2420,
-          "gapPct": -4.5,
+          "gapPct": 3.7,
           "min": {
             "date": "2026-11-20",
             "price": 2179
           },
           "max": {
-            "date": "2026-10-30",
-            "price": 3732
+            "date": "2026-11-02",
+            "price": 3720
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 3732
-            },
             {
               "d": "2026-11-02",
               "p": 3720
@@ -663,6 +659,10 @@
             {
               "d": "2026-11-25",
               "p": 2311
+            },
+            {
+              "d": "2026-11-26",
+              "p": 2510
             }
           ],
           "compare": {
@@ -675,19 +675,19 @@
             "전년순": 3902,
             "순평년": 3181
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=211&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=211&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
-            "date": "2026-11-25",
+            "date": "2026-11-26",
             "price": 2995
           },
           "prev": {
-            "date": "2026-11-24",
+            "date": "2026-11-25",
             "price": 2995
           },
           "median": 3490,
@@ -702,10 +702,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 4087
-            },
             {
               "d": "2026-11-02",
               "p": 4135
@@ -777,6 +773,10 @@
             {
               "d": "2026-11-25",
               "p": 2995
+            },
+            {
+              "d": "2026-11-26",
+              "p": 2995
             }
           ],
           "compare": {
@@ -789,11 +789,11 @@
             "전년순": 4799,
             "순평년": 3682
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=211&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=211&productrankcode=0&countycode=3111"
         }
       }
     },
@@ -808,15 +808,15 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 1878
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1900
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1900
-          },
           "median": 1900,
-          "gapPct": 0.0,
+          "gapPct": -1.2,
           "min": {
             "date": "2026-11-13",
             "price": 1746
@@ -827,10 +827,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1911
-            },
             {
               "d": "2026-11-02",
               "p": 1911
@@ -902,6 +898,10 @@
             {
               "d": "2026-11-25",
               "p": 1900
+            },
+            {
+              "d": "2026-11-26",
+              "p": 1878
             }
           ],
           "compare": {
@@ -914,23 +914,23 @@
             "전년순": 2233,
             "순평년": 2155
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=231&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=231&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 2155
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1805
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1805
-          },
           "median": 1947,
-          "gapPct": -7.3,
+          "gapPct": 10.7,
           "min": {
             "date": "2026-11-12",
             "price": 1780
@@ -941,10 +941,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1920
-            },
             {
               "d": "2026-11-02",
               "p": 1920
@@ -1016,6 +1012,10 @@
             {
               "d": "2026-11-25",
               "p": 1805
+            },
+            {
+              "d": "2026-11-26",
+              "p": 2155
             }
           ],
           "compare": {
@@ -1028,11 +1028,11 @@
             "전년순": 2082,
             "순평년": 1996
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=231&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=231&productrankcode=0&countycode=3111"
         }
       }
     },
@@ -1047,15 +1047,15 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 1810
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1768
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1699
-          },
           "median": 2002,
-          "gapPct": -11.7,
+          "gapPct": -9.6,
           "min": {
             "date": "2026-11-20",
             "price": 1689
@@ -1066,10 +1066,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1924
-            },
             {
               "d": "2026-11-02",
               "p": 2102
@@ -1141,6 +1137,10 @@
             {
               "d": "2026-11-25",
               "p": 1768
+            },
+            {
+              "d": "2026-11-26",
+              "p": 1810
             }
           ],
           "compare": {
@@ -1153,19 +1153,19 @@
             "전년순": 1826,
             "순평년": 2012
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=245&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=245&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
-            "date": "2026-11-25",
+            "date": "2026-11-26",
             "price": 1760
           },
           "prev": {
-            "date": "2026-11-24",
+            "date": "2026-11-25",
             "price": 1760
           },
           "median": 1760,
@@ -1175,15 +1175,11 @@
             "price": 1700
           },
           "max": {
-            "date": "2026-10-30",
+            "date": "2026-11-02",
             "price": 1870
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1870
-            },
             {
               "d": "2026-11-02",
               "p": 1870
@@ -1255,6 +1251,10 @@
             {
               "d": "2026-11-25",
               "p": 1760
+            },
+            {
+              "d": "2026-11-26",
+              "p": 1760
             }
           ],
           "compare": {
@@ -1267,11 +1267,11 @@
             "전년순": 1708,
             "순평년": 1862
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=245&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=245&productrankcode=0&countycode=3111"
         }
       }
     },
@@ -1286,15 +1286,15 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 1082
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1094
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1103
-          },
-          "median": 951,
-          "gapPct": 15.0,
+          "median": 995,
+          "gapPct": 8.7,
           "min": {
             "date": "2026-11-04",
             "price": 888
@@ -1305,10 +1305,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 906
-            },
             {
               "d": "2026-11-02",
               "p": 920
@@ -1380,6 +1376,10 @@
             {
               "d": "2026-11-25",
               "p": 1094
+            },
+            {
+              "d": "2026-11-26",
+              "p": 1082
             }
           ],
           "compare": {
@@ -1392,25 +1392,25 @@
             "전년순": 1016,
             "순평년": 807
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=213&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=213&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 876
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1000
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1000
-          },
-          "median": 783,
-          "gapPct": 27.7,
+          "median": 792,
+          "gapPct": 10.6,
           "min": {
-            "date": "2026-10-30",
+            "date": "2026-11-11",
             "price": 668
           },
           "max": {
@@ -1419,10 +1419,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 668
-            },
             {
               "d": "2026-11-02",
               "p": 698
@@ -1494,6 +1490,10 @@
             {
               "d": "2026-11-25",
               "p": 1000
+            },
+            {
+              "d": "2026-11-26",
+              "p": 876
             }
           ],
           "compare": {
@@ -1506,11 +1506,11 @@
             "전년순": 975,
             "순평년": 731
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=213&kindcode=00&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=213&kindcode=00&productrankcode=0&countycode=3111"
         }
       }
     },
@@ -1525,18 +1525,18 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 1538
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1449
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1394
-          },
           "median": 1544,
-          "gapPct": -6.2,
+          "gapPct": -0.4,
           "min": {
-            "date": "2026-10-30",
-            "price": 1231
+            "date": "2026-11-02",
+            "price": 1310
           },
           "max": {
             "date": "2026-11-11",
@@ -1544,10 +1544,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1231
-            },
             {
               "d": "2026-11-02",
               "p": 1310
@@ -1619,6 +1615,10 @@
             {
               "d": "2026-11-25",
               "p": 1449
+            },
+            {
+              "d": "2026-11-26",
+              "p": 1538
             }
           ],
           "compare": {
@@ -1631,37 +1631,33 @@
             "전년순": 1466,
             "순평년": 1602
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=224&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=224&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 1875
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 1625
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 1690
-          },
           "median": 1645,
-          "gapPct": -1.2,
+          "gapPct": 14.0,
           "min": {
-            "date": "2026-10-30",
-            "price": 1235
+            "date": "2026-11-02",
+            "price": 1300
           },
           "max": {
-            "date": "2026-11-16",
-            "price": 1730
+            "date": "2026-11-26",
+            "price": 1875
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 1235
-            },
             {
               "d": "2026-11-02",
               "p": 1300
@@ -1733,6 +1729,10 @@
             {
               "d": "2026-11-25",
               "p": 1625
+            },
+            {
+              "d": "2026-11-26",
+              "p": 1875
             }
           ],
           "compare": {
@@ -1745,11 +1745,11 @@
             "전년순": 1517,
             "순평년": 1638
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=200&itemcode=224&kindcode=01&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=200&itemcode=224&kindcode=01&productrankcode=0&countycode=3111"
         }
       }
     },
@@ -1764,15 +1764,15 @@
       "byRegion": {
         "seoul": {
           "latest": {
+            "date": "2026-11-26",
+            "price": 17025
+          },
+          "prev": {
             "date": "2026-11-25",
             "price": 16113
           },
-          "prev": {
-            "date": "2026-11-24",
-            "price": 15711
-          },
-          "median": 17500,
-          "gapPct": -7.9,
+          "median": 17489,
+          "gapPct": -2.7,
           "min": {
             "date": "2026-11-24",
             "price": 15711
@@ -1783,10 +1783,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 20167
-            },
             {
               "d": "2026-11-02",
               "p": 20383
@@ -1858,6 +1854,10 @@
             {
               "d": "2026-11-25",
               "p": 16113
+            },
+            {
+              "d": "2026-11-26",
+              "p": 17025
             }
           ],
           "compare": {
@@ -1870,20 +1870,20 @@
             "전년순": 23831,
             "순평년": 23744
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=400&itemcode=411&productrankcode=0&countycode=1101"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=400&itemcode=411&productrankcode=0&countycode=1101"
         },
         "suwon": {
           "latest": {
-            "date": "2026-11-25",
+            "date": "2026-11-26",
             "price": 16200
           },
           "prev": {
-            "date": "2026-11-24",
-            "price": 17050
+            "date": "2026-11-25",
+            "price": 16200
           },
           "median": 19950,
           "gapPct": -18.8,
@@ -1897,10 +1897,6 @@
           },
           "observations": 19,
           "series": [
-            {
-              "d": "2026-10-30",
-              "p": 21200
-            },
             {
               "d": "2026-11-02",
               "p": 21200
@@ -1972,6 +1968,10 @@
             {
               "d": "2026-11-25",
               "p": 16200
+            },
+            {
+              "d": "2026-11-26",
+              "p": 16200
             }
           ],
           "compare": {
@@ -1984,11 +1984,11 @@
             "전년순": 23325,
             "순평년": 25380
           },
-          "observedDate": "2026-11-25",
-          "fetchedDate": "2026-11-26",
+          "observedDate": "2026-11-26",
+          "fetchedDate": "2026-11-27",
           "stale": false,
           "staleDays": 1,
-          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.30&endday=2026.11.26&itemcategorycode=400&itemcode=411&kindcode=05&productrankcode=0&countycode=3111"
+          "sourceUrl": "https://www.kamis.or.kr/customer/info/retail/period.do?action=daily&startday=2026.10.31&endday=2026.11.27&itemcategorycode=400&itemcode=411&kindcode=05&productrankcode=0&countycode=3111"
         }
       }
     }

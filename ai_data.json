@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-11-26 08:26:31 KST",
+  "updated_at": "2026-11-27 08:20:22 KST",
   "total": 365,
-  "briefing": "제공된 목록 기준으로 오늘은 AI 에이전트·워크플로 자동화가 앱 자동화, 역설계, 사무 지원, 시각 창작, 연구·평가로 확장되는 흐름이 가장 두드러진다. 보안 쟁점으로는 Pixel 취약점 95건 신고와 Google 보상 절차 문제, 1Password 고객 계정 일부 유출이 눈에 띄고, LLM·에이전트 레드팀 테스트, 취약점 스캐너, 가드레일, 보안 운영센터 도구가 대거 등장해 에이전트 리스크 관리가 부각됐다. 도구·서비스 측면에서는 n8n, Dify, open-we",
+  "briefing": "오늘은 LLM·AI 에이전트의 레드팀 테스트, 취약점 스캐닝, 런타임·MCP 보안, 평가 자동화 도구가 가장 두드러진 흐름이다. 보안 쟁점으로는 에이전트와 LLM, MCP 서버를 겨냥한 공격·취약점 탐지, 이그레스 통제, 에이전트가 사용자보다 자사 이익을 우선할 수 있다는 리스크, 1Password 고객 계정 일부 유출과 Pixel 취약점 신고·보상 절차 문제가 부각됐다. 도구·서비스 측면에서는 Strix, promptfoo, Codex Security CLI·SDK, AiSOC",
   "top_keywords": [
     {
       "keyword": "#오픈소스",
@@ -46,6 +46,158 @@
   },
   "items": [
     {
+      "item_key": "9f086ac99e50cf6e",
+      "source": "GitHub",
+      "title_ko": "usestrix/strix: 앱 취약점 탐지·수정용 오픈소스 AI 침투 테스트 도구",
+      "title_orig": "usestrix/strix",
+      "url": "https://github.com/usestrix/strix",
+      "category": "AI 보안 툴",
+      "summary": "usestrix/strix는 애플리케이션 취약점을 찾아 수정하도록 돕는 오픈소스 AI 침투 테스트 도구다. Python 기반이며 GitHub에서 ★75,595를 기록했고 agents, ai-hacking, ai-pentesting, ai-security 토픽으로 분류된다. AI 관련 앱·제품의 보안 점검 자동화에 쓰일 수 있으나, 원문에는 구체적 공격 유형과 영향 범위는 명시되지 않았다.",
+      "tech_insight": "AI 펜테스트 도구는 공격 표면을 자동 점검하는 데 유용하지만, 실행 시 시스템 접근 권한이 필요할 수 있어 최소 권한·격리 운영이 중요하다. 발견된 취약점은 패치하고 입력 검증·모니터링·가드레일을 병행해 완화해야 한다.",
+      "tags": [
+        "#AI보안",
+        "#AI펜테스트",
+        "#오픈소스",
+        "#취약점점검"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "5464eee9dd082081",
+      "source": "GitHub",
+      "title_ko": "promptfoo: LLM·에이전트 레드팀 테스트 도구",
+      "title_orig": "promptfoo/promptfoo",
+      "url": "https://github.com/promptfoo/promptfoo",
+      "category": "AI 보안 툴",
+      "summary": "promptfoo는 프롬프트, 에이전트, RAG를 테스트하고 AI 대상 레드팀·펜테스트·취약점 스캔을 수행하는 도구다. GPT, Claude, Gemini, DeepSeek 등 모델 성능 비교를 지원하며, 선언적 설정과 CLI·CI/CD 연동을 제공한다.",
+      "tech_insight": "CI/CD 파이프라인에 테스트·레드팀 자동화를 넣어 배포 전 취약점 점검 게이트로 쓰기 적합하며, 에이전트·RAG 평가와 모델 비교를 같은 설정으로 관리하는 실무 포인트가 있다.",
+      "tags": [
+        "#AI보안",
+        "#레드팀",
+        "#LLM평가",
+        "#CI/CD"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "33e34680baaf800d",
+      "source": "GitHub",
+      "title_ko": "OpenAI Codex Security CLI·SDK 공개",
+      "title_orig": "openai/codex-security",
+      "url": "https://github.com/openai/codex-security",
+      "category": "AI 보안 툴",
+      "summary": "OpenAI가 보안 취약점을 찾고 검증하고 수정하는 Codex Security CLI와 TypeScript SDK를 공개했다. npm 패키지 @openai/codex-security로 제공되며, GitHub 스타 13,552개와 TypeScript 기반 저장소로 소개됐다. 코드 보안 점검 자동화에 쓰이는 개발자 도구다.",
+      "tech_insight": "코드베이스 취약점 점검을 CLI·SDK로 자동화할 수 있다는 점이 핵심이며, 도입 시 npm 패키지 출처와 버전 고정, 공급망 리스크, 스캔 대상 코드·데이터 노출, 실행 권한 최소화를 확인해야 한다.",
+      "tags": [
+        "#OpenAI",
+        "#CodexSecurity",
+        "#CLI",
+        "#보안도구"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "3b05068db0d22da6",
+      "source": "GitHub",
+      "title_ko": "beenuar/AiSOC 오픈소스 AI 보안 운영센터",
+      "title_orig": "beenuar/AiSOC",
+      "url": "https://github.com/beenuar/AiSOC",
+      "category": "AI 보안 툴",
+      "summary": "beenuar/AiSOC는 오픈소스 AI 보안 운영센터로, 알림 융합과 LLM 에이전트 트리아지, MITRE ATT&CK 조사, 모든 에이전트 단계의 재현 가능한 결정 원장을 제공한다. 셀프호스팅이 가능하고 API 키 없이 동작하며 MIT 라이선스이고, Claude·Cursor·Continue용 MCP 서버를 제공한다.",
+      "tech_insight": "셀프호스팅과 API 키 불필요 특성은 데이터 통제가 중요한 보안 운영 환경에 적합하며, MCP 서버 연동 시 에이전트 도구 호출과 권한 범위를 검증하는 게이트로 함께 설계할 필요가 있다. Python 기반 MIT 라이선스 저장소로 ★7,684의 커뮤니티 검증이 축적되어 있으나, 도입 전 최신 유지보수 주기와 운영 요구사항을 확인해야 한다.",
+      "tags": [
+        "#AiSOC",
+        "#AI보안",
+        "#알림트리아지",
+        "#MITREATT&CK"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "eac62ff282fb298b",
+      "source": "GitHub",
+      "title_ko": "텐센트 AI-Infra-Guard, AI 인프라·에이전트 레드팀 플랫폼",
+      "title_orig": "Tencent/AI-Infra-Guard",
+      "url": "https://github.com/Tencent/AI-Infra-Guard",
+      "category": "AI 보안 툴",
+      "summary": "텐센트의 AI-Infra-Guard는 Agent Scan, Skills Scan, MCP scan, AI Infra scan, LLM jailbreak evaluation을 제공하는 풀스택 AI 레드팀 플랫폼이다. 에이전트·스킬·MCP 도구 오남용과 AI 인프라 취약점, LLM 탈옥을 평가해 AI 생태계 보안 점검을 자동화한다. Python 기반 Apache-2.0 오픈소스이며 GitHub 스타 약 7,509개로 실무 도입 검토가 가능하다.",
+      "tech_insight": "CI/배포 파이프라인에 게이트로 넣어 에이전트·MCP·AI 인프라 구성 변경 시 자동 레드팀 검증을 수행할 수 있고, 에이전트 툴 호출·권한 오남용 점검과 레드팀 자동화에 활용할 만하다. 오픈소스 성숙도는 스타 수와 Apache-2.0 라이선스, Python 구현을 참고해 내부 보안 요구에 맞게 검증 후 도입하는 것이 좋다.",
+      "tags": [
+        "#AI보안",
+        "#레드팀",
+        "#에이전트보안",
+        "#MCP"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "b8b96b9e27f47b9c",
+      "source": "GitHub",
+      "title_ko": "Giskard-AI/giskard-oss LLM 에이전트 평가·테스트 라이브러리",
+      "title_orig": "Giskard-AI/giskard-oss",
+      "url": "https://github.com/Giskard-AI/giskard-oss",
+      "category": "AI 보안 툴",
+      "summary": "Giskard-AI/giskard-oss는 LLM 에이전트를 평가·테스트하기 위한 오픈소스 라이브러리다. Python 기반 Apache-2.0 프로젝트로, 2022-03-06 생성됐고 agent-evaluation, ai-red-team, ai-security, ai-testing, fairness-ai, llm 토픽을 다룬다. 스타 5,951개로 LLM 에이전트 평가·보안 테스트 용도의 오픈소스 도구로 활용될 수 있다.",
+      "tech_insight": "평가·테스트 라이브러리 성격상 CI/배포 파이프라인에서 LLM 에이전트 회귀·보안 테스트 게이트로 쓰기 적합하다. 스타 5,951·Python·Apache-2.0은 성숙도 판단에 도움되지만, 런타임 방어 도구는 아니므로 실제 테스트 커버리지와 유지보수 상태를 확인해야 한다.",
+      "tags": [
+        "#LLM에이전트",
+        "#AI보안",
+        "#오픈소스",
+        "#평가테스트"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "f32d5eed7bb9f1fb",
+      "source": "GitHub",
+      "title_ko": "AI 에이전트 런타임 보안 도구, 오픈소스 hol-guard",
+      "title_orig": "hashgraph-online/hol-guard",
+      "url": "https://github.com/hashgraph-online/hol-guard",
+      "category": "AI 보안 툴",
+      "summary": "GitHub에 공개된 hol-guard는 AI 에이전트 실행 시점에 위험한 도구 호출, 비밀 접근, 프롬프트 인젝션, 악성 패키지, MCP 서버·플러그인·스킬을 차단하는 오픈소스 안티바이러스·방화벽이다. Rust로 구현됐고 스타 1,106개를 기록해 에이전트 보안 관심도를 보여준다.",
+      "tech_insight": "런타임 차단은 에이전트 도구 호출과 MCP·플러그인 경계에서 권한 최소화, 입력 검증, 모니터링, 가드레일을 함께 적용해야 효과적임을 시사한다. 도입 시 차단 정책과 예외·감사 로그 설계를 병행해야 운영 영향을 줄일 수 있다.",
+      "tags": [
+        "#AI보안",
+        "#에이전트보안",
+        "#런타임보안",
+        "#hol-guard"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
+      "item_key": "307f1f9342814f62",
+      "source": "GitHub",
+      "title_ko": "pipelock: MCP·에이전트 이그레스 보안 오픈소스 파이어월",
+      "title_orig": "pipelab-org/pipelock",
+      "url": "https://github.com/pipelab-org/pipelock",
+      "category": "AI 보안 툴",
+      "summary": "GitHub에 공개된 pipelock은 MCP 보안과 에이전트 이그레스 통제를 위한 오픈소스 AI 에이전트 파이어월이다. HTTP·MCP·A2A·WebSocket 트래픽을 중재 스캔해 데이터 유출, SSRF, 프롬프트 인젝션을 탐지하고, 에이전트 외부에서 확인 가능한 중재자 서명 액션 영수증을 발행한다.",
+      "tech_insight": "기술적으로는 에이전트 외부 이그레스 경로와 MCP/A2A 등 중재 트래픽을 감시·검증해 탐지와 감사 증거를 분리하는 점이 핵심이다. 실무에서는 최소 권한 이그레스 정책, 입력·트래픽 검증, 서명 영수증 기반 모니터링을 함께 적용해 유출·주입 대응력을 높여야 한다.",
+      "tags": [
+        "#에이전트보안",
+        "#MCP",
+        "#이그레스통제",
+        "#오픈소스"
+      ],
+      "is_featured": true,
+      "published_at": "2026-11-26",
+      "analyzed_by": "cache"
+    },
+    {
       "item_key": "77ea1a82b9cac1e9",
       "source": "GeekNews",
       "title_ko": "1Password 보안 사고, 고객 계정 정보 일부 유출",
@@ -82,6 +234,120 @@
       "is_featured": true,
       "published_at": "2026-11-26",
       "analyzed_by": "cache"
+    },
+    {
+      "item_key": "eb3517ce984e90e4",
+      "source": "GitHub",
+      "title_ko": "Microsoft PyRIT, 생성형 AI 레드팀 자동화 툴킷",
+      "title_orig": "microsoft/PyRIT",
+      "url": "https://github.com/microsoft/PyRIT",
+      "category": "AI 보안 툴",
+      "summary": "마이크로소프트가 공개한 오픈소스 AI 레드팀 툴킷으로, 자동 스캔과 여러 턴에 걸친 적응형 공격, 웹 UI를 제공한다. 생성형 AI 시스템의 탈옥·프롬프트 인젝션·유해 출력 같은 취약 동작을 반복 실행해 드러내는 것이 핵심 기능이다.",
+      "tech_insight": "레드팀 시나리오를 코드로 정의해 CI나 배포 전 게이트에서 자동 실행하는 활용이 적합하다. 공격 프롬프트와 응답 로그에 민감정보가 남지 않도록 저장소·권한을 분리하고, 오탐 판정 기준을 함께 정해야 한다.",
+      "tags": [
+        "#AI레드팀",
+        "#프롬프트인젝션",
+        "#오픈소스",
+        "#CI게이트"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "9fe1b7ac7d97bae5",
+      "source": "GitHub",
+      "title_ko": "Snyk agent-scan, AI 에이전트·MCP 서버 보안 스캐너",
+      "title_orig": "snyk/agent-scan",
+      "url": "https://github.com/snyk/agent-scan",
+      "category": "AI 보안 툴",
+      "summary": "AI 에이전트와 MCP 서버, 에이전트 스킬 구성을 설치·실행 전에 검사하는 스캐너로, 위험한 도구 권한과 취약한 설정을 찾아낸다. 에이전트가 외부 도구를 호출하는 경로 자체를 점검 대상으로 삼는 것이 특징이다.",
+      "tech_insight": "MCP 서버나 스킬을 사내에 배포하기 전 파이프라인 단계에 넣어 공급망 점검 게이트로 쓰기 좋다. 스캔 결과를 통과/차단 규칙으로 자동화하려면 위험도 기준과 예외 승인 절차를 함께 정해야 한다.",
+      "tags": [
+        "#MCP보안",
+        "#에이전트보안",
+        "#공급망",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "299d3443f0c7b242",
+      "source": "GitHub",
+      "title_ko": "ToolHive, MCP 서버 실행·관리 플랫폼",
+      "title_orig": "stacklok/toolhive",
+      "url": "https://github.com/stacklok/toolhive",
+      "category": "AI 보안 툴",
+      "summary": "MCP 서버를 컨테이너로 격리해 실행하고 권한·구성을 일관되게 관리하는 플랫폼이다. 어떤 MCP 서버가 어떤 권한과 비밀에 접근하는지를 통제하는 것이 보안 관점의 핵심 기능이다.",
+      "tech_insight": "에이전트에 붙이는 MCP 서버를 개별 설치 대신 격리된 표준 런타임으로 운영하면 도구 권한과 공급망 위험을 한 곳에서 관리할 수 있다. 쿠버네티스 환경이면 기존 정책·시크릿 관리와 어떻게 겹치는지 먼저 정리해야 한다.",
+      "tags": [
+        "#MCP",
+        "#컨테이너격리",
+        "#권한관리",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "209ef7c05447898b",
+      "source": "GitHub",
+      "title_ko": "agentic_security, 에이전트 LLM 취약점 스캐너",
+      "title_orig": "msoedov/agentic_security",
+      "url": "https://github.com/msoedov/agentic_security",
+      "category": "AI 보안 툴",
+      "summary": "에이전트형 LLM 애플리케이션의 취약점을 퍼징과 공격 시나리오로 탐색하는 스캐너 겸 AI 레드팀 키트다. 프롬프트 인젝션·탈옥·도구 오남용 같은 실패 모드를 자동으로 시도하고 결과를 리포트한다.",
+      "tech_insight": "API 엔드포인트 단위로 스캔을 돌려 배포 전후 회귀 점검에 쓰기 좋다. 자동 공격은 대상 서비스 비용과 로그를 크게 늘리므로 테스트 전용 키·격리된 환경에서 실행해야 한다.",
+      "tags": [
+        "#취약점스캐너",
+        "#퍼징",
+        "#레드팀",
+        "#오픈소스"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "5307c53ae9c09112",
+      "source": "GitHub",
+      "title_ko": "OpenAPPA, 에이전트를 막지 않는 결정적 가드레일",
+      "title_orig": "archestra-ai/OpenAPPA",
+      "url": "https://github.com/archestra-ai/OpenAPPA",
+      "category": "AI 보안 툴",
+      "summary": "확률적 모델 판단에 기대지 않고 결정적으로 동작하는 에이전트 가드레일을 지향하는 오픈소스 도구다. 에이전트의 도구 호출과 출력을 정책으로 검증해, 가드레일이 정상 작업을 과도하게 차단하지 않도록 설계한 점이 특징이다.",
+      "tech_insight": "정책이 명확한 업무(권한 범위, 금지 행동, 출력 형식)에 가드레일을 붙일 때 오탐으로 인한 업무 중단을 줄이는 용도로 적합하다. 2026년 공개된 초기 프로젝트라 정책 표현력과 운영 성숙도는 직접 검증해야 한다.",
+      "tags": [
+        "#가드레일",
+        "#정책검증",
+        "#에이전트보안",
+        "#Rust"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "manual"
+    },
+    {
+      "item_key": "4654094f81c2dde4",
+      "source": "GitHub",
+      "title_ko": "Akto, AI 에이전트·MCP·LLM 보안 테스트 플랫폼",
+      "title_orig": "akto-api-security/akto",
+      "url": "https://github.com/akto-api-security/akto",
+      "category": "AI 보안 툴",
+      "summary": "조직의 AI 에이전트와 MCP, LLM, 에이전트 스킬, 생성형 AI 앱을 점검하는 AI 보안 플랫폼이다. 실제 트래픽을 관찰해 프롬프트 인젝션·민감정보 노출·권한 오남용 같은 취약점을 테스트하는 것이 핵심 기능이다.",
+      "tech_insight": "이미 운영 중인 LLM API 트래픽에 붙여 취약점을 지속적으로 찾는 방식이라, 배포 전 테스트가 어려운 서비스에 특히 맞는다. 트래픽 미러링 범위에 개인정보가 포함되므로 수집·보관 정책을 먼저 확인해야 한다.",
+      "tags": [
+        "#AI보안테스트",
+        "#프롬프트인젝션",
+        "#MCP",
+        "#API보안"
+      ],
+      "is_featured": false,
+      "published_at": "2026-11-26",
+      "analyzed_by": "manual"
     },
     {
       "item_key": "853e259c968148f3",
@@ -176,25 +442,6 @@
       "analyzed_by": "cache"
     },
     {
-      "item_key": "9f086ac99e50cf6e",
-      "source": "GitHub",
-      "title_ko": "usestrix/strix: 앱 취약점 탐지·수정용 오픈소스 AI 침투 테스트 도구",
-      "title_orig": "usestrix/strix",
-      "url": "https://github.com/usestrix/strix",
-      "category": "AI 보안 툴",
-      "summary": "usestrix/strix는 애플리케이션 취약점을 찾아 수정하도록 돕는 오픈소스 AI 침투 테스트 도구다. Python 기반이며 GitHub에서 ★75,595를 기록했고 agents, ai-hacking, ai-pentesting, ai-security 토픽으로 분류된다. AI 관련 앱·제품의 보안 점검 자동화에 쓰일 수 있으나, 원문에는 구체적 공격 유형과 영향 범위는 명시되지 않았다.",
-      "tech_insight": "AI 펜테스트 도구는 공격 표면을 자동 점검하는 데 유용하지만, 실행 시 시스템 접근 권한이 필요할 수 있어 최소 권한·격리 운영이 중요하다. 발견된 취약점은 패치하고 입력 검증·모니터링·가드레일을 병행해 완화해야 한다.",
-      "tags": [
-        "#AI보안",
-        "#AI펜테스트",
-        "#오픈소스",
-        "#취약점점검"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
       "item_key": "bfb325382814a3cc",
       "source": "GitHub",
       "title_ko": "KeygraphHQ/shannon: 웹·API 취약점 증명하는 AI 펜테스터",
@@ -208,25 +455,6 @@
         "#웹보안",
         "#API보안",
         "#오픈소스"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "5464eee9dd082081",
-      "source": "GitHub",
-      "title_ko": "promptfoo: LLM·에이전트 레드팀 테스트 도구",
-      "title_orig": "promptfoo/promptfoo",
-      "url": "https://github.com/promptfoo/promptfoo",
-      "category": "AI 보안 툴",
-      "summary": "promptfoo는 프롬프트, 에이전트, RAG를 테스트하고 AI 대상 레드팀·펜테스트·취약점 스캔을 수행하는 도구다. GPT, Claude, Gemini, DeepSeek 등 모델 성능 비교를 지원하며, 선언적 설정과 CLI·CI/CD 연동을 제공한다.",
-      "tech_insight": "CI/CD 파이프라인에 테스트·레드팀 자동화를 넣어 배포 전 취약점 점검 게이트로 쓰기 적합하며, 에이전트·RAG 평가와 모델 비교를 같은 설정으로 관리하는 실무 포인트가 있다.",
-      "tags": [
-        "#AI보안",
-        "#레드팀",
-        "#LLM평가",
-        "#CI/CD"
       ],
       "is_featured": true,
       "published_at": "2026-11-25",
@@ -271,25 +499,6 @@
       "analyzed_by": "cache"
     },
     {
-      "item_key": "33e34680baaf800d",
-      "source": "GitHub",
-      "title_ko": "OpenAI Codex Security CLI·SDK 공개",
-      "title_orig": "openai/codex-security",
-      "url": "https://github.com/openai/codex-security",
-      "category": "AI 보안 툴",
-      "summary": "OpenAI가 보안 취약점을 찾고 검증하고 수정하는 Codex Security CLI와 TypeScript SDK를 공개했다. npm 패키지 @openai/codex-security로 제공되며, GitHub 스타 13,552개와 TypeScript 기반 저장소로 소개됐다. 코드 보안 점검 자동화에 쓰이는 개발자 도구다.",
-      "tech_insight": "코드베이스 취약점 점검을 CLI·SDK로 자동화할 수 있다는 점이 핵심이며, 도입 시 npm 패키지 출처와 버전 고정, 공급망 리스크, 스캔 대상 코드·데이터 노출, 실행 권한 최소화를 확인해야 한다.",
-      "tags": [
-        "#OpenAI",
-        "#CodexSecurity",
-        "#CLI",
-        "#보안도구"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
       "item_key": "49c3c064b1ddf0b1",
       "source": "GitHub",
       "title_ko": "NVIDIA/garak: LLM 취약점 스캐너",
@@ -302,44 +511,6 @@
         "#LLM보안",
         "#취약점스캐너",
         "#오픈소스"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "3b05068db0d22da6",
-      "source": "GitHub",
-      "title_ko": "beenuar/AiSOC 오픈소스 AI 보안 운영센터",
-      "title_orig": "beenuar/AiSOC",
-      "url": "https://github.com/beenuar/AiSOC",
-      "category": "AI 보안 툴",
-      "summary": "beenuar/AiSOC는 오픈소스 AI 보안 운영센터로, 알림 융합과 LLM 에이전트 트리아지, MITRE ATT&CK 조사, 모든 에이전트 단계의 재현 가능한 결정 원장을 제공한다. 셀프호스팅이 가능하고 API 키 없이 동작하며 MIT 라이선스이고, Claude·Cursor·Continue용 MCP 서버를 제공한다.",
-      "tech_insight": "셀프호스팅과 API 키 불필요 특성은 데이터 통제가 중요한 보안 운영 환경에 적합하며, MCP 서버 연동 시 에이전트 도구 호출과 권한 범위를 검증하는 게이트로 함께 설계할 필요가 있다. Python 기반 MIT 라이선스 저장소로 ★7,684의 커뮤니티 검증이 축적되어 있으나, 도입 전 최신 유지보수 주기와 운영 요구사항을 확인해야 한다.",
-      "tags": [
-        "#AiSOC",
-        "#AI보안",
-        "#알림트리아지",
-        "#MITREATT&CK"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "eac62ff282fb298b",
-      "source": "GitHub",
-      "title_ko": "텐센트 AI-Infra-Guard, AI 인프라·에이전트 레드팀 플랫폼",
-      "title_orig": "Tencent/AI-Infra-Guard",
-      "url": "https://github.com/Tencent/AI-Infra-Guard",
-      "category": "AI 보안 툴",
-      "summary": "텐센트의 AI-Infra-Guard는 Agent Scan, Skills Scan, MCP scan, AI Infra scan, LLM jailbreak evaluation을 제공하는 풀스택 AI 레드팀 플랫폼이다. 에이전트·스킬·MCP 도구 오남용과 AI 인프라 취약점, LLM 탈옥을 평가해 AI 생태계 보안 점검을 자동화한다. Python 기반 Apache-2.0 오픈소스이며 GitHub 스타 약 7,509개로 실무 도입 검토가 가능하다.",
-      "tech_insight": "CI/배포 파이프라인에 게이트로 넣어 에이전트·MCP·AI 인프라 구성 변경 시 자동 레드팀 검증을 수행할 수 있고, 에이전트 툴 호출·권한 오남용 점검과 레드팀 자동화에 활용할 만하다. 오픈소스 성숙도는 스타 수와 Apache-2.0 라이선스, Python 구현을 참고해 내부 보안 요구에 맞게 검증 후 도입하는 것이 좋다.",
-      "tags": [
-        "#AI보안",
-        "#레드팀",
-        "#에이전트보안",
-        "#MCP"
       ],
       "is_featured": true,
       "published_at": "2026-11-25",
@@ -365,25 +536,6 @@
       "analyzed_by": "cache"
     },
     {
-      "item_key": "b8b96b9e27f47b9c",
-      "source": "GitHub",
-      "title_ko": "Giskard-AI/giskard-oss LLM 에이전트 평가·테스트 라이브러리",
-      "title_orig": "Giskard-AI/giskard-oss",
-      "url": "https://github.com/Giskard-AI/giskard-oss",
-      "category": "AI 보안 툴",
-      "summary": "Giskard-AI/giskard-oss는 LLM 에이전트를 평가·테스트하기 위한 오픈소스 라이브러리다. Python 기반 Apache-2.0 프로젝트로, 2022-03-06 생성됐고 agent-evaluation, ai-red-team, ai-security, ai-testing, fairness-ai, llm 토픽을 다룬다. 스타 5,951개로 LLM 에이전트 평가·보안 테스트 용도의 오픈소스 도구로 활용될 수 있다.",
-      "tech_insight": "평가·테스트 라이브러리 성격상 CI/배포 파이프라인에서 LLM 에이전트 회귀·보안 테스트 게이트로 쓰기 적합하다. 스타 5,951·Python·Apache-2.0은 성숙도 판단에 도움되지만, 런타임 방어 도구는 아니므로 실제 테스트 커버리지와 유지보수 상태를 확인해야 한다.",
-      "tags": [
-        "#LLM에이전트",
-        "#AI보안",
-        "#오픈소스",
-        "#평가테스트"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
       "item_key": "213ba631d8c8ba81",
       "source": "GitHub",
       "title_ko": "AISafetyHot, AI 안전 뉴스·논문·사건 매일 수집",
@@ -397,44 +549,6 @@
         "#프롬프트인젝션",
         "#AI거버넌스",
         "#모니터링"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "f32d5eed7bb9f1fb",
-      "source": "GitHub",
-      "title_ko": "AI 에이전트 런타임 보안 도구, 오픈소스 hol-guard",
-      "title_orig": "hashgraph-online/hol-guard",
-      "url": "https://github.com/hashgraph-online/hol-guard",
-      "category": "AI 보안 툴",
-      "summary": "GitHub에 공개된 hol-guard는 AI 에이전트 실행 시점에 위험한 도구 호출, 비밀 접근, 프롬프트 인젝션, 악성 패키지, MCP 서버·플러그인·스킬을 차단하는 오픈소스 안티바이러스·방화벽이다. Rust로 구현됐고 스타 1,106개를 기록해 에이전트 보안 관심도를 보여준다.",
-      "tech_insight": "런타임 차단은 에이전트 도구 호출과 MCP·플러그인 경계에서 권한 최소화, 입력 검증, 모니터링, 가드레일을 함께 적용해야 효과적임을 시사한다. 도입 시 차단 정책과 예외·감사 로그 설계를 병행해야 운영 영향을 줄일 수 있다.",
-      "tags": [
-        "#AI보안",
-        "#에이전트보안",
-        "#런타임보안",
-        "#hol-guard"
-      ],
-      "is_featured": true,
-      "published_at": "2026-11-25",
-      "analyzed_by": "cache"
-    },
-    {
-      "item_key": "307f1f9342814f62",
-      "source": "GitHub",
-      "title_ko": "pipelock: MCP·에이전트 이그레스 보안 오픈소스 파이어월",
-      "title_orig": "pipelab-org/pipelock",
-      "url": "https://github.com/pipelab-org/pipelock",
-      "category": "AI 보안 툴",
-      "summary": "GitHub에 공개된 pipelock은 MCP 보안과 에이전트 이그레스 통제를 위한 오픈소스 AI 에이전트 파이어월이다. HTTP·MCP·A2A·WebSocket 트래픽을 중재 스캔해 데이터 유출, SSRF, 프롬프트 인젝션을 탐지하고, 에이전트 외부에서 확인 가능한 중재자 서명 액션 영수증을 발행한다.",
-      "tech_insight": "기술적으로는 에이전트 외부 이그레스 경로와 MCP/A2A 등 중재 트래픽을 감시·검증해 탐지와 감사 증거를 분리하는 점이 핵심이다. 실무에서는 최소 권한 이그레스 정책, 입력·트래픽 검증, 서명 영수증 기반 모니터링을 함께 적용해 유출·주입 대응력을 높여야 한다.",
-      "tags": [
-        "#에이전트보안",
-        "#MCP",
-        "#이그레스통제",
-        "#오픈소스"
       ],
       "is_featured": true,
       "published_at": "2026-11-25",
@@ -553,25 +667,6 @@
       "analyzed_by": "manual"
     },
     {
-      "item_key": "eb3517ce984e90e4",
-      "source": "GitHub",
-      "title_ko": "Microsoft PyRIT, 생성형 AI 레드팀 자동화 툴킷",
-      "title_orig": "microsoft/PyRIT",
-      "url": "https://github.com/microsoft/PyRIT",
-      "category": "AI 보안 툴",
-      "summary": "마이크로소프트가 공개한 오픈소스 AI 레드팀 툴킷으로, 자동 스캔과 여러 턴에 걸친 적응형 공격, 웹 UI를 제공한다. 생성형 AI 시스템의 탈옥·프롬프트 인젝션·유해 출력 같은 취약 동작을 반복 실행해 드러내는 것이 핵심 기능이다.",
-      "tech_insight": "레드팀 시나리오를 코드로 정의해 CI나 배포 전 게이트에서 자동 실행하는 활용이 적합하다. 공격 프롬프트와 응답 로그에 민감정보가 남지 않도록 저장소·권한을 분리하고, 오탐 판정 기준을 함께 정해야 한다.",
-      "tags": [
-        "#AI레드팀",
-        "#프롬프트인젝션",
-        "#오픈소스",
-        "#CI게이트"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-25",
-      "analyzed_by": "manual"
-    },
-    {
       "item_key": "78bd60a4aacb4e89",
       "source": "GitHub",
       "title_ko": "simplexai-labs/linger",
@@ -606,25 +701,6 @@
       "analyzed_by": "fallback"
     },
     {
-      "item_key": "9fe1b7ac7d97bae5",
-      "source": "GitHub",
-      "title_ko": "Snyk agent-scan, AI 에이전트·MCP 서버 보안 스캐너",
-      "title_orig": "snyk/agent-scan",
-      "url": "https://github.com/snyk/agent-scan",
-      "category": "AI 보안 툴",
-      "summary": "AI 에이전트와 MCP 서버, 에이전트 스킬 구성을 설치·실행 전에 검사하는 스캐너로, 위험한 도구 권한과 취약한 설정을 찾아낸다. 에이전트가 외부 도구를 호출하는 경로 자체를 점검 대상으로 삼는 것이 특징이다.",
-      "tech_insight": "MCP 서버나 스킬을 사내에 배포하기 전 파이프라인 단계에 넣어 공급망 점검 게이트로 쓰기 좋다. 스캔 결과를 통과/차단 규칙으로 자동화하려면 위험도 기준과 예외 승인 절차를 함께 정해야 한다.",
-      "tags": [
-        "#MCP보안",
-        "#에이전트보안",
-        "#공급망",
-        "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-25",
-      "analyzed_by": "manual"
-    },
-    {
       "item_key": "1013302f98cebb5d",
       "source": "GitHub",
       "title_ko": "DeepTeam, LLM·AI 에이전트 레드팀 프레임워크",
@@ -638,82 +714,6 @@
         "#LLM평가",
         "#탈옥",
         "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-25",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "299d3443f0c7b242",
-      "source": "GitHub",
-      "title_ko": "ToolHive, MCP 서버 실행·관리 플랫폼",
-      "title_orig": "stacklok/toolhive",
-      "url": "https://github.com/stacklok/toolhive",
-      "category": "AI 보안 툴",
-      "summary": "MCP 서버를 컨테이너로 격리해 실행하고 권한·구성을 일관되게 관리하는 플랫폼이다. 어떤 MCP 서버가 어떤 권한과 비밀에 접근하는지를 통제하는 것이 보안 관점의 핵심 기능이다.",
-      "tech_insight": "에이전트에 붙이는 MCP 서버를 개별 설치 대신 격리된 표준 런타임으로 운영하면 도구 권한과 공급망 위험을 한 곳에서 관리할 수 있다. 쿠버네티스 환경이면 기존 정책·시크릿 관리와 어떻게 겹치는지 먼저 정리해야 한다.",
-      "tags": [
-        "#MCP",
-        "#컨테이너격리",
-        "#권한관리",
-        "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-25",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "209ef7c05447898b",
-      "source": "GitHub",
-      "title_ko": "agentic_security, 에이전트 LLM 취약점 스캐너",
-      "title_orig": "msoedov/agentic_security",
-      "url": "https://github.com/msoedov/agentic_security",
-      "category": "AI 보안 툴",
-      "summary": "에이전트형 LLM 애플리케이션의 취약점을 퍼징과 공격 시나리오로 탐색하는 스캐너 겸 AI 레드팀 키트다. 프롬프트 인젝션·탈옥·도구 오남용 같은 실패 모드를 자동으로 시도하고 결과를 리포트한다.",
-      "tech_insight": "API 엔드포인트 단위로 스캔을 돌려 배포 전후 회귀 점검에 쓰기 좋다. 자동 공격은 대상 서비스 비용과 로그를 크게 늘리므로 테스트 전용 키·격리된 환경에서 실행해야 한다.",
-      "tags": [
-        "#취약점스캐너",
-        "#퍼징",
-        "#레드팀",
-        "#오픈소스"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-25",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "5307c53ae9c09112",
-      "source": "GitHub",
-      "title_ko": "OpenAPPA, 에이전트를 막지 않는 결정적 가드레일",
-      "title_orig": "archestra-ai/OpenAPPA",
-      "url": "https://github.com/archestra-ai/OpenAPPA",
-      "category": "AI 보안 툴",
-      "summary": "확률적 모델 판단에 기대지 않고 결정적으로 동작하는 에이전트 가드레일을 지향하는 오픈소스 도구다. 에이전트의 도구 호출과 출력을 정책으로 검증해, 가드레일이 정상 작업을 과도하게 차단하지 않도록 설계한 점이 특징이다.",
-      "tech_insight": "정책이 명확한 업무(권한 범위, 금지 행동, 출력 형식)에 가드레일을 붙일 때 오탐으로 인한 업무 중단을 줄이는 용도로 적합하다. 2026년 공개된 초기 프로젝트라 정책 표현력과 운영 성숙도는 직접 검증해야 한다.",
-      "tags": [
-        "#가드레일",
-        "#정책검증",
-        "#에이전트보안",
-        "#Rust"
-      ],
-      "is_featured": false,
-      "published_at": "2026-11-25",
-      "analyzed_by": "manual"
-    },
-    {
-      "item_key": "4654094f81c2dde4",
-      "source": "GitHub",
-      "title_ko": "Akto, AI 에이전트·MCP·LLM 보안 테스트 플랫폼",
-      "title_orig": "akto-api-security/akto",
-      "url": "https://github.com/akto-api-security/akto",
-      "category": "AI 보안 툴",
-      "summary": "조직의 AI 에이전트와 MCP, LLM, 에이전트 스킬, 생성형 AI 앱을 점검하는 AI 보안 플랫폼이다. 실제 트래픽을 관찰해 프롬프트 인젝션·민감정보 노출·권한 오남용 같은 취약점을 테스트하는 것이 핵심 기능이다.",
-      "tech_insight": "이미 운영 중인 LLM API 트래픽에 붙여 취약점을 지속적으로 찾는 방식이라, 배포 전 테스트가 어려운 서비스에 특히 맞는다. 트래픽 미러링 범위에 개인정보가 포함되므로 수집·보관 정책을 먼저 확인해야 한다.",
-      "tags": [
-        "#AI보안테스트",
-        "#프롬프트인젝션",
-        "#MCP",
-        "#API보안"
       ],
       "is_featured": false,
       "published_at": "2026-11-25",

@@ -1,10 +1,10 @@
 # 🛡️ Infosec Archive · 정보보안 포지션 아카이브
 
 > **🌐 공식 아카이브 웹사이트**: [https://bling9513-ship-it.github.io/project-1/](https://bling9513-ship-it.github.io/project-1/)
-> **마지막 업데이트**: `2026-11-27 07:52:32 KST` (매일 08:00 KST 자동 수집)
-> **아카이빙된 보안 공고**: 총 **592**개 (직무 검증 및 중복 제거 완료)
-> **마감 임박 공고**: 총 **131**개 (D-Day 및 마감 기한 순 정렬)
-> **경력 분포**: 신입 18건 · 신입·경력 33건 · 경력 497건 · 경력무관 39건 · 미표기 5건
+> **마지막 업데이트**: `2026-11-27 08:46:21 KST` (매일 08:00 KST 자동 수집)
+> **아카이빙된 보안 공고**: 총 **611**개 (직무 검증 및 중복 제거 완료)
+> **마감 임박 공고**: 총 **134**개 (D-Day 및 마감 기한 순 정렬)
+> **경력 분포**: 신입 19건 · 신입·경력 35건 · 경력 512건 · 경력무관 40건 · 미표기 5건
 > **오늘 한 번에**: [today.html](https://bling9513-ship-it.github.io/project-1/today.html) (오늘 마감 · KEV · 복습 · AI 브리핑 · 날씨 · 게임)
 > **AI 기술·트렌드 브리핑**: [ai.html](https://bling9513-ship-it.github.io/project-1/ai.html) (Hugging Face · arXiv · Hacker News · GeekNews 수집·분석)
 > **CVE 취약점 리포트**: [cve.html](https://bling9513-ship-it.github.io/project-1/cve.html) (CISA KEV · NVD · EPSS · 공개 PoC · 한국어 조치 방안)
@@ -15,14 +15,14 @@
 ### 분야별 바로가기
 | 분야 | 등록 공고 | 바로가기 |
 | :--- | :---: | :--- |
-| **정보보안** | **426개** | [목록 바로가기](#정보보안-426건) |
-| **정보보호** | **180개** | [목록 바로가기](#정보보호-180건) |
-| **취약점 진단** | **81개** | [목록 바로가기](#취약점-진단-81건) |
-| **모의해킹** | **61개** | [목록 바로가기](#모의해킹-61건) |
+| **정보보안** | **437개** | [목록 바로가기](#정보보안-437건) |
+| **정보보호** | **186개** | [목록 바로가기](#정보보호-186건) |
+| **취약점 진단** | **80개** | [목록 바로가기](#취약점-진단-80건) |
+| **모의해킹** | **62개** | [목록 바로가기](#모의해킹-62건) |
 
 ---
 
-## 정보보안 (426건)
+## 정보보안 (437건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -31,8 +31,9 @@
 | **중고나라** | [정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/389366) | 서울 강남구 | 경력 2~5년 | 원티드, 잡코리아 | **D-Day (오늘 마감)** | `정보보호`, `정보보안` |
 | **SK(주)** | [정보보안 운영 전문가 영입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55338862&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 | 경력 3년↑ | 사람인, 잡코리아 | **D-Day (오늘 마감)** | `정보보안` |
 | **갓루트(GOTROOT)** | [[경력 무관] Offensive Security 컨설턴트 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50253569) | 서울 금천구 | 경력무관 | 잡코리아 | **D-Day (오늘 마감)** | `모의해킹`, `정보보안` |
-| **에스케이** | [정보보안 운영 전문가 영입](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610030000081) | 서울 | 경력 3년↑ | 인크루트 | **D-Day (오늘 마감)** | `정보보안` |
-| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 서울 | 경력 4~12년 | 인크루트 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보호`, `정보보안` |
+| **에스케이** | [정보보안 운영 전문가 영입](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610030000081) | 서울 | 경력 3년↑ | 인크루트 | **D-Day (~11/27 금) 23시 마감** | `정보보안` |
+| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 서울 | 경력 4~12년 | 인크루트 | **D-Day (~11/27 금) 23시 마감** | `취약점 진단`, `정보보호`, `정보보안` |
+| **에스케이쉴더스** | [OT 보안 운영 경력직 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2609290005237) | 경기 이천시 | 경력 8년↑ | 인크루트 | **D-Day (~11/27 금) 23시 마감** | `정보보안` |
 | **(주)코리아인** | [[금융사/여의도] IT정보보안 솔루션 기술지원 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55564120&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 영등포구 | 경력 5년↑ | 사람인 | **D-Day (~ 11/27(금))** | `정보보안` |
 | **지에스비아이㈜** | [[남태령/대기업] 클라우드 보안, 모의해킹(취약점) 인력 구인](https://www.jobkorea.co.kr/Recruit/GI_Read/50403550) | 서울 서초구 | 경력 3년↑ | 잡코리아 | **D-Day (오늘 마감)** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **지에스비아이 주식회사** | [[남태령/대기업] 클라우드 보안, 모의해킹(취약점) 구인](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55660546&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 서초구 | 경력 5~9년 | 사람인 | **D-Day (오늘 마감)** | `모의해킹`, `취약점 진단`, `정보보안` |
@@ -105,7 +106,6 @@
 | **(주)GS리테일** | [[GS리테일] 정보보안부문 보안전략운영팀 보안성 검토 경력사원 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611180003512) | 서울 강남구 | 경력 7년↑ | 인크루트 | **D-4 (~12/01 화)** | `취약점 진단`, `정보보안` |
 | **(주)카카오브이엑스** | [카카오VX 정보보안팀 서비스 보안 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55604540&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 경기 성남시 분당구 | 경력 3~6년 | 사람인 | **D-5 (~ 12/02(수))** | `정보보안` |
 | **KB증권(주)** | [침해대응, 네트워크보안, FDS 분야 경력직(연봉계약직)](https://career.rememberapp.co.kr/job/posting/355699) | 서울 영등포구 | 경력 3년↑ | 리멤버 | **D-3 (~11/30 월)** | `정보보안` |
-| **에스케이쉴더스㈜** | [Cloud 보안운영 경력직 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50388089) | 서울 강남구 | 경력 6년↑ | 잡코리아, 인크루트 | **D-5** | `정보보안` |
 | **한화자산운용(주)** | [경력직 채용_IT보안팀 (보안 엔지니어)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611200002758) | 서울 영등포구 | 경력 3년↑ | 인크루트 | **D-7 (~12/04 금)** | `정보보안` |
 | **(주)선진** | [[하림그룹/선진] 정보보안 담당 (경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55631329&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강동구 | 경력 5년↑ | 사람인 | **D-6 (~ 12/03(목))** | `정보보안` |
 | **현대오토에버** | [[HMG AI 팩토리] 정보보호 및 IT 보안 관리](https://www.wanted.co.kr/wd/399436) | 서울 금천구 | 경력 5~11년 | 원티드, 사람인, 리멤버 | **D-3 (~ 11/30(월))** | `정보보호`, `정보보안` |
@@ -119,6 +119,8 @@
 | **(주)안랩** | [[안랩] 보안관제](https://career.rememberapp.co.kr/job/posting/356366) | 경기 성남시 | 경력 4년↑ | 리멤버 | **D-2 (~11/29 일)** | `정보보안` |
 | **(주)카카오엔터프라이즈** | [[정보보안실] 보안 취약점 진단 담당자 영입](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55655717&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 경기 성남시 분당구 | 경력 3년↑ | 사람인 | **D-3 (~ 11/30(월))** | `취약점 진단`, `정보보안` |
 | **(주)유니코써치** | [서비스보안팀장](https://career.rememberapp.co.kr/job/posting/356786) | 서울 영등포구 | 경력 12~20년 | 리멤버 | **D-7 (~12/04 금)** | `정보보안` |
+| **(주)프로써치코리아** | [보안관제·위협대응 컨설턴트(5년이상)](https://career.rememberapp.co.kr/job/posting/357235) | 서울 용산구 | 경력 5~12년 | 리멤버 | **D-6 (~12/03 목)** | `정보보안` |
+| **(주)한국정보보호경영연구소** | [[한국정보보호경영연구소] 보안솔루션 운영담당자 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55677177&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 영등포구 | 경력 3~5년 | 사람인 | **D-7 (~ 12/04(금))** | `정보보호`, `정보보안` |
 | **(주)핀다** | [[핀다뱅크(현 대원저축은행)] 시니어 보안 엔지니어](https://career.rememberapp.co.kr/job/posting/353263) | 서울 | 경력 3~5년 | 인크루트, 원티드, 리멤버 | **채용시 마감** | `정보보안` |
 | **(주)대신저축은행** | [IT 정보보안 부문 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55393054&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 중구 | 경력 3년↑ | 사람인 | **채용시 마감** | `정보보안` |
 | **(주)에이바이트** | [[정보보안기술] 2026년 보안솔루션 엔지니어 채용(신입,경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55148925&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 서초구 | 경력무관 | 사람인 | **채용시 마감** | `정보보안` |
@@ -134,7 +136,6 @@
 | **에스케이쉴더스** | [Cloud 보안 컨설팅 PM 경력직 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610150004218) | 경기 성남시 | 경력 7년↑ | 인크루트 | **채용시 마감** | `정보보안` |
 | **(주)신한디에스** | [보안운영 경력직 수시채용 (~채용 시 마감)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040002165) | 서울 중구 | 경력 3년↑ | 인크루트 | **채용시 마감** | `정보보안` |
 | **LS전선(주)** | [[LS전선] IT보안/인프라운영(본사) 경력 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610140004478) | 경기 안양시 | 경력 4년↑ | 인크루트 | **채용시 마감** | `정보보안` |
-| **에스케이쉴더스** | [OT 보안 운영 경력직 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2609290005237) | 경기 이천시 | 경력 8년↑ | 인크루트 | **채용시 마감** | `정보보안` |
 | **(주)CJ ENM** | [[CJ ENM] Security Manager (DevSecOps)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120003051) | 서울 마포구 | 경력 5년↑ | 인크루트 | **채용시 마감** | `정보보안` |
 | **한화시스템** | [Endpoint 보안솔루션 구축/운영 경력사원 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611120003131) | 서울 | 경력 | 인크루트 | **채용시 마감** | `정보보안` |
 | **(주)신세계아이앤씨** | [[신세계아이앤씨] 보안관제 직무 인재모집(계약직, 장애/보훈 전형, 채용 시 마감)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2608240001125) | 경기 김포시 | 경력무관 | 인크루트 | **채용시 마감** | `정보보안` |
@@ -178,12 +179,12 @@
 | **(주)인포인** | [고객사 상주 정보보안 솔루션 엔지니어 / 정보보안엔지니어](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55665712&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 금천구 | 신입·경력 | 사람인 | **채용시 마감** | `정보보안` |
 | **매버릭컨설팅(주)** | [CYBER SECURITY OFFICER (정보보안 관리자)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611250003058) | 경기 광명시 | 경력 3~19년 | 인크루트 | **채용시 마감** | `정보보안` |
 | **에스케이쉴더스** | [Hybrid 보안관제/보안운영 신입 및 경력직 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611250003635) | 경기 성남시 | 신입·경력 | 인크루트 | **채용시 마감** | `정보보안` |
+| **(주)핀다** | [[핀다뱅크(현 대원저축은행)] 주니어 보안 엔지니어](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100003306) | 서울 강남구 | 신입·경력 | 인크루트 | **채용시 마감** | `정보보안` |
 | **부드러운돌멩이** | [전자금융 정보보안전문가 (3년~10년)](https://www.wanted.co.kr/wd/371674) | 서울 성동구 | 경력 3~10년 | 원티드 | **상시채용** | `정보보안` |
 | **(주)하이브** | [[HYBE] 정보보호 (클라우드 보안운영)](https://career.rememberapp.co.kr/job/posting/352104) | 서울 | 경력 5~10년 | 원티드, 리멤버 | **상시채용** | `정보보호`, `정보보안` |
 | **뮤직카우(MUSICOW)** | [뮤직카우인베스트 정보보안팀 보안기술 담당자](https://www.wanted.co.kr/wd/397908) | 서울 마포구 | 경력 3년↑ | 원티드 | **상시채용** | `정보보안` |
 | **에스더블유엠** | [정보보안](https://www.wanted.co.kr/wd/396674) | 경기 안양시 | 경력 5년↑ | 원티드 | **상시채용** | `정보보안` |
 | **에스케이그룹 (SK)** | [[SK signet] 정보보안 담당 (7년이상)](https://www.wanted.co.kr/wd/396353) | 경기 성남시 | 경력 7년↑ | 원티드 | **상시채용** | `정보보안` |
-| **현대오토에버** | [[EnIT] 정보보안 솔루션 구축 및 운영 (금융)](https://www.wanted.co.kr/wd/395123) | 서울 강남구 | 경력 10년↑ | 원티드 | **상시채용** | `정보보안` |
 | **콘텐츠웨이브(wavve)** | [[정보보안팀] 정보보호 담당자 (ISMS 인증, 클라우드 보안)](https://www.wanted.co.kr/wd/394156) | 서울 영등포구 | 경력 4~13년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
 | **프라이빗에이아이** | [정보보안 프로젝트 수행 시니어(10년 이상)](https://www.wanted.co.kr/wd/393155) | 서울 마포구 | 경력 10~19년 | 원티드 | **상시채용** | `정보보안` |
 | **웰로** | [정보보안 담당자 (ISMS-P·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/393053) | 서울 영등포구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보호`, `정보보안` |
@@ -207,9 +208,6 @@
 | **빗썸** | [보안 정책](https://www.wanted.co.kr/wd/397743) | 서울 강남구 | 경력 4~10년 | 원티드, 리멤버 | **상시채용** | `정보보안` |
 | **크래프톤(Krafton)** | [[Infra Div.] DevSecOps/공급망 보안 엔지니어 (5~8년)](https://www.wanted.co.kr/wd/397436) | 서울 강남구 | 경력 5~8년 | 원티드 | **상시채용** | `정보보안` |
 | **펜타시큐리티** | [웹보안 소프트웨어 개발자](https://www.wanted.co.kr/wd/397408) | 서울 영등포구 | 경력 5~20년 | 원티드, 리멤버 | **상시채용** | `정보보안` |
-| **윤회** | [[CARE ID] 데이터보안·컴플라이언스 담당자](https://www.wanted.co.kr/wd/397312) | 서울 성동구 | 경력 3~8년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
-| **크래프톤(Krafton)** | [[Infra Div.] 클라우드·네트워크 보안 대응 엔지니어 (5~8년)](https://www.wanted.co.kr/wd/397292) | 서울 강남구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보안` |
-| **보맵** | [정보보호팀 인프라,보안 엔지니어(5년 이상~7년 이하)](https://www.wanted.co.kr/wd/396133) | 서울 서초구 | 경력 5~11년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
 | **파인더갭** | [보안 엔지니어(취약점 연구 자동화) 7년 이상](https://www.wanted.co.kr/wd/395962) | 서울 강남구 | 경력 7~11년 | 원티드 | **상시채용** | `취약점 진단`, `정보보안` |
 | **파인더갭** | [보안 엔지니어(취약점 분석/평가) 5년 이상](https://www.wanted.co.kr/wd/395959) | 서울 강남구 | 경력 5~11년 | 원티드 | **상시채용** | `취약점 진단`, `정보보안` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 서울 중구 | 경력 4~12년 | 원티드 | **상시채용** | `취약점 진단`, `정보보호`, `정보보안` |
@@ -238,6 +236,7 @@
 | **클럼엘** | [정보보안 취약점 분석 및 CERT](https://career.rememberapp.co.kr/job/posting/214001) | 서울 강남구 | 경력 2~7년 | 리멤버 | **상시채용** | `취약점 진단`, `정보보안` |
 | **㈜파라타항공** | [IT(정보보안) 경력직 상시채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50264960) | 강원 양양군 | 경력 | 잡코리아 | **상시채용** | `정보보안` |
 | **㈜에이플러스에셋어드바이저** | [(코스피상장 대기업) 정보보안(ISS) 담당자 경력 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50230075) | 서울 강남구 | 경력 5년↑ | 잡코리아 | **상시채용** | `정보보안` |
+| **우리에프아이에스㈜** | [[우리FIS] 26년 11월 보안 부문 경력 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50085310) | 서울 마포구 | 경력 3년↑ | 잡코리아 | **상시채용** | `정보보안` |
 | **(주)대한항공** | [정보보안 전문인력 상시모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2606190000062) | 서울 | 경력 2년↑ | 인크루트 | **상시채용** | `정보보안` |
 | **에어프레미아** | [정보보안 기술 담당자 (경력)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060001875) | 서울 강서구 | 경력 5년↑ | 인크루트 | **상시채용** | `정보보안` |
 | **에스케이쉴더스** | [[MSS사업] Hybrid 보안관제 경력직 상시 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2608240004623) | 경기 성남시 | 경력 1년↑ | 인크루트 | **상시채용** | `정보보안` |
@@ -252,7 +251,6 @@
 | **(주)레브잇** | [[쇼포트] Product Engineer (Security & Infra)](https://career.rememberapp.co.kr/job/posting/354467) | 서울 | 경력 3년↑ | 리멤버 | **상시채용** | `정보보안` |
 | **크림(주)** | [IT 보안 기술 담당자 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50363946) | 경기 성남시 분당구 | 경력 | 잡코리아 | **상시채용** | `정보보안` |
 | **한화시스템** | [한화시스템 보안담당·기술보호책임자 경력사원 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611140000295) | 서울 | 경력 5년↑ | 인크루트 | **상시채용** | `정보보안` |
-| **현대오토에버** | [퍼블릭클라우드 보안 Technical Architect](https://www.wanted.co.kr/wd/398513) | 서울 강남구 | 경력 3~10년 | 원티드 | **상시채용** | `정보보안` |
 | **티맵모빌리티** | [보안 기술 엔지니어](https://www.wanted.co.kr/wd/398468) | 서울 중구 | 경력 2~7년 | 원티드 | **상시채용** | `정보보안` |
 | **한화그룹 (Hanwha)** | [[한화시스템/방산] 보안/기술보호 관리](https://www.wanted.co.kr/wd/398426) | 서울 중구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보안` |
 | **메리츠증권** | [정보보호부문 - Security Engineering (정보보호)](https://www.wanted.co.kr/wd/398383) | 서울 영등포구 | 경력 3년↑ | 원티드 | **상시채용** | `정보보호`, `정보보안` |
@@ -285,7 +283,6 @@
 | **(주)카카오페이증권** | [클라우드 보안 담당자(시니어)](https://career.rememberapp.co.kr/job/posting/355046) | 경기 성남시 | 경력 7~15년 | 리멤버, 인크루트 | **상시채용** | `정보보안` |
 | **(주)구다이글로벌** | [[구다이글로벌] 정보 보안 엔지니어](https://career.rememberapp.co.kr/job/posting/351071) | 서울 강남구 | 경력 7~13년 | 리멤버 | **상시채용** | `정보보안` |
 | **(주)유니코써치** | [국내 OTT 기업 :정보보안 엔지니어(아키텍처 설계)](https://career.rememberapp.co.kr/job/posting/349499) | 서울 마포구 | 경력 5~15년 | 리멤버 | **상시채용** | `정보보안` |
-| **(주)인라이플** | [Security Engineer - 모의해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/338647) | 서울 구로구 | 경력 5년↑ | 리멤버 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **(주)비바리퍼블리카** | [[토스뱅크] Security Researcher (취약점 진단 & 모의해킹)](https://career.rememberapp.co.kr/job/posting/326960) | 서울 강남구 | 경력 미표기 | 리멤버 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **주식회사 무신사** | [Security Engineer (스팸 메일·망연계 운영)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611180003517) | 서울 성동구 | 경력 5년↑ | 인크루트 | **상시채용** | `정보보안` |
 | **주식회사 무신사** | [Security Engineering Lead (보안기술팀장)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611170003863) | 서울 성동구 | 경력 10년↑ | 인크루트 | **상시채용** | `정보보안` |
@@ -308,6 +305,12 @@
 | **몬드리안에이아이** | [정보보안 전문가](https://www.wanted.co.kr/wd/400185) | 인천 연수구 | 경력 5~10년 | 원티드, 리멤버 | **상시채용** | `정보보안` |
 | **퍼플아이오** | [정보보안 관리자(7년 이상)](https://www.wanted.co.kr/wd/400115) | 서울 강남구 | 경력 7~14년 | 원티드 | **상시채용** | `정보보안` |
 | **현대자동차그룹 (HYUNDAI)** | [[통합보안] Mobility Security Engineer - 차량보안](https://www.wanted.co.kr/wd/400151) | 서울 서초구 | 경력 3년↑ | 원티드 | **상시채용** | `정보보안` |
+| **휴젤** | [[보안1팀] 정보보안 운영/개인정보보호](https://www.wanted.co.kr/wd/400292) | 서울 강남구 | 경력 4~9년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
+| **엔도로보틱스** | [IT 인프라·보안 리드](https://www.wanted.co.kr/wd/400500) | 서울 종로구 | 경력 3년↑ | 원티드 | **상시채용** | `정보보안` |
+| **소만사** | [EDR 보안에이전트 C++개발자](https://www.wanted.co.kr/wd/400440) | 경기 성남시 | 경력 1년↑ | 원티드 | **상시채용** | `정보보안` |
+| **(주)프로써치코리아** | [보안관제·위협대응 컨설턴트](https://career.rememberapp.co.kr/job/posting/357125) | 서울 | 경력 5~15년 | 리멤버 | **상시채용** | `정보보안` |
+| **(주)하이브** | [[Weverse Company] 서비스 보안점검](https://career.rememberapp.co.kr/job/posting/357009) | 경기 성남시 | 경력 7~10년 | 리멤버 | **상시채용** | `정보보안` |
+| **(주)하이브** | [[Weverse Company] 서비스 보안정책](https://career.rememberapp.co.kr/job/posting/357008) | 경기 성남시 | 경력 5~10년 | 리멤버 | **상시채용** | `정보보안` |
 | **알라딘커뮤니케이션** | [정보보호팀 정보보호담당자 (기술보안)](https://www.wanted.co.kr/wd/392825) | 서울 중구 | 신입·경력 | 원티드, 사람인, 잡코리아 | **D-16 (~ 12/13(일))** | `정보보호`, `정보보안` |
 | **파이오링크** | [WEBFRONT-K 웹보안기능 / 시그니처개발](https://www.jumpit.co.kr/position/55285701) | 서울 금천구 | 경력 3~13년 | 점핏 | **D-16 (~12/13 일)** | `정보보안` |
 | **스콥정보통신** | [네트워크 보안 R&D 담당자 채용](https://www.jumpit.co.kr/position/55311034) | 서울 서초구 | 경력 7~20년 | 점핏 | **D-18 (~12/15 화)** | `정보보안` |
@@ -332,7 +335,7 @@
 | **(주)제테마** | [[제테마/판교] IT 인프라·정보보안 운영 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55500408&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 경기 성남시 분당구 | 경력 7년↑ | 사람인 | **D-9 (~ 12/06(일))** | `정보보안` |
 | **삼성물산 (주)** | [[삼성물산 건설부문] 플랫폼 정보보안 채용 공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55502827&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강남구 | 경력 2년↑ | 사람인 | **D-9 (~ 12/06(일))** | `정보보안` |
 | **(주)유니코써치** | [[중견 게임개발사] 정보보호 보안관리 시니어급](https://career.rememberapp.co.kr/job/posting/354124) | 경기 성남시 | 경력 8~20년 | 리멤버 | **D-9 (~12/06 일)** | `정보보호`, `정보보안` |
-| **파워에이치알** | [[주요SI업체] 정보보안 컨설팅 담당(경력 3년 - 16년)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611070000271) | 서울 | 경력 3~16년 | 인크루트 | **D-10 (~12/07 월)** | `정보보안` |
+| **파워에이치알** | [[주요SI업체] 정보보안 컨설팅 담당(경력 3년 - 16년)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611070000271) | 서울 | 경력 3~16년 | 인크루트 | **D-29 (~12/26 토)** | `정보보안` |
 | **(주)코윈디에스티** | [기술보안 및 정보보안 운영 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55517406&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 경기 평택시 | 경력 3년↑ | 사람인 | **D-12 (~ 12/09(수))** | `정보보안` |
 | **에스케이쉴더스(주)** | [사이버보안 컨설턴트 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55529935&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 경기 의왕시 | 경력 2년↑ | 사람인, 잡코리아, 인크루트 | **D-12 (~ 12/09(수))** | `정보보안` |
 | **미리디** | [보안 엔지니어(AI-Driven Security Automation Engineer)](https://www.wanted.co.kr/wd/397265) | 서울 | 경력 3~7년 | 원티드, 리멤버 | **D-13 (~12/10 목)** | `정보보안` |
@@ -381,9 +384,11 @@
 | **베스트네트워크(주)** | [37. 개인 정보 보안 담당자 [글로벌 럭셔리 기업]](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611170003786) | 서울 | 경력 6년↑ | 인크루트 | **D-21 (~12/18 금)** | `정보보안` |
 | **에이엠에스(주)** | [전산/보안담당자 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55591461&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 경남 창원시 성산구 | 신입·경력 | 사람인 | **D-20 (~ 12/17(목))** | `정보보안` |
 | **에스케이쉴더스(주)** | [[채용연계형]클라우드 기반 스마트 융합보안 양성과정 37기](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55598928&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 | 신입 | 사람인 | **D-23 (~ 12/20(일))** | `정보보안` |
+| **(주)유니코써치** | [[대기업계열사] Security Engineer](https://career.rememberapp.co.kr/job/posting/352922) | 경기 성남시 | 경력 5~10년 | 리멤버 | **D-12 (~12/09 수)** | `정보보안` |
 | **카카오게임즈** | [[경력] 서비스보안 담당자 영입](https://www.jobkorea.co.kr/Recruit/GI_Read/50385767) | 경기 성남시 분당구 | 경력 5년↑ | 잡코리아, 인크루트 | **D-18** | `정보보안` |
 | **이지케어텍(주)** | [[의료IT 1위 이지케어텍] 정보보안 담당자](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55598261&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 중구 | 경력 1~5년 | 사람인 | **D-20 (~ 12/17(목))** | `정보보안` |
 | **(주)다비치안경체인** | [[다비치안경체인] 정보보안 담당(정보보안팀) 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55597744&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 종로구 | 경력 3~6년 | 사람인 | **D-50 (~ 01/16(토))** | `정보보안` |
+| **에스케이쉴더스㈜** | [Cloud 보안운영 경력직 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50388089) | 서울 강남구 | 경력 6년↑ | 잡코리아, 인크루트 | **D-13** | `정보보안` |
 | **서울평가정보(주)** | [[서울평가정보] 정보보안 담당자 경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55619341&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 영등포구 | 경력 2년↑ | 사람인, 잡코리아 | **D-22 (~ 12/19(토))** | `정보보안` |
 | **(주)에픽스** | [(주)에픽스 정보보안 분석 및 취약점 진단 경력 채용 공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55617241&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 세종 | 경력 | 사람인 | **D-22 (~ 12/19(토))** | `취약점 진단`, `정보보안` |
 | **(주)콘텐츠브릿지** | [[경력] 정보보안 담당자 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55630271&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강남구 | 경력 1년↑ | 사람인 | **D-23 (~ 12/20(일))** | `정보보안` |
@@ -448,22 +453,28 @@
 | **(주)유호스트** | [보안관제(정보보안) 정규직 채용(교대근무)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55665853&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 금천구 | 경력무관 | 사람인 | **D-19 (~ 12/16(수))** | `정보보안` |
 | **(주)시큐레이어** | [㈜시큐레이어 - 사내 전산 및 정보보안 담당자를 모십니다.](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55665958&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 성동구 | 경력 1년↑ | 사람인 | **D-28 (~ 12/25(금))** | `정보보안` |
 | **(주)맨파워그룹코리아** | [[선릉] 처브라이프생명보험 IT정보보안 담당자(1Y)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55666300&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강남구 | 경력무관 | 사람인 | **D-28 (~ 12/25(금))** | `정보보안` |
-| **(주)진인프라** | [중견기업 사내 정보보안 담당자 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55669415&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 송파구 | 경력 5년↑ | 사람인 | **D-28 (~ 12/25(금))** | `정보보안` |
+| **(주)진인프라** | [중견기업 사내 정보보안 담당자 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55669415&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 송파구 | 경력 5년↑ | 사람인, 잡코리아 | **D-28 (~ 12/25(금))** | `정보보안` |
 | **인드림홀딩스** | [정보보안(취약점 진단) / 반도체 대기업 / 사원 ~ 과장급](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55671512&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 충북 청주시 흥덕구 | 경력 4~11년 | 사람인 | **D-28 (~ 12/25(금))** | `취약점 진단`, `정보보안` |
 | **(주)시큐아이** | [[삼성SDS자회사] (주)시큐아이 경력사원 채용(보안운영)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55666278&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 서울 서초구 | 경력 2~10년 | 사람인 | **D-28 (~ 12/25(금))** | `정보보안` |
 | **㈜에스에스알** | [[신입/경력] 보안솔루션 엔지니어 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50391136) | 서울 구로구 | 신입·경력 | 잡코리아 | **D-34** | `정보보안` |
+| **(주)한국정보보안기술원** | [암호모듈시험/CC평가/AI S/W시험/보안 컨설팅등 경력 신입 선발](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611260000813) | 서울 서초구 | 신입·경력 | 인크루트 | **D-8 (~12/05 토)** | `정보보안` |
+| **(주)맨파워써치** | [정보보안(팀장급)](https://career.rememberapp.co.kr/job/posting/357066) | 서울 중구 | 경력 10~22년 | 리멤버 | **D-9 (~12/06 일)** | `정보보안` |
+| **(주)신세계디에프** | [[신세계디에프(면세점)] 정보보안 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55679289&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 중구 | 경력 2년↑ | 사람인, 잡코리아, 인크루트 | **D-10 (~ 12/07(월))** | `정보보안` |
+| **(주)디노텍** | [(주)디노텍 정보보안 솔루션 원격운영 엔지니어 (신입)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55682686&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강남구 | 신입 | 사람인 | **D-29 (~ 12/26(토))** | `정보보안` |
+| **(주)엔터웨이파트너스** | [[대기업생보사]정보보안팀 경력직(대리/과장급)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611260000845) | 서울 | 경력 5년↑ | 인크루트 | **D-29 (~12/26 토)** | `정보보안` |
+| **(주)하이시큐어** | [(주)하이시큐어 IT 기술지원-정보보안-엔지니어](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55675219&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 대전 서구 | 경력무관 | 사람인 | **D-58 (~ 01/24(일))** | `정보보안` |
 
 [맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)
 
 ---
 
-## 정보보호 (180건)
+## 정보보호 (186건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **중고나라** | [정보보안 담당자 (ISMS·보안 운영 및 컴플라이언스)](https://www.wanted.co.kr/wd/389366) | 서울 강남구 | 경력 2~5년 | 원티드, 잡코리아 | **D-Day (오늘 마감)** | `정보보호`, `정보보안` |
-| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 서울 | 경력 4~12년 | 인크루트 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보호`, `정보보안` |
-| **㈜티빙** | [[티빙] Privacy(개인정보보호) Lead 경력채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50260163) | 서울 강남구 | 경력 | 인크루트, 잡코리아 | **D-Day (~11/27 금)** | `정보보호` |
+| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 서울 | 경력 4~12년 | 인크루트 | **D-Day (~11/27 금) 23시 마감** | `취약점 진단`, `정보보호`, `정보보안` |
+| **㈜티빙** | [[티빙] Privacy(개인정보보호) Lead 경력채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50260163) | 서울 강남구 | 경력 | 인크루트, 잡코리아 | **D-Day (~11/27 금) 23시 마감** | `정보보호` |
 | **(주)진영정기** | [㈜진영정기 구매팀 정보보호·전산 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55467391&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 화성시 | 신입·경력 | 사람인 | **D-5 (~ 12/02(수))** | `정보보호` |
 | **(주)카카오** | [개인정보보호 담당자 (경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55482452&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 성남시 분당구 | 경력 2년↑ | 사람인, 잡코리아 | **D-3 (~ 11/30(월))** | `정보보호` |
 | **한화오션(주)** | [[경영지원] 정보보호 경력사원 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55233392&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경남 거제시 | 경력 5년↑ | 사람인, 잡코리아, 인크루트 | **D-3 (~ 11/30(월))** | `정보보호` |
@@ -484,6 +495,7 @@
 | **(주)에스지시큐리티컨설팅** | [문화체육관광부 정보보호 및 개인정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55458701&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 강남구 | 신입·경력 | 사람인, 잡코리아 | **D-5 (~ 12/02(수))** | `정보보호` |
 | **송암시스콤(주)** | [한전 정보보호시스템 개발/PM](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55466354&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 나주시 | 경력 2~5년 | 사람인 | **D-5 (~ 12/02(수))** | `정보보호` |
 | **휴젤(주)** | [[보안1팀] 정보보안 운영/개인정보보호 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55472614&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 강남구 | 경력 4~9년 | 사람인, 잡코리아, 인크루트 | **D-6 (~ 12/03(목))** | `정보보호`, `정보보안` |
+| **씨제이이엔엠(CJ ENM)** | [개인정보보호담당자](https://www.wanted.co.kr/wd/397960) | 서울 마포구 | 경력 4년↑ | 원티드, 사람인 | **D-3 (~ 11/30(월))** | `정보보호` |
 | **위대한상상(요기요)** | [[Security] Privacy Manager (개인정보보호 담당자/3년 이상)](https://www.wanted.co.kr/wd/385811) | 서울 강남구 | 경력 3~10년 | 원티드, 잡코리아, 리멤버 | **D-2** | `정보보호`, `정보보안` |
 | **토스씨엑스(주)** | [개인정보보호 담당자](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55452717&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 구로구 | 경력 3~10년 | 점핏 | **D-4 (~12/01 화)** | `정보보호` |
 | **(주)하이퍼코퍼레이션** | [[코스닥상장사] 하이퍼코퍼레이션 CISO 정보보호최고책임자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55470203&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 강남구 | 경력 10년↑ | 사람인 | **D-6 (~ 12/03(목))** | `정보보호` |
@@ -496,7 +508,7 @@
 | **(주)에스지시큐리티컨설팅** | [세종시 정보보호 및 개인정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55458701&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 세종 | 신입·경력 | 사람인, 잡코리아 | **D-5 (~ 12/02(수))** | `정보보호` |
 | **(주)풍산에프앤에스** | [[풍산그룹 계열사] 풍산FNS 채용 (IT/정보보호)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55608541&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 충남 논산시 | 경력 2~8년 | 사람인 | **D-4 (~ 12/01(화))** | `정보보호` |
 | **(주)대림** | [(주)대림 정보보호 경력직 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611190003778) | 서울 중구 | 경력 5~10년 | 인크루트 | **D-2 (~11/29 일)** | `정보보호` |
-| **미래에셋금융서비스㈜** | [미래에셋금융서비스 개인정보보호 운영 담당 채용(본사 근무)](https://www.jobkorea.co.kr/Recruit/GI_Read/50389637) | 서울 중구 | 경력 3년↑ | 잡코리아 | **D-3 (~ 11/30(월))** | `정보보호` |
+| **미래에셋금융서비스㈜** | [미래에셋금융서비스 개인정보보호 운영 담당 채용(본사 근무)](https://www.jobkorea.co.kr/Recruit/GI_Read/50389637) | 서울 중구 | 경력 3년↑ | 잡코리아 | **D-3** | `정보보호` |
 | **롯데알미늄(주)** | [롯데알미늄㈜ 정보보호담당자 경력직 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55621444&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 금천구 | 경력 3년↑ | 사람인 | **D-2 (~ 11/29(일))** | `정보보호` |
 | **현대오토에버** | [[HMG AI 팩토리] 정보보호 및 IT 보안 관리](https://www.wanted.co.kr/wd/399436) | 서울 금천구 | 경력 5~11년 | 원티드, 사람인, 리멤버 | **D-3 (~ 11/30(월))** | `정보보호`, `정보보안` |
 | **(주)보령** | [[보령] 정보보호 거버넌스 및 컴플라이언스 담당자](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55611847&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 종로구 | 신입·경력 | 사람인 | **D-2 (~ 11/29(일))** | `정보보호` |
@@ -507,6 +519,7 @@
 | **롯데알미늄㈜(본사)** | [롯데알미늄(주) 정보보호담당자 경력직 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50420336) | 서울 금천구 | 경력 3년↑ | 잡코리아 | **D-2** | `정보보호` |
 | **서울아산병원** | [정보보호실 사무직 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611250002951) | 서울 송파구 | 경력 | 인크루트 | **D-3 (~11/30 월)** | `정보보호` |
 | **롯데바이오로직스** | [2026년 11월 경력사원 채용(정규직 일반직군) - 개인정보보호담당](https://www.jobkorea.co.kr/Recruit/GI_Read/50425398) | 인천 연수구 | 경력 | 잡코리아 | **D-6** | `정보보호` |
+| **(주)한국정보보호경영연구소** | [[한국정보보호경영연구소] 보안솔루션 운영담당자 모집](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55677177&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 영등포구 | 경력 3~5년 | 사람인 | **D-7 (~ 12/04(금))** | `정보보호`, `정보보안` |
 | **(주)핀다** | [[핀다뱅크(현 대원저축은행)] 개인정보보호 매니저](https://career.rememberapp.co.kr/job/posting/353262) | 서울 | 신입 | 인크루트, 원티드, 리멤버 | **채용시 마감** | `정보보호` |
 | **(주)한국갤럽조사연구소** | [[한국갤럽] 정보보호팀 / 인프라 및 시스템 보안 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55504589&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 종로구 | 경력 3~10년 | 사람인 | **채용시 마감** | `정보보호`, `정보보안` |
 | **(주)잡뉴스솔로몬서치** | [IT 담당 (클라우드/네트워크/정보보호, 대리-과장급) - 패션 전문기업](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611060000995) | 서울 | 경력 3~8년 | 인크루트 | **채용시 마감** | `정보보호` |
@@ -532,10 +545,6 @@
 | **버킷플레이스(오늘의집)** | [정보보안·컴플라이언스 담당자](https://www.wanted.co.kr/wd/382885) | 서울 서초구 | 경력 6년↑ | 원티드, 리멤버 | **상시채용** | `정보보호`, `정보보안` |
 | **베이글랩스** | [정보보안·개인정보보호 리드 (5년 이상)](https://www.wanted.co.kr/wd/381459) | 서울 서초구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보호`, `정보보안` |
 | **엘리스** | [보안 GRC 매니저](https://www.wanted.co.kr/wd/397993) | 서울 강남구 | 경력 3~15년 | 원티드, 리멤버 | **상시채용** | `정보보호`, `정보보안` |
-| **윤회** | [[CARE ID] 데이터보안·컴플라이언스 담당자](https://www.wanted.co.kr/wd/397312) | 서울 성동구 | 경력 3~8년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
-| **보맵** | [정보보호팀 인프라,보안 엔지니어(5년 이상~7년 이하)](https://www.wanted.co.kr/wd/396133) | 서울 서초구 | 경력 5~11년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
-| **씨제이이엔엠(CJ ENM)** | [개인정보보호담당자](https://www.wanted.co.kr/wd/397960) | 서울 마포구 | 경력 4년↑ | 원티드, 사람인 | **상시채용** | `정보보호` |
-| **한화그룹 (Hanwha)** | [[한화에어로스페이스] 해외사업 정보보호 담당자](https://www.wanted.co.kr/wd/397905) | 서울 중구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보호` |
 | **두꺼비세상** | [정보보호 담당자](https://www.wanted.co.kr/wd/396718) | 서울 구로구 | 경력 4년↑ | 원티드 | **상시채용** | `정보보호` |
 | **인피니티익스체인지코리아** | [정보보호 최고책임자(CISO)](https://www.wanted.co.kr/wd/394325) | 서울 강남구 | 경력 12~20년 | 원티드 | **상시채용** | `정보보호` |
 | **티시스아이티** | [정보보호(보안기획/진단)](https://www.wanted.co.kr/wd/393832) | 서울 중구 | 경력 4~12년 | 원티드 | **상시채용** | `취약점 진단`, `정보보호`, `정보보안` |
@@ -575,11 +584,15 @@
 | **소만사** | [정보보호 및 개인정보보호 컨설턴트](https://www.wanted.co.kr/wd/398153) | 경기 성남시 | 경력 5~11년 | 원티드 | **상시채용** | `정보보호` |
 | **(주)보령** | [[보령] 정보보호 거버넌스 및 컴플라이언스(ISMS/개인정보보호) 팀장](https://career.rememberapp.co.kr/job/posting/340012) | 서울 종로구 | 경력 10년↑ | 리멤버 | **상시채용** | `정보보호` |
 | **(주)두꺼비세상** | [[두꺼비세상] 정보보호 담당자 (경력)](https://career.rememberapp.co.kr/job/posting/352621) | 서울 구로구 | 경력 4년↑ | 리멤버 | **상시채용** | `정보보호` |
+| **(주)스냅컴퍼니** | [정보보호담당자](https://career.rememberapp.co.kr/job/posting/344042) | 서울 | 경력 5~8년 | 리멤버 | **상시채용** | `정보보호` |
 | **메가존㈜** | [[메가존] [IRM] 개인정보보호담당자 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50405724) | 경기 과천시 | 경력 5년↑ | 잡코리아 | **상시채용** | `정보보호` |
 | **쏘카(SOCAR)** | [정보보호 담당자](https://www.wanted.co.kr/wd/399667) | 서울 성동구 | 경력 10년↑ | 원티드, 리멤버 | **상시채용** | `정보보호` |
 | **크림(주)** | [개인정보보호 담당자 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50418045) | 경기 성남시 분당구 | 경력 | 잡코리아 | **상시채용** | `정보보호` |
 | **롯데그룹 (LOTTE)** | [[롯데바이오로직스] 정보보호](https://www.wanted.co.kr/wd/400103) | 인천 연수구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보호` |
 | **롯데그룹 (LOTTE)** | [[롯데바이오로직스] 개인정보보호담당](https://www.wanted.co.kr/wd/400102) | 인천 연수구 | 경력 5년↑ | 원티드 | **상시채용** | `정보보호` |
+| **휴젤** | [[보안1팀] 정보보안 운영/개인정보보호](https://www.wanted.co.kr/wd/400292) | 서울 강남구 | 경력 4~9년 | 원티드 | **상시채용** | `정보보호`, `정보보안` |
+| **보맵** | [정보보호팀 담당자 (3년 이상)](https://www.wanted.co.kr/wd/400390) | 서울 강서구 | 경력 3~8년 | 원티드 | **상시채용** | `정보보호` |
+| **엘박스** | [CISO(정보보호최고책임자)](https://www.wanted.co.kr/wd/355128) | 서울 강남구 | 경력 10년↑ | 원티드 | **상시채용** | `정보보호` |
 | **알라딘커뮤니케이션** | [정보보호팀 정보보호담당자 (기술보안)](https://www.wanted.co.kr/wd/392825) | 서울 중구 | 신입·경력 | 원티드, 사람인, 잡코리아 | **D-16 (~ 12/13(일))** | `정보보호`, `정보보안` |
 | **대진정보통신㈜** | [개인정보보호 컨설팅](https://www.jobkorea.co.kr/Recruit/GI_Read/50200667) | 서울 관악구 | 경력 | 잡코리아 | **D-20 (~ 12/17(목))** | `정보보호` |
 | **대진정보통신㈜** | [PIA 자격증 필수/개인정보보호 컨설팅(경력)](https://www.jobkorea.co.kr/Recruit/GI_Read/50200675) | 서울 관악구 | 경력 3년↑ | 잡코리아 | **D-20 (~ 12/17(목))** | `정보보호` |
@@ -625,9 +638,9 @@
 | **디어유** | [정보보호/개인정보보호 분야 경력직 채용](https://www.jumpit.co.kr/position/55580140) | 서울 강남구 | 경력 5~10년 | 점핏 | **D-19 (~12/16 수)** | `정보보호` |
 | **한진정보통신(주)** | [[보안]정보보호 전략 기획 및 보안 진단(6년 이상)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55604789&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 강서구 | 경력 6년↑ | 사람인, 잡코리아 | **D-23 (~ 12/20(일))** | `취약점 진단`, `정보보호`, `정보보안` |
 | **(주)페퍼저축은행** | [정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55621402&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 성남시 분당구 | 경력 7년↑ | 사람인 | **D-14 (~ 12/11(금))** | `정보보호` |
+| **메가스터디교육(주)** | [개인정보보호 담당자 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55645377&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 서초구 | 경력 2년↑ | 사람인, 인크루트, 잡코리아 | **D-9 (~ 12/06(일))** | `정보보호` |
 | **(주)크몽** | [개인정보 보호 담당자 (8년 이상)](https://career.rememberapp.co.kr/job/posting/356154) | 서울 서초구 | 경력 8~12년 | 리멤버 | **D-9 (~12/06 일)** | `정보보호` |
 | **(주)에듀윌** | [[에듀윌] 정보보호 담당 및 네트워크 엔지니어 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50418320) | 서울 구로구 | 경력 7년↑ | 잡코리아 | **D-9 (~ 12/06(일))** | `정보보호` |
-| **메가스터디교육(주)** | [[IT] 개인정보보호 담당자 채용](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611230003978) | 서울 서초구 | 경력 2년↑ | 인크루트, 잡코리아, 사람인 | **D-9 (~12/06 일)** | `정보보호` |
 | **시큐와우(주)** | [[시큐와우] 관리보안(정보보호)컨설팅 인재채용(신입/경력)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55633075&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 안양시 동안구 | 신입·경력 | 사람인 | **D-23 (~ 12/20(일))** | `정보보호`, `정보보안` |
 | **동은정보기술(주)** | [[프리랜서] 국립중앙의료원 통합의료정보 정보보안/정보보호](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55645447&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88) | 서울 중구 | 경력 3년↑ | 사람인 | **D-26 (~ 12/23(수))** | `정보보호`, `정보보안` |
 | **안국약품(주)** | [안국약품(주) 전산팀(정보보호 담당자) 경력직 수시채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55650127&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 경기 과천시 | 경력 2~7년 | 사람인 | **D-26 (~ 12/23(수))** | `정보보호` |
@@ -641,18 +654,22 @@
 | **리멤버 헤드헌팅 서비스** | [[유명 SaaS 중견/강원 강촌 근무/셔틀 O] 정보보호 관리체계 운영](https://career.rememberapp.co.kr/job/posting/357005) | 강원 춘천시 | 경력 5~13년 | 리멤버 | **D-16 (~12/13 일)** | `정보보호` |
 | **위쉬정보기술㈜** | [인천 인천시청 정보보호관리자 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50425971) | 서울 구로구 | 경력무관 | 잡코리아 | **D-27** | `정보보호` |
 | **그레이스앤파트너스** | [정보보호 팀장/(10~ 20년) - 제약사(코스피)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611250001891) | 서울 | 경력 10~20년 | 인크루트 | **D-28 (~12/25 금)** | `정보보호` |
+| **(주)맨파워써치** | [정보보호 담당](https://career.rememberapp.co.kr/job/posting/357145) | 서울 중구 | 경력 2~6년 | 리멤버 | **D-9 (~12/06 일)** | `정보보호` |
+| **넷마블(주)** | [개인정보보호 관리체계 운영](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55679649&location=ts&searchword=%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8) | 서울 구로구 | 경력 7년↑ | 사람인 | **D-28 (~ 12/25(금))** | `정보보호` |
+| **대진정보통신** | [PIA자격/개인정보보호컨설팅(4~7년)](https://www.jumpit.co.kr/position/55665619) | 서울 관악구 | 경력 4~7년 | 점핏 | **D-29 (~12/26 토)** | `정보보호` |
+| **대진정보통신** | [PIA자격/개인정보보호컨설팅(1~3년)](https://www.jumpit.co.kr/position/55665604) | 서울 관악구 | 경력 1~3년 | 점핏 | **D-29 (~12/26 토)** | `정보보호` |
 
 [맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)
 
 ---
 
-## 취약점 진단 (81건)
+## 취약점 진단 (80건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **(주)써니즈** | [[써니즈] [IT정보보안] 취약점진단 서비스 운영지원](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55554465&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 경기 성남시 수정구 | 경력무관 | 사람인, 잡코리아 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보안` |
 | **(주)써니즈** | [[써니즈][IT정보보안] 소스코드 취약점 진단(SAST) 경력 2년](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55559131&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 서울 영등포구 | 경력 1~6년 | 사람인, 잡코리아 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보안` |
-| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 서울 | 경력 4~12년 | 인크루트 | **D-Day (오늘 마감)** | `취약점 진단`, `정보보호`, `정보보안` |
+| **그레이스앤파트너스** | [정보보호 보안기획/진단/(4~ 12년) - 금융그룹 ICT](https://job.incruit.com/jobdb_info/jobpost.asp?job=2610280003089) | 서울 | 경력 4~12년 | 인크루트 | **D-Day (~11/27 금) 23시 마감** | `취약점 진단`, `정보보호`, `정보보안` |
 | **지에스비아이㈜** | [[남태령/대기업] 클라우드 보안, 모의해킹(취약점) 인력 구인](https://www.jobkorea.co.kr/Recruit/GI_Read/50403550) | 서울 서초구 | 경력 3년↑ | 잡코리아 | **D-Day (오늘 마감)** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **지에스비아이 주식회사** | [[남태령/대기업] 클라우드 보안, 모의해킹(취약점) 구인](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55660546&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 서초구 | 경력 5~9년 | 사람인 | **D-Day (오늘 마감)** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **주식회사 윈스테크넷** | [[중견기업 윈스테크넷] 부울경 정보보호서비스 경력 채용(관제, 진단, 개인정보)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611030001280) | 부산 | 경력 3년↑ | 인크루트 | **D-3 (~11/30 월)** | `취약점 진단`, `정보보호`, `정보보안` |
@@ -671,7 +688,6 @@
 | **(주)골프존** | [[골프존] 보안 취약점 진단 담당자](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55584526&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 서울 강남구 | 경력 4~8년 | 사람인 | **채용시 마감** | `취약점 진단`, `정보보안` |
 | **(주)케인앤클루컨설팅** | [정보보호(보안기획/진단) 대리(과장)급 경력사원 모집](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611170003656) | 서울 중구 | 경력 3~12년 | 인크루트 | **채용시 마감** | `취약점 진단`, `정보보호`, `정보보안` |
 | **(주)핀다** | [[핀다] Application Security Engineer(자동화/취약점)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611100003303) | 서울 강남구 | 경력 4~7년 | 인크루트 | **채용시 마감** | `취약점 진단`, `정보보안` |
-| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 서울 구로구 | 경력 5~11년 | 원티드 | **상시채용** | `모의해킹`, `취약점 진단` |
 | **㈜이글루코퍼레이션** | [[인프라사업본부] 취약점진단 경력 채용(대전/세종/광주/진주)](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55314263&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 대전 유성구 | 경력 1~5년 | 사람인 | **상시채용** | `취약점 진단` |
 | **마이리얼트립** | [정보보안실 보안취약점 진단 매니저](https://www.wanted.co.kr/wd/327262) | 서울 서초구 | 경력 3년↑ | 원티드, 인크루트 | **상시채용** | `취약점 진단`, `정보보안` |
 | **티맵모빌리티** | [보안 진단 엔지니어](https://www.wanted.co.kr/wd/397947) | 서울 중구 | 경력 2~7년 | 원티드 | **상시채용** | `취약점 진단`, `정보보안` |
@@ -697,13 +713,13 @@
 | **엔아이티서비스** | [[네이버계열사][NIT Service] NAVER 서비스 보안진단](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611040003267) | 경기 성남시 | 신입 | 인크루트 | **상시채용** | `취약점 진단`, `정보보안` |
 | **글로벌머니익스프레스** | [[GME/핀테크] 취약점 분석 전문가](https://www.wanted.co.kr/wd/398510) | 서울 영등포구 | 경력 5~10년 | 원티드, 리멤버 | **상시채용** | `취약점 진단` |
 | **지에스리테일(GS리테일)** | [[정보보안부문] 보안전략운영팀 보안성 검토 담당 7년 이상](https://www.wanted.co.kr/wd/398962) | 서울 영등포구 | 경력 7~14년 | 원티드 | **상시채용** | `취약점 진단`, `정보보안` |
-| **(주)인라이플** | [Security Engineer - 모의해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/338647) | 서울 구로구 | 경력 5년↑ | 리멤버 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **(주)비바리퍼블리카** | [[토스뱅크] Security Researcher (취약점 진단 & 모의해킹)](https://career.rememberapp.co.kr/job/posting/326960) | 서울 강남구 | 경력 미표기 | 리멤버 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **넷마블** | [[넷마블] 취약점 진단 및 모의해킹 담당자 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50292765) | 서울 구로구 | 경력 5년↑ | 잡코리아 | **상시채용** | `모의해킹`, `취약점 진단` |
 | **주식회사 무신사** | [Security Engineer (모의해킹 · 소스코드 진단)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611170003862) | 서울 성동구 | 경력 8년↑ | 인크루트 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **LG AI연구원** | [IT 보안취약점 진단 (계약직)](https://career.rememberapp.co.kr/job/posting/356309) | 서울 강서구 | 경력 미표기 | 리멤버 | **상시채용** | `취약점 진단`, `정보보안` |
 | **인더포레스트** | [[보안 컨설팅] AI Security & AI SOC, 취약점 점검 및 모의해킹 컨설팅](https://www.jobkorea.co.kr/Recruit/GI_Read/50421760) | 서울 서초구 | 경력 1년↑ | 잡코리아 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **티시스아이티** | [보안진단(취약점진단/보안성검토)](https://www.jumpit.co.kr/position/55342793) | 서울 중구 | 경력 4~8년 | 점핏, 사람인 | **D-21 (~12/18 금)** | `취약점 진단`, `정보보안` |
+| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 서울 구로구 | 경력 5~11년 | 원티드, 사람인 | **D-28 (~ 12/25(금))** | `모의해킹`, `취약점 진단` |
 | **커리어서포트** | [[정보보안 코스닥] 취약점 진단 PL-경력직](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55477948&location=ts&searchword=%EC%B7%A8%EC%95%BD%EC%A0%90+%EC%A7%84%EB%8B%A8) | 경남 진주시 | 경력 3~9년 | 사람인, 인크루트 | **D-23 (~ 12/20(일))** | `취약점 진단`, `정보보안` |
 | **고려아연(주)** | [보안기획팀 [보안진단]](https://career.rememberapp.co.kr/job/posting/353857) | 서울 종로구 | 경력 12~18년 | 리멤버 | **D-8 (~12/05 토)** | `취약점 진단`, `정보보안` |
 | **㈜아도스** | [모의해킹/취약점 진단/AI Agent for Security (경력직 채용)](https://www.jobkorea.co.kr/Recruit/GI_Read/50118492) | 경기 용인시 기흥구 | 경력 1년↑ | 잡코리아 | **D-8** | `모의해킹`, `취약점 진단`, `정보보안` |
@@ -736,7 +752,7 @@
 
 ---
 
-## 모의해킹 (61건)
+## 모의해킹 (62건)
 
 | 회사명 | 공고명 | 근무지 | 경력 | 플랫폼 | 마감 일정 | 상세 분야 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -755,7 +771,6 @@
 | **엔에이치엔클라우드(주)** | [[NHN Cloud] 모의해킹 및 Red Team 운영](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55524647&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 경기 성남시 분당구 | 경력 5년↑ | 사람인, 잡코리아, 인크루트 | **채용시 마감** | `모의해킹` |
 | **(주)에프원시큐리티** | [모의해킹 신입 및 경력직 채용 공고](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55481184&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 금천구 | 경력무관 | 사람인, 잡코리아 | **채용시 마감** | `모의해킹` |
 | **(주)싸이버원** | [[싸이버원] 모의해킹 정보보호 컨설팅 신입/경력 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55581199&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 서초구 | 경력무관 | 사람인 | **채용시 마감** | `모의해킹`, `정보보호` |
-| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 서울 구로구 | 경력 5~11년 | 원티드 | **상시채용** | `모의해킹`, `취약점 진단` |
 | **아우토크립트** | [자동차 취약점 연구·모의해킹](https://www.wanted.co.kr/wd/396280) | 서울 강남구 | 신입·경력 | 원티드 | **상시채용** | `모의해킹`, `취약점 진단` |
 | **토스뱅크** | [Security Researcher (취약점 진단 & 모의해킹)](https://www.wanted.co.kr/wd/375078) | 서울 강남구 | 경력 1~5년 | 원티드 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **아우토크립트** | [Senior Offensive Security Engineer [모의해킹_6년 이상]](https://www.wanted.co.kr/wd/396406) | 서울 강남구 | 경력 6년↑ | 원티드 | **상시채용** | `모의해킹`, `정보보안` |
@@ -767,11 +782,12 @@
 | **엔에이치엔(주)** | [[NHN Cloud] 모의해킹 및 Red Team 운영](https://career.rememberapp.co.kr/job/posting/353439) | 경기 성남시 | 경력 5년↑ | 리멤버 | **상시채용** | `모의해킹` |
 | **(주)지란지교에스앤씨** | [모의해킹/프리세일즈 엔지니어](https://career.rememberapp.co.kr/job/posting/336405) | 서울 | 경력 5년↑ | 리멤버 | **상시채용** | `모의해킹` |
 | **㈜에스피씨지** | [(주)에스피씨지 모의해킹 신입 및 경력 채용](https://www.jobkorea.co.kr/Recruit/GI_Read/50304660) | 서울 금천구 | 신입·경력 | 잡코리아 | **상시채용** | `모의해킹` |
-| **(주)인라이플** | [Security Engineer - 모의해킹 및 취약점 진단](https://career.rememberapp.co.kr/job/posting/338647) | 서울 구로구 | 경력 5년↑ | 리멤버 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **(주)비바리퍼블리카** | [[토스뱅크] Security Researcher (취약점 진단 & 모의해킹)](https://career.rememberapp.co.kr/job/posting/326960) | 서울 강남구 | 경력 미표기 | 리멤버 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **넷마블** | [[넷마블] 취약점 진단 및 모의해킹 담당자 모집](https://www.jobkorea.co.kr/Recruit/GI_Read/50292765) | 서울 구로구 | 경력 5년↑ | 잡코리아 | **상시채용** | `모의해킹`, `취약점 진단` |
 | **주식회사 무신사** | [Security Engineer (모의해킹 · 소스코드 진단)](https://job.incruit.com/jobdb_info/jobpost.asp?job=2611170003862) | 서울 성동구 | 경력 8년↑ | 인크루트 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
 | **인더포레스트** | [[보안 컨설팅] AI Security & AI SOC, 취약점 점검 및 모의해킹 컨설팅](https://www.jobkorea.co.kr/Recruit/GI_Read/50421760) | 서울 서초구 | 경력 1년↑ | 잡코리아 | **상시채용** | `모의해킹`, `취약점 진단`, `정보보안` |
+| **넷마블** | [취약점 진단 및 모의해킹 담당자](https://www.wanted.co.kr/wd/361467) | 서울 구로구 | 경력 5~11년 | 원티드, 사람인 | **D-28 (~ 12/25(금))** | `모의해킹`, `취약점 진단` |
+| **에스케이쉴더스(주)** | [모의해킹 경력직 채용](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55553090&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 경기 성남시 분당구 | 경력 3년↑ | 사람인, 잡코리아 | **D-13 (~ 12/10(목))** | `모의해킹` |
 | **(주)에이치알비즈코리아** | [게임 및 웹 모의해킹/게임보안 분석 및 대응 담당/세계적 게임사](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55548080&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 경기 성남시 분당구 | 경력 4~10년 | 사람인 | **D-10 (~ 12/07(월))** | `모의해킹`, `정보보안` |
 | **에스투더블유** | [AI Pentester](https://www.jumpit.co.kr/position/55507615) | 경기 성남시 분당구 | 경력 1~10년 | 점핏 | **D-8 (~12/05 토)** | `모의해킹` |
 | **(주)지엔** | [모의해킹 및 보안 컨설턴트 경력](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55496170&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 금천구 | 경력 3~10년 | 사람인 | **D-8 (~ 12/05(토))** | `모의해킹`, `정보보안` |
@@ -801,6 +817,7 @@
 | **번개장터** | [보안 엔지니어 (모의해킹·침해대응)](https://www.wanted.co.kr/wd/399879) | 서울 서초구 | 경력 3~10년 | 원티드, 리멤버, 잡코리아, 인크루트 | **D-57** | `모의해킹`, `정보보안` |
 | **삼성생명보험㈜** | [경력사원 채용(플랫폼, 자산운용, CPC, 경영지원, CISO) - 침투테스트 수행(모의해킹)](https://www.jobkorea.co.kr/Recruit/GI_Read/50429271) | 서울 서초구 | 경력 | 잡코리아 | **D-10** | `모의해킹` |
 | **(주)아이시큐어** | [모의해킹 및 시스템 취약점 분석](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55669347&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 금천구 | 경력 3년↑ | 사람인 | **D-58 (~ 01/24(일))** | `모의해킹`, `취약점 진단` |
+| **삼성생명보험(주)** | [경력사원 채용(침투테스트 수행(모의해킹))](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55675638&location=ts&searchword=%EB%AA%A8%EC%9D%98%ED%95%B4%ED%82%B9) | 서울 서초구 | 경력 4년↑ | 사람인 | **D-10 (~ 12/07(월))** | `모의해킹` |
 
 [맨 위로 이동](#️-infosec-archive--정보보안-포지션-아카이브)
 
