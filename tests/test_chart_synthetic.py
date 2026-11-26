@@ -121,7 +121,10 @@ def check_data(data):
         assert start_txt in ep["explanation"] and end_txt in ep["explanation"], \
             "%s: 해설의 종가가 데이터와 다릅니다" % eid
         assert ("%.1f%%" % abs(ret)) in ep["explanation"], "%s: 해설의 등락률이 다릅니다" % eid
-        assert band_label in ep["explanation"], "%s: 해설에 정답 구간 표기가 없습니다" % eid
+        if quiz["type"] == "next":
+            assert band_label in ep["explanation"], "%s: 해설에 정답 구간 표기가 없습니다" % eid
+        else:
+            assert "정답 구간" not in ep["explanation"], "%s: 패턴 문항 해설에 구간 표기가 섞였습니다" % eid
 
     assert max_move["1d"] < 0.12, "일봉 한 봉 변동이 12%%를 넘습니다: %.1f%%" % (max_move["1d"] * 100)
     assert max_move["1wk"] < 0.20, "주봉 한 봉 변동이 20%%를 넘습니다: %.1f%%" % (max_move["1wk"] * 100)
