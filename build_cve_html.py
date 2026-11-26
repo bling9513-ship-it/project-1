@@ -830,6 +830,7 @@ CSS = """
       line-height: 1.72;
       color: var(--text-secondary);
       margin-bottom: 12px;
+      overflow-wrap: anywhere;
     }
 
     .detail-box {
@@ -842,6 +843,7 @@ CSS = """
       font-size: 12.5px;
       line-height: 1.7;
       color: var(--text-secondary);
+      overflow-wrap: anywhere;
     }
 
     .box-label {
