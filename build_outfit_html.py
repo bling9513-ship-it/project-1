@@ -4,12 +4,14 @@
 build_outfit_html.py — 서울 기준 계절·기온별 옷차림 추천 페이지(outfit.html)를 빌드한다.
 
 - 빌드 시점에 weather CLI(Apple Weather)로 서울 오늘/내일 기온·강수·체감·바람을 읽어 기본값으로 심는다.
-- 브라우저에서는 Open-Meteo(무료·키 불필요)로 실시간 값을 받아 오늘의 코디를 갱신한다(실패 시 빌드 기본값 유지).
+- CLI 가 실패(할당량 초과·미설치)하면 페이지가 실시간으로 쓰는 Open-Meteo 에서 같은 값을 받아 기본값으로 심는다.
+  둘 다 실패할 때만 값을 비워 두고, 브라우저의 실시간 조회가 채운다(이 경우 오늘 구간 표시가 없다).
 - index.html / study.html / ai.html / cve.html 과 동일한 secjobs-theme 디자인 시스템(이모지 미사용, 라인 SVG만 사용).
 """
 import os
 import json
 import subprocess
+import urllib.request
 from datetime import datetime, timezone, timedelta
 
 from html_guard import harden_html, safe_json_for_script
@@ -480,6 +482,83 @@ def _weather_cli(date_str=None):
     return json.loads(res.stdout)["data"]
 
 
+OPEN_METEO_URL = (
+    "https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780"
+    "&timezone=Asia%2FSeoul"
+    "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m"
+    "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code"
+    "&forecast_days=2&wind_speed_unit=kmh"
+)
+
+
+def _wmo_ko(code):
+    """WMO weather_code → 페이지가 쓰는 한글 상태 이름(클라이언트 COND_BY_CODE 와 동일 규칙)."""
+    if code is None:
+        return ""
+    if code == 0:
+        return "맑음"
+    if code == 1:
+        return "대체로 맑음"
+    if code == 2:
+        return "구름 조금"
+    if code == 3:
+        return "흐림"
+    if code in (45, 48):
+        return "안개"
+    if 51 <= code <= 57:
+        return "이슬비"
+    if 61 <= code <= 67:
+        return "비"
+    if 71 <= code <= 77:
+        return "눈"
+    if 80 <= code <= 82:
+        return "소나기"
+    if 85 <= code <= 86:
+        return "눈"
+    if code >= 95:
+        return "천둥번개"
+    return "흐림"
+
+
+def _open_meteo_weather():
+    """weather CLI 를 쓸 수 없을 때: 페이지의 실시간 조회와 같은 Open-Meteo 응답을 빌드 기본값으로 쓴다.
+
+    값이 비어 있거나 형식이 다르면 예외를 올려 빈값 폴백으로 넘긴다(잘못된 값을 기본값으로 심지 않는다).
+    """
+    req = urllib.request.Request(OPEN_METEO_URL, headers={"User-Agent": "InfosecArchive-build/1.0"})
+    with urllib.request.urlopen(req, timeout=15) as res:
+        payload = json.loads(res.read().decode("utf-8"))
+    cur = payload.get("current") or {}
+    daily = payload.get("daily") or {}
+    dates = daily.get("time") or []
+    lows = daily.get("temperature_2m_min") or []
+    highs = daily.get("temperature_2m_max") or []
+    pops = daily.get("precipitation_probability_max") or []
+    codes = daily.get("weather_code") or []
+    if not dates or len(lows) < 1 or len(highs) < 1 or cur.get("temperature_2m") is None:
+        raise RuntimeError("Open-Meteo 응답에 필요한 값이 없습니다")
+    days = []
+    for i, date in enumerate(dates[:2]):
+        days.append({
+            "date": date,
+            "low_c": lows[i] if i < len(lows) else None,
+            "high_c": highs[i] if i < len(highs) else None,
+            "precipitation_chance": pops[i] if i < len(pops) else None,
+            "condition": _wmo_ko(codes[i] if i < len(codes) else None),
+            "daytime": {},
+        })
+    return {
+        "now": {
+            "time": cur.get("time", ""),
+            "condition": _wmo_ko(cur.get("weather_code")),
+            "temperature_c": cur.get("temperature_2m"),
+            "feels_like_c": cur.get("apparent_temperature"),
+            "wind_kmh": cur.get("wind_speed_10m"),
+        },
+        "days": days,
+    }
+
+
 def _fallback_weather():
     """CLI를 쓸 수 없을 때: 날짜만 채우고 값은 비워 둔다(브라우저의 실시간 조회가 채운다)."""
     today = datetime.now(timezone(timedelta(hours=9))).date()
@@ -499,9 +578,14 @@ def load_build_weather():
         if len(days) < 2 and second.get("days"):
             days = days + second["days"][:1]
         data = {"now": today.get("now", {}), "days": days}
-    except Exception as exc:  # CLI 미설치·네트워크 실패
-        print(f"   (weather CLI 기본값 사용 불가 → 폴백: {exc})")
-        data, source = _fallback_weather(), "fallback"
+    except Exception as exc:  # CLI 미설치·할당량 초과·네트워크 실패
+        print(f"   (weather CLI 기본값 사용 불가: {exc})")
+        try:
+            data, source = _open_meteo_weather(), "open-meteo"
+            print("   (Open-Meteo 실시간 조회 값으로 기본값 구성)")
+        except Exception as exc2:
+            print(f"   (Open-Meteo 도 실패 → 빈값 폴백: {exc2})")
+            data, source = _fallback_weather(), "fallback"
 
     now = data.get("now", {})
     days = data.get("days", [])
