@@ -2,11 +2,11 @@
 """
 차트 추리실 (chart.html) 빌더.
 
-- 문제 데이터는 chart_data.json (Yahoo Finance 과거 일별·주별 시세를 잘라 둔 것) 하나뿐이다.
-  차트에 그리는 시가·고가·저가·종가·거래량은 실제 과거 값이고, 가려진 구간의 정답도
-  chart_fetch_data.py 가 실제 종가로 계산해 넣는다(빌드 단계에서 다시 검증한다).
+- 문제 데이터는 chart_data.json (chart_generate_data.py 가 만든 합성 OHLCV) 하나뿐이다.
+  차트에 그리는 시가·고가·저가·종가·거래량은 모두 학습용으로 생성한 값이며 실제 종목·시세가 아니다.
+  가려진 구간의 정답도 만들어진 종가로 계산해 넣는다(빌드 단계에서 다시 검증한다).
 - 처음에는 가격·거래량만 보이고, '단서 보기'를 누를 때마다 기술적 단서 3개가 차례로 열린다.
-  정답을 고르면 가려져 있던 기간·종목·출처·해설이 함께 공개된다.
+  정답을 고르면 가려져 있던 구간·합성 표기·해설이 함께 공개된다.
 - 진행 기록은 localStorage(secjobs-chart-v1)에만 남는다.
 """
 import json
@@ -24,10 +24,10 @@ DATA_PATH = os.path.join(BASE_DIR, "chart_data.json")
 CHART_HTML = os.path.join(BASE_DIR, "chart.html")
 
 CATEGORIES = [
-    {"key": "domestic", "label": "국내 증시"},
-    {"key": "bigtech", "label": "미국 빅테크"},
-    {"key": "market", "label": "지수·원자재"},
-    {"key": "event", "label": "금융 이벤트"},
+    {"key": "trend", "label": "추세"},
+    {"key": "breakout", "label": "돌파"},
+    {"key": "level", "label": "지지·저항"},
+    {"key": "volume", "label": "거래량"},
 ]
 
 FLOW_BANDS = {
@@ -122,8 +122,12 @@ def build_clues(bars, split_index, interval):
 def load_data():
     with open(DATA_PATH, encoding="utf-8") as f:
         data = json.load(f)
+    if not data.get("synthetic") or not data.get("notice"):
+        raise SystemExit("[중단] chart_data.json 이 합성 데이터로 표시되어 있지 않습니다")
     episodes = data["episodes"]
     for index, ep in enumerate(episodes):
+        if not ep.get("synthetic") or not ep.get("data_note"):
+            raise SystemExit("[중단] %s: 합성 데이터 표기가 없습니다" % ep.get("id"))
         bars = ep["bars"]
         split = ep["split_index"]
         if not (0 < split < len(bars) - 1):
@@ -141,7 +145,6 @@ def load_data():
             label = quiz["choices"][quiz["answer"]]
             if FLOW_BANDS.get(quiz["band"]) != label:
                 raise SystemExit("[중단] %s: 정답 라벨이 구간과 맞지 않습니다" % ep["id"])
-            expect = "surge" if ret >= 10 else "up" if ret >= 2 else "down" if ret <= -10 else "plunge"
             if ret >= 10:
                 expect = "surge"
             elif ret >= 2:
@@ -155,9 +158,12 @@ def load_data():
             if expect != quiz["band"]:
                 raise SystemExit("[중단] %s: 계산된 다음 구간 %.1f%% 와 정답(%s)이 어긋납니다"
                                  % (ep["id"], ret, quiz["band"]))
-        elif quiz["type"] == "regime":
-            if not quiz["choices"][quiz["answer"]]:
-                raise SystemExit("[중단] %s: 정답 문구가 비었습니다" % ep["id"])
+        elif quiz["type"] == "pattern":
+            label = quiz["choices"][quiz["answer"]]
+            if label != ep.get("pattern"):
+                raise SystemExit("[중단] %s: 패턴 정답이 표기와 다릅니다" % ep["id"])
+            if len(set(quiz["choices"])) != 4:
+                raise SystemExit("[중단] %s: 패턴 보기가 겹칩니다" % ep["id"])
         else:
             raise SystemExit("[중단] %s: 알 수 없는 문제 유형 %s" % (ep["id"], quiz["type"]))
     return data
@@ -166,7 +172,7 @@ def load_data():
 # ---------------------------------------------------------------- 조각 렌더
 def render_arc_card(ep):
     cat = next(c for c in CATEGORIES if c["key"] == ep["category"])
-    unknown = "다음 구간의 흐름은?" if ep["quiz"]["type"] == "next" else "이 직후에 벌어진 일은?"
+    unknown = "다음 구간의 흐름은?" if ep["quiz"]["type"] == "next" else "보이는 구간의 패턴은?"
     return (
         '        <button class="arc-card" type="button" data-id="%s" data-cat="%s" data-ordinal="%d">\n'
         '          <div class="arc-top"><span class="arc-no">#%02d · %s</span>'
@@ -217,10 +223,10 @@ CSS = """
       --ok-bg: #ecfdf5;  --ok-text: #047857;  --ok-border: #a7f3d0;
       --no-bg: #fef2f2;  --no-text: #b91c1c;  --no-border: #fecaca;
 
-      --cat-domestic: #2563eb;
-      --cat-bigtech: #7c3aed;
-      --cat-market: #d97706;
-      --cat-event: #dc2626;
+      --cat-trend: #2563eb;
+      --cat-breakout: #7c3aed;
+      --cat-level: #d97706;
+      --cat-volume: #0f766e;
 
       --up: #ef4444;
       --down: #2563eb;
@@ -253,10 +259,10 @@ CSS = """
       --ok-bg: rgba(16, 185, 129, 0.12);  --ok-text: #6ee7b7;  --ok-border: rgba(16, 185, 129, 0.32);
       --no-bg: rgba(239, 68, 68, 0.12);   --no-text: #fca5a5;  --no-border: rgba(239, 68, 68, 0.32);
 
-      --cat-domestic: #60a5fa;
-      --cat-bigtech: #a78bfa;
-      --cat-market: #fbbf24;
-      --cat-event: #f87171;
+      --cat-trend: #60a5fa;
+      --cat-breakout: #a78bfa;
+      --cat-level: #fbbf24;
+      --cat-volume: #2dd4bf;
 
       --up: #f87171;
       --down: #60a5fa;
@@ -427,6 +433,8 @@ CSS = """
 
     .hero-stats { display: flex; flex-wrap: wrap; gap: 8px; }
 
+    .stat-chip.is-synth { color: var(--accent-primary); border-color: var(--border-strong); font-weight: 600; }
+
     .stat-chip {
       display: inline-flex;
       align-items: center;
@@ -487,10 +495,10 @@ CSS = """
       flex-shrink: 0;
     }
 
-    .badge.cat-domestic::before { background: var(--cat-domestic); }
-    .badge.cat-bigtech::before { background: var(--cat-bigtech); }
-    .badge.cat-market::before { background: var(--cat-market); }
-    .badge.cat-event::before { background: var(--cat-event); }
+    .badge.cat-trend::before { background: var(--cat-trend); }
+    .badge.cat-breakout::before { background: var(--cat-breakout); }
+    .badge.cat-level::before { background: var(--cat-level); }
+    .badge.cat-volume::before { background: var(--cat-volume); }
 
     .player-date { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 
@@ -1121,7 +1129,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 차트 추리실</title>
-  <meta name="description" content="날짜와 종목명을 가린 과거 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 어떤 시장 국면이었는지 맞히는 4지선다 게임. 실제 과거 일별·주별 시세를 쓰고, 정답을 고르면 가려져 있던 기간·종목·출처와 해설이 공개됩니다.">
+  <meta name="description" content="이름과 기간을 가린 합성 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 보이는 구간의 패턴을 맞히는 4지선다 게임. 학습용으로 만든 합성 OHLCV를 쓰고, 정답을 고르면 가려진 구간과 해설이 공개됩니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous" />
@@ -1215,11 +1223,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <main class="container">
 
     <section class="hero">
-      <span class="hero-pill">CHART MYSTERY</span>
+      <span class="hero-pill">CHART MYSTERY · 합성 학습 차트</span>
       <h1 class="hero-title">차트 추리실</h1>
-      <p class="hero-desc">날짜와 종목명을 가린 과거 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 그 시점의 시장 국면을 맞히는 게임입니다. 가격과 거래량만으로 시작해 필요하면 이동평균·변동성 같은 기술적 단서를 열어 볼 수 있고, 정답을 고르면 실제 기간·종목·출처와 해설이 함께 공개됩니다. 모든 차트는 실제 과거 시세이고 실시간 시세나 투자 조언이 아닙니다.</p>
-      <p class="chart-goal"><span class="chart-goal-tag">목표</span>이름을 가린 차트에서 가려진 다음 구간 맞히기</p>
+      <p class="hero-desc">이름과 기간을 가린 합성 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 보이는 구간의 패턴을 맞히는 게임입니다. 가격과 거래량만으로 시작해 필요하면 이동평균·변동성 같은 기술적 단서를 열어 볼 수 있고, 정답을 고르면 가려진 구간과 해설이 함께 공개됩니다. 모든 차트는 학습용으로 만든 합성 OHLCV이며 실제 종목·지수·시세가 아니고, 투자 판단의 근거로 쓸 수 없습니다.</p>
+      <p class="chart-goal"><span class="chart-goal-tag">목표</span>이름을 가린 합성 차트에서 가려진 다음 구간 맞히기</p>
       <div class="hero-stats">
+        <span class="stat-chip is-synth">합성 학습 차트 · 실제 시세 아님</span>
         <span class="stat-chip">문제 <strong>__TOTAL__</strong></span>
         <span class="stat-chip">오늘 <strong id="statToday">미도전</strong></span>
         <span class="stat-chip">연속 정답 <strong id="statStreak">0</strong></span>
@@ -1232,7 +1241,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       __GUIDE__
       <div class="player-top">
         <div class="player-meta">
-          <span class="badge cat-domestic" id="pCat">분야</span>
+          <span class="badge cat-trend" id="pCat">분야</span>
           <span class="player-date" id="pFreq">일봉</span>
           <span class="today-tag" id="pToday" hidden>오늘의 차트</span>
         </div>
@@ -1241,7 +1250,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
       </div>
       <h2 class="player-title" id="pTitle">차트를 불러오는 중입니다</h2>
-      <p class="player-sub" id="pSub">날짜와 종목명은 정답을 확인할 때 공개됩니다.</p>
+      <p class="player-sub" id="pSub">이름과 합성 구간은 정답을 확인할 때 공개됩니다.</p>
 
       <div class="player-grid">
         <div class="player-main">
@@ -1286,10 +1295,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           <span class="result-title" id="resultTitle">정답입니다</span>
         </div>
         <div class="reveal">
-          <div class="rv"><span class="rv-k">실제 기간</span><span class="rv-v" id="revealPeriod"></span></div>
-          <div class="rv"><span class="rv-k">종목·지수</span><span class="rv-v" id="revealName"></span></div>
+          <div class="rv"><span class="rv-k">합성 구간</span><span class="rv-v" id="revealPeriod"></span></div>
+          <div class="rv"><span class="rv-k">합성 차트</span><span class="rv-v" id="revealName"></span></div>
           <div class="rv"><span class="rv-k">가려진 구간</span><span class="rv-v" id="revealFuture"></span></div>
-          <div class="rv"><span class="rv-k">출처</span><span class="rv-v"><a id="revealSource" href="#" target="_blank" rel="noopener noreferrer"></a></span></div>
+          <div class="rv"><span class="rv-k">데이터</span><span class="rv-v"><span id="revealSource" class="rv-synth"></span></span></div>
         </div>
         <p class="result-answer">정답 <strong id="resultAnswer"></strong></p>
         <p class="result-explain" id="resultExplain"></p>
@@ -1324,7 +1333,7 @@ __ARC_CARDS__      </div>
 
     <footer class="footer">
       Infosec Archive · 차트 추리실<br>
-      차트는 Yahoo Finance가 공개한 과거 일별·주별 시세(시가·고가·저가·종가·거래량)를 그대로 쓴 것이며, 주가는 액면분할·배당을 반영해 조정된 값입니다. 정답과 해설은 학습·오락용으로, 투자 판단의 근거로 쓰라고 만든 것이 아닙니다. 풀이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
+차트의 시가·고가·저가·종가·거래량은 모두 학습·오락용으로 생성한 합성 데이터이며 실제 종목·지수·시세가 아닙니다. 정답과 해설 역시 같은 합성 데이터에서 계산했고, 투자 판단의 근거로 쓸 수 없습니다. 풀이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
       __BUILT_AT__ 기준 · 매일 08:00 새 차트
     </footer>
   </main>
@@ -1828,8 +1837,7 @@ __ARC_CARDS__      </div>
       revealName.textContent = ep.name;
       revealFuture.textContent = ep.bars[ep.split_index + 1][0] + ' ~ ' + ep.bars[ep.bars.length - 1][0]
         + ' · ' + (ep.bars.length - ep.split_index - 1) + '봉 · ' + pctText(ep.future_return);
-      revealSource.textContent = ep.source;
-      revealSource.href = ep.source_url;
+      revealSource.textContent = ep.data_note;
       resultAnswer.textContent = quiz.choices[quiz.answer];
       resultExplain.textContent = ep.explanation;
       askMsg.textContent = gaveUp ? '정답을 봤으니 기록에는 해결로 남지 않습니다.' : (correct ? '' : '가려진 구간을 함께 열었습니다.');
@@ -1873,7 +1881,7 @@ __ARC_CARDS__      </div>
       const solved = solvedCount();
       const rate = triedCount() ? Math.round(solved / triedCount() * 100) : 0;
       const line1 = '차트 추리실 #' + ep.ordinal + ' · ' + catLabel[ep.category];
-      const line2 = '이름을 가린 과거 차트 한 장, 가려진 다음 구간을 맞혀 보세요.';
+      const line2 = '이름을 가린 합성 차트 한 장, 가려진 다음 구간을 맞혀 보세요.';
       const mine = r.solved ? '내 기록 ' + solved + '/' + DATA.length + ' · 정답률 ' + rate + '%' : '나는 ' + (r.gaveUp ? '정답을 확인했습니다' : '도전 중입니다');
       return line1 + '\\n' + line2 + '\\n' + mine + '\\n' + chartUrl(ep.id);
     }
@@ -1898,7 +1906,7 @@ __ARC_CARDS__      </div>
       pFreq.textContent = (ep.interval === '1wk' ? '주봉' : '일봉') + ' · ' + ep.bars.length + '봉';
       pToday.hidden = id !== TODAY_ID;
       pTitle.textContent = '블라인드 차트 #' + ep.ordinal;
-      pSub.textContent = answered || gaveUp ? '정답 확인 완료 · 가려졌던 구간까지 표시됩니다' : '날짜와 종목명은 정답을 확인할 때 공개됩니다';
+      pSub.textContent = answered || gaveUp ? '정답 확인 완료 · 가려졌던 구간까지 표시됩니다' : '이름과 합성 구간은 정답을 확인할 때 공개됩니다';
       resultBox.hidden = !(answered || gaveUp);
       drawChart();
       renderClues(ep);
@@ -2000,7 +2008,7 @@ __ARC_CARDS__      </div>
       giveUp.hidden = false;
       indicatorBtn.textContent = '보조 지표 보기';
       indicatorBtn.setAttribute('aria-pressed', 'false');
-      pSub.textContent = '연습 모드 · 날짜와 종목명은 정답을 확인할 때 공개됩니다';
+      pSub.textContent = '연습 모드 · 이름과 합성 구간은 정답을 확인할 때 공개됩니다';
     }
 
     function openNextChart() {
@@ -2169,7 +2177,7 @@ __ARC_CARDS__      </div>
         notes: [
           '① 봉을 짚으면 그 봉만 밝아지고 시가·종가·거래량이 뜹니다.',
           '② 단서를 하나 열면 이동평균선이 차트에 그려집니다.',
-          '③ 정한 예측은 차트 위에 배지로 남고, 확인 직후 실제 구간이 공개됩니다.'
+          '③ 정한 예측은 차트 위에 배지로 남고, 확인 직후 가려진 구간이 공개됩니다.'
         ],
         reset: function () { paint(0); },
         step: paint
@@ -2209,9 +2217,12 @@ def build():
     episodes = data["episodes"]
     if len(episodes) < 14:
         raise SystemExit("[중단] 차트가 14개 미만입니다: %d" % len(episodes))
+    banned = ("yahoo", "finance.yahoo", "액면분할")
     for ep in episodes:
-        if not ep["source_url"].startswith("https://"):
-            raise SystemExit("[중단] %s: 출처 링크가 https 가 아닙니다" % ep["id"])
+        blob = " ".join([ep.get("name", ""), ep.get("explanation", ""), ep.get("data_note", "")]).lower()
+        hit = [word for word in banned if word in blob]
+        if hit:
+            raise SystemExit("[중단] %s: 합성 데이터에 외부 시세 흔적(%s)" % (ep["id"], ", ".join(hit)))
 
     # 오늘의 차트: 날짜로 정해지는 순환(매일 00:00 KST에 다음 문제)
     epoch = datetime(2026, 1, 1, tzinfo=kst).date()
