@@ -440,9 +440,14 @@ def build_explanation(spec, bars, split, pattern=None):
     if pattern:
         parts.append(pattern_evidence(pattern, bars, split) + ".")
     move = "올랐습니다" if ret >= 2 else ("내렸습니다" if ret <= -2 else "제자리였습니다")
-    parts.append("가려진 %d봉 동안 종가는 %s에서 %s로 %.1f%% %s(정답 구간: %s). 이 구간 고가는 %s, 저가는 %s입니다."
-                 % (len(hidden), _px(start_close), _px(end_close), abs(ret), move, band_label,
-                    _px(max(b[2] for b in hidden)), _px(min(b[3] for b in hidden))))
+    if pattern:
+        parts.append("가려진 %d봉 동안 종가는 %s에서 %s로 %.1f%% %s. 이 구간 고가는 %s, 저가는 %s입니다."
+                     % (len(hidden), _px(start_close), _px(end_close), abs(ret), move,
+                        _px(max(b[2] for b in hidden)), _px(min(b[3] for b in hidden))))
+    else:
+        parts.append("가려진 %d봉 동안 종가는 %s에서 %s로 %.1f%% %s(정답 구간: %s). 이 구간 고가는 %s, 저가는 %s입니다."
+                     % (len(hidden), _px(start_close), _px(end_close), abs(ret), move, band_label,
+                        _px(max(b[2] for b in hidden)), _px(min(b[3] for b in hidden))))
     m = pattern_metrics(bars, split)
     signal = []
     if not (pattern and "거래량" in pattern_evidence(pattern, bars, split)):
