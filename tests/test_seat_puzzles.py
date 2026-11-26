@@ -222,7 +222,7 @@ def main():
     check("이모지 없음", not EMOJI_RE.search(src))
     check("공통 셸 하단 탭 바", src.count('class="ia-tabbar"') == 1, src.count('class="ia-tabbar"'))
     sheet_links = src.count('class="ia-sheet-link') - src.count('class="ia-sheet-links"')
-    check("전체 메뉴 30개", sheet_links == 30, sheet_links)
+    check("전체 메뉴 31개", sheet_links == 31, sheet_links)
     check("내비게이션에 seat.html 등록", 'href="seat.html"' in src)
     check("게임 소제목 챌린지·미니게임", 'ia-sheet-sub">챌린지' in src and 'ia-sheet-sub">미니게임' in src)
     check("CSP 메타 1개", src.count("Content-Security-Policy") == 1)

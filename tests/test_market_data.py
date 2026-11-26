@@ -18,7 +18,7 @@
       - 11/27 14:00 ET → '조기 마감'(장 진행 중 아님)
       - 정상 개장일 09:31 → '장 진행 중'(휴장 오표기 없음)
   · market.html
-      - data-page="market" · 전체 메뉴 30페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
+      - data-page="market" · 전체 메뉴 31페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
       - 장 상태 카드 · 국내/해외 탭 · 섹터 필터 칩 · 일정 목록 · 원문 링크 · 시세 미게시 안내
       - 심긴 JSON 이 market_data.json 과 같은지
 
@@ -39,7 +39,7 @@ import market_crawler as mc
 
 HTML = os.path.join(BASE_DIR, "market.html")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 30
+SHEET_PAGES = 31
 BLOCKED = ("연합뉴스", "매일경제", "Yahoo Finance")
 failures = []
 

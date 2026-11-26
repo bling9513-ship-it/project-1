@@ -11,7 +11,8 @@ AI 기술·트렌드 브리핑(ai.html, ai_data.json), CVE 취약점 리포트(c
 재질 표시·분리배출(recycle.html), 식품 라벨·영양성분표 읽기(food.html), 장보기 타이밍(grocery.html),
 실시간 월급·퇴근 미터(paymeter.html), 오늘의 지하철역 맞히기(subway.html), 오늘의 장바구니 리그(basket.html),
 90초 생활 추리(mystery90.html), 자취방 입주 점검 카드(movein.html), 우리 동네 지금 갈 곳(nearby.html),
-국내·해외 증시 이슈 요약(market.html, market_data.json)을
+국내·해외 증시 이슈 요약(market.html, market_data.json),
+보안 취약점 점검 도구 백과사전(security-reference.html, security_reference_data.json)을
 일괄 생성하고 동기화하는 마스터 빌드 스크립트.
 
 ※ AI 자료 수집·분석은 ai_news_crawler.py 가, CVE 수집·분석은 cve_crawler.py 가 담당한다(별도 실행).
@@ -193,6 +194,10 @@ def build_all():
     from build_market_html import build as build_market
     market_total = build_market()
 
+    # 35. security-reference.html 재생성 (점검 목적→도구→판독→조치 순서의 도구 백과사전 6분야 12항목)
+    from build_security_reference_html import build as build_reference
+    reference_total = build_reference()
+
     print(f"\n[빌드 완결] SQLite DB 기반 전체 동기화 성공!")
     print(f"📊 최종 상태:")
     print(f"  - 활성 보안 공고: {stats['active_jobs']}건 (마감 보관 {stats['expired_jobs']}건)")
@@ -229,6 +234,8 @@ def build_all():
     print(f"  - 증시 이슈: 기사 {market_total['issues']}건 · 일정 {market_total['calendar']}건 "
           f"(장 상태 {market_total['sessions']} · 수집 {market_total['collectedAt']} "
           f"· AI {'사용' if market_total['ai'] else '폴백'})")
+    print(f"  - 점검 백과사전: 분야 {reference_total['categories']} · 항목 {reference_total['items']}개 "
+          f"· 대표 명령 {reference_total['commands']}개")
     print(f"  - 오늘 허브: 마감 {today_total['jobs']}건 · KEV {today_total['kev']}건 · AI {today_total['ai']}건 "
           f"(날씨 {'정상' if today_total['weather'] else '실패'} · 게임 {'정상' if today_total['wargame'] or today_total['clue'] else '없음'})")
 

@@ -8,7 +8,7 @@
       - 항목마다 제목과 '확인 방법' 문구가 있음
       - 수압·배수·결로·창문·계량기 5가지 핵심 확인 그림이 모두 항목에 연결됨
   · movein.html
-      - data-page="movein" · 전체 메뉴 30페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
+      - data-page="movein" · 전체 메뉴 31페이지 · 이모지 0 · 그라데이션 0 · 인라인 핸들러 0
       - 항목 30개 · 상태 버튼 3종 × 항목 수 · 메모 입력 · 진행률 요소
       - localStorage 키 · Canvas 리포트 함수 · 텍스트/PNG 버튼 · 2단계 초기화
       - 하자 요약 목록과 모바일 하단 바
@@ -26,7 +26,7 @@ import build_movein_html as mv
 
 HTML = os.path.join(BASE_DIR, "movein.html")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
-SHEET_PAGES = 30
+SHEET_PAGES = 31
 
 failures = []
 
@@ -73,7 +73,7 @@ def check_html():
     check("이모지 0", not EMOJI_RE.search(html), EMOJI_RE.findall(html)[:3])
     check("그라데이션 0", "linear-gradient" not in html and "radial-gradient" not in html)
     check("인라인 핸들러 0", not re.search(r'\son(click|load|change|input|submit|keydown)=', html, re.I))
-    check("전체 메뉴 30페이지", html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"') == SHEET_PAGES,
+    check("전체 메뉴 31페이지", html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"') == SHEET_PAGES,
           html.count('class="ia-sheet-link') - html.count('class="ia-sheet-links"'))
     items = html.count('class="mv-item"')
     check("항목 카드 %d개" % payload["total"], items == payload["total"], items)

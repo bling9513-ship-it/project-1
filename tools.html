@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-ZFg926v9TpTzMJHTygCybwjsuUkduUDdu1ycIr7TTtE=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-u3LzmktkRZCCAjj1F3+NxGFIrK/nYJqzuSrWw5qoChM=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 보안 실무 유틸 · 치트시트</title>
   <meta name="description" content="Base64·URL·Hex·HTML 인코더, JWT 디코더, SHA-256/384/512 해시, 정규식 테스터, chmod 권한·CIDR 계산기와 실무 모의해킹 명령어 38선. 모든 입력은 브라우저 안에서만 처리됩니다.">
@@ -749,6 +749,29 @@
     }
 
     .cheat-card.hide { display: none; }
+    .cheat-card { scroll-margin-top: 110px; }
+    .cheat-card.is-focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+    }
+
+    .cheat-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      padding: 5px 10px;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      background: var(--bg-page);
+      color: var(--accent-primary);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+    .cheat-ref:hover { background: var(--accent-subtle); border-color: var(--accent-primary); }
 
     .cheat-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 
@@ -1609,7 +1632,7 @@
 <body data-page="tools">
 
   <!-- Global Nav -->
-  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">실무 유틸</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="market.html">증시 이슈</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link is-current" role="menuitem" href="tools.html" aria-current="page">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">입력값은 브라우저에만</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">실무 유틸</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="market.html">증시 이슈</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link is-current" role="menuitem" href="tools.html" aria-current="page">실무 유틸</a><a class="ia-drop-link" role="menuitem" href="security-reference.html">점검 백과사전</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">입력값은 브라우저에만</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
 
   <script>
     // 좁은 화면에서 현재 페이지 탭이 가려지지 않도록 탭 영역만 살짝 스크롤한다.
@@ -1938,7 +1961,7 @@
     </section>
 
     <div class="cheat-list" id="cheatList">
-    <article class="cheat-card" data-cat="nmap" data-search="살아 있는 호스트만 추리기 점검 대역에서 응답하는 호스트를 먼저 확정합니다. 포트 스캔 전에 자산 범위를 좁힐 때 씁니다. nmap -sn 10.0.1.0/24 -og - | awk &#x27;/up$/{print $2}&#x27; ping sweep 호스트 발견 대역 자산 nmap nmap">
+    <article class="cheat-card" id="cheat-01" data-cat="nmap" data-search="살아 있는 호스트만 추리기 점검 대역에서 응답하는 호스트를 먼저 확정합니다. 포트 스캔 전에 자산 범위를 좁힐 때 씁니다. nmap -sn 10.0.1.0/24 -og - | awk &#x27;/up$/{print $2}&#x27; ping sweep 호스트 발견 대역 자산 nmap nmap">
       <div class="cheat-head">
         <h3 class="cheat-title">살아 있는 호스트만 추리기</h3>
         <span class="cheat-cat">Nmap</span>
@@ -1949,8 +1972,9 @@
         <pre id="cmd-01">nmap -sn 10.0.1.0/24 -oG - | awk &#x27;/Up$/{print $2}&#x27;</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>ICMP를 막는 망에서는 <code class="tip-code">-sn</code>이 아무것도 못 찾습니다. <code class="tip-code">-PS22,80,443 -PE</code>를 함께 주거나 ARP 기반(<code class="tip-code">-PR</code>)으로 확인하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#net-asset-inventory">백과사전에서 보기 · 승인 자산 인벤토리 점검</a>
     </article>
-    <article class="cheat-card" data-cat="nmap" data-search="서비스·버전 핑거프린팅 상위 1000개 포트에서 열린 서비스의 제품·버전과 기본 스크립트 결과를 한 번에 모읍니다. nmap -sv -sc -t4 --top-ports 1000 10.0.1.10 -on sv_scan.txt service version detection nse 기본 스크립트 nmap nmap">
+    <article class="cheat-card" id="cheat-02" data-cat="nmap" data-search="서비스·버전 핑거프린팅 상위 1000개 포트에서 열린 서비스의 제품·버전과 기본 스크립트 결과를 한 번에 모읍니다. nmap -sv -sc -t4 --top-ports 1000 10.0.1.10 -on sv_scan.txt service version detection nse 기본 스크립트 nmap nmap">
       <div class="cheat-head">
         <h3 class="cheat-title">서비스·버전 핑거프린팅</h3>
         <span class="cheat-cat">Nmap</span>
@@ -1961,8 +1985,9 @@
         <pre id="cmd-02">nmap -sV -sC -T4 --top-ports 1000 10.0.1.10 -oN sv_scan.txt</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-sC</code>는 기본 NSE 스크립트를 돌리므로 로그에 흔적이 남습니다. 운영 중인 서버라면 점검 허가 범위와 시간 창을 먼저 확인하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#net-nmap-output">백과사전에서 보기 · Nmap 결과 파일 판독</a>
     </article>
-    <article class="cheat-card" data-cat="nmap" data-search="전체 65535 포트 고속 스캔 기본 스캔이 놓치는 상위 포트 밖 서비스(관리 콘솔, 개발 포트)를 찾습니다. nmap -p- --min-rate 2000 -t4 -pn 10.0.1.10 -on allports.txt full port scan 전포트 고속 nmap nmap">
+    <article class="cheat-card" id="cheat-03" data-cat="nmap" data-search="전체 65535 포트 고속 스캔 기본 스캔이 놓치는 상위 포트 밖 서비스(관리 콘솔, 개발 포트)를 찾습니다. nmap -p- --min-rate 2000 -t4 -pn 10.0.1.10 -on allports.txt full port scan 전포트 고속 nmap nmap">
       <div class="cheat-head">
         <h3 class="cheat-title">전체 65535 포트 고속 스캔</h3>
         <span class="cheat-cat">Nmap</span>
@@ -1974,7 +1999,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">--min-rate 2000</code>은 패킷을 초당 2000개까지 밀어냅니다. IDS·IPS가 있는 구간에서는 알람이 뜨고 회선에도 부담이 되니 내부 점검망에서만 쓰세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="nmap" data-search="웹 서버 정보·허용 메서드 http 응답 헤더, 타이틀, options 응답으로 서버 종류와 위험 메서드(put·delete·trace) 허용 여부를 봅니다. nmap -p 80,443,8080,8443 --script http-title,http-headers,http-methods 10.0.1.10 http methods put delete trace 헤더 nmap nmap">
+    <article class="cheat-card" id="cheat-04" data-cat="nmap" data-search="웹 서버 정보·허용 메서드 http 응답 헤더, 타이틀, options 응답으로 서버 종류와 위험 메서드(put·delete·trace) 허용 여부를 봅니다. nmap -p 80,443,8080,8443 --script http-title,http-headers,http-methods 10.0.1.10 http methods put delete trace 헤더 nmap nmap">
       <div class="cheat-head">
         <h3 class="cheat-title">웹 서버 정보·허용 메서드</h3>
         <span class="cheat-cat">Nmap</span>
@@ -1986,7 +2011,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>허용 메서드에 PUT이 있으면 업로드 취약점으로 이어질 수 있습니다. 실제 요청은 <code class="tip-code">curl -X OPTIONS</code>로 한 번 더 확인하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="nmap" data-search="smb 취약점·공유 열거 445 포트에서 os 정보, 공유 목록, 알려진 원격 실행 취약점(ms17-010 등)을 확인합니다. nmap -p 445 --script smb-os-discovery,smb-enum-shares,smb-vuln-ms17-010 10.0.1.20 smb ms17-010 eternalblue 공유 nmap nmap">
+    <article class="cheat-card" id="cheat-05" data-cat="nmap" data-search="smb 취약점·공유 열거 445 포트에서 os 정보, 공유 목록, 알려진 원격 실행 취약점(ms17-010 등)을 확인합니다. nmap -p 445 --script smb-os-discovery,smb-enum-shares,smb-vuln-ms17-010 10.0.1.20 smb ms17-010 eternalblue 공유 nmap nmap">
       <div class="cheat-head">
         <h3 class="cheat-title">SMB 취약점·공유 열거</h3>
         <span class="cheat-cat">Nmap</span>
@@ -1998,7 +2023,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>스크립트 결과가 &quot;VULNERABLE&quot;이어도 실제 익스플로잇 시도는 하지 않습니다. 취약 여부만 근거로 보고하고 패치 일정을 잡으세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="nmap" data-search="udp 상위 포트 점검 dns·snmp·ntp 같은 udp 서비스는 tcp 스캔에 보이지 않습니다. 응답이 느리므로 상위 포트만 짧게 봅니다. nmap -su --top-ports 50 --max-retries 1 --host-timeout 3m 10.0.1.10 udp snmp ntp dns 스캔 nmap nmap">
+    <article class="cheat-card" id="cheat-06" data-cat="nmap" data-search="udp 상위 포트 점검 dns·snmp·ntp 같은 udp 서비스는 tcp 스캔에 보이지 않습니다. 응답이 느리므로 상위 포트만 짧게 봅니다. nmap -su --top-ports 50 --max-retries 1 --host-timeout 3m 10.0.1.10 udp snmp ntp dns 스캔 nmap nmap">
       <div class="cheat-head">
         <h3 class="cheat-title">UDP 상위 포트 점검</h3>
         <span class="cheat-cat">Nmap</span>
@@ -2010,7 +2035,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">open|filtered</code>는 응답이 없어 열림/차단을 구분하지 못한 상태입니다. SNMP(161)는 community 문자열 없이는 확정할 수 없습니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="suid·sgid 실행 파일 전수 조사 소유자 권한으로 실행되는 파일을 찾습니다. 권한 상승 경로를 찾는 1차 단서입니다. find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -ls 2&gt;/dev/null suid sgid 권한상승 find perm linux 점검 linux">
+    <article class="cheat-card" id="cheat-07" data-cat="linux" data-search="suid·sgid 실행 파일 전수 조사 소유자 권한으로 실행되는 파일을 찾습니다. 권한 상승 경로를 찾는 1차 단서입니다. find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -ls 2&gt;/dev/null suid sgid 권한상승 find perm linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">SUID·SGID 실행 파일 전수 조사</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2022,7 +2047,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>기본 배포판에 없는 바이너리(예: /usr/bin/find, /usr/bin/vim)에 SUID가 걸려 있으면 거의 확실히 이상 징후입니다. 패키지 소유 여부를 <code class="tip-code">dpkg -S</code>·<code class="tip-code">rpm -qf</code>로 대조하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="누구나 쓰기 가능한 파일 찾기 other 쓰기 권한이 열린 파일을 찾습니다. 서비스가 참조하는 설정·스크립트가 걸리면 변조 경로가 됩니다. find / -xdev -type f -perm -0002 -ls 2&gt;/dev/null | head -50 world writable 777 o+w 변조 linux 점검 linux">
+    <article class="cheat-card" id="cheat-08" data-cat="linux" data-search="누구나 쓰기 가능한 파일 찾기 other 쓰기 권한이 열린 파일을 찾습니다. 서비스가 참조하는 설정·스크립트가 걸리면 변조 경로가 됩니다. find / -xdev -type f -perm -0002 -ls 2&gt;/dev/null | head -50 world writable 777 o+w 변조 linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">누구나 쓰기 가능한 파일 찾기</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2034,7 +2059,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">/tmp</code>, <code class="tip-code">/var/tmp</code> 아래 임시 파일은 정상일 수 있습니다. 실제 위험은 root 소유 서비스 설정 파일에 o+w가 열린 경우입니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="capability가 부여된 바이너리 suid 대신 프로세스 단위 권한(capability)을 받은 실행 파일을 확인합니다. 최근 리눅스 권한 상승의 주요 통로입니다. getcap -r / 2&gt;/dev/null capability getcap cap_setuid setcap linux 점검 linux">
+    <article class="cheat-card" id="cheat-09" data-cat="linux" data-search="capability가 부여된 바이너리 suid 대신 프로세스 단위 권한(capability)을 받은 실행 파일을 확인합니다. 최근 리눅스 권한 상승의 주요 통로입니다. getcap -r / 2&gt;/dev/null capability getcap cap_setuid setcap linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">capability가 부여된 바이너리</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2046,7 +2071,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">cap_setuid+ep</code>, <code class="tip-code">cap_sys_admin+ep</code>, <code class="tip-code">cap_dac_read_search+ep</code>는 사실상 root급입니다. 배포판 기본값(예: ping의 cap_net_raw)과 비교해 추가된 항목만 보세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="예약 작업(cron·systemd timer) 점검 주기 실행 작업은 지속성 확보와 권한 상승의 단골 경로입니다. 사용자 cron과 시스템 타이머를 함께 봅니다. crontab -l 2&gt;/dev/null; sudo ls -l /etc/cron.* /var/spool/cron/crontabs 2&gt;/dev/null; systemctl list-timers --all --no-pager | head -30 cron systemd timer 지속성 예약 작업 linux 점검 linux">
+    <article class="cheat-card" id="cheat-10" data-cat="linux" data-search="예약 작업(cron·systemd timer) 점검 주기 실행 작업은 지속성 확보와 권한 상승의 단골 경로입니다. 사용자 cron과 시스템 타이머를 함께 봅니다. crontab -l 2&gt;/dev/null; sudo ls -l /etc/cron.* /var/spool/cron/crontabs 2&gt;/dev/null; systemctl list-timers --all --no-pager | head -30 cron systemd timer 지속성 예약 작업 linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">예약 작업(cron·systemd timer) 점검</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2058,7 +2083,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>root cron이 실행하는 스크립트가 사용자 쓰기 가능하면 그 파일 하나로 root 권한을 얻습니다. 스크립트 경로의 소유자·권한까지 같이 확인하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="리슨 포트와 소유 프로세스 지금 외부에서 접근 가능한 포트와 그 포트를 잡고 있는 프로세스를 매핑합니다. sudo ss -tulpn ss netstat listening port 프로세스 linux 점검 linux">
+    <article class="cheat-card" id="cheat-11" data-cat="linux" data-search="리슨 포트와 소유 프로세스 지금 외부에서 접근 가능한 포트와 그 포트를 잡고 있는 프로세스를 매핑합니다. sudo ss -tulpn ss netstat listening port 프로세스 linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">리슨 포트와 소유 프로세스</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2069,8 +2094,9 @@
         <pre id="cmd-11">sudo ss -tulpn</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">0.0.0.0:*</code>·<code class="tip-code">[::]:*</code>는 모든 인터페이스에 열린 상태입니다. 방화벽으로 막혀 있어도 내부에서는 노출되므로 <code class="tip-code">127.0.0.1:</code> 바인딩이 필요한 서비스를 구분하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#os-lynis">백과사전에서 보기 · 로컬 시스템 감사 보고서 판독</a>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="로그인 성공·실패 기록 최근 로그인 이력과 실패 기록으로 무차별 대입·비정상 접속을 확인합니다. last -ai | head -20; echo &#x27;--- 실패 ---&#x27;; sudo lastb | head -20 last lastb 로그인 이력 brute force auth.log linux 점검 linux">
+    <article class="cheat-card" id="cheat-12" data-cat="linux" data-search="로그인 성공·실패 기록 최근 로그인 이력과 실패 기록으로 무차별 대입·비정상 접속을 확인합니다. last -ai | head -20; echo &#x27;--- 실패 ---&#x27;; sudo lastb | head -20 last lastb 로그인 이력 brute force auth.log linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">로그인 성공·실패 기록</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2082,7 +2108,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>성공 기록에 낯선 IP·시간대가 있으면 <code class="tip-code">lastlog</code>, <code class="tip-code">/var/log/auth.log</code>(또는 journald)에서 해당 세션의 명령 이력을 이어서 확인하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="linux" data-search="sudo 권한과 nopasswd 설정 계정이 어떤 명령을 어떤 사용자로 실행할 수 있는지 확인합니다. 과도한 sudo 규칙은 즉시 권한 상승으로 이어집니다. sudo -l -u deploy; sudo grep -re &#x27;nopasswd|all=\(all\)&#x27; /etc/sudoers /etc/sudoers.d 2&gt;/dev/null sudo sudoers nopasswd 권한 linux 점검 linux">
+    <article class="cheat-card" id="cheat-13" data-cat="linux" data-search="sudo 권한과 nopasswd 설정 계정이 어떤 명령을 어떤 사용자로 실행할 수 있는지 확인합니다. 과도한 sudo 규칙은 즉시 권한 상승으로 이어집니다. sudo -l -u deploy; sudo grep -re &#x27;nopasswd|all=\(all\)&#x27; /etc/sudoers /etc/sudoers.d 2&gt;/dev/null sudo sudoers nopasswd 권한 linux 점검 linux">
       <div class="cheat-head">
         <h3 class="cheat-title">sudo 권한과 NOPASSWD 설정</h3>
         <span class="cheat-cat">Linux 점검</span>
@@ -2094,7 +2120,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">NOPASSWD</code>로 vi·find·tar·less 같은 편집·실행 도구를 허용하면 셸을 띄울 수 있습니다. 허용 목록은 절대 경로와 인자까지 제한해야 안전합니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="보안 응답 헤더 한눈에 보기 csp·hsts·x-frame-options·nosniff가 실제 응답에 실려 있는지 확인합니다. curl -ssi https://target.example.com | grep -ie &#x27;^(server|content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy)&#x27; 보안 헤더 csp hsts x-frame nosniff 웹·curl web">
+    <article class="cheat-card" id="cheat-14" data-cat="web" data-search="보안 응답 헤더 한눈에 보기 csp·hsts·x-frame-options·nosniff가 실제 응답에 실려 있는지 확인합니다. curl -ssi https://target.example.com | grep -ie &#x27;^(server|content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy)&#x27; 보안 헤더 csp hsts x-frame nosniff 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">보안 응답 헤더 한눈에 보기</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2105,8 +2131,9 @@
         <pre id="cmd-14">curl -sSI https://target.example.com | grep -iE &#x27;^(server|content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy)&#x27;</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>헤더가 없다고 곧 취약점은 아니지만, XSS·클릭재킹 대응 수준을 판단하는 근거가 됩니다. 리다이렉트되는 도메인마다 따로 확인하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#web-security-headers">백과사전에서 보기 · 보안 응답 헤더·CORS 확인</a>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="리다이렉트·tls 체인 추적 http→https 전환 과정에서 인증서가 바뀌거나 중간 도메인으로 튀는지 확인합니다. curl -ssil --max-redirs 5 http://target.example.com redirect 301 302 tls 인증서 체인 웹·curl web">
+    <article class="cheat-card" id="cheat-15" data-cat="web" data-search="리다이렉트·tls 체인 추적 http→https 전환 과정에서 인증서가 바뀌거나 중간 도메인으로 튀는지 확인합니다. curl -ssil --max-redirs 5 http://target.example.com redirect 301 302 tls 인증서 체인 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">리다이렉트·TLS 체인 추적</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2118,7 +2145,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>첫 응답이 https가 아니라면 HSTS가 없는 한 최초 요청은 평문입니다. 민감 쿠키는 Secure 속성이 있어야 이 구간에서 새지 않습니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="세션 쿠키 속성 점검 로그인 응답의 set-cookie에 httponly·secure·samesite가 붙었는지 확인합니다. curl -ssi https://target.example.com/login | grep -i &#x27;^set-cookie&#x27; cookie httponly secure samesite 세션 웹·curl web">
+    <article class="cheat-card" id="cheat-16" data-cat="web" data-search="세션 쿠키 속성 점검 로그인 응답의 set-cookie에 httponly·secure·samesite가 붙었는지 확인합니다. curl -ssi https://target.example.com/login | grep -i &#x27;^set-cookie&#x27; cookie httponly secure samesite 세션 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">세션 쿠키 속성 점검</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2130,7 +2157,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>세션 쿠키에 HttpOnly가 없으면 XSS 한 번으로 세션이 탈취됩니다. SameSite=None이면 Secure가 반드시 함께 있어야 합니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="허용 http 메서드 확인 options 응답으로 서버가 열어 둔 메서드를 확인합니다. put·delete·trace는 설정 실수를 드러냅니다. curl -ss -i -x options https://target.example.com/ | head -20 options allow put delete trace 메서드 웹·curl web">
+    <article class="cheat-card" id="cheat-17" data-cat="web" data-search="허용 http 메서드 확인 options 응답으로 서버가 열어 둔 메서드를 확인합니다. put·delete·trace는 설정 실수를 드러냅니다. curl -ss -i -x options https://target.example.com/ | head -20 options allow put delete trace 메서드 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">허용 HTTP 메서드 확인</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2141,8 +2168,9 @@
         <pre id="cmd-17">curl -sS -i -X OPTIONS https://target.example.com/ | head -20</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>Allow 헤더에 TRACE가 있으면 XST(Cross-Site Tracing) 위험이 있고, PUT이 열려 있으면 업로드 경로를 우선 점검하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#web-methods-auth">백과사전에서 보기 · HTTP 메서드·인증 응답 코드</a>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="경로 정규화 우회 점검 인코딩된 ../가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다. curl -ss --path-as-is &quot;https://target.example.com/static/..%2f..%2fetc/passwd&quot; | head -5 path traversal lfi 인코딩 디렉터리 웹·curl web">
+    <article class="cheat-card" id="cheat-18" data-cat="web" data-search="경로 정규화 우회 점검 인코딩된 ../가 정적 파일 서버에서 상위 디렉터리로 해석되는지 확인합니다. curl -ss --path-as-is &quot;https://target.example.com/static/..%2f..%2fetc/passwd&quot; | head -5 path traversal lfi 인코딩 디렉터리 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">경로 정규화 우회 점검</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2154,7 +2182,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">--path-as-is</code>가 없으면 curl이 경로를 미리 정규화해 버려 재현이 안 됩니다. 응답 코드와 본문 첫 줄을 함께 보세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="json api에 페이로드 파일로 요청 따옴표·중괄호가 섞인 복잡한 페이로드는 파일로 분리해 보냅니다. 셸 인용 오류를 없애고 재현성을 높입니다. curl -ss -i -h &#x27;content-type: application/json&#x27; -h &quot;authorization: bearer $token&quot; --data @payload.json https://target.example.com/api/login api json post 페이로드 인증 토큰 웹·curl web">
+    <article class="cheat-card" id="cheat-19" data-cat="web" data-search="json api에 페이로드 파일로 요청 따옴표·중괄호가 섞인 복잡한 페이로드는 파일로 분리해 보냅니다. 셸 인용 오류를 없애고 재현성을 높입니다. curl -ss -i -h &#x27;content-type: application/json&#x27; -h &quot;authorization: bearer $token&quot; --data @payload.json https://target.example.com/api/login api json post 페이로드 인증 토큰 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">JSON API에 페이로드 파일로 요청</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2166,7 +2194,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>응답 코드만 보지 말고 <code class="tip-code">-i</code>로 헤더와 함께, 오류 메시지에 내부 경로·SQL이 노출되는지 확인하세요. 토큰은 셸 히스토리에 남지 않도록 환경변수로 넘깁니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="민감 경로·정책 파일 존재 확인 robots.txt, security.txt, .git/head 같은 파일이 공개돼 있는지 상태 코드만으로 빠르게 훑습니다. for p in robots.txt sitemap.xml .well-known/security.txt .git/head .env; do printf &#x27;%-28s %s\n&#x27; &quot;$p&quot; &quot;$(curl -ss -o /dev/null -w &#x27;%{http_code}&#x27; https://target.example.com/$p)&quot;; done robots security.txt git env 노출 디렉터리 웹·curl web">
+    <article class="cheat-card" id="cheat-20" data-cat="web" data-search="민감 경로·정책 파일 존재 확인 robots.txt, security.txt, .git/head 같은 파일이 공개돼 있는지 상태 코드만으로 빠르게 훑습니다. for p in robots.txt sitemap.xml .well-known/security.txt .git/head .env; do printf &#x27;%-28s %s\n&#x27; &quot;$p&quot; &quot;$(curl -ss -o /dev/null -w &#x27;%{http_code}&#x27; https://target.example.com/$p)&quot;; done robots security.txt git env 노출 디렉터리 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">민감 경로·정책 파일 존재 확인</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2178,7 +2206,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">.git/HEAD</code>가 200이면 소스 저장소가 통째로 노출된 것입니다. <code class="tip-code">.env</code> 200은 자격증명 유출로 직결되므로 즉시 보고 대상입니다.</span></p>
     </article>
-    <article class="cheat-card" data-cat="web" data-search="시간 기반 블라인드 sqli 확인 응답 내용이 바뀌지 않는 블라인드 구간에서 지연 시간으로 주입 가능성을 판별합니다. curl -ss -o /dev/null -w &#x27;%{time_total}\n&#x27; &quot;https://target.example.com/item?id=1%27%20and%20sleep(3)--&quot; sqli blind time based sleep 인젝션 웹·curl web">
+    <article class="cheat-card" id="cheat-21" data-cat="web" data-search="시간 기반 블라인드 sqli 확인 응답 내용이 바뀌지 않는 블라인드 구간에서 지연 시간으로 주입 가능성을 판별합니다. curl -ss -o /dev/null -w &#x27;%{time_total}\n&#x27; &quot;https://target.example.com/item?id=1%27%20and%20sleep(3)--&quot; sqli blind time based sleep 인젝션 웹·curl web">
       <div class="cheat-head">
         <h3 class="cheat-title">시간 기반 블라인드 SQLi 확인</h3>
         <span class="cheat-cat">웹·curl</span>
@@ -2190,7 +2218,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>3초 지연이 일관되게 나와야 신호입니다. 네트워크 지연과 구분하려면 같은 요청을 3회 반복하고, 정상 파라미터 요청의 기준 시간과 비교하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="win" data-search="로컬 관리자·계정 확인 대상 호스트의 로컬 관리자 그룹과 전체 로컬 계정을 확인합니다. net localgroup administrators &amp; net user &amp; whoami /priv windows local admin 계정 권한 whoami windows·ad win">
+    <article class="cheat-card" id="cheat-22" data-cat="win" data-search="로컬 관리자·계정 확인 대상 호스트의 로컬 관리자 그룹과 전체 로컬 계정을 확인합니다. net localgroup administrators &amp; net user &amp; whoami /priv windows local admin 계정 권한 whoami windows·ad win">
       <div class="cheat-head">
         <h3 class="cheat-title">로컬 관리자·계정 확인</h3>
         <span class="cheat-cat">Windows·AD</span>
@@ -2202,7 +2230,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">whoami /priv</code>에서 SeImpersonatePrivilege가 보이면 Potato 계열 권한 상승이 가능한 환경입니다. 실제 공격은 하지 말고 설정 오류로 보고하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="win" data-search="도메인 관리자 그룹 구성원 도메인·엔터프라이즈 관리자 그룹의 현재 구성원을 확인합니다. 권한이 과하게 부여된 계정을 찾는 첫 단계입니다. net group &quot;domain admins&quot; /domain &amp; net group &quot;enterprise admins&quot; /domain &amp; net group &quot;account operators&quot; /domain active directory domain admins 그룹 구성원 windows·ad win">
+    <article class="cheat-card" id="cheat-23" data-cat="win" data-search="도메인 관리자 그룹 구성원 도메인·엔터프라이즈 관리자 그룹의 현재 구성원을 확인합니다. 권한이 과하게 부여된 계정을 찾는 첫 단계입니다. net group &quot;domain admins&quot; /domain &amp; net group &quot;enterprise admins&quot; /domain &amp; net group &quot;account operators&quot; /domain active directory domain admins 그룹 구성원 windows·ad win">
       <div class="cheat-head">
         <h3 class="cheat-title">도메인 관리자 그룹 구성원</h3>
         <span class="cheat-cat">Windows·AD</span>
@@ -2214,7 +2242,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>서비스 계정이 Domain Admins에 들어 있으면 그 계정이 침해되는 순간 도메인 전체가 넘어갑니다. 업무용·서비스 계정의 분리를 권고하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="win" data-search="spn 보유 계정(kerberoast 대상) 조회 서비스 주체 이름이 등록된 계정을 뽑습니다. 오프라인 크래킹에 쓰이는 티켓 발급 대상입니다. get-aduser -filter {serviceprincipalname -ne &quot;$null&quot;} -properties serviceprincipalname | select-object samaccountname,serviceprincipalname kerberoast spn active directory 티켓 windows·ad win">
+    <article class="cheat-card" id="cheat-24" data-cat="win" data-search="spn 보유 계정(kerberoast 대상) 조회 서비스 주체 이름이 등록된 계정을 뽑습니다. 오프라인 크래킹에 쓰이는 티켓 발급 대상입니다. get-aduser -filter {serviceprincipalname -ne &quot;$null&quot;} -properties serviceprincipalname | select-object samaccountname,serviceprincipalname kerberoast spn active directory 티켓 windows·ad win">
       <div class="cheat-head">
         <h3 class="cheat-title">SPN 보유 계정(Kerberoast 대상) 조회</h3>
         <span class="cheat-cat">Windows·AD</span>
@@ -2226,7 +2254,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>서비스 계정의 비밀번호가 길고 주기적으로 교체되는지가 핵심입니다. 25자 이상 무작위 암호를 권고하고, krbtgt 계정의 이중 재설정도 함께 점검하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="win" data-search="localsystem으로 도는 서비스 경로 system 권한으로 실행되는 서비스의 실행 파일 경로를 확인합니다. 쓰기 가능한 경로에 있으면 권한 상승 지점입니다. get-ciminstance win32_service | where-object {$_.startname -like &#x27;*localsystem*&#x27;} | select-object name,startmode,pathname | format-list windows service localsystem unquoted path 권한상승 windows·ad win">
+    <article class="cheat-card" id="cheat-25" data-cat="win" data-search="localsystem으로 도는 서비스 경로 system 권한으로 실행되는 서비스의 실행 파일 경로를 확인합니다. 쓰기 가능한 경로에 있으면 권한 상승 지점입니다. get-ciminstance win32_service | where-object {$_.startname -like &#x27;*localsystem*&#x27;} | select-object name,startmode,pathname | format-list windows service localsystem unquoted path 권한상승 windows·ad win">
       <div class="cheat-head">
         <h3 class="cheat-title">LocalSystem으로 도는 서비스 경로</h3>
         <span class="cheat-cat">Windows·AD</span>
@@ -2238,7 +2266,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>경로에 공백이 있고 따옴표가 없는 항목(<code class="tip-code">C:\Program Files\...</code>)은 unquoted service path 문제입니다. 각 경로의 디렉터리 ACL을 <code class="tip-code">icacls</code>로 확인하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="win" data-search="로그온 실패 4625 집계 보안 로그에서 로그온 실패(4625)를 모아 무차별 대입·자격증명 스터핑 시도를 확인합니다. get-winevent -filterhashtable @{logname=&#x27;security&#x27;;id=4625} -maxevents 50 | group-object {$_.properties[5].value} | sort-object count -descending | select-object count,name event log 4625 로그온 실패 brute force windows·ad win">
+    <article class="cheat-card" id="cheat-26" data-cat="win" data-search="로그온 실패 4625 집계 보안 로그에서 로그온 실패(4625)를 모아 무차별 대입·자격증명 스터핑 시도를 확인합니다. get-winevent -filterhashtable @{logname=&#x27;security&#x27;;id=4625} -maxevents 50 | group-object {$_.properties[5].value} | sort-object count -descending | select-object count,name event log 4625 로그온 실패 brute force windows·ad win">
       <div class="cheat-head">
         <h3 class="cheat-title">로그온 실패 4625 집계</h3>
         <span class="cheat-cat">Windows·AD</span>
@@ -2249,8 +2277,9 @@
         <pre id="cmd-26">Get-WinEvent -FilterHashtable @{LogName=&#x27;Security&#x27;;Id=4625} -MaxEvents 50 | Group-Object {$_.Properties[5].Value} | Sort-Object Count -Descending | Select-Object Count,Name</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>4625는 기본 감사 정책에서 켜져 있어야 기록됩니다. 짧은 시간에 여러 계정으로 퍼지는 실패는 password spray 패턴입니다.</span></p>
+      <a class="cheat-ref" href="security-reference.html#os-ad-logs">백과사전에서 보기 · 정책·감사 이벤트 로그 검토</a>
     </article>
-    <article class="cheat-card" data-cat="win" data-search="smb 공유·접속 세션 확인 공유 목록과 현재 접속 중인 세션을 확인합니다. 불필요한 쓰기 공유와 원격 접속 흔적을 찾습니다. get-smbshare | select-object name,path,description | format-table -auto; get-smbsession | select-object clientcomputername,clientusername,numopens smb share session windows 공유 세션 windows·ad win">
+    <article class="cheat-card" id="cheat-27" data-cat="win" data-search="smb 공유·접속 세션 확인 공유 목록과 현재 접속 중인 세션을 확인합니다. 불필요한 쓰기 공유와 원격 접속 흔적을 찾습니다. get-smbshare | select-object name,path,description | format-table -auto; get-smbsession | select-object clientcomputername,clientusername,numopens smb share session windows 공유 세션 windows·ad win">
       <div class="cheat-head">
         <h3 class="cheat-title">SMB 공유·접속 세션 확인</h3>
         <span class="cheat-cat">Windows·AD</span>
@@ -2262,7 +2291,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">IPC$</code> 외에 Everyone 쓰기 권한이 있는 공유는 랜섬웨어 확산 경로가 됩니다. 공유 ACL은 <code class="tip-code">Get-SmbShareAccess</code>로 함께 확인하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="net" data-search="특정 호스트 트래픽 저장 대상 호스트와 오가는 패킷을 파일로 남겨 나중에 wireshark로 분석합니다. sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap tcpdump pcap 캡처 패킷 저장 네트워크·tcpdump net">
+    <article class="cheat-card" id="cheat-28" data-cat="net" data-search="특정 호스트 트래픽 저장 대상 호스트와 오가는 패킷을 파일로 남겨 나중에 wireshark로 분석합니다. sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap tcpdump pcap 캡처 패킷 저장 네트워크·tcpdump net">
       <div class="cheat-head">
         <h3 class="cheat-title">특정 호스트 트래픽 저장</h3>
         <span class="cheat-cat">네트워크·tcpdump</span>
@@ -2273,8 +2302,9 @@
         <pre id="cmd-28">sudo tcpdump -i any -nn -s 0 host 10.0.1.10 -w cap.pcap</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-s 0</code>은 패킷 전체를 저장합니다(기본은 262144바이트로 충분하지만 명시가 안전). 캡처 파일에는 개인정보·자격증명이 담길 수 있어 보관 기한과 접근 권한을 정해 두세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#pcap-tcpdump">백과사전에서 보기 · 저장 캐시 플래그·재전송 판독</a>
     </article>
-    <article class="cheat-card" data-cat="net" data-search="http 요청 라인 실시간 확인 암호화되지 않은 http 구간에서 어떤 경로로 요청이 오가는지 실시간으로 봅니다. sudo tcpdump -i any -nn -a &#x27;tcp port 80&#x27; | grep --line-buffered -e &#x27;^(get|post|head|host:)&#x27; http get post host 평문 패킷 네트워크·tcpdump net">
+    <article class="cheat-card" id="cheat-29" data-cat="net" data-search="http 요청 라인 실시간 확인 암호화되지 않은 http 구간에서 어떤 경로로 요청이 오가는지 실시간으로 봅니다. sudo tcpdump -i any -nn -a &#x27;tcp port 80&#x27; | grep --line-buffered -e &#x27;^(get|post|head|host:)&#x27; http get post host 평문 패킷 네트워크·tcpdump net">
       <div class="cheat-head">
         <h3 class="cheat-title">HTTP 요청 라인 실시간 확인</h3>
         <span class="cheat-cat">네트워크·tcpdump</span>
@@ -2286,7 +2316,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>평문 HTTP에서 Authorization 헤더나 세션 쿠키가 그대로 보이면 그 자체가 유출입니다. 운영 서비스라면 즉시 TLS 적용 대상으로 보고하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="net" data-search="dns 질의 감시 내부 호스트가 어떤 도메인을 조회하는지 확인합니다. 악성 도메인·터널링 징후를 찾는 기본 수단입니다. sudo tcpdump -i any -nn -vv &#x27;udp port 53&#x27; -c 100 dns 53 질의 터널링 네트워크·tcpdump net">
+    <article class="cheat-card" id="cheat-30" data-cat="net" data-search="dns 질의 감시 내부 호스트가 어떤 도메인을 조회하는지 확인합니다. 악성 도메인·터널링 징후를 찾는 기본 수단입니다. sudo tcpdump -i any -nn -vv &#x27;udp port 53&#x27; -c 100 dns 53 질의 터널링 네트워크·tcpdump net">
       <div class="cheat-head">
         <h3 class="cheat-title">DNS 질의 감시</h3>
         <span class="cheat-cat">네트워크·tcpdump</span>
@@ -2297,8 +2327,9 @@
         <pre id="cmd-30">sudo tcpdump -i any -nn -vv &#x27;udp port 53&#x27; -c 100</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-vv</code>로 질의 이름까지 보입니다. 길고 무작위한 서브도메인이 반복되면 DNS 터널링을 의심하고, 같은 이름의 응답 TTL·레코드 타입(TXT)도 함께 보세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#dns-dig">백과사전에서 보기 · TXT·SPF·DMARC 레코드 확인</a>
     </article>
-    <article class="cheat-card" data-cat="net" data-search="pcap에서 syn 패킷만 추출 저장한 캡처에서 연결 시도(syn)만 걸러 스캔·접속 시도를 빠르게 추립니다. tcpdump -nn -r cap.pcap &#x27;tcp[13] &amp; 2 != 0&#x27; -c 50 pcap syn 스캔 필터 재분석 네트워크·tcpdump net">
+    <article class="cheat-card" id="cheat-31" data-cat="net" data-search="pcap에서 syn 패킷만 추출 저장한 캡처에서 연결 시도(syn)만 걸러 스캔·접속 시도를 빠르게 추립니다. tcpdump -nn -r cap.pcap &#x27;tcp[13] &amp; 2 != 0&#x27; -c 50 pcap syn 스캔 필터 재분석 네트워크·tcpdump net">
       <div class="cheat-head">
         <h3 class="cheat-title">pcap에서 SYN 패킷만 추출</h3>
         <span class="cheat-cat">네트워크·tcpdump</span>
@@ -2309,8 +2340,9 @@
         <pre id="cmd-31">tcpdump -nn -r cap.pcap &#x27;tcp[13] &amp; 2 != 0&#x27; -c 50</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>같은 출발지에서 여러 포트로 SYN만 뿌리고 ACK가 없으면 스캔입니다. <code class="tip-code">-c</code>로 개수를 제한해 출력이 넘치지 않게 하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#pcap-tcpdump">백과사전에서 보기 · 저장 캐시 플래그·재전송 판독</a>
     </article>
-    <article class="cheat-card" data-cat="net" data-search="arp 스푸핑 징후 찾기 같은 ip에 대해 서로 다른 mac이 응답하는지 확인합니다. 내부 중간자 공격의 대표 신호입니다. sudo tcpdump -i eth0 -nn arp -c 200 | awk &#x27;{print $2, $nf}&#x27; | sort | uniq -c | sort -rn | head arp spoofing mitm mac 중간자 네트워크·tcpdump net">
+    <article class="cheat-card" id="cheat-32" data-cat="net" data-search="arp 스푸핑 징후 찾기 같은 ip에 대해 서로 다른 mac이 응답하는지 확인합니다. 내부 중간자 공격의 대표 신호입니다. sudo tcpdump -i eth0 -nn arp -c 200 | awk &#x27;{print $2, $nf}&#x27; | sort | uniq -c | sort -rn | head arp spoofing mitm mac 중간자 네트워크·tcpdump net">
       <div class="cheat-head">
         <h3 class="cheat-title">ARP 스푸핑 징후 찾기</h3>
         <span class="cheat-cat">네트워크·tcpdump</span>
@@ -2322,7 +2354,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>게이트웨이 IP에 두 개 이상의 MAC이 매핑되면 스푸핑을 의심합니다. 스위치 포트 보안·동적 ARP 검사(Dynamic ARP Inspection) 설정도 함께 확인하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="인증서 만료일·san 확인 서버가 실제로 내미는 인증서의 주체, 발급자, 유효기간, 대체 이름(san)을 확인합니다. echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2&gt;/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectaltname openssl 인증서 만료 san sni tls openssl·ssh crypto">
+    <article class="cheat-card" id="cheat-33" data-cat="crypto" data-search="인증서 만료일·san 확인 서버가 실제로 내미는 인증서의 주체, 발급자, 유효기간, 대체 이름(san)을 확인합니다. echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2&gt;/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectaltname openssl 인증서 만료 san sni tls openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">인증서 만료일·SAN 확인</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -2333,8 +2365,9 @@
         <pre id="cmd-33">echo | openssl s_client -connect target.example.com:443 -servername target.example.com 2&gt;/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-servername</code>을 빼면 SNI 없이 접속해 다른 인증서를 받을 수 있습니다. 만료가 임박했거나 SAN에 실제 도메인이 빠져 있으면 브라우저 경고로 이어집니다.</span></p>
+      <a class="cheat-ref" href="security-reference.html#tls-openssl">백과사전에서 보기 · 인증서·체인·유효기간 판독</a>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="tls 버전·암호 스위트 확인 구버전 tls(1.0/1.1)나 취약 암호 스위트가 아직 허용되는지 확인합니다. openssl s_client -connect target.example.com:443 -tls1_2 &lt;/dev/null 2&gt;&amp;1 | grep -e &#x27;protocol|cipher|verify return code&#x27; tls 1.0 1.1 cipher suite 암호 스위트 openssl·ssh crypto">
+    <article class="cheat-card" id="cheat-34" data-cat="crypto" data-search="tls 버전·암호 스위트 확인 구버전 tls(1.0/1.1)나 취약 암호 스위트가 아직 허용되는지 확인합니다. openssl s_client -connect target.example.com:443 -tls1_2 &lt;/dev/null 2&gt;&amp;1 | grep -e &#x27;protocol|cipher|verify return code&#x27; tls 1.0 1.1 cipher suite 암호 스위트 openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">TLS 버전·암호 스위트 확인</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -2345,8 +2378,9 @@
         <pre id="cmd-34">openssl s_client -connect target.example.com:443 -tls1_2 &lt;/dev/null 2&gt;&amp;1 | grep -E &#x27;Protocol|Cipher|Verify return code&#x27;</pre>
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>TLS 1.0/1.1은 폐기 대상입니다. <code class="tip-code">Verify return code: 0</code>이 아니면 체인 문제이므로 중간 인증서 누락 여부를 확인하세요.</span></p>
+      <a class="cheat-ref" href="security-reference.html#tls-openssl">백과사전에서 보기 · 인증서·체인·유효기간 판독</a>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="파일 무결성 검증 배포 파일이 배포처가 공개한 해시와 일치하는지 확인합니다. 공급망 침해를 걸러내는 가장 빠른 방법입니다. sha256sum artifact.tar.gz; sha256sum -c sha256sums; openssl dgst -sha256 artifact.tar.gz sha256 무결성 해시 checksum 공급망 openssl·ssh crypto">
+    <article class="cheat-card" id="cheat-35" data-cat="crypto" data-search="파일 무결성 검증 배포 파일이 배포처가 공개한 해시와 일치하는지 확인합니다. 공급망 침해를 걸러내는 가장 빠른 방법입니다. sha256sum artifact.tar.gz; sha256sum -c sha256sums; openssl dgst -sha256 artifact.tar.gz sha256 무결성 해시 checksum 공급망 openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">파일 무결성 검증</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -2358,7 +2392,7 @@
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>해시 값은 파일을 받은 경로가 아닌 공식 공지·서명된 릴리스 노트에서 가져와야 의미가 있습니다. GPG 서명(<code class="tip-code">.asc</code>)이 있으면 서명 검증까지 하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="파일 암호화·복호화 전달용 파일을 비밀번호 기반(aes-256)으로 암호화하고 다시 풉니다. openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt openssl enc aes 암호화 복호화 pbkdf2 openssl·ssh crypto">
+    <article class="cheat-card" id="cheat-36" data-cat="crypto" data-search="파일 암호화·복호화 전달용 파일을 비밀번호 기반(aes-256)으로 암호화하고 다시 풉니다. openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in plain.txt -out plain.enc openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt openssl enc aes 암호화 복호화 pbkdf2 openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">파일 암호화·복호화</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -2371,7 +2405,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span><code class="tip-code">-pbkdf2</code>와 높은 <code class="tip-code">-iter</code>를 빼면 옛 방식(단순 MD5 키 유도)으로 떨어집니다. 암호는 파일과 다른 채널(전화·메신저)로 전달하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="ssh 공개키 지문·길이 확인 키 파일의 지문과 비트 길이를 확인해 서버에 등록된 키와 같은지 대조합니다. ssh-keygen -lf ~/.ssh/id_ed25519.pub; ssh-keygen -lf ~/.ssh/id_rsa.pub ssh key fingerprint rsa ed25519 지문 openssl·ssh crypto">
+    <article class="cheat-card" id="cheat-37" data-cat="crypto" data-search="ssh 공개키 지문·길이 확인 키 파일의 지문과 비트 길이를 확인해 서버에 등록된 키와 같은지 대조합니다. ssh-keygen -lf ~/.ssh/id_ed25519.pub; ssh-keygen -lf ~/.ssh/id_rsa.pub ssh key fingerprint rsa ed25519 지문 openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">SSH 공개키 지문·길이 확인</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -2383,7 +2417,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
       </div>
       <p class="tip"><span class="tip-tag">주의</span><span>RSA 2048비트 이하는 교체 대상입니다. 지문을 대조할 때는 앞뒤 몇 글자가 아니라 전체 지문을 비교하세요.</span></p>
     </article>
-    <article class="cheat-card" data-cat="crypto" data-search="ssh 접속 실패 원인 추적 키 인증이 거부될 때 어느 단계에서 끊기는지 상세 로그로 확인합니다. ssh -vvv -i ~/.ssh/id_ed25519 -o identitiesonly=yes user@10.0.1.10 2&gt;&amp;1 | grep -e &#x27;offering|authentications that can continue|permission denied|server accepts key&#x27; ssh key 인증 디버그 permission denied openssl·ssh crypto">
+    <article class="cheat-card" id="cheat-38" data-cat="crypto" data-search="ssh 접속 실패 원인 추적 키 인증이 거부될 때 어느 단계에서 끊기는지 상세 로그로 확인합니다. ssh -vvv -i ~/.ssh/id_ed25519 -o identitiesonly=yes user@10.0.1.10 2&gt;&amp;1 | grep -e &#x27;offering|authentications that can continue|permission denied|server accepts key&#x27; ssh key 인증 디버그 permission denied openssl·ssh crypto">
       <div class="cheat-head">
         <h3 class="cheat-title">SSH 접속 실패 원인 추적</h3>
         <span class="cheat-cat">OpenSSL·SSH</span>
@@ -2406,7 +2440,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
     <footer class="footer">
       Infosec Archive · 보안 실무 유틸 · 치트시트<br>
       모든 변환·계산은 브라우저에서만 수행되며 서버로 전송되지 않습니다. 명령은 점검 권한이 있는 대상에만 사용하세요.<br>
-      2026-11-26 08:53 KST 기준
+      2026-11-27 07:52 KST 기준
     </footer>
   </main>
 
@@ -3433,12 +3467,29 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in plain.enc -out plain.txt</p
         });
       });
 
+      /* 다른 페이지의 '백과사전에서 보기'가 tools.html#cheat-NN 으로 들어온다.
+         모바일에서는 먼저 치트시트 보기로 전환한 뒤 해당 카드로 이동한다. */
+      function focusHashCheat() {
+        const hash = decodeURIComponent(location.hash || '');
+        if (hash.indexOf('#cheat-') !== 0) return;
+        const card = document.querySelector(hash);
+        if (!card) return;
+        if (window.innerWidth < 1024) show('cheat', false, false);
+        window.requestAnimationFrame(function () {
+          card.scrollIntoView({ block: 'start', behavior: 'instant' });
+          card.classList.add('is-focus');
+          window.setTimeout(function () { card.classList.remove('is-focus'); }, 2200);
+        });
+      }
+      window.addEventListener('hashchange', focusHashCheat);
+
       window.addEventListener('resize', function () { apply(false); });
       apply(true);
+      focusHashCheat();
     })();
 
   </script>
-<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab is-active" href="today.html" aria-current="page"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="market.html"><span>증시 이슈</span><span class="ia-sheet-file">market.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link is-current" href="tools.html" aria-current="page"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="grocery.html"><span>장보기 타이밍</span><span class="ia-sheet-file">grocery.html</span></a><a class="ia-sheet-link" href="basket.html"><span>장바구니 리그</span><span class="ia-sheet-file">basket.html</span></a><a class="ia-sheet-link" href="paymeter.html"><span>월급 미터</span><span class="ia-sheet-file">paymeter.html</span></a><a class="ia-sheet-link" href="movein.html"><span>입주 점검</span><span class="ia-sheet-file">movein.html</span></a><a class="ia-sheet-link" href="nearby.html"><span>지금 갈 곳</span><span class="ia-sheet-file">nearby.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link" href="recycle.html"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a><a class="ia-sheet-link" href="food.html"><span>식품 라벨 읽기</span><span class="ia-sheet-file">food.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mystery90.html"><span>90초 추리</span><span class="ia-sheet-file">mystery90.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a><a class="ia-sheet-link" href="subway.html"><span>지하철역 맞히기</span><span class="ia-sheet-file">subway.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
+<nav class="ia-tabbar" aria-label="빠른 이동"><a class="ia-tab" href="index.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M8.5 7V5.6A1.6 1.6 0 0 1 10.1 4h3.8a1.6 1.6 0 0 1 1.6 1.6V7"></path><path d="M3 12.5h18"></path></svg></span><span class="ia-tab-label">채용</span></a><a class="ia-tab" href="study.html"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v16H6a2 2 0 0 1-2-1.5z"></path><path d="M20 5.5A2 2 0 0 0 18 4h-5v16h5a2 2 0 0 0 2-1.5z"></path></svg></span><span class="ia-tab-label">학습</span></a><a class="ia-tab is-active" href="today.html" aria-current="page"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.5-4 3 2.4L19 8"></path></svg></span><span class="ia-tab-label">브리핑</span></a><button type="button" class="ia-tab" id="iaGameBtn" aria-haspopup="dialog" aria-controls="iaSheet" aria-expanded="false" data-sheet-target="iaSheetGroupGame"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7.5" width="18" height="10" rx="4"></rect><path d="M8 11v2.6M6.7 12.3h2.6"></path><circle cx="16" cy="11.6" r="0.9" fill="currentColor" stroke="none"></circle><circle cx="17.8" cy="13.4" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><span class="ia-tab-label">게임</span></button><button type="button" class="ia-tab" id="iaAllBtn" aria-expanded="false" aria-controls="iaSheet"><span class="ia-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"></rect></svg></span><span class="ia-tab-label">전체</span></button></nav><div class="ia-sheet-backdrop" id="iaSheetBackdrop" hidden></div><section class="ia-sheet" id="iaSheet" role="dialog" aria-modal="true" aria-labelledby="iaSheetTitle" hidden><div class="ia-sheet-head"><h2 class="ia-sheet-title" id="iaSheetTitle">전체 메뉴</h2><button type="button" class="ia-sheet-close" id="iaSheetClose" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="ia-sheet-body"><p class="ia-sheet-group">보안·채용</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="index.html"><span>채용공고</span><span class="ia-sheet-file">index.html</span></a><a class="ia-sheet-link" href="study.html"><span>시험 공부</span><span class="ia-sheet-file">study.html</span></a></div><p class="ia-sheet-group">브리핑·유틸</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="today.html"><span>오늘</span><span class="ia-sheet-file">today.html</span></a><a class="ia-sheet-link" href="market.html"><span>증시 이슈</span><span class="ia-sheet-file">market.html</span></a><a class="ia-sheet-link" href="ai.html"><span>AI 트렌드</span><span class="ia-sheet-file">ai.html</span></a><a class="ia-sheet-link" href="cve.html"><span>CVE 리포트</span><span class="ia-sheet-file">cve.html</span></a><a class="ia-sheet-link is-current" href="tools.html" aria-current="page"><span>실무 유틸</span><span class="ia-sheet-file">tools.html</span></a><a class="ia-sheet-link" href="security-reference.html"><span>점검 백과사전</span><span class="ia-sheet-file">security-reference.html</span></a><a class="ia-sheet-link" href="radar.html"><span>피싱 레이더</span><span class="ia-sheet-file">radar.html</span></a></div><p class="ia-sheet-group">데일리·생활</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="outfit.html"><span>옷차림</span><span class="ia-sheet-file">outfit.html</span></a><a class="ia-sheet-link" href="pick.html"><span>오늘 뭐 먹지</span><span class="ia-sheet-file">pick.html</span></a><a class="ia-sheet-link" href="grocery.html"><span>장보기 타이밍</span><span class="ia-sheet-file">grocery.html</span></a><a class="ia-sheet-link" href="basket.html"><span>장바구니 리그</span><span class="ia-sheet-file">basket.html</span></a><a class="ia-sheet-link" href="paymeter.html"><span>월급 미터</span><span class="ia-sheet-file">paymeter.html</span></a><a class="ia-sheet-link" href="movein.html"><span>입주 점검</span><span class="ia-sheet-file">movein.html</span></a><a class="ia-sheet-link" href="nearby.html"><span>지금 갈 곳</span><span class="ia-sheet-file">nearby.html</span></a><a class="ia-sheet-link" href="cards.html"><span>오늘의 카드</span><span class="ia-sheet-file">cards.html</span></a><a class="ia-sheet-link" href="wash.html"><span>세탁 라벨 읽기</span><span class="ia-sheet-file">wash.html</span></a><a class="ia-sheet-link" href="recycle.html"><span>분리배출 읽기</span><span class="ia-sheet-file">recycle.html</span></a><a class="ia-sheet-link" href="food.html"><span>식품 라벨 읽기</span><span class="ia-sheet-file">food.html</span></a></div><p class="ia-sheet-group" id="iaSheetGroupGame" tabindex="-1">게임</p><p class="ia-sheet-sub">챌린지</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="wargame.html"><span>워게임</span><span class="ia-sheet-file">wargame.html</span></a><a class="ia-sheet-link" href="clue.html"><span>3단서 추리</span><span class="ia-sheet-file">clue.html</span></a><a class="ia-sheet-link" href="mystery90.html"><span>90초 추리</span><span class="ia-sheet-file">mystery90.html</span></a><a class="ia-sheet-link" href="mission.html"><span>퇴근길 미션</span><span class="ia-sheet-file">mission.html</span></a><a class="ia-sheet-link" href="chart.html"><span>차트 추리실</span><span class="ia-sheet-file">chart.html</span></a><a class="ia-sheet-link" href="subway.html"><span>지하철역 맞히기</span><span class="ia-sheet-file">subway.html</span></a></div><p class="ia-sheet-sub">미니게임</p><div class="ia-sheet-links"><a class="ia-sheet-link" href="arcade.html"><span>아케이드</span><span class="ia-sheet-file">arcade.html</span></a><a class="ia-sheet-link" href="ops.html"><span>60초 관제실</span><span class="ia-sheet-file">ops.html</span></a><a class="ia-sheet-link" href="seat.html"><span>막차 자리 배치</span><span class="ia-sheet-file">seat.html</span></a><a class="ia-sheet-link" href="load.html"><span>한 번 더 싣기</span><span class="ia-sheet-file">load.html</span></a><a class="ia-sheet-link" href="hangul.html"><span>한글 한 칸</span><span class="ia-sheet-file">hangul.html</span></a></div></div></section><script id="ia-shell-script">
 (function () {
   'use strict';
 

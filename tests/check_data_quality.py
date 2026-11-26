@@ -14,6 +14,7 @@
        · tests/test_job_dedup.py · tests/test_job_dedup_active.py · tests/test_location_normalize.py
        · tests/test_experience_normalize.py (경력 정규화·현황 바·경력 필터)
        · tests/test_chart_synthetic.py (차트 추리실 합성 OHLCV·정답·해설 무결성)
+       · tests/test_security_reference.py (점검 백과사전 12항목·샘플 위생·tools 상호 링크)
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
        - meta.total 과 실제 건수 불일치
@@ -174,7 +175,8 @@ def run_unit_tests():
                "tests/test_wargame_rotate.py", "tests/test_wargame_spread.py",
                "tests/test_job_dedup.py", "tests/test_job_dedup_active.py",
                "tests/test_location_normalize.py", "tests/test_experience_normalize.py",
-               "tests/test_chart_synthetic.py"]
+               "tests/test_chart_synthetic.py",
+               "tests/test_security_reference.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)
         if not os.path.exists(path):
@@ -491,6 +493,25 @@ def check_pages():
         else:
             check("market.html 데이터 블록", False, 'id="mkData" 파싱 실패')
 
+    # 점검 백과사전: security_reference_data.json 과 security-reference.html 의 항목 목록이 같은지
+    reference = load_json("security_reference_data.json")
+    if isinstance(reference, dict):
+        embedded = embedded_json("security-reference.html", 'id="srData">')
+        if isinstance(embedded, dict):
+            ids = [item.get("id") for item in reference.get("items") or []]
+            check("security-reference.html 항목 수", embedded.get("total") == len(ids),
+                  "%s vs %s" % (embedded.get("total"), len(ids)))
+            check("security-reference.html ID 일치", embedded.get("ids") == ids,
+                  "ID 집합 불일치")
+            check("security-reference.html 분야 일치",
+                  [c.get("key") for c in embedded.get("categories") or []]
+                  == [c.get("key") for c in reference.get("categories") or []])
+        else:
+            check("security-reference.html 데이터 블록", False, "id=srData 파싱 실패")
+        src = open(os.path.join(BASE_DIR, "security-reference.html"), encoding="utf-8").read()
+        check("security-reference.html 카드 수", src.count('class="sr-item"') == len(ids),
+              src.count('class="sr-item"'))
+
     # 옷차림·오늘 뭐 먹지: 카드 수 = 데이터 수
     outfit_cards = count_articles("outfit.html", "outfit-card")
     check("outfit.html 코디 카드", outfit_cards == 24, "%s개" % outfit_cards)
@@ -730,6 +751,22 @@ def check_db():
         conn.close()
 
 
+def check_security_reference():
+    """점검 백과사전의 분야·항목 구성이 데이터 정의와 같은지 한 번 더 확인한다."""
+    data = load_json("security_reference_data.json")
+    if not isinstance(data, dict):
+        return
+    cats = [c.get("key") for c in data.get("categories") or []]
+    items = data.get("items") or []
+    check("점검 백과사전 분야 6개", len(cats) == 6, len(cats))
+    check("점검 백과사전 항목 12개", len(items) == 12, len(items))
+    per_cat = {key: sum(1 for item in items if item.get("category") == key) for key in cats}
+    check("점검 백과사전 분야별 2개", all(v == 2 for v in per_cat.values()), per_cat)
+    check("점검 백과사전 영향 등급",
+          all(item.get("impact") in {"로컬 파일 읽기", "네트워크 요청", "별도 변경 승인 필요"}
+              for item in items))
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="수집 데이터 품질 검증")
     parser.add_argument("--skip-unit-tests", action="store_true", help="퍼즐·워게임 회귀 테스트 생략")
@@ -753,6 +790,7 @@ def main(argv=None):
 
     print("[3/4] HTML ↔ 데이터 정합성(빌드 누락)")
     check_pages()
+    check_security_reference()
 
     check_today()
 

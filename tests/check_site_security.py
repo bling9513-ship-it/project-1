@@ -13,8 +13,8 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ("today", "index", "study", "ai", "cve", "market", "wargame", "tools", "radar", "outfit", "pick", "clue", "mission", "chart", "ops", "seat", "load", "arcade", "hangul", "cards", "wash", "recycle", "food", "grocery", "paymeter", "subway", "basket", "mystery90", "movein", "nearby")
-assert len(PAGES) == 30, "페이지 수(30)와 PAGES 목록이 어긋났습니다: %d" % len(PAGES)
+PAGES = ("today", "index", "study", "ai", "cve", "market", "wargame", "tools", "security-reference", "radar", "outfit", "pick", "clue", "mission", "chart", "ops", "seat", "load", "arcade", "hangul", "cards", "wash", "recycle", "food", "grocery", "paymeter", "subway", "basket", "mystery90", "movein", "nearby")
+assert len(PAGES) == 31, "페이지 수(31)와 PAGES 목록이 어긋났습니다: %d" % len(PAGES)
 PRETENDARD = "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
 PRETENDARD_SRI = "sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg"
 SCRIPT_TYPES = {"", "module", "text/javascript", "application/javascript",

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Infosec Archive 공통 UI 셸(내비게이션·모바일 하단 탭 바·전체 메뉴 시트).
 
-30개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
+31개 페이지 빌더가 각자 복사해 두던 상단 내비게이션을 한 곳에서 만든다.
 빌더는 페이지 HTML 을 완성한 뒤 `apply(html, page_key)` 를 한 번 통과시키고,
 그 결과를 `harden_html()` 에 넘긴다(CSP 해시는 harden 단계에서 다시 계산된다).
 
@@ -25,6 +25,7 @@ PAGES = [
     ("ai", "ai.html", "AI 트렌드", "AI 트렌드"),
     ("cve", "cve.html", "CVE 리포트", "CVE 리포트"),
     ("tools", "tools.html", "실무 유틸", "실무 유틸"),
+    ("reference", "security-reference.html", "점검 백과사전", "점검 백과"),
     ("radar", "radar.html", "피싱 레이더", "피싱 레이더"),
     ("outfit", "outfit.html", "옷차림", "옷차림"),
     ("pick", "pick.html", "오늘 뭐 먹지", "오늘 뭐 먹지"),
@@ -71,14 +72,14 @@ DAILY_KEYS = ["outfit", "pick", "grocery", "basket", "paymeter", "movein", "near
 # 데스크톱 드롭다운과 모바일 시트가 같은 분류를 쓴다.
 GROUPS = [
     ("보안·채용", ["index", "study"]),
-    ("브리핑·유틸", ["today", "market", "ai", "cve", "tools", "radar"]),
+    ("브리핑·유틸", ["today", "market", "ai", "cve", "tools", "reference", "radar"]),
     ("데일리·생활", DAILY_KEYS),
     ("게임", GAME_GROUPS),
 ]
 
 # 데스크톱 내비게이션의 드롭다운 그룹(대표 메뉴 3개)
 DESKTOP_DROPDOWNS = [
-    ("브리핑·트렌드", ["today", "market", "ai", "cve", "tools", "radar"]),
+    ("브리핑·트렌드", ["today", "market", "ai", "cve", "tools", "reference", "radar"]),
     ("데일리·생활", DAILY_KEYS),
     ("게임", GAME_GROUPS),
 ]
@@ -87,7 +88,7 @@ DESKTOP_DROPDOWNS = [
 MOBILE_TABS = [
     ("jobs", "채용", "index.html", ["index"], "briefcase"),
     ("study", "학습", "study.html", ["study"], "book"),
-    ("brief", "브리핑", "today.html", ["today", "market", "ai", "cve", "tools", "radar"], "chart"),
+    ("brief", "브리핑", "today.html", ["today", "market", "ai", "cve", "tools", "reference", "radar"], "chart"),
     # href 가 None 이면 이동 대신 전체 시트의 게임 목록을 열어 준다.
     ("game", "게임", None, ["wargame", "clue", "mystery90", "mission", "chart", "subway", "ops", "seat", "load", "arcade", "hangul"], "game"),
 ]

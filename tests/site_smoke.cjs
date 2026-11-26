@@ -4,10 +4,10 @@ const path = require('node:path');
 const fs = require('node:fs');
 const { chromium } = require('playwright');
 
-const pages = ['today', 'index', 'study', 'ai', 'cve', 'market', 'wargame', 'tools', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food', 'grocery', 'paymeter', 'subway', 'basket', 'mystery90', 'movein', 'nearby'];
+const pages = ['today', 'index', 'study', 'ai', 'cve', 'market', 'wargame', 'tools', 'security-reference', 'radar', 'outfit', 'pick', 'clue', 'mission', 'chart', 'ops', 'seat', 'load', 'arcade', 'hangul', 'cards', 'wash', 'recycle', 'food', 'grocery', 'paymeter', 'subway', 'basket', 'mystery90', 'movein', 'nearby'];
 const root = path.join(__dirname, '..');
 
-const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'market.html', 'tools.html', 'radar.html',
+const SHELL_HREFS = ['today.html', 'index.html', 'study.html', 'ai.html', 'cve.html', 'market.html', 'tools.html', 'security-reference.html', 'radar.html',
   'outfit.html', 'pick.html', 'wargame.html', 'clue.html', 'mission.html', 'chart.html', 'ops.html',
   'seat.html', 'load.html', 'arcade.html', 'hangul.html', 'cards.html', 'wash.html', 'recycle.html', 'food.html', 'grocery.html',
   'paymeter.html', 'subway.html', 'basket.html',
@@ -6984,6 +6984,7 @@ async function checkPage(context, base, name, width) {  const page = await conte
     if (name === 'market') await checkMarket(page, width);
     if (name === 'outfit') await checkOutfit(page, width);
     if (name === 'pick') await checkPick(page, width);
+    if (name === 'security-reference') await checkSecurityReference(page, width);
     if (name === 'today') await checkToday(page, width, `today ${width}px`);
     if (name === 'today' && (width === 390 || width === 1280)) await checkTodayStudyQueue(page, `today queue ${width}px`);
 
@@ -7004,6 +7005,191 @@ async function checkPage(context, base, name, width) {  const page = await conte
     throw new Error(`${name} ${width}px: ${error.message}`, { cause: error });
   } finally {
     await page.close();
+  }
+}
+
+
+// ---- 점검 백과사전: 좌측 레일(PC) / 검색·분야 칩(모바일) · 딥링크 · 복사 ----
+async function checkSecurityReference(page, width) {
+  const tag = `reference ${width}px`;
+  const state = await page.evaluate(() => {
+    const rail = document.querySelector('.sr-rail');
+    const toolbar = document.querySelector('.sr-toolbar');
+    return {
+      items: document.querySelectorAll('.sr-item').length,
+      rail: rail ? getComputedStyle(rail).display : 'none',
+      toolbar: toolbar ? getComputedStyle(toolbar).display : 'none',
+      railLinks: document.querySelectorAll('.sr-tree-link').length,
+      cmds: document.querySelectorAll('.sr-cmd').length,
+      copies: document.querySelectorAll('.sr-cmd-copy').length,
+      chips: document.querySelectorAll('#srToolbar .sr-chip').length,
+      docs: document.querySelectorAll('.sr-doc-link').length,
+      count: (document.getElementById('srCount') || {}).textContent || '',
+      cats: document.querySelectorAll('.sr-cat').length,
+    };
+  });
+  assert.equal(state.items, 12, `${tag}: items ${state.items}`);
+  assert.equal(state.railLinks, 12, `${tag}: rail links ${state.railLinks}`);
+  assert.equal(state.cats, 6, `${tag}: categories ${state.cats}`);
+  assert.equal(state.copies, state.cmds, `${tag}: copy buttons ${state.copies}/${state.cmds}`);
+  assert.ok(state.cmds >= 60, `${tag}: commands ${state.cmds}`);
+  assert.equal(state.chips, 7, `${tag}: chips ${state.chips}`);
+  assert.ok(state.docs >= 30, `${tag}: doc links ${state.docs}`);
+  assert.ok(state.count.startsWith('12개 항목'), `${tag}: count ${state.count}`);
+
+  if (width >= 1024) {
+    assert.equal(state.rail, 'block', `${tag}: desktop rail must be visible`);
+    assert.equal(state.toolbar, 'none', `${tag}: search bar must be mobile only`);
+    await page.click('.sr-tree-link[data-target="pcap-tcpdump"]');
+    await page.waitForTimeout(260);
+    const jump = await page.evaluate(() => ({
+      hash: location.hash,
+      top: document.getElementById('pcap-tcpdump').getBoundingClientRect().top,
+      active: document.querySelector('.sr-tree-link.is-active')
+        ? document.querySelector('.sr-tree-link.is-active').getAttribute('data-target') : null,
+      focus: document.activeElement ? document.activeElement.className : '',
+    }));
+    assert.equal(jump.hash, '#pcap-tcpdump', `${tag}: rail click must update the hash`);
+    assert.ok(jump.top >= 0 && jump.top < 200, `${tag}: rail click scroll top ${jump.top}`);
+    assert.equal(jump.active, 'pcap-tcpdump', `${tag}: active rail item ${jump.active}`);
+    assert.equal(jump.focus, 'sr-item-title', `${tag}: focus ${jump.focus}`);
+    await page.evaluate(() => { history.replaceState(null, '', location.pathname); window.scrollTo(0, 0); });
+    return;
+  }
+
+  assert.equal(state.rail, 'none', `${tag}: rail must be hidden on mobile`);
+  assert.equal(state.toolbar, 'block', `${tag}: search bar must be visible`);
+
+  if (width !== 390 && width !== 320) return;
+  await page.fill('#srSearch', 'openssl');
+  await page.waitForTimeout(160);
+  const found = await page.evaluate(() => ({
+    ids: Array.from(document.querySelectorAll('.sr-item')).filter((el) => !el.hidden).map((el) => el.id),
+    count: document.getElementById('srCount').textContent,
+    hiddenCats: Array.from(document.querySelectorAll('.sr-cat')).filter((el) => el.hidden).length,
+  }));
+  assert.deepEqual(found.ids, ['tls-openssl'], `${tag}: search result ${found.ids}`);
+  assert.ok(found.count.startsWith('1개 항목'), `${tag}: search count ${found.count}`);
+  assert.equal(found.hiddenCats, 5, `${tag}: empty categories must collapse (${found.hiddenCats})`);
+
+  await page.fill('#srSearch', 'no-such-tool-zzz');
+  await page.waitForTimeout(160);
+  const emptyState = await page.evaluate(() => ({
+    empty: !document.getElementById('srEmpty').hidden,
+    count: document.getElementById('srCount').textContent,
+  }));
+  assert.equal(emptyState.empty, true, `${tag}: empty state must show`);
+  assert.ok(emptyState.count.startsWith('0개 항목'), `${tag}: empty count ${emptyState.count}`);
+
+  await page.click('#srSearchClear');
+  await page.waitForTimeout(160);
+  await page.click('.sr-chip[data-cat="packet"]');
+  await page.waitForTimeout(160);
+  const filtered = await page.evaluate(() => ({
+    ids: Array.from(document.querySelectorAll('.sr-item')).filter((el) => !el.hidden).map((el) => el.id),
+    count: document.getElementById('srCount').textContent,
+    pressed: document.querySelector('.sr-chip[data-cat="packet"]').getAttribute('aria-pressed'),
+  }));
+  assert.deepEqual(filtered.ids, ['pcap-tshark', 'pcap-tcpdump'], `${tag}: category filter ${filtered.ids}`);
+  assert.ok(filtered.count.indexOf('패킷') !== -1, `${tag}: count must name the category (${filtered.count})`);
+  assert.equal(filtered.pressed, 'true', `${tag}: aria-pressed`);
+  await page.click('.sr-chip[data-cat="all"]');
+  await page.waitForTimeout(160);
+  const restored = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.sr-item')).filter((el) => !el.hidden).length);
+  assert.equal(restored, 12, `${tag}: all filter restores ${restored}`);
+}
+
+async function checkReferenceDeepLink(browser, base) {
+  const tag = 'reference deep link';
+  for (const [width, id] of [[1280, 'os-ad-logs'], [390, 'web-security-headers']]) {
+    const context = await browser.newContext({ viewport: { width, height: 900 } });
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    try {
+      await page.goto(`${base}/security-reference.html#${id}`, { waitUntil: 'load' });
+      await page.waitForTimeout(300);
+      const state = await page.evaluate((target) => ({
+        hash: location.hash,
+        top: document.getElementById(target).getBoundingClientRect().top,
+        visible: !document.getElementById(target).hidden,
+        active: document.querySelector('.sr-tree-link.is-active')
+          ? document.querySelector('.sr-tree-link.is-active').getAttribute('data-target') : null,
+        title: document.querySelector('.sr-item-title').textContent.trim(),
+      }), id);
+      assert.equal(state.hash, '#' + id, `${tag} ${width}px: hash ${state.hash}`);
+      assert.equal(state.visible, true, `${tag} ${width}px: item hidden`);
+      assert.ok(state.top >= 0 && state.top < 260, `${tag} ${width}px: item top ${state.top}`);
+      assert.equal(state.active, id, `${tag} ${width}px: active ${state.active}`);
+      assert.ok(state.title.length > 0, `${tag} ${width}px: first title missing`);
+      assert.deepEqual(errors, [], `${tag} ${width}px: browser errors`);
+      console.log(`${tag} ${width}px passed`);
+    } finally {
+      await context.close();
+    }
+  }
+}
+
+async function checkReferenceCopy(browser, base) {
+  const tag = 'reference copy';
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    permissions: ['clipboard-read', 'clipboard-write'],
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/security-reference.html#net-asset-inventory`, { waitUntil: 'load' });
+    const cmdButton = page.locator('#net-asset-inventory .sr-cmd-copy').first();
+    const expected = await page.locator('#net-asset-inventory .sr-cmd pre').first().textContent();
+    await cmdButton.click();
+    await page.waitForTimeout(200);
+    const state = await page.evaluate(() => ({
+      label: document.querySelector('#net-asset-inventory .sr-cmd-copy').dataset.state,
+      copied: window.__srCopied,
+      clip: null,
+    }));
+    assert.equal(state.label, 'done', `${tag}: copy button state ${state.label}`);
+    assert.equal(state.copied, expected, `${tag}: copied text mismatch`);
+    const clip = await page.evaluate(() => navigator.clipboard.readText());
+    assert.equal(clip, expected, `${tag}: clipboard content mismatch`);
+    await page.evaluate(() => { window.scrollTo(0, 0); });
+
+    const linkButton = page.locator('#net-asset-inventory [data-copy-link]').first();
+    await linkButton.click();
+    await page.waitForTimeout(200);
+    const linkClip = await page.evaluate(() => navigator.clipboard.readText());
+    assert.ok(linkClip.endsWith('/security-reference.html#net-asset-inventory'),
+      `${tag}: link copy ${linkClip}`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
+// tools.html 의 '백과사전에서 보기' 링크가 해시로 들어왔을 때(모바일은 치트시트 보기 전환) 동작
+async function checkToolsReferenceHash(browser, base, width) {
+  const tag = `tools reference hash ${width}px`;
+  const context = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/tools.html#cheat-14`, { waitUntil: 'load' });
+    await page.waitForTimeout(500);
+    const state = await page.evaluate(() => ({
+      cheatVisible: !document.getElementById('tlViewCheat').hidden,
+      top: document.getElementById('cheat-14').getBoundingClientRect().top,
+      focus: document.getElementById('cheat-14').className,
+      ref: document.querySelector('#cheat-14 .cheat-ref').getAttribute('href'),
+      box: document.getElementById('cheat-14').getBoundingClientRect().height,
+    }));
+    assert.equal(state.cheatVisible, true, `${tag}: cheat view must be visible`);
+    assert.ok(state.top >= 54 && state.top < 320, `${tag}: card top ${state.top}`);
+    assert.ok(state.box > 40, `${tag}: card height ${state.box}`);
+    assert.ok(state.focus.indexOf('is-focus') !== -1, `${tag}: card not highlighted (${state.focus})`);
+    assert.equal(state.ref, 'security-reference.html#web-security-headers', `${tag}: back link ${state.ref}`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
   }
 }
 
@@ -7425,6 +7611,10 @@ async function runExtras(browser, base) {
     await checkGameTabSheet(browser, base, 390);
     await checkGroceryStale(browser, base);
     await checkMonetization(browser, base);
+    await checkReferenceDeepLink(browser, base);
+    await checkReferenceCopy(browser, base);
+    await checkToolsReferenceHash(browser, base, 390);
+    await checkToolsReferenceHash(browser, base, 1280);
 }
 
 async function main() {
@@ -7499,6 +7689,7 @@ async function main() {
           if (name === 'wash') await checkWashLayout(page, width);
           if (name === 'recycle') await checkRecycleLayout(page, width);
           if (name === 'food') await checkFoodLayout(page, width);
+          if (name === 'security-reference') await checkSecurityReference(page, width);
         } finally {
           await page.close();
         }
