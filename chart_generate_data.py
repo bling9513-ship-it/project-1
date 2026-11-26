@@ -378,24 +378,25 @@ def pattern_evidence(pattern, bars, split):
     highs = [b[2] for b in visible]
     lows = [b[3] for b in visible]
     if pattern == PATTERN_POOL[0]:
-        return ("보이는 구간은 20봉선(%s)이 60봉선(%s) 위에 있고, 최근 10봉의 고점 %s와 저점 %s는 "
+        return ("보이는 구간은 20봉선(%s)이 60봉선(%s) 위에 있고, 최근 10봉의 고점(%s)과 저점(%s)은 "
                 "그 앞 구간(고점 %s · 저점 %s)보다 높아진 모습입니다"
                 % (_px(m["ma20"]), _px(m["ma60"]), _px(max(highs[-10:])), _px(min(lows[-10:])),
                    _px(max(highs[-30:-10])), _px(min(lows[-30:-10]))))
     if pattern == PATTERN_POOL[2]:
-        return ("보이는 구간의 박스 상단은 %s이고, 마지막 5봉에서 종가는 %s까지 올라 박스를 넘어섰습니다. "
+        return ("보이는 구간의 박스 상단(%s)을 마지막 5봉에서 종가가 %s까지 올라 넘어섰습니다. "
                 "이때 거래량은 앞 20봉 평균의 %.1f배입니다" % (_px(m["box_high"]), _px(m["last"]), m["vol_ratio"]))
     if pattern == PATTERN_POOL[3]:
-        return ("보이는 구간에서 종가가 직전 고점 %s을 넘어섰지만, 마지막 종가는 %s로 고점 %s보다 %.1f%% 낮습니다"
+        return ("보이는 구간에서 종가가 직전 고점(%s)을 넘어섰지만, 마지막 종가는 %s까지 밀렸습니다. "
+                "구간 최고가(%s)보다 %.1f%% 낮은 수준입니다"
                 % (_px(m["prior_high"]), _px(m["last"]), _px(m["high"]), (1 - m["last"] / m["high"]) * 100))
     if pattern == PATTERN_POOL[4]:
         return ("보이는 구간에서 저점은 %s, %s 두 곳에서 같은 가격대를 지켰고, 마지막 종가는 %s입니다"
                 % (_px(m["low_a"]), _px(m["low_b"]), _px(m["last"])))
     if pattern == PATTERN_POOL[5]:
-        return ("보이는 구간에서 고점 %s 부근에서 두 번 밀렸고, 마지막 종가는 %s로 고점보다 %.1f%% 낮습니다"
+        return ("보이는 구간에서 고점(%s) 부근에서 두 번 밀렸고, 마지막 종가는 %s까지 내려와 고점보다 %.1f%% 낮습니다"
                 % (_px(m["high"]), _px(m["last"]), (1 - m["last"] / m["high"]) * 100))
     if pattern == PATTERN_POOL[7]:
-        return ("마지막 봉은 거래량이 앞 20봉 평균의 %.1f배로 폭증한 가운데 시가 %s에서 %s로 밀린 음봉이었습니다"
+        return ("마지막 봉은 거래량이 앞 20봉 평균의 %.1f배로 폭증한 가운데 시가 %s에서 %s까지 밀린 음봉이었습니다"
                 % (m["vol_ratio"], _px(visible[-1][1]), _px(visible[-1][4])))
     raise AssertionError("설명 문구가 없는 패턴: %s" % pattern)
 
@@ -439,15 +440,16 @@ def build_explanation(spec, bars, split, pattern=None):
     parts = []
     if pattern:
         parts.append(pattern_evidence(pattern, bars, split) + ".")
-    move = "올랐습니다" if ret >= 2 else ("내렸습니다" if ret <= -2 else "제자리였습니다")
-    if pattern:
-        parts.append("가려진 %d봉 동안 종가는 %s에서 %s로 %.1f%% %s. 이 구간 고가는 %s, 저가는 %s입니다."
-                     % (len(hidden), _px(start_close), _px(end_close), abs(ret), move,
-                        _px(max(b[2] for b in hidden)), _px(min(b[3] for b in hidden))))
+    if ret >= 2:
+        move = "올라 %.1f%% 상승했습니다" % abs(ret)
+    elif ret <= -2:
+        move = "내려 %.1f%% 하락했습니다" % abs(ret)
     else:
-        parts.append("가려진 %d봉 동안 종가는 %s에서 %s로 %.1f%% %s(정답 구간: %s). 이 구간 고가는 %s, 저가는 %s입니다."
-                     % (len(hidden), _px(start_close), _px(end_close), abs(ret), move, band_label,
-                        _px(max(b[2] for b in hidden)), _px(min(b[3] for b in hidden))))
+        move = "제자리였습니다(%.1f%%)" % abs(ret)
+    band_note = "" if pattern else " (정답 구간: %s)" % band_label
+    parts.append("가려진 %d봉 동안 종가는 %s에서 %s까지 %s%s. 이 구간 고가는 %s, 저가는 %s입니다."
+                 % (len(hidden), _px(start_close), _px(end_close), move, band_note,
+                    _px(max(b[2] for b in hidden)), _px(min(b[3] for b in hidden))))
     m = pattern_metrics(bars, split)
     signal = []
     if not (pattern and "거래량" in pattern_evidence(pattern, bars, split)):
