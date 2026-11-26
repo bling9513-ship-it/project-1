@@ -624,7 +624,9 @@ def band_for(temp):
     for b in BANDS:
         if b["min"] <= temp <= b["max"]:
             return b
-    return BANDS[-1] if temp > 60 else BANDS[0]
+    # 구간 사이 빈틈(예: 8.3°C — 5~8 다음이 9~11)은 가장 가까운 구간으로 붙인다.
+    # 예전에는 빈틈이면 무조건 BANDS[0](4°C 이하 한파)로 떨어져 8°C 아침에 한파 코디가 추천됐다.
+    return min(BANDS, key=lambda b: min(abs(temp - b["min"]), abs(temp - b["max"])))
 
 
 def weather_icon_name(cond, pop=None):

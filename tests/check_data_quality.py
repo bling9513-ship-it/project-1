@@ -176,6 +176,7 @@ def run_unit_tests():
                "tests/test_job_dedup.py", "tests/test_job_dedup_active.py",
                "tests/test_location_normalize.py", "tests/test_experience_normalize.py",
                "tests/test_chart_synthetic.py",
+               "tests/test_outfit_band.py",
                "tests/test_security_reference.py"]
     for script in scripts:
         path = os.path.join(BASE_DIR, script)
