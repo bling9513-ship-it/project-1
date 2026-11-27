@@ -7243,6 +7243,7 @@ async function checkReferenceTextIntegrity(browser, base) {
         safeText: safePre ? safePre.textContent : '',
         safeElements: safePre ? safePre.querySelectorAll('*').length : -1,
         blockText: blockPre ? blockPre.textContent : '',
+        articleText: article.textContent,
         commandTexts,
         commandCopies: article.querySelectorAll('.sr-cmd .sr-cmd-copy').length,
       };
@@ -7268,7 +7269,9 @@ async function checkReferenceTextIntegrity(browser, base) {
     assert.ok(state.safeText.includes('"code"'), `${tag}: harmless quote text missing`);
     assert.ok(state.safeText.includes('&'), `${tag}: harmless ampersand text missing`);
     assert.equal(state.safeElements, 0, `${tag}: mock text must not create elements (${state.safeElements})`);
-    assert.ok(state.blockText.includes("'WAF만 막고 코드는 취약'"), `${tag}: harmless single quote text missing`);
+    assert.ok(state.articleText.includes("'WAF만 막고 코드는 취약'"), `${tag}: harmless single quote text missing`);
+    assert.ok(state.blockText.includes('action=block') && state.blockText.includes('action=DENY') === false,
+      `${tag}: block log text ${state.blockText.slice(0, 40)}`);
     // 확인 절차는 저장된 결과·로그를 읽는 명령만 둔다.
     assert.equal(state.commandTexts.length, 5, `${tag}: probe commands ${state.commandTexts.length}`);
     state.commandTexts.forEach((cmd) => {
