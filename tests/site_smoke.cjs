@@ -7022,20 +7022,22 @@ async function checkSecurityReference(page, width) {
       railLinks: document.querySelectorAll('.sr-tree-link').length,
       cmds: document.querySelectorAll('.sr-cmd').length,
       copies: document.querySelectorAll('.sr-cmd-copy').length,
+      patterns: document.querySelectorAll('.sr-pattern-table .sr-cmd-copy').length,
       chips: document.querySelectorAll('#srToolbar .sr-chip').length,
       docs: document.querySelectorAll('.sr-doc-link').length,
       count: (document.getElementById('srCount') || {}).textContent || '',
       cats: document.querySelectorAll('.sr-cat').length,
     };
   });
-  assert.equal(state.items, 12, `${tag}: items ${state.items}`);
-  assert.equal(state.railLinks, 12, `${tag}: rail links ${state.railLinks}`);
-  assert.equal(state.cats, 6, `${tag}: categories ${state.cats}`);
-  assert.equal(state.copies, state.cmds, `${tag}: copy buttons ${state.copies}/${state.cmds}`);
-  assert.ok(state.cmds >= 60, `${tag}: commands ${state.cmds}`);
-  assert.equal(state.chips, 7, `${tag}: chips ${state.chips}`);
-  assert.ok(state.docs >= 30, `${tag}: doc links ${state.docs}`);
-  assert.ok(state.count.startsWith('12개 항목'), `${tag}: count ${state.count}`);
+  assert.equal(state.items, 22, `${tag}: items ${state.items}`);
+  assert.equal(state.railLinks, 22, `${tag}: rail links ${state.railLinks}`);
+  assert.equal(state.cats, 8, `${tag}: categories ${state.cats}`);
+  assert.equal(state.copies, state.cmds + state.patterns, `${tag}: copy buttons ${state.copies}/${state.cmds + state.patterns}`);
+  assert.ok(state.cmds >= 120, `${tag}: commands ${state.cmds}`);
+  assert.ok(state.patterns >= 15, `${tag}: pattern copies ${state.patterns}`);
+  assert.equal(state.chips, 9, `${tag}: chips ${state.chips}`);
+  assert.ok(state.docs >= 55, `${tag}: doc links ${state.docs}`);
+  assert.ok(state.count.startsWith('22개 항목'), `${tag}: count ${state.count}`);
 
   if (width >= 1024) {
     assert.equal(state.rail, 'block', `${tag}: desktop rail must be visible`);
@@ -7061,16 +7063,16 @@ async function checkSecurityReference(page, width) {
   assert.equal(state.toolbar, 'block', `${tag}: search bar must be visible`);
 
   if (width !== 390 && width !== 320) return;
-  await page.fill('#srSearch', 'openssl');
+  await page.fill('#srSearch', 'xmlstarlet');
   await page.waitForTimeout(160);
   const found = await page.evaluate(() => ({
     ids: Array.from(document.querySelectorAll('.sr-item')).filter((el) => !el.hidden).map((el) => el.id),
     count: document.getElementById('srCount').textContent,
     hiddenCats: Array.from(document.querySelectorAll('.sr-cat')).filter((el) => el.hidden).length,
   }));
-  assert.deepEqual(found.ids, ['tls-openssl'], `${tag}: search result ${found.ids}`);
+  assert.deepEqual(found.ids, ['net-nmap-output'], `${tag}: search result ${found.ids}`);
   assert.ok(found.count.startsWith('1개 항목'), `${tag}: search count ${found.count}`);
-  assert.equal(found.hiddenCats, 5, `${tag}: empty categories must collapse (${found.hiddenCats})`);
+  assert.equal(found.hiddenCats, 7, `${tag}: empty categories must collapse (${found.hiddenCats})`);
 
   await page.fill('#srSearch', 'no-such-tool-zzz');
   await page.waitForTimeout(160);
@@ -7097,7 +7099,7 @@ async function checkSecurityReference(page, width) {
   await page.waitForTimeout(160);
   const restored = await page.evaluate(() =>
     Array.from(document.querySelectorAll('.sr-item')).filter((el) => !el.hidden).length);
-  assert.equal(restored, 12, `${tag}: all filter restores ${restored}`);
+  assert.equal(restored, 22, `${tag}: all filter restores ${restored}`);
 }
 
 async function checkReferenceDeepLink(browser, base) {
@@ -7161,6 +7163,100 @@ async function checkReferenceCopy(browser, base) {
     const linkClip = await page.evaluate(() => navigator.clipboard.readText());
     assert.ok(linkClip.endsWith('/security-reference.html#net-asset-inventory'),
       `${tag}: link copy ${linkClip}`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 점검 백과사전: 좌측 목차의 보조키 클릭은 브라우저 기본 새 탭 동작에 맡긴다 ----
+async function checkReferenceModifierClick(browser, base) {
+  const tag = 'reference modifier click';
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${base}/security-reference.html`, { waitUntil: 'load' });
+    const link = page.locator('.sr-tree-link[data-target="oss-nuclei"]');
+    assert.equal(await link.getAttribute('href'), '#oss-nuclei', `${tag}: rail href`);
+    const urlBefore = page.url();
+    const [popup] = await Promise.all([
+      context.waitForEvent('page'),
+      link.click({ modifiers: ['Control'] }),
+    ]);
+    await popup.waitForLoadState('load');
+    assert.ok(popup.url().endsWith('/security-reference.html#oss-nuclei'),
+      `${tag}: ctrl+click must open the hash link in a new tab (${popup.url()})`);
+    await popup.close();
+    assert.equal(page.url(), urlBefore, `${tag}: original tab url must not change`);
+    const afterCtrl = await page.evaluate(() => location.hash);
+    assert.equal(afterCtrl, '', `${tag}: ctrl+click must not rewrite the hash (${afterCtrl})`);
+
+    // 보조키 없는 클릭은 기존처럼 같은 탭에서 해시 이동·스크롤한다.
+    await link.click();
+    await page.waitForTimeout(280);
+    const plain = await page.evaluate(() => ({
+      hash: location.hash,
+      top: document.getElementById('oss-nuclei').getBoundingClientRect().top,
+    }));
+    assert.equal(plain.hash, '#oss-nuclei', `${tag}: plain click hash ${plain.hash}`);
+    assert.ok(plain.top >= 0 && plain.top < 220, `${tag}: plain click scroll ${plain.top}`);
+    console.log(`${tag} passed`);
+  } finally {
+    await context.close();
+  }
+}
+
+// ---- 점검 백과사전: 판별 패턴이 화면·클립보드에 텍스트로만 남고 DOM·요청을 만들지 않는다 ----
+async function checkReferenceTextIntegrity(browser, base) {
+  const tag = 'reference text integrity';
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    permissions: ['clipboard-read', 'clipboard-write'],
+  });
+  const page = await context.newPage();
+  const requests = [];
+  page.on('request', (request) => requests.push(request.url()));
+  try {
+    await page.goto(`${base}/security-reference.html#probe-input-validation`, { waitUntil: 'load' });
+    await page.waitForTimeout(200);
+    const state = await page.evaluate(() => {
+      const codes = Array.from(document.querySelectorAll('#probe-input-validation .sr-pattern-table code'));
+      const xss = codes.find((el) => el.textContent === '<script>alert(1)</script>') || null;
+      return {
+        scripts: document.querySelectorAll('script').length,
+        jsonBlocks: document.querySelectorAll('script[type="application/json"]').length,
+        alertScripts: Array.from(document.querySelectorAll('script'))
+          .filter((el) => ((el.textContent || '') + (el.src || '')).toLowerCase().includes('alert')).length,
+        payloadElements: document.querySelectorAll('script[src*="alert"], img[onerror], [onfocus], [autofocus]').length,
+        xssText: xss ? xss.textContent : null,
+        ssti: codes.some((el) => el.textContent === '{{7*7}}'),
+        rawTag: document.getElementById('probe-input-validation').innerHTML.includes('<script>alert(1)</script>'),
+      };
+    });
+    // 테마 초기화·JSON 데이터·페이지 스크립트·공통 셸 = 4개. 패턴 때문에 늘어나면 안 된다.
+    assert.equal(state.scripts, 4, `${tag}: script elements ${state.scripts}`);
+    assert.equal(state.jsonBlocks, 1, `${tag}: json data block ${state.jsonBlocks}`);
+    assert.equal(state.alertScripts, 0, `${tag}: payload became a script`);
+    assert.equal(state.payloadElements, 0, `${tag}: payload became an element`);
+    assert.equal(state.xssText, '<script>alert(1)</script>', `${tag}: pattern text ${state.xssText}`);
+    assert.equal(state.ssti, true, `${tag}: SSTI pattern text missing`);
+    assert.equal(state.rawTag, false, `${tag}: innerHTML must not contain a raw script tag`);
+
+    const codeId = await page.evaluate(() => {
+      const codes = Array.from(document.querySelectorAll('#probe-input-validation .sr-pattern-table code'));
+      const xss = codes.find((el) => el.textContent === '<script>alert(1)</script>');
+      return xss ? xss.id : null;
+    });
+    assert.ok(codeId, `${tag}: pattern code id missing`);
+    await page.click(`[data-copy-cmd="${codeId}"]`);
+    await page.waitForTimeout(200);
+    const clip = await page.evaluate(() => navigator.clipboard.readText());
+    assert.equal(clip, '<script>alert(1)</script>', `${tag}: clipboard text ${clip}`);
+    const copied = await page.evaluate(() => window.__srCopied);
+    assert.equal(copied, '<script>alert(1)</script>', `${tag}: copied state ${copied}`);
+
+    const leaked = requests.filter((url) => /alert\(1\)|169\.254|evil\.test/i.test(url));
+    assert.deepEqual(leaked, [], `${tag}: payload triggered a request`);
     console.log(`${tag} passed`);
   } finally {
     await context.close();
@@ -7613,6 +7709,8 @@ async function runExtras(browser, base) {
     await checkMonetization(browser, base);
     await checkReferenceDeepLink(browser, base);
     await checkReferenceCopy(browser, base);
+    await checkReferenceModifierClick(browser, base);
+    await checkReferenceTextIntegrity(browser, base);
     await checkToolsReferenceHash(browser, base, 390);
     await checkToolsReferenceHash(browser, base, 1280);
 }

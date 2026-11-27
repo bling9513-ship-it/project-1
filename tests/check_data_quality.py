@@ -14,7 +14,7 @@
        · tests/test_job_dedup.py · tests/test_job_dedup_active.py · tests/test_location_normalize.py
        · tests/test_experience_normalize.py (경력 정규화·현황 바·경력 필터)
        · tests/test_chart_synthetic.py (차트 추리실 합성 OHLCV·정답·해설 무결성)
-       · tests/test_security_reference.py (점검 백과사전 12항목·샘플 위생·tools 상호 링크)
+       · tests/test_security_reference.py (점검 백과사전 22항목·오픈소스 툴 7·판별 패턴 3·샘플 위생·tools 상호 링크)
   2) 커밋된 수집 결과(JSON) 무결성
        - 파싱 실패·필수 필드 누락·ID 중복·날짜 형식 오류·미래 시각
        - meta.total 과 실제 건수 불일치
@@ -759,10 +759,16 @@ def check_security_reference():
         return
     cats = [c.get("key") for c in data.get("categories") or []]
     items = data.get("items") or []
-    check("점검 백과사전 분야 6개", len(cats) == 6, len(cats))
-    check("점검 백과사전 항목 12개", len(items) == 12, len(items))
+    check("점검 백과사전 분야 8개", len(cats) == 8, len(cats))
+    check("점검 백과사전 항목 22개", len(items) == 22, len(items))
     per_cat = {key: sum(1 for item in items if item.get("category") == key) for key in cats}
-    check("점검 백과사전 분야별 2개", all(v == 2 for v in per_cat.values()), per_cat)
+    expected = {"asset": 2, "web": 2, "tls": 2, "packet": 2, "code": 2, "os": 2,
+                "osscan": 7, "probe": 3}
+    check("점검 백과사전 분야별 항목", per_cat == expected, per_cat)
+    check("점검 백과사전 오픈소스 툴",
+          sum(1 for item in items if item.get("category") == "osscan") == 7)
+    check("점검 백과사전 판별 패턴",
+          sum(1 for item in items if item.get("category") == "probe") == 3)
     check("점검 백과사전 영향 등급",
           all(item.get("impact") in {"로컬 파일 읽기", "네트워크 요청", "별도 변경 승인 필요"}
               for item in items))
