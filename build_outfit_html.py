@@ -1932,7 +1932,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     const OF = __OF_JSON__;
     const STYLE_LABEL = { all: '전체', office: '출근·오피스', casual: '캐주얼·데일리', outdoor: '운동·야외' };
     const isNarrow = function () { return window.matchMedia('(max-width: 1023px)').matches; };
-    const state = { season: 'all', band: isNarrow() ? TODAY_KEY : null, style: 'all' };
+    const state = { season: 'all', band: isNarrow() ? TODAY_KEY : null, style: 'all', auto: isNarrow() };
     // 지금 보고 있는 날씨(빌드 기본값 → Open-Meteo 실시간으로 갱신)
     const wxNow = {
       temp: WX_BUILD.now_temp, feels: WX_BUILD.now_feels, cond: WX_BUILD.now_cond,
@@ -1953,7 +1953,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       for (let i = 0; i < BANDS.length; i++) {
         if (t >= BANDS[i].min && t <= BANDS[i].max) return BANDS[i];
       }
-      return t > 60 ? BANDS[BANDS.length - 1] : BANDS[0];
+      // 구간 사이 빈틈(예: 8.3°C — 5~8 다음이 9~11)은 가장 가까운 구간으로 붙인다.
+      // 예전에는 빈틈이면 BANDS[0](한파)로 떨어져 '오늘 구간'이 한파로 계산됐다.
+      let best = BANDS[0];
+      let bestGap = Infinity;
+      BANDS.forEach(function (b) {
+        const gap = t < b.min ? b.min - t : (t > b.max ? t - b.max : 0);
+        if (gap < bestGap) { bestGap = gap; best = b; }
+      });
+      return best;
     }
 
     function bandByKey(k) { return BANDS.filter(b => b.key === k)[0] || null; }
@@ -2018,6 +2026,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     tempChips.forEach(chip => {
       chip.addEventListener('click', () => {
+        state.auto = false;
         if (!chip.dataset.band) {
           state.band = null;
           state.season = 'all';
@@ -2035,6 +2044,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     seasonTabs.forEach(tab => {
       tab.addEventListener('click', () => {
+        state.auto = false;
         state.season = tab.dataset.season;
         state.band = null;
         sliderValue.textContent = '전체 기온';
@@ -2053,6 +2063,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     slider.addEventListener('input', () => {
       const v = Number(slider.value);
       const b = bandForTemp(v);
+      state.auto = false;
       state.band = b.key;
       state.season = 'all';
       sliderValue.textContent = v + '°C · ' + b.name;
@@ -2061,6 +2072,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     document.getElementById('resetFilters').addEventListener('click', () => {
       state.season = 'all'; state.style = 'all';
+      state.auto = isNarrow();
       state.band = isNarrow() ? TODAY_KEY : null;
       const t = wxNow.temp;
       if (typeof t === 'number') slider.value = Math.min(35, Math.max(-10, Math.round(t)));
@@ -2078,6 +2090,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const todaySection = list ? list.querySelector('.band-section[data-band="' + b.key + '"]') : null;
       if (todaySection && list.firstElementChild !== todaySection) {
         list.insertBefore(todaySection, list.firstElementChild);
+      }
+      // 자동 모드(모바일의 '오늘만 보기')는 실시간 기온으로 오늘 구간이 바뀌면
+      // 필터도 같은 구간으로 따라가야 표시 구간과 is-today 표시가 어긋나지 않는다.
+      if (state.auto && state.band !== b.key) {
+        state.band = b.key;
+        apply();
       }
       const badge = document.getElementById('recBand');
       const label = document.getElementById('recLabel');
