@@ -2,7 +2,8 @@
 """보안 취약점 점검 도구 백과사전(security-reference.html) 빌더.
 
 데이터는 security_reference_data.json 하나만 고치면 된다(단일 소스).
-6개 분야 × 12개 항목을 '점검 목적 → 도구·옵션 → 결과 판독 → 조치·재점검' 순서로 읽히게
+8개 분야 × 22개 항목(기본 점검 6분야 12항목 · 오픈소스 점검 툴 7항목 · 진단 패턴·방어 검증 3항목)을
+'점검 목적 → 도구·옵션 → 결과 판독 → 조치·재점검' 순서로 읽히게
 정적 HTML 로 렌더링한다. 검색·분야 필터는 이미 렌더된 카드의 data 속성만 토글하므로
 CSP(인라인 이벤트 핸들러 금지) 아래에서도 동작하고, JS 가 없어도 전체 문서를 읽을 수 있다.
 
@@ -59,19 +60,32 @@ def impact_pill(value):
     )
 
 
+EXPECTED_PER_CAT = {
+    "asset": 2, "web": 2, "tls": 2, "packet": 2, "code": 2, "os": 2,
+    "osscan": 7, "probe": 3,
+}
+
+
 def load_data():
     with open(DATA_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    assert len(data["categories"]) == 6, "분야는 6개여야 합니다."
-    assert len(data["items"]) == 12, "항목은 12개여야 합니다."
+    assert len(data["categories"]) == 8, "분야는 8개여야 합니다."
+    assert len(data["items"]) == 22, "항목은 22개여야 합니다."
     ids = [item["id"] for item in data["items"]]
     assert len(ids) == len(set(ids)), "항목 ID 가 중복됩니다."
+    for cat in data["categories"]:
+        count = sum(1 for item in data["items"] if item["category"] == cat["key"])
+        assert count == EXPECTED_PER_CAT[cat["key"]], "%s 분야 항목 수: %d" % (cat["key"], count)
     for item in data["items"]:
         assert item["impact"] in IMPACTS, "알 수 없는 영향 등급: %s" % item["impact"]
         for cmd in item["commands"]:
             assert cmd["impact"] in IMPACTS, "알 수 없는 명령 영향 등급: %s" % cmd["impact"]
         for doc in item["docs"]:
             assert doc["url"].startswith("https://"), "공식 문서는 https 여야 합니다: %s" % doc["url"]
+        if item.get("patterns"):
+            assert item.get("mock") and item.get("block_log"), "%s: 판별 패턴에는 모의 응답·차단 로그가 필요합니다." % item["id"]
+        else:
+            assert item.get("sample"), "%s: 샘플 증적이 필요합니다." % item["id"]
     return data
 
 
@@ -610,6 +624,8 @@ CSS = """
       color: var(--text-primary);
       overflow-wrap: anywhere;
     }
+    /* 짧은 플래그가 줄 끝에서 쪼개지지 않게 한다(-rl → '-' + 'rl'). */
+    .sr-facts .sr-code, .sr-cmd-note .sr-code { white-space: nowrap; }
 
     /* ---------- 판독 ---------- */
     .sr-read {
@@ -659,6 +675,21 @@ CSS = """
       -webkit-overflow-scrolling: touch;
     }
     .sr-sample-cap { margin-top: 8px; font-size: 11.5px; line-height: 1.66; color: var(--text-secondary); overflow-wrap: anywhere; }
+
+    /* ---------- 판별 패턴 · 모의 응답 ---------- */
+    .sr-pattern-table td:first-child { min-width: 168px; }
+    .sr-pattern-table td:first-child code { white-space: normal; }
+    .sr-pat-cell { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .sr-pat-name { font-size: 11.5px; font-weight: 700; color: var(--text-primary); }
+    .sr-pat-code { display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap; }
+    .sr-pat-code .sr-cmd-copy { padding: 3px 7px; font-size: 10.5px; }
+    .sr-mock { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .sr-mock .sr-sample { min-width: 0; }
+    .sr-mock .sr-sample pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .sr-mock-safe figcaption { color: var(--ok-text); }
+    .sr-mock-vuln figcaption { color: var(--no-text); }
+    .sr-blocklog pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .sr-sub { margin: 16px 2px 8px; font-size: 11.5px; font-weight: 700; color: var(--text-muted); }
 
     /* ---------- 문서·연결 ---------- */
     .sr-foot {
@@ -717,14 +748,35 @@ CSS = """
       .sr-lead { font-size: 13.5px; }
       .sr-flow ol { grid-template-columns: 1fr; gap: 8px; }
       .sr-flow li { padding: 12px 13px; }
+      /* 분야 칩 9개가 여러 줄로 늘어나 상단을 가리지 않도록 한 줄 가로 스크롤로 둔다. */
+      .sr-chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+      .sr-chips::-webkit-scrollbar { display: none; }
+      .sr-chip { flex: 0 0 auto; }
       .sr-item { padding: 16px 15px 18px; border-radius: 15px; }
       .sr-item-title { font-size: 17.5px; }
       .sr-cat-head h2 { font-size: 19px; }
       .sr-facts { grid-template-columns: 1fr; gap: 10px; }
       .sr-read { grid-template-columns: 1fr; }
+      .sr-mock { grid-template-columns: 1fr; }
       .sr-foot { grid-template-columns: 1fr; gap: 14px; }
       .sr-copy-link { margin-left: 0; }
       .sr-table { min-width: 480px; }
+      /* 판별 패턴은 모바일에서 표 대신 카드처럼 쌓아 옆으로 스크롤하지 않게 한다. */
+      .sr-pattern-table { min-width: 0; }
+      .sr-pattern-table thead { display: none; }
+      .sr-pattern-table, .sr-pattern-table tbody, .sr-pattern-table tr, .sr-pattern-table td { display: block; width: 100%; }
+      .sr-pattern-table tr { padding: 11px 2px; border-top: 1px solid var(--border-subtle); }
+      .sr-pattern-table tr:first-child { border-top: 0; }
+      .sr-pattern-table td { padding: 3px 0; border: 0; }
+      .sr-pattern-table td:first-child { min-width: 0; }
+      .sr-pattern-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 2px;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--text-muted);
+      }
     }
 
     @media (max-width: 380px) {
@@ -895,6 +947,9 @@ JS = r"""
         link.addEventListener('click', function (event) {
           const id = link.getAttribute('data-target');
           if (!id) return;
+          // 보조키 클릭(Ctrl/Cmd/Shift/Alt)과 가운데·오른쪽 버튼은 브라우저 기본 동작
+          // (새 탭/새 창/새 창에서 열기)에 맡긴다. preventDefault 하면 새 탭이 열리지 않는다.
+          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
           event.preventDefault();
           if (history.pushState) history.pushState(null, '', '#' + id);
           else location.hash = '#' + id;
@@ -1004,7 +1059,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 보안 취약점 점검 도구 백과사전</title>
-  <meta name="description" content="점검 목적에서 도구 선택, 결과 판독, 조치와 재점검까지 한 흐름으로 읽는 보안 점검 도구 백과사전. 6개 분야 12개 항목의 대표 명령, 옵션별 영향, 마스킹된 샘플 증적, 공식 문서 링크를 한 페이지에 정리했습니다.">
+  <meta name="description" content="점검 목적에서 도구 선택, 결과 판독, 조치와 재점검까지 한 흐름으로 읽는 보안 점검 도구 백과사전. 8개 분야 22개 항목의 대표 명령, 옵션별 영향, 오픈소스 점검 툴(nuclei·ffuf·sqlmap·nikto·subfinder·httpx·testssl.sh), 취약점별 판별 패턴과 모의 응답·차단 로그, 공식 문서 링크를 한 페이지에 정리했습니다.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
@@ -1079,7 +1134,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.4" y2="16.4"></line>
         </svg>
-        <input type="search" id="srSearch" placeholder="도구·옵션·점검 목적 검색 (예: openssl, HSTS, 재전송)" autocomplete="off" aria-label="도구·옵션·점검 목적 검색">
+        <input type="search" id="srSearch" placeholder="도구·옵션·판별 패턴 검색 (예: nuclei, openssl, HSTS, {{7*7}})" autocomplete="off" aria-label="도구·옵션·점검 목적 검색">
         <button type="button" class="sr-clear" id="srSearchClear" hidden>지우기</button>
       </div>
       <div class="sr-chips" role="group" aria-label="분야 필터">
@@ -1235,9 +1290,14 @@ def render_item(item, index, cat_label, items_by_cat, data):
         item["title"], item["tool"], item["summary"], item["purpose"], cat_label,
         " ".join(item.get("aliases") or []),
         " ".join(cmd["label"] + " " + cmd["cmd"] for cmd in item["commands"]),
-        " ".join("%s %s" % (opt["flag"], opt["meaning"]) for opt in item["options"]),
+        " ".join("%s %s" % (opt["flag"], opt["meaning"]) for opt in item.get("options") or []),
+        " ".join("%s %s %s" % (p["name"], p["where"], p["principle"]) for p in item.get("patterns") or []),
+        (item.get("mock") or {}).get("title", ""),
     ])
     search_blob = " ".join(search_blob.replace("`", " ").split()).lower()
+    # 검색어 색인에는 꺾쇠·따옴표·앰퍼샌드를 남기지 않는다(태그처럼 보이는 문자열이 속성에 들어가지 않게).
+    for ch in ("<", ">", '"', "&"):
+        search_blob = search_blob.replace(ch, " ")
 
     out.append('          <article class="sr-item" id="%s" data-cat="%s" data-search="%s">'
                % (esc_attr(item["id"]), esc_attr(item["category"]), esc_attr(search_blob)))
@@ -1261,7 +1321,43 @@ def render_item(item, index, cat_label, items_by_cat, data):
                % (impact_pill(item["impact"]), rich(item["impact_note"])))
     out.append("            </dl>")
 
-    out.append('            <h4 class="sr-h">대표 명령어</h4>')
+    if item.get("report"):
+        out.append('            <h4 class="sr-h">보고서 필드</h4>')
+        out.append('            <p class="sr-sub">%s</p>' % rich(item["report"]["format"]))
+        out.append('            <div class="sr-table-wrap">')
+        out.append('              <table class="sr-table">')
+        out.append('                <thead><tr><th scope="col">필드</th><th scope="col">의미</th><th scope="col">판독 포인트</th></tr></thead>')
+        out.append("                <tbody>")
+        for field in item["report"]["fields"]:
+            out.append('                  <tr><td><code class="sr-code">%s</code></td><td>%s</td><td>%s</td></tr>'
+                       % (esc(field["name"]), rich(field["meaning"]), rich(field["note"])))
+        out.append("                </tbody>")
+        out.append("              </table>")
+        out.append("            </div>")
+
+    if item.get("patterns"):
+        out.append('            <h4 class="sr-h">판별 패턴</h4>')
+        out.append('            <p class="sr-sub">인가된 테스트 대상에 1회만 보내는 무해한 판별 문자열입니다. 데이터를 변경하거나 파일을 내려받지 않습니다.</p>')
+        out.append('            <div class="sr-table-wrap">')
+        out.append('              <table class="sr-table sr-pattern-table">')
+        out.append('                <thead><tr><th scope="col">패턴</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>')
+        out.append("                <tbody>")
+        for n, pat in enumerate(item["patterns"], start=1):
+            code_id = "%s-pat-%d" % (item["id"], n)
+            out.append('                  <tr><td><div class="sr-pat-cell">'
+                       '<span class="sr-pat-name">%s</span>'
+                       '<div class="sr-pat-code"><code class="sr-code" id="%s">%s</code>'
+                       '<button type="button" class="sr-cmd-copy" data-copy-cmd="%s" data-label="복사">복사</button></div>'
+                       '</div></td>'
+                       '<td data-label="위치 · 판별 원리"><span class="sr-pat-name">%s</span><br>%s</td>'
+                       '<td data-label="안전(차단) 신호">%s</td><td data-label="취약 신호">%s</td></tr>'
+                       % (esc(pat["name"]), esc_attr(code_id), esc(pat["payload"]), esc_attr(code_id),
+                          esc(pat["where"]), rich(pat["principle"]), rich(pat["safe"]), rich(pat["vulnerable"])))
+        out.append("                </tbody>")
+        out.append("              </table>")
+        out.append("            </div>")
+
+    out.append('            <h4 class="sr-h">%s</h4>' % ("확인 명령" if item.get("patterns") else "대표 명령어"))
     for n, cmd in enumerate(item["commands"], start=1):
         pre_id = "%s-cmd-%d" % (item["id"], n)
         out.append('            <div class="sr-cmd">')
@@ -1276,19 +1372,20 @@ def render_item(item, index, cat_label, items_by_cat, data):
         if cmd.get("note"):
             out.append('            <p class="sr-cmd-note">%s</p>' % rich(cmd["note"]))
 
-    out.append('            <h4 class="sr-h">옵션별 영향 해부</h4>')
-    out.append('            <div class="sr-table-wrap">')
-    out.append('              <table class="sr-table">')
-    out.append('                <thead><tr><th scope="col">옵션</th><th scope="col">의미</th><th scope="col">부하·네트워크 / 파일 쓰기 / 민감정보 영향</th></tr></thead>')
-    out.append("                <tbody>")
-    for opt in item["options"]:
-        out.append('                  <tr><td><code class="sr-code">%s</code></td><td>%s</td><td>%s</td></tr>'
-                   % (esc(opt["flag"]), rich(opt["meaning"]), rich(opt["effect"])))
-    out.append("                </tbody>")
-    out.append("              </table>")
-    out.append("            </div>")
+    if item.get("options"):
+        out.append('            <h4 class="sr-h">옵션별 영향 해부</h4>')
+        out.append('            <div class="sr-table-wrap">')
+        out.append('              <table class="sr-table">')
+        out.append('                <thead><tr><th scope="col">옵션</th><th scope="col">의미</th><th scope="col">부하·네트워크 / 파일 쓰기 / 민감정보 영향</th></tr></thead>')
+        out.append("                <tbody>")
+        for opt in item["options"]:
+            out.append('                  <tr><td><code class="sr-code">%s</code></td><td>%s</td><td>%s</td></tr>'
+                       % (esc(opt["flag"]), rich(opt["meaning"]), rich(opt["effect"])))
+        out.append("                </tbody>")
+        out.append("              </table>")
+        out.append("            </div>")
 
-    out.append('            <h4 class="sr-h">결과 판독</h4>')
+    out.append('            <h4 class="sr-h">%s</h4>' % ("판정 기준 · 오탐 · 조치" if item.get("patterns") else "결과 판독"))
     out.append('            <div class="sr-read">')
     for key, label, cls in READING_KEYS:
         bullets = item["reading"].get(key) or []
@@ -1301,12 +1398,38 @@ def render_item(item, index, cat_label, items_by_cat, data):
         out.append("              </section>")
     out.append("            </div>")
 
-    out.append('            <h4 class="sr-h">샘플 증적 (마스킹)</h4>')
-    out.append('            <figure class="sr-sample">')
-    out.append('              <figcaption>%s</figcaption>' % esc(item["sample"]["title"]))
-    out.append('              <pre>%s</pre>' % esc(item["sample"]["text"]))
-    out.append("            </figure>")
-    out.append('            <p class="sr-sample-cap">%s</p>' % rich(item["sample"]["caption"]))
+    if item.get("sample"):
+        out.append('            <h4 class="sr-h">샘플 증적 (마스킹)</h4>')
+        out.append('            <figure class="sr-sample">')
+        out.append('              <figcaption>%s</figcaption>' % esc(item["sample"]["title"]))
+        out.append('              <pre>%s</pre>' % esc(item["sample"]["text"]))
+        out.append("            </figure>")
+        out.append('            <p class="sr-sample-cap">%s</p>' % rich(item["sample"]["caption"]))
+
+    if item.get("mock"):
+        mock = item["mock"]
+        out.append('            <h4 class="sr-h">모의 응답 대조</h4>')
+        out.append('            <p class="sr-sub">%s</p>' % esc(mock["title"]))
+        out.append('            <div class="sr-mock">')
+        out.append('              <figure class="sr-sample sr-mock-safe">')
+        out.append('                <figcaption>%s</figcaption>' % esc(mock["safe_label"]))
+        out.append('                <pre>%s</pre>' % esc(mock["safe_text"]))
+        out.append("              </figure>")
+        out.append('              <figure class="sr-sample sr-mock-vuln">')
+        out.append('                <figcaption>%s</figcaption>' % esc(mock["vuln_label"]))
+        out.append('                <pre>%s</pre>' % esc(mock["vuln_text"]))
+        out.append("              </figure>")
+        out.append("            </div>")
+        out.append('            <p class="sr-sample-cap">%s</p>' % rich(mock["caption"]))
+
+    if item.get("block_log"):
+        log = item["block_log"]
+        out.append('            <h4 class="sr-h">차단 로그 예시</h4>')
+        out.append('            <figure class="sr-sample sr-blocklog">')
+        out.append('              <figcaption>%s</figcaption>' % esc(log["title"]))
+        out.append('              <pre>%s</pre>' % esc(log["text"]))
+        out.append("            </figure>")
+        out.append('            <p class="sr-sample-cap">%s</p>' % rich(log["caption"]))
 
     out.append('            <div class="sr-foot">')
     out.append('              <div><h5>공식 문서</h5><ul>')
