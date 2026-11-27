@@ -7023,6 +7023,7 @@ async function checkSecurityReference(page, width) {
       cmds: document.querySelectorAll('.sr-cmd').length,
       copies: document.querySelectorAll('.sr-cmd-copy').length,
       patterns: document.querySelectorAll('.sr-pattern-table .sr-cmd-copy').length,
+      notation: document.querySelectorAll('.sr-pat-notation').length,
       chips: document.querySelectorAll('#srToolbar .sr-chip').length,
       docs: document.querySelectorAll('.sr-doc-link').length,
       count: (document.getElementById('srCount') || {}).textContent || '',
@@ -7032,9 +7033,10 @@ async function checkSecurityReference(page, width) {
   assert.equal(state.items, 22, `${tag}: items ${state.items}`);
   assert.equal(state.railLinks, 22, `${tag}: rail links ${state.railLinks}`);
   assert.equal(state.cats, 8, `${tag}: categories ${state.cats}`);
-  assert.equal(state.copies, state.cmds + state.patterns, `${tag}: copy buttons ${state.copies}/${state.cmds + state.patterns}`);
+  assert.equal(state.copies, state.cmds, `${tag}: copy buttons ${state.copies}/${state.cmds}`);
   assert.ok(state.cmds >= 120, `${tag}: commands ${state.cmds}`);
-  assert.ok(state.patterns >= 15, `${tag}: pattern copies ${state.patterns}`);
+  assert.equal(state.patterns, 0, `${tag}: pattern copy buttons ${state.patterns}`);
+  assert.equal(state.notation, 18, `${tag}: non-executable notations ${state.notation}`);
   assert.equal(state.chips, 9, `${tag}: chips ${state.chips}`);
   assert.ok(state.docs >= 55, `${tag}: doc links ${state.docs}`);
   assert.ok(state.count.startsWith('22개 항목'), `${tag}: count ${state.count}`);
@@ -7206,7 +7208,7 @@ async function checkReferenceModifierClick(browser, base) {
   }
 }
 
-// ---- 점검 백과사전: 판별 패턴이 화면·클립보드에 텍스트로만 남고 DOM·요청을 만들지 않는다 ----
+// ---- 점검 백과사전: 판별 표기는 비실행 개념 문장이고, 무해한 꺾쇠·따옴표·앰퍼샌드 텍스트는 문자로만 남는다 ----
 async function checkReferenceTextIntegrity(browser, base) {
   const tag = 'reference text integrity';
   const context = await browser.newContext({
@@ -7220,40 +7222,67 @@ async function checkReferenceTextIntegrity(browser, base) {
     await page.goto(`${base}/security-reference.html#probe-input-validation`, { waitUntil: 'load' });
     await page.waitForTimeout(200);
     const state = await page.evaluate(() => {
-      const codes = Array.from(document.querySelectorAll('#probe-input-validation .sr-pattern-table code'));
-      const xss = codes.find((el) => el.textContent === '<script>alert(1)</script>') || null;
+      const article = document.getElementById('probe-input-validation');
+      const notations = Array.from(article.querySelectorAll('.sr-pattern-table .sr-pat-notation'));
+      const safePre = article.querySelector('.sr-mock-safe pre');
+      const blockPre = article.querySelector('.sr-blocklog pre');
+      const commandTexts = Array.from(article.querySelectorAll('.sr-cmd pre'))
+        .map((el) => el.textContent.trim());
       return {
         scripts: document.querySelectorAll('script').length,
         jsonBlocks: document.querySelectorAll('script[type="application/json"]').length,
         alertScripts: Array.from(document.querySelectorAll('script'))
           .filter((el) => ((el.textContent || '') + (el.src || '')).toLowerCase().includes('alert')).length,
         payloadElements: document.querySelectorAll('script[src*="alert"], img[onerror], [onfocus], [autofocus]').length,
-        xssText: xss ? xss.textContent : null,
-        ssti: codes.some((el) => el.textContent === '{{7*7}}'),
-        rawTag: document.getElementById('probe-input-validation').innerHTML.includes('<script>alert(1)</script>'),
+        patternRows: article.querySelectorAll('.sr-pattern-table tbody tr').length,
+        notations: notations.length,
+        notationText: notations.map((el) => el.textContent),
+        patternCodes: article.querySelectorAll('.sr-pattern-table code[id]').length,
+        patternCopies: article.querySelectorAll('.sr-pattern-table .sr-cmd-copy').length,
+        articleScripts: article.querySelectorAll('script').length,
+        safeText: safePre ? safePre.textContent : '',
+        safeElements: safePre ? safePre.querySelectorAll('*').length : -1,
+        blockText: blockPre ? blockPre.textContent : '',
+        commandTexts,
+        commandCopies: article.querySelectorAll('.sr-cmd .sr-cmd-copy').length,
       };
     });
-    // 테마 초기화·JSON 데이터·페이지 스크립트·공통 셸 = 4개. 패턴 때문에 늘어나면 안 된다.
+    // 테마 초기화·JSON 데이터·페이지 스크립트·공통 셸 = 4개. 표기 때문에 늘어나면 안 된다.
     assert.equal(state.scripts, 4, `${tag}: script elements ${state.scripts}`);
     assert.equal(state.jsonBlocks, 1, `${tag}: json data block ${state.jsonBlocks}`);
     assert.equal(state.alertScripts, 0, `${tag}: payload became a script`);
     assert.equal(state.payloadElements, 0, `${tag}: payload became an element`);
-    assert.equal(state.xssText, '<script>alert(1)</script>', `${tag}: pattern text ${state.xssText}`);
-    assert.equal(state.ssti, true, `${tag}: SSTI pattern text missing`);
-    assert.equal(state.rawTag, false, `${tag}: innerHTML must not contain a raw script tag`);
-
-    const codeId = await page.evaluate(() => {
-      const codes = Array.from(document.querySelectorAll('#probe-input-validation .sr-pattern-table code'));
-      const xss = codes.find((el) => el.textContent === '<script>alert(1)</script>');
-      return xss ? xss.id : null;
+    assert.equal(state.articleScripts, 0, `${tag}: article must not contain a script element`);
+    assert.equal(state.patternRows, 6, `${tag}: pattern rows ${state.patternRows}`);
+    assert.equal(state.notations, 6, `${tag}: notations ${state.notations}`);
+    assert.equal(state.patternCodes, 0, `${tag}: pattern table must not hold copyable code blocks`);
+    assert.equal(state.patternCopies, 0, `${tag}: pattern copy buttons ${state.patternCopies}`);
+    assert.equal(state.commandCopies, 5, `${tag}: probe command copy buttons ${state.commandCopies}`);
+    // 판별 표기는 실행 문자열이 아니라 무엇을 확인하는지 적은 문장이다.
+    state.notationText.forEach((text) => {
+      assert.ok(text.length > 4, `${tag}: notation too short (${text})`);
+      assert.ok(!/[<>{}$]/.test(text.replace(/<[^>]*>/g, '')), `${tag}: notation looks executable (${text})`);
     });
-    assert.ok(codeId, `${tag}: pattern code id missing`);
-    await page.click(`[data-copy-cmd="${codeId}"]`);
+    // 꺾쇠·따옴표·앰퍼샌드가 든 무해한 모의 응답이 태그가 아닌 문자로 표시된다.
+    assert.ok(state.safeText.includes('<태그>'), `${tag}: harmless tag text missing`);
+    assert.ok(state.safeText.includes('"code"'), `${tag}: harmless quote text missing`);
+    assert.ok(state.safeText.includes('&'), `${tag}: harmless ampersand text missing`);
+    assert.equal(state.safeElements, 0, `${tag}: mock text must not create elements (${state.safeElements})`);
+    assert.ok(state.blockText.includes("'WAF만 막고 코드는 취약'"), `${tag}: harmless single quote text missing`);
+    // 확인 절차는 저장된 결과·로그를 읽는 명령만 둔다.
+    assert.equal(state.commandTexts.length, 5, `${tag}: probe commands ${state.commandTexts.length}`);
+    state.commandTexts.forEach((cmd) => {
+      assert.ok(/^(jq|grep)\s/.test(cmd), `${tag}: unexpected probe command (${cmd})`);
+      assert.ok(!/(curl|wget|http:\/\/|https:\/\/)/.test(cmd), `${tag}: probe command must not send requests (${cmd})`);
+    });
+
+    // 남은 복사 버튼(저장 결과 판독 명령)은 그대로 동작한다.
+    const first = page.locator('#probe-input-validation .sr-cmd').first();
+    const expected = (await first.locator('pre').textContent()).trim();
+    await first.locator('.sr-cmd-copy').click();
     await page.waitForTimeout(200);
     const clip = await page.evaluate(() => navigator.clipboard.readText());
-    assert.equal(clip, '<script>alert(1)</script>', `${tag}: clipboard text ${clip}`);
-    const copied = await page.evaluate(() => window.__srCopied);
-    assert.equal(copied, '<script>alert(1)</script>', `${tag}: copied state ${copied}`);
+    assert.equal(clip.trim(), expected, `${tag}: clipboard text ${clip}`);
 
     const leaked = requests.filter((url) => /alert\(1\)|169\.254|evil\.test/i.test(url));
     assert.deepEqual(leaked, [], `${tag}: payload triggered a request`);

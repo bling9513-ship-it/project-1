@@ -6,12 +6,14 @@
   1) 데이터(security_reference_data.json)
      - 8개 분야 22개 항목(기본 6분야 12 · 오픈소스 점검 툴 7 · 진단 패턴 3), ID 중복 없음
      - 도구 항목: 필수 필드·명령 5개 이상·옵션 7개 이상·보고서 필드
-     - 진단 패턴 항목: 판별 패턴 5개 이상·모의 응답·차단 로그·조치·재점검
+     - 진단 패턴 항목: 비실행 판별 표기 5개 이상·모의 응답·차단 로그·조치·재점검
+     - 판별 표기는 실행 문자열(payload) 대신 개념 표기(notation)만 쓰고, 확인 명령은 저장된 결과·로그 판독이다
      - 실행 영향 등급 3종만 사용, 공식 문서는 https 공식 호스트
      - 샘플·패턴·모의 응답에 실제 사설·공인 IP, 실제 도메인, 시크릿 패턴이 없음
   2) 페이지(security-reference.html)
-     - 항목·레일 링크 22개, 복사 버튼 = 명령 + 패턴 수
-     - 합성 문자열(<script>alert(1)</script> · {{7*7}})이 원문 태그가 아니라 텍스트로만 존재
+     - 항목·레일 링크 22개, 복사 버튼 = 명령 수(판별 표기에는 복사 버튼 없음)
+     - 꺾쇠·따옴표·앰퍼샌드를 포함한 무해한 일반 텍스트가 태그가 아닌 텍스트로만 표시됨
+     - 공개 HTML·배포 JSON 어디에도 실행 가능한 검증 문자열이 남지 않음
      - 이모지 0 · 'gradient' 0 · 인라인 on* 핸들러 0 · http:// 문서 링크 0
   3) tools.html 상호 연결
      - 데이터의 치트시트 앵커가 tools.html 에 실제로 있고, 그 카드가 같은 항목 ID로 되돌아옴
@@ -39,7 +41,16 @@ REQUIRED_TOOL = ("id", "category", "tool", "title", "summary", "purpose", "verif
 REQUIRED_PROBE = ("id", "category", "tool", "title", "summary", "purpose", "verified_version",
                   "input_type", "privilege", "impact", "impact_note", "commands", "patterns",
                   "mock", "block_log", "reading", "docs")
-PATTERN_FIELDS = ("name", "payload", "where", "principle", "safe", "vulnerable")
+PATTERN_FIELDS = ("name", "notation", "where", "principle", "safe", "vulnerable")
+# 공개 HTML·배포 JSON 어디에도 남으면 안 되는 실행 가능한 검증 문자열.
+BANNED_PUBLIC_TOKENS = (
+    "<script>alert", "alert(1)", "alert(", "onfocus", "onerror=", "autofocus",
+    "SLEEP(", "sleep(", "1'='1", "{{7*7}}", "{{7", "${7", "#{7", "169.254",
+    "etc/passwd", "win.ini", "evil.test", "union select", "%2f", "%2F", "%3c", "%3C",
+    "../", "..\\", "or 1=1", "sleep", "benchmark(",
+)
+# 판별 표기·모의 응답에 쓰는 무해한 일반 텍스트(이스케이프되어 텍스트로만 보여야 한다).
+HARMLESS_ESCAPED = ("&lt;태그&gt;", "&quot;error&quot;", " &amp; ")
 READING_KEYS = ("normal", "abnormal", "false_positive", "action", "recheck")
 # 공식 HTTPS 문서 호스트만 허용한다(임의 블로그·미러 차단).
 DOC_HOSTS = {
@@ -95,7 +106,7 @@ def evidence_text(item):
     if item.get("sample"):
         parts += [item["sample"]["text"], item["sample"].get("caption", "")]
     for pat in item.get("patterns") or []:
-        parts += [pat["payload"], pat["where"], pat["principle"], pat["safe"], pat["vulnerable"]]
+        parts += [pat["notation"], pat["where"], pat["principle"], pat["safe"], pat["vulnerable"]]
     if item.get("mock"):
         parts += [item["mock"]["safe_text"], item["mock"]["vuln_text"]]
     if item.get("block_log"):
@@ -215,8 +226,8 @@ def main():
 
     cmd_count = sum(len(item["commands"]) for item in items)
     pat_count = sum(len(item.get("patterns") or []) for item in items)
-    check("복사 버튼 = 명령 + 패턴", html.count('class="sr-cmd-copy"') == cmd_count + pat_count,
-          "%d vs %d" % (html.count('class="sr-cmd-copy"'), cmd_count + pat_count))
+    check("복사 버튼 = 명령", html.count('class="sr-cmd-copy"') == cmd_count,
+          "%d vs %d" % (html.count('class="sr-cmd-copy"'), cmd_count))
     check("명령 블록 = 명령 수", len(re.findall(r'<pre id="[^"]+-cmd-\d+">', html)) == cmd_count)
     check("항목별 링크 복사 버튼", html.count('class="sr-copy-link"') == 22,
           html.count('class="sr-copy-link"'))
@@ -230,24 +241,48 @@ def main():
     check("새 분야 이름 표시", "오픈소스 점검 툴" in html and "진단 패턴·방어 검증" in html)
     check("모의 응답·차단 로그 절", "모의 응답 대조" in html and "차단 로그 예시" in html)
 
-    print("== 합성 문자열 (텍스트로만) ==")
-    # 원문 태그가 그대로 들어가면 실제 <script> 요소가 생긴다.
-    check("<script> 원문 태그 없음", "<script>alert(1)</script>" not in html)
-    check("<script> 이스케이프 존재", "&lt;script&gt;alert(1)&lt;/script&gt;" in html)
-    check("속성 탈출 패턴 이스케이프", "&quot; autofocus onfocus=&quot;alert(1)" in html
-          or "&quot; autofocus onfocus=&quot;alert(1)" in html.replace("&#x27;", "'"))
-    check("SSTI 패턴 텍스트", "{{7*7}}" in html)
-    check("SSTI 결과값 미노출", "Template: 49" in html)  # 모의 응답(취약 예시) 안에서만
+    print("== 판별 표기 (비실행) ==")
+    for item in items:
+        if item["id"] not in PROBE_IDS:
+            continue
+        name = item["id"]
+        check("%s 실행 영향 = 로컬 파일 읽기" % name, item["impact"] == "로컬 파일 읽기", item.get("impact"))
+        for pat in item["patterns"]:
+            check("%s 실행 문자열(payload) 없음" % name, "payload" not in pat,
+                  list(pat.keys()))
+            check("%s 표기 = 개념 문장" % name, bool(pat["notation"].strip()), pat["notation"])
+        for cmd in item["commands"]:
+            body = cmd["cmd"].lower()
+            check("%s 확인 명령 = 저장 결과 판독" % name,
+                  not any(tool in body for tool in ("curl", "wget", "http://", "https://", "nc ")),
+                  cmd["cmd"])
+            check("%s 확인 명령 영향 = 로컬 파일 읽기" % name,
+                  cmd["impact"] == "로컬 파일 읽기", cmd["impact"])
+    check("판별 표기 절 이름", "판별 표기 (비실행)" in html and "확인 절차 (비실행)" in html)
+    check("확인 절차는 저장 결과만", "저장된 결과 JSON·로그를 읽기만 합니다" in html)
+
+    print("== 무해 텍스트 이스케이프 ==")
+    # 꺾쇠·따옴표·앰퍼샌드를 포함한 일반 텍스트가 수스 요소가 아니라 문자로 표시되는지 본다.
+    for needle in HARMLESS_ESCAPED:
+        check("무해 텍스트 이스케이프 %s" % needle, needle in html, needle)
+    check("<태그> 원문 태그 없음", "<태그>" not in html)
     for item in items:
         for pat in item.get("patterns") or []:
-            if "<" not in pat["payload"]:
+            if "<" not in pat["notation"]:
                 continue
-            check("%s 패턴 원문 태그 없음" % item["id"], pat["payload"] not in html, pat["payload"])
-    check("패턴 복사 대상 코드 ID", len(re.findall(r'<code class="sr-code" id="[^"]+-pat-\d+">', html)) == pat_count,
-          len(re.findall(r'<code class="sr-code" id="[^"]+-pat-\d+">', html)))
-    check("패턴 복사 버튼 대상 일치",
-          len(re.findall(r'data-copy-cmd="([^"]+-pat-\d+)"', html)) == pat_count)
-    check("다중 속성/앰퍼샌드 이스케이프", "&amp;" in html and "&lt;" in html and "&gt;" in html)
+            check("%s 표기 원문 태그 없음" % item["id"], pat["notation"] not in html, pat["notation"])
+    check("판별 표기 복사 버튼 없음", len(re.findall(r'data-copy-cmd="[^"]+-pat-\d+"', html)) == 0)
+    check("판별 표기 코드 요소 없음", not re.search(r'<code[^>]*-pat-\d+', html))
+    check("판별 표기 텍스트 18개", html.count('class="sr-pat-notation"') == pat_count,
+          "%d vs %d" % (html.count('class="sr-pat-notation"'), pat_count))
+
+    print("== 실행 가능한 검증 문자열 없음 ==")
+    public_blobs = (("security-reference.html", html),
+                    ("security_reference_data.json", json.dumps(data, ensure_ascii=False)))
+    for label, blob in public_blobs:
+        lowered = blob.lower()
+        for token in BANNED_PUBLIC_TOKENS:
+            check("%s 에 '%s' 없음" % (label, token), token.lower() not in lowered)
 
     embedded = re.search(r'<script type="application/json" id="srData">(.*?)</script>', html, re.S)
     if check("페이지 데이터 블록", embedded is not None):

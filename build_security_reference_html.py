@@ -84,6 +84,9 @@ def load_data():
             assert doc["url"].startswith("https://"), "공식 문서는 https 여야 합니다: %s" % doc["url"]
         if item.get("patterns"):
             assert item.get("mock") and item.get("block_log"), "%s: 판별 패턴에는 모의 응답·차단 로그가 필요합니다." % item["id"]
+            for pat in item["patterns"]:
+                assert pat.get("notation"), "%s: 판별 표기(notation)가 필요합니다." % item["id"]
+                assert "payload" not in pat, "%s: 실행 문자열(payload)은 싣지 않습니다." % item["id"]
         else:
             assert item.get("sample"), "%s: 샘플 증적이 필요합니다." % item["id"]
     return data
@@ -676,13 +679,12 @@ CSS = """
     }
     .sr-sample-cap { margin-top: 8px; font-size: 11.5px; line-height: 1.66; color: var(--text-secondary); overflow-wrap: anywhere; }
 
-    /* ---------- 판별 패턴 · 모의 응답 ---------- */
+    /* ---------- 판별 표기 · 모의 응답 ---------- */
     .sr-pattern-table td:first-child { min-width: 168px; }
-    .sr-pattern-table td:first-child code { white-space: normal; }
-    .sr-pat-cell { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .sr-pat-cell { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
     .sr-pat-name { font-size: 11.5px; font-weight: 700; color: var(--text-primary); }
-    .sr-pat-code { display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap; }
-    .sr-pat-code .sr-cmd-copy { padding: 3px 7px; font-size: 10.5px; }
+    /* 비실행 표기: 복사·실행 대상이 아니라 무엇을 확인하는지 적은 설명문이다. */
+    .sr-pat-notation { font-size: 11.5px; line-height: 1.6; color: var(--text-secondary); overflow-wrap: anywhere; }
     .sr-mock { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .sr-mock .sr-sample { min-width: 0; }
     .sr-mock .sr-sample pre { white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -1134,7 +1136,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.4" y2="16.4"></line>
         </svg>
-        <input type="search" id="srSearch" placeholder="도구·옵션·판별 패턴 검색 (예: nuclei, openssl, HSTS, {{7*7}})" autocomplete="off" aria-label="도구·옵션·점검 목적 검색">
+        <input type="search" id="srSearch" placeholder="도구·옵션·판별 표기 검색 (예: nuclei, openssl, HSTS, SSRF)" autocomplete="off" aria-label="도구·옵션·점검 목적 검색">
         <button type="button" class="sr-clear" id="srSearchClear" hidden>지우기</button>
       </div>
       <div class="sr-chips" role="group" aria-label="분야 필터">
@@ -1291,7 +1293,8 @@ def render_item(item, index, cat_label, items_by_cat, data):
         " ".join(item.get("aliases") or []),
         " ".join(cmd["label"] + " " + cmd["cmd"] for cmd in item["commands"]),
         " ".join("%s %s" % (opt["flag"], opt["meaning"]) for opt in item.get("options") or []),
-        " ".join("%s %s %s" % (p["name"], p["where"], p["principle"]) for p in item.get("patterns") or []),
+        " ".join("%s %s %s %s" % (p["name"], p.get("notation", ""), p["where"], p["principle"])
+                  for p in item.get("patterns") or []),
         (item.get("mock") or {}).get("title", ""),
     ])
     search_blob = " ".join(search_blob.replace("`", " ").split()).lower()
@@ -1336,28 +1339,28 @@ def render_item(item, index, cat_label, items_by_cat, data):
         out.append("            </div>")
 
     if item.get("patterns"):
-        out.append('            <h4 class="sr-h">판별 패턴</h4>')
-        out.append('            <p class="sr-sub">인가된 테스트 대상에 1회만 보내는 무해한 판별 문자열입니다. 데이터를 변경하거나 파일을 내려받지 않습니다.</p>')
+        out.append('            <h4 class="sr-h">판별 표기 (비실행)</h4>')
+        out.append('            <p class="sr-sub">실행할 문자열 대신 무엇을 확인하는지 적은 표기입니다. 복사·전송 없이, 저장된 모의 응답·차단 로그·테스트 결과 JSON과 대조해 판정합니다.</p>')
         out.append('            <div class="sr-table-wrap">')
         out.append('              <table class="sr-table sr-pattern-table">')
-        out.append('                <thead><tr><th scope="col">패턴</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>')
+        out.append('                <thead><tr><th scope="col">확인 표기</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>')
         out.append("                <tbody>")
-        for n, pat in enumerate(item["patterns"], start=1):
-            code_id = "%s-pat-%d" % (item["id"], n)
+        for pat in item["patterns"]:
             out.append('                  <tr><td><div class="sr-pat-cell">'
                        '<span class="sr-pat-name">%s</span>'
-                       '<div class="sr-pat-code"><code class="sr-code" id="%s">%s</code>'
-                       '<button type="button" class="sr-cmd-copy" data-copy-cmd="%s" data-label="복사">복사</button></div>'
+                       '<span class="sr-pat-notation">%s</span>'
                        '</div></td>'
                        '<td data-label="위치 · 판별 원리"><span class="sr-pat-name">%s</span><br>%s</td>'
                        '<td data-label="안전(차단) 신호">%s</td><td data-label="취약 신호">%s</td></tr>'
-                       % (esc(pat["name"]), esc_attr(code_id), esc(pat["payload"]), esc_attr(code_id),
+                       % (esc(pat["name"]), esc(pat["notation"]),
                           esc(pat["where"]), rich(pat["principle"]), rich(pat["safe"]), rich(pat["vulnerable"])))
         out.append("                </tbody>")
         out.append("              </table>")
         out.append("            </div>")
 
-    out.append('            <h4 class="sr-h">%s</h4>' % ("확인 명령" if item.get("patterns") else "대표 명령어"))
+    out.append('            <h4 class="sr-h">%s</h4>' % ("확인 절차 (비실행)" if item.get("patterns") else "대표 명령어"))
+    if item.get("patterns"):
+        out.append('            <p class="sr-sub">아래 명령은 승인된 점검에서 이미 저장된 결과 JSON·로그를 읽기만 합니다. 대상을 향해 요청을 보내지 않습니다.</p>')
     for n, cmd in enumerate(item["commands"], start=1):
         pre_id = "%s-cmd-%d" % (item["id"], n)
         out.append('            <div class="sr-cmd">')
