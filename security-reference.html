@@ -596,13 +596,12 @@
     }
     .sr-sample-cap { margin-top: 8px; font-size: 11.5px; line-height: 1.66; color: var(--text-secondary); overflow-wrap: anywhere; }
 
-    /* ---------- 판별 패턴 · 모의 응답 ---------- */
+    /* ---------- 판별 표기 · 모의 응답 ---------- */
     .sr-pattern-table td:first-child { min-width: 168px; }
-    .sr-pattern-table td:first-child code { white-space: normal; }
-    .sr-pat-cell { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .sr-pat-cell { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
     .sr-pat-name { font-size: 11.5px; font-weight: 700; color: var(--text-primary); }
-    .sr-pat-code { display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap; }
-    .sr-pat-code .sr-cmd-copy { padding: 3px 7px; font-size: 10.5px; }
+    /* 비실행 표기: 복사·실행 대상이 아니라 무엇을 확인하는지 적은 설명문이다. */
+    .sr-pat-notation { font-size: 11.5px; line-height: 1.6; color: var(--text-secondary); overflow-wrap: anywhere; }
     .sr-mock { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .sr-mock .sr-sample { min-width: 0; }
     .sr-mock .sr-sample pre { white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -1168,18 +1167,18 @@
 </head>
 <body data-page="reference">
 
-  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">점검 백과</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="market.html">증시 이슈</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link is-current" role="menuitem" href="security-reference.html" aria-current="page">점검 백과사전</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">2026-11-27 10:04 KST 기준</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
+  <header class="ia-header"><div class="ia-header-inner"><a class="ia-brand" href="index.html" aria-label="Infosec Archive 홈"><img src="logo.png" alt="Infosec Archive 로고" class="ia-brand-img"><span class="ia-brand-name">Infosec Archive</span></a><span class="ia-current">점검 백과</span><nav class="ia-menu" aria-label="주요 메뉴"><a class="ia-menu-link" href="index.html">채용공고</a><a class="ia-menu-link" href="study.html">시험 공부</a><div class="ia-menu-group"><button type="button" class="ia-menu-btn is-active" aria-expanded="true" aria-haspopup="true">브리핑·트렌드<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="today.html">오늘</a><a class="ia-drop-link" role="menuitem" href="market.html">증시 이슈</a><a class="ia-drop-link" role="menuitem" href="ai.html">AI 트렌드</a><a class="ia-drop-link" role="menuitem" href="cve.html">CVE 리포트</a><a class="ia-drop-link" role="menuitem" href="tools.html">실무 유틸</a><a class="ia-drop-link is-current" role="menuitem" href="security-reference.html" aria-current="page">점검 백과사전</a><a class="ia-drop-link" role="menuitem" href="radar.html">피싱 레이더</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">데일리·생활<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><a class="ia-drop-link" role="menuitem" href="outfit.html">옷차림</a><a class="ia-drop-link" role="menuitem" href="pick.html">오늘 뭐 먹지</a><a class="ia-drop-link" role="menuitem" href="grocery.html">장보기 타이밍</a><a class="ia-drop-link" role="menuitem" href="basket.html">장바구니 리그</a><a class="ia-drop-link" role="menuitem" href="paymeter.html">월급 미터</a><a class="ia-drop-link" role="menuitem" href="movein.html">입주 점검</a><a class="ia-drop-link" role="menuitem" href="nearby.html">지금 갈 곳</a><a class="ia-drop-link" role="menuitem" href="cards.html">오늘의 카드</a><a class="ia-drop-link" role="menuitem" href="wash.html">세탁 라벨 읽기</a><a class="ia-drop-link" role="menuitem" href="recycle.html">분리배출 읽기</a><a class="ia-drop-link" role="menuitem" href="food.html">식품 라벨 읽기</a></div></div><div class="ia-menu-group"><button type="button" class="ia-menu-btn" aria-expanded="false" aria-haspopup="true">게임<svg class="ia-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="ia-drop" role="menu"><p class="ia-drop-label">챌린지</p><a class="ia-drop-link" role="menuitem" href="wargame.html">워게임</a><a class="ia-drop-link" role="menuitem" href="clue.html">3단서 추리</a><a class="ia-drop-link" role="menuitem" href="mystery90.html">90초 추리</a><a class="ia-drop-link" role="menuitem" href="mission.html">퇴근길 미션</a><a class="ia-drop-link" role="menuitem" href="chart.html">차트 추리실</a><a class="ia-drop-link" role="menuitem" href="subway.html">지하철역 맞히기</a><div class="ia-drop-sep" aria-hidden="true"></div><p class="ia-drop-label">미니게임</p><a class="ia-drop-link" role="menuitem" href="arcade.html">아케이드</a><a class="ia-drop-link" role="menuitem" href="ops.html">60초 관제실</a><a class="ia-drop-link" role="menuitem" href="seat.html">막차 자리 배치</a><a class="ia-drop-link" role="menuitem" href="load.html">한 번 더 싣기</a><a class="ia-drop-link" role="menuitem" href="hangul.html">한글 한 칸</a></div></div></nav><div class="ia-actions"><span class="ia-meta">2026-11-27 10:49 KST 기준</span><button type="button" class="ia-icon-btn" id="themeToggle" title="화면 테마 변경" aria-label="화면 테마 변경"><svg id="moonIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg id="sunIcon" style="display:none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"></path></svg></button><a class="ia-icon-link" href="https://github.com/bling9513-ship-it/project-1" target="_blank" rel="noopener noreferrer" aria-label="GitHub 저장소 바로가기" title="GitHub 저장소 바로가기"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.3371.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a></div></div></header>
 
   <main class="container">
 
     <section class="sr-hero" aria-labelledby="srTitle">
       <span class="sr-eyebrow">SECURITY REFERENCE</span>
       <h1 class="sr-title" id="srTitle">보안 취약점 점검 도구 백과사전</h1>
-      <p class="sr-lead">점검 목적을 정하고, 도구와 옵션을 고르고, 결과를 판독해 조치와 재점검까지 이어지는 순서로 읽는 8개 분야 22개 항목입니다. 앞의 여섯 분야는 저장된 파일·로컬 설정을 읽는 기본 점검, &#x27;오픈소스 점검 툴&#x27; 분야는 실무에서 쓰는 도구의 목적·영향 등급·보고서 필드·결과 판독, &#x27;진단 패턴·방어 검증&#x27; 분야는 무해한 판별 패턴과 모의 응답·차단 로그로 취약 여부를 가르는 기준을 다룹니다. 모든 명령은 저장된 파일이나 로컬 테스트 대상(127.0.0.1)을 기준으로 쓰였고, 문서용 주소는 RFC 5737 대역(192.0.2.0/24)과 RFC 2606 이름(fixture.test)만 사용합니다.</p>
+      <p class="sr-lead">점검 목적을 정하고, 도구와 옵션을 고르고, 결과를 판독해 조치와 재점검까지 이어지는 순서로 읽는 8개 분야 22개 항목입니다. 앞의 여섯 분야는 저장된 파일·로컬 설정을 읽는 기본 점검, &#x27;오픈소스 점검 툴&#x27; 분야는 실무에서 쓰는 도구의 목적·영향 등급·보고서 필드·결과 판독, &#x27;진단 패턴·방어 검증&#x27; 분야는 실행 문자열 대신 무엇을 확인하는지 적은 비실행 판별 표기와 모의 응답·차단 로그로 취약 여부를 가르는 기준을 다룹니다. 모든 명령은 저장된 파일이나 로컬 테스트 대상(127.0.0.1)을 기준으로 쓰였고, 문서용 주소는 RFC 5737 대역(192.0.2.0/24)과 RFC 2606 이름(fixture.test)만 사용합니다.</p>
       <div class="sr-stats">
         <span class="sr-stat">분야 <strong>8</strong></span>
         <span class="sr-stat">항목 <strong>22</strong></span>
-        <span class="sr-stat">대표 명령 <strong>123</strong></span>
+        <span class="sr-stat">대표 명령 <strong>122</strong></span>
         <span class="sr-stat">실행 없이 복사만</span>
       </div>
     </section>
@@ -1189,7 +1188,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.4" y2="16.4"></line>
         </svg>
-        <input type="search" id="srSearch" placeholder="도구·옵션·판별 패턴 검색 (예: nuclei, openssl, HSTS, {{7*7}})" autocomplete="off" aria-label="도구·옵션·점검 목적 검색">
+        <input type="search" id="srSearch" placeholder="도구·옵션·판별 표기 검색 (예: nuclei, openssl, HSTS, SSRF)" autocomplete="off" aria-label="도구·옵션·점검 목적 검색">
         <button type="button" class="sr-clear" id="srSearchClear" hidden>지우기</button>
       </div>
       <div class="sr-chips" role="group" aria-label="분야 필터">
@@ -1217,13 +1216,13 @@
 
     <section class="sr-scope" aria-labelledby="srScopeTitle">
       <h2 id="srScopeTitle">이 백과사전이 다루지 않는 것</h2>
-      <p>대량 스캔, 퍼징, 공격 템플릿 실행, 자격증명 대입·시험은 실행 예제로 제공하지 않습니다. 각 항목은 승인된 범위 안에서 &#x27;무엇을 보고 어떻게 판독하고 무엇을 고칠지&#x27;에 집중하며, 도구 사용법은 옵션 해부와 저장된 결과 판독, 공식 문서 링크 수준으로만 안내합니다. 진단 패턴은 인가된 테스트 대상에서 취약 여부만 가르는 1회성 판별 문자열이며, 실제 피해를 만드는 익스플로잇·데이터 변경·대량 요청은 넣지 않았습니다.</p>
+      <p>대량 스캔, 퍼징, 공격 템플릿 실행, 자격증명 대입·시험은 실행 예제로 제공하지 않습니다. 각 항목은 승인된 범위 안에서 &#x27;무엇을 보고 어떻게 판독하고 무엇을 고칠지&#x27;에 집중하며, 도구 사용법은 옵션 해부와 저장된 결과 판독, 공식 문서 링크 수준으로만 안내합니다. 진단 패턴은 실행할 문자열을 싣지 않고 &#x27;무엇을 확인하는지&#x27; 적은 비실행 표기로 두며, 요청 전송 없이 저장된 모의 응답·차단 로그·테스트 결과 JSON만 판독합니다. 실제 피해를 만드는 익스플로잇·데이터 변경·대량 요청은 넣지 않았습니다.</p>
       <ul>
           <li>스캔·질의는 승인서에 적힌 대역·도메인·시간 창 안에서만 실행합니다.</li>
           <li>예제의 대상은 로컬 파일(fixture.crt, sample.pcap)이나 루프백(127.0.0.1)입니다.</li>
           <li>자격증명은 실제 값을 쓰지 않습니다. 무효 토큰 1회로 응답 코드만 확인합니다.</li>
           <li>발견 항목은 &#x27;악용 가능성&#x27;과 &#x27;조치 필요성&#x27;을 나눠 판단합니다.</li>
-          <li>판별 패턴은 인가된 테스트 대상에 1회만 보내고, 저장형 패턴은 본인 소유 테스트 데이터로만 확인합니다.</li>
+          <li>판별 표기는 실행용 문자열을 싣지 않습니다. 실제 점검은 승인된 별도 절차에서 하고, 이 문서는 저장된 결과·로그 판독만 다룹니다.</li>
           <li>모의 응답과 차단 로그는 판독 기준을 보여 주는 합성 예시이며 실제 서버·조직의 출력이 아닙니다.</li>
       </ul>
     </section>
@@ -1275,9 +1274,9 @@
           </div>
           <div class="sr-tree-group">
             <p class="sr-tree-cat">진단 패턴·방어 검증</p>
-            <a class="sr-tree-link" href="#probe-input-validation" data-target="probe-input-validation"><span class="sr-tree-name">입력·출력 검증 — SQLi / XSS / SSTI 판별 패턴</span><span class="sr-tree-tool">모의 응답 · OWASP WSTG</span></a>
-            <a class="sr-tree-link" href="#probe-server-request" data-target="probe-server-request"><span class="sr-tree-name">서버 요청·이동 검증 — SSRF / Open Redirect 판별 패턴</span><span class="sr-tree-tool">모의 응답 · OWASP WSTG</span></a>
-            <a class="sr-tree-link" href="#probe-file-access" data-target="probe-file-access"><span class="sr-tree-name">파일 접근 검증 — Path Traversal / LFI 판별 패턴</span><span class="sr-tree-tool">모의 응답 · OWASP WSTG</span></a>
+            <a class="sr-tree-link" href="#probe-input-validation" data-target="probe-input-validation"><span class="sr-tree-name">입력·출력 검증 — SQLi / XSS / SSTI 판별 표기</span><span class="sr-tree-tool">비실행 판정 · OWASP WSTG</span></a>
+            <a class="sr-tree-link" href="#probe-server-request" data-target="probe-server-request"><span class="sr-tree-name">서버 요청·이동 검증 — SSRF / Open Redirect 판별 표기</span><span class="sr-tree-tool">비실행 판정 · OWASP WSTG</span></a>
+            <a class="sr-tree-link" href="#probe-file-access" data-target="probe-file-access"><span class="sr-tree-name">파일 접근 검증 — Path Traversal / LFI 판별 표기</span><span class="sr-tree-tool">비실행 판정 · OWASP WSTG</span></a>
           </div>
         </nav>
       </aside>
@@ -3346,7 +3345,7 @@ Event[0]
               </ul></div>
               <div><h5>이어 보기</h5><ul>
                 <li><a href="#web-security-headers"><span class="sr-link-kind">항목</span>보안 응답 헤더·CORS 확인</a></li>
-                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 패턴</a></li>
+                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 표기</a></li>
                 <li><a href="tools.html"><span class="sr-link-kind">유틸</span>실무 유틸·치트시트 전체</a></li>
               </ul></div>
             </div>
@@ -3514,7 +3513,7 @@ Event[0]
               </ul></div>
               <div><h5>이어 보기</h5><ul>
                 <li><a href="#web-methods-auth"><span class="sr-link-kind">항목</span>HTTP 메서드·인증 응답 코드</a></li>
-                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 패턴</a></li>
+                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 표기</a></li>
                 <li><a href="tools.html"><span class="sr-link-kind">유틸</span>실무 유틸·치트시트 전체</a></li>
               </ul></div>
             </div>
@@ -3682,7 +3681,7 @@ Event[0]
                 <li><a class="sr-doc-link" href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP SQL 삽입 방어 치트시트</a></li>
               </ul></div>
               <div><h5>이어 보기</h5><ul>
-                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 패턴</a></li>
+                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 표기</a></li>
                 <li><a href="#web-methods-auth"><span class="sr-link-kind">항목</span>HTTP 메서드·인증 응답 코드</a></li>
                 <li><a href="tools.html"><span class="sr-link-kind">유틸</span>실무 유틸·치트시트 전체</a></li>
               </ul></div>
@@ -4359,122 +4358,114 @@ cert_expirationStatus	OK	Certificate expires in 87 days</pre>
             <h2>진단 패턴·방어 검증</h2>
             <p>취약 여부를 가르는 무해한 판별 패턴과, 같은 신호를 모의 응답·차단 로그로 확인하는 기준을 짝지어 봅니다.</p>
           </header>
-          <article class="sr-item" id="probe-input-validation" data-cat="probe" data-search="입력·출력 검증 — sqli / xss / ssti 판별 패턴 모의 응답 · owasp wstg 경계·반사·평가 여부만 확인하는 무해한 문자열과, 모의 응답·차단 로그로 판정하는 기준 입력이 쿼리·html·템플릿 중 어디로 흘러가는지에 따라 판별 신호가 다릅니다. 데이터를 바꾸지 않는 1회성 문자열로 &#x27;경계가 닫히는지 · 그대로 반사되는지 · 식이 평가되는지&#x27;만 확인하고, 응답 본문·차단 로그·서버 정책 기록을 함께 대조해 판정합니다. 진단 패턴·방어 검증 오류 반사 확인 (sqli) curl -ss -g --data-urlencode  q=&#x27;  http://127.0.0.1:8080/search -o resp-quote.html -w &#x27;%{http_code} %{size_download}\n&#x27; 참/거짓 짝 비교 for v in  &#x27; and &#x27;1&#x27;=&#x27;1   &#x27; and &#x27;1&#x27;=&#x27;2 ; do curl -ss -g --data-urlencode  q=$v  http://127.0.0.1:8080/search -o /tmp/r.html -w  %{http_code} %{size_download}\n ; done 반사 본문 확인 (xss) curl -ss -g --data-urlencode  q= script alert(1) /script   http://127.0.0.1:8080/search -o resp-xss.html -w &#x27;%{http_code} %{size_download}\n&#x27; 이스케이프 여부 grep grep -c &#x27; lt;script gt;alert(1) lt;/script gt;&#x27; resp-xss.html db 오류 문구 탐색 grep -nei &#x27;sql syntax|sqlstate|ora-|unclosed quotation|traceback&#x27; resp-quote.html 템플릿 평가 확인 (ssti) curl -ss -g --data-urlencode  name={{7*7}}  http://127.0.0.1:8080/render -o resp-ssti.html -w &#x27;%{http_code} %{size_download}\n&#x27; sqli 경계 판별 쿼리 파라미터 값 끝 문자열 경계를 닫아 구문 오류·응답 길이 변화가 나는지 봅니다. sqli 불리언 참/거짓 쿼리 파라미터 값 참 조건과 거짓 조건( &#x27; and &#x27;1&#x27;=&#x27;2 )의 응답이 달라지는지 비교합니다. 두 요청을 짝으로 보내야 합니다. sqli 0초 지연 쿼리 파라미터 값 지연 함수가 구문으로 수용되는지만 봅니다. 0초라 서버 부하는 없고, 실제 시간 지연 공격은 하지 않습니다. xss 반사 판별 검색어·댓글 입력 응답 본문에 이스케이프 없이 그대로 반사되는지 확인합니다. 브라우저에서는 실행하지 않고 curl로 본문만 받습니다. xss 속성 탈출 속성 값에 들어가는 입력 따옴표로 속성을 닫고 새 이벤트 속성을 붙일 수 있는지 봅니다. ssti 판별 이름·제목 등 템플릿에 들어가는 값 템플릿 엔진이 식을 평가해 49 를 렌더링하는지 봅니다. 엔진별 표기( #{7*7} , ${7*7} )도 같은 원리입니다. 같은 패턴에 대한 두 서버의 응답 (합성 예시)">
+          <article class="sr-item" id="probe-input-validation" data-cat="probe" data-search="입력·출력 검증 — sqli / xss / ssti 판별 표기 비실행 판정 · owasp wstg 실행 문자열 대신 &#x27;무엇을 확인하는지&#x27; 적은 비실행 표기와, 저장된 모의 응답·차단 로그로 판정하는 기준 입력이 쿼리·html·템플릿 중 어디로 흘러가는지에 따라 판별 신호가 다릅니다. 이 항목은 실행할 문자열을 싣지 않고, 경계가 닫히는지 · 그대로 반사되는지 · 식이 평가되는지를 어떤 표기로 확인하는지만 정리합니다. 실제 판정은 승인된 별도 절차에서 남긴 응답 본문·차단 로그·테스트 결과 json을 대조해 내립니다. 진단 패턴·방어 검증 판별 결과 json 요약 jq -r &#x27;.probes[] | [.notation, .rule, .action, .status] | @tsv&#x27; fixture/results/input-validation.json 검증 없이 통과한 표기 찾기 jq -r &#x27;.probes[] | select(.action ==  pass ) | .notation&#x27; fixture/results/input-validation.json waf 차단 로그 확인 grep -ne &#x27;rule=(941|942)[0-9]{3} action=(block|log)&#x27; /var/log/fixture/waf.log | tail -20 앱 거부 로그 대조 grep -nie &#x27;input_validation|invalid_input&#x27; /var/log/fixture/app.log | tail -20 코드 경로 정적 확인 grep -rne &#x27;preparedstatement|bindparam|escapehtml|autoescape&#x27; app/src | head -20 sqli 경계 판별 단일 따옴표 경계 구문 쿼리 파라미터 값 끝 값 끝에 따옴표 하나만 붙여 문자열 경계가 닫히는지, 구문 오류·응답 길이 변화로 드러나는지 봅니다. sqli 불리언 참/거짓 참/거짓 조건 비교 쌍 쿼리 파라미터 값 참 조건과 거짓 조건 두 표기의 응답이 달라지는지 비교합니다. 두 요청을 짝으로 남겨야 합니다. sqli 0초 지연 0초 지연 함수 구문 쿼리 파라미터 값 지연 함수가 구문으로 수용되는지만 봅니다. 0초라 서버 부하는 없고, 실제 시간 지연 공격은 하지 않습니다. xss 반사 판별 스크립트 태그( 태그  형태) 출력 이스케이프 확인 검색어·댓글 입력 응답 본문에 태그 문자가 이스케이프 없이 그대로 반사되는지 확인합니다. 브라우저에서는 열지 않고 응답 본문 텍스트만 봅니다. xss 속성 탈출 속성 따옴표 탈출 차단 확인 속성 값에 들어가는 입력 따옴표로 속성을 닫고 새 이벤트 속성을 붙일 수 있는지 봅니다. ssti 판별 템플릿 이중 중괄호 수식 평가 차단 확인 이름·제목 등 템플릿에 들어가는 값 템플릿 엔진이 수식 표기를 평가해 계산 결과를 렌더링하는지 봅니다. 엔진별 중괄호·달러 표기도 같은 원리입니다. 같은 표기에 대한 두 서버의 판정 (합성 예시)">
             <p class="sr-item-kicker"><span class="sr-dot"></span>진단 패턴·방어 검증 · 20</p>
-            <h3 class="sr-item-title">입력·출력 검증 — SQLi / XSS / SSTI 판별 패턴</h3>
-            <p class="sr-item-summary">경계·반사·평가 여부만 확인하는 무해한 문자열과, 모의 응답·차단 로그로 판정하는 기준</p>
+            <h3 class="sr-item-title">입력·출력 검증 — SQLi / XSS / SSTI 판별 표기</h3>
+            <p class="sr-item-summary">실행 문자열 대신 &#x27;무엇을 확인하는지&#x27; 적은 비실행 표기와, 저장된 모의 응답·차단 로그로 판정하는 기준</p>
             <div class="sr-item-badges">
-              <span class="sr-tool">모의 응답 · OWASP WSTG</span>
-              <span class="sr-pill impact-net">네트워크 요청</span>
+              <span class="sr-tool">비실행 판정 · OWASP WSTG</span>
+              <span class="sr-pill impact-read">로컬 파일 읽기</span>
               <button type="button" class="sr-copy-link" data-copy-link="probe-input-validation" data-label="링크 복사">링크 복사</button>
             </div>
             <dl class="sr-facts">
-              <div><dt>점검 목적</dt><dd>입력이 쿼리·HTML·템플릿 중 어디로 흘러가는지에 따라 판별 신호가 다릅니다. 데이터를 바꾸지 않는 1회성 문자열로 &#x27;경계가 닫히는지 · 그대로 반사되는지 · 식이 평가되는지&#x27;만 확인하고, 응답 본문·차단 로그·서버 정책 기록을 함께 대조해 판정합니다.</dd></div>
+              <div><dt>점검 목적</dt><dd>입력이 쿼리·HTML·템플릿 중 어디로 흘러가는지에 따라 판별 신호가 다릅니다. 이 항목은 실행할 문자열을 싣지 않고, 경계가 닫히는지 · 그대로 반사되는지 · 식이 평가되는지를 어떤 표기로 확인하는지만 정리합니다. 실제 판정은 승인된 별도 절차에서 남긴 응답 본문·차단 로그·테스트 결과 JSON을 대조해 내립니다.</dd></div>
               <div><dt>검증 기준 버전</dt><dd>OWASP WSTG v4.2(INPV) · OWASP Cheat Sheet Series 기준 정리 (도구 실행 없음)</dd></div>
-              <div><dt>입력·대상</dt><dd>인가된 테스트 대상의 입력 필드·쿼리 파라미터 (예: <code class="sr-code">http://127.0.0.1:8080/search?q=</code>, <code class="sr-code">fixture.test</code>)</dd></div>
+              <div><dt>입력·대상</dt><dd>인가된 테스트 서버의 검색 입력 필드(<code class="sr-code">/search</code>), 댓글·템플릿 입력값 · 판정 근거는 저장된 테스트 결과 JSON과 WAF·앱 로그</dd></div>
               <div><dt>필요 권한</dt><dd>일반 사용자 (테스트 계정)</dd></div>
-              <div><dt>실행 영향 등급</dt><dd><span class="sr-pill impact-net">네트워크 요청</span> 패턴 1개당 요청 1회, 데이터 변경 없음. 저장형 XSS는 본인 소유의 테스트 데이터에만 넣고, 실제 사용자에게 노출되는 경로에는 쓰지 않습니다.</dd></div>
+              <div><dt>실행 영향 등급</dt><dd><span class="sr-pill impact-read">로컬 파일 읽기</span> 요청을 보내지 않습니다. 승인된 점검에서 이미 저장된 테스트 결과 JSON·WAF/프록시 차단 로그·애플리케이션 거부 로그만 읽습니다.</dd></div>
             </dl>
             <h4 class="sr-h">보고서 필드</h4>
-            <p class="sr-sub">응답 본문 파일 + 프록시·WAF 차단 로그</p>
+            <p class="sr-sub">저장된 응답 본문·테스트 결과 JSON + 프록시·WAF 차단 로그</p>
             <div class="sr-table-wrap">
               <table class="sr-table">
                 <thead><tr><th scope="col">필드</th><th scope="col">의미</th><th scope="col">판독 포인트</th></tr></thead>
                 <tbody>
-                  <tr><td><code class="sr-code">status / size_download</code></td><td>응답 코드·길이</td><td>짝 요청끼리 비교하는 1차 지표입니다.</td></tr>
+                  <tr><td><code class="sr-code">status / size</code></td><td>응답 코드·길이</td><td>짝 요청끼리 비교하는 1차 지표입니다.</td></tr>
                   <tr><td><code class="sr-code">반사 위치</code></td><td>본문·속성·스크립트</td><td>어디에 들어갔는지에 따라 조치가 달라집니다.</td></tr>
                   <tr><td><code class="sr-code">차단 로그</code></td><td>WAF·프록시 판정</td><td>rule id·action(block/log)을 근거로 남깁니다.</td></tr>
                   <tr><td><code class="sr-code">서버 정책 기록</code></td><td>코드 경로·검증 설정</td><td>응답 하나가 아니라 코드와 정책 적용 기록을 함께 봅니다.</td></tr>
                 </tbody>
               </table>
             </div>
-            <h4 class="sr-h">판별 패턴</h4>
-            <p class="sr-sub">인가된 테스트 대상에 1회만 보내는 무해한 판별 문자열입니다. 데이터를 변경하거나 파일을 내려받지 않습니다.</p>
+            <h4 class="sr-h">판별 표기 (비실행)</h4>
+            <p class="sr-sub">실행할 문자열 대신 무엇을 확인하는지 적은 표기입니다. 복사·전송 없이, 저장된 모의 응답·차단 로그·테스트 결과 JSON과 대조해 판정합니다.</p>
             <div class="sr-table-wrap">
               <table class="sr-table sr-pattern-table">
-                <thead><tr><th scope="col">패턴</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>
+                <thead><tr><th scope="col">확인 표기</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>
                 <tbody>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SQLi 경계 판별</span><div class="sr-pat-code"><code class="sr-code" id="probe-input-validation-pat-1">&#x27;</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-pat-1" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">쿼리 파라미터 값 끝</span><br>문자열 경계를 닫아 구문 오류·응답 길이 변화가 나는지 봅니다.</td><td data-label="안전(차단) 신호">400/정상 페이지, 이전 응답과 같은 길이</td><td data-label="취약 신호">DB 오류 문구 노출 또는 응답 길이·본문 차이</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SQLi 불리언 참/거짓</span><div class="sr-pat-code"><code class="sr-code" id="probe-input-validation-pat-2">&#x27; AND &#x27;1&#x27;=&#x27;1</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-pat-2" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">쿼리 파라미터 값</span><br>참 조건과 거짓 조건(<code class="sr-code">&#x27; AND &#x27;1&#x27;=&#x27;2</code>)의 응답이 달라지는지 비교합니다. 두 요청을 짝으로 보내야 합니다.</td><td data-label="안전(차단) 신호">두 응답의 상태·길이·본문이 동일(파라미터 바인딩)</td><td data-label="취약 신호">참 조건에서만 행·길이가 늘어남</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SQLi 0초 지연</span><div class="sr-pat-code"><code class="sr-code" id="probe-input-validation-pat-3">&#x27; AND SLEEP(0)--</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-pat-3" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">쿼리 파라미터 값</span><br>지연 함수가 구문으로 수용되는지만 봅니다. 0초라 서버 부하는 없고, 실제 시간 지연 공격은 하지 않습니다.</td><td data-label="안전(차단) 신호">구문 오류 또는 동일 응답</td><td data-label="취약 신호">오류 없이 정상 응답 + 구문 수용 흔적</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">XSS 반사 판별</span><div class="sr-pat-code"><code class="sr-code" id="probe-input-validation-pat-4">&lt;script&gt;alert(1)&lt;/script&gt;</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-pat-4" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">검색어·댓글 입력</span><br>응답 본문에 이스케이프 없이 그대로 반사되는지 확인합니다. 브라우저에서는 실행하지 않고 curl로 본문만 받습니다.</td><td data-label="안전(차단) 신호"><code class="sr-code">&amp;lt;script&amp;gt;</code>로 이스케이프되어 출력</td><td data-label="취약 신호">본문에 원문 그대로 포함</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">XSS 속성 탈출</span><div class="sr-pat-code"><code class="sr-code" id="probe-input-validation-pat-5">&quot; autofocus onfocus=&quot;alert(1)</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-pat-5" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">속성 값에 들어가는 입력</span><br>따옴표로 속성을 닫고 새 이벤트 속성을 붙일 수 있는지 봅니다.</td><td data-label="안전(차단) 신호">따옴표가 <code class="sr-code">&amp;quot;</code>로 인코딩되어 속성 하나로 유지</td><td data-label="취약 신호">속성이 새로 생기고 값이 분리됨</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSTI 판별</span><div class="sr-pat-code"><code class="sr-code" id="probe-input-validation-pat-6">{{7*7}}</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-pat-6" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">이름·제목 등 템플릿에 들어가는 값</span><br>템플릿 엔진이 식을 평가해 <code class="sr-code">49</code>를 렌더링하는지 봅니다. 엔진별 표기(<code class="sr-code">#{7*7}</code>, <code class="sr-code">${7*7}</code>)도 같은 원리입니다.</td><td data-label="안전(차단) 신호"><code class="sr-code">{{7*7}}</code>가 그대로 출력</td><td data-label="취약 신호">응답에 <code class="sr-code">49</code>가 출력</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SQLi 경계 판별</span><span class="sr-pat-notation">단일 따옴표 경계 구문</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">쿼리 파라미터 값 끝</span><br>값 끝에 따옴표 하나만 붙여 문자열 경계가 닫히는지, 구문 오류·응답 길이 변화로 드러나는지 봅니다.</td><td data-label="안전(차단) 신호">400 거부 또는 이전 응답과 같은 길이</td><td data-label="취약 신호">DB 오류 문구 노출 또는 응답 길이·본문 차이</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SQLi 불리언 참/거짓</span><span class="sr-pat-notation">참/거짓 조건 비교 쌍</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">쿼리 파라미터 값</span><br>참 조건과 거짓 조건 두 표기의 응답이 달라지는지 비교합니다. 두 요청을 짝으로 남겨야 합니다.</td><td data-label="안전(차단) 신호">두 응답의 상태·길이·본문이 동일(파라미터 바인딩)</td><td data-label="취약 신호">참 조건에서만 행·길이가 늘어남</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SQLi 0초 지연</span><span class="sr-pat-notation">0초 지연 함수 구문</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">쿼리 파라미터 값</span><br>지연 함수가 구문으로 수용되는지만 봅니다. 0초라 서버 부하는 없고, 실제 시간 지연 공격은 하지 않습니다.</td><td data-label="안전(차단) 신호">구문 오류 또는 동일 응답</td><td data-label="취약 신호">오류 없이 정상 응답 + 구문 수용 흔적</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">XSS 반사 판별</span><span class="sr-pat-notation">스크립트 태그(&lt;태그&gt; 형태) 출력 이스케이프 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">검색어·댓글 입력</span><br>응답 본문에 태그 문자가 이스케이프 없이 그대로 반사되는지 확인합니다. 브라우저에서는 열지 않고 응답 본문 텍스트만 봅니다.</td><td data-label="안전(차단) 신호">태그 문자가 엔티티로 인코딩되어 문자 그대로 출력</td><td data-label="취약 신호">본문에 태그 문자가 원문 그대로 포함</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">XSS 속성 탈출</span><span class="sr-pat-notation">속성 따옴표 탈출 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">속성 값에 들어가는 입력</span><br>따옴표로 속성을 닫고 새 이벤트 속성을 붙일 수 있는지 봅니다.</td><td data-label="안전(차단) 신호">따옴표가 엔티티로 인코딩되어 속성 하나로 유지</td><td data-label="취약 신호">속성이 새로 생기고 값이 분리됨</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSTI 판별</span><span class="sr-pat-notation">템플릿 이중 중괄호 수식 평가 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">이름·제목 등 템플릿에 들어가는 값</span><br>템플릿 엔진이 수식 표기를 평가해 계산 결과를 렌더링하는지 봅니다. 엔진별 중괄호·달러 표기도 같은 원리입니다.</td><td data-label="안전(차단) 신호">수식 표기가 그대로 출력</td><td data-label="취약 신호">계산 결과(49 등)가 출력</td></tr>
                 </tbody>
               </table>
             </div>
-            <h4 class="sr-h">확인 명령</h4>
+            <h4 class="sr-h">확인 절차 (비실행)</h4>
+            <p class="sr-sub">아래 명령은 승인된 점검에서 이미 저장된 결과 JSON·로그를 읽기만 합니다. 대상을 향해 요청을 보내지 않습니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">오류 반사 확인 (SQLi)</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">판별 결과 JSON 요약</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-cmd-1" data-label="복사">복사</button>
               </div>
-              <pre id="probe-input-validation-cmd-1">curl -sS -G --data-urlencode &quot;q=&#x27;&quot; http://127.0.0.1:8080/search -o resp-quote.html -w &#x27;%{http_code} %{size_download}\n&#x27;</pre>
+              <pre id="probe-input-validation-cmd-1">jq -r &#x27;.probes[] | [.notation, .rule, .action, .status] | @tsv&#x27; fixture/results/input-validation.json</pre>
             </div>
-            <p class="sr-cmd-note"><code class="sr-code">--data-urlencode</code>로 인코딩해 보냅니다. 같은 요청을 두 번 보내 응답 길이가 같은지 비교합니다.</p>
+            <p class="sr-cmd-note">승인된 점검에서 남긴 결과 파일을 읽습니다. 표기별로 어떤 규칙에 걸렸고 어떤 상태로 끝났는지 한눈에 봅니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">참/거짓 짝 비교</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">검증 없이 통과한 표기 찾기</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-cmd-2" data-label="복사">복사</button>
               </div>
-              <pre id="probe-input-validation-cmd-2">for v in &quot;&#x27; AND &#x27;1&#x27;=&#x27;1&quot; &quot;&#x27; AND &#x27;1&#x27;=&#x27;2&quot;; do curl -sS -G --data-urlencode &quot;q=$v&quot; http://127.0.0.1:8080/search -o /tmp/r.html -w &quot;%{http_code} %{size_download}\n&quot;; done</pre>
+              <pre id="probe-input-validation-cmd-2">jq -r &#x27;.probes[] | select(.action == &quot;pass&quot;) | .notation&#x27; fixture/results/input-validation.json</pre>
             </div>
-            <p class="sr-cmd-note">두 줄의 상태 코드와 크기가 같으면 파라미터가 쿼리에 값으로만 들어간 것입니다.</p>
+            <p class="sr-cmd-note"><code class="sr-code">pass</code>는 코드 검증을 통과한 표기입니다. 한 건이라도 있으면 그 표기의 응답 본문을 먼저 엽니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">반사 본문 확인 (XSS)</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">WAF 차단 로그 확인</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-cmd-3" data-label="복사">복사</button>
               </div>
-              <pre id="probe-input-validation-cmd-3">curl -sS -G --data-urlencode &quot;q=&lt;script&gt;alert(1)&lt;/script&gt;&quot; http://127.0.0.1:8080/search -o resp-xss.html -w &#x27;%{http_code} %{size_download}\n&#x27;</pre>
+              <pre id="probe-input-validation-cmd-3">grep -nE &#x27;rule=(941|942)[0-9]{3} action=(block|log)&#x27; /var/log/fixture/waf.log | tail -20</pre>
             </div>
-            <p class="sr-cmd-note">브라우저로 열지 않고 본문 파일만 봅니다. 확인 후 파일은 지웁니다.</p>
+            <p class="sr-cmd-note">941xxx는 XSS, 942xxx는 SQL 삽입 규칙 계열입니다. <code class="sr-code">log</code>는 차단하지 않고 기록만 한 것입니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">이스케이프 여부 grep</span>
+                <span class="sr-cmd-label">앱 거부 로그 대조</span>
                 <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-cmd-4" data-label="복사">복사</button>
               </div>
-              <pre id="probe-input-validation-cmd-4">grep -c &#x27;&amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt;&#x27; resp-xss.html</pre>
+              <pre id="probe-input-validation-cmd-4">grep -niE &#x27;input_validation|invalid_input&#x27; /var/log/fixture/app.log | tail -20</pre>
             </div>
-            <p class="sr-cmd-note">1 이상이면 이스케이프된 것입니다. <code class="sr-code">grep -c &#x27;&lt;script&gt;alert(1)&lt;/script&gt;&#x27;</code>가 0인지도 함께 봅니다.</p>
+            <p class="sr-cmd-note">WAF만 막고 코드는 통과시키는 상태를 가릅니다. 앱 거부 기록이 없으면 코드 조치가 남아 있습니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">DB 오류 문구 탐색</span>
+                <span class="sr-cmd-label">코드 경로 정적 확인</span>
                 <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-cmd-5" data-label="복사">복사</button>
               </div>
-              <pre id="probe-input-validation-cmd-5">grep -nEi &#x27;SQL syntax|SQLSTATE|ORA-|unclosed quotation|Traceback&#x27; resp-quote.html</pre>
+              <pre id="probe-input-validation-cmd-5">grep -rnE &#x27;PreparedStatement|bindParam|escapeHtml|autoescape&#x27; app/src | head -20</pre>
             </div>
-            <p class="sr-cmd-note">문구가 나오면 오류 노출이 확인된 것입니다. 동시에 DB 종류가 드러나므로 정보 노출 조치 대상입니다.</p>
-            <div class="sr-cmd">
-              <div class="sr-cmd-head">
-                <span class="sr-cmd-label">템플릿 평가 확인 (SSTI)</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
-                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-input-validation-cmd-6" data-label="복사">복사</button>
-              </div>
-              <pre id="probe-input-validation-cmd-6">curl -sS -G --data-urlencode &quot;name={{7*7}}&quot; http://127.0.0.1:8080/render -o resp-ssti.html -w &#x27;%{http_code} %{size_download}\n&#x27;</pre>
-            </div>
-            <p class="sr-cmd-note">응답에서 <code class="sr-code">49</code>가 보이면 평가된 것입니다. <code class="sr-code">{{7*7}}</code> 원문이 그대로인지 함께 확인합니다.</p>
+            <p class="sr-cmd-note">명령을 실행하지 않고 소스에서 바인딩·이스케이프 적용 지점만 찾습니다.</p>
             <h4 class="sr-h">판정 기준 · 오탐 · 조치</h4>
             <div class="sr-read">
               <section class="sr-read-block read-ok">
                 <h5>정상 출력</h5>
                 <ul>
-                  <li>같은 패턴의 두 요청이 같은 상태 코드·같은 길이로 돌아오고, 본문에 패턴 원문이 보이지 않습니다.</li>
-                  <li>XSS 패턴이 <code class="sr-code">&amp;lt;script&amp;gt;</code>로 인코딩되어 출력되고 속성이 늘지 않습니다.</li>
-                  <li>SSTI 패턴이 <code class="sr-code">{{7*7}}</code> 그대로 출력되고 <code class="sr-code">49</code>가 없습니다.</li>
-                  <li>차단 로그에 <code class="sr-code">action=block</code>과 규칙 번호가 남고 애플리케이션 로그에는 요청이 도달하지 않습니다.</li>
+                  <li>짝으로 남긴 두 응답(참 조건·거짓 조건)의 상태 코드와 길이가 같고, 본문에 표기 원문이 보이지 않습니다.</li>
+                  <li>태그 형태 표기가 엔티티로 인코딩되어 문자 그대로 출력되고, 속성이나 이벤트가 늘지 않습니다.</li>
+                  <li>수식 표기가 그대로 출력되고 계산 결과가 보이지 않습니다.</li>
+                  <li>차단 로그에 <code class="sr-code">action=block</code>과 규칙 번호가 남고, 애플리케이션 로그에는 요청이 도달하지 않습니다.</li>
                 </ul>
               </section>
               <section class="sr-read-block read-no">
                 <h5>이상 징후</h5>
                 <ul>
                   <li>참 조건에서만 응답 길이·행 수가 달라집니다(불리언 차이).</li>
-                  <li>응답 본문에 패턴이 원문 그대로 들어 있고, 속성·이벤트가 새로 생겼습니다.</li>
-                  <li><code class="sr-code">49</code>가 출력되거나 <code class="sr-code">{{</code> 구문 오류로 스택 트레이스가 노출됩니다.</li>
+                  <li>응답 본문에 표기가 원문 그대로 들어 있고, 속성·이벤트가 새로 생겼습니다.</li>
+                  <li>계산 결과가 출력되거나 템플릿 구문 오류로 스택 트레이스가 노출됩니다.</li>
                   <li>DB 오류 문구·스택 트레이스가 사용자 응답에 그대로 나옵니다.</li>
                 </ul>
               </section>
@@ -4484,7 +4475,7 @@ cert_expirationStatus	OK	Certificate expires in 87 days</pre>
                   <li>응답 코드 하나로 단정할 수 없습니다. 200이라도 이스케이프되어 있으면 정상입니다.</li>
                   <li>WAF가 403을 주면 &#x27;안전&#x27;이 아니라 &#x27;검사되지 않음&#x27;입니다. 차단 로그와 애플리케이션 로그를 대조합니다.</li>
                   <li>응답 길이 차이는 광고·타임스탬프·난수 때문에도 생깁니다. 여러 번 반복해 편차를 확인합니다.</li>
-                  <li><code class="sr-code">SLEEP</code> 계열은 네트워크 지연과 구분이 어려워 단독 근거로 쓰지 않습니다.</li>
+                  <li>지연 함수 계열은 네트워크 지연과 구분이 어려워 단독 근거로 쓰지 않습니다.</li>
                   <li>다른 사용자의 저장 데이터가 섞여 보이면 내 테스트 데이터인지 먼저 확인합니다.</li>
                 </ul>
               </section>
@@ -4500,48 +4491,48 @@ cert_expirationStatus	OK	Certificate expires in 87 days</pre>
               <section class="sr-read-block read-act">
                 <h5>재점검</h5>
                 <ul>
-                  <li>같은 패턴·같은 짝 요청으로 다시 보내 상태·길이·본문이 동일해졌는지 확인합니다.</li>
+                  <li>조치 후 같은 표기로 다시 점검해 남긴 응답의 상태·길이·본문이 동일해졌는지 확인합니다.</li>
                   <li>차단 로그가 &#x27;차단&#x27;에서 &#x27;통과 후 코드에서 거부&#x27;로 바뀌었는지, 애플리케이션 로그에 거부 기록이 남는지 봅니다.</li>
-                  <li>회귀 테스트에 같은 패턴을 넣어 배포마다 자동 확인합니다.</li>
+                  <li>회귀 테스트에 같은 표기를 넣어 배포마다 자동 확인합니다.</li>
                 </ul>
               </section>
             </div>
             <h4 class="sr-h">모의 응답 대조</h4>
-            <p class="sr-sub">같은 패턴에 대한 두 서버의 응답 (합성 예시)</p>
+            <p class="sr-sub">같은 표기에 대한 두 서버의 판정 (합성 예시)</p>
             <div class="sr-mock">
               <figure class="sr-sample sr-mock-safe">
-                <figcaption>안전 — 이스케이프·거부</figcaption>
+                <figcaption>안전 — 거부·이스케이프</figcaption>
                 <pre>HTTP/1.1 400 Bad Request
 content-type: application/json
 
-{&quot;error&quot;:&quot;입력값이 허용되지 않습니다&quot;,&quot;code&quot;:&quot;INVALID_INPUT&quot;}
+{&quot;error&quot;:&quot;허용되지 않은 입력값입니다&quot;,&quot;code&quot;:&quot;INVALID_INPUT&quot;,&quot;hint&quot;:&quot;특수문자 &amp; 따옴표는 인코딩되어 표시됩니다&quot;}
 
 HTTP/1.1 200 OK
 content-type: text/html; charset=utf-8
 
-&lt;p&gt;검색 결과: &amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt; 에 대한 결과가 없습니다.&lt;/p&gt;
-&lt;p&gt;Template: {{7*7}}&lt;/p&gt;</pre>
+&lt;p&gt;검색 결과: 입력한 &lt;태그&gt; 표기가 문자 그대로 표시됩니다.&lt;/p&gt;
+&lt;p&gt;Template: 수식 표기가 그대로 출력됩니다.&lt;/p&gt;</pre>
               </figure>
               <figure class="sr-sample sr-mock-vuln">
-                <figcaption>취약 신호 — 원문 반사·평가</figcaption>
+                <figcaption>취약 신호 — 오류 노출·원문 반사</figcaption>
                 <pre>HTTP/1.1 500 Internal Server Error
 content-type: text/html
 
-SQLSTATE[42000]: Syntax error or access violation: 1064 ... near &#x27;&#x27;&#x27; at line 1
+SQLSTATE[42000]: Syntax error or access violation: 1064 ... near the boundary quote at line 1
 
 HTTP/1.1 200 OK
 content-type: text/html
 
-&lt;p&gt;검색 결과: &lt;script&gt;alert(1)&lt;/script&gt;&lt;/p&gt;
-&lt;p&gt;Template: 49&lt;/p&gt;</pre>
+&lt;p&gt;검색 결과: 입력한 &lt;태그&gt; 표기가 그대로 반사되었습니다.&lt;/p&gt;
+&lt;p&gt;Template: 수식이 평가되어 49가 출력되었습니다.&lt;/p&gt;</pre>
               </figure>
             </div>
-            <p class="sr-sample-cap">왼쪽은 400 거부 또는 이스케이프 출력, 오른쪽은 오류 노출·원문 반사·식 평가입니다. 코드 하나가 아니라 본문과 오류 문구를 함께 봐야 판정할 수 있습니다.</p>
+            <p class="sr-sample-cap">왼쪽은 400 거부 또는 이스케이프 출력, 오른쪽은 오류 노출·원문 반사·식 평가입니다. 코드 하나가 아니라 본문과 오류 문구를 함께 봐야 판정할 수 있습니다. 입력 &amp; 출력을 짝으로 비교합니다.</p>
             <h4 class="sr-h">차단 로그 예시</h4>
             <figure class="sr-sample sr-blocklog">
               <figcaption>프록시·WAF 차단 로그 (합성 예시)</figcaption>
-              <pre>2026-11-27T10:12:03+09:00 edge-waf src=192.0.2.10 method=GET uri=/search?q=%27 rule=942100 msg=&quot;SQL_INJECTION&quot; action=block status=403 req_id=fixture-0001
-2026-11-27T10:12:07+09:00 edge-waf src=192.0.2.10 method=GET uri=/search?q=%3Cscript%3Ealert%281%29%3C%2Fscript%3E rule=941100 msg=&quot;XSS&quot; action=block status=403 req_id=fixture-0002
+              <pre>2026-11-27T10:12:03+09:00 edge-waf src=192.0.2.10 method=GET uri=/search notation=quote-boundary rule=942100 msg=&quot;SQL_INJECTION&quot; action=block status=403 req_id=fixture-0001
+2026-11-27T10:12:07+09:00 edge-waf src=192.0.2.10 method=GET uri=/search notation=script-tag rule=941100 msg=&quot;XSS&quot; action=block status=403 req_id=fixture-0002
 2026-11-27T10:12:09+09:00 app-gateway src=192.0.2.10 route=/render result=reject reason=input_validation req_id=fixture-0003</pre>
             </figure>
             <p class="sr-sample-cap"><code class="sr-code">action=block</code>은 경계에서 막힌 것, <code class="sr-code">app-gateway result=reject</code>는 코드에서 거부한 것입니다. 둘을 구분해야 &#x27;WAF만 막고 코드는 취약&#x27;인 상태를 놓치지 않습니다.</p>
@@ -4559,21 +4550,21 @@ content-type: text/html
               </ul></div>
             </div>
           </article>
-          <article class="sr-item" id="probe-server-request" data-cat="probe" data-search="서버 요청·이동 검증 — ssrf / open redirect 판별 패턴 모의 응답 · owasp wstg 서버가 대신 요청하는 주소와 리다이렉트 목적지를 통제할 수 있는지, egress 로그로 확인합니다 사용자가 준 url을 서버가 대신 가져오거나 그대로 이동시키는 기능에서, 내부 주소·외부 목적지로 확장되는지 확인합니다. 요청은 테스트 서버 1대에서만 발생시키고, 내부 자원의 내용은 읽지 않습니다. 진단 패턴·방어 검증 루프백 요청 1회 curl -ss -g --data-urlencode  url=http://127.0.0.1:8080/admin  http://127.0.0.1:8080/fetch -o resp-ssrf.html -w &#x27;%{http_code} %{size_download}\n&#x27; 메타데이터 주소 차단 확인 curl -ss -g --data-urlencode  url=http://169.254.169.254/latest/meta-data/  http://127.0.0.1:8080/fetch -w &#x27;%{http_code}\n&#x27; 리다이렉트 목적지 확인 curl -ss -d - -o /dev/null -g --data-urlencode  next=https://evil.test/  http://127.0.0.1:8080/link egress 차단 로그 확인 grep -n &#x27;deny\|block\|egress&#x27; /var/log/fixture/egress.log | tail -20 허용 목록 설정 확인 grep -ne &#x27;allow|egress|proxy&#x27; /etc/fixture/app.conf ssrf 루프백 url을 받는 파라미터 서버 자신의 다른 포트·경로로 요청이 나가는지 봅니다. 응답이 그대로 반사되면 내부 접근이 가능한 상태입니다. ssrf 메타데이터 url을 받는 파라미터 클라우드 메타데이터 주소로 요청이 나가는지 봅니다. 자격증명 경로는 요청하지 않고 루트 응답 여부만 확인합니다. ssrf 표기 우회 url을 받는 파라미터 파서마다 사용자정보( @ ) 해석이 달라 허용 목록 검사를 통과하는지 봅니다. open redirect 절대 url next · returnurl 파라미터 이동 목적지를 외부 도메인으로 바꿀 수 있는지 봅니다. 실제로 이동하지 않고 location 헤더만 확인합니다. open redirect 스킴 상대 표기 next · returnurl 파라미터 // 로 시작하는 표기가 같은 출처 검사를 우회하는지 봅니다. 허용 목록 접미사 우회 허용 목록 비교 로직 문자열 포함 검사( contains )를 쓰면 접미사로 통과하는지 봅니다. ssrf·리다이렉트에 대한 두 서버의 응답 (합성 예시)">
+          <article class="sr-item" id="probe-server-request" data-cat="probe" data-search="서버 요청·이동 검증 — ssrf / open redirect 판별 표기 비실행 판정 · owasp wstg 서버가 대신 요청하는 주소와 리다이렉트 목적지를 통제할 수 있는지, 저장된 egress 로그로 확인합니다 사용자가 준 url을 서버가 대신 가져오거나 그대로 이동시키는 기능에서, 내부 대역·외부 목적지로 확장되는지 확인합니다. 실행할 url을 싣지 않고 확인 대상만 정리하며, 판정은 승인된 점검에서 남긴 egress 프록시 로그·응답 헤더·테스트 결과 json으로 내립니다. 진단 패턴·방어 검증 egress 판정 결과 요약 jq -r &#x27;.egress[] | [.notation, .dest_class, .action, .reason] | @tsv&#x27; fixture/results/server-request.json 외부로 나간 리다이렉트 찾기 jq -r &#x27;.redirects[] | select(.location_class ==  external ) | .notation&#x27; fixture/results/server-request.json egress 프록시 로그 확인 grep -ne &#x27;action=(deny|allow)&#x27; /var/log/fixture/egress.log | tail -20 허용 목록 설정 확인 grep -ne &#x27;allow|egress|proxy&#x27; /etc/fixture/app.conf url 검증 코드 정적 확인 grep -rne &#x27;urlparse|allowlist|is_safe_url|resolve&#x27; app/src | head -20 ssrf 루프백 루프백 대역 주소 요청 차단 확인 url을 받는 파라미터 서버 자신의 다른 포트·경로로 요청이 나가는지 봅니다. 응답이 그대로 반사되면 내부 접근이 가능한 상태입니다. ssrf 메타데이터 메타데이터/루프백 대역 egress 차단 확인 url을 받는 파라미터 클라우드 메타데이터 대역 주소로 요청이 나가는지 봅니다. 자격증명 경로는 요청하지 않고 루트 응답 여부만 확인합니다. ssrf 표기 우회 사용자정보(@) 표기 혼동 우회 차단 확인 url을 받는 파라미터 파서마다 사용자정보( @ ) 해석이 달라 허용 목록 검사를 통과하는지 봅니다. open redirect 절대 url 외부 절대 url 이동 차단 확인 next · returnurl 파라미터 이동 목적지를 외부 도메인으로 바꿀 수 있는지 봅니다. 실제로 이동하지 않고 location 헤더만 확인합니다. open redirect 스킴 상대 표기 스킴 상대 표기(//) 이동 차단 확인 next · returnurl 파라미터 슬래시 두 개로 시작하는 표기가 같은 출처 검사를 우회하는지 봅니다. 허용 목록 접미사 우회 허용 목록 접미사 우회 차단 확인 허용 목록 비교 로직 문자열 포함 검사( contains )를 쓰면 접미사로 통과하는지 봅니다. ssrf·리다이렉트에 대한 두 서버의 응답 (합성 예시)">
             <p class="sr-item-kicker"><span class="sr-dot"></span>진단 패턴·방어 검증 · 21</p>
-            <h3 class="sr-item-title">서버 요청·이동 검증 — SSRF / Open Redirect 판별 패턴</h3>
-            <p class="sr-item-summary">서버가 대신 요청하는 주소와 리다이렉트 목적지를 통제할 수 있는지, Egress 로그로 확인합니다</p>
+            <h3 class="sr-item-title">서버 요청·이동 검증 — SSRF / Open Redirect 판별 표기</h3>
+            <p class="sr-item-summary">서버가 대신 요청하는 주소와 리다이렉트 목적지를 통제할 수 있는지, 저장된 Egress 로그로 확인합니다</p>
             <div class="sr-item-badges">
-              <span class="sr-tool">모의 응답 · OWASP WSTG</span>
-              <span class="sr-pill impact-net">네트워크 요청</span>
+              <span class="sr-tool">비실행 판정 · OWASP WSTG</span>
+              <span class="sr-pill impact-read">로컬 파일 읽기</span>
               <button type="button" class="sr-copy-link" data-copy-link="probe-server-request" data-label="링크 복사">링크 복사</button>
             </div>
             <dl class="sr-facts">
-              <div><dt>점검 목적</dt><dd>사용자가 준 URL을 서버가 대신 가져오거나 그대로 이동시키는 기능에서, 내부 주소·외부 목적지로 확장되는지 확인합니다. 요청은 테스트 서버 1대에서만 발생시키고, 내부 자원의 내용은 읽지 않습니다.</dd></div>
+              <div><dt>점검 목적</dt><dd>사용자가 준 URL을 서버가 대신 가져오거나 그대로 이동시키는 기능에서, 내부 대역·외부 목적지로 확장되는지 확인합니다. 실행할 URL을 싣지 않고 확인 대상만 정리하며, 판정은 승인된 점검에서 남긴 Egress 프록시 로그·응답 헤더·테스트 결과 JSON으로 내립니다.</dd></div>
               <div><dt>검증 기준 버전</dt><dd>OWASP WSTG v4.2(SSRF·리다이렉트) · OWASP Cheat Sheet Series 기준 정리 (도구 실행 없음)</dd></div>
-              <div><dt>입력·대상</dt><dd>인가된 테스트 대상의 URL 입력 필드 (예: <code class="sr-code">http://127.0.0.1:8080/fetch?url=</code>, <code class="sr-code">fixture.test/link?next=</code>)</dd></div>
+              <div><dt>입력·대상</dt><dd>인가된 테스트 서버의 URL 입력 필드(<code class="sr-code">/fetch</code>), 리다이렉트 파라미터(<code class="sr-code">next</code>·<code class="sr-code">returnUrl</code>) · 판정 근거는 저장된 Egress 프록시 로그와 결과 JSON</dd></div>
               <div><dt>필요 권한</dt><dd>일반 사용자 (테스트 계정)</dd></div>
-              <div><dt>실행 영향 등급</dt><dd><span class="sr-pill impact-net">네트워크 요청</span> 서버가 대신 요청하므로 대상 서버의 Egress 경로를 탑니다. 메타데이터 주소는 차단 확인용으로 1회만 시도하고, 내부 서비스 탐색으로 확장하지 않습니다.</dd></div>
+              <div><dt>실행 영향 등급</dt><dd><span class="sr-pill impact-read">로컬 파일 읽기</span> 요청을 보내지 않습니다. 승인된 점검에서 저장된 Egress 프록시 로그·응답 헤더·테스트 결과 JSON만 읽습니다.</dd></div>
             </dl>
             <h4 class="sr-h">보고서 필드</h4>
             <p class="sr-sub">응답 헤더·본문 + Egress 프록시 로그</p>
@@ -4588,73 +4579,74 @@ content-type: text/html
                 </tbody>
               </table>
             </div>
-            <h4 class="sr-h">판별 패턴</h4>
-            <p class="sr-sub">인가된 테스트 대상에 1회만 보내는 무해한 판별 문자열입니다. 데이터를 변경하거나 파일을 내려받지 않습니다.</p>
+            <h4 class="sr-h">판별 표기 (비실행)</h4>
+            <p class="sr-sub">실행할 문자열 대신 무엇을 확인하는지 적은 표기입니다. 복사·전송 없이, 저장된 모의 응답·차단 로그·테스트 결과 JSON과 대조해 판정합니다.</p>
             <div class="sr-table-wrap">
               <table class="sr-table sr-pattern-table">
-                <thead><tr><th scope="col">패턴</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>
+                <thead><tr><th scope="col">확인 표기</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>
                 <tbody>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSRF 루프백</span><div class="sr-pat-code"><code class="sr-code" id="probe-server-request-pat-1">http://127.0.0.1:8080/admin</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-pat-1" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">URL을 받는 파라미터</span><br>서버 자신의 다른 포트·경로로 요청이 나가는지 봅니다. 응답이 그대로 반사되면 내부 접근이 가능한 상태입니다.</td><td data-label="안전(차단) 신호">400 거부 또는 허용 목록 밖 차단 로그</td><td data-label="취약 신호">내부 페이지 내용이 응답에 포함</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSRF 메타데이터</span><div class="sr-pat-code"><code class="sr-code" id="probe-server-request-pat-2">http://169.254.169.254/latest/meta-data/</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-pat-2" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">URL을 받는 파라미터</span><br>클라우드 메타데이터 주소로 요청이 나가는지 봅니다. 자격증명 경로는 요청하지 않고 루트 응답 여부만 확인합니다.</td><td data-label="안전(차단) 신호">403·차단 로그, 응답 본문 비어 있음</td><td data-label="취약 신호">메타데이터 목록이 응답에 포함</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSRF 표기 우회</span><div class="sr-pat-code"><code class="sr-code" id="probe-server-request-pat-3">http://127.0.0.1:8080@fixture.test/</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-pat-3" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">URL을 받는 파라미터</span><br>파서마다 사용자정보(<code class="sr-code">@</code>) 해석이 달라 허용 목록 검사를 통과하는지 봅니다.</td><td data-label="안전(차단) 신호">호스트를 <code class="sr-code">fixture.test</code>로 파싱해 허용/거부가 일관됨</td><td data-label="취약 신호">검사는 통과하고 실제 요청은 루프백으로 감</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">Open Redirect 절대 URL</span><div class="sr-pat-code"><code class="sr-code" id="probe-server-request-pat-4">https://evil.test/</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-pat-4" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">`next`·`returnUrl` 파라미터</span><br>이동 목적지를 외부 도메인으로 바꿀 수 있는지 봅니다. 실제로 이동하지 않고 <code class="sr-code">Location</code> 헤더만 확인합니다.</td><td data-label="안전(차단) 신호">상대 경로로 정규화되거나 400 거부</td><td data-label="취약 신호"><code class="sr-code">Location: https://evil.test/</code> 반환</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">Open Redirect 스킴 상대 표기</span><div class="sr-pat-code"><code class="sr-code" id="probe-server-request-pat-5">//evil.test/</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-pat-5" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">`next`·`returnUrl` 파라미터</span><br><code class="sr-code">//</code>로 시작하는 표기가 같은 출처 검사를 우회하는지 봅니다.</td><td data-label="안전(차단) 신호"><code class="sr-code">/</code>로 시작하는 내부 경로로만 허용</td><td data-label="취약 신호">프로토콜 상대 URL로 외부 이동</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">허용 목록 접미사 우회</span><div class="sr-pat-code"><code class="sr-code" id="probe-server-request-pat-6">https://fixture.test.evil.test/</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-pat-6" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">허용 목록 비교 로직</span><br>문자열 포함 검사(<code class="sr-code">contains</code>)를 쓰면 접미사로 통과하는지 봅니다.</td><td data-label="안전(차단) 신호">호스트 전체 일치 비교로 거부</td><td data-label="취약 신호">허용 목록 통과 후 외부로 요청</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSRF 루프백</span><span class="sr-pat-notation">루프백 대역 주소 요청 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">URL을 받는 파라미터</span><br>서버 자신의 다른 포트·경로로 요청이 나가는지 봅니다. 응답이 그대로 반사되면 내부 접근이 가능한 상태입니다.</td><td data-label="안전(차단) 신호">400 거부 또는 허용 목록 밖 차단 로그</td><td data-label="취약 신호">내부 페이지 내용이 응답에 포함</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSRF 메타데이터</span><span class="sr-pat-notation">메타데이터/루프백 대역 Egress 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">URL을 받는 파라미터</span><br>클라우드 메타데이터 대역 주소로 요청이 나가는지 봅니다. 자격증명 경로는 요청하지 않고 루트 응답 여부만 확인합니다.</td><td data-label="안전(차단) 신호">403·차단 로그, 응답 본문 비어 있음</td><td data-label="취약 신호">메타데이터 목록이 응답에 포함</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">SSRF 표기 우회</span><span class="sr-pat-notation">사용자정보(@) 표기 혼동 우회 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">URL을 받는 파라미터</span><br>파서마다 사용자정보(<code class="sr-code">@</code>) 해석이 달라 허용 목록 검사를 통과하는지 봅니다.</td><td data-label="안전(차단) 신호">호스트 파싱이 일관되고 허용 목록 밖이면 거부</td><td data-label="취약 신호">검사는 통과하고 실제 요청은 루프백으로 감</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">Open Redirect 절대 URL</span><span class="sr-pat-notation">외부 절대 URL 이동 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">`next`·`returnUrl` 파라미터</span><br>이동 목적지를 외부 도메인으로 바꿀 수 있는지 봅니다. 실제로 이동하지 않고 <code class="sr-code">Location</code> 헤더만 확인합니다.</td><td data-label="안전(차단) 신호">상대 경로로 정규화되거나 400 거부</td><td data-label="취약 신호"><code class="sr-code">Location</code> 헤더가 외부 도메인으로 반환</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">Open Redirect 스킴 상대 표기</span><span class="sr-pat-notation">스킴 상대 표기(//) 이동 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">`next`·`returnUrl` 파라미터</span><br>슬래시 두 개로 시작하는 표기가 같은 출처 검사를 우회하는지 봅니다.</td><td data-label="안전(차단) 신호"><code class="sr-code">/</code>로 시작하는 내부 경로로만 허용</td><td data-label="취약 신호">프로토콜 상대 URL로 외부 이동</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">허용 목록 접미사 우회</span><span class="sr-pat-notation">허용 목록 접미사 우회 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">허용 목록 비교 로직</span><br>문자열 포함 검사(<code class="sr-code">contains</code>)를 쓰면 접미사로 통과하는지 봅니다.</td><td data-label="안전(차단) 신호">호스트 전체 일치 비교로 거부</td><td data-label="취약 신호">허용 목록 통과 후 외부로 요청</td></tr>
                 </tbody>
               </table>
             </div>
-            <h4 class="sr-h">확인 명령</h4>
+            <h4 class="sr-h">확인 절차 (비실행)</h4>
+            <p class="sr-sub">아래 명령은 승인된 점검에서 이미 저장된 결과 JSON·로그를 읽기만 합니다. 대상을 향해 요청을 보내지 않습니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">루프백 요청 1회</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">Egress 판정 결과 요약</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-1" data-label="복사">복사</button>
               </div>
-              <pre id="probe-server-request-cmd-1">curl -sS -G --data-urlencode &quot;url=http://127.0.0.1:8080/admin&quot; http://127.0.0.1:8080/fetch -o resp-ssrf.html -w &#x27;%{http_code} %{size_download}\n&#x27;</pre>
+              <pre id="probe-server-request-cmd-1">jq -r &#x27;.egress[] | [.notation, .dest_class, .action, .reason] | @tsv&#x27; fixture/results/server-request.json</pre>
             </div>
-            <p class="sr-cmd-note">응답 본문이 내부 페이지와 같으면 SSRF입니다. 파일은 확인 후 지웁니다.</p>
+            <p class="sr-cmd-note">표기별로 목적지 분류(<code class="sr-code">loopback</code>·<code class="sr-code">link_local</code>·<code class="sr-code">external</code>)와 판정(<code class="sr-code">ALLOW</code>·<code class="sr-code">DENY</code>)을 봅니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">메타데이터 주소 차단 확인</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">외부로 나간 리다이렉트 찾기</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-2" data-label="복사">복사</button>
               </div>
-              <pre id="probe-server-request-cmd-2">curl -sS -G --data-urlencode &quot;url=http://169.254.169.254/latest/meta-data/&quot; http://127.0.0.1:8080/fetch -w &#x27;%{http_code}\n&#x27;</pre>
+              <pre id="probe-server-request-cmd-2">jq -r &#x27;.redirects[] | select(.location_class == &quot;external&quot;) | .notation&#x27; fixture/results/server-request.json</pre>
             </div>
-            <p class="sr-cmd-note">자격증명 경로는 요청하지 않습니다. 403·400이면 차단 정상입니다.</p>
+            <p class="sr-cmd-note">한 건이라도 있으면 그 요청의 <code class="sr-code">Location</code> 헤더 원문을 확인합니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">리다이렉트 목적지 확인</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">Egress 프록시 로그 확인</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-3" data-label="복사">복사</button>
               </div>
-              <pre id="probe-server-request-cmd-3">curl -sS -D - -o /dev/null -G --data-urlencode &quot;next=https://evil.test/&quot; http://127.0.0.1:8080/link</pre>
+              <pre id="probe-server-request-cmd-3">grep -nE &#x27;action=(DENY|ALLOW)&#x27; /var/log/fixture/egress.log | tail -20</pre>
             </div>
-            <p class="sr-cmd-note">본문은 버리고 <code class="sr-code">Location</code> 헤더만 봅니다. <code class="sr-code">-L</code>은 붙이지 않아 실제로 이동하지 않습니다.</p>
-            <div class="sr-cmd">
-              <div class="sr-cmd-head">
-                <span class="sr-cmd-label">Egress 차단 로그 확인</span>
-                <span class="sr-pill impact-read">로컬 파일 읽기</span>
-                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-4" data-label="복사">복사</button>
-              </div>
-              <pre id="probe-server-request-cmd-4">grep -n &#x27;DENY\|BLOCK\|egress&#x27; /var/log/fixture/egress.log | tail -20</pre>
-            </div>
-            <p class="sr-cmd-note">서버가 대신 요청한 목적지와 차단 사유가 남습니다. 코드 거부와 프록시 차단을 구분합니다.</p>
+            <p class="sr-cmd-note">사설·링크로컬 대역이 <code class="sr-code">ALLOW</code>로 남아 있으면 코드 검증이 없는 상태입니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
                 <span class="sr-cmd-label">허용 목록 설정 확인</span>
                 <span class="sr-pill impact-read">로컬 파일 읽기</span>
-                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-5" data-label="복사">복사</button>
+                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-4" data-label="복사">복사</button>
               </div>
-              <pre id="probe-server-request-cmd-5">grep -nE &#x27;allow|egress|proxy&#x27; /etc/fixture/app.conf</pre>
+              <pre id="probe-server-request-cmd-4">grep -nE &#x27;allow|egress|proxy&#x27; /etc/fixture/app.conf</pre>
             </div>
             <p class="sr-cmd-note">허용 출처·프록시 설정을 코드와 대조합니다. 설정만 있고 코드가 무시하면 취약입니다.</p>
+            <div class="sr-cmd">
+              <div class="sr-cmd-head">
+                <span class="sr-cmd-label">URL 검증 코드 정적 확인</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
+                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-server-request-cmd-5" data-label="복사">복사</button>
+              </div>
+              <pre id="probe-server-request-cmd-5">grep -rnE &#x27;urlparse|allowlist|is_safe_url|resolve&#x27; app/src | head -20</pre>
+            </div>
+            <p class="sr-cmd-note">검증 함수가 허용 목록과 사설 대역 차단을 함께 하는지 소스에서 확인합니다.</p>
             <h4 class="sr-h">판정 기준 · 오탐 · 조치</h4>
             <div class="sr-read">
               <section class="sr-read-block read-ok">
                 <h5>정상 출력</h5>
                 <ul>
-                  <li>루프백·메타데이터 요청이 400·403으로 거부되고 Egress 로그에 <code class="sr-code">DENY</code>가 남습니다.</li>
+                  <li>루프백·메타데이터 대역 요청이 400·403으로 거부되고 Egress 로그에 <code class="sr-code">DENY</code>가 남습니다.</li>
                   <li>리다이렉트가 내부 상대 경로로만 정규화됩니다.</li>
                   <li>허용 목록이 호스트 전체 일치로 비교되어 접미사 우회가 통과하지 않습니다.</li>
                 </ul>
@@ -4663,8 +4655,8 @@ content-type: text/html
                 <h5>이상 징후</h5>
                 <ul>
                   <li>응답 본문에 내부 페이지 HTML·메타데이터 항목이 포함됩니다.</li>
-                  <li><code class="sr-code">Location: https://evil.test/</code>가 그대로 반환됩니다.</li>
-                  <li>Egress 로그에 사설·링크로컬 주소로 나간 <code class="sr-code">ALLOW</code> 기록이 있습니다.</li>
+                  <li><code class="sr-code">Location</code> 헤더가 허용 목록 밖 외부 도메인을 가리킵니다.</li>
+                  <li>Egress 로그에 사설·링크로컬 대역으로 나간 <code class="sr-code">ALLOW</code> 기록이 있습니다.</li>
                   <li>검사는 통과했는데 실제 요청 목적지가 다른 경우(파서 차이)가 있습니다.</li>
                 </ul>
               </section>
@@ -4688,8 +4680,8 @@ content-type: text/html
               <section class="sr-read-block read-act">
                 <h5>재점검</h5>
                 <ul>
-                  <li>같은 패턴으로 다시 보내 400·403과 Egress <code class="sr-code">DENY</code>가 유지되는지 확인합니다.</li>
-                  <li>리다이렉트가 내부 경로로만 정규화되는지 <code class="sr-code">Location</code> 헤더로 확인합니다.</li>
+                  <li>조치 후 새로 저장된 Egress 로그에서 400·403과 <code class="sr-code">DENY</code> 사유가 유지되는지 확인합니다.</li>
+                  <li>리다이렉트 응답의 <code class="sr-code">Location</code>이 내부 경로로만 정규화되는지 다시 봅니다.</li>
                 </ul>
               </section>
             </div>
@@ -4704,8 +4696,7 @@ content-type: application/json
 {&quot;error&quot;:&quot;허용되지 않은 대상 URL입니다&quot;,&quot;code&quot;:&quot;URL_NOT_ALLOWED&quot;}
 
 HTTP/1.1 302 Found
-location: /dashboard
-</pre>
+location: /dashboard</pre>
               </figure>
               <figure class="sr-sample sr-mock-vuln">
                 <figcaption>취약 신호 — 내부 접근·외부 이동</figcaption>
@@ -4716,19 +4707,18 @@ content-type: text/html
 &lt;a href=&quot;/admin/users&quot;&gt;사용자 관리&lt;/a&gt;
 
 HTTP/1.1 302 Found
-location: https://evil.test/
-</pre>
+location: 외부-도메인(허용 목록 밖)</pre>
               </figure>
             </div>
             <p class="sr-sample-cap">왼쪽은 허용 목록에서 거부되고 내부 경로로만 이동합니다. 오른쪽은 내부 페이지가 응답에 실리고 외부 도메인으로 이동합니다.</p>
             <h4 class="sr-h">차단 로그 예시</h4>
             <figure class="sr-sample sr-blocklog">
               <figcaption>Egress 프록시 차단 로그 (합성 예시)</figcaption>
-              <pre>2026-11-27T10:13:01+09:00 egress-proxy app=fixture-fetch dest=127.0.0.1:8080 action=DENY reason=loopback_blocked req_id=fixture-1001
-2026-11-27T10:13:03+09:00 egress-proxy app=fixture-fetch dest=169.254.169.254:80 action=DENY reason=link_local_blocked req_id=fixture-1002
-2026-11-27T10:13:05+09:00 egress-proxy app=fixture-link dest=evil.test:443 action=DENY reason=not_in_allowlist req_id=fixture-1003</pre>
+              <pre>2026-11-27T10:13:01+09:00 egress-proxy app=fixture-fetch dest=loopback-band action=DENY reason=loopback_blocked req_id=fixture-1001
+2026-11-27T10:13:03+09:00 egress-proxy app=fixture-fetch dest=link-local-band action=DENY reason=link_local_blocked req_id=fixture-1002
+2026-11-27T10:13:05+09:00 egress-proxy app=fixture-link dest=offsite-domain action=DENY reason=not_in_allowlist req_id=fixture-1003</pre>
             </figure>
-            <p class="sr-sample-cap"><code class="sr-code">DENY</code> 사유가 <code class="sr-code">loopback_blocked</code>·<code class="sr-code">link_local_blocked</code>·<code class="sr-code">not_in_allowlist</code>로 구분됩니다. 사유가 <code class="sr-code">ALLOW</code>인데 사설 주소면 코드 검증이 없는 상태입니다.</p>
+            <p class="sr-sample-cap"><code class="sr-code">DENY</code> 사유가 <code class="sr-code">loopback_blocked</code>·<code class="sr-code">link_local_blocked</code>·<code class="sr-code">not_in_allowlist</code>로 구분됩니다. 사유가 <code class="sr-code">ALLOW</code>인데 사설 대역이면 코드 검증이 없는 상태입니다.</p>
             <div class="sr-foot">
               <div><h5>공식 문서</h5><ul>
                 <li><a class="sr-doc-link" href="https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP SSRF 방어 치트시트</a></li>
@@ -4736,27 +4726,27 @@ location: https://evil.test/
                 <li><a class="sr-doc-link" href="https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP — 검증되지 않은 리다이렉트</a></li>
               </ul></div>
               <div><h5>이어 보기</h5><ul>
-                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 패턴</a></li>
+                <li><a href="#probe-input-validation"><span class="sr-link-kind">항목</span>입력·출력 검증 — SQLi / XSS / SSTI 판별 표기</a></li>
                 <li><a href="#web-security-headers"><span class="sr-link-kind">항목</span>보안 응답 헤더·CORS 확인</a></li>
                 <li><a href="tools.html"><span class="sr-link-kind">유틸</span>실무 유틸·치트시트 전체</a></li>
               </ul></div>
             </div>
           </article>
-          <article class="sr-item" id="probe-file-access" data-cat="probe" data-search="파일 접근 검증 — path traversal / lfi 판별 패턴 모의 응답 · owasp wstg 경로 정규화와 기준 디렉터리 제한이 동작하는지, 차단 로그와 허용 목록 설정으로 확인합니다 파일 이름·경로를 입력받는 기능에서 .. 가 정규화되어 기준 디렉터리를 벗어나는지 확인합니다. 파일 내용은 읽지 않고 거부 응답·차단 로그·경로 설정만 확인합니다. 진단 패턴·방어 검증 상위 경로 요청 1회 curl -ss --path-as-is -g --data-urlencode  name=../../etc/passwd  http://127.0.0.1:8080/file -o resp-traversal.txt -w &#x27;%{http_code} %{size_download}\n&#x27; 인코딩 표기 확인 curl -ss --path-as-is -g --data-urlencode  name=..%2f..%2fetc%2fpasswd  http://127.0.0.1:8080/file -w &#x27;%{http_code}\n&#x27; 응답이 거부 문구인지 확인 grep -nei &#x27;invalid|not allowed|denied|허용|거부&#x27; resp-traversal.txt | head 차단 로그 확인 grep -ne &#x27;traversal|invalid_path|permission denied&#x27; /var/log/fixture/app.log | tail -20 기준 디렉터리 설정 확인 grep -ne &#x27;base_dir|root|files_path|upload_dir&#x27; /etc/fixture/app.conf 상위 경로 탐색 파일 이름 파라미터 .. 가 정규화되지 않고 상위 디렉터리로 해석되는지 봅니다. 인코딩 우회 파일 이름 파라미터 url 디코딩 후 검사하는지, 디코딩 전 문자열만 검사하는지 봅니다. 이중 인코딩 파일 이름 파라미터 한 번 더 디코딩하는 단계(프록시·프레임워크)가 있는지 봅니다. 필터 우회 표기 파일 이름 파라미터 ../ 문자열만 지우는 필터에서 ....// 가 다시 ../ 로 복원되는지 봅니다. 절대 경로 파일 이름 파라미터 상대 경로만 검사하고 절대 경로를 그대로 여는지 봅니다. 윈도 경로 구분자 파일 이름 파라미터 / 만 정규화하고 \ 를 놓치는지 봅니다. 경로 탐색에 대한 두 서버의 응답 (합성 예시)">
+          <article class="sr-item" id="probe-file-access" data-cat="probe" data-search="파일 접근 검증 — path traversal / lfi 판별 표기 비실행 판정 · owasp wstg 경로 정규화와 기준 디렉터리 제한이 동작하는지, 저장된 거부 로그와 허용 설정으로 확인합니다 파일 이름·경로를 입력받는 기능에서 상위 경로 표기가 정규화되어 기준 디렉터리를 벗어나는지 확인합니다. 실행할 경로 문자열을 싣지 않고 확인 대상만 정리하며, 파일 내용은 읽지 않습니다. 판정은 승인된 점검에서 남긴 거부 응답·애플리케이션 로그·경로 설정으로 내립니다. 진단 패턴·방어 검증 경로 판정 결과 요약 jq -r &#x27;.probes[] | [.notation, .normalized, .action, .status] | @tsv&#x27; fixture/results/file-access.json 기준 디렉터리를 벗어난 표기 찾기 jq -r &#x27;.probes[] | select(.escaped_base == true) | .notation&#x27; fixture/results/file-access.json 앱 거부 로그 확인 grep -ne &#x27;result=reject reason=(invalid_path|double_encoded)&#x27; /var/log/fixture/app.log | tail -20 기준 디렉터리 설정 확인 grep -ne &#x27;base_dir|root|files_path|upload_dir&#x27; /etc/fixture/app.conf 정규화 코드 정적 확인 grep -rne &#x27;realpath|abspath|commonpath|is_relative_to&#x27; app/src | head -20 상위 경로 탐색 상위 경로 정규화·기준 디렉터리 검증 파일 이름 파라미터 .. 표기가 정규화되지 않고 상위 디렉터리로 해석되는지 봅니다. 인코딩 우회 url 인코딩 상위 경로 차단 확인 파일 이름 파라미터 url 디코딩 후 검사하는지, 디코딩 전 문자열만 검사하는지 봅니다. 이중 인코딩 이중 인코딩 경로 차단 확인 파일 이름 파라미터 한 번 더 디코딩하는 단계(프록시·프레임워크)가 있는지 봅니다. 필터 우회 표기 필터 축약 상위 경로 차단 확인 파일 이름 파라미터 상위 경로 문자열만 지우는 필터에서 축약 표기가 다시 상위 경로로 복원되는지 봅니다. 절대 경로 절대 경로 접근 차단 확인 파일 이름 파라미터 상대 경로만 검사하고 절대 경로를 그대로 여는지 봅니다. 윈도 경로 구분자 역슬래시 경로 구분자 차단 확인 파일 이름 파라미터 슬래시만 정규화하고 역슬래시를 놓치는지 봅니다. 경로 탐색에 대한 두 서버의 응답 (합성 예시)">
             <p class="sr-item-kicker"><span class="sr-dot"></span>진단 패턴·방어 검증 · 22</p>
-            <h3 class="sr-item-title">파일 접근 검증 — Path Traversal / LFI 판별 패턴</h3>
-            <p class="sr-item-summary">경로 정규화와 기준 디렉터리 제한이 동작하는지, 차단 로그와 허용 목록 설정으로 확인합니다</p>
+            <h3 class="sr-item-title">파일 접근 검증 — Path Traversal / LFI 판별 표기</h3>
+            <p class="sr-item-summary">경로 정규화와 기준 디렉터리 제한이 동작하는지, 저장된 거부 로그와 허용 설정으로 확인합니다</p>
             <div class="sr-item-badges">
-              <span class="sr-tool">모의 응답 · OWASP WSTG</span>
-              <span class="sr-pill impact-net">네트워크 요청</span>
+              <span class="sr-tool">비실행 판정 · OWASP WSTG</span>
+              <span class="sr-pill impact-read">로컬 파일 읽기</span>
               <button type="button" class="sr-copy-link" data-copy-link="probe-file-access" data-label="링크 복사">링크 복사</button>
             </div>
             <dl class="sr-facts">
-              <div><dt>점검 목적</dt><dd>파일 이름·경로를 입력받는 기능에서 <code class="sr-code">..</code>가 정규화되어 기준 디렉터리를 벗어나는지 확인합니다. 파일 내용은 읽지 않고 거부 응답·차단 로그·경로 설정만 확인합니다.</dd></div>
+              <div><dt>점검 목적</dt><dd>파일 이름·경로를 입력받는 기능에서 상위 경로 표기가 정규화되어 기준 디렉터리를 벗어나는지 확인합니다. 실행할 경로 문자열을 싣지 않고 확인 대상만 정리하며, 파일 내용은 읽지 않습니다. 판정은 승인된 점검에서 남긴 거부 응답·애플리케이션 로그·경로 설정으로 내립니다.</dd></div>
               <div><dt>검증 기준 버전</dt><dd>OWASP WSTG v4.2(경로 탐색) · OWASP Cheat Sheet Series 기준 정리 (도구 실행 없음)</dd></div>
-              <div><dt>입력·대상</dt><dd>인가된 테스트 대상의 파일 파라미터 (예: <code class="sr-code">http://127.0.0.1:8080/file?name=</code>) · 기준 디렉터리 <code class="sr-code">app-data/files</code></dd></div>
+              <div><dt>입력·대상</dt><dd>인가된 테스트 서버의 파일 파라미터(<code class="sr-code">/file</code>) · 기준 디렉터리 <code class="sr-code">app-data/files</code> · 판정 근거는 저장된 거부 로그와 결과 JSON</dd></div>
               <div><dt>필요 권한</dt><dd>일반 사용자 (테스트 계정)</dd></div>
-              <div><dt>실행 영향 등급</dt><dd><span class="sr-pill impact-net">네트워크 요청</span> 파일을 읽거나 쓰지 않는 판별 요청입니다. 시스템 파일 내용이 응답에 오면 수집·저장하지 않고 즉시 보고합니다.</dd></div>
+              <div><dt>실행 영향 등급</dt><dd><span class="sr-pill impact-read">로컬 파일 읽기</span> 요청을 보내지 않습니다. 승인된 점검에서 저장된 거부 응답·애플리케이션 로그·프록시 로그·테스트 결과 JSON만 읽습니다.</dd></div>
             </dl>
             <h4 class="sr-h">보고서 필드</h4>
             <p class="sr-sub">응답 본문 파일 + 애플리케이션·프록시 로그</p>
@@ -4771,67 +4761,68 @@ location: https://evil.test/
                 </tbody>
               </table>
             </div>
-            <h4 class="sr-h">판별 패턴</h4>
-            <p class="sr-sub">인가된 테스트 대상에 1회만 보내는 무해한 판별 문자열입니다. 데이터를 변경하거나 파일을 내려받지 않습니다.</p>
+            <h4 class="sr-h">판별 표기 (비실행)</h4>
+            <p class="sr-sub">실행할 문자열 대신 무엇을 확인하는지 적은 표기입니다. 복사·전송 없이, 저장된 모의 응답·차단 로그·테스트 결과 JSON과 대조해 판정합니다.</p>
             <div class="sr-table-wrap">
               <table class="sr-table sr-pattern-table">
-                <thead><tr><th scope="col">패턴</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>
+                <thead><tr><th scope="col">확인 표기</th><th scope="col">위치 · 판별 원리</th><th scope="col">안전(차단) 신호</th><th scope="col">취약 신호</th></tr></thead>
                 <tbody>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">상위 경로 탐색</span><div class="sr-pat-code"><code class="sr-code" id="probe-file-access-pat-1">../../etc/passwd</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-pat-1" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br><code class="sr-code">..</code>가 정규화되지 않고 상위 디렉터리로 해석되는지 봅니다.</td><td data-label="안전(차단) 신호">400 거부 또는 <code class="sr-code">invalid path</code></td><td data-label="취약 신호">시스템 파일 내용이 응답에 포함</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">인코딩 우회</span><div class="sr-pat-code"><code class="sr-code" id="probe-file-access-pat-2">..%2f..%2fetc%2fpasswd</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-pat-2" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>URL 디코딩 후 검사하는지, 디코딩 전 문자열만 검사하는지 봅니다.</td><td data-label="안전(차단) 신호">디코딩 후에도 거부</td><td data-label="취약 신호">디코딩되며 경로가 벗어남</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">이중 인코딩</span><div class="sr-pat-code"><code class="sr-code" id="probe-file-access-pat-3">..%252f..%252fetc%252fpasswd</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-pat-3" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>한 번 더 디코딩하는 단계(프록시·프레임워크)가 있는지 봅니다.</td><td data-label="안전(차단) 신호">두 번 디코딩하지 않고 거부</td><td data-label="취약 신호">프레임워크가 한 번 더 디코딩해 경로 탈출</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">필터 우회 표기</span><div class="sr-pat-code"><code class="sr-code" id="probe-file-access-pat-4">....//....//etc/passwd</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-pat-4" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br><code class="sr-code">../</code> 문자열만 지우는 필터에서 <code class="sr-code">....//</code>가 다시 <code class="sr-code">../</code>로 복원되는지 봅니다.</td><td data-label="안전(차단) 신호">정규화 후 기준 디렉터리 밖이면 거부</td><td data-label="취약 신호">필터 통과 후 경로 탈출</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">절대 경로</span><div class="sr-pat-code"><code class="sr-code" id="probe-file-access-pat-5">/etc/passwd</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-pat-5" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>상대 경로만 검사하고 절대 경로를 그대로 여는지 봅니다.</td><td data-label="안전(차단) 신호">기준 디렉터리와 결합해 내부 파일만 허용</td><td data-label="취약 신호">절대 경로 그대로 열림</td></tr>
-                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">윈도 경로 구분자</span><div class="sr-pat-code"><code class="sr-code" id="probe-file-access-pat-6">..\..\windows\win.ini</code><button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-pat-6" data-label="복사">복사</button></div></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br><code class="sr-code">/</code>만 정규화하고 <code class="sr-code">\</code>를 놓치는지 봅니다.</td><td data-label="안전(차단) 신호">두 구분자 모두 정규화 후 거부</td><td data-label="취약 신호">역슬래시 경로가 그대로 해석</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">상위 경로 탐색</span><span class="sr-pat-notation">상위 경로 정규화·기준 디렉터리 검증</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br><code class="sr-code">..</code> 표기가 정규화되지 않고 상위 디렉터리로 해석되는지 봅니다.</td><td data-label="안전(차단) 신호">400 거부 또는 <code class="sr-code">invalid path</code></td><td data-label="취약 신호">기준 디렉터리 밖 파일 내용이 응답에 포함</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">인코딩 우회</span><span class="sr-pat-notation">URL 인코딩 상위 경로 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>URL 디코딩 후 검사하는지, 디코딩 전 문자열만 검사하는지 봅니다.</td><td data-label="안전(차단) 신호">디코딩 후에도 거부</td><td data-label="취약 신호">디코딩되며 경로가 벗어남</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">이중 인코딩</span><span class="sr-pat-notation">이중 인코딩 경로 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>한 번 더 디코딩하는 단계(프록시·프레임워크)가 있는지 봅니다.</td><td data-label="안전(차단) 신호">두 번 디코딩하지 않고 거부</td><td data-label="취약 신호">프레임워크가 한 번 더 디코딩해 경로 탈출</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">필터 우회 표기</span><span class="sr-pat-notation">필터 축약 상위 경로 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>상위 경로 문자열만 지우는 필터에서 축약 표기가 다시 상위 경로로 복원되는지 봅니다.</td><td data-label="안전(차단) 신호">정규화 후 기준 디렉터리 밖이면 거부</td><td data-label="취약 신호">필터 통과 후 경로 탈출</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">절대 경로</span><span class="sr-pat-notation">절대 경로 접근 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>상대 경로만 검사하고 절대 경로를 그대로 여는지 봅니다.</td><td data-label="안전(차단) 신호">기준 디렉터리와 결합해 내부 파일만 허용</td><td data-label="취약 신호">절대 경로 그대로 열림</td></tr>
+                  <tr><td><div class="sr-pat-cell"><span class="sr-pat-name">윈도 경로 구분자</span><span class="sr-pat-notation">역슬래시 경로 구분자 차단 확인</span></div></td><td data-label="위치 · 판별 원리"><span class="sr-pat-name">파일 이름 파라미터</span><br>슬래시만 정규화하고 역슬래시를 놓치는지 봅니다.</td><td data-label="안전(차단) 신호">두 구분자 모두 정규화 후 거부</td><td data-label="취약 신호">역슬래시 경로가 그대로 해석</td></tr>
                 </tbody>
               </table>
             </div>
-            <h4 class="sr-h">확인 명령</h4>
+            <h4 class="sr-h">확인 절차 (비실행)</h4>
+            <p class="sr-sub">아래 명령은 승인된 점검에서 이미 저장된 결과 JSON·로그를 읽기만 합니다. 대상을 향해 요청을 보내지 않습니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">상위 경로 요청 1회</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">경로 판정 결과 요약</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-1" data-label="복사">복사</button>
               </div>
-              <pre id="probe-file-access-cmd-1">curl -sS --path-as-is -G --data-urlencode &quot;name=../../etc/passwd&quot; http://127.0.0.1:8080/file -o resp-traversal.txt -w &#x27;%{http_code} %{size_download}\n&#x27;</pre>
+              <pre id="probe-file-access-cmd-1">jq -r &#x27;.probes[] | [.notation, .normalized, .action, .status] | @tsv&#x27; fixture/results/file-access.json</pre>
             </div>
-            <p class="sr-cmd-note"><code class="sr-code">--path-as-is</code>는 curl이 <code class="sr-code">..</code>를 임의로 정리하지 않게 합니다. 쿼리로 보낼 때는 <code class="sr-code">--data-urlencode</code>를 씁니다.</p>
+            <p class="sr-cmd-note">정규화 결과(<code class="sr-code">normalized</code>)가 기준 디렉터리 안으로 잘렸는지 표기별로 봅니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">인코딩 표기 확인</span>
-                <span class="sr-pill impact-net">네트워크 요청</span>
+                <span class="sr-cmd-label">기준 디렉터리를 벗어난 표기 찾기</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-2" data-label="복사">복사</button>
               </div>
-              <pre id="probe-file-access-cmd-2">curl -sS --path-as-is -G --data-urlencode &quot;name=..%2f..%2fetc%2fpasswd&quot; http://127.0.0.1:8080/file -w &#x27;%{http_code}\n&#x27;</pre>
+              <pre id="probe-file-access-cmd-2">jq -r &#x27;.probes[] | select(.escaped_base == true) | .notation&#x27; fixture/results/file-access.json</pre>
             </div>
-            <p class="sr-cmd-note">인코딩된 표기가 디코딩되어 처리되는지 상태 코드로 구분합니다.</p>
+            <p class="sr-cmd-note">한 건이라도 있으면 그 응답 본문을 열어 파일 내용이 실렸는지 확인합니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
-                <span class="sr-cmd-label">응답이 거부 문구인지 확인</span>
+                <span class="sr-cmd-label">앱 거부 로그 확인</span>
                 <span class="sr-pill impact-read">로컬 파일 읽기</span>
                 <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-3" data-label="복사">복사</button>
               </div>
-              <pre id="probe-file-access-cmd-3">grep -nEi &#x27;invalid|not allowed|denied|허용|거부&#x27; resp-traversal.txt | head</pre>
+              <pre id="probe-file-access-cmd-3">grep -nE &#x27;result=reject reason=(invalid_path|double_encoded)&#x27; /var/log/fixture/app.log | tail -20</pre>
             </div>
-            <p class="sr-cmd-note">거부 문구가 있으면 정상입니다. 시스템 파일 형식(<code class="sr-code">root:x:0:0:</code>)이 보이면 즉시 보고하고 파일을 지웁니다.</p>
-            <div class="sr-cmd">
-              <div class="sr-cmd-head">
-                <span class="sr-cmd-label">차단 로그 확인</span>
-                <span class="sr-pill impact-read">로컬 파일 읽기</span>
-                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-4" data-label="복사">복사</button>
-              </div>
-              <pre id="probe-file-access-cmd-4">grep -nE &#x27;traversal|invalid_path|Permission denied&#x27; /var/log/fixture/app.log | tail -20</pre>
-            </div>
-            <p class="sr-cmd-note">앱이 거부한 것인지 OS가 거부한 것인지 구분합니다.</p>
+            <p class="sr-cmd-note">앱이 거부한 것인지 OS가 거부한 것인지 구분합니다. 앱 거부 기록이 없으면 코드 검증이 없습니다.</p>
             <div class="sr-cmd">
               <div class="sr-cmd-head">
                 <span class="sr-cmd-label">기준 디렉터리 설정 확인</span>
                 <span class="sr-pill impact-read">로컬 파일 읽기</span>
-                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-5" data-label="복사">복사</button>
+                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-4" data-label="복사">복사</button>
               </div>
-              <pre id="probe-file-access-cmd-5">grep -nE &#x27;base_dir|root|files_path|upload_dir&#x27; /etc/fixture/app.conf</pre>
+              <pre id="probe-file-access-cmd-4">grep -nE &#x27;base_dir|root|files_path|upload_dir&#x27; /etc/fixture/app.conf</pre>
             </div>
             <p class="sr-cmd-note">기준 디렉터리가 코드에 하드코딩되어 있는지, 설정과 일치하는지 확인합니다.</p>
+            <div class="sr-cmd">
+              <div class="sr-cmd-head">
+                <span class="sr-cmd-label">정규화 코드 정적 확인</span>
+                <span class="sr-pill impact-read">로컬 파일 읽기</span>
+                <button type="button" class="sr-cmd-copy" data-copy-cmd="probe-file-access-cmd-5" data-label="복사">복사</button>
+              </div>
+              <pre id="probe-file-access-cmd-5">grep -rnE &#x27;realpath|abspath|commonpath|is_relative_to&#x27; app/src | head -20</pre>
+            </div>
+            <p class="sr-cmd-note">정규화 후 기준 디렉터리 안인지 절대 경로로 비교하는지 소스에서 확인합니다.</p>
             <h4 class="sr-h">판정 기준 · 오탐 · 조치</h4>
             <div class="sr-read">
               <section class="sr-read-block read-ok">
@@ -4845,9 +4836,9 @@ location: https://evil.test/
               <section class="sr-read-block read-no">
                 <h5>이상 징후</h5>
                 <ul>
-                  <li>응답에 <code class="sr-code">root:x:0:0:</code> 같은 시스템 파일 형식이 보입니다.</li>
+                  <li>응답에 시스템 계정 파일 형식이 그대로 보입니다.</li>
                   <li>인코딩·이중 인코딩 표기에서만 200이 나옵니다.</li>
-                  <li><code class="sr-code">....//</code> 같은 표기가 통과합니다.</li>
+                  <li>필터 축약 표기가 통과합니다.</li>
                   <li>OS 권한 오류만 남고 앱 거부 기록이 없습니다. 앱이 검사하지 않는 상태입니다.</li>
                 </ul>
               </section>
@@ -4855,7 +4846,7 @@ location: https://evil.test/
                 <h5>오탐 주의</h5>
                 <ul>
                   <li>OS 권한 때문에 실패한 것을 &#x27;안전&#x27;으로 읽으면 안 됩니다. 앱 검증 여부를 따로 봅니다.</li>
-                  <li>파일 이름에 <code class="sr-code">..</code>가 정상적으로 들어가는 기능(버전 표기 등)이 있습니다. 문맥을 확인합니다.</li>
+                  <li>파일 이름에 상위 경로 표기가 정상적으로 들어가는 기능(버전 표기 등)이 있습니다. 문맥을 확인합니다.</li>
                   <li>404는 파일이 없어서일 수도, 차단해서일 수도 있습니다. 로그로 구분합니다.</li>
                 </ul>
               </section>
@@ -4870,7 +4861,7 @@ location: https://evil.test/
               <section class="sr-read-block read-act">
                 <h5>재점검</h5>
                 <ul>
-                  <li>같은 표기 6종을 다시 보내 모두 400·403인지 확인합니다.</li>
+                  <li>조치 후 같은 표기 6종의 새 점검 결과가 모두 400·403인지 확인합니다.</li>
                   <li>앱 로그에 <code class="sr-code">invalid_path</code> 거부가 남는지, OS 권한 오류만 남지 않는지 확인합니다.</li>
                 </ul>
               </section>
@@ -4885,26 +4876,25 @@ content-type: application/json
 
 {&quot;error&quot;:&quot;허용된 디렉터리 밖 경로입니다&quot;,&quot;code&quot;:&quot;INVALID_PATH&quot;}
 
-app.log: WARN file=../../etc/passwd result=reject reason=invalid_path</pre>
+app.log: WARN file=상위-경로-표기 result=reject reason=invalid_path</pre>
               </figure>
               <figure class="sr-sample sr-mock-vuln">
                 <figcaption>취약 신호 — 기준 디렉터리 이탈</figcaption>
                 <pre>HTTP/1.1 200 OK
 content-type: text/plain
 
-root:x:0:0:root:/root:/bin/sh
-daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+root 계정 항목이 포함된 시스템 계정 파일 내용이 그대로 출력되었습니다.
 
-app.log: INFO file=../../etc/passwd result=open</pre>
+app.log: INFO file=상위-경로-표기 result=open</pre>
               </figure>
             </div>
             <p class="sr-sample-cap">왼쪽은 정규화 단계에서 거부하고 앱 로그에 사유가 남습니다. 오른쪽은 기준 디렉터리를 벗어나 시스템 파일이 열린 상태입니다.</p>
             <h4 class="sr-h">차단 로그 예시</h4>
             <figure class="sr-sample sr-blocklog">
               <figcaption>경로 검증 차단 로그 (합성 예시)</figcaption>
-              <pre>2026-11-27T10:14:01+09:00 fixture-app src=192.0.2.10 route=/file file=..%2F..%2Fetc%2Fpasswd result=reject reason=invalid_path req_id=fixture-2001
-2026-11-27T10:14:03+09:00 fixture-app src=192.0.2.10 route=/file file=..%252F..%252Fetc%252Fpasswd result=reject reason=double_encoded req_id=fixture-2002
-2026-11-27T10:14:05+09:00 fixture-proxy src=192.0.2.10 uri=/file?name=....//....//etc/passwd rule=930100 msg=&quot;Path Traversal&quot; action=block status=403 req_id=fixture-2003</pre>
+              <pre>2026-11-27T10:14:01+09:00 fixture-app src=192.0.2.10 route=/file file=relative-up-notation result=reject reason=invalid_path req_id=fixture-2001
+2026-11-27T10:14:03+09:00 fixture-app src=192.0.2.10 route=/file file=encoded-up-notation result=reject reason=double_encoded req_id=fixture-2002
+2026-11-27T10:14:05+09:00 fixture-proxy src=192.0.2.10 uri=/file notation=collapsed-up rule=930100 msg=&quot;Path Traversal&quot; action=block status=403 req_id=fixture-2003</pre>
             </figure>
             <p class="sr-sample-cap">앱 거부(<code class="sr-code">result=reject</code>)와 프록시 차단(<code class="sr-code">action=block</code>)이 모두 남습니다. 프록시만 막고 앱은 통과시키는 상태라면 코드 조치가 남아 있습니다.</p>
             <div class="sr-foot">
@@ -4914,7 +4904,7 @@ app.log: INFO file=../../etc/passwd result=open</pre>
                 <li><a class="sr-doc-link" href="https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP 파일 업로드 치트시트</a></li>
               </ul></div>
               <div><h5>이어 보기</h5><ul>
-                <li><a href="#probe-server-request"><span class="sr-link-kind">항목</span>서버 요청·이동 검증 — SSRF / Open Redirect 판별 패턴</a></li>
+                <li><a href="#probe-server-request"><span class="sr-link-kind">항목</span>서버 요청·이동 검증 — SSRF / Open Redirect 판별 표기</a></li>
                 <li><a href="#web-methods-auth"><span class="sr-link-kind">항목</span>HTTP 메서드·인증 응답 코드</a></li>
                 <li><a href="tools.html"><span class="sr-link-kind">유틸</span>실무 유틸·치트시트 전체</a></li>
               </ul></div>
@@ -4926,7 +4916,7 @@ app.log: INFO file=../../etc/passwd result=open</pre>
 
   </main>
 
-  <script type="application/json" id="srData">{"version": 2, "updated": "2026-11-27", "built_at": "2026-11-27 10:04 KST", "total": 22, "ids": ["net-asset-inventory", "net-nmap-output", "web-security-headers", "web-methods-auth", "tls-openssl", "dns-dig", "pcap-tshark", "pcap-tcpdump", "container-trivy", "code-semgrep", "os-lynis", "os-ad-logs", "oss-nuclei", "oss-ffuf", "oss-sqlmap", "oss-nikto", "oss-subfinder", "oss-httpx", "oss-testssl", "probe-input-validation", "probe-server-request", "probe-file-access"], "categories": [{"key": "asset", "label": "자산·네트워크", "items": ["net-asset-inventory", "net-nmap-output"]}, {"key": "web", "label": "웹·API", "items": ["web-security-headers", "web-methods-auth"]}, {"key": "tls", "label": "TLS·DNS", "items": ["tls-openssl", "dns-dig"]}, {"key": "packet", "label": "패킷", "items": ["pcap-tshark", "pcap-tcpdump"]}, {"key": "code", "label": "코드·컨테이너·IaC", "items": ["container-trivy", "code-semgrep"]}, {"key": "os", "label": "OS·AD", "items": ["os-lynis", "os-ad-logs"]}, {"key": "osscan", "label": "오픈소스 점검 툴", "items": ["oss-nuclei", "oss-ffuf", "oss-sqlmap", "oss-nikto", "oss-subfinder", "oss-httpx", "oss-testssl"]}, {"key": "probe", "label": "진단 패턴·방어 검증", "items": ["probe-input-validation", "probe-server-request", "probe-file-access"]}]}</script>
+  <script type="application/json" id="srData">{"version": 2, "updated": "2026-11-27", "built_at": "2026-11-27 10:49 KST", "total": 22, "ids": ["net-asset-inventory", "net-nmap-output", "web-security-headers", "web-methods-auth", "tls-openssl", "dns-dig", "pcap-tshark", "pcap-tcpdump", "container-trivy", "code-semgrep", "os-lynis", "os-ad-logs", "oss-nuclei", "oss-ffuf", "oss-sqlmap", "oss-nikto", "oss-subfinder", "oss-httpx", "oss-testssl", "probe-input-validation", "probe-server-request", "probe-file-access"], "categories": [{"key": "asset", "label": "자산·네트워크", "items": ["net-asset-inventory", "net-nmap-output"]}, {"key": "web", "label": "웹·API", "items": ["web-security-headers", "web-methods-auth"]}, {"key": "tls", "label": "TLS·DNS", "items": ["tls-openssl", "dns-dig"]}, {"key": "packet", "label": "패킷", "items": ["pcap-tshark", "pcap-tcpdump"]}, {"key": "code", "label": "코드·컨테이너·IaC", "items": ["container-trivy", "code-semgrep"]}, {"key": "os", "label": "OS·AD", "items": ["os-lynis", "os-ad-logs"]}, {"key": "osscan", "label": "오픈소스 점검 툴", "items": ["oss-nuclei", "oss-ffuf", "oss-sqlmap", "oss-nikto", "oss-subfinder", "oss-httpx", "oss-testssl"]}, {"key": "probe", "label": "진단 패턴·방어 검증", "items": ["probe-input-validation", "probe-server-request", "probe-file-access"]}]}</script>
   <script>
     // ---- 테마(다른 페이지와 같은 secjobs-theme 키) ----
     (function initTheme() {
