@@ -1,12 +1,12 @@
 {
   "meta": {
-    "total": 268,
-    "critical": 201,
-    "high": 33,
-    "kev": 46,
+    "total": 283,
+    "critical": 212,
+    "high": 34,
+    "kev": 47,
     "poc": 58,
-    "collected_at": "2026-11-27 08:30:36 KST",
-    "built_at": "2026-11-27 08:46 KST",
+    "collected_at": "2026-11-28 08:46:46 KST",
+    "built_at": "2026-11-28 08:59 KST",
     "sources": [
       "CISA KEV",
       "CISA 경보",
@@ -28,6 +28,636 @@
   },
   "items": [
     {
+      "cve_id": "CVE-2026-136716",
+      "title_ko": "Drupal core 부적절한 예외 조건 검사 취약점",
+      "summary_ko": "Drupal core의 부적절한 예외/비정상 조건 검사 취약점(CWE-754)으로, 사이트가 영향받는 비정상 또는 불완전 설치 상태에 있을 때 노출된 Drupal installer를 통해 인증되지 않은 원격 공격자가 사이트를 탈취할 수 있다. CVSS는 미평가이고 EPSS는 1.2%(상위 68%)이며, KEV에 실제 악용으로 등재되어 조치기한은 2026-11-30이다. CISA는 BOD 26-04 및 Forensics Triage Requirements에 따른 완화/패치와 인터넷 노출 평가를 요구한다.",
+      "impact_ko": "공격 성공 시 인증 없이 사이트가 탈취될 수 있어 콘텐츠·설정·사용자 데이터에 대한 통제 상실로 이어질 수 있다. 실제 악용 등재 취약점이므로 신속한 조치가 필요하다.",
+      "remediation_ko": "① CISA BOD 26-04와 Forensics Triage Requirements, 벤더 지침에 따라 영향 버전의 완화 및 패치를 적용한다. ② 인터넷 노출 자산을 우선 점검하고, 클라우드 서비스는 BOD 26-04 지침을 따르며 완화 불가 시 사용 중단을 검토한다. ③ 비정상/불완전 설치 상태가 해소되었는지 확인하고 installer 노출을 점검한다.",
+      "cvss_score": null,
+      "severity": "UNKNOWN",
+      "epss_score": 0.01212,
+      "epss_percentile": 0.68449,
+      "is_kev": true,
+      "kev_date_added": "2026-11-27",
+      "kev_due_date": "2026-11-30",
+      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "kev_ransomware": "Unknown",
+      "vendor": "Drupal",
+      "product": "Drupal core",
+      "affected_products": [
+        "Drupal core (< 10.6.23, < 11.3.23, < 11.4.14)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.drupal.org/sa-core-2026-019",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-754"
+      ],
+      "description_orig": "Drupal Core contains an improper check for unusual or exceptional conditions vulnerability that allows an unauthenticated remote attacker to take over a site via the exposed Drupal installer when the site is in one of the affected unusual or incomplete installation states.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "CISA Alert",
+          "title": "CISA Adds Three Known Exploited Vulnerabilities to Catalog",
+          "url": "https://www.cisa.gov/news-events/alerts/2026/11/27/cisa-adds-three-known-exploited-vulnerabilities-catalog",
+          "published_at": "2026-11-27"
+        },
+        {
+          "source": "The Hacker News",
+          "title": "Drupal Warns of New Highly Critical Site Takeover Vulnerability Under Active Exploitation",
+          "url": "https://thehackernews.com/2026/11/drupal-warns-of-new-highly-critical.html",
+          "published_at": "2026-11-26"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-129243",
+      "title_ko": "OSGeo GeoServer 접근 제어 우회 취약점",
+      "summary_ko": "OSGeo GeoServer의 부적절한 권한 확인 취약점으로, 인증되지 않은 원격 공격자가 service 파라미터 접두사를 포함한 요청을 통해 서비스 수준 역할 검사만으로 보호되는 작업을 호출해 검사를 우회할 수 있다. 이 취약점은 CVE-2026-129244, CVE-2026-120705, CVE-2026-129245, CVE-2026-129242와 연쇄되어 영향받는 인스턴스에서 인증되지 않은 원격 코드 실행을 달성할 수 있다. KEV 실제 악용 등재, 조치기한 2026-11-30이다.",
+      "impact_ko": "공격 성공 시 서비스 수준 역할 검사가 우회되어 보호된 작업이 실행될 수 있고, 다른 취약점과 연쇄 시 인증 없는 원격 코드 실행으로 이어질 수 있다.",
+      "remediation_ko": "① 벤더 지침과 CISA BOD 26-04, Forensics Triage Requirements에 따라 완화/패치를 적용한다. ② 인터넷 노출 GeoServer 자산을 우선 점검하고 클라우드 서비스는 BOD 26-04 지침을 따르며 완화 불가 시 사용 중단을 검토한다. ③ 연쇄 악용 가능성을 고려해 관련 CVE 목록을 함께 점검한다.",
+      "cvss_score": null,
+      "severity": "UNKNOWN",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": true,
+      "kev_date_added": "2026-11-27",
+      "kev_due_date": "2026-11-30",
+      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "kev_ransomware": "Unknown",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "affected_products": [],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [],
+      "cwe": [],
+      "description_orig": "GeoServer contains an incorrect authorization vulnerability that allows an unauthenticated remote attacker to bypass service-level role checks and invoke operations protected solely by those checks via a request with a prefixed service parameter. This vulnerability can be chained with CVE-2026-129244, CVE-2026-120705, CVE-2026-129245, and CVE-2026-129242 to achieve unauthenticated remote code execution on an affected GeoServer instance.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "CISA Alert",
+          "title": "CISA Adds Three Known Exploited Vulnerabilities to Catalog",
+          "url": "https://www.cisa.gov/news-events/alerts/2026/11/27/cisa-adds-three-known-exploited-vulnerabilities-catalog",
+          "published_at": "2026-11-27"
+        },
+        {
+          "source": "The Hacker News",
+          "title": "Hackers Exploit Two GeoServer Flaws as Researchers Warn of Unauthenticated RCE Chains",
+          "url": "https://thehackernews.com/2026/11/hackers-exploit-two-geoserver-flaws-as.html",
+          "published_at": "2026-11-25"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-120705",
+      "title_ko": "OSGeo GeoServer XML 주입 취약점",
+      "summary_ko": "OSGeo GeoServer의 XML 주입 취약점으로, 인증되지 않은 원격 공격자가 WFS 2.0 GetFeatureById stored query의 조작된 ID 파라미터를 통해 GeoServer 프로세스가 접근 가능한 로컬 텍스트 파일을 읽거나 공격자가 지정한 HTTP/HTTPS URL을 가져오게 할 수 있다. 이 취약점은 CVE-2026-129244, CVE-2026-129243, CVE-2026-129245, CVE-2026-129242와 연쇄되어 영향받는 인스턴스에서 인증되지 않은 원격 코드 실행을 달성할 수 있다. KEV 실제 악용 등재, 조치기한 2026-11-30이다.",
+      "impact_ko": "공격 성공 시 로컬 파일 읽기와 외부 URL 요청이 발생할 수 있으며, 연쇄 시 인증 없는 원격 코드 실행으로 이어질 수 있다.",
+      "remediation_ko": "① 벤더 지침과 CISA BOD 26-04, Forensics Triage Requirements에 따라 완화/패치를 적용한다. ② 인터넷 노출 GeoServer 자산을 우선 점검하고 클라우드 서비스는 BOD 26-04 지침을 따르며 완화 불가 시 사용 중단을 검토한다. ③ 연쇄 악용 가능성을 고려해 관련 CVE 목록을 함께 점검한다.",
+      "cvss_score": null,
+      "severity": "UNKNOWN",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": true,
+      "kev_date_added": "2026-11-27",
+      "kev_due_date": "2026-11-30",
+      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+      "kev_ransomware": "Unknown",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "affected_products": [],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [],
+      "cwe": [],
+      "description_orig": "OsGeo GeoServer contains an XML injection vulnerability that allows an unauthenticated remote attacker to cause the server to read local text files accessible to the GeoServer process or fetch attacker-specified HTTP or HTTPS URLs via a crafted ID parameter in the WFS 2.0 GetFeatureById stored query. This vulnerability can be chained with CVE-2026-129244, CVE-2026-129243, CVE-2026-129245, and CVE-2026-129242 to achieve unauthenticated remote code execution on an affected GeoServer instance.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "CISA Alert",
+          "title": "CISA Adds Three Known Exploited Vulnerabilities to Catalog",
+          "url": "https://www.cisa.gov/news-events/alerts/2026/11/27/cisa-adds-three-known-exploited-vulnerabilities-catalog",
+          "published_at": "2026-11-27"
+        },
+        {
+          "source": "The Hacker News",
+          "title": "Hackers Exploit Two GeoServer Flaws as Researchers Warn of Unauthenticated RCE Chains",
+          "url": "https://thehackernews.com/2026/11/hackers-exploit-two-geoserver-flaws-as.html",
+          "published_at": "2026-11-25"
+        }
+      ]
+    },
+    {
+      "cve_id": "CVE-2026-137721",
+      "title_ko": "Mitel OpenScape 4000 명령어 주입 취약점",
+      "summary_ko": "Mitel OpenScape 4000 및 OpenScape 4000 Manager의 Platform 구성요소에 불충분한 파라미터 정화로 인한 명령어 주입 취약점(CWE-78)이 존재한다. 공격자가 성공시키면 시스템 문맥에서 임의 명령을 실행할 수 있으며, CVSS 10.0(CRITICAL), EPSS 2.8%(상위 87%)로 제시되었다. 제공된 영향 버전 정보는 OpenScape 4000 및 Manager의 V11 R2.14 미만을 포함하고, 설명에는 V11 R0.22~R2.11 및 V10 일부 버전이 포함된다.",
+      "impact_ko": "공격 성공 시 시스템 문맥에서 임의 명령이 실행되어 장치 통제 상실이나 서비스 중단으로 이어질 수 있다.",
+      "remediation_ko": "① 영향 버전 해당 여부를 확인하고 벤더 지침에 따른 패치/완화를 적용한다. ② 인터넷 노출 자산을 우선 점검하고 불필요한 노출을 제한한다. ③ 명령어 주입 방지를 위해 입력값 검증과 최소 권한 운영 원칙을 적용한다.",
+      "cvss_score": 10.0,
+      "severity": "CRITICAL",
+      "epss_score": 0.02801,
+      "epss_percentile": 0.87208,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Mitel",
+      "product": "OpenScape 4000",
+      "affected_products": [
+        "Mitel OpenScape 4000 (< V11 R2.14)",
+        "Mitel OpenScape 4000 Manager (< V11 R2.14)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.mitel.com/support/security-advisories/mitel-product-security-advisory-misa-2026-0013",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-78"
+      ],
+      "description_orig": "A vulnerability in the Platform component of Mitel OpenScape 4000 and OpenScape 4000 Manager could allow an attacker to conduct a command injection attack due to insufficient parameter sanitization. A successful exploit could allow an attacker to execute arbitrary commands within the context of the system. This vulnerability affects OpenScape 4000, versions V11 R0.22 through V11 R2.11 and V10 R1.68 and earlier, and OpenScape 4000 Manager, versions V11 R0.22 through V11 R2.11 and V10 R1.34 through V10 R1.68. This is MTLVULN-1786.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone"
+    },
+    {
+      "cve_id": "CVE-2026-137724",
+      "title_ko": "Mitel OpenScape 4000 인증 우회 취약점",
+      "summary_ko": "Mitel OpenScape 4000 및 OpenScape 4000 Manager의 Platform 구성요소에 부적절한 인증 메커니즘으로 인한 취약점이 존재한다. 인증되지 않은 공격자가 이를 악용해 민감 정보를 획득하고 시스템에 무단 접근할 수 있다. CWE-306에 해당하며 CVSS 10.0(CRITICAL)로 평가되었고, V11 R0.22~V11 R2.11, V10 R1.68 이하 등 영향 버전 사용 여부 확인이 필요하다.",
+      "impact_ko": "공격 성공 시 민감 정보 유출과 시스템 무단 접근으로 이어질 수 있다.",
+      "remediation_ko": "① 영향 버전 사용 여부를 확인하고 벤더 보안 권고에 따른 조치 및 패치를 적용한다. ② 인터넷 노출 자산을 우선 점검하고 불필요한 노출을 제한한다. ③ 인증 우회 가능성을 고려해 접근 통제와 이상 접근 모니터링을 강화한다.",
+      "cvss_score": 10.0,
+      "severity": "CRITICAL",
+      "epss_score": 0.0054,
+      "epss_percentile": 0.38968,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Mitel",
+      "product": "OpenScape 4000",
+      "affected_products": [
+        "Mitel OpenScape 4000 (< V11 R2.14)",
+        "Mitel OpenScape 4000 Manager (< V11 R2.14)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.mitel.com/support/security-advisories/mitel-product-security-advisory-misa-2026-0013",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-306"
+      ],
+      "description_orig": "A vulnerability in the Platform component of Mitel OpenScape 4000, and OpenScape 4000 Manager could allow an unauthenticated attacker to conduct an unauthorized access attack due to improper authentication mechanisms. A successful exploit could allow an attacker to obtain sensitive information and gain unauthorized access to system. This vulnerability affects OpenScape 4000, versions V11 R0.22 through V11 R2.11 and V10 R1.68 and earlier, and OpenScape 4000 Manager, versions V11 R0.22 through V11 R2.11 and V10 R1.34 through V10 R1.68. This is MTLVULN-1785.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone"
+    },
+    {
+      "cve_id": "CVE-2026-138004",
+      "title_ko": "TRENDnet TEW-751DR/TEW-733GR 명령어 주입 취약점",
+      "summary_ko": "TRENDnet TEW-751DR 및 TEW-733GR 1.03B01의 UPnP Igd Control Endpoint 구성요소에서 /soap.cgi의 soapcgi_main 함수가 service 인자를 부적절하게 처리한다. 이로 인해 OS 명령 주입(CWE-78, CWE-77)이 가능하며 공격은 원격에서 수행될 수 있다. 익스플로잇이 공개되어 사용될 가능성이 있다.",
+      "impact_ko": "공격 성공 시 공격자가 OS 명령을 실행할 수 있으며, 이는 장비 보안에 중대한 영향을 줄 수 있다.",
+      "remediation_ko": "① 영향 버전 사용 여부를 확인하고 벤더 보안 권고에 따른 조치 및 패치를 적용한다. ② 인터넷 노출 자산을 우선 점검하고 불필요한 노출을 제한한다. ③ UPnP/soap.cgi 관련 접근 통제와 명령 실행 모니터링을 강화한다.",
+      "cvss_score": 10.0,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "TRENDnet",
+      "product": "TEW-751DR",
+      "affected_products": [
+        "TRENDnet TEW-751DR (1.03B01)",
+        "TRENDnet TEW-733GR (1.03B01)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://vuldb.com/vuln/444939",
+          "title": ""
+        },
+        {
+          "url": "https://vuldb.com/vuln/444939/cti",
+          "title": ""
+        },
+        {
+          "url": "https://vuldb.com/cve/CVE-2026-138004",
+          "title": ""
+        },
+        {
+          "url": "https://vuldb.com/submit/1066849",
+          "title": ""
+        },
+        {
+          "url": "https://gist.github.com/qwq-nm/251e7963d59f41beea2c7ad5ff7ca39f",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-78",
+        "CWE-77"
+      ],
+      "description_orig": "A security vulnerability has been detected in TRENDnet TEW-751DR and TEW-733GR 1.03B01. Affected is the function soapcgi_main of the file /soap.cgi of the component UPnP Igd Control Endpoint. Such manipulation of the argument service leads to os command injection. The attack may be performed from remote. The exploit has been disclosed publicly and may be used.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone"
+    },
+    {
+      "cve_id": "CVE-2026-137706",
+      "title_ko": "Direk Tech Smart Portal 권한 누락 취약점",
+      "summary_ko": "Direk Tech Smart Portal에 Missing Authorization(CWE-862) 취약점이 존재한다. 인증된 원격 공격자가 지정 계정을 Active Directory Domain Admins 그룹에 추가할 수 있다. 이를 통해 도메인 관리자 권한을 획득할 수 있다.",
+      "impact_ko": "공격 성공 시 도메인 관리자 권한 탈취로 Active Directory 환경에 대한 광범위한 제어와 민감 정보 접근이 가능해질 수 있다.",
+      "remediation_ko": "① Smart Portal의 인증·권한 부여 로직과 관리자 기능을 점검한다. ② 최소 권한 원칙을 적용하고 불필요한 계정의 그룹 추가 권한을 제한한다. ③ Active Directory Domain Admins 그룹 변경 감사와 인터넷 노출 자산 우선 점검을 수행한다.",
+      "cvss_score": 9.9,
+      "severity": "CRITICAL",
+      "epss_score": 0.00527,
+      "epss_percentile": 0.38039,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Direk Tech",
+      "product": "Smart Portal",
+      "affected_products": [
+        "Direk Tech Smart Portal (all)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.twcert.org.tw/tw/cp-132-11442-02619-1.html",
+          "title": ""
+        },
+        {
+          "url": "https://www.twcert.org.tw/en/cp-139-11443-c40ea-2.html",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-862"
+      ],
+      "description_orig": "Smart Portal developed by Direk Tech has a Missing Authorization vulnerability. Authenticated remote attackers can add a specified account to the Active Directory Domain Admins group, thereby obtaining domain administrator privileges.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone"
+    },
+    {
+      "cve_id": "CVE-2026-134963",
+      "title_ko": "Webdeclic WPMasterToolKit 코드 주입 취약점",
+      "summary_ko": "Webdeclic WPMasterToolKit에 코드 생성 제어 부적절(CWE-94)로 인한 코드 주입 취약점이 존재한다. WPMasterToolKit 2.26.1까지 영향을 받는 것으로 제시되었다. 공격자가 코드를 주입할 수 있는 보안 결함이다.",
+      "impact_ko": "공격 성공 시 임의 코드 실행으로 이어질 수 있어 애플리케이션 및 관련 시스템 보안에 중대한 영향을 줄 수 있다.",
+      "remediation_ko": "① 2.26.1 포함 영향 버전 사용 여부를 확인하고 벤더 보안 권고에 따른 조치 및 패치를 적용한다. ② 코드 생성 경로와 입력 검증을 점검하고 불필요한 경우 비활성화한다. ③ 인터넷 노출 자산을 우선 점검하고 이상 행위 모니터링을 강화한다.",
+      "cvss_score": 9.9,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Webdeclic",
+      "product": "WPMasterToolKit",
+      "affected_products": [
+        "Webdeclic WPMasterToolKit"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://patchstack.com/database/wordpress/plugin/wpmastertoolkit/vulnerability/wordpress-wpmastertoolkit-plugin-2-26-1-arbitrary-code-execution-vulnerability-2?_s_id=cve",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-94"
+      ],
+      "description_orig": "Improper Control of Generation of Code ('Code Injection') vulnerability in Webdeclic WPMasterToolKit wpmastertoolkit allows Code Injection.This issue affects WPMasterToolKit: from n/a through 2.26.1.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone"
+    },
+    {
+      "cve_id": "CVE-2026-106125",
+      "title_ko": "Sneeit Framework 원격 코드 실행(RCE) 취약점",
+      "summary_ko": "CVE-2026-106125는 Sneeit Framework에서 확인된 원격 코드 실행(RCE) 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 1.2%(악용 위험 상위 31% 수준)입니다.",
+      "impact_ko": "공격자가 원격에서 임의 코드를 실행해 서버를 완전히 장악하고, 내부 데이터 유출·추가 침해의 발판으로 삼을 수 있습니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": 0.01239,
+      "epss_percentile": 0.69111,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Sneeit",
+      "product": "Sneeit Framework",
+      "affected_products": [
+        "Sneeit Framework"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.wordfence.com/threat-intel/vulnerabilities/id/9654f07e-e595-46d4-b093-5d2ab4389806?source=cve",
+          "title": ""
+        },
+        {
+          "url": "https://github.com/tiennguyenvan/sneeit-framework/blob/main/includes/menus/menus-compact.php#L141-L142",
+          "title": ""
+        },
+        {
+          "url": "https://github.com/tiennguyenvan/sneeit-framework/blob/main/includes/lib/lib-utilities.php#L2-L12",
+          "title": ""
+        },
+        {
+          "url": "https://github.com/tiennguyenvan/sneeit-framework/blob/main/includes/menus/menus-compact.php#L487-L497",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-94"
+      ],
+      "description_orig": "The Sneeit Framework plugin for WordPress is vulnerable to Remote Code Execution in versions up to, and including, 8.7 via the 'callback' parameter of the sneeit_compact_menu_mega_content AJAX action. The handler sneeit_compact_menu_mega_content_callback() is registered on the wp_ajax_nopriv_ hook and passes the attacker-supplied 'callback' value directly into call_user_func() after only a function_exists() check, with the single argument also attacker-controlled via a JSON-decoded 'args' parameter. There is no authentication, no capability check, no nonce, and no allow-list of callable functions. This makes it possible for unauthenticated attackers to execute arbitrary existing PHP/WordPress functions with controlled arguments.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget"
+    },
+    {
+      "cve_id": "CVE-2026-59103",
+      "title_ko": "MONEO Latvia SIA MONEO ERP 보안 취약점",
+      "summary_ko": "CVE-2026-59103는 MONEO Latvia SIA MONEO ERP에서 확인된 보안 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 1.1%(악용 위험 상위 36% 수준)입니다.",
+      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": 0.0106,
+      "epss_percentile": 0.64007,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "MONEO Latvia SIA",
+      "product": "MONEO ERP",
+      "affected_products": [
+        "MONEO Latvia SIA MONEO ERP"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://offseq.com/en/research/moneo-cve-2026-59103/",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-288",
+        "CWE-807"
+      ],
+      "description_orig": "MONEO ERP exposes the Ping method of its _slave JSON-RPC service over WebSocket as @rpc.openpublic, so it can be called without a valid session. The method's only guard compares the calling application name with \"_login\", but that value is taken from the client-controlled params.appname field of the request. When the check passes, Ping stores an attacker-chosen session ID, user number and company in the server session store, and subsequent session validation accepts that session. An unauthenticated remote attacker can therefore create a valid session as any user, including administrators, in any company (tenant) hosted on the server and invoke authenticated RPC methods with that user's privileges, gaining read and write access to that company's data.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget"
+    },
+    {
+      "cve_id": "CVE-2026-115867",
+      "title_ko": "Crmperks Database for Contact Form 7, WPforms, Elementor forms 파일 업로드 취약점",
+      "summary_ko": "CVE-2026-115867는 Crmperks Database for Contact Form 7, WPforms, Elementor forms에서 확인된 파일 업로드 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.9%(악용 위험 상위 41% 수준)입니다.",
+      "impact_ko": "악성 파일 업로드를 통해 웹셸 실행이나 서버 장악이 가능합니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": 0.00921,
+      "epss_percentile": 0.58584,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "crmperks",
+      "product": "Database for Contact Form 7, WPforms, Elementor forms",
+      "affected_products": [
+        "Crmperks Database for Contact Form 7, WPforms, Elementor forms"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://www.wordfence.com/threat-intel/vulnerabilities/id/581b8b40-6333-4bb6-8584-de1dc3af2b45?source=cve",
+          "title": ""
+        },
+        {
+          "url": "https://plugins.trac.wordpress.org/browser/contact-form-entries/tags/1.5.5/contact-form-entries.php#L1383",
+          "title": ""
+        },
+        {
+          "url": "https://plugins.trac.wordpress.org/browser/contact-form-entries/tags/1.5.5/contact-form-entries.php#L810",
+          "title": ""
+        },
+        {
+          "url": "https://plugins.trac.wordpress.org/browser/contact-form-entries/tags/1.5.5/contact-form-entries.php#L108",
+          "title": ""
+        },
+        {
+          "url": "https://plugins.trac.wordpress.org/changeset/3795781/contact-form-entries",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-434"
+      ],
+      "description_orig": "The Database for Contact Form 7, WPforms, Elementor forms plugin for WordPress is vulnerable to Arbitrary File Upload in all versions up to, and including, 1.5.5 via the copy_files function. This is due to missing file extension validation in the copy_files function, which accepts attacker-controlled stream wrapper URIs as the file source and derives the destination filename without restricting executable extensions. This makes it possible for unauthenticated attackers to upload files that may be executable, which makes remote code execution possible. The plugin places an .htaccess file in its uploads directory to block PHP execution, but this mitigation is ineffective on Nginx, LiteSpeed in certain configurations, and Apache servers with AllowOverride None, and the file is not restored if deleted.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget"
+    },
+    {
+      "cve_id": "CVE-2026-137738",
+      "title_ko": "RealVNC Viewer 메모리 손상 취약점",
+      "summary_ko": "CVE-2026-137738는 RealVNC Viewer에서 확인된 메모리 손상 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.7%(악용 위험 상위 53% 수준)입니다.",
+      "impact_ko": "메모리 오류를 악용해 서비스가 중단되거나 원격 코드 실행으로 이어질 수 있습니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": 0.00671,
+      "epss_percentile": 0.47083,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "RealVNC",
+      "product": "RealVNC Viewer",
+      "affected_products": [
+        "RealVNC Viewer (8.4.0)",
+        "RealVNC Classic Viewer (6.4.0)",
+        "RealVNC Server (6.4.0)",
+        "RealVNC Connect App",
+        "RealVNC iOS Viewer (3.7.0)",
+        "RealVNC Android Viewer (3.5.0)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://help.realvnc.com/hc/en-us/articles/40824627217949-Security-Advisory-UDP-based-connection-vulnerability",
+          "title": ""
+        },
+        {
+          "url": "https://wakefield.co/research",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-787"
+      ],
+      "description_orig": "In RealVNC Server before 7.19.1, UDP-based connections could potentially be exploited without authentication to execute code remotely or cause the software to crash. This could allow an attacker to remotely execute code as root on certain platforms or perform a denial of service attack. This issue affects RealVNC Viewer: from 8.4.0 through 8.6.1; RealVNC Classic Viewer: from 6.4.0 through 7.18.2; RealVNC Server: from 6.4.0 through 7.19.0; RealVNC Connect App: through 8.6.1; RealVNC iOS Viewer: from 3.7.0 through 4.9.5; RealVNC Android Viewer: from 3.5.0 through 4.9.5; RealVNC iOS Server: through 2.8.1; RealVNC Android Server: through 2.8.3; On-Demand Assist: through 3.4.1.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget"
+    },
+    {
+      "cve_id": "CVE-2026-135933",
+      "title_ko": "Tobias WebinarIgnition 권한 상승 취약점",
+      "summary_ko": "CVE-2026-135933는 Tobias WebinarIgnition에서 확인된 권한 상승 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
+      "impact_ko": "낮은 권한의 사용자가 관리자 수준 권한을 얻어 시스템 전반을 통제할 수 있습니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Tobias",
+      "product": "WebinarIgnition",
+      "affected_products": [
+        "Tobias WebinarIgnition"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://patchstack.com/database/wordpress/plugin/webinar-ignition/vulnerability/wordpress-webinarignition-plugin-4-28-1-privilege-escalation-vulnerability?_s_id=cve",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-266"
+      ],
+      "description_orig": "Incorrect Privilege Assignment vulnerability in Tobias WebinarIgnition webinar-ignition allows Privilege Escalation.This issue affects WebinarIgnition: from n/a through 4.28.1.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget"
+    },
+    {
+      "cve_id": "CVE-2026-134994",
+      "title_ko": "Nitramix Revertix &#8211; Backup, Migration, Staging &amp; Clone 역직렬화 취약점",
+      "summary_ko": "CVE-2026-134994는 Nitramix Revertix &#8211; Backup, Migration, Staging &amp; Clone에서 확인된 역직렬화 취약점입니다. CVSS 9.8점(치명적)으로 평가됐습니다.",
+      "impact_ko": "신뢰할 수 없는 데이터가 역직렬화되면서 원격 코드 실행으로 이어질 수 있습니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": null,
+      "epss_percentile": null,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Nitramix",
+      "product": "Revertix &#8211; Backup, Migration, Staging &amp; Clone",
+      "affected_products": [
+        "Nitramix Revertix &#8211; Backup, Migration, Staging &amp; Clone"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://patchstack.com/database/wordpress/plugin/revertix/vulnerability/wordpress-revertix-backup-migration-staging-clone-plugin-1-0-3-php-object-injection-vulnerability?_s_id=cve",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-502"
+      ],
+      "description_orig": "Deserialization of Untrusted Data vulnerability in Nitramix Revertix &#8211; Backup, Migration, Staging &amp; Clone revertix allows Object Injection.This issue affects Revertix &#8211; Backup, Migration, Staging &amp; Clone: from n/a through 1.0.3.",
+      "published_at": "2026-11-27",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget"
+    },
+    {
+      "cve_id": "CVE-2026-137498",
+      "title_ko": "budibase server 프로토타입 오염 취약점",
+      "summary_ko": "Budibase server의 3.39.18부터 4.0.0 전 버전에는 프로토타입 오염 취약점이 있다. 인증되지 않은 공격자가 PUBLIC queries의 동적 JSON 키로 __proto__를 공급해 MongoDB 쿼리 필터를 제거할 수 있다. 단일 요청으로 필터를 {}로 축소해 컬렉션 전체 문서를 읽기, 수정, 삭제할 수 있다. 제공된 영향 버전은 < 4.0.0, 4.0.0이다.",
+      "impact_ko": "인증 없이 컬렉션 전체 문서의 읽기, 업데이트, 삭제가 가능해 데이터 유출·변조·삭제 영향이 발생할 수 있다.",
+      "remediation_ko": "① 벤더 보안 지침과 패치를 확인해 적용한다. ② query execution endpoint 입력 검증과 프로토타입 오염 방어를 적용한다. ③ 인터넷 노출 및 접근 권한을 점검하고 모니터링한다.",
+      "cvss_score": 10.0,
+      "severity": "CRITICAL",
+      "epss_score": 0.01096,
+      "epss_percentile": 0.65175,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "budibase",
+      "product": "server",
+      "affected_products": [
+        "Budibase server (< 4.0.0, 4.0.0)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://github.com/Budibase/budibase/security/advisories/GHSA-x4w8-596q-fmh7",
+          "title": ""
+        },
+        {
+          "url": "https://www.vulncheck.com/advisories/budibase-server-3.39.18-before-4.0.0-mongodb-filter-erasure-via-proto-keys",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-943"
+      ],
+      "description_orig": "Budibase Server from 3.39.18 before 4.0.0 contains a prototype pollution vulnerability that allows unauthenticated attackers to erase MongoDB query filters by supplying __proto__ as a dynamic JSON key in PUBLIC queries. Attackers can send a single request to the query execution endpoint, reducing the filter to {} to read, update, or delete every document in the collection.",
+      "published_at": "2026-11-26",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone"
+    },
+    {
       "cve_id": "CVE-2026-137043",
       "title_ko": "TOTOLINK N350RT 인증 우회 취약점",
       "summary_ko": "TOTOLINK N350RT의 /cgi-bin/cstecgi.cgi 내 setLanguageCfg 함수에서 lang 인자 조작으로 인증 우회가 발생한다. 공격은 원격에서 실행 가능하며 익스플로잇이 공개되어 사용될 수 있다. 영향 버전은 9.3.5u.6466_B20250825, 9.3.5u.6468_B20250827이고 CVSS 10.0 Critical이며 CWE-639, CWE-285에 해당한다.",
@@ -35,8 +665,8 @@
       "remediation_ko": "① 벤더 보안 지침과 펌웨어 업데이트를 확인하고 적용한다. ② 인터넷 노출 자산을 우선 점검해 불필요 노출을 차단한다. ③ 공개 익스플로잇 존재를 고려해 접근 통제와 로그 모니터링을 강화한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
-      "epss_score": 0.00794,
-      "epss_percentile": 0.53037,
+      "epss_score": 0.01009,
+      "epss_percentile": 0.62115,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -81,47 +711,7 @@
       ],
       "description_orig": "A security vulnerability has been detected in TOTOLINK N350RT 9.3.5u.6468_B20250827/9.3.5u.6466_B20250825. The affected element is the function setLanguageCfg of the file /cgi-bin/cstecgi.cgi. Such manipulation of the argument lang leads to authorization bypass. The attack can be executed remotely. The exploit has been disclosed publicly and may be used.",
       "published_at": "2026-11-26",
-      "updated_at": "2026-11-27 08:30:36 KST",
-      "analyzed_by": "exaone"
-    },
-    {
-      "cve_id": "CVE-2026-137498",
-      "title_ko": "budibase server 프로토타입 오염 취약점",
-      "summary_ko": "Budibase server의 3.39.18부터 4.0.0 전 버전에는 프로토타입 오염 취약점이 있다. 인증되지 않은 공격자가 PUBLIC queries의 동적 JSON 키로 __proto__를 공급해 MongoDB 쿼리 필터를 제거할 수 있다. 단일 요청으로 필터를 {}로 축소해 컬렉션 전체 문서를 읽기, 수정, 삭제할 수 있다. 제공된 영향 버전은 < 4.0.0, 4.0.0이다.",
-      "impact_ko": "인증 없이 컬렉션 전체 문서의 읽기, 업데이트, 삭제가 가능해 데이터 유출·변조·삭제 영향이 발생할 수 있다.",
-      "remediation_ko": "① 벤더 보안 지침과 패치를 확인해 적용한다. ② query execution endpoint 입력 검증과 프로토타입 오염 방어를 적용한다. ③ 인터넷 노출 및 접근 권한을 점검하고 모니터링한다.",
-      "cvss_score": 10.0,
-      "severity": "CRITICAL",
-      "epss_score": null,
-      "epss_percentile": null,
-      "is_kev": false,
-      "kev_date_added": "",
-      "kev_due_date": "",
-      "kev_required_action": "",
-      "kev_ransomware": "",
-      "vendor": "budibase",
-      "product": "server",
-      "affected_products": [
-        "Budibase server (< 4.0.0, 4.0.0)"
-      ],
-      "poc_count": 0,
-      "poc_links": [],
-      "references": [
-        {
-          "url": "https://github.com/Budibase/budibase/security/advisories/GHSA-x4w8-596q-fmh7",
-          "title": ""
-        },
-        {
-          "url": "https://www.vulncheck.com/advisories/budibase-server-3.39.18-before-4.0.0-mongodb-filter-erasure-via-proto-keys",
-          "title": ""
-        }
-      ],
-      "cwe": [
-        "CWE-943"
-      ],
-      "description_orig": "Budibase Server from 3.39.18 before 4.0.0 contains a prototype pollution vulnerability that allows unauthenticated attackers to erase MongoDB query filters by supplying __proto__ as a dynamic JSON key in PUBLIC queries. Attackers can send a single request to the query execution endpoint, reducing the filter to {} to read, update, or delete every document in the collection.",
-      "published_at": "2026-11-26",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -132,8 +722,8 @@
       "remediation_ko": "① 벤더 보안 지침과 수정 버전을 확인해 적용한다. ② content app 및 remote 접근 경로를 제한하고 불필요 URL 요청을 차단한다. ③ 인터넷 노출 자산과 remote 자격증명 설정을 점검한다.",
       "cvss_score": 10.0,
       "severity": "CRITICAL",
-      "epss_score": null,
-      "epss_percentile": null,
+      "epss_score": 0.00658,
+      "epss_percentile": 0.46326,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -173,7 +763,7 @@
       ],
       "description_orig": "A **server-side request forgery** flaw has been found in the get_remote_artifact_url() function in pulp_python/app/models.py of the pull-through caching feature in the **pulp_python** package. The function uses the redirect query parameter from the client request as the URL to download. A network attacker or user who can reach the content app of a Python distribution that has a remote can choose that URL. The content app downloads it and returns the response. When the remote has a username and password, the download sends those credentials to the host in the URL. When the remote policy is immediate, the default, or on_demand, the file is saved into the distribution's repository and later clients are served that file. The project name and version come from the file, and the filename comes from the request path. A filename the repository already stores is served from the stored file.",
       "published_at": "2026-11-26",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -184,8 +774,8 @@
       "remediation_ko": "① 인증 사용자와 테이블 쓰기 권한을 기준으로 객체 참조 권한을 재점검하고 테넌트 간 첨부 키 접근 통제를 강화 ② 공유 APPS 버킷의 객체 접근·삭제 로그를 모니터링하고 인터넷 노출 자산 우선 점검 ③ 벤더 보안 공지에서 권고하는 수정 버전으로 업데이트",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
-      "epss_score": null,
-      "epss_percentile": null,
+      "epss_score": 0.00644,
+      "epss_percentile": 0.45547,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -213,7 +803,7 @@
       ],
       "description_orig": "Budibase before 4.0.0 contains a broken object-level authorization vulnerability that allows authenticated users with table write access to reference other tenants' files by supplying arbitrary attachment keys on row save. Attackers can inject a victim app's attachment key into a row, then update or delete the row to delete that object from the shared APPS bucket or read it via presigned URLs.",
       "published_at": "2026-11-26",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -225,7 +815,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.05628,
-      "epss_percentile": 0.93713,
+      "epss_percentile": 0.9372,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -257,7 +847,7 @@
       ],
       "description_orig": "Mitel MiCollab contains an improper neutralization of special elements used in an OS command (OS command injection) vulnerability in its Audio, Web, and Video Conferencing (AWV) component that could allow an unauthenticated attacker to execute arbitrary system commands.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -277,7 +867,7 @@
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.02485,
-      "epss_percentile": 0.85331,
+      "epss_percentile": 0.85348,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -305,7 +895,7 @@
       ],
       "description_orig": "Danfoss AK-SM 800A Series contains an improper input validation vulnerability that could allow a remote attacker to run arbitrary commands on the affected system.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -325,7 +915,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.31768,
-      "epss_percentile": 0.987,
+      "epss_percentile": 0.98701,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -371,7 +961,7 @@
       ],
       "description_orig": "Vates Xen Orchestra contains an improper validation of specified type of input vulnerability that could allow an unauthenticated attacker to bypass authentication and perform actions with administrative privileges via a specially crafted authentication token containing an empty JSON object.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -391,7 +981,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.01535,
-      "epss_percentile": 0.75157,
+      "epss_percentile": 0.75183,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -430,7 +1020,7 @@
       ],
       "description_orig": "Hewlett Packard Enterprise (HPE) Juniper Session Smart Conductor and Session Smart Router contain an OS command injection vulnerability that could allow a remote attacker to execute arbitrary commands as root via a specially crafted salt minion ID.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -450,7 +1040,7 @@
       "cvss_score": 9.0,
       "severity": "CRITICAL",
       "epss_score": 0.01326,
-      "epss_percentile": 0.71078,
+      "epss_percentile": 0.71112,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -474,7 +1064,7 @@
       ],
       "description_orig": "Mitel MiCollab contains an XML injection vulnerability in its Audio, Web, and Video Conferencing (AWV) component that could allow an unauthenticated attacker to execute arbitrary commands using pre-staged malicious content.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -494,7 +1084,7 @@
       "cvss_score": 8.8,
       "severity": "HIGH",
       "epss_score": 0.01845,
-      "epss_percentile": 0.79569,
+      "epss_percentile": 0.79594,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -522,7 +1112,7 @@
       ],
       "description_orig": "Danfoss AK-SM 800A Series contains a path traversal vulnerability that could allow an attacker to access and read underlying server system files via the XML interface.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -542,7 +1132,7 @@
       "cvss_score": 8.2,
       "severity": "HIGH",
       "epss_score": 0.04271,
-      "epss_percentile": 0.91857,
+      "epss_percentile": 0.91866,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-12-09",
@@ -588,7 +1178,7 @@
       ],
       "description_orig": "Danfoss AK-SM 800A Series contains an improper authentication vulnerability that could allow an attacker to generate a web report exposing sensitive information, including internal IP addresses, usernames, and store names.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -608,7 +1198,7 @@
       "cvss_score": 5.9,
       "severity": "MEDIUM",
       "epss_score": 0.00985,
-      "epss_percentile": 0.61187,
+      "epss_percentile": 0.6122,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-12-09",
@@ -632,7 +1222,7 @@
       ],
       "description_orig": "Mitel MiCollab contains a weak authentication vulnerability in the Audio, Web and Video Conferencing (AWV) component that could allow an unauthenticated attacker to access sensitive information using a specific system-generated random identifier or pre-staged content.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -652,7 +1242,7 @@
       "cvss_score": 5.3,
       "severity": "MEDIUM",
       "epss_score": 0.00832,
-      "epss_percentile": 0.54808,
+      "epss_percentile": 0.54848,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -676,7 +1266,7 @@
       ],
       "description_orig": "Mitel MiCollab contains a not failing securely vulnerability in the Audio, Web and Video Conferencing (AWV) component that could allow an unauthenticated attacker to bypass authentication controls and perform unauthorized actions.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -696,7 +1286,7 @@
       "cvss_score": 5.3,
       "severity": "MEDIUM",
       "epss_score": 0.00771,
-      "epss_percentile": 0.52058,
+      "epss_percentile": 0.52094,
       "is_kev": true,
       "kev_date_added": "2026-11-25",
       "kev_due_date": "2026-11-28",
@@ -720,7 +1310,7 @@
       ],
       "description_orig": "Mitel MiCollab contains an unrestricted upload of file with dangerous type vulnerability in the Audio, Web and Video Conferencing (AWV) component due to insufficient file type validation that could allow an unauthenticated attacker to upload arbitrary files.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -746,7 +1336,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.02466,
-      "epss_percentile": 0.85199,
+      "epss_percentile": 0.85216,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -791,7 +1381,7 @@
       ],
       "description_orig": "A vulnerability was found in D-Link R32 1.10B02. This affects an unknown function of the file /usr/bin/httpd of the component flupl self Endpoint. Performing a manipulation of the argument fpath results in os command injection. The attack can be initiated remotely. The exploit has been made public and could be used.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -803,7 +1393,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.02206,
-      "epss_percentile": 0.83273,
+      "epss_percentile": 0.83292,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -848,7 +1438,7 @@
       ],
       "description_orig": "A security flaw has been discovered in Tenda RX3 16.03.13.11_multi. The impacted element is the function formSetSafeWanWebMan of the file /goform/SetRemoteWebCfg. The manipulation of the argument remoteIp results in command injection. The attack can be executed remotely. The exploit has been released to the public and may be used for attacks.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -860,7 +1450,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.01305,
-      "epss_percentile": 0.70595,
+      "epss_percentile": 0.70628,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -904,7 +1494,7 @@
       ],
       "description_orig": "A vulnerability was determined in Tenda RX3 16.03.13.11_multi. Impacted is the function R7WebsSecurityHandler of the component httpd. Executing a manipulation can lead to improper authentication. The attack may be launched remotely. The exploit has been publicly disclosed and may be utilized.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -916,7 +1506,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.01052,
-      "epss_percentile": 0.63717,
+      "epss_percentile": 0.63749,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -960,7 +1550,7 @@
       ],
       "description_orig": "A vulnerability was detected in Tenda RX3 16.03.13.11_multi. Affected is an unknown function of the file /goform/fast_setting_wifi_set. Performing a manipulation of the argument loginPwd results in improper authentication. It is possible to initiate the attack remotely. The exploit is now public and may be used.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -972,7 +1562,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00885,
-      "epss_percentile": 0.57046,
+      "epss_percentile": 0.5708,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -1008,7 +1598,7 @@
       ],
       "description_orig": "A vulnerability was identified in Netis WF2409E up to 20261026. Affected by this issue is some unknown functionality of the file /cgi-bin/skk_set.cgi of the component CGI Interface. The manipulation of the argument app/password/new_pwd_confirm/passwd_set/mode_name/wl_link leads to improper authentication. The attack may be initiated remotely. The exploit is publicly available and might be used. The vendor was contacted early about this disclosure but did not respond in any way.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1020,7 +1610,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.00864,
-      "epss_percentile": 0.56192,
+      "epss_percentile": 0.56233,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -1065,7 +1655,7 @@
       ],
       "description_orig": "A vulnerability was identified in Tenda RX3 16.03.13.11. The affected element is an unknown function of the file /bin/auto_discover of the component GBK-to-UTF-8 Conversion. The manipulation of the argument Hostname leads to stack-based buffer overflow. Remote exploitation of the attack is possible. The exploit is publicly available and might be used.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1077,7 +1667,7 @@
       "cvss_score": 10.0,
       "severity": "CRITICAL",
       "epss_score": 0.0062,
-      "epss_percentile": 0.44048,
+      "epss_percentile": 0.44092,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -1101,7 +1691,7 @@
       ],
       "description_orig": "Session Fixation in the login flow of Apache JSPWiki versions 2.10 through 3.0.0 on all platforms. The session identifier was not replaced when a user authenticated, so an attacker who could set a known session identifier in the browser of a victim could use the same identifier after the victim logged in. Users are recommended to upgrade to version 3.0.1 (3.x) or 2.12.6 (2.x), which fix this issue.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1113,7 +1703,7 @@
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.01801,
-      "epss_percentile": 0.79019,
+      "epss_percentile": 0.79044,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -1158,7 +1748,7 @@
       ],
       "description_orig": "A vulnerability has been found in D-Link R32 1.10B02. The impacted element is the function SetDeviceSettings of the file /usr/bin/httpd of the component DHMAPI Action Handler. Such manipulation of the argument TZLocation leads to os command injection. It is possible to launch the attack remotely. The exploit has been disclosed to the public and may be used.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1170,7 +1760,7 @@
       "cvss_score": 9.9,
       "severity": "CRITICAL",
       "epss_score": 0.01801,
-      "epss_percentile": 0.79019,
+      "epss_percentile": 0.79045,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -1215,7 +1805,7 @@
       ],
       "description_orig": "A flaw has been found in D-Link R32 1.10B02. The affected element is the function SetTimeSettings of the component DHMAPI Action Handler. This manipulation of the argument TZLocation causes os command injection. It is possible to initiate the attack remotely. The exploit has been published and may be used.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1226,8 +1816,8 @@
       "remediation_ko": "① 벤더 권고를 확인해 Jenkins Script Security Plugin을 최신 버전으로 업데이트한다. ② 스크립트·파이프라인 정의 및 실행 권한을 최소화하고 샌드박스 우회 가능성을 점검한다. ③ 인터넷 노출 Jenkins 인스턴스를 우선 점검한다.",
       "cvss_score": 9.9,
       "severity": "CRITICAL",
-      "epss_score": 0.01256,
-      "epss_percentile": 0.69522,
+      "epss_score": 0.01209,
+      "epss_percentile": 0.68353,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -1251,7 +1841,7 @@
       ],
       "description_orig": "Jenkins Script Security Plugin 1436.v1082791135e4 and earlier does not reject @Builder annotations whose builderStrategy member names an arbitrary class when the annotation is referred to using a partially qualified class name, allowing attackers with permission to define and run sandboxed scripts, including Pipelines, to execute code outside the sandbox if a suitable class is present on the classpath of the component that evaluates the script.",
       "published_at": "2026-11-25",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -1262,8 +1852,8 @@
       "remediation_ko": "① 제조사 지침에 따라 완화 조치를 적용하고 CISA BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② 클라우드 서비스는 BOD 26-04 지침을 따르고 완화가 불가하면 사용을 중단한다. ③ KEV 조치기한(2026-11-27)을 고려해 EoL/EoS 여부 확인, 지원 버전 전환 검토, 인터넷 노출 자산 우선 점검을 수행한다.",
       "cvss_score": 9.3,
       "severity": "CRITICAL",
-      "epss_score": 0.04292,
-      "epss_percentile": 0.91897,
+      "epss_score": 0.04238,
+      "epss_percentile": 0.91803,
       "is_kev": true,
       "kev_date_added": "2026-11-24",
       "kev_due_date": "2026-11-27",
@@ -1313,7 +1903,7 @@
       ],
       "description_orig": "Idunno AntiCsrf contains a deserialization of untrusted data vulnerability that allows an unauthenticated remote attacker to execute arbitrary code via object injection. The impacted product(s) could be end-of-life (EoL) and/or end-of-service (EoS). Users are advised to discontinue use and/or transition to a supported version.",
       "published_at": "2026-11-24",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -1339,7 +1929,7 @@
       "cvss_score": 7.1,
       "severity": "HIGH",
       "epss_score": 0.01055,
-      "epss_percentile": 0.63822,
+      "epss_percentile": 0.63854,
       "is_kev": true,
       "kev_date_added": "2026-11-24",
       "kev_due_date": "2026-11-27",
@@ -1391,7 +1981,7 @@
       ],
       "description_orig": "Optimizely Web Experimentation contains an external control of critical state data vulnerability in its account signup flow that could allow an attacker to impersonate existing customer users and modify Project JavaScript. Successful exploitation can result in attacker-controlled JavaScript being distributed through Optimizely-hosted assets and executed in browsers visiting affected customer websites.",
       "published_at": "2026-11-24",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -1410,8 +2000,8 @@
       "remediation_ko": "① 벤더 지침에 따라 완화를 적용하고 CISA BOD 26-04 및 포렌식 트리아지 요구사항을 준수한다. ② 인터넷 노출 자산을 우선 평가·점검하고 조치기한 2026-11-27을 고려한다. ③ 클라우드 서비스는 BOD 26-04를 따르며 완화 불가 시 사용 중단을 검토한다.",
       "cvss_score": null,
       "severity": "UNKNOWN",
-      "epss_score": 0.11053,
-      "epss_percentile": 0.96627,
+      "epss_score": 0.08381,
+      "epss_percentile": 0.95738,
       "is_kev": true,
       "kev_date_added": "2026-11-24",
       "kev_due_date": "2026-11-27",
@@ -1457,7 +2047,7 @@
       ],
       "description_orig": "Drupal Core contains a not failing securely vulnerability that could allow an unauthenticated attacker to take over an existing site or execute arbitrary code via the Drupal installer. Under specific conditions, the attacker can use install.php to attempt to reinstall Drupal on the site.",
       "published_at": "2026-11-24",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -2427,7 +3017,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.27157,
-      "epss_percentile": 0.98498,
+      "epss_percentile": 0.98499,
       "is_kev": true,
       "kev_date_added": "2026-11-23",
       "kev_due_date": "2026-11-26",
@@ -2492,7 +3082,7 @@
       ],
       "description_orig": "Project MONAI MONAI Label contains a path traversal vulnerability that allows an unauthenticated remote attacker to write arbitrary files outside the intended datastore directory, potentially resulting in remote code execution.",
       "published_at": "2026-11-23",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -2512,7 +3102,7 @@
       "cvss_score": 9.3,
       "severity": "CRITICAL",
       "epss_score": 0.01793,
-      "epss_percentile": 0.78906,
+      "epss_percentile": 0.7893,
       "is_kev": true,
       "kev_date_added": "2026-11-23",
       "kev_due_date": "2026-11-26",
@@ -2544,7 +3134,7 @@
       ],
       "description_orig": "N-able MailAssure (SpamExperts) contains a server-side request forgery vulnerability in the LDAP synchronization connection check that allows an authenticated API user to connect to arbitrary internal hosts and ports, determine which are reachable, and send crafted data to internal services.",
       "published_at": "2026-11-23",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -3675,7 +4265,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.24159,
-      "epss_percentile": 0.98332,
+      "epss_percentile": 0.98333,
       "is_kev": true,
       "kev_date_added": "2026-11-20",
       "kev_due_date": "2026-11-23",
@@ -3740,7 +4330,7 @@
       ],
       "description_orig": "Apache Roller contains a deserialization of untrusted data vulnerability that allows an unauthenticated remote attacker to execute arbitrary code via the XML-RPC endpoint, which accepts and deserializes vendor extension types before authentication. This CVE covers the same underlying vulnerability as CVE-2026-82384 but applies to a broader range of affected versions.",
       "published_at": "2026-11-20",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -3772,7 +4362,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.05009,
-      "epss_percentile": 0.93017,
+      "epss_percentile": 0.93025,
       "is_kev": true,
       "kev_date_added": "2026-11-20",
       "kev_due_date": "2026-11-23",
@@ -3834,7 +4424,7 @@
       ],
       "description_orig": "Broadcom VMware vCenter contains an authentication bypass using an alternate path or channel vulnerability in the VMware Directory Service that allows an unauthenticated attacker with network access to vCenter to bypass authentication and gain unauthorized access to the system.",
       "published_at": "2026-11-20",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -3872,7 +4462,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.01116,
-      "epss_percentile": 0.6571,
+      "epss_percentile": 0.65743,
       "is_kev": true,
       "kev_date_added": "2026-11-20",
       "kev_due_date": "2026-11-23",
@@ -3925,7 +4515,7 @@
       ],
       "description_orig": "Cisco Expressway Series contains a use of hard-coded credentials vulnerability that allows an unauthenticated, remote attacker with persistent cookies and network access to execute commands as root on a clustered device via the database service.",
       "published_at": "2026-11-20",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -3951,7 +4541,7 @@
       "cvss_score": 6.5,
       "severity": "MEDIUM",
       "epss_score": 0.01102,
-      "epss_percentile": 0.65308,
+      "epss_percentile": 0.6534,
       "is_kev": true,
       "kev_date_added": "2026-11-20",
       "kev_due_date": "2026-11-23",
@@ -3987,7 +4577,7 @@
       ],
       "description_orig": "SAP NetWeaver Enterprise Portal contains an improper neutralization of special elements in data query logic vulnerability that allows an unauthenticated attacker to disclose or modify server information via injected JNDI environment properties or a URL used during JNDI lookup operations.",
       "published_at": "2026-11-20",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -5267,7 +5857,7 @@
       "cvss_score": 9.8,
       "severity": "CRITICAL",
       "epss_score": 0.18881,
-      "epss_percentile": 0.97863,
+      "epss_percentile": 0.97865,
       "is_kev": true,
       "kev_date_added": "2026-11-18",
       "kev_due_date": "2026-11-21",
@@ -5314,78 +5904,7 @@
       ],
       "description_orig": "Vanderbilt University Research Electronic Data Capture (REDCap) contains a code injection vulnerability which could allow an unauthenticated attacker to execute arbitrary code on the server. An attacker could exploit this via crafted HTTP requests that access an unintended controller route from a public survey context and supply a crafted file-path or stream parameter during data import processing. Exploitation requires knowledge of a valid public survey hash.",
       "published_at": "2026-11-18",
-      "updated_at": "2026-11-27 08:30:36 KST",
-      "analyzed_by": "exaone",
-      "alerts": [
-        {
-          "source": "CISA Alert",
-          "title": "CISA Adds Four Known Exploited Vulnerabilities to Catalog",
-          "url": "https://www.cisa.gov/news-events/alerts/2026/11/18/cisa-adds-four-known-exploited-vulnerabilities-catalog",
-          "published_at": "2026-11-18"
-        }
-      ]
-    },
-    {
-      "cve_id": "CVE-2024-10441",
-      "title_ko": "Synology DSM/BSM 출력 인코딩·이스케이프 부적절 취약점",
-      "summary_ko": "Synology DiskStation Manager(DSM)의 시스템 플러그인 데몬에 출력 인코딩·이스케이프 부적절 취약점이 있다. Synology BeeStation OS(BSM) 환경에서 원격 공격자가 미지의 벡터로 임의 코드를 실행할 수 있다. CVSS 9.8 CRITICAL, EPSS 1.3%(상위 70%), KEV 실제 악용 등재(2026-11-18), 조치기한 2026-11-21이다.",
-      "impact_ko": "성공 시 원격 임의 코드 실행이 가능해 데이터 유출·권한 탈취·서비스 중단으로 이어질 수 있다.",
-      "remediation_ko": "① 제조사 지침에 따른 완화 적용과 CISA BOD 26-04·포렌식 트리아지 요구사항 준수. ② 인터넷 노출 자산 우선 점검, 클라우드 서비스 지침 준수, 완화 불가 시 사용 중단.",
-      "cvss_score": 9.8,
-      "severity": "CRITICAL",
-      "epss_score": 0.0276,
-      "epss_percentile": 0.86996,
-      "is_kev": true,
-      "kev_date_added": "2026-11-18",
-      "kev_due_date": "2026-11-21",
-      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-      "kev_ransomware": "Known",
-      "vendor": "Synology",
-      "product": "DiskStation Manager (DSM)",
-      "affected_products": [
-        "Synology DiskStation Manager (DSM) (< 7.2.2-72806-1, < 7.2.1-69057-6, < 7.2-64570-4 외)",
-        "Synology BeeStation OS (BSM) (< 1.1-65374, < 1.1-65374, < 1.0)"
-      ],
-      "poc_count": 3,
-      "poc_links": [
-        {
-          "name": "SHIFox8/synology-dsm-vuln-scanner",
-          "url": "https://github.com/SHIFox8/synology-dsm-vuln-scanner",
-          "stars": 3,
-          "description": "Detection-only vulnerability scanner for Synology DSM — CVE-2024-10441 (SA-24:20, ransomware-exploited) and CVE-2026-13684/13639 (SA-26:13). Read-only fingerpri…",
-          "updated": "2026-11-25"
-        },
-        {
-          "name": "Ntn10/cve-2024-10441-synology-rce",
-          "url": "https://github.com/Ntn10/cve-2024-10441-synology-rce",
-          "stars": 1,
-          "description": "Writeup y PoC educativo de CVE-2024-10441 (RCE pre-auth como root en Synology DSM via synoplugind). CVE ya parcheado; uso autorizado/defensivo.",
-          "updated": "2026-11-02"
-        },
-        {
-          "name": "cveForge/CVE-2024-10441",
-          "url": "https://github.com/cveForge/CVE-2024-10441",
-          "stars": 0,
-          "description": "Synology DiskStation Manager improper output encoding in system plugin service leading to unauthenticated remote code execution",
-          "updated": "2026-11-24"
-        }
-      ],
-      "references": [
-        {
-          "url": "https://www.synology.com/en-global/security/advisory/Synology_SA_24_20",
-          "title": ""
-        },
-        {
-          "url": "https://www.synology.com/en-global/security/advisory/Synology_SA_24_23",
-          "title": ""
-        }
-      ],
-      "cwe": [
-        "CWE-116"
-      ],
-      "description_orig": "Synology DSM contains an improper encoding or escaping of output vulnerability in the system plugin daemon in Synology BeeStation OS (BSM) that could allow a remote attacker to execute arbitrary code via unspecified vectors.",
-      "published_at": "2026-11-18",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -5404,8 +5923,8 @@
       "remediation_ko": "① 제조사 지침에 따른 완화 적용과 CISA BOD 26-04·포렌식 트리아지 요구사항 준수. ② 인터넷 노출 자산 우선 점검, 클라우드 서비스 지침 준수, 완화 불가 시 사용 중단. ③ /guardrails/test_custom_code 등 해당 URI 노출·접근 통제 검토.",
       "cvss_score": 8.8,
       "severity": "HIGH",
-      "epss_score": 0.20215,
-      "epss_percentile": 0.98012,
+      "epss_score": 0.2063,
+      "epss_percentile": 0.9806,
       "is_kev": true,
       "kev_date_added": "2026-11-18",
       "kev_due_date": "2026-12-02",
@@ -5451,7 +5970,7 @@
       ],
       "description_orig": "BerriAI LiteLLM contains an unprotected alternate channel vulnerability that could allow remote attackers to execute arbitrary code via bytecode rewriting at the /guardrails/test_custom_code URI.",
       "published_at": "2026-11-18",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -5483,7 +6002,7 @@
       "cvss_score": null,
       "severity": "UNKNOWN",
       "epss_score": 0.02695,
-      "epss_percentile": 0.86645,
+      "epss_percentile": 0.86662,
       "is_kev": true,
       "kev_date_added": "2026-11-18",
       "kev_due_date": "2026-11-21",
@@ -5542,7 +6061,7 @@
       ],
       "description_orig": "Apache Axis contains an unsafe reflection vulnerability that could allow an unauthenticated remote attacker to execute arbitrary code via a crafted SOAP fault message that causes Axis to load and instantiate an attacker-specified class when a suitable class is available on the application classpath. The impacted product(s) could be end-of-life (EoL) and/or end-of-service (EoS). Users are advised to discontinue use and/or transition to a supported version.",
       "published_at": "2026-11-18",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone",
       "alerts": [
         {
@@ -6863,72 +7382,6 @@
       "analyzed_by": "exaone"
     },
     {
-      "cve_id": "CVE-2026-115731",
-      "title_ko": "Perforce Puppet Enterprise 역직렬화 취약점",
-      "summary_ko": "Perforce Puppet Enterprise의 Puppet report-processing 코드에 신뢰할 수 없는 데이터 역직렬화 취약점이 존재한다. CA 서명 에이전트 인증서를 가진 클라이언트가 조작된 rich-data 타입을 포함한 보고서를 PUT 요청으로 제출하면 Puppet Server에서 서비스 사용자 권한으로 임의 코드 실행이 가능하다. CA가 강한 검증 없이 자동 서명하는 경우 비인증 네트워크 공격자가 유효 인증서를 얻어 악용할 수 있다.",
-      "impact_ko": "공격 성공 시 Puppet Server에서 서비스 사용자 권한으로 임의 코드가 실행되어 데이터 유출, 권한 탈취, 서비스 중단으로 이어질 수 있다. 실제 악용 KEV 등재 취약점이다.",
-      "remediation_ko": "① 벤더 지침에 따른 완화 조치를 적용하고 CISA BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② 인터넷 노출 자산을 우선 점검하고 클라우드 서비스는 해당 BOD 26-04 지침을 따르며 완화 불가 시 사용 중단을 검토한다. ③ KEV 조치기한(2026-12-01)을 고려해 신속히 조치하고 인증서 서명 검증 정책을 확인한다.",
-      "cvss_score": 9.4,
-      "severity": "CRITICAL",
-      "epss_score": 0.12579,
-      "epss_percentile": 0.9693,
-      "is_kev": true,
-      "kev_date_added": "2026-11-17",
-      "kev_due_date": "2026-12-01",
-      "kev_required_action": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-      "kev_ransomware": "Unknown",
-      "vendor": "Perforce",
-      "product": "Puppet Enterprise",
-      "affected_products": [
-        "Perforce Puppet Enterprise (< 2023.8.13, < 2025.12.1, < 2026.0.1 외)"
-      ],
-      "poc_count": 2,
-      "poc_links": [
-        {
-          "name": "foxcornlab/puppet-enterprise-scanner",
-          "url": "https://github.com/foxcornlab/puppet-enterprise-scanner",
-          "stars": 3,
-          "description": "Detection-only triage for Puppet Enterprise / OpenVox CVE-2026-115731 (report deserialization RCE, CVSS 9.4) and CVE-2026-115732 — version grading, port 8140 pr…",
-          "updated": "2026-11-25"
-        },
-        {
-          "name": "cveForge/CVE-2026-115731",
-          "url": "https://github.com/cveForge/CVE-2026-115731",
-          "stars": 0,
-          "description": "Perforce Puppet Enterprise deserialization of untrusted PSON catalog data leading to remote code execution on the Puppet master",
-          "updated": "2026-11-24"
-        }
-      ],
-      "references": [
-        {
-          "url": "https://portal.perforce.com/s/cve/a91Qi000003IaHpIAK/report-deserialization-code-execution",
-          "title": ""
-        }
-      ],
-      "cwe": [
-        "CWE-502",
-        "CWE-94"
-      ],
-      "description_orig": "Perforce Puppet Enterprise contains a deserialization of untrusted data vulnerability in Puppet’s report-processing code that allows a client with any CA-signed agent certificate to execute arbitrary code on the Puppet Server as the service user by submitting a report containing a crafted rich-data type through a PUT request. If the certificate authority automatically signs requests without strong verification, an unauthenticated network attacker can obtain a valid certificate and exploit the vulnerability.",
-      "published_at": "2026-11-17",
-      "updated_at": "2026-11-27 08:30:36 KST",
-      "analyzed_by": "exaone",
-      "alerts": [
-        {
-          "source": "The Hacker News",
-          "title": "Hackers Exploiting Critical Puppet RCE Flaw Affecting Enterprise Management Servers",
-          "url": "https://thehackernews.com/2026/11/hackers-exploiting-critical-puppet-rce.html",
-          "published_at": "2026-11-18"
-        },
-        {
-          "source": "CISA Alert",
-          "title": "CISA Adds One Known Exploited Vulnerability to Catalog",
-          "url": "https://www.cisa.gov/news-events/alerts/2026/11/17/cisa-adds-one-known-exploited-vulnerability-catalog",
-          "published_at": "2026-11-17"
-        }
-      ]
-    },
-    {
       "cve_id": "CVE-2026-114938",
       "title_ko": "Java4Shell — OpenJDK Base64 디코더 메모리 손상 및 원격 코드 실행 (CVE-2026-114938)",
       "summary_ko": "Java4Shell로 명명된 CVE-2026-114938은 OpenJDK HotSpot JVM의 x86-64 Base64 디코더 인트린직에서 발생하는 힙 메모리 손상 취약점입니다. AVX-512 VBMI 명령으로 남은 꼬리 입력을 처리할 때 패딩('=') 개수만큼 출력 길이를 빼는데, 이 값이 0에서 음수로 내려가면서 기록 마스크가 64바이트 전체로 바뀌어 할당된 배열 뒤쪽 62바이트를 덮어씁니다. 'A' 64개 뒤에 '=' 하나를 붙인 Base64 문자열만으로 재현되며(OpenJDK 17은 'A' 128개), 인증 없이 네트워크에서 접근하는 공격자가 JVM을 중단시키거나 힙 메모리를 유출하고 최악의 경우 원격 코드 실행까지 이어갈 수 있습니다. CVSS 4.0 기준 9.2(치명적)로 평가됐고, 미국 CISA는 2026-11-17 '즉시 패치' 경보를 발표했습니다(NVD에는 CVSS 3.1 8.1로 먼저 등록).",
@@ -6936,8 +7389,8 @@
       "remediation_ko": "① Java 17.0.21.1+4, 21.0.13.1+4, 25.0.5.1+4, 27.0.1.1+4 이상으로 즉시 업데이트하세요(Oracle CSPU·OpenJDK 보안 업데이트로 배포). ② 패치 전 임시 조치로 JVM 옵션 -XX:-UseBASE64Intrinsics(하드웨어 가속 Base64 비활성) 또는 x86-64에 한해 -XX:UseAVX=2를 적용하세요. ARM64 JVM은 -XX:UseAVX를 인식하지 못해 기동에 실패하므로 적용하면 안 됩니다. ③ grep -om1 -E 'avx512[_]?vbmi' /proc/cpuinfo 로 AVX-512 VBMI 지원 여부를 확인하고, 컨테이너 이미지·어플라이언스·서드파티에 번들된 JDK·JRE까지 자산 목록에 넣어 점검하세요. ④ Base64 입력 길이 제한과 검증을 적용하고 비인증 접근을 줄이며, 예상치 못한 JVM 크래시와 의심스러운 Java 프로세스를 모니터링하세요.",
       "cvss_score": 9.2,
       "severity": "CRITICAL",
-      "epss_score": 0.59265,
-      "epss_percentile": 0.99341,
+      "epss_score": 0.72539,
+      "epss_percentile": 0.99603,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -7012,7 +7465,7 @@
       ],
       "description_orig": "Vulnerability in the Oracle Java SE, Oracle GraalVM for JDK, Oracle GraalVM Enterprise Edition product of Oracle Java SE (component: Compiler). Supported versions that are affected are Oracle Java SE: 8u511b33-perf, 17.0.21.0.3, 21.0.13.0.3, 25.0.5.0.3, 27.0.1.0.3; Oracle GraalVM for JDK: 17.0.21.0.3 and 21.0.13.0.3; Oracle GraalVM Enterprise Edition: 21.3.20.0.3. Difficult to exploit vulnerability allows unauthenticated attacker with network access via multiple protocols to compromise Oracle Java SE, Oracle GraalVM for JDK, Oracle GraalVM Enterprise Edition. Successful attacks of this vulnerability can result in takeover of Oracle Java SE, Oracle GraalVM for JDK, Oracle GraalVM Enterprise Edition. Note: This vulnerability can only be exploited by supplying data to APIs in the specified Component without using Untrusted Java Web Start applications or Untrusted Java applets, such as through a web service. CVSS 3.1 Base Score 8.1 (Confidentiality, Integrity and Availability impacts). CVSS Vector: (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H).",
       "published_at": "2026-11-17",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "curated",
       "alerts": [
         {
@@ -11447,6 +11900,55 @@
       ]
     },
     {
+      "cve_id": "CVE-2026-58114",
+      "title_ko": "Siemens SIMATIC BATCH V9.1 보안 취약점",
+      "summary_ko": "CVE-2026-58114는 Siemens SIMATIC BATCH V9.1에서 확인된 보안 취약점입니다. CVSS 7.5점(높음)으로 평가됐습니다. 향후 30일 내 악용될 확률(EPSS)은 0.5%(악용 위험 상위 63% 수준)입니다.",
+      "impact_ko": "취약점이 악용되면 시스템 기밀성·무결성이 훼손될 수 있습니다.",
+      "remediation_ko": "① 영향받는 제품·버전을 자산 목록에서 확인하고, 벤더 보안 공지의 수정 버전으로 업데이트하세요. ② 인터넷에 직접 노출된 서비스는 접근 제어·WAF 차단 등 임시 완화 조치를 함께 적용하고, 침해 흔적 점검을 병행하세요.",
+      "cvss_score": 7.5,
+      "severity": "HIGH",
+      "epss_score": 0.00519,
+      "epss_percentile": 0.37458,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Siemens",
+      "product": "SIMATIC BATCH V9.1",
+      "affected_products": [
+        "Siemens SIMATIC BATCH V9.1 (< *)",
+        "Siemens SIMATIC Information Server 2020 (< *)",
+        "Siemens SIMATIC Information Server 2022 (< *)",
+        "Siemens SIMATIC PCS 7 V9.1 (< *)",
+        "Siemens SIMATIC Process Historian 2020 (< *)",
+        "Siemens SIMATIC Process Historian 2022 (< *)"
+      ],
+      "poc_count": 0,
+      "poc_links": [],
+      "references": [
+        {
+          "url": "https://cert-portal.siemens.com/productcert/html/ssa-970803.html",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-1390"
+      ],
+      "description_orig": "A vulnerability has been identified in SIMATIC BATCH V9.1 (All versions), SIMATIC Information Server 2020 (All versions), SIMATIC Information Server 2022 (All versions), SIMATIC PCS 7 V9.1 (All versions), SIMATIC Process Historian 2020 (All versions), SIMATIC Process Historian 2022 (All versions), SIMATIC WinCC Runtime Professional V17 (All versions), SIMATIC WinCC Runtime Professional V18 (All versions), SIMATIC WinCC Runtime Professional V19 (All versions), SIMATIC WinCC Runtime Professional V20 (All versions), SIMATIC WinCC Runtime Professional V21 (All versions), SIMATIC WinCC V7.5 (All versions), SIMATIC WinCC V8.0 (All versions), SIMATIC WinCC V8.1 (All versions). Affected systems do not properly secure their remote user authentication with the deprecated NTLM protocol. This could allow unauthenticated remote attackers, who have achieved a machine in the middle position, to relay NTLM authentication and impersonate a legitimate user. The potential impact depends on the services that are accessible, e.g. a SQL server used by WinCC.",
+      "published_at": "2026-11-10",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "fallback:budget",
+      "alerts": [
+        {
+          "source": "CISA ICS Advisory",
+          "title": "Siemens SIMATIC",
+          "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-08",
+          "published_at": "2026-11-17"
+        }
+      ]
+    },
+    {
       "cve_id": "CVE-2026-105583",
       "title_ko": "Microsoft Windows DWM Core Library 잘못된 포인터 해제 취약점",
       "summary_ko": "Microsoft Windows DWM Core Library의 잘못된 포인터 또는 참조 해제(CWE-763) 문제로, 로컬 인증 공격자가 권한을 상승시킬 수 있다. 영향 버전은 Windows 10 1809(<10.0.17763.9487), Windows 10 21H2(<10.0.19044.7846), Windows 10 22H2(<10.0.19045.7846), Windows 11 23H2(<10.0.22631.7711)이다.",
@@ -12204,6 +12706,72 @@
       ]
     },
     {
+      "cve_id": "CVE-2026-115731",
+      "title_ko": "Perforce Puppet Enterprise 역직렬화 취약점",
+      "summary_ko": "Perforce Puppet Enterprise의 Puppet report-processing 코드에 신뢰할 수 없는 데이터 역직렬화 취약점이 존재한다. CA 서명 에이전트 인증서를 가진 클라이언트가 조작된 rich-data 타입을 포함한 보고서를 PUT 요청으로 제출하면 Puppet Server에서 서비스 사용자 권한으로 임의 코드 실행이 가능하다. CA가 강한 검증 없이 자동 서명하는 경우 비인증 네트워크 공격자가 유효 인증서를 얻어 악용할 수 있다.",
+      "impact_ko": "공격 성공 시 Puppet Server에서 서비스 사용자 권한으로 임의 코드가 실행되어 데이터 유출, 권한 탈취, 서비스 중단으로 이어질 수 있다. 실제 악용 KEV 등재 취약점이다.",
+      "remediation_ko": "① 벤더 지침에 따른 완화 조치를 적용하고 CISA BOD 26-04 및 Forensics Triage Requirements를 준수한다. ② 인터넷 노출 자산을 우선 점검하고 클라우드 서비스는 해당 BOD 26-04 지침을 따르며 완화 불가 시 사용 중단을 검토한다. ③ KEV 조치기한(2026-12-01)을 고려해 신속히 조치하고 인증서 서명 검증 정책을 확인한다.",
+      "cvss_score": 9.9,
+      "severity": "CRITICAL",
+      "epss_score": 0.12579,
+      "epss_percentile": 0.96934,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Perforce",
+      "product": "Puppet Enterprise",
+      "affected_products": [
+        "Perforce Puppet Enterprise (< 2023.8.13, < 2025.12.1, < 2026.0.1 외)"
+      ],
+      "poc_count": 2,
+      "poc_links": [
+        {
+          "name": "foxcornlab/puppet-enterprise-scanner",
+          "url": "https://github.com/foxcornlab/puppet-enterprise-scanner",
+          "stars": 3,
+          "description": "Detection-only triage for Puppet Enterprise / OpenVox CVE-2026-115731 (report deserialization RCE, CVSS 9.4) and CVE-2026-115732 — version grading, port 8140 pr…",
+          "updated": "2026-11-25"
+        },
+        {
+          "name": "cveForge/CVE-2026-115731",
+          "url": "https://github.com/cveForge/CVE-2026-115731",
+          "stars": 0,
+          "description": "Perforce Puppet Enterprise deserialization of untrusted PSON catalog data leading to remote code execution on the Puppet master",
+          "updated": "2026-11-24"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://portal.perforce.com/s/cve/a91Qi000003IaHpIAK/report-deserialization-code-execution",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-502",
+        "CWE-94"
+      ],
+      "description_orig": "Deserialization of untrusted data in the report-processing code of Puppet, as used by Puppet Server, in the affected releases, allows a client that holds any CA-signed agent certificate to execute arbitrary code on the Puppet Server as its service user by submitting a report containing a crafted rich-data type via PUT request. Where the certificate authority autosigns requests without strong verification, an unauthenticated network attacker can obtain such a certificate.",
+      "published_at": "2026-11-03",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "The Hacker News",
+          "title": "Hackers Exploiting Critical Puppet RCE Flaw Affecting Enterprise Management Servers",
+          "url": "https://thehackernews.com/2026/11/hackers-exploiting-critical-puppet-rce.html",
+          "published_at": "2026-11-18"
+        },
+        {
+          "source": "CISA Alert",
+          "title": "CISA Adds One Known Exploited Vulnerability to Catalog",
+          "url": "https://www.cisa.gov/news-events/alerts/2026/11/17/cisa-adds-one-known-exploited-vulnerability-catalog",
+          "published_at": "2026-11-17"
+        }
+      ]
+    },
+    {
       "cve_id": "CVE-2026-119977",
       "title_ko": "WordPress 코어 TOCTOU 경쟁 조건 취약점",
       "summary_ko": "WordPress 코어에는 시간 확인·사용(TOCTOU) 경쟁 조건 취약점이 존재한다. 전체 패키지 코어 업그레이드 과정에서 예측 가능한 웹 접근 가능 스테이징 경로가 사용되는 조건을 이용하면, 인증되지 않은 공격자가 업그레이드 창에서 서버에서 코드를 실행할 수 있다고 설명된다. 영향 버전은 WordPress Foundation WordPress 4.7.0, 4.8.0, 4.9.0 외로 제시됐고, CVSS 8.1(HIGH), KEV 실제 악용 등재(2026-11-03), 조치기한 2026-11-06이 확인됐다.",
@@ -12952,7 +13520,7 @@
       "cvss_score": 9.3,
       "severity": "CRITICAL",
       "epss_score": 0.00583,
-      "epss_percentile": 0.41807,
+      "epss_percentile": 0.41849,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -12986,7 +13554,7 @@
       ],
       "description_orig": "Insufficient authentication and access control on the internal-only IPC SOAP endpoint of the Genian NAC/ZTNA policy server allows an unauthenticated attacker to invoke internal functions",
       "published_at": "2026-10-01",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -12998,7 +13566,7 @@
       "cvss_score": 8.4,
       "severity": "HIGH",
       "epss_score": 0.01652,
-      "epss_percentile": 0.76934,
+      "epss_percentile": 0.76959,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -13022,7 +13590,7 @@
       ],
       "description_orig": "An OS command injection vulnerability in Genian SSL PNS allows an attacker who knows only the client access ID, without the password, to execute arbitrary commands remotely",
       "published_at": "2026-10-01",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -13034,7 +13602,7 @@
       "cvss_score": 7.5,
       "severity": "HIGH",
       "epss_score": 0.00388,
-      "epss_percentile": 0.24588,
+      "epss_percentile": 0.24608,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -13059,7 +13627,7 @@
       ],
       "description_orig": "An improper privilege management vulnerability in Genian SSL PNS allows an attacker to escalate to super administrator privileges and force the creation of an OS account by manipulating the permission column during CSV bulk user registration",
       "published_at": "2026-10-01",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -13071,7 +13639,7 @@
       "cvss_score": 7.3,
       "severity": "HIGH",
       "epss_score": 0.00498,
-      "epss_percentile": 0.3562,
+      "epss_percentile": 0.35651,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -13095,7 +13663,7 @@
       ],
       "description_orig": "A missing authorization vulnerability in Genian SSL PNS allows an attacker to bypass multi-factor authentication by manipulating a login request parameter.",
       "published_at": "2026-10-01",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -13107,7 +13675,7 @@
       "cvss_score": 5.9,
       "severity": "MEDIUM",
       "epss_score": 0.00579,
-      "epss_percentile": 0.41542,
+      "epss_percentile": 0.41584,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -13142,7 +13710,7 @@
       ],
       "description_orig": "A path traversal (ZIP Slip) vulnerability caused by insufficient authorization and integrity verification in the agent upgrade feature of Genian NAC/ZTNA allows a remote attacker to execute arbitrary code",
       "published_at": "2026-10-01",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
     },
     {
@@ -13154,7 +13722,7 @@
       "cvss_score": 1.8,
       "severity": "LOW",
       "epss_score": 0.00129,
-      "epss_percentile": 0.01226,
+      "epss_percentile": 0.0123,
       "is_kev": false,
       "kev_date_added": "",
       "kev_due_date": "",
@@ -13179,8 +13747,79 @@
       ],
       "description_orig": "An unrestricted file upload vulnerability caused by insufficient file extension and integrity verification in Genian SSL PNS allows an attacker to upload a dangerous file that is not an official patch",
       "published_at": "2026-10-01",
-      "updated_at": "2026-11-27 08:30:36 KST",
+      "updated_at": "2026-11-28 08:46:46 KST",
       "analyzed_by": "exaone"
+    },
+    {
+      "cve_id": "CVE-2024-10441",
+      "title_ko": "Synology DSM/BSM 출력 인코딩·이스케이프 부적절 취약점",
+      "summary_ko": "Synology DiskStation Manager(DSM)의 시스템 플러그인 데몬에 출력 인코딩·이스케이프 부적절 취약점이 있다. Synology BeeStation OS(BSM) 환경에서 원격 공격자가 미지의 벡터로 임의 코드를 실행할 수 있다. CVSS 9.8 CRITICAL, EPSS 1.3%(상위 70%), KEV 실제 악용 등재(2026-11-18), 조치기한 2026-11-21이다.",
+      "impact_ko": "성공 시 원격 임의 코드 실행이 가능해 데이터 유출·권한 탈취·서비스 중단으로 이어질 수 있다.",
+      "remediation_ko": "① 제조사 지침에 따른 완화 적용과 CISA BOD 26-04·포렌식 트리아지 요구사항 준수. ② 인터넷 노출 자산 우선 점검, 클라우드 서비스 지침 준수, 완화 불가 시 사용 중단.",
+      "cvss_score": 9.8,
+      "severity": "CRITICAL",
+      "epss_score": 0.0276,
+      "epss_percentile": 0.87012,
+      "is_kev": false,
+      "kev_date_added": "",
+      "kev_due_date": "",
+      "kev_required_action": "",
+      "kev_ransomware": "",
+      "vendor": "Synology",
+      "product": "DiskStation Manager (DSM)",
+      "affected_products": [
+        "Synology DiskStation Manager (DSM) (< 7.2.2-72806-1, < 7.2.1-69057-6, < 7.2-64570-4 외)",
+        "Synology BeeStation OS (BSM) (< 1.1-65374, < 1.1-65374, < 1.0)"
+      ],
+      "poc_count": 3,
+      "poc_links": [
+        {
+          "name": "SHIFox8/synology-dsm-vuln-scanner",
+          "url": "https://github.com/SHIFox8/synology-dsm-vuln-scanner",
+          "stars": 3,
+          "description": "Detection-only vulnerability scanner for Synology DSM — CVE-2024-10441 (SA-24:20, ransomware-exploited) and CVE-2026-13684/13639 (SA-26:13). Read-only fingerpri…",
+          "updated": "2026-11-25"
+        },
+        {
+          "name": "Ntn10/cve-2024-10441-synology-rce",
+          "url": "https://github.com/Ntn10/cve-2024-10441-synology-rce",
+          "stars": 1,
+          "description": "Writeup y PoC educativo de CVE-2024-10441 (RCE pre-auth como root en Synology DSM via synoplugind). CVE ya parcheado; uso autorizado/defensivo.",
+          "updated": "2026-11-02"
+        },
+        {
+          "name": "cveForge/CVE-2024-10441",
+          "url": "https://github.com/cveForge/CVE-2024-10441",
+          "stars": 0,
+          "description": "Synology DiskStation Manager improper output encoding in system plugin service leading to unauthenticated remote code execution",
+          "updated": "2026-11-24"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://www.synology.com/en-global/security/advisory/Synology_SA_24_20",
+          "title": ""
+        },
+        {
+          "url": "https://www.synology.com/en-global/security/advisory/Synology_SA_24_23",
+          "title": ""
+        }
+      ],
+      "cwe": [
+        "CWE-116"
+      ],
+      "description_orig": "Improper encoding or escaping of output vulnerability in the system plugin daemon in Synology BeeStation OS (BSM) before 1.1-65374 and Synology DiskStation Manager (DSM) before 7.2-64570-4, 7.2.1-69057-6 and 7.2.2-72806-1 allows remote attackers to execute arbitrary code via unspecified vectors.",
+      "published_at": "2025-03-19",
+      "updated_at": "2026-11-28 08:46:46 KST",
+      "analyzed_by": "exaone",
+      "alerts": [
+        {
+          "source": "CISA Alert",
+          "title": "CISA Adds Four Known Exploited Vulnerabilities to Catalog",
+          "url": "https://www.cisa.gov/news-events/alerts/2026/11/18/cisa-adds-four-known-exploited-vulnerabilities-catalog",
+          "published_at": "2026-11-18"
+        }
+      ]
     }
   ]
 }

@@ -1,11 +1,11 @@
 {
   "meta": {
-    "collectedAt": "2026-11-27 08:37:11 KST",
-    "collectedAtIso": "2026-11-27T08:37:11+09:00",
+    "collectedAt": "2026-11-28 08:57:28 KST",
+    "collectedAtIso": "2026-11-28T08:57:28+09:00",
     "ai": {
       "used": true,
       "analyzed": 29,
-      "fallback": 2,
+      "fallback": 0,
       "model": "k-exaone_v2.5"
     },
     "sources": [
@@ -14,7 +14,7 @@
         "kind": "뉴스",
         "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
         "status": "ok",
-        "count": 19
+        "count": 18
       },
       {
         "name": "CNBC Markets",
@@ -28,7 +28,7 @@
         "kind": "뉴스",
         "url": "https://www.cnbc.com/id/10000664/device/rss/rss.html",
         "status": "ok",
-        "count": 6
+        "count": 5
       },
       {
         "name": "MarketWatch Top Stories",
@@ -42,7 +42,7 @@
         "kind": "공식 발표",
         "url": "https://www.federalreserve.gov/feeds/press_all.xml",
         "status": "ok",
-        "count": 2
+        "count": 0
       },
       {
         "name": "연준(FOMC)",
@@ -76,7 +76,7 @@
         "kind": "공식 일정",
         "url": "https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755&mtgSe=A&pYear=2026",
         "status": "ok",
-        "count": 1
+        "count": 0
       },
       {
         "name": "Nasdaq 실적 캘린더",
@@ -95,44 +95,44 @@
       "장 상태는 거래소 캘린더(휴장·조기 마감) 기준입니다. 임시 휴장·거래시간 변경은 거래소 공지를 확인하세요.",
       "일정의 한국시간은 서머타임에 따라 1시간 달라질 수 있습니다(현지 시각을 함께 적었습니다)."
     ],
-    "newsCount": 31,
-    "calendarCount": 8
+    "newsCount": 29,
+    "calendarCount": 7
   },
   "sessions": {
     "domestic": {
-      "state": "preopen",
-      "stateLabel": "개장 전",
-      "reason": "",
+      "state": "holiday",
+      "stateLabel": "휴장",
+      "reason": "주말",
       "marketName": "한국거래소(KRX)",
       "timezone": "Asia/Seoul",
       "tzLabel": "KST",
-      "localNow": "11-27 08:37",
-      "localDate": "2026-11-27",
+      "localNow": "11-28 08:57",
+      "localDate": "2026-11-28",
       "sessionText": "09:00~15:30",
       "earlyClose": false,
-      "lastTradingDate": "2026-11-26",
-      "lastTradingLabel": "11월 26일(목)",
-      "nextTradingDate": "2026-11-27",
-      "nextTradingLabel": "11월 27일(금)",
+      "lastTradingDate": "2026-11-27",
+      "lastTradingLabel": "11월 27일(금)",
+      "nextTradingDate": "2026-11-30",
+      "nextTradingLabel": "11월 30일(월)",
       "outsideCalendar": false,
       "calendarName": "한국거래소 증시일정(휴장일)",
       "calendarUrl": "https://www.krx.co.kr/main/main.jsp"
     },
     "global": {
-      "state": "holiday",
-      "stateLabel": "휴장",
-      "reason": "추수감사절",
+      "state": "early_closed",
+      "stateLabel": "조기 마감",
+      "reason": "13:00 ET 조기 마감",
       "marketName": "NYSE·Nasdaq",
       "timezone": "America/New_York",
       "tzLabel": "ET",
-      "localNow": "11-26 18:37",
-      "localDate": "2026-11-26",
-      "sessionText": "09:30~16:00",
-      "earlyClose": false,
-      "lastTradingDate": "2026-11-25",
-      "lastTradingLabel": "11월 25일(수)",
-      "nextTradingDate": "2026-11-27",
-      "nextTradingLabel": "11월 27일(금)",
+      "localNow": "11-27 18:57",
+      "localDate": "2026-11-27",
+      "sessionText": "09:30~13:00",
+      "earlyClose": true,
+      "lastTradingDate": "2026-11-27",
+      "lastTradingLabel": "11월 27일(금)",
+      "nextTradingDate": "2026-11-30",
+      "nextTradingLabel": "11월 30일(월)",
       "outsideCalendar": false,
       "calendarName": "NYSE 거래시간·휴장일",
       "calendarUrl": "https://www.nyse.com/trade/hours-calendars"
@@ -188,42 +188,25 @@
         "국내 공식 발표(한국은행) 일정은 아래 '이번 주 시장 일정'에 정리했습니다."
       ],
       "next": [
-        "현재 개장 전 · 거래 시간 09:00~15:30 KST",
-        "다음 일정 11/26 시간 미정 한국은행 금통위 기준금리 결정",
+        "현재 휴장(주말) · 거래 시간 09:00~15:30 KST",
+        "예정된 공식 일정이 없습니다. 거래소·기관 일정표를 확인하세요.",
         "시세는 이 페이지에 싣지 않습니다. 위 '공식 시세 확인' 링크를 쓰세요."
       ]
     },
     "global": {
       "issues": [
-        "MarketWatch: 시장 폭락 두려워 은퇴자금 100만 달러 중 40만 달러 연금 고민",
         "MarketWatch: 젠슨 황의 NVIDIA 복귀는 싫지만 내 401(k)에 도움…내가 위선자?",
-        "CNBC: 트럼프, 3분기 GDP 대폭 상향 수정에 '기록적 오류' 조사 요구"
+        "MarketWatch: 부모 집 정리 법적 악몽, 자녀에게 같은 고생 없이 줄이려면",
+        "CNBC: 인플레이션에 소비자 가성비 추구…블랙프라이데이에 긍정적"
       ],
       "next": [
-        "현재 휴장(추수감사절) · 거래 시간 09:30~16:00 ET",
+        "현재 조기 마감(13:00 ET 조기 마감) · 거래 시간 09:30~13:00 ET",
         "다음 일정 12/02 시간 미정 Marvell Technology, Inc. 실적 발표",
         "그다음 일정 12/03 시간 미정 Salesforce, Inc. 실적 발표"
       ]
     }
   },
   "issues": [
-    {
-      "id": "25d754105152522b",
-      "market": "global",
-      "title": "시장 폭락 두려워 은퇴자금 100만 달러 중 40만 달러 연금 고민",
-      "titleOriginal": "I’m terrified of a market crash. Should I put $400,000 of my $1 million retirement savings into an annuity?",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "금융"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/were-in-our-50s-and-terrified-of-a-market-crash-should-we-put-400-000-of-our-1-million-retirement-savings-into-an-annuity-1943f240?mod=mw_rss_topstories",
-      "publishedKst": "11-27 06:45",
-      "analyzedBy": "cache"
-    },
     {
       "id": "1f3e45bae58bb634",
       "market": "global",
@@ -238,24 +221,126 @@
       "sourceSection": "Top Stories",
       "official": false,
       "url": "https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories",
-      "publishedKst": "11-27 06:30",
+      "publishedKst": "11-28 08:30",
       "analyzedBy": "cache"
     },
     {
-      "id": "6b6cf9b584edb42b",
+      "id": "85f51d1a5ce6b340",
       "market": "global",
-      "title": "트럼프, 3분기 GDP 대폭 상향 수정에 '기록적 오류' 조사 요구",
-      "titleOriginal": "Trump demands probe into ‘record setting error’ after third-quarter GDP data gets massive revision higher",
-      "why": "3분기 GDP 데이터가 대폭 상향 수정되자 트럼프가 '기록적 오류' 조사 요구",
+      "title": "부모 집 정리 법적 악몽, 자녀에게 같은 고생 없이 줄이려면",
+      "titleOriginal": "Clearing out my parents’ house was a legal nightmare. How can I downsize without putting my kids through the same ordeal?",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "금융"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/clearing-out-my-parents-house-was-a-legal-nightmare-how-can-i-downsize-without-putting-my-children-through-the-same-ordeal-6537d804?mod=mw_rss_topstories",
+      "publishedKst": "11-28 08:15",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "bd29bcaf897e9bc2",
+      "market": "global",
+      "title": "인플레이션에 소비자 가성비 추구…블랙프라이데이에 긍정적",
+      "titleOriginal": "Inflation has shoppers hunting for value. That bodes well for Black Friday",
+      "why": "인플레이션으로 소비자들이 가성비를 찾는 것이 블랙프라이데이에 긍정적",
       "confidence": "원문 근거",
       "sectors": [
-        "매크로"
+        "유통·소비"
       ],
       "source": "CNBC",
       "sourceSection": "Top News",
       "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/trump-gdp-revision-investigation.html",
-      "publishedKst": "11-27 06:13",
+      "url": "https://www.cnbc.com/2026/11/27/black-friday-2026-inflation-value-deals.html",
+      "publishedKst": "11-28 07:00",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "9a438e849baf1153",
+      "market": "global",
+      "title": "황의 엔비디아 복귀 부각된 요동 주간, 주가 급등 상위 종목",
+      "titleOriginal": "These stocks soared the most during a wild week highlighted by Huang’s return to Nvidia",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/these-stocks-soared-the-most-during-a-wild-week-highlighted-by-huangs-return-to-nvidia-578b3f9a?mod=mw_rss_topstories",
+      "publishedKst": "11-28 05:16",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "7296cc44f2f8beda",
+      "market": "global",
+      "title": "젠슨 황 복귀에도 AI 불안 못 달래…약세에 매수",
+      "titleOriginal": "Jensen Huang's return did little to ease AI jitters. We used the weakness to buy",
+      "why": "젠슨 황 복귀에도 AI 불안이 완화되지 않아 약세",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/investingclub/2026/11/27/jensen-huangs-return-did-little-to-ease-ai-jitters-we-bought-on-weakness.html",
+      "publishedKst": "11-28 03:46",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "2102c26c0c11c169",
+      "market": "global",
+      "title": "이번 주 증시 랠리 뒤의 경고들",
+      "titleOriginal": "The warnings behind this week’s stock-market rally",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "source": "MarketWatch",
+      "sourceSection": "Top Stories",
+      "official": false,
+      "url": "https://www.marketwatch.com/story/the-warnings-behind-this-weeks-stock-market-rally-86e5319c?mod=mw_rss_topstories",
+      "publishedKst": "11-28 03:40",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "6b8e81e0b4c24925",
+      "market": "global",
+      "title": "SpaceX 주가 4%대 급등…기술주 랠리·머스크 발언 여파",
+      "titleOriginal": "SpaceX shares jump over 4% amid tech rally and after Musk says he will expand on Trump Account share donations",
+      "why": "기술주 랠리와 머스크의 Trump Account 주식 기부 확대 발언에 SpaceX 주가 급등",
+      "confidence": "원문 근거",
+      "sectors": [
+        "인터넷·플랫폼"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/spacex-shares-musk-donations.html",
+      "publishedKst": "11-28 03:24",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "894806af40b793ac",
+      "market": "global",
+      "title": "저가항공 Norse Atlantic, 자금 확보 실패로 유럽서 파산 신청",
+      "titleOriginal": "Budget airline Norse Atlantic files for bankruptcy in Europe after failing to secure funding",
+      "why": "자금 확보 실패로 파산 신청",
+      "confidence": "원문 근거",
+      "sectors": [
+        "유통·소비"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/norse-atlantic-bankruptcy-fuel-costs.html",
+      "publishedKst": "11-28 03:20",
       "analyzedBy": "cache"
     },
     {
@@ -272,8 +357,212 @@
       "sourceSection": "Top Stories",
       "official": false,
       "url": "https://www.marketwatch.com/story/a-66-year-old-nurse-faces-retirement-with-just-500-saved-whos-to-blame-4249a0fd?mod=mw_rss_topstories",
-      "publishedKst": "11-27 04:00",
+      "publishedKst": "11-28 01:00",
       "analyzedBy": "cache"
+    },
+    {
+      "id": "6b6cf9b584edb42b",
+      "market": "global",
+      "title": "트럼프, 3분기 GDP 대폭 상향 수정에 '기록적 오류' 조사 요구",
+      "titleOriginal": "Trump demands probe into 'record setting error' after third-quarter GDP data gets massive revision higher",
+      "why": "3분기 GDP 데이터가 대폭 상향 수정되자 트럼프가 '기록적 오류' 조사 요구",
+      "confidence": "원문 근거",
+      "sectors": [
+        "매크로"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/26/trump-gdp-revision-investigation.html",
+      "publishedKst": "11-28 00:52",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "b38390e66dec2088",
+      "market": "global",
+      "title": "SAP, AI 추진 위해 최소 1만 명 감원 보도",
+      "titleOriginal": "German software firm SAP is reportedly cutting at least 10,000 jobs in AI push",
+      "why": "AI 추진 과정에서 최소 1만 명 감원",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/sap-job-cuts-ai-restructuring.html",
+      "publishedKst": "11-27 23:52",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "0a7ca804c76eb356",
+      "market": "global",
+      "title": "리즈먼: 엔비디아 급등락, 워시의 시장 신호 판독 시험대",
+      "titleOriginal": "Liesman: Nvidia whiplash tests Kevin Warsh’s push to read market signals",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "World Markets",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/25/nvidia-kevin-warsh-fed-market-signals.html",
+      "publishedKst": "11-27 22:29",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "21de881f0bb8ee2e",
+      "market": "global",
+      "title": "S&P 500, 조정장 진입…약세장·경기침체가 항상 뒤따르진 않아",
+      "titleOriginal": "The S&P 500 is in a correction. Bear markets and recessions don't always follow",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/the-sp-500-is-in-a-correction-bear-markets-and-recessions-dont-always-follow.html",
+      "publishedKst": "11-27 22:21",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "067687420e925c6a",
+      "market": "global",
+      "title": "신차 가격 사상 최고치, 어디서 할인 찾을까",
+      "titleOriginal": "New car prices are at a record high. Here's where to look for deals",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "자동차"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/new-car-buying-deals-buying-tips.html",
+      "publishedKst": "11-27 22:15",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "8b16efb67470b3f9",
+      "market": "global",
+      "title": "Rheinmetall, 유럽 재무장 호황 난관에 성장 야심 자제",
+      "titleOriginal": "Rheinmetall reins in growth ambitions as Europe's rearmament boom hits hurdles",
+      "why": "유럽 재무장 호황이 난관에 부딪혀 성장 야심을 줄였기 때문",
+      "confidence": "원문 근거",
+      "sectors": [
+        "방산"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/rheinmetall-stock-cmd-guidance-sales.html",
+      "publishedKst": "11-27 22:08",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "45c6fa4b4e40d787",
+      "market": "global",
+      "title": "테크 다운로드: Jensen Huang 복귀가 AI 시장의 불씨 될까",
+      "titleOriginal": "The Tech Download: Will Jensen Huang’s return be the spark the shaky AI market needs?",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/tech-download-jensen-huang-ai-market.html",
+      "publishedKst": "11-27 21:00",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "2c834d4ef4babbc9",
+      "market": "global",
+      "title": "중국 반도체주, 베이징 지원 신호에 사상 최대 일일 상승",
+      "titleOriginal": "Chinese chip stocks notch biggest ever one-day gains as Beijing signals broader market support",
+      "why": "베이징의 광범위한 시장 지원 신호로 중국 반도체주가 사상 최대 일일 상승",
+      "confidence": "원문 근거",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/china-chip-stocks-beijing-market-support.html",
+      "publishedKst": "11-27 19:13",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "877fa681998dce9d",
+      "market": "global",
+      "title": "UAE 장관, IMF 전망 상향에 경제 낙관",
+      "titleOriginal": "‘Ready for any storm’: UAE minister optimistic on economy as IMF lifts forecast",
+      "why": "IMF가 전망을 상향해 UAE 장관이 경제에 낙관적",
+      "confidence": "원문 근거",
+      "sectors": [
+        "매크로"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Markets",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/25/uae-iran-war-economy-oil.html",
+      "publishedKst": "11-27 17:47",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "3598f60fdbe82e77",
+      "market": "global",
+      "title": "사모시장 접근성은 최고 수준, 그러나 엑시트는 별개",
+      "titleOriginal": "Private markets are more accessible than ever for investors. Getting out is another matter",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "금융"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/private-markets-retail-investors-liquidity.html",
+      "publishedKst": "11-27 17:05",
+      "analyzedBy": "exaone"
+    },
+    {
+      "id": "c80494e0629fcffd",
+      "market": "global",
+      "title": "스페인 파블로 에르난데스 데 코스, ECB 총재 내정",
+      "titleOriginal": "Spain’s Pablo Hernández de Cos set to lead European Central Bank",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "매크로"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/26/pablo-hernandez-de-cos-ecb-president.html",
+      "publishedKst": "11-27 15:50",
+      "analyzedBy": "cache"
+    },
+    {
+      "id": "e691899222da7f6a",
+      "market": "global",
+      "title": "중국 공장 이익 다시 증가, AI 붐이 승자 가른다",
+      "titleOriginal": "China’s factories are growing profits again, but the AI boom is picking the winners",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Markets",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/27/china-industrial-profits-october.html",
+      "publishedKst": "11-27 15:09",
+      "analyzedBy": "exaone"
     },
     {
       "id": "3dcdb36e6cbd20a0",
@@ -310,6 +599,23 @@
       "analyzedBy": "cache"
     },
     {
+      "id": "f6db0c5966ba0d3a",
+      "market": "global",
+      "title": "Nvidia, GPU 구매 때 중국 렌터 배제 권고",
+      "titleOriginal": "Nvidia chip buyers told to rule out Chinese renters to purchase GPUs, sources say",
+      "why": "뚜렷한 원인 미확인",
+      "confidence": "미확인",
+      "sectors": [
+        "AI·반도체"
+      ],
+      "source": "CNBC",
+      "sourceSection": "Top News",
+      "official": false,
+      "url": "https://www.cnbc.com/2026/11/26/neoclouds-nvidia-china-ai.html",
+      "publishedKst": "11-27 02:04",
+      "analyzedBy": "exaone"
+    },
+    {
       "id": "d5644481aa3a071c",
       "market": "global",
       "title": "엔비디아 변동성, 단일종목 ETF 위험 드러내",
@@ -321,62 +627,10 @@
         "금융"
       ],
       "source": "CNBC",
-      "sourceSection": "Top News",
+      "sourceSection": "World Markets",
       "official": false,
       "url": "https://www.cnbc.com/2026/11/26/nvidias-volatile-swings-expose-risks-of-single-stock-etfs.html",
       "publishedKst": "11-27 01:00",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "cd4031b1792e4455",
-      "market": "global",
-      "title": "엔비디아 CEO 젠슨 황이 401(k) 좌우하면 위험한 시대",
-      "titleOriginal": "We are living in perilous times if Nvidia CEO Jensen Huang dictates your 401(k) balance",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체",
-        "금융"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/we-are-living-in-perilous-times-if-nvidias-jensen-huang-dictates-your-401-k-balance-e0942d1e?mod=mw_rss_topstories",
-      "publishedKst": "11-27 00:30",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "c80494e0629fcffd",
-      "market": "global",
-      "title": "스페인 파블로 에르난데스 데 코스, ECB 총재 내정",
-      "titleOriginal": "Spain’s Pablo Hernández de Cos set to lead European Central Bank",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/pablo-hernandez-de-cos-ecb-president.html",
-      "publishedKst": "11-27 00:28",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "bed7633aeb250a85",
-      "market": "global",
-      "title": "엔비디아·AI 관련주, 아직 위험에서 벗어나지 못해",
-      "titleOriginal": "Nvidia and the whole AI trade aren’t out of the woods — not by a long shot",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "MarketWatch",
-      "sourceSection": "Top Stories",
-      "official": false,
-      "url": "https://www.marketwatch.com/story/nvidia-and-the-whole-ai-trade-arent-out-of-the-woods-not-by-a-long-shot-bccc0025?mod=mw_rss_topstories",
-      "publishedKst": "11-26 23:00",
       "analyzedBy": "cache"
     },
     {
@@ -390,7 +644,7 @@
         "매크로"
       ],
       "source": "CNBC",
-      "sourceSection": "Top News",
+      "sourceSection": "Markets",
       "official": false,
       "url": "https://www.cnbc.com/2026/11/26/us-tariffs-hike-trade-agreement.html",
       "publishedKst": "11-26 21:46",
@@ -411,24 +665,7 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/26/ubs-swiss-capital-rules-finma-crisis-plan.html",
       "publishedKst": "11-26 20:17",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "e05fd12cde4919bb",
-      "market": "global",
-      "title": "노르딕 애틀랜틱, 전 항공편 중단·파산 가능성 경고",
-      "titleOriginal": "Norse Atlantic suspends all flights, warns it may file for bankruptcy after share price collapse",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "유통·소비"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/norse-airline-finance-business.html",
-      "publishedKst": "11-26 18:02",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "90a9b9e561d0c755",
@@ -446,24 +683,7 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/26/latin-america-copper-energy-ai-investment.html",
       "publishedKst": "11-26 17:59",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "64dd558a359fd7b0",
-      "market": "global",
-      "title": "AI 매도세 속 유럽 부유층, 주식 밖으로 투자 다변화",
-      "titleOriginal": "Wealthy Europeans look beyond stocks amid AI selloff. Here’s where they’re investing",
-      "why": "AI 매도세 때문에 유럽 부유층이 주식 외 자산으로 눈을 돌림",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/wealthy-europeans-alternative-investments-ai.html",
-      "publishedKst": "11-26 16:23",
-      "analyzedBy": "exaone"
+      "analyzedBy": "cache"
     },
     {
       "id": "300a42d699a7f9e2",
@@ -480,268 +700,13 @@
       "official": false,
       "url": "https://www.cnbc.com/2026/11/26/mispricing-risk-fund-managers-ai-volatility.html",
       "publishedKst": "11-26 14:36",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "d0dc2123bcb8227e",
-      "market": "global",
-      "title": "트럼프 최신 관세, 인도에 아시아 경쟁국 대비 우위 안겨",
-      "titleOriginal": "How Trump’s latest tariff moves hand India an edge over rival Asian exporters",
-      "why": "트럼프의 최신 관세 조치로 인도가 경쟁 아시아 수출국보다 우위",
-      "confidence": "원문 근거",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/trump-us-tariff-india-trade.html",
-      "publishedKst": "11-26 13:12",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "7d85dadada6659d2",
-      "market": "global",
-      "title": "S&P, Nvidia 관리·지배구조 리스크로 등급 강등 경고",
-      "titleOriginal": "S&P warns Nvidia credit rating could be cut over 'rising' management and governance risk",
-      "why": "S&P가 Nvidia의 관리·지배구조 리스크 상승을 이유로 신용등급 강등 가능성을 경고",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/nvidia-market-governance-risk.html",
-      "publishedKst": "11-26 12:19",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "88ac7ce88a8d7269",
-      "market": "global",
-      "title": "Denny’s, 젠슨 황 Nvidia CEO 복귀 환영",
-      "titleOriginal": "‘Your booth is waiting’: Denny’s welcomes Jensen Huang back as Nvidia CEO",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "유통·소비"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/dennys-jensen-huang-nvidia.html",
-      "publishedKst": "11-26 12:13",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "4f5090995c15ec2b",
-      "market": "global",
-      "title": "K-beauty 주가 랠리, 한국 브랜드 아마존 글로벌 베스트셀러 상위",
-      "titleOriginal": "K-beauty stocks rally as Korean brands top Amazon bestseller lists globally ahead of Black Friday",
-      "why": "한국 브랜드들이 블랙프라이데이 앞두고 아마존 글로벌 베스트셀러 목록 상위에 올라",
-      "confidence": "원문 근거",
-      "sectors": [
-        "유통·소비"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/k-beauty-firms-amazon-sales-black-friday.html",
-      "publishedKst": "11-26 12:09",
-      "analyzedBy": "exaone"
-    },
-    {
-      "id": "daea34476944cf60",
-      "market": "global",
-      "title": "Inside India newsletter: Roaring economy, foreign investors’ return and now record auto sales",
-      "titleOriginal": "Inside India newsletter: Roaring economy, foreign investors’ return and now record auto sales",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/26/india-auto-slaes-economy-suzuki-hyundai-toyota.html",
-      "publishedKst": "11-26 09:12",
-      "analyzedBy": "fallback"
-    },
-    {
-      "id": "d3ed57317f9a6d92",
-      "market": "global",
-      "title": "연방기관, 소비자 신용·리스 규정 적용 금액 기준 발표",
-      "titleOriginal": "Agencies announce dollar thresholds for applicability of truth in lending and consumer leasing rules for consumer credit and lease transactions",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "금융"
-      ],
-      "source": "연방준비제도",
-      "sourceSection": "보도자료",
-      "official": true,
-      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261125b.htm",
-      "publishedKst": "11-26 05:00",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "38362f45862e14df",
-      "market": "global",
-      "title": "연방기관, 고가 주택담보대출 감정평가 면제 기준 금액 발표",
-      "titleOriginal": "Agencies announce dollar thresholds for smaller loan exemption from appraisal requirements for higher-priced mortgage loans",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "금융"
-      ],
-      "source": "연방준비제도",
-      "sourceSection": "보도자료",
-      "official": true,
-      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261125a.htm",
-      "publishedKst": "11-26 05:00",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "c8ee3c5a8a1e2a2b",
-      "market": "global",
-      "title": "Nvidia sellers seek new buyers as U.S. curbs China AI chip access, sources tell CNBC",
-      "titleOriginal": "Nvidia sellers seek new buyers as U.S. curbs China AI chip access, sources tell CNBC",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/nvidia-china-ai-chip-remote-access.html",
-      "publishedKst": "11-26 02:28",
-      "analyzedBy": "fallback"
-    },
-    {
-      "id": "4b8a6d03d07c9124",
-      "market": "global",
-      "title": "예측시장, OpenAI IPO 기대 시점 2027년으로 미뤄",
-      "titleOriginal": "Prediction markets push OpenAI IPO expectations later into 2027",
-      "why": "예측시장이 OpenAI IPO 기대 시점을 2027년 이후로 밀어냈다",
-      "confidence": "원문 근거",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "World Markets",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/openai-ipo-odds-2027-prediction-markets.html",
-      "publishedKst": "11-26 02:08",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "3335864e4d5548f0",
-      "market": "global",
-      "title": "Anthropic 주가, IPO 후 부진…AI 거래에 왜 중요한가",
-      "titleOriginal": "Anthropic's stock has been a clunker post-IPO. Why that matters for the AI trade",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/investingclub/2026/11/25/anthropics-stock-has-been-a-clunker-post-ipo-why-that-matters-for-the-ai-trade.html",
-      "publishedKst": "11-26 01:05",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "d93c2165c40609b3",
-      "market": "global",
-      "title": "미국, 중국·EU 포함 14개 교역국에 새 관세 제안",
-      "titleOriginal": "U.S. proposes new tariffs on 14 trading partners, including China and the EU",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/us-tariffs-trump-section-301.html",
-      "publishedKst": "11-26 01:02",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "52488453af4067e8",
-      "market": "global",
-      "title": "젠슨 황 엔비디아 복귀, 미중 AI 경쟁은 칩 이상",
-      "titleOriginal": "Jensen Huang's Nvidia return shows the U.S.-China AI race is about more than chips",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "World Markets",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/jensen-huang-nvidia-ai-talent-race.html",
-      "publishedKst": "11-25 23:29",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "9f86a802bb7bd6d0",
-      "market": "global",
-      "title": "연준 선호 물가 지표 10월 3.8%로 가속",
-      "titleOriginal": "Fed’s preferred inflation gauge accelerated to 3.8% in October, raising the 2027 stakes for the central bank",
-      "why": "연준 선호 물가 지표가 10월 3.8%로 가속해 2027년 연준 부담 제기",
-      "confidence": "원문 근거",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Markets",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/pce-inflation-report-october-2026.html",
-      "publishedKst": "11-25 23:18",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "0a7ca804c76eb356",
-      "market": "global",
-      "title": "리즈먼: 엔비디아 급등락, 워시의 시장 신호 판독 시험대",
-      "titleOriginal": "Liesman: Nvidia whiplash tests Kevin Warsh’s push to read market signals",
-      "why": "뚜렷한 원인 미확인",
-      "confidence": "미확인",
-      "sectors": [
-        "AI·반도체"
-      ],
-      "source": "CNBC",
-      "sourceSection": "World Markets",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/nvidia-kevin-warsh-fed-market-signals.html",
-      "publishedKst": "11-25 21:26",
-      "analyzedBy": "cache"
-    },
-    {
-      "id": "877fa681998dce9d",
-      "market": "global",
-      "title": "UAE 장관, IMF 전망 상향에 경제 낙관",
-      "titleOriginal": "‘Ready for any storm’: UAE minister optimistic on economy as IMF lifts forecast",
-      "why": "IMF가 전망을 상향해 UAE 장관이 경제에 낙관적",
-      "confidence": "원문 근거",
-      "sectors": [
-        "매크로"
-      ],
-      "source": "CNBC",
-      "sourceSection": "Top News",
-      "official": false,
-      "url": "https://www.cnbc.com/2026/11/25/uae-iran-war-economy-oil.html",
-      "publishedKst": "11-25 13:06",
       "analyzedBy": "cache"
     }
   ],
   "sectors": [
     {
       "name": "AI·반도체",
-      "count": 13,
+      "count": 12,
       "items": [
         {
           "title": "젠슨 황의 NVIDIA 복귀는 싫지만 내 401(k)에 도움…내가 위선자?",
@@ -749,14 +714,14 @@
           "url": "https://www.marketwatch.com/story/i-hate-that-jensen-huang-is-back-at-nvidia-but-i-love-what-its-done-for-my-401-k-am-i-a-hypocrite-f63c0303?mod=mw_rss_topstories"
         },
         {
-          "title": "반도체 칩은 새로운 석유? 그 이유는",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/semiconductor-chips-are-the-new-oil-heres-why.html"
+          "title": "황의 엔비디아 복귀 부각된 요동 주간, 주가 급등 상위 종목",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/these-stocks-soared-the-most-during-a-wild-week-highlighted-by-huangs-return-to-nvidia-578b3f9a?mod=mw_rss_topstories"
         },
         {
-          "title": "엔비디아 변동성, 단일종목 ETF 위험 드러내",
+          "title": "젠슨 황 복귀에도 AI 불안 못 달래…약세에 매수",
           "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/nvidias-volatile-swings-expose-risks-of-single-stock-etfs.html"
+          "url": "https://www.cnbc.com/investingclub/2026/11/27/jensen-huangs-return-did-little-to-ease-ai-jitters-we-bought-on-weakness.html"
         }
       ]
     },
@@ -767,8 +732,14 @@
     },
     {
       "name": "방산",
-      "count": 0,
-      "items": []
+      "count": 1,
+      "items": [
+        {
+          "title": "Rheinmetall, 유럽 재무장 호황 난관에 성장 야심 자제",
+          "source": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/27/rheinmetall-stock-cmd-guidance-sales.html"
+        }
+      ]
     },
     {
       "name": "바이오",
@@ -777,12 +748,12 @@
     },
     {
       "name": "금융",
-      "count": 8,
+      "count": 6,
       "items": [
         {
-          "title": "시장 폭락 두려워 은퇴자금 100만 달러 중 40만 달러 연금 고민",
+          "title": "부모 집 정리 법적 악몽, 자녀에게 같은 고생 없이 줄이려면",
           "source": "MarketWatch",
-          "url": "https://www.marketwatch.com/story/were-in-our-50s-and-terrified-of-a-market-crash-should-we-put-400-000-of-our-1-million-retirement-savings-into-an-annuity-1943f240?mod=mw_rss_topstories"
+          "url": "https://www.marketwatch.com/story/clearing-out-my-parents-house-was-a-legal-nightmare-how-can-i-downsize-without-putting-my-children-through-the-same-ordeal-6537d804?mod=mw_rss_topstories"
         },
         {
           "title": "66세 간호사, 500달러 저축 후 은퇴 직면…누구 탓?",
@@ -790,16 +761,22 @@
           "url": "https://www.marketwatch.com/story/a-66-year-old-nurse-faces-retirement-with-just-500-saved-whos-to-blame-4249a0fd?mod=mw_rss_topstories"
         },
         {
-          "title": "엔비디아 변동성, 단일종목 ETF 위험 드러내",
+          "title": "사모시장 접근성은 최고 수준, 그러나 엑시트는 별개",
           "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/nvidias-volatile-swings-expose-risks-of-single-stock-etfs.html"
+          "url": "https://www.cnbc.com/2026/11/27/private-markets-retail-investors-liquidity.html"
         }
       ]
     },
     {
       "name": "자동차",
-      "count": 0,
-      "items": []
+      "count": 1,
+      "items": [
+        {
+          "title": "신차 가격 사상 최고치, 어디서 할인 찾을까",
+          "source": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/27/new-car-buying-deals-buying-tips.html"
+        }
+      ]
     },
     {
       "name": "조선",
@@ -819,29 +796,29 @@
     },
     {
       "name": "유통·소비",
-      "count": 3,
+      "count": 2,
       "items": [
         {
-          "title": "노르딕 애틀랜틱, 전 항공편 중단·파산 가능성 경고",
+          "title": "인플레이션에 소비자 가성비 추구…블랙프라이데이에 긍정적",
           "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/norse-airline-finance-business.html"
+          "url": "https://www.cnbc.com/2026/11/27/black-friday-2026-inflation-value-deals.html"
         },
         {
-          "title": "Denny’s, 젠슨 황 Nvidia CEO 복귀 환영",
+          "title": "저가항공 Norse Atlantic, 자금 확보 실패로 유럽서 파산 신청",
           "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/dennys-jensen-huang-nvidia.html"
-        },
-        {
-          "title": "K-beauty 주가 랠리, 한국 브랜드 아마존 글로벌 베스트셀러 상위",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/k-beauty-firms-amazon-sales-black-friday.html"
+          "url": "https://www.cnbc.com/2026/11/27/norse-atlantic-bankruptcy-fuel-costs.html"
         }
       ]
     },
     {
       "name": "인터넷·플랫폼",
-      "count": 1,
+      "count": 2,
       "items": [
+        {
+          "title": "SpaceX 주가 4%대 급등…기술주 랠리·머스크 발언 여파",
+          "source": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/27/spacex-shares-musk-donations.html"
+        },
         {
           "title": "할리우드 숏폼·세로 영상 진출에 마이크로드라마 앱 수익성 경쟁",
           "source": "CNBC",
@@ -851,39 +828,27 @@
     },
     {
       "name": "매크로",
-      "count": 8,
+      "count": 6,
       "items": [
+        {
+          "title": "이번 주 증시 랠리 뒤의 경고들",
+          "source": "MarketWatch",
+          "url": "https://www.marketwatch.com/story/the-warnings-behind-this-weeks-stock-market-rally-86e5319c?mod=mw_rss_topstories"
+        },
         {
           "title": "트럼프, 3분기 GDP 대폭 상향 수정에 '기록적 오류' 조사 요구",
           "source": "CNBC",
           "url": "https://www.cnbc.com/2026/11/26/trump-gdp-revision-investigation.html"
         },
         {
-          "title": "스페인 파블로 에르난데스 데 코스, ECB 총재 내정",
+          "title": "S&P 500, 조정장 진입…약세장·경기침체가 항상 뒤따르진 않아",
           "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/pablo-hernandez-de-cos-ecb-president.html"
-        },
-        {
-          "title": "미국, 관세 인상 위협으로 무역협정 압박",
-          "source": "CNBC",
-          "url": "https://www.cnbc.com/2026/11/26/us-tariffs-hike-trade-agreement.html"
+          "url": "https://www.cnbc.com/2026/11/27/the-sp-500-is-in-a-correction-bear-markets-and-recessions-dont-always-follow.html"
         }
       ]
     }
   ],
   "calendar": [
-    {
-      "id": "bok-2026-11-26",
-      "date": "2026-11-26",
-      "timeKst": "",
-      "title": "한국은행 금통위 기준금리 결정",
-      "category": "금리",
-      "region": "국내",
-      "note": "결정문 발표 시각은 당일 공지(보통 오전)",
-      "source": "한국은행",
-      "sourceUrl": "https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755",
-      "localDate": "2026-11-26"
-    },
     {
       "id": "earn-2026-12-01-MRVL",
       "date": "2026-12-02",

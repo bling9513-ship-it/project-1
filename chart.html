@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-AA2210flaU+FKM29V9W6oX8tmzGcLNkrVGKVoth1it8=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1SZp0z7c+BTLIzZke8RIVCk/HN9F8AB/tnY2kdnVPlQ=' 'sha256-5qehTPUeGAaXwxJSjIp7Y5Kr4TBoVb8eR9GenIdzOu4=' 'sha256-K0Nm7v1GGBUWxUrxFmonRSJiLUYU9fz8A0GKPUnrPbo=' 'sha256-aVMCKdkAyMoLQssh0ndX7UQ2p69scTfKPz10EJ7G3Ao='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infosec Archive · 차트 추리실</title>
   <meta name="description" content="이름과 기간을 가린 합성 차트 한 장을 보고, 가려진 다음 구간의 흐름이나 보이는 구간의 패턴을 맞히는 4지선다 게임. 학습용으로 만든 합성 OHLCV를 쓰고, 정답을 고르면 가려진 구간과 해설이 공개됩니다.">
@@ -1653,7 +1653,7 @@
     <footer class="footer">
       Infosec Archive · 차트 추리실<br>
 차트의 시가·고가·저가·종가·거래량은 모두 학습·오락용으로 생성한 합성 데이터이며 실제 종목·지수·시세가 아닙니다. 정답과 해설 역시 같은 합성 데이터에서 계산했고, 투자 판단의 근거로 쓸 수 없습니다. 풀이 기록은 이 브라우저(localStorage)에만 저장되며 서버로 전송되지 않습니다.<br>
-      2026-11-27 08:46 KST 기준 · 매일 08:00 새 차트
+      2026-11-28 08:59 KST 기준 · 매일 08:00 새 차트
     </footer>
   </main>
 
@@ -1759,7 +1759,7 @@
   })();
 
     const CATS = [{"key":"trend","label":"추세"},{"key":"breakout","label":"돌파"},{"key":"level","label":"지지·저항"},{"key":"volume","label":"거래량"}];
-    const TODAY_ID = 'syn-level-03';
+    const TODAY_ID = 'syn-level-04';
     const STORE_KEY = 'secjobs-chart-v1';
     const SITE = 'https://bling9513-ship-it.github.io/project-1/chart.html';
 
