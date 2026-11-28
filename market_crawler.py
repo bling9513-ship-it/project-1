@@ -703,12 +703,14 @@ def calendar_bok(now, sources):
     url = ("https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do"
            "?menuNo=200755&mtgSe=A&pYear=%d")
     fetched = 0
+    read_years = 0
     for year in (now.year, now.year + 1):
         try:
             raw = fetch_bytes(url % year, timeout=30).decode("utf-8", "ignore")
         except Exception as exc:  # noqa: BLE001
             print("  [일정] 한국은행 %d년 실패: %s" % (year, exc))
             continue
+        read_years += 1
         found = 0
         for month, day, weekday in re.findall(r"(\d{2})월\s*(\d{2})일\s*\(([월화수목금토일])\)", raw):
             try:
@@ -731,9 +733,12 @@ def calendar_bok(now, sources):
             })
             found += 1
         fetched += found
+    # 연말에는 다음 해 일정이 아직 공표되지 않아 조회는 성공해도 0건일 수 있다.
+    # 조회 자체가 됐는지(read_years)로 상태를 정하고, 창 안 일정 건수는 count 로 따로 남긴다.
     sources.append({"name": "한국은행 금통위", "kind": "공식 일정", "url": url % now.year,
-                    "status": "ok" if fetched else "실패", "count": fetched})
-    print("  [일정] 한국은행 금통위 %d건" % fetched)
+                    "status": "ok" if read_years else "실패", "count": fetched})
+    print("  [일정] 한국은행 금통위 %d건%s" % (fetched,
+                                           " (조회 정상 · 120일 안 회의 없음)" if not fetched and read_years else ""))
     return out
 
 
