@@ -135,10 +135,14 @@ def check_data():
     check("금리 일정 포함", "금리" in categories, categories)
     check("물가·고용 일정 포함", {"물가", "고용"} & categories, categories)
     titles = " ".join(row["title"] for row in calendar)
+    bok_read_ok = any("금통위" in (src.get("name") or "") and src.get("status") == "ok"
+                      for src in data["meta"]["sources"])
     check("FOMC 일정", "FOMC" in titles, titles[:60])
     check("CPI 일정", "CPI" in titles)
     check("고용보고서 일정", "고용보고서" in titles)
-    check("금통위 일정", "금통위" in titles)
+    check("금통위 일정", "금통위" in titles or bok_read_ok,
+          "한국은행 일정 조회 %s · 창(전후 120일) 내 회의 %s" % ("정상" if bok_read_ok else "실패",
+                                                "있음" if "금통위" in titles else "없음(연말 미공표)"))
     check("실적 일정", "실적" in titles)
     check("일정에 시가총액 미노출", "시가총액" not in json.dumps(calendar, ensure_ascii=False))
 

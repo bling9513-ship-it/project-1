@@ -1,16 +1,16 @@
 {
-  "generated": "2026-11-27 08:46 KST",
+  "generated": "2026-11-28 08:59 KST",
   "checkedOn": "2026-11-22",
   "rotation": {
-    "condition": "sleep",
-    "digital": "permission"
+    "condition": "eyes",
+    "digital": "notify"
   },
   "decks": [
     {
       "id": "condition",
       "title": "컨디션 키워드",
       "subtitle": "몸의 리듬을 가볍게 맞추는 3장",
-      "todayTheme": "sleep",
+      "todayTheme": "eyes",
       "themes": [
         {
           "id": "sleep",
@@ -198,7 +198,7 @@
       "id": "digital",
       "title": "1분 디지털 생활",
       "subtitle": "오늘 바로 바꿀 수 있는 설정 3장",
-      "todayTheme": "permission",
+      "todayTheme": "notify",
       "themes": [
         {
           "id": "permission",
